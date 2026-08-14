@@ -192,7 +192,7 @@ export default function CarpetaDetailScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={styles.plName} numberOfLines={1}>{sub.name}</Text>
                   <Text style={styles.plMeta}>
-                    Carpeta · {(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length} elemento{(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length !== 1 ? "s" : ""}
+                    Carpeta · {(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length + (sub.presetIds ?? []).length} elemento{(sub.subFolderIds ?? []).length + (sub.playlistIds ?? []).length + (sub.presetIds ?? []).length !== 1 ? "s" : ""}
                   </Text>
                 </View>
                 <Pressable

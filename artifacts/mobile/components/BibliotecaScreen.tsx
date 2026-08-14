@@ -294,7 +294,13 @@ function AnimatedChipRow({
 
 // ── Fila de carpeta del usuario ───────────────────────────────────────────────
 function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPress: () => void; onLongPress?: () => void }) {
-  const count = (folder.playlistIds ?? []).length;
+  const nPl = (folder.playlistIds ?? []).length;
+  const nMix = (folder.presetIds ?? []).length;
+  const nSub = (folder.subFolderIds ?? []).length;
+  const count = nPl + nMix + nSub;
+  const label = nMix > 0 || nSub > 0
+    ? `${count} elemento${count !== 1 ? "s" : ""}`
+    : `${nPl} playlist${nPl !== 1 ? "s" : ""}`;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
@@ -306,7 +312,7 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
           {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
         <Text style={styles.rowSub} numberOfLines={1}>
-          {count} playlist{count !== 1 ? "s" : ""}
+          {label}
         </Text>
       </View>
     </Pressable>
@@ -1407,6 +1413,14 @@ export function BibliotecaScreen({
 
       const openMixFolderMenu = (folder: MixFolder) => setMixMenuFolder(folder);
 
+      // Carpetas unificadas del usuario que contienen al menos una mezcla
+      const userFoldersWithMixes = [...userFolders]
+        .filter((f) => (f.presetIds ?? []).length > 0)
+        .sort((a, b) => {
+          if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+
       const createButtons = (
         <>
           <Pressable
@@ -1488,6 +1502,14 @@ export function BibliotecaScreen({
       return (
         <View style={{ gap: 15, marginTop: 20 }}>
           <View style={{ gap: 14 }}>
+            {userFoldersWithMixes.map((folder) => (
+              <FolderRow
+                key={folder.id}
+                folder={folder}
+                onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+                onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
+              />
+            ))}
             {sortedMixFolders.map((folder) => (
               <MixFolderRow
                 key={folder.id}
