@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 16,
     borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(255,255,255,0.045)",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
