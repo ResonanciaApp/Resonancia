@@ -300,6 +300,8 @@ export default function PlaylistDetailScreen() {
               />
             ) : (
               <View style={styles.coverEmpty}>
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: sceneTheme.solid }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.045)" }]} />
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
                 <View style={[styles.coverPlusBadge, { backgroundColor: plusBadgeBg }]}>
@@ -821,7 +823,7 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.045)",
+    overflow: "hidden",
   },
   coverPlusBadge: {
     position: "absolute",
