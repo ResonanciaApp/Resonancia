@@ -130,6 +130,13 @@ function getSessionAuthor(s: Session): string {
 
 // ── Overlay de búsqueda ────────────────────────────────────────────────────
 function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { theme: srTheme } = useSceneTheme();
+  const srBg =
+    srTheme.id === "tibet"
+      ? (srTheme.gradient[srTheme.gradient.length - 1] as string)
+      : srTheme.id === "indigo"
+        ? (srTheme.solid as string)
+        : "#190913";
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -165,9 +172,16 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <View style={[srStyles.root, { paddingBottom: kbHeight }]}>
+      <View style={[srStyles.root, { paddingBottom: kbHeight, backgroundColor: srBg }]}>
+        {srTheme.id === "tibet" && (
+          <LinearGradient
+            colors={srTheme.gradient as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+        )}
         {/* Barra */}
-        <View style={[srStyles.overlay, { paddingTop: insets.top + 14 }]}>
+        <View style={[srStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: srTheme.id === "tibet" ? "transparent" : srBg }]}>
           <View style={srStyles.bar}>
             <Feather name="search" size={16} color="#F9F9F9" />
             <TextInput
