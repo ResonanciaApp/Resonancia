@@ -162,14 +162,17 @@ export function CommunityMixesCarousel() {
 
       {/* ── Lista vertical ── */}
       {visible.length > 0 && (
-        <View style={styles.gridWrap}>
+        <View style={styles.listWrap}>
           {visible.map((mix) => (
-            <MixGridCell
+            <MixRow
               key={mix.id}
               mix={mix}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
-              onLongPress={() => handleViewCreator(mix)}
+              onDotsPress={() => {}}
+              onAuthorPress={() => handleViewCreator(mix)}
+              favorited={(mix.likedByMe ?? false) || (mix.likes ?? 0) > 0}
+              onHeartPress={() => handleLike(mix)}
             />
           ))}
         </View>
@@ -525,12 +528,6 @@ const styles = StyleSheet.create({
   listWrap: {
     flexDirection: "column",
     gap: 11,
-  },
-  gridWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    columnGap: GRID_GAP,
-    rowGap: 14,
   },
   gridCell: { width: CELL_W },
   gridCover: {
