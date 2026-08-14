@@ -55,7 +55,6 @@ function ActionRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.actionRow,
-        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -70,7 +69,13 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme, activeSceneId } = useSceneTheme();
-  const sheetGradient = activeSceneId === "tibet" ? (["#2d4081", "#2d4081"] as const) : theme.gradient;
+  const sheetSolid =
+    activeSceneId === "tibet"
+      ? ((theme.gradient[2] ?? "#2d4081") as string)
+      : activeSceneId === "indigo"
+        ? (theme.gradient[theme.gradient.length - 1] as string)
+        : null;
+  const sheetGradient = sheetSolid ? ([sheetSolid, sheetSolid] as [string, string]) : theme.gradient;
   const { toggleFavorite } = usePlayer();
   const {
     favFolders,
@@ -242,8 +247,6 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                 </Pressable>
               </View>
 
-              <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
-
               <ActionRow
                 icon="bookmark"
                 label={isPinned ? "Desfijar" : itemKind === "session" ? "Fijar favorito" : "Fijar carpeta"}
@@ -288,8 +291,6 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                   <Feather name="x" size={20} color={colors.mutedForeground} />
                 </Pressable>
               </View>
-
-              <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
               <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 300 }}>
                 {eligibleFavFolders.length === 0 ? (
