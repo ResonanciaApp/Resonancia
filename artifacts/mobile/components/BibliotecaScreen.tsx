@@ -891,7 +891,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
     >
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.045)" }]} />
         {firstLayers.map((instId, idx) => {
           const geoId = baseOf(instId);
           const settings = creation.settings[instId];
