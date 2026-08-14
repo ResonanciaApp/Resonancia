@@ -1305,7 +1305,7 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaFavVisible(true)}
+            onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
               <Feather name="folder" size={25} color={iconPlaceholderColor} />
