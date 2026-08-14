@@ -204,7 +204,7 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <LocalGrupoAvatar grupo={g} size={54} />
@@ -281,7 +281,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <LocalGrupoAvatar grupo={g} size={54} />
@@ -323,7 +323,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 0, opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
