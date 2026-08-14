@@ -141,6 +141,17 @@ export function AmbientSoundPickerSheet({
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
   const [favPopupSound, setFavPopupSound] = useState<MixSound | null>(null);
+  const popupOpacity = useRef(new Animated.Value(0)).current;
+  const openPopup = (sound: MixSound) => {
+    setFavPopupSound(sound);
+    popupOpacity.setValue(0);
+    Animated.timing(popupOpacity, { toValue: 1, duration: 450, useNativeDriver: true }).start();
+  };
+  const closePopup = () => {
+    Animated.timing(popupOpacity, { toValue: 0, duration: 450, useNativeDriver: true }).start(({ finished }) => {
+      if (finished) setFavPopupSound(null);
+    });
+  };
   const [step, setStep] = useState<"pick" | "controles">("pick");
   const [sessionVolume, setSessionVolume] = useState(initialSessionVolume ?? 0.8);
   const [ambientVolume, setAmbientVolume] = useState(initialAmbientVolume ?? 0.5);
@@ -277,7 +288,7 @@ export function AmbientSoundPickerSheet({
                     selected={localSelected === sound.id}
                     fav={true}
                     onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
-                    onLongPress={() => setFavPopupSound(sound)}
+                    onLongPress={() => openPopup(sound)}
                   />
                 ))}
               </View>
@@ -328,7 +339,7 @@ export function AmbientSoundPickerSheet({
                   selected={localSelected === sound.id}
                   fav={favIds.has(sound.id)}
                   onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
-                  onLongPress={() => setFavPopupSound(sound)}
+                  onLongPress={() => openPopup(sound)}
                 />
               ))}
             </View>
@@ -336,7 +347,8 @@ export function AmbientSoundPickerSheet({
 
           {/* ── Fav popup ───────────────────────────────────────────────── */}
           {favPopupSound && (
-            <Pressable style={styles.popupBackdrop} onPress={() => setFavPopupSound(null)}>
+            <Animated.View style={[StyleSheet.absoluteFill, { opacity: popupOpacity, zIndex: 100 }]}>
+            <Pressable style={styles.popupBackdrop} onPress={closePopup}>
               <Pressable style={[styles.popup, { backgroundColor: sceneTheme.gradient[0] as string }]} onPress={() => {}}>
                 {(() => {
                   const img = getSoundImage(favPopupSound.id);
@@ -363,7 +375,7 @@ export function AmbientSoundPickerSheet({
                           style={[styles.popupFavBtn, isFav && styles.popupFavBtnActive]}
                           onPress={() => {
                             toggleFav(favPopupSound.id);
-                            setFavPopupSound(null);
+                            closePopup();
                           }}
                         >
                           <Feather name="heart" size={14} color="white" />
@@ -377,6 +389,7 @@ export function AmbientSoundPickerSheet({
                 })()}
               </Pressable>
             </Pressable>
+            </Animated.View>
           )}
 
           {/* ── Sticky footer ───────────────────────────────────────────── */}
