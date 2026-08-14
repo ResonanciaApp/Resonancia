@@ -332,14 +332,14 @@ export function AmbientSoundPickerSheet({
             </ScrollView>
 
             {/* Sounds grid */}
-            <View style={[styles.grid, { marginTop: 15 }]}>
+            <View style={[styles.grid, { marginTop: 15, columnGap: EXPLORE_GAP }]}>
               {filteredSounds.map((sound) => (
                 <SoundCard
                   key={sound.id}
                   sound={sound}
                   selected={localSelected === sound.id}
                   fav={favIds.has(sound.id)}
-                  size={Math.floor(CARD_SIZE * 0.85)}
+                  size={EXPLORE_CARD}
                   onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                   onLongPress={() => openPopup(sound)}
                 />
@@ -624,6 +624,9 @@ const NUM_COLS = 3;
 const CARD_SIZE = Math.floor(
   (Dimensions.get("window").width - GRID_H_PAD * 2 - GRID_GAP * (NUM_COLS - 1)) / NUM_COLS
 ) - 5;
+const EXPLORE_CARD = Math.floor(CARD_SIZE * 0.85);
+// Gap que compensa el achique de las cards para que las 3 columnas llenen el ancho
+const EXPLORE_GAP = GRID_GAP + Math.floor((NUM_COLS * (CARD_SIZE - EXPLORE_CARD)) / (NUM_COLS - 1));
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
