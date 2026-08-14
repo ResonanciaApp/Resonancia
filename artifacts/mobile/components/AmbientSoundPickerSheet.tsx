@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image as ExpoImage } from "expo-image";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -173,7 +172,14 @@ export function AmbientSoundPickerSheet({
       statusBarTranslucent
     >
       <View style={styles.root}>
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: themeBg }]} />
+        {sceneTheme.id === "tibet" ? (
+          <LinearGradient
+            colors={sceneTheme.gradient as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+          />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: themeBg }]} />
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════
             PASO 1 — PICKER  (slideAnim=0 → visible; =1 → desliza abajo)
@@ -320,11 +326,7 @@ export function AmbientSoundPickerSheet({
           )}
 
           {/* ── Sticky footer ───────────────────────────────────────────── */}
-          <BlurView
-            intensity={60}
-            tint="dark"
-            style={[styles.footer, { paddingBottom: bottomPad + 12 }]}
-          >
+          <View style={[styles.footer, { paddingBottom: bottomPad + 12 }]}>
             <Pressable
               style={styles.nextBtn}
               onPress={localSelected !== null ? goToControles : undefined}
@@ -334,7 +336,7 @@ export function AmbientSoundPickerSheet({
                 Siguiente
               </Text>
             </Pressable>
-          </BlurView>
+          </View>
         </Animated.View>
 
         {/* ═══════════════════════════════════════════════════════════════
@@ -595,9 +597,6 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255,255,255,0.10)",
-    overflow: "hidden",
   },
   nextBtn: {
     backgroundColor: "white",
