@@ -1171,7 +1171,10 @@ export function BibliotecaScreen({
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
       const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0 || sortedFavFoldersGeneral.length > 0;
-      const mixIdsInFoldersGeneral = new Set(mixFolders.flatMap((f) => f.presetIds));
+      const mixIdsInFoldersGeneral = new Set([
+        ...mixFolders.flatMap((f) => f.presetIds),
+        ...userFolders.flatMap((f) => f.presetIds ?? []),
+      ]);
       const sortedMixesGeneral = presets
         .filter((p) => !mixIdsInFoldersGeneral.has(p.id))
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -1408,7 +1411,7 @@ export function BibliotecaScreen({
         <>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaMezclaVisible(true)}
+            onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
               <Feather name="folder" size={25} color={iconPlaceholderColor} />
@@ -1429,7 +1432,10 @@ export function BibliotecaScreen({
       }
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      const mixIdsInFolders = new Set(mixFolders.flatMap((f) => f.presetIds));
+      const mixIdsInFolders = new Set([
+        ...mixFolders.flatMap((f) => f.presetIds),
+        ...userFolders.flatMap((f) => f.presetIds ?? []),
+      ]);
       const unfiledPresetsRaw = presets.filter((p) => !mixIdsInFolders.has(p.id));
       const unfiledPresets =
         sort === "alfabetico"

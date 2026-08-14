@@ -14,6 +14,7 @@ export type Folder = {
   name: string;
   sessionIds: string[];    // sesiones (flujo AddToFolderSheet)
   playlistIds: string[];   // playlists agrupadas (flujo carpeta Spotify-style)
+  presetIds?: string[];    // mezclas del Mezclador guardadas en la carpeta
   subFolderIds: string[];  // subcarpetas anidadas
   createdAt: string;
   pinned?: boolean;
@@ -60,6 +61,9 @@ interface FoldersPlaylistsCtx {
   addPlaylistToFolder: (folderId: string, playlistId: string) => void;
   removePlaylistFromFolder: (folderId: string, playlistId: string) => void;
   isPlaylistInFolder: (folderId: string, playlistId: string) => boolean;
+  addMixToFolder: (folderId: string, presetId: string) => void;
+  removeMixFromFolder: (folderId: string, presetId: string) => void;
+  isMixInFolder: (folderId: string, presetId: string) => boolean;
   addFolderToFolder: (parentId: string, childId: string) => void;
   removeFolderFromFolder: (parentId: string, childId: string) => void;
   isFolderInFolder: (parentId: string, childId: string) => boolean;
@@ -239,6 +243,32 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const isPlaylistInFolder = useCallback(
     (folderId: string, playlistId: string) =>
       (folders.find((f) => f.id === folderId)?.playlistIds ?? []).includes(playlistId),
+    [folders]
+  );
+
+  const addMixToFolder = useCallback((folderId: string, presetId: string) => {
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId && !(f.presetIds ?? []).includes(presetId)
+          ? { ...f, presetIds: [...(f.presetIds ?? []), presetId] }
+          : f
+      )
+    );
+  }, [updateFolders]);
+
+  const removeMixFromFolder = useCallback((folderId: string, presetId: string) => {
+    updateFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId
+          ? { ...f, presetIds: (f.presetIds ?? []).filter((id) => id !== presetId) }
+          : f
+      )
+    );
+  }, [updateFolders]);
+
+  const isMixInFolder = useCallback(
+    (folderId: string, presetId: string) =>
+      (folders.find((f) => f.id === folderId)?.presetIds ?? []).includes(presetId),
     [folders]
   );
 
@@ -501,6 +531,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         addPlaylistToFolder,
         removePlaylistFromFolder,
         isPlaylistInFolder,
+        addMixToFolder,
+        removeMixFromFolder,
+        isMixInFolder,
         addFolderToFolder,
         removeFolderFromFolder,
         isFolderInFolder,

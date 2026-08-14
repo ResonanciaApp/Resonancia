@@ -35,6 +35,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixFolder, type MixPreset, useMixer } from "@/context/MixerContext";
+import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -138,6 +139,11 @@ export function MixActionsSheet({
     renameMixFolder,
     deleteMixFolder,
   } = useMixer();
+  const {
+    folders: userFolders,
+    addMixToFolder: addMixToUserFolder,
+    isMixInFolder: isMixInUserFolder,
+  } = useFoldersPlaylists();
   const queryClient = useQueryClient();
   const shareMixMutation = useShareMix();
 
@@ -441,12 +447,34 @@ export function MixActionsSheet({
             </View>
 
             <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 320 }}>
-              {eligibleMixFolders.length === 0 ? (
+              {eligibleMixFolders.length === 0 && (itemKind !== "mix" || userFolders.length === 0) ? (
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                   Todavía no tenés ninguna carpeta
                 </Text>
               ) : (
-                eligibleMixFolders.map((f) => {
+                <>
+                {itemKind === "mix" && mix && userFolders.map((f) => {
+                  const inIt = isMixInUserFolder(f.id, mix.id);
+                  return (
+                    <Pressable
+                      key={f.id}
+                      onPress={() => { addMixToUserFolder(f.id, mix.id); onClose(); }}
+                      style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
+                    >
+                      <View style={styles.folderIconBox}>
+                        <Feather name="folder" size={18} color={colors.primary} />
+                      </View>
+                      <Text
+                        style={[styles.folderLabel, { color: colors.foreground }]}
+                        numberOfLines={1}
+                      >
+                        {f.name}
+                      </Text>
+                      {inIt && <Feather name="check" size={16} color={colors.primary} />}
+                    </Pressable>
+                  );
+                })}
+                {eligibleMixFolders.map((f) => {
                   const inIt =
                     itemKind === "mix" && mix
                       ? isMixInFolder(f.id, mix.id)
@@ -475,7 +503,8 @@ export function MixActionsSheet({
                       {inIt && <Feather name="check" size={16} color={colors.primary} />}
                     </Pressable>
                   );
-                })
+                })}
+                </>
               )}
             </ScrollView>
           </>

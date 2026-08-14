@@ -20,6 +20,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { useMixer } from "@/context/MixerContext";
+import { useLoadMix } from "@/hooks/useLoadMix";
+import { MixCover } from "@/app/mi-mezcla/[id]";
+import { EqualizerBars } from "@/components/EqualizerBars";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -50,7 +54,10 @@ export default function CarpetaDetailScreen() {
     removeFolderFromFolder,
     createPlaylist,
     createFolder,
+    removeMixFromFolder,
   } = useFoldersPlaylists();
+  const { presets: allMixes, loadedPresetId, isPlaying: mixerPlaying, openSheet } = useMixer();
+  const loadMix = useLoadMix();
 
   const [addSheetVisible, setAddSheetVisible] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -83,6 +90,11 @@ export default function CarpetaDetailScreen() {
   const subFolders = subFolderIds
     .map((fid) => folders.find((f) => f.id === fid))
     .filter(Boolean) as typeof folders;
+
+  const folderMixIds = folder.presetIds ?? [];
+  const folderMixes = folderMixIds
+    .map((mid) => allMixes.find((m) => m.id === mid))
+    .filter(Boolean) as typeof allMixes;
 
   const handleDelete = () => {
     Alert.alert(
@@ -160,10 +172,10 @@ export default function CarpetaDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {subFolders.length === 0 && folderPlaylists.length === 0 ? (
+        {subFolders.length === 0 && folderPlaylists.length === 0 && folderMixes.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyTitle}>Esta carpeta está vacía</Text>
-            <Text style={styles.emptySub}>Agrega playlists o carpetas desde Tu biblioteca.</Text>
+            <Text style={styles.emptySub}>Agrega playlists, mezclas o carpetas desde Tu biblioteca.</Text>
           </View>
         ) : (
           <View style={{ paddingTop: 12 }}>
@@ -226,6 +238,40 @@ export default function CarpetaDetailScreen() {
                 </Pressable>
               </Pressable>
             ))}
+
+            {/* Mezclas */}
+            {folderMixes.map((mix) => {
+              const isPlayingThis = loadedPresetId === mix.id && mixerPlaying;
+              return (
+                <Pressable
+                  key={mix.id}
+                  style={({ pressed }) => [styles.playlistRow, { opacity: pressed ? 0.8 : 1 }]}
+                  onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
+                >
+                  <MixCover mix={mix} size={52} radius={6} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.plName} numberOfLines={1}>{mix.name}</Text>
+                    {isPlayingThis ? (
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 }}>
+                        <EqualizerBars color={GOLD} size="sm" />
+                        <Text style={[styles.plMeta, { color: GOLD }]}>Reproduciendo</Text>
+                      </View>
+                    ) : (
+                      <Text style={styles.plMeta}>
+                        Mezcla · {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                      </Text>
+                    )}
+                  </View>
+                  <Pressable
+                    onPress={() => removeMixFromFolder(folder.id, mix.id)}
+                    hitSlop={10}
+                    style={styles.removePlBtn}
+                  >
+                    <Feather name="x" size={16} color={MUTED} />
+                  </Pressable>
+                </Pressable>
+              );
+            })}
           </View>
         )}
       </ScrollView>
