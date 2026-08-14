@@ -1299,7 +1299,7 @@ export function BibliotecaScreen({
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="plus" size={24} color={iconPlaceholderColor} />
+              <Feather name="plus" size={28} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
           </Pressable>
