@@ -116,7 +116,7 @@ export default function CarpetaDetailScreen() {
   };
 
   return (
-    <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
+    <LinearGradient style={styles.root} colors={BG}>
       <StatusBar hidden />
 
       {/* Header */}
