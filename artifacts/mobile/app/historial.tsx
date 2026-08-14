@@ -45,7 +45,7 @@ export default function HistorialScreen() {
       <Text
         style={{
           fontFamily: "Manrope",
-          fontSize: 30,
+          fontSize: 27,
           fontWeight: "700",
           color: FOREGROUND,
           letterSpacing: 0.3,
