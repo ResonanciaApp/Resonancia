@@ -718,6 +718,18 @@ export default function SessionDetailScreen() {
             </View>
             <View style={styles.optDivider} />
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+              {/* Sonido ambiente */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowAmbientPicker(true), 300); }}
+              >
+                <Feather name="music" size={18} color="#FBFBFB" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Sonido ambiente</Text>
+                {selectedAmbientSoundId && (
+                  <Feather name="check-circle" size={15} color="#F9F9F9" style={{ marginRight: 6 }} />
+                )}
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
               {/* Temporizador */}
               <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
                 <Feather name="clock" size={18} color="#FBFBFB" style={styles.optIcon} />
@@ -745,18 +757,6 @@ export default function SessionDetailScreen() {
               >
                 <Feather name="list" size={18} color="#FBFBFB" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a playlist</Text>
-                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
-              </Pressable>
-              {/* Sonido ambiente */}
-              <Pressable
-                style={styles.optRow}
-                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowAmbientPicker(true), 300); }}
-              >
-                <Feather name="music" size={18} color="#FBFBFB" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Sonido ambiente</Text>
-                {selectedAmbientSoundId && (
-                  <Feather name="check-circle" size={15} color="#F9F9F9" style={{ marginRight: 6 }} />
-                )}
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
               {/* Seguir al guía (si aplica) */}
