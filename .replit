@@ -34,3 +34,35 @@ EXPO_PUBLIC_BUNNY_CDN_HOSTNAME = "vz-881ead65-839.b-cdn.net"
 
 [userenv.development]
 EXPO_PUBLIC_DEV_ADMIN = "true"
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
+
+[[ports]]
+localPort = 18115
+externalPort = 4200
+
+[[ports]]
+localPort = 18161
+externalPort = 3003
+
+[[ports]]
+localPort = 18837
+externalPort = 3002
+
+[[ports]]
+localPort = 20208
+externalPort = 3000
+
+[[ports]]
+localPort = 22736
+externalPort = 3001
+
+[[ports]]
+localPort = 23342
+externalPort = 80

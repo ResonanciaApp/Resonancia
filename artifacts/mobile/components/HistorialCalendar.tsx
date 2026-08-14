@@ -244,7 +244,7 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
           </Text>
         </View>
       ) : dayEntries.length === 0 ? (
-        <View style={[styles.emptyWrap, { backgroundColor: colors.card }, p ? { marginHorizontal: p } : undefined]}>
+        <View style={[styles.emptyWrap, { backgroundColor: "rgba(255,255,255,0.045)" }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             No hay sesiones registradas este día.
