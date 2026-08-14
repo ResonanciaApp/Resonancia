@@ -287,6 +287,7 @@ export function AmbientSoundPickerSheet({
                     sound={sound}
                     selected={localSelected === sound.id}
                     fav={true}
+                    size={Math.floor(CARD_SIZE * 0.75)}
                     onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                     onLongPress={() => openPopup(sound)}
                   />
@@ -565,24 +566,26 @@ function SoundCard({
   sound,
   selected,
   fav,
+  size,
   onPress,
   onLongPress,
 }: {
   sound: MixSound;
   selected: boolean;
   fav: boolean;
+  size?: number;
   onPress: () => void;
   onLongPress: () => void;
 }) {
   const img = getSoundImage(sound.id);
 
   return (
-    <View style={styles.cardWrap}>
+    <View style={[styles.cardWrap, size != null && { width: size }]}>
       <Pressable
         onPress={onPress}
         onLongPress={onLongPress}
         delayLongPress={1000}
-        style={[styles.card, selected && styles.cardSelected]}
+        style={[styles.card, size != null && { width: size, height: size }, selected && styles.cardSelected]}
       >
         {/* Thumbnail */}
         {img ? (
