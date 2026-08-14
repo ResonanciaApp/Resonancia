@@ -6583,7 +6583,7 @@ const styles = StyleSheet.create({
   },
   catChip: {
     paddingHorizontal: 13,
-    height: 31,
+    height: 29,
     borderRadius: 999,
     overflow: "hidden",
     alignItems: "center",
@@ -6597,7 +6597,7 @@ const styles = StyleSheet.create({
   },
   catChipText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "450",
     color: "#F4F4F4",
     letterSpacing: 0.3,
