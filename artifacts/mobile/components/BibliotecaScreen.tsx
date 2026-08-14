@@ -1163,10 +1163,13 @@ export function BibliotecaScreen({
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
-      const sortedPlaylists = [...userPlaylists].sort((a, b) => {
-        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
+      const plIdsInFoldersGeneral = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
+      const sortedPlaylists = userPlaylists
+        .filter((pl) => !plIdsInFoldersGeneral.has(pl.id))
+        .sort((a, b) => {
+          if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
       const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0 || sortedFavFoldersGeneral.length > 0;
       const mixIdsInFoldersGeneral = new Set(mixFolders.flatMap((f) => f.presetIds));
       const sortedMixesGeneral = presets
@@ -1317,9 +1320,10 @@ export function BibliotecaScreen({
     }
 
     if (activeTab === "playlists") {
-      const sortedUserPl = [...userPlaylists].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      const plIdsInFolders = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
+      const sortedUserPl = userPlaylists
+        .filter((pl) => !plIdsInFolders.has(pl.id))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       // Aplicar ordenamiento según sort mode
       const applySort = (arr: typeof sortedUserPl) => {
         if (sort === "agregado") return [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
