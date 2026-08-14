@@ -187,6 +187,8 @@ export function CommunityMixesCarousel() {
 // ── Corazón animado ───────────────────────────────────────────────
 function AnimatedHeart({ favorited, onPress }: { favorited: boolean; onPress: () => void }) {
   const scale = useRef(new Animated.Value(1)).current;
+  const { theme: heartTheme } = useSceneTheme();
+  const heartFill = heartTheme.id === "tibet" ? "#F9F9F9" : "#BEA3E6";
 
   const handlePress = () => {
     onPress();
@@ -201,7 +203,7 @@ function AnimatedHeart({ favorited, onPress }: { favorited: boolean; onPress: ()
     <Pressable onPress={handlePress} hitSlop={10} style={styles.heartBtn}>
       <Animated.View style={{ transform: [{ scale }] }}>
         {favorited ? (
-          <Ionicons name="heart" size={18} color="#BEA3E6" />
+          <Ionicons name="heart" size={18} color={heartFill} />
         ) : (
           <Ionicons name="heart-outline" size={18} color="#f9f9f9" />
         )}
