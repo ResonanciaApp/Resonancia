@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getSoundImage } from "@/config/sound-images";
 import { SOUNDS, hasSoundFile, type MixSound, type SoundCategoryId } from "@/data/sounds";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
 
 /** Sonidos que realmente tienen audio (bundle o remoto) */
@@ -91,6 +92,9 @@ export function AmbientSoundPickerSheet({
   onRemoveConfirm,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
+  // Mismo fondo que el Inicio de cada tema (último stop del degradado)
+  const themeBg = sceneTheme.gradient[sceneTheme.gradient.length - 1] as string;
   const [activeTab, setActiveTab] = useState<TabId>("todos");
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
@@ -169,7 +173,7 @@ export function AmbientSoundPickerSheet({
       statusBarTranslucent
     >
       <View style={styles.root}>
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#191919" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: themeBg }]} />
 
         {/* ═══════════════════════════════════════════════════════════════
             PASO 1 — PICKER  (slideAnim=0 → visible; =1 → desliza abajo)
