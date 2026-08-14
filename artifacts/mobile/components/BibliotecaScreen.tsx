@@ -55,6 +55,7 @@ import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
+const GEO_CELL = (width - H_PAD * 2 - 10) / 2;
 const GOLD = "#F9F9F9";
 const NAVY = "#210911";
 const DARK_BLUE = "#210911";
@@ -1572,7 +1573,7 @@ export function BibliotecaScreen({
       }
       return (
         <>
-          <View style={{ gap: 9 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 14, paddingHorizontal: H_PAD }}>
             {visibleGeo.map((c) => (
               <GeometrixRow
                 key={c.id}
@@ -2168,16 +2169,11 @@ const styles = StyleSheet.create({
 
   // Geometrix rows
   geoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: H_PAD,
-    height: 124,
-    marginBottom: 7,
-    gap: 14,
+    width: GEO_CELL,
   },
   geoThumb: {
-    width: 124,
-    height: 124,
+    width: GEO_CELL,
+    height: GEO_CELL,
     borderRadius: 10,
     overflow: "hidden",
     alignItems: "center",
@@ -2185,7 +2181,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.025)",
   },
-  geoInfo: { flex: 1 },
+  geoInfo: { marginTop: 7 },
   geoName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
   geoSub:  { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 3 },
 
