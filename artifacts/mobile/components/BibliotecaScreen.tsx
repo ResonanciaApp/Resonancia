@@ -1308,6 +1308,24 @@ export function BibliotecaScreen({
 
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="list" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="sliders" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
