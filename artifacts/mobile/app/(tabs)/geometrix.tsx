@@ -6725,22 +6725,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   catRow: {
-    flexDirection: "column",
-    alignItems: "stretch",
-    paddingLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 6,
     paddingTop: 10,
     paddingBottom: 4,
   },
   exitBtn: {
     width: 32,
     height: 36,
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    marginBottom: 4,
   },
   catScroll: {
-    flexGrow: 0,
+    flex: 1,
   },
   catScrollContent: {
     flexDirection: "row",
