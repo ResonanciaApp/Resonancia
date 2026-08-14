@@ -214,7 +214,7 @@ export default function CarpetaDetailScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={styles.plName} numberOfLines={1}>{pl.name}</Text>
                   <Text style={styles.plMeta}>
-                    Ritual · {pl.sessionIds.length} sesión{pl.sessionIds.length !== 1 ? "es" : ""}
+                    Playlist · {pl.sessionIds.length} sesión{pl.sessionIds.length !== 1 ? "es" : ""}
                   </Text>
                 </View>
                 <Pressable
@@ -242,7 +242,7 @@ export default function CarpetaDetailScreen() {
       <NamingModal
         visible={nombrePlaylistVisible}
         title="Ponle un nombre a tu ritual"
-        defaultName={`Mi Ritual n.° ${allPlaylists.length + 1}`}
+        defaultName={`Mi Playlist n.° ${allPlaylists.length + 1}`}
         onClose={() => setNombrePlaylistVisible(false)}
         onCreate={handleCreatePlaylist}
       />
@@ -265,7 +265,7 @@ function AddSheet({
   const { activeSceneId } = useSceneTheme();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const ITEMS = [
-    { icon: "music" as const,  title: "Ritual",  sub: "Crea un ritual con canciones o episodios", onPress: onPlaylist },
+    { icon: "music" as const,  title: "Playlist",  sub: "Crea una playlist con canciones o episodios", onPress: onPlaylist },
     { icon: "folder" as const, title: "Carpeta",   sub: "Organiza tus rituales", onPress: onCarpeta },
   ];
   return (

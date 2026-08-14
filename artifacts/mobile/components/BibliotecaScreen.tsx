@@ -66,7 +66,7 @@ type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
-  { id: "playlists",   label: "Rituales" },
+  { id: "playlists",   label: "Playlists" },
   { id: "mezclas",     label: "Mezclas" },
   { id: "geometrix",   label: "Geometrix" },
   { id: "historial",   label: "Historial" },
@@ -356,7 +356,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
           <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
           {pl.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
-        <Text style={styles.rowSub} numberOfLines={1}>Ritual · Casa del Cuenco</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
       </View>
     </Pressable>
   );
@@ -526,7 +526,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
                     <Feather name="list" size={28} color={GOLD} />
                   </View>
                 );
-                cat   = "Ritual";
+                cat   = "Playlist";
                 title = p.name;
                 sub   = `${p.sessionIds.length} sesión${p.sessionIds.length !== 1 ? "es" : ""}`;
               } else {
@@ -643,7 +643,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
 
-  const suggestedName = `Mi Ritual n.° ${playlists.length + 1}`;
+  const suggestedName = `Mi Playlist n.° ${playlists.length + 1}`;
 
   useEffect(() => {
     if (visible) setName(suggestedName);
@@ -842,10 +842,10 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   gradient: readonly string[];
 }) {
   const ITEMS = [
-    { icon: "list" as const,     title: "Crear un Ritual",        sub: "Crea un ritual con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
+    { icon: "list" as const,     title: "Crear una Playlist",        sub: "Crea una playlist con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
     { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
-    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Rituales",                 onPress: () => { onClose(); onCreateCarpeta(); } },
+    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlists",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>

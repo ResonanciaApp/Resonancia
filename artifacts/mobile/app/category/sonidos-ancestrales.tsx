@@ -349,7 +349,7 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
         </Pressable>
         <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
           <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
-          <Text style={styles.qsLabel}>Añadir a un ritual</Text>
+          <Text style={styles.qsLabel}>Añadir a una playlist</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
 

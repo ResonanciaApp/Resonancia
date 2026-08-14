@@ -85,7 +85,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 <Feather name="x" size={22} color={colors.foreground} />
               </Pressable>
               <Text style={[styles.topTitle, { color: colors.foreground }]}>
-                Seleccionar un Ritual
+                Seleccionar una Playlist
               </Text>
               <View style={styles.iconBtn} />
             </View>
@@ -155,7 +155,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                   <Feather name="plus" size={18} color="#1B060F" />
                 </View>
                 <Text style={[styles.createLabel, { color: colors.foreground }]}>
-                  Crear un Ritual
+                  Crear una Playlist
                 </Text>
               </Pressable>
             </View>
@@ -170,7 +170,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <Text style={[styles.topTitle, { color: colors.foreground }]}>
-                Nombre del Ritual
+                Nombre de la Playlist
               </Text>
               <Pressable onPress={handleClose} style={styles.iconBtn}>
                 <Feather name="x" size={22} color={colors.mutedForeground} />
@@ -210,7 +210,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
             >
               {newName.trim() ? <GoldGradientFill /> : null}
               <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
-                Crear Ritual
+                Crear Playlist
               </Text>
             </Pressable>
           </View>

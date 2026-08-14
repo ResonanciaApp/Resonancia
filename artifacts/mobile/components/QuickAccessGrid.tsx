@@ -27,7 +27,7 @@ const ALL_ITEMS: { id: string; label: string; icon: FeatherIconName; route: stri
   { id: "geometrix", label: "Mis Geometrix", icon: "triangle",       route: "/geometrix-creaciones" },
   { id: "grupos",    label: "Grupos",        icon: "users",          route: "/grupos"               },
   { id: "carpetas",  label: "Carpetas",      icon: "folder",         route: "/carpetas"             },
-  { id: "playlists", label: "Rituales",      icon: "list",           route: "/playlists"            },
+  { id: "playlists", label: "Playlists",      icon: "list",           route: "/playlists"            },
   { id: "chats",     label: "Chats",         icon: "message-circle", route: "/amigos"               },
 ];
 

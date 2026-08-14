@@ -464,7 +464,7 @@ export function PlaylistAddSessionsSheet({
           <Pressable onPress={onClose} hitSlop={12} style={styles.headerClose}>
             <Feather name="x" size={26} color={MUTED} />
           </Pressable>
-          <Text style={styles.headerTitle}>Agregar a un Ritual</Text>
+          <Text style={styles.headerTitle}>Agregar a una Playlist</Text>
           <View style={styles.headerSpacer} />
         </View>
 

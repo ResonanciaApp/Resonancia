@@ -46,7 +46,7 @@ export default function PlaylistsScreen() {
         </Pressable>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <Feather name="list" size={20} color={colors.primary} />
-          <Text style={[styles.title, { flex: 0, color: colors.foreground }]}>Mis Rituales</Text>
+          <Text style={[styles.title, { flex: 0, color: colors.foreground }]}>Mis Playlists</Text>
         </View>
         <View style={{ width: 40 }} />
       </View>

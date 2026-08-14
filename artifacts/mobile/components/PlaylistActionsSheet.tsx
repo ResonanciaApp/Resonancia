@@ -108,7 +108,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
   const folderCount = folder?.playlistIds?.length ?? 0;
   const subtitle =
     itemKind === "playlist"
-      ? "Ritual · Casa del Cuenco"
+      ? "Playlist · Casa del Cuenco"
       : `Carpeta · ${folderCount === 0 ? "Vacía" : `${folderCount} ritual${folderCount !== 1 ? "es" : ""}`}`;
 
   const handlePin = () => {

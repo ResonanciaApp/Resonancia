@@ -389,7 +389,7 @@ export default function ExploreScreen() {
     : activeSceneId === "profundo"
       ? "rgba(255,255,255,0.06)"
       : "rgba(255,255,255,0.07)";
-  // Rituales para ti — playlists del catálogo (admin, showOnHome)
+  // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
       PLAYLISTS.slice(0, 4).map((pl) => ({
@@ -879,7 +879,7 @@ export default function ExploreScreen() {
             {([
               ["Cuencos", "Meditaciones"],
               ["Energízate", "Gongs"],
-              ["Rituales", "Paisajes sonoros"],
+              ["Playlists", "Paisajes sonoros"],
             ] as [string, string][]).map(([top, bottom]) => (
               <View key={top} style={{ gap: 10 }}>
                 {[top, bottom].map((label) => (
@@ -932,7 +932,7 @@ const styles = StyleSheet.create({
 
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
-  // Rituales para ti
+  // Playlists para ti
   ritualGrid: {
     flexDirection: "row",
     flexWrap: "wrap",

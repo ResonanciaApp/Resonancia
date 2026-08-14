@@ -25,7 +25,7 @@ const H_PAD = 15;
 type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
-  { id: "playlists", label: "Rituales" },
+  { id: "playlists", label: "Playlists" },
   { id: "mezclas", label: "Mezclas" },
   { id: "geometrix", label: "Geometrix" },
   { id: "favoritos", label: "Favoritos" },

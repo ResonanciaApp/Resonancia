@@ -203,7 +203,7 @@ export default function PlaylistDetailScreen() {
         <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="list" size={48} color={MUTED} style={{ marginBottom: 16 }} />
-          <Text style={{ color: MUTED, fontSize: 16 }}>Ritual no encontrado</Text>
+          <Text style={{ color: MUTED, fontSize: 16 }}>Playlist no encontrada</Text>
           <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
             <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
@@ -411,7 +411,7 @@ export default function PlaylistDetailScreen() {
           onPress={() => setAddSheetVisible(true)}
         >
           <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
-          <Text style={styles.addBtnText}>Agregar a este Ritual</Text>
+          <Text style={styles.addBtnText}>Agregar a esta Playlist</Text>
         </Pressable>
 
         {/* Sesiones recomendadas */}
@@ -513,7 +513,7 @@ export default function PlaylistDetailScreen() {
       >
         <View style={cpStyles.backdrop}>
           <View style={cpStyles.sheet}>
-            <Text style={cpStyles.title}>Fondo de tu Ritual</Text>
+            <Text style={cpStyles.title}>Fondo de tu Playlist</Text>
             <Text style={cpStyles.sub}>Elige el color que resuena con tus canciones</Text>
 
             {/* Preview del header con el color seleccionado */}
@@ -1144,7 +1144,7 @@ function PlaylistMenuSheet({
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
           { icon: "plus-circle", label: "Agregar a este ritual", action: onAddSessions },
-          { icon: "list", label: "Editar Ritual", action: onEditOrder },
+          { icon: "list", label: "Editar Playlist", action: onEditOrder },
           { icon: "edit-2", label: "Nombre y datos", action: onEditInfo },
         ] as { icon: React.ComponentProps<typeof Feather>["name"]; label: string; action: () => void }[]).map(({ icon, label, action }) => (
           <Pressable key={label} style={({ pressed }) => [menuSt.row, { opacity: pressed ? 0.7 : 1 }]} onPress={action}>
@@ -1295,7 +1295,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
             <Pressable onPress={onClose} hitSlop={12} style={dreSt.closeBtn}>
               <Feather name="x" size={20} color={MUTED} />
             </Pressable>
-            <Text style={dreSt.title}>Editar Ritual</Text>
+            <Text style={dreSt.title}>Editar Playlist</Text>
             <View style={{ width: 32 }} />
           </View>
           <Text style={dreSt.hint}>Toca y arrastra ≡ para reordenar</Text>
