@@ -32,6 +32,49 @@ const PLAYABLE_SOUNDS = SOUNDS.filter((s) => isPlayable(s.id));
 
 const FAV_KEY = "@ambient_fav_sounds";
 
+/** Descripciones breves por sonido (popup de long-press) */
+const SOUND_DESCRIPTIONS: Record<string, string> = {
+  pajaros: "Cantos de aves al amanecer que llenan el espacio de vida. Ideal para meditaciones matutinas y para reconectar con la naturaleza.",
+  grillos: "El pulso nocturno del campo en calma. Un manto sonoro suave que invita al descanso profundo y a la quietud de la noche.",
+  bosque: "El murmullo vivo del bosque: hojas, brisa y aves lejanas. Un refugio natural para soltar la mente y respirar profundo.",
+  viento: "Corrientes de aire que atraviesan los árboles. Un sonido limpio y constante que despeja los pensamientos.",
+  oceano: "Olas que llegan y se retiran en un ritmo eterno. La respiración del mar para calmar la tuya.",
+  lluvia: "Gotas cayendo en una cadencia serena. Uno de los sonidos más efectivos para dormir y concentrarse.",
+  rio: "El caudal constante de un río en movimiento. Fluye con él y deja que arrastre las tensiones del día.",
+  arroyo: "Agua clara corriendo entre piedras. Un borboteo delicado que acompaña la lectura y la meditación.",
+  cascada: "La fuerza del agua cayendo sin pausa. Un ruido natural envolvente que disuelve el entorno.",
+  fogata: "Crepitar de leña ardiendo lentamente. Calidez y refugio para las noches de introspección.",
+  tormenta: "Truenos lejanos y lluvia intensa. La energía de la tormenta desde la seguridad de tu espacio.",
+  noche: "La atmósfera abierta de la noche en el desierto. Silencio vivo bajo un cielo estrellado.",
+  cuencos: "Vibraciones armónicas del cuenco tibetano. Una onda sonora ancestral que equilibra cuerpo y mente.",
+  cuenco_grave: "Tonos profundos y envolventes que resuenan en el cuerpo. Ideal para enraizar y soltar tensión.",
+  cuenco_agudo: "Armónicos brillantes que elevan la atención. Claridad y apertura para tu práctica.",
+  cuarzo_do: "Cuenco de cuarzo en la nota Do, asociada a la raíz. Estabilidad, presencia y conexión con la tierra.",
+  cuarzo_sol: "Cuenco de cuarzo en la nota Sol, ligada a la garganta y la expresión. Un timbre cristalino y expansivo.",
+  cuarzo_corazon: "Frecuencia del corazón en cuarzo puro. Suaviza, abre y armoniza el centro del pecho.",
+  gong: "La resonancia total del gong: un baño sonoro que envuelve y disuelve los límites de la mente.",
+  gong_planetario: "Gong afinado en frecuencias planetarias. Un viaje sonoro profundo hacia estados expandidos.",
+  campanas_viento: "Campanas mecidas por la brisa. Destellos metálicos suaves que aparecen y se desvanecen.",
+  campanas_bambu: "Maderas de bambú chocando con dulzura. Un sonido orgánico, cálido y terroso.",
+  mantra_om: "La sílaba sagrada Om repetida en calma. La vibración primordial que centra la mente.",
+  mantra_soham: "So Ham: \"yo soy\". Un mantra respirado que acompaña la meditación y la autoindagación.",
+  solfeggio_528: "Frecuencia de 528 Hz, conocida como la frecuencia del amor y la transformación.",
+  solfeggio_432: "Afinación natural de 432 Hz. Un tono suave y armónico que relaja el sistema nervioso.",
+  solfeggio_396: "396 Hz, asociada a liberar el miedo y la culpa. Una base sonora para soltar y comenzar de nuevo.",
+  ruido_blanco: "Todas las frecuencias en equilibrio. Enmascara el ruido exterior y sostiene el enfoque.",
+  ruido_rosa: "Más cálido que el ruido blanco, con graves suaves. Perfecto para dormir profundamente.",
+  ruido_marron: "Frecuencias graves y profundas, como un rumor lejano. Máxima sensación de cobijo.",
+  ruido_azul: "Frecuencias altas y ligeras, como aire brillante. Nitidez para el estudio y el trabajo.",
+  onda_delta: "Ondas delta para el sueño profundo. Acompañan al cerebro hacia el descanso reparador.",
+  onda_theta: "Ondas theta, el umbral de la meditación profunda y la visualización creativa.",
+  onda_alpha: "Ondas alpha de calma alerta. Relajación serena sin perder la presencia.",
+  onda_beta: "Ondas beta para el enfoque activo. Energía mental clara para concentrarte.",
+  onda_gamma: "Ondas gamma de alta claridad. Asociadas a la lucidez y la integración mental.",
+};
+
+const DEFAULT_SOUND_DESCRIPTION =
+  "Un paisaje sonoro para acompañar tu práctica, profundizar tu descanso y envolver tu espacio en calma.";
+
 type TabId = "todos" | "naturaleza" | "ancestrales" | "digital" | "voces" | "bpm";
 
 const TABS: { id: TabId; label: string; categories: SoundCategoryId[] | null }[] = [
@@ -246,27 +289,35 @@ export function AmbientSoundPickerSheet({
 
             {/* Tabs */}
             <Text style={styles.sectionTitle}>Explorar</Text>
-            <View style={styles.tabsGrid}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabsRow}
+              contentContainerStyle={styles.tabsRowContent}
+            >
               {TABS.map((tab) => {
                 const sel = activeTab === tab.id;
                 return (
                   <Pressable
                     key={tab.id}
                     onPress={() => setActiveTab(tab.id)}
-                    style={[
-                      styles.tab,
-                      sel
-                        ? { backgroundColor: "transparent", borderColor: "#FFFFFF" }
-                        : { backgroundColor: "transparent", borderColor: "rgba(255,255,255,0.22)" },
-                    ]}
+                    style={({ pressed }) => [styles.pillTab, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
                   >
-                    <Text style={[styles.tabLabel, sel && { color: "white", fontWeight: "700" }]}>
+                    {sel && (
+                      <LinearGradient
+                        colors={["#FFFFFF", "#F5F5F5"]}
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 1, y: 0.5 }}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
+                      />
+                    )}
+                    <Text style={[styles.pillTabLabel, sel && styles.pillTabLabelSel]}>
                       {tab.label}
                     </Text>
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
 
             {/* Sounds grid */}
             <View style={styles.grid}>
@@ -286,7 +337,7 @@ export function AmbientSoundPickerSheet({
           {/* ── Fav popup ───────────────────────────────────────────────── */}
           {favPopupSound && (
             <Pressable style={styles.popupBackdrop} onPress={() => setFavPopupSound(null)}>
-              <Pressable style={styles.popup} onPress={() => {}}>
+              <Pressable style={[styles.popup, { backgroundColor: sceneTheme.gradient[0] as string }]} onPress={() => {}}>
                 {(() => {
                   const img = getSoundImage(favPopupSound.id);
                   const isFav = favIds.has(favPopupSound.id);
@@ -305,6 +356,9 @@ export function AmbientSoundPickerSheet({
                       </View>
                       <View style={styles.popupBody}>
                         <Text style={styles.popupName} numberOfLines={1}>{favPopupSound.name}</Text>
+                        <Text style={styles.popupDesc} numberOfLines={3}>
+                          {SOUND_DESCRIPTIONS[favPopupSound.id] ?? DEFAULT_SOUND_DESCRIPTION}
+                        </Text>
                         <Pressable
                           style={[styles.popupFavBtn, isFav && styles.popupFavBtnActive]}
                           onPress={() => {
@@ -659,24 +713,37 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
 
-  tabsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
+  tabsRow: {
+    flexGrow: 0,
     marginBottom: 16,
   },
-  tab: {
-    paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 7,
-    borderRadius: 20,
-    borderWidth: 1,
+  tabsRowContent: {
+    flexDirection: "row",
+    gap: 8,
   },
-  tabLabel: {
+  pillTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    paddingHorizontal: 13,
+    height: 31,
+    borderRadius: 999,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  pillTabLabel: {
     fontFamily: "Manrope",
     fontSize: 13,
+    fontWeight: "450",
+    letterSpacing: 0.3,
     color: "#F4F4F4",
-    fontWeight: "400",
+  },
+  pillTabLabelSel: {
+    color: "#0D0A1E",
+    fontWeight: "600",
   },
 
   grid: {
@@ -885,6 +952,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "white",
+  },
+  popupDesc: {
+    fontFamily: "Manrope",
+    fontSize: 12.5,
+    lineHeight: 18,
+    color: "rgba(255,255,255,0.72)",
+    marginTop: -4,
   },
   popupFavBtn: {
     flexDirection: "row",
