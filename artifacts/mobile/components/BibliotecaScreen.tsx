@@ -1790,7 +1790,7 @@ export function BibliotecaScreen({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
-        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") && activeTab !== "historial" && (
+        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>

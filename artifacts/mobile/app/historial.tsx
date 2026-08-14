@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
-import { GhostPill } from "@/components/GhostPill";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React from "react";
 import {
@@ -28,30 +28,18 @@ export default function HistorialScreen() {
   const bottomPad = insets.bottom + 24;
 
   return (
-    <View style={styles.root}>
+    <>
+    <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
+    <LinearGradient
+      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
+      colors={sceneTheme.gradient}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar hidden />
-      <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}
-      <View
-        style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }}
-        pointerEvents="box-none"
-      >
-        <GhostPill>
-          <Pressable
-            onPress={goBack ?? (() => router.back())}
-            hitSlop={10}
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
+      <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} />
 
       {/* Page title */}
       <Text
@@ -80,7 +68,8 @@ export default function HistorialScreen() {
       >
         <HistorialCalendar />
       </ScrollView>
-    </View>
+    </LinearGradient>
+    </>
   );
 }
 
