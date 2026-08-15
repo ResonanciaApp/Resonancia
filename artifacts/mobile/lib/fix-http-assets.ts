@@ -43,7 +43,7 @@ try {
   (Asset as any).fromModule = (virtualAssetModule: any) => {
     const asset = origFromModule(virtualAssetModule);
     const fixed = toHttps(asset.uri);
-    if (fixed && fixed !== asset.uri) asset.uri = fixed;
+    if (fixed && fixed !== asset.uri) (asset as any).uri = fixed;
     return asset;
   };
 } catch (e) {
