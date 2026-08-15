@@ -118,3 +118,4 @@
 - [Perfil split](perfil-split.md) — Perfil de tabs = solo pills Biblioteca/Historial; contenido de perfil (Muro) vive en /mi-perfil (ProfileScreenBase dedicated); drawer "Ver Perfil" → /mi-perfil
 - [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
 - [RN specs_DEPRECATED StubComponent patch](rn-specs-deprecated-stub-patch.md) — crash iOS "two views same name StubComponent": parchear src/private/specs_DEPRECATED/components/*.js con null en TODAS las instancias de RN en node_modules/.pnpm/
+- [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
