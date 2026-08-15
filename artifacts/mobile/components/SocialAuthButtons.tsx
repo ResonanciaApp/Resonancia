@@ -43,7 +43,7 @@ export function SocialAuthButtons({ redirectTo = "/(tabs)" }: Props) {
       try {
         const { createdSessionId, setActive } = await startSSOFlow({
           strategy,
-          redirectUrl: AuthSession.makeRedirectUri({ scheme: "mobile" }),
+          redirectUrl: AuthSession.makeRedirectUri({ scheme: "resonancia" }),
         });
         if (createdSessionId && setActive) {
           await setActive({
