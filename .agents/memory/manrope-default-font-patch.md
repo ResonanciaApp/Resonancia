@@ -1,10 +1,12 @@
 ---
-name: Manrope default font patch
-description: Cómo se inyecta Manrope como fuente por defecto en mobile y por qué NO debe hacerse vía StyleSheet.create
+name: Manrope fuente global (mobile)
+description: Cómo se aplica Manrope por defecto en la app Expo y qué enfoques NO funcionan
 ---
 
-Regla: la fuente por defecto (Manrope) se inyecta parchando `Text.render`/`TextInput.render` en app/_layout.tsx, poniendo `{fontFamily:"Manrope"}` como PRIMER elemento del array de estilos.
+La fuente global Manrope se inyecta parchando `StyleSheet.create` en `app/_layout.tsx`: cada estilo objeto sin `fontFamily` recibe `fontFamily:"Manrope"`.
 
-**Why:** el enfoque anterior (parchar `StyleSheet.create` para agregar fontFamily a todo estilo que no la tuviera) inyectaba Manrope también en los estilos pasados a íconos de @expo/vector-icons, pisando su fontFamily ("Feather", "Ionicons"...). En Android los íconos salían como cajitas tofu o glifos aleatorios (iOS lo disimula con fallback por glifo). Además, precargar las fuentes de íconos con useFonts no arregla nada si la fontFamily queda pisada.
+**Por qué este enfoque y no otros:**
+- Parchar `Text.render`/`TextInput.render` NO funciona en RN 0.81: `Text` y `TextInput` se exportan como function components sin `.render` — el patch se salta en silencio y la app entera pierde Manrope (regresión detectada por code review, ago 2026).
+- El patch de StyleSheet NO rompe los íconos de @expo/vector-icons: la lib pone su fontFamily DESPUÉS del estilo del usuario (`[styleDefaults, style, styleOverrides]`), así que siempre gana. El tofu de íconos de ago 2026 era otra cosa (assets bajados por http — ver dev-client-http-assets-corrupt.md).
 
-**How to apply:** cualquier "fuente global por defecto" en RN → estilo base primero en el array del render de Text, nunca reescribiendo estilos ajenos. Si reaparecen íconos tofu solo en Android con fuentes "loaded=true", buscar quién pisa fontFamily.
+**How to apply:** no "modernizar" el patch de StyleSheet sin verificar en dispositivo que un `<Text>` sin estilo sigue saliendo en Manrope.
