@@ -1412,6 +1412,7 @@ export default function HomeScreen2() {
             {DURATION_SLOTS.map((slot) => (
               <Pressable
                 key={slot.label}
+                collapsable={false}
                 onLayout={
                   __DEV__ && slot.label === "5 min"
                     ? (e) => console.log(`[diag] durPill "5 min": ${JSON.stringify(e.nativeEvent.layout)}`)
