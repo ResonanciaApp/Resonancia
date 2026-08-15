@@ -395,6 +395,7 @@ export default function RootLayout() {
       }
       // Verificar que el ARCHIVO de la fuente llega íntegro al dispositivo
       // (Android registra fuentes corruptas en silencio con la letra genérica).
+      if (!__DEV__) return;
       (async () => {
         try {
           const mod = Object.values(Feather.font)[0] as number;
