@@ -2,6 +2,8 @@
 name: expo-router version must track SDK line
 description: expo-router 6.x breaks under floated @expo/cli 57; pin expo-router to the 57.x line
 ---
+OJO: pasó una TERCERA vez (15-ago): el tooling externo dejó package.json en SDK 57 sin commit y un commit mío lo capturó sin querer; el device crasheó con MessageQueue. Antes de tocar deps de mobile, verificar `grep '"expo"' artifacts/mobile/package.json` == ~54.x. Commit estable SDK 54 de referencia: buscar "volver mobile a Expo SDK 54" en git log.
+
 REGLA REAL (ago 2026): el dev client instalado en el device del usuario es **SDK 54** (expo ~54.0.36, RN 0.81.5, expo-router ~6.0.24). Cualquier bump del JS a SDK 57 crashea el device con "MessageQueue doesn't exist". Tooling externo ya subió mobile a SDK 57 dos veces ("Update mobile configuration and refresh lockfile dependencies"); el fix es `git checkout <commit SDK54> -- artifacts/mobile/package.json` + pnpm install + restart. NO subir de SDK hasta que el usuario recompile el dev client.
 
 Contexto histórico (solo si algún día se migra a SDK 57): con expo SDK 57, expo-router debe ser de la línea 57.x (el versionado de expo-router pasó de 6.x a seguir el SDK). Si `@expo/cli` flota a una versión nueva (lockfile re-resuelto), su typed-routes requiere `expo-router/internal/routing`, que no existe en 6.x → el workflow expo crashea al arrancar con MODULE_NOT_FOUND.
