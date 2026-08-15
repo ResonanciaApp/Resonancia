@@ -61,26 +61,28 @@ const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// ── Manrope como font por defecto en todos los <Text>/<TextInput> ──
-// OJO: antes esto se hacía parchando StyleSheet.create, pero eso inyectaba
-// "Manrope" también en los estilos que se pasan a los íconos de
-// @expo/vector-icons, pisando su fontFamily ("Feather", etc.) → en Android
-// los íconos salían como cajitas (tofu). Ahora se inyecta como estilo BASE
-// del componente Text (primero en el array), así cualquier fontFamily
-// explícita —incluida la de los íconos— siempre gana.
+// ── Inyectar Manrope como font por defecto en TODOS los estilos de la app ──
+// Expo Router carga las pantallas de forma lazy → este patch queda activo
+// antes de que cualquier screen llame a StyleSheet.create.
+// Nota: NO pisa la fuente de los íconos (@expo/vector-icons pone su
+// fontFamily DESPUÉS del estilo del usuario); el tofu de agosto 2026 era por
+// assets descargados vía http (ver lib/fix-http-assets.ts).
 {
-  const patchRender = (Comp: unknown) => {
-    const C = Comp as { render?: (...args: unknown[]) => unknown };
-    const orig = C.render;
-    if (typeof orig !== "function") return;
-    C.render = function (...args: unknown[]) {
-      const props = args[0] as { style?: unknown } | undefined;
-      if (props) args[0] = { ...props, style: [{ fontFamily: "Manrope" }, props.style] };
-      return orig.apply(this, args);
-    };
+  const _orig = StyleSheet.create.bind(StyleSheet);
+  // @ts-ignore
+  StyleSheet.create = function (styles: Parameters<typeof _orig>[0]) {
+    const out: Record<string, unknown> = {};
+    for (const key in styles as Record<string, unknown>) {
+      const s = (styles as Record<string, unknown>)[key];
+      if (s && typeof s === "object" && !Array.isArray(s)) {
+        const so = s as Record<string, unknown>;
+        out[key] = so["fontFamily"] ? so : { fontFamily: "Manrope", ...so };
+      } else {
+        out[key] = s;
+      }
+    }
+    return _orig(out as Parameters<typeof _orig>[0]);
   };
-  patchRender(Text);
-  patchRender(TextInput);
 }
 
 const queryClient = new QueryClient();
