@@ -1,3 +1,4 @@
+- [Tablet horizontal-scroll invisible](tablet-horizontal-scroll-bug.md) — en la tablet Samsung, hijos de TODO scrollable horizontal no montan (nativo Fabric); filas fijas OK; investigación y descartes en el topic
 - [eas-cli spawn sin NODE_PATH](eas-cli-node-path.md) — "expo cli config --json exited 1" silencioso en eas build = falta NODE_PATH del shim pnpm; copiarlo del .bin/expo; APK 8-ago nació rota (AnyTypeCache)
 - [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
 - [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
