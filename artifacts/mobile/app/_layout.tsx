@@ -12,7 +12,7 @@ import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { Animated, StyleSheet, Text, TextInput, View } from "react-native";
+import { Animated, Dimensions, I18nManager, StyleSheet, Text, TextInput, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -386,6 +386,15 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    if (__DEV__) {
+      const win = Dimensions.get("window");
+      const scr = Dimensions.get("screen");
+      console.log(
+        `[device] RTL=${I18nManager.isRTL} allowRTL=${(I18nManager as any).getConstants?.().doLeftAndRightSwapInRTL ?? "?"} ` +
+        `window=${Math.round(win.width)}x${Math.round(win.height)} screen=${Math.round(scr.width)}x${Math.round(scr.height)} ` +
+        `scale=${win.scale} fontScale=${win.fontScale}`
+      );
+    }
     console.log(`[fonts] loaded=${fontsLoaded} error=${fontError ? String(fontError) : "none"}`);
     if (fontsLoaded) {
       try {
