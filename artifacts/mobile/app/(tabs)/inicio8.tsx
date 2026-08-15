@@ -1395,6 +1395,31 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── DIAGNÓSTICO TEMPORAL (tablet) ── */}
+        {__DEV__ && (
+          <View style={{ marginBottom: 20 }}>
+            <ScrollView horizontal style={{ height: 34 }}>
+              {["red", "orange", "yellow"].map((c, i) => (
+                <View
+                  key={c}
+                  collapsable={false}
+                  style={{ width: 60, height: 30, backgroundColor: c, marginLeft: 8 }}
+                  onLayout={i === 0 ? (e) => console.log(`[diag] testA scroll child: ${JSON.stringify(e.nativeEvent.layout)}`) : undefined}
+                />
+              ))}
+            </ScrollView>
+            <View style={{ flexDirection: "row", marginTop: 6 }}>
+              {["green", "cyan", "violet"].map((c, i) => (
+                <View
+                  key={c}
+                  style={{ width: 60, height: 30, backgroundColor: c, marginLeft: 8 }}
+                  onLayout={i === 0 ? (e) => console.log(`[diag] testB row child: ${JSON.stringify(e.nativeEvent.layout)}`) : undefined}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
