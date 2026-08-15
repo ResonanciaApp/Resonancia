@@ -43,7 +43,7 @@ export function SocialAuthButtons({ redirectTo = "/(tabs)" }: Props) {
       try {
         const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
           strategy,
-          redirectUrl: AuthSession.makeRedirectUri({ scheme: "resonancia" }),
+          redirectUrl: AuthSession.makeRedirectUri({ scheme: "resonancia", path: "sso-callback" }),
         });
 
         let sessionId = createdSessionId;
