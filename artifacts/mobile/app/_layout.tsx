@@ -1,3 +1,4 @@
+import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
@@ -382,6 +383,15 @@ export default function RootLayout() {
 
   useEffect(() => {
     console.log(`[fonts] loaded=${fontsLoaded} error=${fontError ? String(fontError) : "none"}`);
+    if (fontsLoaded) {
+      try {
+        // Preguntar al lado NATIVO qué familias quedaron registradas de verdad.
+        const native = (Font as unknown as { getLoadedFonts?: () => string[] }).getLoadedFonts?.();
+        console.log(`[fonts] nativas registradas: ${JSON.stringify(native)}`);
+      } catch (e) {
+        console.log(`[fonts] getLoadedFonts falló: ${String(e)}`);
+      }
+    }
   }, [fontsLoaded, fontError]);
 
   // Resuelve la Escena persistida ANTES de montar SceneThemeProvider, para
