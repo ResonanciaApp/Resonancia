@@ -1403,6 +1403,7 @@ export default function HomeScreen2() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={{ height: 46 }}
             contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
             onLayout={(e) => {
               if (__DEV__) console.log(`[diag] durRow scrollview: ${JSON.stringify(e.nativeEvent.layout)}`);
