@@ -380,8 +380,8 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontError) console.warn("[fonts] error cargando tipografías:", fontError);
-  }, [fontError]);
+    console.log(`[fonts] loaded=${fontsLoaded} error=${fontError ? String(fontError) : "none"}`);
+  }, [fontsLoaded, fontError]);
 
   // Resuelve la Escena persistida ANTES de montar SceneThemeProvider, para
   // que el primer render ya use el tema correcto (evita el flash del tema
