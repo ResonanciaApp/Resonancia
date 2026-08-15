@@ -1,4 +1,5 @@
 import { useFonts } from "expo-font";
+import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -366,9 +367,21 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  // Cargar explícitamente las tipografías de íconos junto con Manrope.
+  // Sin esto dependen de una carga perezosa que en algunos dispositivos
+  // Android falla en silencio y los íconos quedan como cajitas (tofu).
   const [fontsLoaded, fontError] = useFonts({
     Manrope: require("../assets/fonts/Manrope.ttf"),
+    ...Feather.font,
+    ...MaterialCommunityIcons.font,
+    ...Ionicons.font,
+    ...FontAwesome5.font,
+    ...MaterialIcons.font,
   });
+
+  useEffect(() => {
+    if (fontError) console.warn("[fonts] error cargando tipografías:", fontError);
+  }, [fontError]);
 
   // Resuelve la Escena persistida ANTES de montar SceneThemeProvider, para
   // que el primer render ya use el tema correcto (evita el flash del tema
