@@ -9,6 +9,7 @@ import {
   Dimensions,
   Easing as RNEasing,
   Image,
+  FlatList,
   Keyboard,
   Modal,
   Platform,
