@@ -1812,7 +1812,12 @@ export function BibliotecaScreen({
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -52, marginBottom: -4 }}>
+        <View
+          style={{ marginTop: -52, marginBottom: -4 }}
+          onLayout={(e) => {
+            if (__DEV__) console.log(`[diag] chipRow container: ${JSON.stringify(e.nativeEvent.layout)}`);
+          }}
+        >
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}

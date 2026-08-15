@@ -1404,10 +1404,18 @@ export default function HomeScreen2() {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+            onLayout={(e) => {
+              if (__DEV__) console.log(`[diag] durRow scrollview: ${JSON.stringify(e.nativeEvent.layout)}`);
+            }}
           >
             {DURATION_SLOTS.map((slot) => (
               <Pressable
                 key={slot.label}
+                onLayout={
+                  __DEV__ && slot.label === "5 min"
+                    ? (e) => console.log(`[diag] durPill "5 min": ${JSON.stringify(e.nativeEvent.layout)}`)
+                    : undefined
+                }
                 onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
                 style={({ pressed }) => [
                   styles.durPill,
