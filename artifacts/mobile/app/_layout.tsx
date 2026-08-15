@@ -1,3 +1,4 @@
+import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -391,6 +392,24 @@ export default function RootLayout() {
       } catch (e) {
         console.log(`[fonts] getLoadedFonts falló: ${String(e)}`);
       }
+      // Verificar que el ARCHIVO de la fuente llega íntegro al dispositivo
+      // (Android registra fuentes corruptas en silencio con la letra genérica).
+      (async () => {
+        try {
+          const mod = Object.values(Feather.font)[0] as number;
+          const asset = Asset.fromModule(mod);
+          await asset.downloadAsync();
+          console.log(`[fonts] feather uri=${asset.uri} localUri=${asset.localUri}`);
+          const res = await fetch(asset.localUri || asset.uri);
+          const buf = await res.arrayBuffer();
+          const head = Array.from(new Uint8Array(buf.slice(0, 4)))
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join(" ");
+          console.log(`[fonts] feather bytes=${buf.byteLength} head=${head} (ttf válido = 00 01 00 00)`);
+        } catch (e) {
+          console.log(`[fonts] verificación de archivo falló: ${String(e)}`);
+        }
+      })();
     }
   }, [fontsLoaded, fontError]);
 
