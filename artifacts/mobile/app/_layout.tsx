@@ -1,3 +1,4 @@
+import "@/lib/fix-http-assets";
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { useFonts } from "expo-font";
