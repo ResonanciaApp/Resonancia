@@ -41,19 +41,47 @@ export function SocialAuthButtons({ redirectTo = "/(tabs)" }: Props) {
       setError(null);
       setBusy(which);
       try {
-        const { createdSessionId, setActive } = await startSSOFlow({
+        const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
           strategy,
           redirectUrl: AuthSession.makeRedirectUri({ scheme: "resonancia" }),
         });
-        if (createdSessionId && setActive) {
+
+        let sessionId = createdSessionId;
+
+        // Caso cuenta nueva: Clerk devuelve un signUp incompleto en vez de
+        // una sesión. Si el email ya quedó verificado por Google, basta con
+        // reintentar la creación para completarlo.
+        if (!sessionId && signUp) {
+          if (signUp.status === "missing_requirements" && signUp.missingFields.length === 0) {
+            const res = await signUp.update({});
+            sessionId = res.createdSessionId ?? sessionId;
+          } else if (signUp.status === "complete") {
+            sessionId = signUp.createdSessionId ?? sessionId;
+          }
+        }
+        // Caso cuenta existente que quedó a medio camino.
+        if (!sessionId && signIn?.status === "complete") {
+          sessionId = signIn.createdSessionId ?? sessionId;
+        }
+
+        if (sessionId && setActive) {
           await setActive({
-            session: createdSessionId,
+            session: sessionId,
             navigate: () => {
               router.replace(redirectTo as never);
             },
           });
         } else {
-          setError("No se pudo completar el inicio de sesión.");
+          console.log("[SSO] sin sesión", {
+            createdSessionId,
+            signInStatus: signIn?.status,
+            signUpStatus: signUp?.status,
+            missing: signUp?.missingFields,
+          });
+          const detail = signUp?.missingFields?.length
+            ? ` Faltan datos: ${signUp.missingFields.join(", ")}.`
+            : "";
+          setError(`No se pudo completar el inicio de sesión.${detail}`);
         }
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
