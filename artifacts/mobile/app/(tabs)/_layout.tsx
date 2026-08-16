@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: PILL_MARGIN_H,
     right: PILL_MARGIN_H,
-    bottom: 14,
+    bottom: 29,
   },
   mixerPanel: {
     position: "absolute",
