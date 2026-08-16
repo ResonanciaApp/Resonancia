@@ -797,10 +797,18 @@ export default function MezcladorScreen() {
               </View>
             )}
 
-            {/* Divisor sticky: solo visible al hacer scroll */}
-            {contentScrolled && (
-              <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)", marginHorizontal: -20 }} />
-            )}
+            {/* Divisor sticky: solo visible al hacer scroll.
+                Siempre montado (solo cambia opacity) para no alterar el layout
+                y evitar rebotes de la grilla al cruzar el umbral de scroll. */}
+            <View
+              pointerEvents="none"
+              style={{
+                height: StyleSheet.hairlineWidth,
+                backgroundColor: "rgba(255,255,255,0.10)",
+                marginHorizontal: -20,
+                opacity: contentScrolled ? 1 : 0,
+              }}
+            />
         </View>
 
         {/* ── Scroll principal ── */}

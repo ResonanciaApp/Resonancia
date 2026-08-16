@@ -39,3 +39,5 @@ sin importar cuánto contenido haya. Para pestañas que embeben una pantalla
 completa reutilizada con su propio `ScrollView` interno (ej. Biblioteca),
 exponer `onScroll`/`scrollEventThrottle` como props opcionales pass-through
 en ese componente para conectarlo al mismo handler compartido.
+
+**Además:** el divisor debe estar SIEMPRE montado y togglear solo `opacity` (nunca montarse condicionalmente): al montarse añade su hairline de alto al header → la grilla de abajo "rebota" al cruzar el umbral de scroll.
