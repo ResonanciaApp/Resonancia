@@ -102,12 +102,21 @@ function OverlayLayer({
           transform: [{
             translateX: Animated.add(
               slideAnim,
-              // Parallax: esta capa se corre cuando entra otra encima.
-              parallaxAnim.interpolate({
-                inputRange: [layer.depth + 1, layer.depth + 2],
-                outputRange: [0, PARALLAX_SHIFT],
-                extrapolate: "clamp",
-              }),
+              Animated.add(
+                // Compensa el corrimiento del wrapper de las tabs (esta capa
+                // vive dentro de él): la capa visible queda en su lugar.
+                parallaxAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, -PARALLAX_SHIFT],
+                  extrapolate: "clamp",
+                }),
+                // Parallax propio: esta capa se corre cuando entra otra encima.
+                parallaxAnim.interpolate({
+                  inputRange: [layer.depth + 1, layer.depth + 2],
+                  outputRange: [0, PARALLAX_SHIFT],
+                  extrapolate: "clamp",
+                }),
+              ),
             ),
           }],
         },

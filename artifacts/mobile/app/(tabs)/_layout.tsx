@@ -150,6 +150,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
   const { openMixer, isMixerOpen } = useMixerPanel();
+  // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
+  const { parallaxAnim: barOverlayParallax } = useCategoryOverlay();
+  const tabBarCounterX = barOverlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, 56], extrapolate: "clamp" });
   const { isGeometrixOpen } = useGeometrixPanel();
 
   // 8 px de separación con el borde inferior de la pantalla
@@ -271,7 +274,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }, { translateX: tabBarCounterX }] }]}
       >
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
