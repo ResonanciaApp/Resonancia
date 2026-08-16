@@ -1439,8 +1439,8 @@ const styles = StyleSheet.create({
   pillBorderSel: {},
   pill: {
     flex: 1,
-    height: 31,
-    paddingHorizontal: 13,
+    height: 29,
+    paddingHorizontal: 11.5,
     borderRadius: 999,
     overflow: "hidden",
     alignItems: "center",
@@ -1450,7 +1450,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   pillSel: { borderWidth: 0 },
-  pillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "450" as TextStyle["fontWeight"], letterSpacing: 0.3, color: "#F4F4F4" },
+  pillText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450" as TextStyle["fontWeight"], letterSpacing: 0.3, color: "#F4F4F4" },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   comingSoonWrap: {

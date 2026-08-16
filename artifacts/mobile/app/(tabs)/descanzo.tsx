@@ -1064,8 +1064,8 @@ const styles = StyleSheet.create({
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 31,
-    paddingHorizontal: 13,
+    height: 29,
+    paddingHorizontal: 11.5,
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
@@ -1076,7 +1076,7 @@ const styles = StyleSheet.create({
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "450",
     letterSpacing: 0.3,
     color: "#F4F4F4",

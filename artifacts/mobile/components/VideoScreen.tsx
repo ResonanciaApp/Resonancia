@@ -285,8 +285,8 @@ const styles = StyleSheet.create({
   chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
   chip: {
     borderRadius: 999,
-    paddingHorizontal: 13,
-    height: 32,
+    paddingHorizontal: 11.5,
+    height: 29,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(80,42,247,0.07)",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3 },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450", letterSpacing: 0.3 },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontFamily: "Manrope", fontSize: 11 },
