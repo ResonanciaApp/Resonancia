@@ -2156,7 +2156,11 @@ export default function GeometrixScreen() {
 
   // Landing screen: se muestra al entrar con el canvas vacío. Se oculta al
   // tocar "Crear Geometría" o al cargar una creación existente.
-  const [showLanding, setShowLanding] = useState(false);
+  // Arranca en true: el panel se monta en la primera apertura y debe pintar el
+  // landing desde el PRIMER frame (con false había un flash del lienzo antes
+  // de que el efecto lo activara). Si llega una creación a cargar, el efecto
+  // de params lo apaga antes de que se note.
+  const [showLanding, setShowLanding] = useState(true);
   // Pausa todas las animaciones de Reanimated (withRepeat) cuando el usuario
   // abandona la pestaña. Las tabs quedan montadas en React Navigation, así que
   // sin esta guarda rot/pulse/fade/ripple/expansión siguen corriendo en el fondo
