@@ -7,6 +7,7 @@ import {
   Animated,
   Image,
   PanResponder,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -260,7 +261,7 @@ export function MiniPlayer() {
         {/* ── Píldora glass: réplica del tab bar horizontal ── */}
         <View style={styles.mixPill}>
           {/* 1. Blur base (igual al tab bar) */}
-          <BlurView intensity={40} tint="dark" experimentalBlurMethod="dimezisBlurView" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={Platform.OS === "android" ? 80 : 40} tint="dark" experimentalBlurMethod="dimezisBlurView" style={StyleSheet.absoluteFill} />
           {/* 2. Tinte violeta base */}
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
           {/* 3. Inner glow vertical */}
