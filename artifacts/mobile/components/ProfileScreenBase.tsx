@@ -301,7 +301,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     ? new Date(me.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
