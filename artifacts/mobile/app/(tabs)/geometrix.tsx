@@ -6810,16 +6810,19 @@ const styles = StyleSheet.create({
   catRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 6,
+    paddingLeft: 0,
     paddingTop: 10,
     paddingBottom: 4,
   },
   exitBtn: {
+    position: "absolute",
+    left: 6,
+    top: 10,
     width: 40,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
+    zIndex: 10,
     transform: [{ translateY: -36 }],
   },
   catScroll: {
