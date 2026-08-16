@@ -1436,7 +1436,7 @@ export default function HomeScreen2() {
           <View style={{ marginBottom: SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => router.push("/videos" as never)}>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
                 <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
               </Pressable>
             </View>

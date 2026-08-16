@@ -29,6 +29,7 @@ const LazyChakra        = React.lazy(() => import("@/app/chakra/[id]"));
 const LazyBusqueda      = React.lazy(() => import("@/app/busqueda"));
 const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
 const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
+const LazyVideos        = React.lazy(() => import("@/app/videos"));
 
 const W = Dimensions.get("window").width;
 
@@ -41,6 +42,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   const b = route.match(/^\/busqueda(?:\?tiempo=(.+))?$/);
   if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
   if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };
+  if (route === "/videos") return { node: <LazyVideos />, eager: false };
   const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);

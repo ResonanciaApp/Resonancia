@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -49,6 +50,8 @@ interface Props {
 }
 
 export function VideoScreen({ showBack = false }: Props) {
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
   const colors = useColors();
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -103,7 +106,7 @@ export function VideoScreen({ showBack = false }: Props) {
         {/* Title row */}
         <View style={styles.titleRow}>
           {showBack ? (
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
+            <Pressable onPress={goBack} hitSlop={10} style={styles.backBtn}>
               <Feather name="chevron-left" size={28} color="#F4F4F4" />
             </Pressable>
           ) : (
