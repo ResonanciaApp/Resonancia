@@ -2690,6 +2690,8 @@ export default function GeometrixScreen() {
   useEffect(() => {
     if (!isGeometrixOpen) return;
     if (activeRef.current.length === 0) {
+      // Al entrar por el panel con el lienzo vacío → mostrar el landing
+      setShowLanding(true);
       playIntro();
     }
     return () => {
@@ -3178,8 +3180,10 @@ export default function GeometrixScreen() {
     const p = consumePendingParams();
     if (!p) return;
     if (p.load) {
+      setShowLanding(false);
       loadCreation(p.load, p.play === "1");
     } else if (p.new === "1") {
+      setShowLanding(false);
       setEditingCreation(null);
       resetHistory();
       stopIntro();
