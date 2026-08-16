@@ -517,7 +517,7 @@ function TabLayoutInner() {
       >
         <MezcladorScreen />
         <View style={styles.miniPlayerFloat} pointerEvents="box-none">
-          <MiniPlayer idle={!currentSession} />
+          <MiniPlayer />
         </View>
       </Animated.View>
       <Animated.View
@@ -666,9 +666,9 @@ const styles = StyleSheet.create({
   },
   miniPlayerFloat: {
     position: "absolute",
-    left: 10,
-    right: 10,
-    bottom: -10,
+    left: PILL_MARGIN_H,
+    right: PILL_MARGIN_H,
+    bottom: 14,
   },
   mixerPanel: {
     position: "absolute",

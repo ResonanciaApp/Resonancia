@@ -5,7 +5,6 @@ import Svg, { Path, Rect } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
-  Easing,
   Image,
   PanResponder,
   Pressable,
@@ -19,14 +18,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
-import { GhostPill } from "@/components/GhostPill";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const MAX_PLAYER_WIDTH    = 438;
@@ -38,8 +35,6 @@ const MAX_STACK_LAYOUT_W  = STACK_SIZE + 6 * STACK_SHIFT; // 6 thumbs completos,
 
 const GRAD_COLORS: [string, string] = ["#160f28", "#160f28"];
 const MIX_BG      = "rgba(0,0,0,0.85)";
-const PILL_BORDER = "rgba(110,80,200,0.5)";
-const BORDER_R    = 12;
 
 type StackThumbItemProps = {
   image: ReturnType<typeof require> | string | undefined;
@@ -86,8 +81,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
   );
 }
 
-export function MiniPlayer({ idle = false }: { idle?: boolean }) {
-  const insets = useSafeAreaInsets();
+export function MiniPlayer() {
   const { activeSceneId } = useSceneTheme();
   const tibetTint = null;
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
@@ -102,7 +96,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   } = useMixer();
 
   const colors = useColors();
-  const { isMixerOpen } = useMixerPanel();
 
   // ── Swipe-up en handle → abre la sheet ─────────────────────────
   const openSheetRef = useRef(openSheet);
@@ -148,50 +141,24 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
 
   const mixActive = !currentSession && activeSounds.length > 0;
 
-  // ── Título cinemático "Esta es tu mezcla" + contador de sonidos ──
-  const cinematicOpacity = useRef(new Animated.Value(0)).current;
-  const counterOpacity   = useRef(new Animated.Value(0)).current;
-  const prevMixActive    = useRef(false);
+  // ── Entrada del miniplayer al activar el primer sonido ─────────
+  const entryAnim     = useRef(new Animated.Value(0)).current;
+  const prevMixActive = useRef(false);
 
   useEffect(() => {
     if (mixActive && !prevMixActive.current) {
-      cinematicOpacity.setValue(0);
-      counterOpacity.setValue(0);
-      Animated.sequence([
-        Animated.timing(cinematicOpacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
-        Animated.delay(1100),
-        Animated.timing(cinematicOpacity, { toValue: 0, duration: 800, useNativeDriver: true }),
-        Animated.timing(counterOpacity,   { toValue: 1, duration: 600, useNativeDriver: true }),
-      ]).start();
+      entryAnim.setValue(0);
+      Animated.timing(entryAnim, {
+        toValue: 1,
+        duration: 380,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }).start();
+    } else if (!mixActive) {
+      entryAnim.setValue(0);
     }
     prevMixActive.current = mixActive;
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Fade del texto idle "Selecciona un sonido para comenzar" ───
-  // Solo se muestra la primera vez que entra el panel; no vuelve si borran todos los sonidos.
-  const idleTextOpacity  = useRef(new Animated.Value(0)).current;
-  const idleHintShownRef = useRef(false);
-  useEffect(() => {
-    if (!isMixerOpen) {
-      idleHintShownRef.current = false;   // reset al cerrar → la próxima apertura lo muestra de nuevo
-      idleTextOpacity.setValue(0);
-      return;
-    }
-    if (idle && !idleHintShownRef.current) {
-      idleHintShownRef.current = true;
-      idleTextOpacity.setValue(0);
-      const seq = Animated.sequence([
-        Animated.delay(320),
-        Animated.timing(idleTextOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-        Animated.delay(2000),
-        Animated.timing(idleTextOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
-      ]);
-      seq.start();
-      return () => seq.stop();
-    }
-    // Si ya se mostró o no es idle: asegura opacidad 0 (sin animación)
-    idleTextOpacity.setValue(0);
-  }, [isMixerOpen, idle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── De-stack / carrusel ────────────────────────────────────────
   // El área del stack anima su ANCHO: cerrado = stackWidthStackedCap,
@@ -264,22 +231,8 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!currentSession && !mixActive) {
-    if (!idle) return null;
-    // ── Estado inactivo del Mezclador ─────────────────────────────
-    return (
-      <View style={styles.mixOuter}>
-        <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
-          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
-          {tibetTint}
-          <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
-            <Animated.Text style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 0 }}>
-              Crea tus paisajes sonoros
-            </Animated.Text>
-          </View>
-        </View>
-      </View>
-    );
+    // El miniplayer del Mezclador solo aparece con el primer sonido activo.
+    return null;
   }
 
   // ── Modo mezcla ───────────────────────────────────────────────
@@ -295,12 +248,32 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         : openSheet();
 
     return (
-      <View style={styles.mixOuter}>
-        {/* ── Card del miniplayer ── */}
-        <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
-          {/* Fondo glassmorphism */}
-          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+      <Animated.View
+        style={[
+          styles.mixOuter,
+          {
+            opacity: entryAnim,
+            transform: [{ translateY: entryAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
+          },
+        ]}
+      >
+        {/* ── Píldora glass: réplica del tab bar horizontal ── */}
+        <View style={styles.mixPill}>
+          {/* 1. Blur base (igual al tab bar) */}
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          {/* 2. Tinte violeta base */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+          {/* 3. Inner glow vertical */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          {/* Tinte Universo (igual al tab bar) */}
+          {activeSceneId === "tibet" && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
+          )}
           {tibetTint}
 
           {/* ── Row principal ── */}
@@ -365,17 +338,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           </View>
 
         </View>
-
-        {/* Contador de sonidos */}
-        <Animated.Text
-          numberOfLines={1}
-          pointerEvents="none"
-          style={[styles.cinematicText, { opacity: counterOpacity, fontSize: 13, fontWeight: "400" }]}
-        >
-          {n === 1 ? "1 sonido" : `${n} sonidos`}
-        </Animated.Text>
-
-      </View>
+      </Animated.View>
     );
   }
 
@@ -491,7 +454,17 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
 
-  // ── Card ──────────────────────────────────────────────────────
+  // ── Píldora de mezcla (réplica del tab bar: altura 68, radio 999) ──
+  mixPill: {
+    overflow: "hidden",
+    maxWidth: MAX_PLAYER_WIDTH,
+    width: "100%",
+    height: 68,
+    borderRadius: 999,
+    justifyContent: "center",
+  },
+
+  // ── Card (modo sesión, sin cambios) ───────────────────────────
   wrapper: {
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
@@ -508,7 +481,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 12,
     paddingRight: 84,
-    paddingVertical: 15,
     gap: 10,
   },
 
@@ -571,18 +543,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#204d90",
-  },
-  cinematicText: {
-    fontFamily: "Manrope",
-    position: "absolute",
-    bottom: 20,
-    left: 0,
-    right: 0,
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "600",
-    letterSpacing: 1.0,
-    textAlign: "center",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
