@@ -481,7 +481,8 @@ export default function MezcladorScreen() {
 
   const { setTabBarColors, requestHide, showMenu } = useTabBarVisibility();
 
-  const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
+  // null = ningún tab seleccionado → catálogo completo por secciones
+  const [mainTab,        setMainTab]        = useState<MainTabId | null>(null);
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
   const [selectedBpm,    setSelectedBpm]    = useState<44 | 50 | 68 | 72 | null>(null);
   const [playCounts,     setPlayCounts]     = useState<Record<string, number>>({});
@@ -590,7 +591,7 @@ export default function MezcladorScreen() {
       return;
     }
     requestHide();
-    setMainTab("popular");
+    setMainTab(null);
     refreshSounds();
     return () => {
       showMenu();
@@ -628,9 +629,16 @@ export default function MezcladorScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const handleMainTab = (id: MainTabId) => {
-    if (id === mainTab) return;
+    if (id === mainTab) {
+      // Des-seleccionar → volver al catálogo completo
+      setMainTab(null);
+      setSubTab(null);
+      setSelectedBpm(null);
+      setContentAnimKey((k) => k + 1);
+      return;
+    }
     const ids = MAIN_TABS.map((t) => t.id);
-    setContentDir(ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
+    setContentDir(mainTab === null || ids.indexOf(id) > ids.indexOf(mainTab) ? "right" : "left");
     setMainTab(id);
     setSubTab(null);
     if (id !== "bpm") setSelectedBpm(null);
@@ -710,6 +718,28 @@ export default function MezcladorScreen() {
     // Solo filtrar sonidos que TIENEN tags definidos; los que no tienen tags pasan siempre.
     return base.filter((s) => !s.tags?.length || s.tags.some((t) => activeTags.includes(t)));
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
+
+  // ── Catálogo completo por secciones (sin tab seleccionado, estilo Insight Timer) ──
+  const catalogSections = useMemo(() => {
+    if (mainTab !== null) return [];
+    const moodTags = moodFilter ? MOOD_SOUND_TAGS[moodFilter] ?? [] : [];
+    const activeTags = Array.from(new Set([...moodTags, ...tagFilters]));
+    const applyTags = (list: MixSound[]) =>
+      activeTags.length === 0
+        ? list
+        : list.filter((s) => !s.tags?.length || s.tags.some((t) => activeTags.includes(t)));
+
+    return MAIN_TABS.map((tab) => {
+      const base = tab.categories === null
+        ? popularSounds
+        : allSounds.filter(
+            (s) =>
+              tab.categories!.includes(s.category as SoundCategoryId) &&
+              (tab.id !== "bpm" || effectiveBpm === null || soundMatchesBpm(s, effectiveBpm)),
+          );
+      return { tab, sounds: applyTags(base) };
+    }).filter((sec) => sec.sounds.length > 0);
+  }, [mainTab, popularSounds, allSounds, moodFilter, tagFilters, effectiveBpm]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.solid }]}>
@@ -860,7 +890,41 @@ export default function MezcladorScreen() {
                 onSelect={setSelectedBpm}
               />
             )}
-            {displayedSounds.length === 0 ? (
+            {mainTab === null && catalogSections.length === 0 ? (
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="music-note-off-outline" size={34} color="rgba(26,30,43,0.35)" />
+                <Text style={styles.emptyTitle}>Sin sonidos con estos filtros</Text>
+                <Text style={styles.emptyHint}>Probá con otra combinación o tocá Limpiar filtros.</Text>
+              </View>
+            ) : mainTab === null ? (
+              /* ── Catálogo completo: secciones por tab ── */
+              catalogSections.map((sec) => (
+                <View key={sec.tab.id}>
+                  <View style={styles.sectionHeaderRow}>
+                    <View style={styles.sectionHeaderLine} />
+                    <Text style={styles.sectionHeaderText}>{sec.tab.label}</Text>
+                    <View style={styles.sectionHeaderLine} />
+                  </View>
+                  <View style={styles.grid}>
+                    {sec.sounds.map((s, i) => (
+                      <SoundCard
+                        key={`${sec.tab.id}-${s.id}`}
+                        sound={s}
+                        idx={i}
+                        active={isActive(s.id)}
+                        locked={!!s.isPremium && !isPremium}
+                        available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
+                        image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
+                        borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[sec.tab.id][0], TAB_HEADER_GRADIENT[sec.tab.id][1], TAB_HEADER_GRADIENT[sec.tab.id][2]]}
+                        textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
+                        bgPaletteId={bgPaletteId}
+                        onPress={() => handleSoundPress(s)}
+                      />
+                    ))}
+                  </View>
+                </View>
+              ))
+            ) : displayedSounds.length === 0 ? (
               <View style={styles.emptyState}>
                 <MaterialCommunityIcons name="music-note-off-outline" size={34} color="rgba(26,30,43,0.35)" />
                 <Text style={styles.emptyTitle}>
@@ -1102,6 +1166,28 @@ const styles = StyleSheet.create({
   subTabText: { fontFamily: "Manrope", fontSize: 13, letterSpacing: 0.3, fontWeight: "450", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
+
+  // ── Encabezado de sección (catálogo completo, estilo Insight Timer) ──
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginTop: 30,
+    marginBottom: 22,
+    paddingHorizontal: 4,
+  },
+  sectionHeaderLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.18)",
+  },
+  sectionHeaderText: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.4,
+    color: "#F4F4F4",
+  },
   soundCard: { width: CARD_W },
   cardImageWrap: {
     width: IMG_SIZE, height: IMG_SIZE, alignSelf: "center", marginTop: 13,
