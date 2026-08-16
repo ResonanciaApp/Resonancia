@@ -27,6 +27,7 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG_FALLBACK = ["#340D1A", "#190913"] as const;
@@ -213,7 +214,9 @@ export default function CarpetaDetailScreen() {
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}
               >
                 <View style={styles.plCover}>
-                  {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                  {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
+                    <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: 52, height: 52, borderRadius: 6 }} contentFit="cover" />
+                  ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
                     <CreationCoverPreview creationId={pl.coverCreationId} size={52} />

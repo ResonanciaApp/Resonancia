@@ -117,8 +117,6 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
     name: "Para Empezar",
     description: "Una selección para tus primeros pasos en Resonancia.",
     sessionIds: ["1", "25", "26", "20"],
-    coverType: "geometrix",
-    coverGeometryId: "flor-vida",
     createdAt: new Date().toISOString(),
   },
   {
@@ -126,8 +124,6 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
     name: "Calma Profunda",
     description: "Sonidos y sesiones para soltar el día y relajarte.",
     sessionIds: ["41", "44", "21", "22", "27"],
-    coverType: "geometrix",
-    coverGeometryId: "semilla-vida",
     createdAt: new Date().toISOString(),
   },
   {
@@ -135,8 +131,6 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
     name: "Sueño Reparador",
     description: "Acompañamiento para una noche de descanso profundo.",
     sessionIds: ["8", "46", "47", "50", "24"],
-    coverType: "geometrix",
-    coverGeometryId: "metatron",
     createdAt: new Date().toISOString(),
   },
 ];

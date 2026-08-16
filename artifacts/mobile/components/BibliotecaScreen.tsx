@@ -51,6 +51,7 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
+import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
 const { width } = Dimensions.get("window");
@@ -345,7 +346,9 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+        {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
+          <Image source={getDefaultPlaylistCover(pl.id)} style={styles.userPlCover} contentFit="cover" />
+        ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
           <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]}>
             <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={82} strokeWidth={1.2} opacity={1} />
           </View>
@@ -1198,7 +1201,9 @@ export function BibliotecaScreen({
                       onPress={() => router.push(`/playlist/${pl.id}` as never)}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
-                        {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                        {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
+                          <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                        ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
                           <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
@@ -1379,7 +1384,9 @@ export function BibliotecaScreen({
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
                 <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
-                  {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                  {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
+                    <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                  ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
                     <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />

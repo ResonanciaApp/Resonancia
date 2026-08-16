@@ -25,6 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
@@ -278,7 +279,9 @@ export default function PlaylistDetailScreen() {
         <View style={styles.hero}>
           {/* Cover art — tap para elegir foto o geometría */}
           <Pressable style={styles.cover} onPress={() => setCoverModalVisible(true)}>
-            {playlist.coverType === "geometrix" && playlist.coverGeometryId ? (
+            {getDefaultPlaylistCover(playlist.id) && !playlist.coverUri && !playlist.coverType ? (
+              <Image source={getDefaultPlaylistCover(playlist.id)} style={StyleSheet.absoluteFill} contentFit="cover" />
+            ) : playlist.coverType === "geometrix" && playlist.coverGeometryId ? (
               <View style={[styles.coverGlyph, { backgroundColor: panelColor }]}>
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}

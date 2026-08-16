@@ -19,6 +19,7 @@ import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
@@ -79,7 +80,9 @@ export default function PlaylistsScreen() {
               ]}
             >
               <View style={[styles.plIcon, { backgroundColor: "rgba(212,175,55,0.12)", overflow: "hidden" }]}>
-                {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
+                  <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
+                ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
                   <SacredGlyph id={pl.coverGeometryId as GeometryId} color={colors.primary} size={36} strokeWidth={1.6} opacity={1} />
                 ) : pl.coverType === "creation" && pl.coverCreationId ? (
                   <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
