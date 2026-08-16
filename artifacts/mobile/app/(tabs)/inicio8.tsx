@@ -1438,7 +1438,7 @@ export default function HomeScreen2() {
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
           titleSize={20}
-          onViewAll={() => router.push("/favoritos-todos" as never)}
+          onViewAll={() => openCategory("/favoritos-todos")}
         />
 
 
