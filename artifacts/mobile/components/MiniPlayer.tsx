@@ -314,6 +314,17 @@ export function MiniPlayer() {
               </ScrollView>
             </Animated.View>
 
+            {/* Contador de sonidos — solo visible con los thumbnails apilados */}
+            <Animated.Text
+              pointerEvents="none"
+              style={[
+                styles.stackCount,
+                { opacity: openProgress.interpolate({ inputRange: [0, 0.35, 1], outputRange: [1, 0, 0] }) },
+              ]}
+            >
+              {n}
+            </Animated.Text>
+
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
             <View style={[styles.waveWrap, { position: "absolute", right: 25, zIndex: 2, transform: [{ translateY: -2 }] }]}>
               {[wave1, wave2].map((w, idx) => (
@@ -488,6 +499,14 @@ const styles = StyleSheet.create({
   stackArea: {
     height: STACK_SIZE,
     overflow: "visible",
+  },
+  stackCount: {
+    marginLeft: 12,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.85)",
+    transform: [{ translateY: -2 }],
   },
   stackScroll: {
     width: "100%",
