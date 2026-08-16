@@ -742,62 +742,40 @@ export default function MezcladorScreen() {
               </View>
             </View>
 
-            {/* ── Espaciador: conserva el layout que ocupaba el título (ahora está arriba) ── */}
-            <View style={{ paddingHorizontal: 19, paddingBottom: 14 }}>
-              <Text style={[styles.pageTitle, { fontSize: 27, letterSpacing: 0.3, opacity: 0 }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-                Mezclador
-              </Text>
-            </View>
+            {/* ── Espaciador (título original menos 30 px: tabs suben) ── */}
+            <View style={{ height: 19 }} />
 
-            {/* ── Tabs en píldora ── */}
+            {/* ── Tabs en píldora: dos filas con scroll horizontal ── */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.pillRow}
               contentContainerStyle={styles.pillRowContent}
             >
-              {MAIN_TABS.map((tab) => (
-                <View key={tab.id}>
-                  <PillTab
-                    tab={tab}
-                    sel={mainTab === tab.id}
-                    onPress={() => handleMainTab(tab.id)}
-                  />
-                </View>
-              ))}
+              <View style={{ gap: 8 }}>
+                {[
+                  MAIN_TABS.slice(0, Math.ceil(MAIN_TABS.length / 2)),
+                  MAIN_TABS.slice(Math.ceil(MAIN_TABS.length / 2)),
+                ].map((row, i) => (
+                  <View key={i} style={{ flexDirection: "row", gap: 8 }}>
+                    {row.map((tab) => (
+                      <View key={tab.id}>
+                        <PillTab
+                          tab={tab}
+                          sel={mainTab === tab.id}
+                          onPress={() => handleMainTab(tab.id)}
+                        />
+                      </View>
+                    ))}
+                  </View>
+                ))}
+              </View>
             </ScrollView>
 
             {/* ── Banner rotativo — oculto temporalmente ── */}
 
-            {/* ── Sub-tabs ── */}
-            {(!subTabCategories || subTabCategories.length <= 1) && (
-              <View style={{ height: 8 }} />
-            )}
-            {subTabCategories && subTabCategories.length > 1 && (
-              <View style={styles.subTabZone}>
-                <SubTabSlide>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subTabRow}>
-                    {subTabCategories.map((catId) => {
-                      const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
-                      if (!cat) return null;
-                      const sel = subTab === catId;
-                      return (
-                        <Pressable
-                          key={catId}
-                          onPress={() => setSubTab(sel ? null : catId)}
-                          style={[styles.subTab, sel && styles.subTabSel]}
-                        >
-                          {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-                          <Text style={[styles.subTabText, { color: sel ? "#0D0A1E" : "#FBFBFB" }]}>
-                            {SUB_TAB_LABELS[catId] ?? cat.label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
-                </SubTabSlide>
-              </View>
-            )}
+            {/* ── Sub-tabs eliminados ── */}
+            <View style={{ height: 8 }} />
 
             {/* Divisor sticky: solo visible al hacer scroll.
                 Siempre montado (solo cambia opacity) para no alterar el layout
