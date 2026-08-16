@@ -6818,6 +6818,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    transform: [{ translateY: -15 }],
   },
   catScroll: {
     flex: 1,
