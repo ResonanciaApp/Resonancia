@@ -561,6 +561,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.045)",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
