@@ -27,7 +27,7 @@ import { useColors } from "@/hooks/useColors";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const MAX_PLAYER_WIDTH    = 438;
-const STACK_SIZE          = 43;
+const STACK_SIZE          = 40;
 const STACK_SHIFT         = 13;   // offset apilado (cerrado)
 const CAROUSEL_THUMB_GAP  = 6;    // separación fija entre thumbnails en el carrusel
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
   stackThumb: {
     width: STACK_SIZE,
     height: STACK_SIZE,
-    borderRadius: 999,
+    borderRadius: 8,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.3)",
