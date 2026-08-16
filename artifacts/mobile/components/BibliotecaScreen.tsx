@@ -2053,8 +2053,8 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    height: 31,
-    paddingHorizontal: 13,
+    height: 29,
+    paddingHorizontal: 11.5,
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
@@ -2063,7 +2063,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   controlRow: {
