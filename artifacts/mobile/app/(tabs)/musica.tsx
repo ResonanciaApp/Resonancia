@@ -722,6 +722,13 @@ export default function MezcladorScreen() {
                   />
                 </View>
               </View>
+              {/* Título centrado, a la altura del chevron */}
+              <View
+                pointerEvents="none"
+                style={{ position: "absolute", left: 0, right: 0, top: topPad - 17, height: 40, alignItems: "center", justifyContent: "center" }}
+              >
+                <Text style={[styles.pageTitle, { fontSize: 22, letterSpacing: 0.3 }]}>Mezclador</Text>
+              </View>
               <View style={{ position: "absolute", right: 20, top: topPad - 17, zIndex: 10 }}>
                 <Pressable
                   onPress={() => openMenu()}
@@ -735,14 +742,9 @@ export default function MezcladorScreen() {
               </View>
             </View>
 
-            {/* ── Título a la izquierda, arriba del primer tab ── */}
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 14 }}>
-              <Text
-                style={[
-                  styles.pageTitle,
-                  { fontSize: 27, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -1 }] },
-                ]}
-              >
+            {/* ── Espaciador: conserva el layout que ocupaba el título (ahora está arriba) ── */}
+            <View style={{ paddingHorizontal: 19, paddingBottom: 14 }}>
+              <Text style={[styles.pageTitle, { fontSize: 27, letterSpacing: 0.3, opacity: 0 }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                 Mezclador
               </Text>
             </View>
