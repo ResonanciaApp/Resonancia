@@ -705,34 +705,42 @@ export default function MezcladorScreen() {
 
       <View style={styles.inner}>
 
-        {/* ── Zona superior ── */}
-        <View style={{ zIndex: 10, paddingTop: topPad + 2, backgroundColor: "transparent" }}>
-            {/* ── Header ── */}
-            <View style={styles.header}>
-              <View style={styles.headerRow}>
+        {/* ── Zona superior (layout imitando la página de Música) ── */}
+        <View style={{ zIndex: 10, backgroundColor: "transparent" }}>
+            {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
+            <View style={{ height: topPad + 48, position: "relative" }}>
+              <View style={{ position: "absolute", left: 20, top: topPad - 17, zIndex: 10 }}>
                 <Pressable
                   onPress={closeMixer}
                   hitSlop={10}
-                  style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 14, marginLeft: -6 }}
+                  style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                 >
                   <MaterialCommunityIcons name="chevron-left" size={24} color="#FBFBFB" />
                 </Pressable>
-                <View style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }} pointerEvents="none">
-                  <Text style={[styles.pageTitle, { fontSize: 25 }]}>Mezclador</Text>
-                </View>
-                <View style={{ flex: 1 }} />
-                <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
-                    <Pressable
-                      onPress={() => openMenu()}
-                      style={{ width: 38, height: 38, alignItems: "center", justifyContent: "center" }}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel="Menú del Mezclador"
-                    >
-                      <MaterialCommunityIcons name="tune-variant" size={22} color="#FBFBFB" />
-                    </Pressable>
-                </View>
               </View>
+              <View style={{ position: "absolute", right: 20, top: topPad - 17, zIndex: 10 }}>
+                <Pressable
+                  onPress={() => openMenu()}
+                  style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Menú del Mezclador"
+                >
+                  <MaterialCommunityIcons name="tune-variant" size={22} color="#FBFBFB" />
+                </Pressable>
+              </View>
+            </View>
+
+            {/* ── Título a la izquierda, arriba del primer tab ── */}
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 14 }}>
+              <Text
+                style={[
+                  styles.pageTitle,
+                  { fontSize: 27, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -4 }] },
+                ]}
+              >
+                Mezclador
+              </Text>
             </View>
 
             {/* ── Tabs en píldora ── */}
