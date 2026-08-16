@@ -160,7 +160,19 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY, DEFAULT_PLAYLISTS_SEEDED_KEY]).then(
       ([fEntry, pEntry, ffEntry, pfEntry, seededEntry]) => {
         if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
-        const storedPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
+        let storedPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
+        // Migración: playlists por defecto sembradas con portada de geometría
+        // pasan a usar la imagen bundleada (limpiando el coverType persistido).
+        let migrated = false;
+        storedPlaylists = storedPlaylists.map((p) => {
+          if (p.id.startsWith("default_") && p.coverType === "geometrix" && !p.coverUri) {
+            migrated = true;
+            const { coverType, coverGeometryId, ...rest } = p;
+            return rest;
+          }
+          return p;
+        });
+        if (migrated) AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(storedPlaylists));
         if (storedPlaylists.length > 0) {
           setPlaylists(storedPlaylists);
         } else if (!seededEntry[1]) {
