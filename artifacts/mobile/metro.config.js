@@ -162,7 +162,16 @@ config.resolver = {
         !fp.includes("RCTModalHostViewNativeComponent") &&
         // EXCEPTION: SwitchNativeComponent (+ Android twin) is the native view
         // behind <Switch>; stubbing it makes every Switch render nothing.
-        !/[\\/](Android)?SwitchNativeComponent\.js$/.test(fp)
+        !/[\\/](Android)?SwitchNativeComponent\.js$/.test(fp) &&
+        // EXCEPTION: AndroidHorizontalScrollContentViewNativeComponent is the
+        // content wrapper of EVERY horizontal ScrollView/FlatList on Android;
+        // stubbing it makes all horizontal list children silently never mount
+        // (invisible + untappable). iOS uses a different component, so the bug
+        // only showed on Android devices.
+        !fp.includes("AndroidHorizontalScrollContentViewNativeComponent") &&
+        // Same silent-nothing class: pull-to-refresh wrapper and spinners.
+        !fp.includes("AndroidSwipeRefreshLayoutNativeComponent") &&
+        !fp.includes("ActivityIndicatorViewNativeComponent")
       ) {
         return { filePath: NULL_STUB, type: "sourceFile" };
       }
