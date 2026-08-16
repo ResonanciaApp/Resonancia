@@ -39,7 +39,7 @@ import { Dimensions } from "react-native";
 
 const GOLD = "#F9F9F9";
 const STACK_THUMB = 93;
-const MAX_VISIBLE = 10;
+const MAX_VISIBLE = 5;
 const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 
@@ -136,7 +136,7 @@ export function CommunityMixesCarousel() {
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
-          Top 10 Creaciones
+          Top 5 Mezclas
         </Text>
         <Pressable
           onPress={() => router.push("/mezclas-comunidad" as never)}
