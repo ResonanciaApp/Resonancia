@@ -8,4 +8,6 @@ En tablets Android el `insets.top` de safe-area-context es mucho menor (~24) que
 
 **Why:** el usuario compara lado a lado tablet vs iPhone y espera el mismo aire superior; el piso 40 no afecta iPhone.
 
+Biblioteca además necesita aire extra entre título y tabs cuando el inset real es < 40: los chips de BibliotecaScreen llevan `marginTop: -52 + 31` en ese caso (afinado a ojo por el usuario en tablet; iPhone queda sin cambio).
+
 **How to apply:** al crear pantallas nuevas con padding superior basado en insets, usar el mismo piso 40 en native (web mantiene su constante 67/16).
