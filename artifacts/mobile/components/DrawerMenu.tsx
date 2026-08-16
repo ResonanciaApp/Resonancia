@@ -402,6 +402,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: DRAWER_PUSH,
+    borderTopRightRadius: 31,
+    borderBottomRightRadius: 31,
+    overflow: "hidden",
   },
   drawerShadow: {
     shadowColor: "#000",
