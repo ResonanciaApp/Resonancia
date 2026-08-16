@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import { Animated, Dimensions, StyleSheet, View } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
@@ -82,11 +83,11 @@ export function DrawerScreenOverlay() {
     <Animated.View
       style={[
         StyleSheet.absoluteFill,
-        { backgroundColor: sceneTheme.solid, transform: [{ translateX: slideAnim }] },
+        { backgroundColor: sceneTheme.gradient[0], transform: [{ translateX: slideAnim }] },
       ]}
     >
       <BackOverrideProvider onBack={closeOverlay}>
-        <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: sceneTheme.solid }]} />}>
+        <Suspense fallback={<LinearGradient style={StyleSheet.absoluteFill} colors={sceneTheme.gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />}>
           <Screen />
         </Suspense>
       </BackOverrideProvider>
