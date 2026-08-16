@@ -334,14 +334,14 @@ export function MiniPlayer() {
                 }]} />
               ))}
               <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
-                <Svg width={22} height={22} viewBox="0 0 48 48">
+                <Svg width={25} height={25} viewBox="0 0 48 48">
                   {mixPlaying ? (
                     <>
-                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#0d0c26" />
-                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#0d0c26" />
+                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
+                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
                     </>
                   ) : (
-                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#0d0c26" />
+                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#F9F9F9" />
                   )}
                 </Svg>
               </Pressable>
@@ -561,7 +561,6 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F9F9F9",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
