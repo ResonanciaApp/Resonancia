@@ -369,7 +369,7 @@ export default function PlaylistDetailScreen() {
         )}
 
         {/* Sessions list */}
-        <View style={{ marginTop: 0 }}>
+        <View style={{ marginTop: 15 }}>
         {sessions.map((session) => (
           <PlaylistSessionRow
             key={session.id}
