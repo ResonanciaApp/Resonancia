@@ -107,7 +107,7 @@ interface FoldersPlaylistsCtx {
 
 const FOLDERS_KEY = "@resonance_folders";
 const PLAYLISTS_KEY = "@resonance_playlists";
-const DEFAULT_PLAYLISTS_SEEDED_KEY = "@resonance_default_playlists_seeded";
+const DEFAULT_PLAYLISTS_SEEDED_KEY = "@resonance_default_playlists_seeded_v2";
 
 // ─── Playlists por defecto (usuarios nuevos) ─────────────────────────────────
 // Se crean una sola vez en la primera apertura; si el usuario las borra, no vuelven.
