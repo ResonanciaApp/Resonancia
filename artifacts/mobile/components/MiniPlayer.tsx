@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
@@ -257,14 +258,30 @@ export function MiniPlayer() {
         ]}
       >
         {/* ── Píldora glass: réplica del tab bar horizontal ── */}
-        <View style={[styles.mixPill, { backgroundColor: "#F9F9F9" }]}>
+        <View style={styles.mixPill}>
+          {/* 1. Blur base (igual al tab bar) */}
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          {/* 2. Tinte violeta base */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+          {/* 3. Inner glow vertical */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          {/* Tinte Universo (igual al tab bar) */}
+          {activeSceneId === "tibet" && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
+          )}
+          {tibetTint}
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
             {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <Feather name="chevron-up" size={27} color="#0d0c26" />
+              <Feather name="chevron-up" size={27} color="rgba(255,255,255,0.95)" />
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
@@ -320,11 +337,11 @@ export function MiniPlayer() {
                 <Svg width={22} height={22} viewBox="0 0 48 48">
                   {mixPlaying ? (
                     <>
-                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#0d0c26" />
+                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#0d0c26" />
                     </>
                   ) : (
-                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#0d0c26" />
                   )}
                 </Svg>
               </Pressable>
@@ -488,7 +505,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "rgba(13,12,38,0.8)",
+    color: "rgba(255,255,255,0.85)",
     transform: [{ translateY: -2 }],
   },
   stackScroll: {
@@ -544,7 +561,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#0d0c26",
+    backgroundColor: "#F9F9F9",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
@@ -558,7 +575,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
   },
   waveSession: { width: 38, height: 38 },
-  waveMix:    { width: 44, height: 44, backgroundColor: "rgba(13,12,38,0.18)" },
+  waveMix:    { width: 44, height: 44 },
 
   // ── Sesión ────────────────────────────────────────────────────
   row: {
