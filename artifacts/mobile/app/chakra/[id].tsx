@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
 import {
   Animated,
@@ -32,13 +34,18 @@ const W = Dimensions.get("window").width;
 // Cards en 2 columnas — mismas medidas que la grilla de sonidos binaurales de Dormir
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
-export default function ChakraScreen() {
+export default function ChakraScreen({ id: idProp }: { id?: string } = {}) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { version: catalogVersion } = useCatalog();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const overlay = useCategoryOverlayOptional();
+  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
 
   const chakra = getChakraById(id);
   const { theme: sceneTheme } = useSceneTheme();
@@ -71,7 +78,7 @@ export default function ChakraScreen() {
     if (locked) { router.push("/membresia" as never); return; }
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-    router.push(`/session/${s.id}` as never);
+    openSession(s.id);
   };
 
   if (!chakra) {
@@ -80,7 +87,7 @@ export default function ChakraScreen() {
         <StatusBar hidden />
         <LinearGradient colors={["#340D1A", "#190913", "#0D0808"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Pressable onPress={goBack} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
         </View>
@@ -111,7 +118,7 @@ export default function ChakraScreen() {
       >
         {/* Header: atrás + título centrado */}
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Pressable onPress={goBack} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.headerCenter} />
@@ -169,7 +176,7 @@ export default function ChakraScreen() {
         ]}
       >
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, marginBottom: 10 }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Pressable onPress={goBack} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
           <View style={styles.headerCenter}>

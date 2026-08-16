@@ -1,21 +1,41 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useRef, useState } from "react";
+
+export type OverlayEntry = { key: number; route: string };
 
 type CategoryOverlayCtx = {
+  /** Pila de rutas abiertas como overlay (la última es la visible arriba). */
+  stack: OverlayEntry[];
+  /** Ruta del tope de la pila (compat). */
   categoryRoute: string | null;
+  /** Abre una ruta como overlay (se apila sobre las anteriores). */
   openCategory: (route: string) => void;
+  /** Cierra el overlay del tope de la pila. */
   closeCategory: () => void;
 };
 
 const Ctx = createContext<CategoryOverlayCtx | null>(null);
 
 export function CategoryOverlayProvider({ children }: { children: React.ReactNode }) {
-  const [categoryRoute, setCategoryRoute] = useState<string | null>(null);
-  const openCategory  = useCallback((route: string) => setCategoryRoute(route), []);
-  const closeCategory = useCallback(() => setCategoryRoute(null), []);
+  const [stack, setStack] = useState<OverlayEntry[]>([]);
+  const nextKey = useRef(1);
+
+  const openCategory = useCallback((route: string) => {
+    setStack((prev) => {
+      // Evitar duplicar la misma ruta que ya está en el tope.
+      if (prev.length && prev[prev.length - 1].route === route) return prev;
+      return [...prev, { key: nextKey.current++, route }];
+    });
+  }, []);
+
+  const closeCategory = useCallback(() => {
+    setStack((prev) => (prev.length ? prev.slice(0, -1) : prev));
+  }, []);
+
+  const categoryRoute = stack.length ? stack[stack.length - 1].route : null;
 
   const value = React.useMemo(
-    () => ({ categoryRoute, openCategory, closeCategory }),
-    [categoryRoute, openCategory, closeCategory],
+    () => ({ stack, categoryRoute, openCategory, closeCategory }),
+    [stack, categoryRoute, openCategory, closeCategory],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -25,4 +45,13 @@ export function useCategoryOverlay() {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error("useCategoryOverlay must be used within CategoryOverlayProvider");
   return ctx;
+}
+
+/**
+ * Variante segura para componentes compartidos que pueden montarse fuera del
+ * provider (rutas root). Retorna null fuera de las tabs: en ese caso el
+ * componente debe navegar con router.push como siempre.
+ */
+export function useCategoryOverlayOptional() {
+  return useContext(Ctx);
 }

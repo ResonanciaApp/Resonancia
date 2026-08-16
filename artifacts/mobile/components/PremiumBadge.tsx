@@ -1,5 +1,6 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -10,12 +11,14 @@ import { type Session } from "@/data/sessions";
 export function useSessionGate(session: Session) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  const overlay = useCategoryOverlayOptional();
   const locked = !!session.isPremium && !isPremium;
   const openSession = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-    router.push(`/session/${session.id}` as never);
+    if (overlay) overlay.openCategory(`/session/${session.id}`);
+    else router.push(`/session/${session.id}` as never);
   };
   return { locked, openSession };
 }

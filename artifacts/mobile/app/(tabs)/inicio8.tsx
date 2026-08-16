@@ -952,7 +952,7 @@ export default function HomeScreen2() {
         router.push("/player" as never);
         return;
       }
-      router.push(`/session/${s.id}` as never);
+      openCategory(`/session/${s.id}`);
     },
     [closeSearch, playSession],
   );
@@ -1356,7 +1356,7 @@ export default function HomeScreen2() {
               onPress={() => {
                 if (filteredFeatured.skipMiniPlayer) { playSession(filteredFeatured); return; }
                 if (filteredFeatured.skipDetail) { playSession(filteredFeatured); router.push("/player" as never); }
-                else router.push(`/session/${filteredFeatured.id}` as never);
+                else openCategory(`/session/${filteredFeatured.id}`);
               }}
             >
               <View style={styles.heroImageContainer}>
@@ -1457,7 +1457,7 @@ export default function HomeScreen2() {
           title="Escuchadas recientemente"
           sessions={filteredListened}
           isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
@@ -1469,7 +1469,7 @@ export default function HomeScreen2() {
           title="Mis favoritos"
           sessions={favoriteSessions}
           isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
@@ -1542,7 +1542,7 @@ export default function HomeScreen2() {
                   if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
                   if (s.skipMiniPlayer) { playSession(s); return; }
                   if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-                  router.push(`/session/${s.id}` as never);
+                  openCategory(`/session/${s.id}`);
                 }}
               />
             </View>

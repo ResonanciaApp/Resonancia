@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
@@ -33,8 +35,13 @@ const CARD_W  = (width - H_PAD * 2 - 14) / 2;
 const STICKY_START = HERO_H - 60;
 const STICKY_END   = HERO_H;
 
-export default function TemaScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const overlay = useCategoryOverlayOptional();
+  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
   const colors  = useColors();
   const insets  = useSafeAreaInsets();
   const { theme: activeTheme } = useSceneTheme();
@@ -86,7 +93,7 @@ export default function TemaScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tema.label}
           </Text>
@@ -118,7 +125,7 @@ export default function TemaScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: tema.color + "33" }]} />
           )}
           {/* Floating back button */}
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
         </View>
 
         {/* ── TITLE + DESCRIPTION ── */}
@@ -141,7 +148,7 @@ export default function TemaScreen() {
               showAuthorAvatar={false}
               overridePress={() => {
                 if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                router.push(`/session/${s.id}` as never);
+                openSession(s.id);
               }}
             />
           ))}

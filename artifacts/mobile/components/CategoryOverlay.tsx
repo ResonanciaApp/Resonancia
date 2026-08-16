@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { ActivityIndicator, Animated, Dimensions, StyleSheet, View } from "react-native";
 
-import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { useCategoryOverlay, type OverlayEntry } from "@/context/CategoryOverlayContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -15,28 +15,112 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 // (el tamaño es manejable, ~400 módulos) y evita la doble evaluación.
 import DescanzoScreen from "@/app/(tabs)/descanzo";
 
-// ─── Pantallas de categoría root-level: React.lazy es seguro ─────────────────
-// Estas viven en app/category/ (rutas root, no tab). Expo Router no las
-// empaqueta como split-bundles de tab, así que React.lazy crea UN SOLO
-// bundle sin duplicar SceneThemeContext.
+// ─── Pantallas root-level: React.lazy es seguro ───────────────────────────────
+// Estas viven en app/ (rutas root, no tab). Expo Router no las empaqueta como
+// split-bundles de tab, así que React.lazy crea UN SOLO bundle sin duplicar
+// SceneThemeContext.
 const LazyMeditaciones = React.lazy(() => import("@/app/category/meditaciones-guiadas"));
 const LazySonidos      = React.lazy(() => import("@/app/category/sonidos-ancestrales"));
 const LazyMusica       = React.lazy(() => import("@/app/category/musica-sonidos"));
+const LazySessionDetail = React.lazy(() => import("@/app/session/[id]"));
+const LazyMezcla        = React.lazy(() => import("@/app/mezcla/[id]"));
+const LazyTema          = React.lazy(() => import("@/app/tema/[id]"));
+const LazyChakra        = React.lazy(() => import("@/app/chakra/[id]"));
 
 const W = Dimensions.get("window").width;
 
-/**
- * Overlay de categorías: desliza de derecha a izquierda SOBRE las tabs.
- * El botón ← de cada pantalla cierra el overlay en vez de navegar en el router.
- */
-export function CategoryOverlay() {
-  const { categoryRoute, closeCategory } = useCategoryOverlay();
-  const { theme: sceneTheme } = useSceneTheme();
-  const [rendered, setRendered] = useState(false);
-  const [activeRoute, setActiveRoute] = useState<string | null>(null);
+/** Resuelve la ruta de un overlay a su pantalla (con id si es parametrizada). */
+function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } | null {
+  if (route === "/(tabs)/descanzo") return { node: <DescanzoScreen />, eager: true };
+  if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
+  if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
+  if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
+  const m = route.match(/^\/(session|mezcla|tema|chakra)\/(.+)$/);
+  if (m) {
+    const id = decodeURIComponent(m[2]);
+    if (m[1] === "session") return { node: <LazySessionDetail id={id} />, eager: false };
+    if (m[1] === "mezcla") return { node: <LazyMezcla id={id} />, eager: false };
+    if (m[1] === "tema") return { node: <LazyTema id={id} />, eager: false };
+    if (m[1] === "chakra") return { node: <LazyChakra id={id} />, eager: false };
+  }
+  return null;
+}
+
+type LayerState = OverlayEntry & { closing: boolean };
+
+/** Una capa del overlay: desliza al entrar y al salir. */
+function OverlayLayer({
+  layer,
+  bg,
+  onBack,
+  onClosed,
+}: {
+  layer: LayerState;
+  bg: string;
+  onBack: () => void;
+  onClosed: (key: number) => void;
+}) {
   const slideAnim = useRef(new Animated.Value(W)).current;
 
-  // Pre-cargar las 3 pantallas root-level de forma secuencial con pausa.
+  useEffect(() => {
+    slideAnim.stopAnimation();
+    Animated.timing(slideAnim, {
+      toValue: layer.closing ? W : 0,
+      duration: DURATION.DRAWER,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished && layer.closing) onClosed(layer.key);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layer.closing]);
+
+  const resolved = resolveRoute(layer.route);
+  if (!resolved) return null;
+
+  return (
+    <Animated.View
+      style={[
+        StyleSheet.absoluteFill,
+        { backgroundColor: bg, transform: [{ translateX: slideAnim }] },
+      ]}
+    >
+      <BackOverrideProvider onBack={onBack}>
+        {resolved.eager ? (
+          resolved.node
+        ) : (
+          <Suspense
+            fallback={
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
+                ]}
+              >
+                <ActivityIndicator size="large" color="#BE9650" />
+              </View>
+            }
+          >
+            {resolved.node}
+          </Suspense>
+        )}
+      </BackOverrideProvider>
+    </Animated.View>
+  );
+}
+
+/**
+ * Overlay de categorías y detalles: desliza de derecha a izquierda SOBRE las
+ * tabs (debajo del tab bar, que queda siempre visible). Soporta una pila de
+ * pantallas (p.ej. categoría → detalle de sesión).
+ * El botón ← de cada pantalla cierra su capa en vez de navegar en el router.
+ */
+export function CategoryOverlay() {
+  const { stack, closeCategory } = useCategoryOverlay();
+  const { theme: sceneTheme } = useSceneTheme();
+  const [layers, setLayers] = useState<LayerState[]>([]);
+
+  // Pre-cargar las 3 pantallas de categoría de forma secuencial con pausa.
   // Así Metro compila un split-bundle a la vez sin saturar el heap.
   // Descanzo NO se precarga porque ya está en el bundle principal (eager).
   useEffect(() => {
@@ -50,78 +134,40 @@ export function CategoryOverlay() {
     })();
   }, []);
 
+  // Sincronizar la pila del contexto con las capas locales (para poder animar
+  // la salida antes de desmontar).
   useEffect(() => {
-    if (categoryRoute) {
-      setActiveRoute(categoryRoute);
-      setRendered(true);
-      slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: DURATION.DRAWER,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start();
-    } else if (rendered) {
-      slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: W,
-        duration: DURATION.DRAWER,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (finished) {
-          setRendered(false);
-          setActiveRoute(null);
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryRoute]);
+    setLayers((prev) => {
+      const liveKeys = new Set(stack.map((e) => e.key));
+      const next: LayerState[] = prev.map((l) =>
+        liveKeys.has(l.key) ? l : { ...l, closing: true },
+      );
+      for (const e of stack) {
+        if (!next.some((l) => l.key === e.key)) next.push({ ...e, closing: false });
+      }
+      return next;
+    });
+  }, [stack]);
 
-  if (!rendered || !activeRoute) return null;
+  const handleClosed = React.useCallback((key: number) => {
+    setLayers((prev) => prev.filter((l) => l.key !== key));
+  }, []);
 
-  // Resolver el componente según la ruta activa.
-  // Descanzo: eager import → sin Suspense necesario.
-  // Categorías: React.lazy → envueltas en Suspense.
-  const isDescanzo = activeRoute === "/(tabs)/descanzo";
-  let ResolvedScreen: React.ComponentType | null = null;
-  if (!isDescanzo) {
-    if (activeRoute === "/category/meditaciones-guiadas") ResolvedScreen = LazyMeditaciones;
-    else if (activeRoute === "/category/sonidos-ancestrales") ResolvedScreen = LazySonidos;
-    else if (activeRoute === "/category/musica-sonidos") ResolvedScreen = LazyMusica;
-    if (!ResolvedScreen) return null;
-  }
+  if (!layers.length) return null;
 
   const bg = sceneTheme.solid;
-  const Screen = ResolvedScreen;
 
   return (
-    <Animated.View
-      style={[
-        StyleSheet.absoluteFill,
-        { backgroundColor: bg, transform: [{ translateX: slideAnim }] },
-      ]}
-    >
-      <BackOverrideProvider onBack={closeCategory}>
-        {isDescanzo ? (
-          <DescanzoScreen />
-        ) : Screen ? (
-          <Suspense
-            fallback={
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
-                ]}
-              >
-                <ActivityIndicator size="large" color="#BE9650" />
-              </View>
-            }
-          >
-            <Screen />
-          </Suspense>
-        ) : null}
-      </BackOverrideProvider>
-    </Animated.View>
+    <>
+      {layers.map((layer) => (
+        <OverlayLayer
+          key={layer.key}
+          layer={layer}
+          bg={bg}
+          onBack={closeCategory}
+          onClosed={handleClosed}
+        />
+      ))}
+    </>
   );
 }

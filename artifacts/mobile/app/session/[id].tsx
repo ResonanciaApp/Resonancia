@@ -7,6 +7,8 @@ import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -127,8 +129,13 @@ function GlowPill({ onPress, pillStyle, bgColor }: { onPress: () => void; pillSt
 
 
 
-export default function SessionDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}) {
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const overlay = useCategoryOverlayOptional();
+  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
@@ -145,7 +152,7 @@ export default function SessionDetailScreen() {
     return (
       <View style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}>
         <Text style={{ color: colors.mutedForeground }}>Sesión no encontrada</Text>
-        <Pressable onPress={() => router.back()} style={{ marginTop: 16 }}>
+        <Pressable onPress={goBack} style={{ marginTop: 16 }}>
           <Text style={{ color: colors.primary }}>Volver</Text>
         </Pressable>
       </View>
@@ -427,7 +434,7 @@ export default function SessionDetailScreen() {
       {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
       <View style={[styles.navBar, { paddingTop: topPad, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
         <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.5)", marginTop: -2, transform: [{ translateY: 2 }] }}>
-          <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
+          <BackPill onPress={goBack} size={27} iconOffsetX={-2} />
         </GhostPill>
         <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
           <FontAwesome name="instagram" size={20} color="#FBFBFB" />
@@ -636,7 +643,7 @@ export default function SessionDetailScreen() {
                 {related.map((s) => (
                   <Pressable
                     key={s.id}
-                    onPress={() => router.push(`/session/${s.id}` as never)}
+                    onPress={() => openSession(s.id)}
                     style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
                   >
                     <Image
@@ -677,7 +684,7 @@ export default function SessionDetailScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.10)", marginTop: -2, transform: [{ translateY: -3 }] }}>
-          <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
+          <BackPill onPress={goBack} size={27} iconOffsetX={-2} />
         </GhostPill>
         <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
           <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>

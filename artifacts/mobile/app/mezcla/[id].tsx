@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -51,12 +52,15 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-export default function CommunityMixScreen() {
+export default function CommunityMixScreen({ id: idProp }: { id?: string } = {}) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
   const mixId = Number(id);
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
 
   const { isSignedIn } = useAuth();
   const { photoUri } = useUserProfile();
@@ -235,7 +239,7 @@ export default function CommunityMixScreen() {
         <Text style={[styles.notFound, { color: colors.foreground }]}>
           Esta mezcla ya no está disponible.
         </Text>
-        <Pressable onPress={() => router.back()} style={[styles.backPill, { borderColor: colors.border }]}>
+        <Pressable onPress={goBack} style={[styles.backPill, { borderColor: colors.border }]}>
           <Text style={{ color: colors.accent, fontWeight: "600" }}>Volver</Text>
         </Pressable>
       </LinearGradient>
@@ -263,7 +267,7 @@ export default function CommunityMixScreen() {
       >
         {/* Botón volver */}
         <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* Fila de sonidos — scroll horizontal, una sola fila */}

@@ -21,6 +21,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
@@ -369,6 +370,7 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
 
 // ── Pantalla ──────────────────────────────────────────────────────────────────
 export default function SonidosAncestalesScreen() {
+  const { openCategory } = useCategoryOverlay();
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
@@ -497,7 +499,7 @@ export default function SonidosAncestalesScreen() {
               title="Escuchadas recientemente"
               sessions={recentInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -511,7 +513,7 @@ export default function SonidosAncestalesScreen() {
               title="Favoritos"
               sessions={favoritesInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -532,7 +534,7 @@ export default function SonidosAncestalesScreen() {
                   title={tab.label}
                   sessions={preview}
                   isPremium={isPremium}
-                  onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+                  onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}

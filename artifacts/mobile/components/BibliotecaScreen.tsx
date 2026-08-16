@@ -3,6 +3,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
@@ -404,6 +405,7 @@ type LibResult =
   | { kind: "playlist"; data: UserPlaylist };
 
 function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: boolean; onClose: () => void; gradient: readonly string[]; accentColor: string }) {
+  const overlay = useCategoryOverlayOptional();
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -455,7 +457,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
 
   const handleSelect = (result: LibResult) => {
     onClose();
-    if (result.kind === "session") router.push(`/session/${result.data.id}` as never);
+    if (result.kind === "session") { if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never); }
     else if (result.kind === "playlist") router.push(`/playlist/${result.data.id}` as never);
     else {
       if (loadedPresetId !== result.data.id) loadMix(result.data);

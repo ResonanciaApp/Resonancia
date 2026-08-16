@@ -21,6 +21,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
 
@@ -157,12 +158,13 @@ function CategoryCard({
 }) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  const { openCategory } = useCategoryOverlay();
   const locked   = !!session.isPremium && !isPremium;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-    router.push(`/session/${session.id}` as never);
+    openCategory(`/session/${session.id}`);
   };
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const author = authorObj.name;
@@ -246,6 +248,7 @@ const ac = StyleSheet.create({
 });
 
 export default function MeditacionesGuiadasScreen() {
+  const { openCategory } = useCategoryOverlay();
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
@@ -366,7 +369,7 @@ export default function MeditacionesGuiadasScreen() {
               title="Escuchadas recientemente"
               sessions={recentInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -380,7 +383,7 @@ export default function MeditacionesGuiadasScreen() {
               title="Favoritos"
               sessions={favoritesInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -401,7 +404,7 @@ export default function MeditacionesGuiadasScreen() {
                   title={tab.label}
                   sessions={preview}
                   isPremium={isPremium}
-                  onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+                  onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}

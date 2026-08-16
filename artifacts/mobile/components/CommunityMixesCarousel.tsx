@@ -32,6 +32,7 @@ import { getMixImage } from "@/config/mix-images";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useAuth } from "@/context/AuthContext";
 
 
@@ -47,6 +48,7 @@ const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
 // ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
+  const { openCategory } = useCategoryOverlay();
   const colors = useColors();
   const { data } = useGetSharedMixes();
   const allMixes = data?.mixes ?? [];
@@ -127,8 +129,8 @@ export function CommunityMixesCarousel() {
   }, []);
 
   const handleOpenMix = useCallback((mix: SharedMix) => {
-    router.push({ pathname: "/mezcla/[id]", params: { id: String(mix.id) } } as never);
-  }, []);
+    openCategory(`/mezcla/${mix.id}`);
+  }, [openCategory]);
 
   // ── Render ────────────────────────────────────────────────────
   return (

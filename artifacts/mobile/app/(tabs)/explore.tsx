@@ -41,6 +41,7 @@ import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
@@ -130,6 +131,7 @@ function getSessionAuthor(s: Session): string {
 
 // ── Overlay de búsqueda ────────────────────────────────────────────────────
 function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { openCategory } = useCategoryOverlay();
   const { theme: srTheme } = useSceneTheme();
   const srBg =
     srTheme.id === "tibet"
@@ -236,7 +238,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                 : item.subtitle ?? null;
               return (
                 <Pressable
-                  onPress={() => { onClose(); router.push(`/session/${item.id}` as never); }}
+                  onPress={() => { onClose(); openCategory(`/session/${item.id}`); }}
                   style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
                 >
                   <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />
@@ -279,6 +281,7 @@ const GLOW_R = 34;
 const ROW_H = 72;
 
 function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; topPct: number; side: "left" | "right"; colorAnim: Animated.Value }) {
+  const { openCategory } = useCategoryOverlay();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const dimAnim   = useRef(new Animated.Value(0.75)).current;
 
@@ -299,7 +302,7 @@ function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; to
         Animated.timing(dimAnim,   { toValue: 1,    duration: 230, useNativeDriver: true }),
         Animated.timing(dimAnim,   { toValue: 0.75, duration: 230, useNativeDriver: true }),
       ]),
-    ]).start(() => router.push(`/chakra/${chakra.id}` as never));
+    ]).start(() => openCategory(`/chakra/${chakra.id}`));
   };
 
   const rowTop = Math.round(topPct * CHAKRA_PANEL_H) - ROW_H / 2;
@@ -373,6 +376,7 @@ function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; to
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ExploreScreen() {
+  const { openCategory } = useCategoryOverlay();
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
@@ -539,7 +543,7 @@ export default function ExploreScreen() {
     if (locked) { router.push("/membresia" as never); return; }
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-    router.push(`/session/${s.id}` as never);
+    openCategory(`/session/${s.id}`);
   }
 
   function renderCarousel(title: string, sessions: Session[], categoryRoute: string, contentPaddingTop = 0) {
@@ -666,7 +670,7 @@ export default function ExploreScreen() {
             {TEMAS.map((t) => (
               <Pressable
                 key={t.id}
-                onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                onPress={() => (t.route ? router.push(t.route as never) : openCategory(`/tema/${t.id}`))}
                 style={({ pressed }) => [
                   styles.temaCell,
                   { width: TEMA3_W, height: TEMA3_W, backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.75 : 1 },
