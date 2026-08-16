@@ -708,7 +708,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior (layout imitando la página de Música) ── */}
         <View style={{ zIndex: 10, backgroundColor: "transparent" }}>
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
-            <View style={{ height: topPad + 48, position: "relative" }}>
+            <View style={{ height: topPad + 45, position: "relative" }}>
               <View style={{ position: "absolute", left: 20, top: topPad - 17, zIndex: 10 }}>
                 <Pressable
                   onPress={closeMixer}
