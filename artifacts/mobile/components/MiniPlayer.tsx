@@ -15,7 +15,6 @@ import {
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -258,30 +257,14 @@ export function MiniPlayer() {
         ]}
       >
         {/* ── Píldora glass: réplica del tab bar horizontal ── */}
-        <View style={styles.mixPill}>
-          {/* 1. Blur base (igual al tab bar) */}
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          {/* 2. Tinte violeta base */}
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
-          {/* 3. Inner glow vertical */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          {/* Tinte Universo (igual al tab bar) */}
-          {activeSceneId === "tibet" && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
-          )}
-          {tibetTint}
+        <View style={[styles.mixPill, { backgroundColor: "#F9F9F9" }]}>
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
             {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <Feather name="chevron-up" size={27} color="rgba(255,255,255,0.95)" />
+              <Feather name="chevron-up" size={27} color="#0d0c26" />
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
@@ -505,7 +488,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "rgba(255,255,255,0.85)",
+    color: "rgba(13,12,38,0.8)",
     transform: [{ translateY: -2 }],
   },
   stackScroll: {
@@ -561,7 +544,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#204d90",
+    backgroundColor: "#0d0c26",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
@@ -575,7 +558,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
   },
   waveSession: { width: 38, height: 38 },
-  waveMix:    { width: 44, height: 44 },
+  waveMix:    { width: 44, height: 44, backgroundColor: "rgba(13,12,38,0.18)" },
 
   // ── Sesión ────────────────────────────────────────────────────
   row: {
