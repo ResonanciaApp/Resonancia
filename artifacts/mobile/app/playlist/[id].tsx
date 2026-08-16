@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -261,9 +262,7 @@ export default function PlaylistDetailScreen() {
 
         {/* Header — scrollea con el contenido (sin sticky) */}
         <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
-          <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-            <Feather name="arrow-left" size={22} color={TEXT} />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: -1 }] }} />
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
