@@ -4122,6 +4122,10 @@ export default function GeometrixScreen() {
 
         {/* Tab de categorías + botón salir */}
         <View style={styles.catRow}>
+          {/* Título centrado, a la altura del chevron (igual que Mezclador) */}
+          <View pointerEvents="none" style={styles.lienzoTitleWrap}>
+            <Text style={styles.lienzoTitle}>Lienzo</Text>
+          </View>
           <View style={styles.exitBtn}>
             <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
               <BackPill
@@ -6814,6 +6818,24 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 45,
     paddingBottom: 4,
+  },
+  lienzoTitleWrap: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 10,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateY: -36 }],
+    zIndex: 9,
+  },
+  lienzoTitle: {
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    color: "#FBFBFB",
   },
   exitBtn: {
     position: "absolute",
