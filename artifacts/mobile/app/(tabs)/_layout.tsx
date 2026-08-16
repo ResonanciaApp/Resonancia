@@ -253,15 +253,31 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   return (
     <>
-      {/* TEMPORAL: prueba de diagnóstico de blur en Android — quitar después */}
+      {/* TEMPORAL: pruebas de diagnóstico de blur en Android — quitar después */}
       {Platform.OS === "android" && (
-        <BlurView
-          intensity={90}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          pointerEvents="none"
-          style={{ position: "absolute", top: 120, left: 0, right: 0, height: 90, zIndex: 999 }}
-        />
+        <>
+          {/* A: con bordes redondeados */}
+          <BlurView
+            intensity={90}
+            tint="dark"
+            experimentalBlurMethod="dimezisBlurView"
+            pointerEvents="none"
+            style={{ position: "absolute", top: 120, left: 20, right: 20, height: 80, zIndex: 999, borderRadius: 999, overflow: "hidden" }}
+          />
+          {/* B: dentro de un contenedor animado con transform (como la barra) */}
+          <Animated.View
+            pointerEvents="none"
+            style={{ position: "absolute", top: 220, left: 20, right: 20, height: 80, zIndex: 999, transform: [{ translateY }] }}
+          >
+            <BlurView
+              intensity={90}
+              tint="dark"
+              experimentalBlurMethod="dimezisBlurView"
+              pointerEvents="none"
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
+        </>
       )}
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
