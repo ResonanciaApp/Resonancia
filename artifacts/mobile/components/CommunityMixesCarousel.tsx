@@ -246,6 +246,10 @@ export function MixRow({
 
       {/* Info */}
       <View style={styles.info}>
+        {/* Nº de sonidos — arriba del título, mismo estilo que el autor */}
+        <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
+          {mix.sounds.length} sonidos
+        </Text>
         {/* Título */}
         <View style={styles.nameRow}>
           <Text
