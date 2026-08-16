@@ -3,6 +3,8 @@ import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React, { useRef, useState } from "react";
 import {
   Animated,
@@ -49,8 +51,12 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
-export default function TagScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function TagScreen({ id: idProp }: { id?: string } = {}) {
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const overlay = useCategoryOverlayOptional();
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
@@ -124,7 +130,7 @@ export default function TagScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tag.label}
           </Text>
@@ -152,7 +158,7 @@ export default function TagScreen() {
             style={StyleSheet.absoluteFill}
           />
           {/* Back button floating on hero */}
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
         </View>
 
         {/* TITLE + DESCRIPTION */}
@@ -225,7 +231,8 @@ export default function TagScreen() {
                   showAuthorAvatar={false}
                   overridePress={() => {
                     if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                    router.push(`/session/${session.id}` as never);
+                    if (overlay) overlay.openCategory(`/session/${session.id}`);
+                    else router.push(`/session/${session.id}` as never);
                   }}
                 />
               ))}

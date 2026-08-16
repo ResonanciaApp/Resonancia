@@ -840,7 +840,7 @@ export default function ExploreScreen() {
                       {/* ── Otras temáticas ── */}
                       <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
                         <Pressable
-                          onPress={() => router.push("/todas-las-tematicas" as never)}
+                          onPress={() => openCategory("/todas-las-tematicas")}
                           style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
                         >
                           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
@@ -849,7 +849,7 @@ export default function ExploreScreen() {
                           {TAG_CARDS.filter((t) => !themeCarousels.some((tc) => tc.label === t.label)).slice(0, 8).map((tag) => (
                             <Pressable
                               key={tag.id}
-                              onPress={() => router.push(`/tag/${tag.id}` as never)}
+                              onPress={() => openCategory(`/tag/${tag.id}`)}
                               style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
                             >
                               <View style={styles.tagCard}>

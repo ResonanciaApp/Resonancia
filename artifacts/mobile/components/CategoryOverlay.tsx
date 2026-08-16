@@ -27,6 +27,8 @@ const LazyMezcla        = React.lazy(() => import("@/app/mezcla/[id]"));
 const LazyTema          = React.lazy(() => import("@/app/tema/[id]"));
 const LazyChakra        = React.lazy(() => import("@/app/chakra/[id]"));
 const LazyBusqueda      = React.lazy(() => import("@/app/busqueda"));
+const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
+const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
 
 const W = Dimensions.get("window").width;
 
@@ -38,13 +40,15 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
   const b = route.match(/^\/busqueda(?:\?tiempo=(.+))?$/);
   if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
-  const m = route.match(/^\/(session|mezcla|tema|chakra)\/(.+)$/);
+  if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };
+  const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
     if (m[1] === "session") return { node: <LazySessionDetail id={id} />, eager: false };
     if (m[1] === "mezcla") return { node: <LazyMezcla id={id} />, eager: false };
     if (m[1] === "tema") return { node: <LazyTema id={id} />, eager: false };
     if (m[1] === "chakra") return { node: <LazyChakra id={id} />, eager: false };
+    if (m[1] === "tag") return { node: <LazyTag id={id} />, eager: false };
   }
   return null;
 }

@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
 import {
   Dimensions,
@@ -26,6 +28,9 @@ const TAG_W = (width - H_PAD * 2 - GAP) / 2;
 const TAG_H = 140;
 
 export default function TodasLasTemáticasScreen() {
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const overlay = useCategoryOverlayOptional();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -37,7 +42,7 @@ export default function TodasLasTemáticasScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 12 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} />
         <View style={styles.headerText}>
           <Text style={[styles.title, { color: colors.foreground }]}>Todas las Temáticas</Text>
           <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
@@ -55,7 +60,7 @@ export default function TodasLasTemáticasScreen() {
           {TAG_CARDS.map((tag) => (
             <Pressable
               key={tag.id}
-              onPress={() => router.push(`/tag/${tag.id}` as never)}
+              onPress={() => (overlay ? overlay.openCategory(`/tag/${tag.id}`) : router.push(`/tag/${tag.id}` as never))}
               style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
             >
               <Image
