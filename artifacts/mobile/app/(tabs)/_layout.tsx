@@ -587,6 +587,8 @@ const styles = StyleSheet.create({
     height: PILL_H,
     borderRadius: 999,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.22,
