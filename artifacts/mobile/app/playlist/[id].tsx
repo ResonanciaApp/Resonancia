@@ -318,7 +318,7 @@ export default function PlaylistDetailScreen() {
             <Pressable
               onPress={() => setMenuVisible(true)}
               hitSlop={10}
-              style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
+              style={[styles.iconBtn, { backgroundColor: "#283673", borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
             >
               <Feather name="more-horizontal" size={22} color={TEXT} />
             </Pressable>
