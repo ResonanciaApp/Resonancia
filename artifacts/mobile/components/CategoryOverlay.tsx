@@ -26,6 +26,7 @@ const LazySessionDetail = React.lazy(() => import("@/app/session/[id]"));
 const LazyMezcla        = React.lazy(() => import("@/app/mezcla/[id]"));
 const LazyTema          = React.lazy(() => import("@/app/tema/[id]"));
 const LazyChakra        = React.lazy(() => import("@/app/chakra/[id]"));
+const LazyBusqueda      = React.lazy(() => import("@/app/busqueda"));
 
 const W = Dimensions.get("window").width;
 
@@ -35,6 +36,8 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
   if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
   if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
+  const b = route.match(/^\/busqueda(?:\?tiempo=(.+))?$/);
+  if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
   const m = route.match(/^\/(session|mezcla|tema|chakra)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);

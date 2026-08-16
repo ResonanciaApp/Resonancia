@@ -1411,7 +1411,7 @@ export default function HomeScreen2() {
             {DURATION_SLOTS.map((slot) => (
               <Pressable
                 key={slot.label}
-                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
                 style={({ pressed }) => [
                   styles.durPill,
                   { opacity: pressed ? 0.75 : 1 },

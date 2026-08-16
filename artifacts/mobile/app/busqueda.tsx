@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
 import {
   Dimensions,
@@ -173,10 +174,13 @@ function FilterSheet({
 }
 
 // ── Pantalla de búsqueda ─────────────────────────────────────────────────────
-export default function BusquedaScreen() {
+export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string } = {}) {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
-  const { tiempo } = useLocalSearchParams<{ tiempo?: string }>();
+  const { tiempo: tiempoParam } = useLocalSearchParams<{ tiempo?: string }>();
+  const tiempo = tiempoProp ?? tiempoParam;
+  const overlayBack = useBackOverride();
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { theme } = useSceneTheme();
@@ -236,7 +240,7 @@ export default function BusquedaScreen() {
 
       {/* Header */}
       <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={styles.pageTitle}>Búsqueda</Text>
         <View style={styles.backBtn} />
       </View>
