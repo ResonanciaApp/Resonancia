@@ -736,7 +736,7 @@ export default function MezcladorScreen() {
               <Text
                 style={[
                   styles.pageTitle,
-                  { fontSize: 27, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -4 }] },
+                  { fontSize: 27, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -1 }] },
                 ]}
               >
                 Mezclador
