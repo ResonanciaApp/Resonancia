@@ -501,7 +501,7 @@ export default function MeditacionesGuiadasScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Todas las Meditaciones</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Todas las Meditaciones</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
             {getSessionsForTab(null).map((s) => (

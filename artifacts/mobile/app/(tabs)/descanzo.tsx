@@ -753,7 +753,7 @@ export default function DescansoScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
               Sesiones de Dormir
             </Text>
           </View>
@@ -941,7 +941,7 @@ const styles = StyleSheet.create({
   },
   todosSectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",
