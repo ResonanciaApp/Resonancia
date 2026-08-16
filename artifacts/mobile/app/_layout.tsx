@@ -38,6 +38,7 @@ import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { VideosProvider } from "@/context/VideosContext";
 import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
 import { MixerPanelProvider } from "@/context/MixerPanelContext";
+import { GeometrixPanelProvider } from "@/context/GeometrixPanelContext";
 import { GreetingVisibleProvider } from "@/context/GreetingVisibleContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
@@ -353,6 +354,7 @@ function RootLayoutNav() {
   return (
     <SelectedSceneProvider>
       <MixerPanelProvider>
+        <GeometrixPanelProvider>
         <DrawerProvider>
           <ApiAuthBridge />
           <AuthGate />
@@ -367,6 +369,7 @@ function RootLayoutNav() {
           <EscenasSheet />
           <GlobalSceneModal />
         </DrawerProvider>
+        </GeometrixPanelProvider>
       </MixerPanelProvider>
     </SelectedSceneProvider>
   );

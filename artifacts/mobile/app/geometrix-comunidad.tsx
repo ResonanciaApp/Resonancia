@@ -52,6 +52,7 @@ import {
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
@@ -195,6 +196,7 @@ function GlyphPreview({
 }
 
 export default function GeometrixComunidadScreen() {
+  const { openGeometrix } = useGeometrixPanel();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -283,7 +285,7 @@ export default function GeometrixComunidadScreen() {
             onPress={() =>
               router.canGoBack()
                 ? router.back()
-                : router.replace("/(tabs)/geometrix" as never)
+                : openGeometrix()
             }
             hitSlop={10}
             style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}

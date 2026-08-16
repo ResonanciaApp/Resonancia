@@ -55,6 +55,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 // voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
@@ -355,6 +356,7 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
+  const { openGeometrix } = useGeometrixPanel();
   const { openCategory } = useCategoryOverlay();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
@@ -1293,7 +1295,7 @@ export default function HomeScreen2() {
                 onPress={() => {
                   if (c.id === "__descanzo__") openCategory("/(tabs)/descanzo");
                   else if (c.id === "__mezcla__") openMixer();
-                  else if (c.id === "__geometrix__") router.push("/(tabs)/geometrix" as never);
+                  else if (c.id === "__geometrix__") openGeometrix();
                   else openCategory(`/category/${c.id}`);
                 }}
                 style={({ pressed }) => [{

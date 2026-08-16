@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { bgGradientColors, gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { baseOf } from "@/data/geometries";
 import type { SceneAnimation } from "@workspace/api-client-react";
@@ -123,6 +124,7 @@ interface Props {
 export function SceneAnimationModal({ scene, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const { openGeometrix } = useGeometrixPanel();
 
   if (!scene) return null;
 
@@ -209,7 +211,7 @@ export function SceneAnimationModal({ scene, onClose }: Props) {
           ]}
           onPress={() => {
             onClose();
-            router.push("/(tabs)/geometrix" as never);
+            openGeometrix();
           }}
         >
           <Feather name="layers" size={16} color="#2D2D2D" style={{ marginRight: 8 }} />

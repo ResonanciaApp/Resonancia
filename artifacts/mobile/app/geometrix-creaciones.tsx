@@ -44,6 +44,7 @@ import { useShareGlyph, useCreateAdminSceneAnimation } from "@workspace/api-clie
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { useColors } from "@/hooks/useColors";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
   bgGradientColors,
@@ -196,6 +197,7 @@ function PreviewGlyph({
 }
 
 export default function GeometrixCreacionesScreen() {
+  const { openGeometrix } = useGeometrixPanel();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -473,7 +475,7 @@ export default function GeometrixCreacionesScreen() {
         <View style={styles.headerRow}>
           <Pressable
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace("/(tabs)/geometrix" as never)
+              router.canGoBack() ? router.back() : openGeometrix()
             }
             hitSlop={10}
             style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -503,12 +505,7 @@ export default function GeometrixCreacionesScreen() {
         <View style={[styles.grid, { gap: GAP }]}>
           {/* Card "Nueva composición" */}
           <Pressable
-            onPress={() =>
-              router.navigate({
-                pathname: "/(tabs)/geometrix",
-                params: { new: "1" },
-              } as never)
-            }
+            onPress={() => openGeometrix({ new: "1" })}
             style={({ pressed }) => [
               styles.newCard,
               {
@@ -916,11 +913,7 @@ export default function GeometrixCreacionesScreen() {
               onPress={() => {
                 const c = openingFor;
                 setOpeningFor(null);
-                if (c)
-                  router.navigate({
-                    pathname: "/(tabs)/geometrix",
-                    params: { load: c.id },
-                  });
+                if (c) openGeometrix({ load: c.id });
               }}
               accessibilityRole="button"
             >
@@ -934,11 +927,7 @@ export default function GeometrixCreacionesScreen() {
               onPress={() => {
                 const c = openingFor;
                 setOpeningFor(null);
-                if (c)
-                  router.navigate({
-                    pathname: "/(tabs)/geometrix",
-                    params: { load: c.id, play: "1" },
-                  });
+                if (c) openGeometrix({ load: c.id, play: "1" });
               }}
               accessibilityRole="button"
             >

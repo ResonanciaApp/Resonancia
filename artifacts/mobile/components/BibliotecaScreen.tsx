@@ -37,6 +37,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useMixer, type MixPreset, type MixFolder } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
@@ -850,10 +851,11 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   onGoMezclas: () => void;
   gradient: readonly string[];
 }) {
+  const { openGeometrix } = useGeometrixPanel();
   const ITEMS = [
     { icon: "list" as const,     title: "Crear una Playlist",        sub: "Crea una playlist con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
-    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
+    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); openGeometrix(); } },
     { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlists",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
@@ -1103,6 +1105,7 @@ export function BibliotecaScreen({
     mixFolders,
   } = useMixer();
   const { openMixer } = useMixerPanel();
+  const { openGeometrix } = useGeometrixPanel();
   const loadMix = useLoadMix();
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
   const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
@@ -1330,7 +1333,7 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => router.navigate("/(tabs)/geometrix" as never)}
+            onPress={() => openGeometrix()}
           >
             <View style={styles.addResonadorIcon}>
               <Feather name="hexagon" size={25} color={iconPlaceholderColor} />
@@ -1580,7 +1583,7 @@ export function BibliotecaScreen({
             <Feather name="hexagon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
-            <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
+            <Pressable style={styles.emptyBtn} onPress={() => openGeometrix()}>
               <GoldGradientFill />
               <Text style={styles.emptyBtnText}>Ir a Geometrix</Text>
             </Pressable>
@@ -1601,7 +1604,7 @@ export function BibliotecaScreen({
                   <Pressable
                     key={c.id}
                     style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                    onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
+                    onPress={() => openGeometrix({ load: c.id })}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                       <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
@@ -1640,12 +1643,7 @@ export function BibliotecaScreen({
               <GeometrixRow
                 key={c.id}
                 creation={c}
-                onPress={() =>
-                  router.navigate({
-                    pathname: "/(tabs)/geometrix",
-                    params: { load: c.id },
-                  } as never)
-                }
+                onPress={() => openGeometrix({ load: c.id })}
               />
             ))}
           </View>

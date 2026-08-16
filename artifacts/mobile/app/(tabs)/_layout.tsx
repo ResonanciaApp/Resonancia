@@ -6,7 +6,9 @@ import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
+import { useGeometrixPanel, GEOMETRIX_PANEL_W } from "@/context/GeometrixPanelContext";
 import MezcladorScreen from "./musica";
+import GeometrixScreen from "./geometrix";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
@@ -451,6 +453,16 @@ function TabLayoutInner() {
   const tabBarHeight       = PILL_H + Math.max(8, bottomPb - 10);
   const { hidden }         = useTabBarVisibility();
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
+  const { isGeometrixOpen, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
+
+  const geoTranslateX = geoPanelAnim.interpolate({
+    inputRange:  [0, 1],
+    outputRange: [GEOMETRIX_PANEL_W, 0],
+  });
+  const geoBackdropOpacity = geoPanelAnim.interpolate({
+    inputRange:  [0, 1],
+    outputRange: [0, 0.55],
+  });
   const { theme } = useSceneTheme();
   const { brightMode } = useBrightness();
   const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
@@ -537,6 +549,24 @@ function TabLayoutInner() {
       >
         <Pressable style={{ flex: 1 }} onPress={closeMixer} />
       </Animated.View>
+
+      {/* ── Geometrix Panel — se monta en la primera apertura, desliza derecha→izquierda ── */}
+      {hasOpenedGeometrix && (
+        <>
+          <Animated.View
+            pointerEvents={isGeometrixOpen ? "box-none" : "none"}
+            style={[styles.mixerPanel, { transform: [{ translateX: geoTranslateX }] }]}
+          >
+            <GeometrixScreen />
+          </Animated.View>
+          <Animated.View
+            pointerEvents={isGeometrixOpen ? "auto" : "none"}
+            style={[styles.mixerBackdrop, { opacity: geoBackdropOpacity }]}
+          >
+            <Pressable style={{ flex: 1 }} onPress={closeGeometrix} />
+          </Animated.View>
+        </>
+      )}
 
       {/* ── MezclaMiniPlayer (mezclas cargadas desde Biblioteca) ─────────── */}
       <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />

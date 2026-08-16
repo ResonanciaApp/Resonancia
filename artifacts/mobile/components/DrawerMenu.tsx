@@ -23,6 +23,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
@@ -94,6 +95,7 @@ export function DrawerMenu() {
   const { theme: activeTheme, activeSceneId, setActiveSceneWithFade } = useSceneTheme();
   const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
+  const { openGeometrix } = useGeometrixPanel();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -359,7 +361,7 @@ export function DrawerMenu() {
                   height={DRAWER_ANIM_CARD_H}
                   onPress={() => {
                     onClose();
-                    router.navigate("/(tabs)/geometrix" as never);
+                    openGeometrix();
                   }}
                 />
               </View>

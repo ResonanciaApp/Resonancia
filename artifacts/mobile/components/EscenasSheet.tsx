@@ -46,6 +46,7 @@ import { useBrightness } from "@/context/BrightnessContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { FadeToggleSection } from "@/components/FadeToggleSection";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import type { GeometrixCreation } from "@/data/geometrix-creations";
@@ -188,6 +189,7 @@ const userS = StyleSheet.create({
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { openGeometrix } = useGeometrixPanel();
   const { theme, activeSceneId, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
@@ -243,9 +245,9 @@ export function EscenasSheet() {
       useNativeDriver: true,
     }).start(() => {
       closeSheet();
-      router.navigate("/(tabs)/geometrix");
+      openGeometrix();
     });
-  }, [sheetEnterY, closeSheet, router]);
+  }, [sheetEnterY, closeSheet, openGeometrix]);
 
   useLayoutEffect(() => {
     if (isSheetOpen) {

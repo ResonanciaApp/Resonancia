@@ -22,6 +22,7 @@ import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { getGeometryLearn } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 
 // ── Glifo animado genérico (Flor de la Vida) ─────────────────────────────────
 function HeroGlyph({ id, color, pulseAnim }: { id: string; color: string; pulseAnim: Animated.Value }) {
@@ -57,6 +58,7 @@ function HeroGlyph({ id, color, pulseAnim }: { id: string; color: string; pulseA
 }
 
 export default function GeometrixAprendeDetalleScreen() {
+  const { openGeometrix } = useGeometrixPanel();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -166,7 +168,7 @@ export default function GeometrixAprendeDetalleScreen() {
             style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={() => {
               // Navega al editor de Geometrix con esta forma preseleccionada
-              router.push({ pathname: "/(tabs)/geometrix", params: { preloadId: geoId } });
+              openGeometrix({ preloadId: geoId });
             }}
           >
             <LinearGradient

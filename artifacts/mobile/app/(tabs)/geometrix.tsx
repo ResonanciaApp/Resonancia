@@ -102,6 +102,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { sendHeartbeat } from "@/lib/communityApi";
 import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
+import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
@@ -2137,6 +2138,14 @@ export default function GeometrixScreen() {
     }, [requestHide, showMenu])
   );
 
+  // Lo mismo cuando Geometrix se abre como panel deslizante (overlay):
+  const { isGeometrixOpen: panelOpen } = useGeometrixPanel();
+  useEffect(() => {
+    if (!panelOpen) return;
+    requestHide();
+    return () => { showMenu(); };
+  }, [panelOpen, requestHide, showMenu]);
+
   // Catálogo de geometrías con ajustes del servidor (orden, visibilidad, nombre).
   const { geometries: catalogGeometries } = useGeometrixCatalog();
 
@@ -2152,7 +2161,11 @@ export default function GeometrixScreen() {
   // abandona la pestaña. Las tabs quedan montadas en React Navigation, así que
   // sin esta guarda rot/pulse/fade/ripple/expansión siguen corriendo en el fondo
   // y generan lag en el resto de la app. Se activa en useFocusEffect.
-  const [tabFocused, setTabFocused] = useState(false);
+  const [routeFocused, setTabFocused] = useState(false);
+  // El panel deslizante (estilo Mezclador) también cuenta como "enfocado":
+  // cuando Geometrix vive como overlay, useFocusEffect no dispara.
+  const { isGeometrixOpen, closeGeometrix, consumePendingParams, pendingVersion } = useGeometrixPanel();
+  const tabFocused = routeFocused || isGeometrixOpen;
 
   // `active` guarda IDs de instancia (ver `baseOf`): el original de cada
   // geometría usa el id base pelado; los duplicados usan `${base}::${sufijo}`.
@@ -2672,6 +2685,32 @@ export default function GeometrixScreen() {
     }, [playIntro, stopIntro]),
   );
 
+  // Mismo ciclo entrar/salir cuando Geometrix se abre como panel deslizante
+  // (overlay estilo Mezclador): useFocusEffect no dispara en ese modo.
+  useEffect(() => {
+    if (!isGeometrixOpen) return;
+    if (activeRef.current.length === 0) {
+      playIntro();
+    }
+    return () => {
+      stopIntro();
+      setSettingsOpen(false);
+      setSettingsGeoId(null);
+      setGeneralOpen(false);
+      setImmersive(false);
+      setFullscreenEdit(false);
+      setSavedName(null);
+      setMenuGeoId(null);
+      setHiddenIds([]);
+      carouselTimers.current.forEach((t) => clearTimeout(t));
+      carouselTimers.current.clear();
+      const emptyActivating = new Set<string>();
+      activatingIdsRef.current = emptyActivating;
+      setActivatingIds(emptyActivating);
+      setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
+    };
+  }, [isGeometrixOpen, playIntro, stopIntro]);
+
 
   // Quita una geometría del set de "activándose" (estado + ref espejo).
   const dropActivating = useCallback((id: string) => {
@@ -3131,6 +3170,37 @@ export default function GeometrixScreen() {
       router.setParams({ new: "" });
     }
   }, [params.new, stopIntro, resetHistory]);
+
+  // Params que llegan vía el panel deslizante (openGeometrix({...})): mismos
+  // efectos que los params de ruta, pero consumidos del contexto.
+  useEffect(() => {
+    if (!isGeometrixOpen) return;
+    const p = consumePendingParams();
+    if (!p) return;
+    if (p.load) {
+      loadCreation(p.load, p.play === "1");
+    } else if (p.new === "1") {
+      setEditingCreation(null);
+      resetHistory();
+      stopIntro();
+      setActive([]);
+      setSettings({});
+      setHiddenIds([]);
+      setSelectedId(null);
+      setImmersive(false);
+      setSavedName(null);
+      setMaster({
+        opacity: 1,
+        motion: true,
+        glow: 0,
+        bgColor: null,
+        bgGradientId: null,
+        bgBrightness: 0.5,
+        bgPattern: null,
+      });
+    }
+    // p.preloadId: la ruta tampoco lo consumía; se acepta y se ignora igual.
+  }, [isGeometrixOpen, pendingVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [canvas, setCanvas] = useState({ w: 0, h: 0 });
   // Lienzo cuadrado y centrado: lado = lado menor del espacio disponible.
@@ -6214,7 +6284,7 @@ export default function GeometrixScreen() {
 
           {/* Botón volver */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => { if (isGeometrixOpen) closeGeometrix(); else router.back(); }}
             hitSlop={12}
             style={({ pressed }) => [styles.landingBackBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
