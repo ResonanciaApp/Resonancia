@@ -149,7 +149,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
-  const { openMixer } = useMixerPanel();
+  const { openMixer, isMixerOpen } = useMixerPanel();
+  const { isGeometrixOpen } = useGeometrixPanel();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5) - 1;
@@ -245,13 +246,21 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
-    Animated.timing(handleOpacity, {
-      toValue: hidden ? 1 : 0,
-      duration: DURATION.SHEET_CLOSE,
-      easing: easeOutCubic,
-      useNativeDriver: true,
-    }).start();
-  }, [hidden, barHeight, translateY, handleOpacity]);
+    // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
+    // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
+    const panelOpen = isMixerOpen || isGeometrixOpen;
+    if (panelOpen) {
+      handleOpacity.stopAnimation();
+      handleOpacity.setValue(0);
+    } else {
+      Animated.timing(handleOpacity, {
+        toValue: hidden ? 1 : 0,
+        duration: DURATION.SHEET_CLOSE,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [hidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
 
   return (
     <>
