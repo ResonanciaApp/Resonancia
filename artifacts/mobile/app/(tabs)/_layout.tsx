@@ -258,7 +258,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       >
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
-        <BlurView intensity={Platform.OS === "android" ? 80 : 40} tint="dark" experimentalBlurMethod="dimezisBlurView" style={StyleSheet.absoluteFill} />
+        {/* En Android el blur experimental (dimezis) no se dibuja si el radio/clip
+            vive solo en el padre: hay que darle el borderRadius al propio BlurView */}
+        <BlurView
+          intensity={Platform.OS === "android" ? 80 : 40}
+          tint="dark"
+          experimentalBlurMethod="dimezisBlurView"
+          style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
+        />
         {/* 2. Tinte violeta base */}
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
         {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
