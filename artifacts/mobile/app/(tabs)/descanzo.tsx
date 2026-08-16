@@ -502,7 +502,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={20}
+                  titleSize={18}
                 />
                 <View style={styles.sectionDivider} />
               </>
@@ -516,7 +516,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={20}
+                  titleSize={18}
                 />
                 <View style={styles.sectionDivider} />
               </>
@@ -530,7 +530,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={20}
+                  titleSize={18}
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
                 />
                 <View style={styles.sectionDivider} />
@@ -545,7 +545,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={20}
+                  titleSize={18}
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
                 />
                 {(binauralSounds.length > 0 || ambientalSounds.length > 0) && (
@@ -753,7 +753,7 @@ export default function DescansoScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
               Sesiones de Dormir
             </Text>
           </View>
@@ -844,7 +844,7 @@ const styles = StyleSheet.create({
   },
   sheetTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: "700",
     color: "#FBFBFB",
   },
@@ -941,7 +941,7 @@ const styles = StyleSheet.create({
   },
   todosSectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",

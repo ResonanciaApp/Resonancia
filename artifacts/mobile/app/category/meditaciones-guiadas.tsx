@@ -369,7 +369,7 @@ export default function MeditacionesGuiadasScreen() {
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={20}
+              titleSize={18}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -383,7 +383,7 @@ export default function MeditacionesGuiadasScreen() {
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={20}
+              titleSize={18}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -404,7 +404,7 @@ export default function MeditacionesGuiadasScreen() {
                   onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={20}
+                  titleSize={18}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
                 {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
@@ -501,7 +501,7 @@ export default function MeditacionesGuiadasScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Todas las Meditaciones</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Todas las Meditaciones</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
             {getSessionsForTab(null).map((s) => (
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
-  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
   featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
