@@ -1396,58 +1396,6 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        {/* ── DIAGNÓSTICO TEMPORAL (tablet) ── */}
-        {__DEV__ && (
-          <View style={{ marginBottom: 20 }}>
-            {/* Variante 1: ScrollView con un solo hijo envoltorio no colapsable — ROJOS */}
-            <ScrollView horizontal style={{ height: 34 }}>
-              <View collapsable={false} style={{ flexDirection: "row" }}>
-                {[0, 1, 2].map((i) => (
-                  <View
-                    key={i}
-                    style={{ width: 60, height: 30, backgroundColor: "red", marginLeft: 8 }}
-                    onLayout={i === 0 ? (e) => console.log(`[diag] v1 wrapper: ${JSON.stringify(e.nativeEvent.layout)}`) : undefined}
-                  />
-                ))}
-              </View>
-            </ScrollView>
-            {/* Variante 2: FlatList horizontal — NARANJAS */}
-            <FlatList
-              horizontal
-              style={{ height: 34, marginTop: 6 }}
-              data={[0, 1, 2]}
-              keyExtractor={(i) => String(i)}
-              renderItem={({ index }) => (
-                <View
-                  style={{ width: 60, height: 30, backgroundColor: "orange", marginLeft: 8 }}
-                  onLayout={index === 0 ? (e) => console.log(`[diag] v2 flatlist: ${JSON.stringify(e.nativeEvent.layout)}`) : undefined}
-                />
-              )}
-            />
-            {/* Variante 3: ScrollView sin clipping — AMARILLOS */}
-            <ScrollView
-              horizontal
-              style={{ height: 34, marginTop: 6 }}
-              removeClippedSubviews={false}
-              nestedScrollEnabled
-            >
-              {[0, 1, 2].map((i) => (
-                <View
-                  key={i}
-                  style={{ width: 60, height: 30, backgroundColor: "yellow", marginLeft: 8 }}
-                  onLayout={i === 0 ? (e) => console.log(`[diag] v3 noclip: ${JSON.stringify(e.nativeEvent.layout)}`) : undefined}
-                />
-              ))}
-            </ScrollView>
-            {/* Control: fila fija — VERDES */}
-            <View style={{ flexDirection: "row", marginTop: 6 }}>
-              {["green", "green", "green"].map((c, i) => (
-                <View key={i} style={{ width: 60, height: 30, backgroundColor: c, marginLeft: 8 }} />
-              ))}
-            </View>
-          </View>
-        )}
-
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
@@ -1456,21 +1404,11 @@ export default function HomeScreen2() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ height: 46 }}
             contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
-            onLayout={(e) => {
-              if (__DEV__) console.log(`[diag] durRow scrollview: ${JSON.stringify(e.nativeEvent.layout)}`);
-            }}
           >
             {DURATION_SLOTS.map((slot) => (
               <Pressable
                 key={slot.label}
-                collapsable={false}
-                onLayout={
-                  __DEV__ && slot.label === "5 min"
-                    ? (e) => console.log(`[diag] durPill "5 min": ${JSON.stringify(e.nativeEvent.layout)}`)
-                    : undefined
-                }
                 onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
                 style={({ pressed }) => [
                   styles.durPill,
