@@ -54,6 +54,7 @@ import {
   emitBgPresetChange,
 } from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
+import { BackPill } from "@/components/BackPill";
 import Svg, { Defs, LinearGradient as SvgLG, Stop, Rect } from "react-native-svg";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -710,13 +711,15 @@ export default function MezcladorScreen() {
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
               <View style={{ position: "absolute", left: 20, top: topPad - 17, zIndex: 10 }}>
-                <Pressable
-                  onPress={closeMixer}
-                  hitSlop={10}
-                  style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
-                >
-                  <MaterialCommunityIcons name="chevron-left" size={24} color="#FBFBFB" />
-                </Pressable>
+                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+                  <BackPill
+                    onPress={closeMixer}
+                    size={28}
+                    bgColor="rgba(255,255,255,0.10)"
+                    iconOffsetX={-1}
+                    style={{ transform: [{ translateX: -1 }] }}
+                  />
+                </View>
               </View>
               <View style={{ position: "absolute", right: 20, top: topPad - 17, zIndex: 10 }}>
                 <Pressable
