@@ -476,6 +476,7 @@ export default function MezcladorScreen() {
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
   const [menuScrolled, setMenuScrolled] = useState(false);
+  const [contentScrolled, setContentScrolled] = useState(false);
 
   const menuSlide = useRef(new Animated.Value(300)).current;
   const menuFade  = useRef(new Animated.Value(0)).current;
@@ -796,6 +797,10 @@ export default function MezcladorScreen() {
               </View>
             )}
 
+            {/* Divisor sticky: solo visible al hacer scroll */}
+            {contentScrolled && (
+              <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)", marginHorizontal: -20 }} />
+            )}
         </View>
 
         {/* ── Scroll principal ── */}
@@ -804,6 +809,8 @@ export default function MezcladorScreen() {
           style={[styles.scroll, { marginTop: -3 }]}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
+          onScroll={(e) => setContentScrolled(e.nativeEvent.contentOffset.y > 2)}
+          scrollEventThrottle={16}
         >
           <ContentSlide dir={contentDir}>
             {/* ── Chips de filtros activos ── */}
