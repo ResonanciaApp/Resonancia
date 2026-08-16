@@ -1408,7 +1408,7 @@ export function BibliotecaScreen({
       });
       const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
-        <View style={{ gap: 9, marginTop: 20 }}>
+        <View style={{ gap: 15, marginTop: 20 }}>
           {sortedFolders.map((folder) => (
             <FolderRow
               key={folder.id}
