@@ -63,7 +63,7 @@ export function VideoScreen({ showBack = false }: Props) {
   const sortBtnRef  = useRef<View>(null);
   const [sortMenuPos, setSortMenuPos]   = useState({ top: 0, right: 0 });
 
-  const topPad    = Platform.OS === "web" ? 16 : insets.top;
+  const topPad    = Platform.OS === "web" ? 16 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   const filtered = useMemo(() => {

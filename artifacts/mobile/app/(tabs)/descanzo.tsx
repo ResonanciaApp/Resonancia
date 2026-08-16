@@ -295,7 +295,7 @@ function PlayingDot() {
 export default function DescansoScreen() {
   const colors    = useColors();
   const insets    = useSafeAreaInsets();
-  const topPad    = Platform.OS === "web" ? 67 : insets.top;
+  const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;

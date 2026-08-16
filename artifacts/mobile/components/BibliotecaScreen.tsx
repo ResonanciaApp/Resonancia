@@ -1049,7 +1049,7 @@ export function BibliotecaScreen({
     }
   };
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [activeTab, setActiveTab] = useState<LibTab | null>(null);

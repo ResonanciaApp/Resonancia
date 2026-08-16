@@ -530,7 +530,7 @@ export default function ExploreScreen() {
       .slice(0, 10);
   }, [popularData, catalogVersion]);
 
-  const topPad    = Platform.OS === "web" ? 67 : insets.top;
+  const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
 

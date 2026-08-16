@@ -455,7 +455,7 @@ function TabLayoutInner() {
 
   const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
-  const topPad         = isWeb ? 67 : insets.top;
+  const topPad         = isWeb ? 67 : Math.max(insets.top, 40);
 
   const descansoPlayer = useDescansoPlayerContext();
   const selectedSound = descansoPlayer.selectedId

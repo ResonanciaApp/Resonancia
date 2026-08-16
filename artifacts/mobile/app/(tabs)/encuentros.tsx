@@ -152,7 +152,7 @@ export default function EncuentrosScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string, paddingTop: insets.top }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string, paddingTop: Math.max(insets.top, 40) }]}>
       <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
 
