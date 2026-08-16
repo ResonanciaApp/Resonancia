@@ -4122,15 +4122,17 @@ export default function GeometrixScreen() {
 
         {/* Tab de categorías + botón salir */}
         <View style={styles.catRow}>
-          <Pressable
-            onPress={() => setShowLanding(true)}
-            style={styles.exitBtn}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Salir del lienzo"
-          >
-            <Feather name="chevron-left" size={20} color="#F4F4F4" />
-          </Pressable>
+          <View style={styles.exitBtn}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+              <BackPill
+                onPress={() => setShowLanding(true)}
+                size={28}
+                bgColor="rgba(255,255,255,0.10)"
+                iconOffsetX={-1}
+                style={{ transform: [{ translateX: -1 }] }}
+              />
+            </View>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -6813,12 +6815,12 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   exitBtn: {
-    width: 32,
-    height: 36,
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    transform: [{ translateY: -30 }],
+    transform: [{ translateY: -36 }],
   },
   catScroll: {
     flex: 1,
