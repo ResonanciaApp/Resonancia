@@ -174,13 +174,6 @@ const PillTab = memo(function PillTab({
         <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[StyleSheet.absoluteFill, { borderRadius: 999 }]} />
       )}
 
-      {/* Ícono */}
-      <MaterialCommunityIcons
-        name={tab.icon as any}
-        size={13}
-        color={fgColor}
-      />
-
       {/* Texto */}
       <Text style={[styles.pillTabLabel, { color: fgColor }]}>
         {tab.label}
