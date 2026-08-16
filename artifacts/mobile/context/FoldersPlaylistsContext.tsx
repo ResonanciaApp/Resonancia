@@ -166,8 +166,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY, DEFAULT_PLAYLISTS_SEEDED_KEY]).then(
       ([fEntry, pEntry, ffEntry, pfEntry, seededEntry]) => {
         if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
-        if (pEntry[1]) {
-          setPlaylists(JSON.parse(pEntry[1]));
+        const storedPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
+        if (storedPlaylists.length > 0) {
+          setPlaylists(storedPlaylists);
         } else if (!seededEntry[1]) {
           // Usuario nuevo: sembrar las playlists por defecto una sola vez.
           setPlaylists(DEFAULT_PLAYLISTS);
