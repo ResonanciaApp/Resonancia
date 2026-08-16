@@ -1827,8 +1827,10 @@ export function BibliotecaScreen({
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
+        {/* En Android/tablet el inset real es chico (piso 40): dar más aire
+            entre el título y los tabs para igualar la altura del header de iPhone */}
         <View
-          style={{ marginTop: -52, marginBottom: -4 }}
+          style={{ marginTop: -52 + (Platform.OS !== "web" && insets.top < 40 ? 16 : 0), marginBottom: -4 }}
         >
           <AnimatedChipRow
             tabs={LIB_TABS}
