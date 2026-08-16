@@ -509,7 +509,14 @@ function TabLayoutInner() {
     <View style={{ flex: 1, backgroundColor: bg }}>
       <Tabs
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: bg } }}
-        tabBar={(props) => <CustomTabBar {...props} />}
+        tabBar={(props) => (
+          <>
+            {/* El overlay de categorías va DEBAJO de la barra: así el tab bar
+                queda visible sobre Dormir/Música/Meditaciones/Sesiones */}
+            <CategoryOverlay />
+            <CustomTabBar {...props} />
+          </>
+        )}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
         <Tabs.Screen name="inicio5"        options={{ href: null }} />
@@ -604,8 +611,6 @@ function TabLayoutInner() {
         topOffset={topPad}
       />
 
-      {/* ── Overlay de categorías (meditaciones / sesiones / música / dormir) ── */}
-      <CategoryOverlay />
     </View>
   );
 }
