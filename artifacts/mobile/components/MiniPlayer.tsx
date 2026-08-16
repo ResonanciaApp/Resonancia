@@ -268,8 +268,10 @@ export function MiniPlayer() {
             pointerEvents="none"
             style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
           >
-            {/* 2. Tinte violeta base */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(29,11,77,0.10)" : "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+            {/* 2. Tinte violeta base (sin tinte en Android para no tapar el blur) */}
+            {Platform.OS !== "android" && (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+            )}
             {/* 3. Inner glow vertical */}
             <LinearGradient
               colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
@@ -277,9 +279,9 @@ export function MiniPlayer() {
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Tinte Universo (igual al tab bar) */}
-            {activeSceneId === "tibet" && (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(20,33,77,0.28)" : "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
+            {/* Tinte Universo (igual al tab bar; sin tinte en Android) */}
+            {activeSceneId === "tibet" && Platform.OS !== "android" && (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
             )}
           </BlurView>
           {tibetTint}

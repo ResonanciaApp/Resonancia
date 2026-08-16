@@ -122,4 +122,5 @@
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
+- [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
 - [Dev client http = assets corruptos](dev-client-http-assets-corrupt.md) — URL del túnel sin https → fuentes/imágenes llegan como HTML y quedan cacheadas; tofu solo en ese dispositivo; fix = borrar caché + reconectar con https

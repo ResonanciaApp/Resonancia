@@ -253,32 +253,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   return (
     <>
-      {/* TEMPORAL: pruebas de diagnóstico de blur en Android — quitar después */}
-      {Platform.OS === "android" && (
-        <>
-          {/* A: con bordes redondeados */}
-          <BlurView
-            intensity={90}
-            tint="dark"
-            experimentalBlurMethod="dimezisBlurView"
-            pointerEvents="none"
-            style={{ position: "absolute", top: 120, left: 20, right: 20, height: 80, zIndex: 999, borderRadius: 999, overflow: "hidden" }}
-          />
-          {/* B: dentro de un contenedor animado con transform (como la barra) */}
-          <Animated.View
-            pointerEvents="none"
-            style={{ position: "absolute", top: 220, left: 20, right: 20, height: 80, zIndex: 999, transform: [{ translateY }] }}
-          >
-            <BlurView
-              intensity={90}
-              tint="dark"
-              experimentalBlurMethod="dimezisBlurView"
-              pointerEvents="none"
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        </>
-      )}
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
@@ -293,8 +267,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           pointerEvents="none"
           style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
         >
-          {/* 2. Tinte violeta base */}
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(29,11,77,0.10)" : "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+          {/* 2. Tinte violeta base (sin tinte en Android para no tapar el blur) */}
+          {Platform.OS !== "android" && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+          )}
           {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
           <LinearGradient
             colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
@@ -319,9 +295,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           />
           {/* Acento del tab activo (crossfade) */}
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
-          {/* Tinte Universo */}
-          {activeSceneId === "tibet" && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(20,33,77,0.28)" : "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
+          {/* Tinte Universo (sin tinte en Android para no tapar el blur) */}
+          {activeSceneId === "tibet" && Platform.OS !== "android" && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
           )}
         </BlurView>
 
