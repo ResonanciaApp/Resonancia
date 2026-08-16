@@ -41,7 +41,7 @@ import {
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
-import { CategoryOverlayProvider } from "@/context/CategoryOverlayContext";
+import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 
 const ACTIVE_COLOR   = "#F9F9F9";
@@ -522,7 +522,14 @@ function TabLayoutInner() {
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
   // cuando entra un panel derecha→izquierda (estilo Insight Timer).
-  const bgParallaxX = panelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56] });
+  const { parallaxAnim: overlayParallax } = useCategoryOverlay();
+  const bgParallaxX = Animated.add(
+    Animated.add(
+      panelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
+      geoPanelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
+    ),
+    overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: bg }}>

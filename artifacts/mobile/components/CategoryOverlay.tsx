@@ -57,7 +57,9 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   return null;
 }
 
-type LayerState = OverlayEntry & { closing: boolean };
+type LayerState = OverlayEntry & { closing: boolean; depth: number };
+
+const PARALLAX_SHIFT = -56;
 
 /** Una capa del overlay: desliza al entrar y al salir. */
 function OverlayLayer({
@@ -65,11 +67,13 @@ function OverlayLayer({
   bg,
   onBack,
   onClosed,
+  parallaxAnim,
 }: {
   layer: LayerState;
   bg: string;
   onBack: () => void;
   onClosed: (key: number) => void;
+  parallaxAnim: Animated.Value;
 }) {
   const slideAnim = useRef(new Animated.Value(W)).current;
 
@@ -93,7 +97,20 @@ function OverlayLayer({
     <Animated.View
       style={[
         StyleSheet.absoluteFill,
-        { backgroundColor: bg, transform: [{ translateX: slideAnim }] },
+        {
+          backgroundColor: bg,
+          transform: [{
+            translateX: Animated.add(
+              slideAnim,
+              // Parallax: esta capa se corre cuando entra otra encima.
+              parallaxAnim.interpolate({
+                inputRange: [layer.depth + 1, layer.depth + 2],
+                outputRange: [0, PARALLAX_SHIFT],
+                extrapolate: "clamp",
+              }),
+            ),
+          }],
+        },
       ]}
     >
       <BackOverrideProvider onBack={onBack}>
@@ -127,7 +144,7 @@ function OverlayLayer({
  * El botón ← de cada pantalla cierra su capa en vez de navegar en el router.
  */
 export function CategoryOverlay() {
-  const { stack, closeCategory } = useCategoryOverlay();
+  const { stack, closeCategory, parallaxAnim } = useCategoryOverlay();
   const { theme: sceneTheme } = useSceneTheme();
   const [layers, setLayers] = useState<LayerState[]>([]);
 
@@ -153,8 +170,9 @@ export function CategoryOverlay() {
       const next: LayerState[] = prev.map((l) =>
         liveKeys.has(l.key) ? l : { ...l, closing: true },
       );
-      for (const e of stack) {
-        if (!next.some((l) => l.key === e.key)) next.push({ ...e, closing: false });
+      for (let i = 0; i < stack.length; i++) {
+        const e = stack[i];
+        if (!next.some((l) => l.key === e.key)) next.push({ ...e, closing: false, depth: i });
       }
       return next;
     });
@@ -177,6 +195,7 @@ export function CategoryOverlay() {
           bg={bg}
           onBack={closeCategory}
           onClosed={handleClosed}
+          parallaxAnim={parallaxAnim}
         />
       ))}
     </>

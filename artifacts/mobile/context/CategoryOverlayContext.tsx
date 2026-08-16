@@ -1,4 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Animated } from "react-native";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 
 export type OverlayEntry = { key: number; route: string };
 
@@ -11,6 +13,8 @@ type CategoryOverlayCtx = {
   openCategory: (route: string) => void;
   /** Cierra el overlay del tope de la pila. */
   closeCategory: () => void;
+  /** Profundidad animada de la pila (0, 1, 2…) para el parallax del fondo. */
+  parallaxAnim: Animated.Value;
 };
 
 const Ctx = createContext<CategoryOverlayCtx | null>(null);
@@ -27,6 +31,18 @@ export function openCategoryGlobal(route: string): boolean {
 export function CategoryOverlayProvider({ children }: { children: React.ReactNode }) {
   const [stack, setStack] = useState<OverlayEntry[]>([]);
   const nextKey = useRef(1);
+  const parallaxAnim = useRef(new Animated.Value(0)).current;
+
+  // Sigue la profundidad de la pila con la misma curva que el slide de las capas.
+  useEffect(() => {
+    parallaxAnim.stopAnimation();
+    Animated.timing(parallaxAnim, {
+      toValue: stack.length,
+      duration: DURATION.DRAWER,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start();
+  }, [stack.length, parallaxAnim]);
 
   const openCategory = useCallback((route: string) => {
     setStack((prev) => {
@@ -48,8 +64,8 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
   const categoryRoute = stack.length ? stack[stack.length - 1].route : null;
 
   const value = React.useMemo(
-    () => ({ stack, categoryRoute, openCategory, closeCategory }),
-    [stack, categoryRoute, openCategory, closeCategory],
+    () => ({ stack, categoryRoute, openCategory, closeCategory, parallaxAnim }),
+    [stack, categoryRoute, openCategory, closeCategory, parallaxAnim],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

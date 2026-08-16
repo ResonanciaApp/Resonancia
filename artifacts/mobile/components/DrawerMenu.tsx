@@ -88,7 +88,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -188,7 +188,7 @@ export function DrawerMenu() {
 
       <Animated.View
         {...panResponder.panHandlers}
-        style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: Animated.add(translateX, dragX) }], opacity: drawerOpacity }]}
+        style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: Animated.add(Animated.add(translateX, dragX), overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56] })) }], opacity: drawerOpacity }]}
       >
         <LinearGradient
           style={styles.drawerInner}

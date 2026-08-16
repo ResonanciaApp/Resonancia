@@ -1,5 +1,5 @@
 import { Dimensions, Animated } from "react-native";
-import React, { createContext, useCallback, useContext, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 export const DRAWER_W = Math.min(Dimensions.get("window").width * 0.78, 300);
@@ -25,6 +25,7 @@ type DrawerCtx = {
   overlayRoute: string | null;
   openOverlay: (route: string) => void;
   closeOverlay: () => void;
+  overlayParallax: Animated.Value;
 };
 
 const Ctx = createContext<DrawerCtx | null>(null);
@@ -74,12 +75,23 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeLib = useCallback(() => setLibOpen(false), []);
 
   const [overlayRoute, setOverlayRoute] = useState<string | null>(null);
+  // Parallax: el drawer (y lo que hay detrás) se corre un poco al abrir un overlay.
+  const overlayParallax = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    overlayParallax.stopAnimation();
+    Animated.timing(overlayParallax, {
+      toValue: overlayRoute ? 1 : 0,
+      duration: 320,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start();
+  }, [overlayRoute, overlayParallax]);
   const openOverlay = useCallback((route: string) => setOverlayRoute(route), []);
   const closeOverlay = useCallback(() => setOverlayRoute(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
