@@ -6812,7 +6812,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // Alineado con el margen donde parten las tiles de geometrías (gridContent)
     paddingLeft: 10,
-    paddingTop: 10,
+    paddingTop: 25,
     paddingBottom: 4,
   },
   exitBtn: {
