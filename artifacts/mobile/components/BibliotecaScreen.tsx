@@ -1161,21 +1161,20 @@ export function BibliotecaScreen({
         return arr; // "recientes" = orden natural
       };
 
-      const sortedFoldersGeneral = [...userFolders].sort((a, b) => {
+      // Comparador según el modo de orden elegido (Recientes / Agregado / Alfabético),
+      // manteniendo los fijados (pinned) siempre primero.
+      const cmpGeneral = (a: { pinned?: boolean; name?: string; createdAt: string }, b: { pinned?: boolean; name?: string; createdAt: string }) => {
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (sort === "alfabetico") return (a.name ?? "").localeCompare(b.name ?? "", "es");
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-      const sortedFavFoldersGeneral = [...favFolders].sort((a, b) => {
-        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
+      };
+
+      const sortedFoldersGeneral = [...userFolders].sort(cmpGeneral);
+      const sortedFavFoldersGeneral = [...favFolders].sort(cmpGeneral);
       const plIdsInFoldersGeneral = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
       const sortedPlaylists = userPlaylists
         .filter((pl) => !plIdsInFoldersGeneral.has(pl.id))
-        .sort((a, b) => {
-          if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        });
+        .sort(cmpGeneral);
       const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0 || sortedFavFoldersGeneral.length > 0;
       const mixIdsInFoldersGeneral = new Set([
         ...mixFolders.flatMap((f) => f.presetIds),
@@ -1183,10 +1182,10 @@ export function BibliotecaScreen({
       ]);
       const sortedMixesGeneral = presets
         .filter((p) => !mixIdsInFoldersGeneral.has(p.id))
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        .sort(cmpGeneral);
 
       return (
-        <View style={{ gap: 15, marginTop: 10 }}>
+        <View style={{ gap: 15, marginTop: 20 }}>
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
