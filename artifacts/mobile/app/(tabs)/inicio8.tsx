@@ -1147,42 +1147,6 @@ export default function HomeScreen2() {
                 noInternalFade
               />
 
-              {/* Controles: Frase · Shuffle · Grid ── esquina superior izquierda */}
-              <View
-                style={{ position: "absolute", top: 22, left: 22, flexDirection: "row", gap: 8 }}
-                pointerEvents="box-none"
-              >
-                <Pressable
-                  onPress={() => setPhraseVisible((v) => !v)}
-                  hitSlop={8}
-                  style={({ pressed }) => [
-                    ctrlBtnStyles.base,
-                    phraseVisible && ctrlBtnStyles.active,
-                    { opacity: pressed ? 0.72 : 1 },
-                  ]}
-                >
-                  <Feather
-                    name="message-circle"
-                    size={15}
-                    color={phraseVisible ? "#F0DFB0" : "rgba(255,255,255,0.78)"}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={handleShuffle}
-                  hitSlop={8}
-                  style={({ pressed }) => [ctrlBtnStyles.base, { opacity: pressed ? 0.72 : 1 }]}
-                >
-                  <Feather name="shuffle" size={15} color="rgba(255,255,255,0.78)" />
-                </Pressable>
-                <Pressable
-                  onPress={() => setAnimSheetOpen(true)}
-                  hitSlop={8}
-                  style={({ pressed }) => [ctrlBtnStyles.base, { opacity: pressed ? 0.72 : 1 }]}
-                >
-                  <Feather name="grid" size={15} color="rgba(255,255,255,0.78)" />
-                </Pressable>
-              </View>
-
               {/* Frase overlay — centrada sobre la animación */}
               {phraseVisible && (
                 <View
