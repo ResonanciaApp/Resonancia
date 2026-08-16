@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 export type OverlayEntry = { key: number; route: string };
 
@@ -15,6 +15,15 @@ type CategoryOverlayCtx = {
 
 const Ctx = createContext<CategoryOverlayCtx | null>(null);
 
+// Opener global registrado por el provider, para llamadores fuera del árbol
+// (p.ej. DrawerMenu, que vive en el root layout).
+let globalOpen: ((route: string) => void) | null = null;
+export function openCategoryGlobal(route: string): boolean {
+  if (!globalOpen) return false;
+  globalOpen(route);
+  return true;
+}
+
 export function CategoryOverlayProvider({ children }: { children: React.ReactNode }) {
   const [stack, setStack] = useState<OverlayEntry[]>([]);
   const nextKey = useRef(1);
@@ -30,6 +39,11 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
   const closeCategory = useCallback(() => {
     setStack((prev) => (prev.length ? prev.slice(0, -1) : prev));
   }, []);
+
+  useEffect(() => {
+    globalOpen = openCategory;
+    return () => { if (globalOpen === openCategory) globalOpen = null; };
+  }, [openCategory]);
 
   const categoryRoute = stack.length ? stack[stack.length - 1].route : null;
 

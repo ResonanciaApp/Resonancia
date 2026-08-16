@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
+import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -47,7 +48,7 @@ type MenuItem = {
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
   { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
-  { label: "Mis Favoritos", icon: "heart",     route: "__overlay:/favoritos-todos" },
+  { label: "Mis Favoritos", icon: "heart",     route: "__cat:/favoritos-todos" },
   { label: "Diario",        icon: "book-open", route: "__overlay:/diario" },
   { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
   { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
@@ -163,6 +164,14 @@ export function DrawerMenu() {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLib(); return; }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
+    if (route.startsWith("__cat:")) {
+      const target = route.replace("__cat:", "");
+      onClose();
+      if (openCategoryGlobal(target)) return;
+      markInstantNav();
+      router.push(target as never);
+      return;
+    }
     markInstantNav();
     onClose();
     router.push(route as never);

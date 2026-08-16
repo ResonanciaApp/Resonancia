@@ -30,6 +30,7 @@ const LazyBusqueda      = React.lazy(() => import("@/app/busqueda"));
 const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
 const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
 const LazyVideos        = React.lazy(() => import("@/app/videos"));
+const LazyFavoritos     = React.lazy(() => import("@/app/favoritos-todos"));
 
 const W = Dimensions.get("window").width;
 
@@ -43,6 +44,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
   if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };
   if (route === "/videos") return { node: <LazyVideos />, eager: false };
+  if (route === "/favoritos-todos") return { node: <LazyFavoritos />, eager: false };
   const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
