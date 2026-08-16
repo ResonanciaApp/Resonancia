@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginHorizontal: 20,
-    marginTop: -14,
+    marginTop: -4,
     marginBottom: 8,
   },
   pill: {
