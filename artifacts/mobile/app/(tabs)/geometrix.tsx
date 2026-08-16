@@ -57,6 +57,7 @@ import Animated, {
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BackPill } from "@/components/BackPill";
 
 import Svg, {
   Circle,
@@ -6290,14 +6291,18 @@ export default function GeometrixScreen() {
             style={StyleSheet.absoluteFill}
           />
 
-          {/* Botón volver */}
-          <Pressable
-            onPress={() => { if (isGeometrixOpen) closeGeometrix(); else router.back(); }}
-            hitSlop={12}
-            style={({ pressed }) => [styles.landingBackBtn, { opacity: pressed ? 0.6 : 1 }]}
-          >
-            <Feather name="arrow-left" size={22} color="rgba(255,255,255,0.75)" />
-          </Pressable>
+          {/* Botón volver (mismo chevron/fondo que Música) */}
+          <View style={[styles.landingBackBtn, { top: insets.top + 3 }]}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+              <BackPill
+                onPress={() => { if (isGeometrixOpen) closeGeometrix(); else router.back(); }}
+                size={28}
+                bgColor="rgba(255,255,255,0.10)"
+                iconOffsetX={-1}
+                style={{ transform: [{ translateX: -1 }] }}
+              />
+            </View>
+          </View>
 
           {/* Logo + título */}
           <View style={styles.landingHero}>
@@ -6388,10 +6393,8 @@ const styles = StyleSheet.create({
   },
   landingBackBtn: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 54 : 28,
     left: 20,
     zIndex: 10,
-    padding: 6,
   },
   landingHero: {
     alignItems: "center",
