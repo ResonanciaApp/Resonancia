@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Animated, Dimensions, StyleSheet, View } from "react-native";
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
@@ -106,7 +106,18 @@ export function CategoryOverlay() {
         {isDescanzo ? (
           <DescanzoScreen />
         ) : Screen ? (
-          <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} />}>
+          <Suspense
+            fallback={
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
+                ]}
+              >
+                <ActivityIndicator size="large" color="#BE9650" />
+              </View>
+            }
+          >
             <Screen />
           </Suspense>
         ) : null}
