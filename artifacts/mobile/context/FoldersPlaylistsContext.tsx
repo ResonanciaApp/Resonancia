@@ -107,6 +107,39 @@ interface FoldersPlaylistsCtx {
 
 const FOLDERS_KEY = "@resonance_folders";
 const PLAYLISTS_KEY = "@resonance_playlists";
+const DEFAULT_PLAYLISTS_SEEDED_KEY = "@resonance_default_playlists_seeded";
+
+// ─── Playlists por defecto (usuarios nuevos) ─────────────────────────────────
+// Se crean una sola vez en la primera apertura; si el usuario las borra, no vuelven.
+const DEFAULT_PLAYLISTS: Playlist[] = [
+  {
+    id: "default_para_empezar",
+    name: "Para Empezar",
+    description: "Una selección para tus primeros pasos en Resonancia.",
+    sessionIds: ["1", "25", "26", "20"],
+    coverType: "geometrix",
+    coverGeometryId: "flor-vida",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "default_calma_profunda",
+    name: "Calma Profunda",
+    description: "Sonidos y sesiones para soltar el día y relajarte.",
+    sessionIds: ["41", "44", "21", "22", "27"],
+    coverType: "geometrix",
+    coverGeometryId: "semilla-vida",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "default_sueno_reparador",
+    name: "Sueño Reparador",
+    description: "Acompañamiento para una noche de descanso profundo.",
+    sessionIds: ["8", "46", "47", "50", "24"],
+    coverType: "geometrix",
+    coverGeometryId: "metatron",
+    createdAt: new Date().toISOString(),
+  },
+];
 const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 
@@ -130,10 +163,17 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   // Load from storage
   useEffect(() => {
-    AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY]).then(
-      ([fEntry, pEntry, ffEntry, pfEntry]) => {
+    AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY, DEFAULT_PLAYLISTS_SEEDED_KEY]).then(
+      ([fEntry, pEntry, ffEntry, pfEntry, seededEntry]) => {
         if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
-        if (pEntry[1]) setPlaylists(JSON.parse(pEntry[1]));
+        if (pEntry[1]) {
+          setPlaylists(JSON.parse(pEntry[1]));
+        } else if (!seededEntry[1]) {
+          // Usuario nuevo: sembrar las playlists por defecto una sola vez.
+          setPlaylists(DEFAULT_PLAYLISTS);
+          AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(DEFAULT_PLAYLISTS));
+        }
+        if (!seededEntry[1]) AsyncStorage.setItem(DEFAULT_PLAYLISTS_SEEDED_KEY, "1");
         if (ffEntry[1]) setFavFolders(JSON.parse(ffEntry[1]));
         if (pfEntry[1]) setPinnedFavoriteIds(JSON.parse(pfEntry[1]));
       }
