@@ -47,12 +47,25 @@ export function GeometrixPanelProvider({ children }: { children: React.ReactNode
     [panelAnim],
   );
 
+  const hasMountedRef = useRef(false);
+
   const openGeometrix = useCallback((params?: GeometrixOpenParams) => {
     pendingRef.current = params ?? null;
     setPendingVersion((v) => v + 1);
     setHasOpenedGeometrix(true);
     setIsGeometrixOpen(true);
-    animate(true);
+    if (hasMountedRef.current) {
+      animate(true);
+    } else {
+      // Primera apertura: el screen (pesado) recién se está montando y bloquea
+      // el hilo JS; si la animación arranca ya, se saltan frames y el panel
+      // "aparece" de golpe. Diferir el inicio hasta después del montaje para
+      // que la entrada dure lo mismo que las siguientes.
+      hasMountedRef.current = true;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => animate(true)),
+      );
+    }
   }, [animate]);
 
   const closeGeometrix = useCallback(() => {
