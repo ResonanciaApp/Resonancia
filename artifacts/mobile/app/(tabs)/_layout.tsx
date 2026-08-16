@@ -648,7 +648,15 @@ function TabLayoutInner() {
 /** Captura las props del tabBar de <Tabs> para renderizar la barra fuera del
  *  wrapper con parallax (evita el fantasma del blur en Android). */
 function TabBarPropsBridge({ props, onProps }: { props: any; onProps: (p: any) => void }) {
-  useEffect(() => { onProps(props); });
+  const lastStateRef = useRef<unknown>(null);
+  useEffect(() => {
+    // Solo re-publicar cuando el estado de navegación cambia de verdad:
+    // publicar en cada render causa un loop infinito de setState.
+    if (lastStateRef.current !== props.state) {
+      lastStateRef.current = props.state;
+      onProps(props);
+    }
+  });
   return null;
 }
 
