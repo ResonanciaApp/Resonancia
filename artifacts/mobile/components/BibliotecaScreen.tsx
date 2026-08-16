@@ -1186,7 +1186,7 @@ export function BibliotecaScreen({
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       return (
-        <View style={{ gap: 15, marginTop: 20 }}>
+        <View style={{ gap: 15, marginTop: 10 }}>
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
