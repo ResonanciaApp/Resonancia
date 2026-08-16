@@ -98,7 +98,9 @@ const SUB_TAB_ICONS: Partial<Record<SoundCategoryId, string>> = {
   ruidos:            "volume-vibrate",
 };
 
-type MainTabId = "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces" | "bpm";
+type MainTabId =
+  | "popular" | "naturaleza" | "ancestrales" | "sintetizadores" | "voces" | "bpm"
+  | "ambientales" | "ciudad" | "astrales" | "relatos" | "meditaciones";
 
 const MAIN_TABS: {
   id: MainTabId;
@@ -113,6 +115,12 @@ const MAIN_TABS: {
   { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
   { id: "voces",          label: "Voces",      icon: "microphone",        color: "#9060A0", categories: ["mantras"] },
   { id: "bpm",            label: "BPM",        icon: "metronome",         color: "#A04040", categories: ["bpm"] },
+  // ── Nuevas pantallas (sin audios todavía) ──
+  { id: "ambientales",    label: "Ambientales",  icon: "waveform",        color: "#4A6B8A", categories: [] },
+  { id: "ciudad",         label: "Ciudad",       icon: "city-variant",    color: "#6B6B7A", categories: [] },
+  { id: "astrales",       label: "Astrales",     icon: "star-four-points",color: "#5A4A8A", categories: [] },
+  { id: "relatos",        label: "Relatos",      icon: "book-open-variant",color: "#8A6A4A", categories: [] },
+  { id: "meditaciones",   label: "Meditaciones", icon: "meditation",      color: "#4A8A7A", categories: [] },
 ];
 
 const COUNTS_KEY = "@resonance_sound_play_counts_m3";
@@ -134,6 +142,11 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, ...string[]]> = {
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
   voces:          ["#220830", "#220830", "#220830"],
   bpm:            ["#0A2020", "#0A2020", "#0A2020"],
+  ambientales:    ["#0B1622", "#0B1622", "#0B1622"],
+  ciudad:         ["#16161C", "#16161C", "#16161C"],
+  astrales:       ["#150F26", "#150F26", "#150F26"],
+  relatos:        ["#1E150C", "#1E150C", "#1E150C"],
+  meditaciones:   ["#0C1E1A", "#0C1E1A", "#0C1E1A"],
 };
 
 
@@ -145,6 +158,11 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, ...string[]]> = {
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
   voces:          ["#220830", "#220830", "#220830"],
   bpm:            ["#0A2020", "#0A2020", "#0A2020"],
+  ambientales:    ["#0B1622", "#0B1622", "#0B1622"],
+  ciudad:         ["#16161C", "#16161C", "#16161C"],
+  astrales:       ["#150F26", "#150F26", "#150F26"],
+  relatos:        ["#1E150C", "#1E150C", "#1E150C"],
+  meditaciones:   ["#0C1E1A", "#0C1E1A", "#0C1E1A"],
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
@@ -154,6 +172,11 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   sintetizadores: ["#2C62AB", "#2C62AB"],
   voces:          ["#FF6B6B", "#C9184A"],
   bpm:            ["#1A5454", "#0D3535"],
+  ambientales:    ["#2E4A66", "#2E4A66"],
+  ciudad:         ["#4A4A58", "#4A4A58"],
+  astrales:       ["#453A70", "#453A70"],
+  relatos:        ["#6B5236", "#6B5236"],
+  meditaciones:   ["#2E6658", "#2E6658"],
 };
 
 // ── PillTab — estilo Biblioteca (texto + subrayado animado) ──────────────────
