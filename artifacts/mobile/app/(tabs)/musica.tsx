@@ -773,7 +773,7 @@ export default function MezcladorScreen() {
                   MAIN_TABS.slice(0, Math.ceil(MAIN_TABS.length / 2)),
                   MAIN_TABS.slice(Math.ceil(MAIN_TABS.length / 2)),
                 ].map((row, i) => (
-                  <View key={i} style={{ flexDirection: "row", gap: 8 }}>
+                  <View key={i} style={{ flexDirection: "row", gap: 11 }}>
                     {row.map((tab) => (
                       <View key={tab.id}>
                         <PillTab
@@ -1011,7 +1011,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    paddingHorizontal: 13,
+    paddingHorizontal: 11.5,
     height: 29,
     borderRadius: 999,
     overflow: "hidden",
