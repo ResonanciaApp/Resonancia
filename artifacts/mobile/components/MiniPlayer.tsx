@@ -27,9 +27,9 @@ import { useColors } from "@/hooks/useColors";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const MAX_PLAYER_WIDTH    = 438;
-const STACK_SIZE          = 40;
+const STACK_SIZE          = 37;
 const STACK_SHIFT         = 13;   // offset apilado (cerrado)
-const CAROUSEL_THUMB_GAP  = 6;    // separación fija entre thumbnails en el carrusel
+const CAROUSEL_THUMB_GAP  = 8;    // separación fija entre thumbnails en el carrusel
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 const MAX_STACK_LAYOUT_W  = STACK_SIZE + 6 * STACK_SHIFT; // 6 thumbs completos, 7mo se corta
 
