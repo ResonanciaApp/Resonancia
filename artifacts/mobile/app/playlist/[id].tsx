@@ -786,7 +786,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "rgba(0,0,0,0.15)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.6)",
   },
   addBtnText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
 
