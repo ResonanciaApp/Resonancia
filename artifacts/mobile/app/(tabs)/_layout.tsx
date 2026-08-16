@@ -520,8 +520,13 @@ function TabLayoutInner() {
   }, [activePlaylist?.id, currentSession?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
+  // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
+  // cuando entra un panel derecha→izquierda (estilo Insight Timer).
+  const bgParallaxX = panelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56] });
+
   return (
     <View style={{ flex: 1, backgroundColor: bg }}>
+      <Animated.View style={{ flex: 1, transform: [{ translateX: bgParallaxX }] }}>
       <Tabs
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: bg } }}
         tabBar={(props) => (
@@ -554,6 +559,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir", href: null }} />
         <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>
+      </Animated.View>
 
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
       <Animated.View
