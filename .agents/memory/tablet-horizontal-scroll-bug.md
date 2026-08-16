@@ -1,13 +1,9 @@
 ---
-name: Tablet Android — hijos de ScrollView horizontal nunca montan
-description: En la tablet Samsung del usuario, TODO contenido de ScrollView/FlatList horizontal es invisible/no-tappable; vertical y filas fijas funcionan; iPhone OK
+name: Null-stub de specs_DEPRECATED rompía listas horizontales en Android
+description: RESUELTO — el resolutor de Metro que anula specs_DEPRECATED/components dejaba invisible/no-tappable todo ScrollView/FlatList horizontal SOLO en Android
 ---
-Síntoma (15-ago-2026): en la tablet Samsung barata (800x1285, scale 1.5), los hijos de CUALQUIER scrollable horizontal (ScrollView, FlatList) jamás disparan onLayout ni se ven — incluso Views de color puro sin estilos. Filas fijas (flexDirection row) idénticas sí se ven. Afecta pills de duración, carruseles, chips de Biblioteca, VideoCards. iPhone con el mismo JS funciona.
+Regla: el interceptor de metro.config.js que redirige `src/private/specs_DEPRECATED/components/` a un null-stub necesita EXCEPCIONES para todo componente nativo que se use de verdad. Ya excluidos: RCTModalHostView, Switch/AndroidSwitch, **AndroidHorizontalScrollContentView** (contenedor de TODO scrollable horizontal en Android), AndroidSwipeRefreshLayout, ActivityIndicatorView.
 
-Descartado: datos vacíos, MaskedView, RTL, collapsable={false}, wrapper único no colapsable, removeClippedSubviews={false}, FlatList vs ScrollView. No es JS: es el componente nativo HorizontalScrollView de Fabric en esa APK/dispositivo.
+**Why:** (15-ago-2026) en la tablet Samsung todos los hijos de scrollables horizontales jamás montaban (sin onLayout, invisibles, no-tappables) — pills, carruseles, chips. iPhone OK porque iOS usa otro componente (no está en esa carpeta). Se desperdició un rebuild EAS completo + prebuild --clean creyendo que era la APK: era JS puro (Metro). Los archivos reales en node_modules estaban intactos; solo el resolutor los anulaba.
 
-Estado: deps verificadas sanas (expo 54.0.36, RN 0.81.5, expo-asset 12.x pineado); la APK del 15-ago (2b8e33fc) ya era de árbol limpio y aun así falla. Último intento: `expo prebuild -p android --clean` (android/ podía venir del período híbrido SDK57) + rebuild EAS (build 9d23f6a2). Si la APK nueva sigue mal → es bug de Fabric específico del dispositivo; opciones restantes: bump RN a 0.81.6, o workaround global reemplazando scrollables horizontales (reanimated 4 impide desactivar New Arch).
-
-Diagnósticos temporales pendientes de limpiar cuando se resuelva: filas de cuadritos de colores + logs [diag] en inicio8.tsx, BibliotecaScreen.tsx, _layout.tsx.
-
-**How to apply:** si reaparecen "secciones invisibles" solo en Android barato, sospechar esto primero; probar con Views de color dentro/fuera de un scrollable horizontal.
+**How to apply:** si un componente nativo "renderiza nada en silencio" solo en una plataforma, revisar PRIMERO las excepciones del null-stub en metro.config.js antes de sospechar de la APK/dispositivo. Para probar: Views de color puro dentro vs fuera del contenedor sospechoso.
