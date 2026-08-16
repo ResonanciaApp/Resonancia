@@ -6817,7 +6817,7 @@ const styles = StyleSheet.create({
   },
   exitBtn: {
     position: "absolute",
-    left: 6,
+    left: 9,
     top: 10,
     width: 40,
     height: 40,
