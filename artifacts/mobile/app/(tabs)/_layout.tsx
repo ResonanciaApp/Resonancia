@@ -600,7 +600,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.22,
     shadowRadius: 24,
-    elevation: 20,
+    // elevation rompe el blur dimezis en Android (capa separada → no captura el fondo)
+    ...(Platform.OS === "android" ? {} : { elevation: 20 }),
   },
   row: {
     flex: 1,

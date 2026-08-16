@@ -261,7 +261,7 @@ export function MiniPlayer() {
         {/* ── Píldora glass: réplica del tab bar horizontal ── */}
         <View style={styles.mixPill}>
           {/* 1. Blur base (igual al tab bar) */}
-          <BlurView intensity={Platform.OS === "android" ? 80 : 40} tint="dark" experimentalBlurMethod="dimezisBlurView" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={Platform.OS === "android" ? 80 : 40} tint="dark" experimentalBlurMethod="dimezisBlurView" style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]} />
           {/* 2. Tinte violeta base */}
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
           {/* 3. Inner glow vertical */}
@@ -413,7 +413,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.16,
     shadowRadius: 6,
-    elevation: 6,
+    // elevation rompe el blur dimezis en Android (capa separada → no captura el fondo)
+    ...(Platform.OS === "android" ? {} : { elevation: 6 }),
   },
 
   // ── Píldora "Abrir" ───────────────────────────────────────────
