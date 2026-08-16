@@ -467,6 +467,8 @@ const styles = StyleSheet.create({
     height: 68,
     borderRadius: 999,
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
 
   // ── Card (modo sesión, sin cambios) ───────────────────────────
