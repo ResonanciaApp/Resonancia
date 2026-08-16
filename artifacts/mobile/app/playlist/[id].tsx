@@ -305,7 +305,7 @@ export default function PlaylistDetailScreen() {
               <View style={styles.coverEmpty}>
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
-                <View style={[styles.coverPlusBadge, { backgroundColor: plusBadgeBg }]}>
+                <View style={[styles.coverPlusBadge, { backgroundColor: "#283673" }]}>
                   <Feather name="plus" size={14} color="#FFFFFF" />
                 </View>
               </View>
