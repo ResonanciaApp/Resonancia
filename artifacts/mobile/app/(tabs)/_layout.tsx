@@ -249,12 +249,18 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
     // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
     const panelOpen = isMixerOpen || isGeometrixOpen;
-    if (panelOpen) {
+    if (panelOpen || !hidden) {
+      // Ocultar de inmediato (sin fade) para que no quede visible durante la
+      // transición de cierre de los paneles.
       handleOpacity.stopAnimation();
       handleOpacity.setValue(0);
     } else {
+      // Mostrar con un pequeño delay: al cerrar Mezclador/Geometrix hay unos
+      // milisegundos donde hidden sigue true antes de que el panel llame a
+      // showMenu(); el delay evita que la pestañita alcance a aparecer.
       Animated.timing(handleOpacity, {
-        toValue: hidden ? 1 : 0,
+        toValue: 1,
+        delay: 350,
         duration: DURATION.SHEET_CLOSE,
         easing: easeOutCubic,
         useNativeDriver: true,
