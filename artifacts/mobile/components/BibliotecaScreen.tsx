@@ -1330,6 +1330,15 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => router.navigate("/(tabs)/geometrix" as never)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="hexagon" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una geometría</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
