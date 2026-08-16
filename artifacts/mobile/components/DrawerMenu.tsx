@@ -113,10 +113,10 @@ export function DrawerMenu() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const translateX = drawerAnim.interpolate({
+  const translateX = React.useMemo(() => drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [-DRAWER_PUSH, 0],
-  });
+  }), [drawerAnim]);
 
   const drawerOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
@@ -124,6 +124,17 @@ export function DrawerMenu() {
   });
 
   const dragX = React.useRef(new Animated.Value(0)).current;
+
+  // Nodo de transform ESTABLE entre renders: recrearlo en cada render
+  // re-ata el nodo nativo y produce un glitch de un frame al abrir overlays.
+  const drawerTranslate = React.useMemo(
+    () =>
+      Animated.add(
+        Animated.add(translateX, dragX),
+        overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56] }),
+      ),
+    [translateX, dragX, overlayParallax],
+  );
 
   const panResponder = React.useRef(
     PanResponder.create({
@@ -188,7 +199,7 @@ export function DrawerMenu() {
 
       <Animated.View
         {...panResponder.panHandlers}
-        style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: Animated.add(Animated.add(translateX, dragX), overlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, -56] })) }], opacity: drawerOpacity }]}
+        style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: drawerTranslate }], opacity: drawerOpacity }]}
       >
         <LinearGradient
           style={styles.drawerInner}
