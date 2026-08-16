@@ -741,7 +741,7 @@ export default function MezcladorScreen() {
               {/* Título centrado, a la altura del chevron */}
               <View
                 pointerEvents="none"
-                style={{ position: "absolute", left: 0, right: 0, top: topPad - 2, height: 40, alignItems: "center", justifyContent: "center" }}
+                style={{ position: "absolute", left: 0, right: 0, top: topPad + 3, height: 40, alignItems: "center", justifyContent: "center" }}
               >
                 <Text style={[styles.pageTitle, { fontSize: 19, letterSpacing: 0.3 }]}>Mezclador</Text>
               </View>
