@@ -743,7 +743,7 @@ export default function MezcladorScreen() {
                 pointerEvents="none"
                 style={{ position: "absolute", left: 0, right: 0, top: topPad - 2, height: 40, alignItems: "center", justifyContent: "center" }}
               >
-                <Text style={[styles.pageTitle, { fontSize: 22, letterSpacing: 0.3 }]}>Mezclador</Text>
+                <Text style={[styles.pageTitle, { fontSize: 19, letterSpacing: 0.3 }]}>Mezclador</Text>
               </View>
               <View style={{ position: "absolute", right: 20, top: topPad - 2, zIndex: 10 }}>
                 <Pressable
