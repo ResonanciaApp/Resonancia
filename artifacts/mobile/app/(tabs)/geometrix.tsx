@@ -3980,10 +3980,10 @@ export default function GeometrixScreen() {
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  // Un solo degradado para toda la pantalla. Default = tema activo (igual que Inicio).
+  // Un solo degradado para toda la pantalla. Default = degradado fijo tipo Tibet (pedido del usuario).
   const canvasBgColors: [string, string, ...string[]] = selectedBg
     ? (scaleColors(selectedBg, bgFactor) as [string, string, ...string[]])
-    : (sceneTheme.gradient as [string, string, ...string[]]);
+    : (["#2D1C52", "#261F57", "#1F255A", "#1F2A62"] as [string, string, ...string[]]);
   // locations=undefined → LinearGradient distribuye stops de forma uniforme (válido para 2 ó 4 stops).
   const canvasBgLocations = undefined;
 
