@@ -327,12 +327,6 @@ export function MiniPlayer() {
 
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
             <View style={[styles.waveWrap, { position: "absolute", right: 25, zIndex: 2, transform: [{ translateY: -2 }] }]}>
-              {[wave1, wave2].map((w, idx) => (
-                <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
-                  opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
-                  transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 1.7] }) }],
-                }]} />
-              ))}
               <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
                 <Svg width={22} height={22} viewBox="0 0 48 48">
                   {mixPlaying ? (
@@ -562,6 +556,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#204d90",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
     shadowOffset: { width: -4, height: 0 },
     shadowOpacity: 0.35,
