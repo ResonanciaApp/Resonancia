@@ -11,3 +11,5 @@ Blur `experimentalBlurMethod="dimezisBlurView"` (expo-blur) en el tab bar de mob
 
 **Why:** el usuario ve la barra sólida en la tablet aunque el blur funciona fuera de ella; los tintes encima la hacían ver "sólida" incluso sin blur.
 **How to apply:** si se retoma el glass en Android, probar sacar el BlurView del ancestro con transform (o animar sin transform) antes que tocar intensidades/tintes; no reintroducir tintes Android sin resolver la captura.
+
+**Update (ago 2026):** un ancestro con transform (p.ej. wrapper de parallax alrededor de <Tabs>) hace que el blur dimezis dibuje una copia fantasma de la propia barra desplazada. Fix estructural: la barra (y CategoryOverlay) se renderizan FUERA del wrapper con parallax, vía TabBarPropsBridge que captura las props del tabBar en estado del layout. La barra nunca debe tener ancestros transformados.

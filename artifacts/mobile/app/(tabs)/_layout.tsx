@@ -151,8 +151,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pb     = isWeb ? 8 : insets.bottom;
   const { openMixer, isMixerOpen } = useMixerPanel();
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
-  const { parallaxAnim: barOverlayParallax } = useCategoryOverlay();
-  const tabBarCounterX = barOverlayParallax.interpolate({ inputRange: [0, 1], outputRange: [0, 56], extrapolate: "clamp" });
   const { isGeometrixOpen } = useGeometrixPanel();
 
   // 8 px de separación con el borde inferior de la pantalla
@@ -274,7 +272,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }, { translateX: tabBarCounterX }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
@@ -470,6 +468,7 @@ function TabLayoutInner() {
   const bottomPb           = isWeb ? 8 : insets.bottom;
   const tabBarHeight       = PILL_H + Math.max(8, bottomPb - 10);
   const { hidden }         = useTabBarVisibility();
+  const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
   const { isGeometrixOpen, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
 
@@ -539,14 +538,7 @@ function TabLayoutInner() {
       <Animated.View style={{ flex: 1, transform: [{ translateX: bgParallaxX }] }}>
       <Tabs
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: bg } }}
-        tabBar={(props) => (
-          <>
-            {/* El overlay de categorías va DEBAJO de la barra: así el tab bar
-                queda visible sobre Dormir/Música/Meditaciones/Sesiones */}
-            <CategoryOverlay />
-            <CustomTabBar {...props} />
-          </>
-        )}
+        tabBar={(props) => <TabBarPropsBridge props={props} onProps={setBarProps} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
         <Tabs.Screen name="inicio5"        options={{ href: null }} />
@@ -570,6 +562,13 @@ function TabLayoutInner() {
         <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>
       </Animated.View>
+
+      {/* El overlay de categorías va DEBAJO de la barra: así el tab bar queda
+          visible sobre Música/Meditaciones/etc. Ambos viven FUERA del wrapper
+          con parallax: la barra no debe tener ancestros con transform (el blur
+          de Android duplica la barra) y las capas ya no necesitan compensar. */}
+      <CategoryOverlay />
+      {barProps && <CustomTabBar {...barProps} />}
 
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
       <Animated.View
@@ -644,6 +643,13 @@ function TabLayoutInner() {
 
     </View>
   );
+}
+
+/** Captura las props del tabBar de <Tabs> para renderizar la barra fuera del
+ *  wrapper con parallax (evita el fantasma del blur en Android). */
+function TabBarPropsBridge({ props, onProps }: { props: any; onProps: (p: any) => void }) {
+  useEffect(() => { onProps(props); });
+  return null;
 }
 
 export default function TabLayout() {
