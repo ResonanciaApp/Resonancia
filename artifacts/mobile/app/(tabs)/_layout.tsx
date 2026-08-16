@@ -271,41 +271,43 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* En Android el blur experimental (dimezis) no se dibuja si el radio/clip
             vive solo en el padre: hay que darle el borderRadius al propio BlurView */}
         <BlurView
-          intensity={Platform.OS === "android" ? 80 : 40}
+          intensity={Platform.OS === "android" ? 100 : 40}
           tint="dark"
           experimentalBlurMethod="dimezisBlurView"
+          pointerEvents="none"
           style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
-        />
-        {/* 2. Tinte violeta base */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
-        {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
-        <LinearGradient
-          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
-        <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
-          locations={[0, 0.18, 0.5, 1]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-          pointerEvents="none"
-        />
-        {/* 6. Acento curva inferior-izquierda — bajo Inicio, toma la curva, casi imperceptible */}
-        <LinearGradient
-          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
-          pointerEvents="none"
-        />
-        {/* Acento del tab activo (crossfade) */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
-        {/* Tinte Universo */}
-        {activeSceneId === "tibet" && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
-        )}
+        >
+          {/* 2. Tinte violeta base */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(29,11,77,0.10)" : "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
+          {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
+            locations={[0, 0.18, 0.5, 1]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+            style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+            pointerEvents="none"
+          />
+          {/* 6. Acento curva inferior-izquierda — bajo Inicio, toma la curva, casi imperceptible */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+            style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
+            pointerEvents="none"
+          />
+          {/* Acento del tab activo (crossfade) */}
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
+          {/* Tinte Universo */}
+          {activeSceneId === "tibet" && (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === "android" ? "rgba(20,33,77,0.28)" : "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
+          )}
+        </BlurView>
 
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
@@ -603,7 +605,9 @@ const styles = StyleSheet.create({
     right: PILL_MARGIN_H,
     height: PILL_H,
     borderRadius: 999,
-    overflow: "hidden",
+    // En Android el overflow:hidden del contenedor rompe la captura del blur dimezis;
+    // el recorte lo hace el propio BlurView
+    overflow: Platform.OS === "android" ? "visible" : "hidden",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
