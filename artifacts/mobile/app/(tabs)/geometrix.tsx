@@ -6810,7 +6810,8 @@ const styles = StyleSheet.create({
   catRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 0,
+    // Alineado con el margen donde parten las tiles de geometrías (gridContent)
+    paddingLeft: 10,
     paddingTop: 10,
     paddingBottom: 4,
   },
