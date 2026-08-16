@@ -322,7 +322,7 @@ export function MiniPlayer() {
                 { opacity: openProgress.interpolate({ inputRange: [0, 0.35, 1], outputRange: [1, 0, 0] }) },
               ]}
             >
-              {n}
+              {n} {n === 1 ? "sonido" : "sonidos"}
             </Animated.Text>
 
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
