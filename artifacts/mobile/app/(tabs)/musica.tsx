@@ -727,7 +727,7 @@ export default function MezcladorScreen() {
         <View style={{ zIndex: 10, backgroundColor: "transparent" }}>
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
-              <View style={{ position: "absolute", left: 20, top: topPad - 2, zIndex: 10 }}>
+              <View style={{ position: "absolute", left: 20, top: topPad + 3, zIndex: 10 }}>
                 <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
                   <BackPill
                     onPress={closeMixer}
@@ -745,7 +745,7 @@ export default function MezcladorScreen() {
               >
                 <Text style={[styles.pageTitle, { fontSize: 19, letterSpacing: 0.3 }]}>Mezclador</Text>
               </View>
-              <View style={{ position: "absolute", right: 20, top: topPad - 2, zIndex: 10 }}>
+              <View style={{ position: "absolute", right: 20, top: topPad + 3, zIndex: 10 }}>
                 <Pressable
                   onPress={() => openMenu()}
                   style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}
