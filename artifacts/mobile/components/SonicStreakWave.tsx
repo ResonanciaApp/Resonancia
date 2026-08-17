@@ -132,7 +132,7 @@ export function SonicStreakWave() {
     <View style={styles.card}>
       {/* ── Contador a la izquierda + texto a la derecha ── */}
       <View style={{ flexDirection: "row", alignItems: "center", width: COMP_W, paddingVertical: 18, marginTop: -45, gap: 16 }}>
-        <MaterialCommunityIcons name="spa" size={34} color="#FFFFFF" />
+        <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
         <View style={{ alignItems: "center" }}>
           <Text style={styles.ringCount}>{weekCount}</Text>
           <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
