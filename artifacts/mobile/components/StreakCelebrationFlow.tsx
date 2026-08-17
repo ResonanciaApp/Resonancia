@@ -23,6 +23,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
 import { getArtistById } from "@/data/artists";
 import { computeWeekFlags } from "@/utils/stats";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
 
 // ── Flujo de celebración al completar el día de racha ───────────────────────
 // Pantalla 1: "Día N: ¡Excelente!" + contador circular + semana + Continuar.
@@ -53,6 +55,13 @@ const SLOTS: { id: ReminderSlot; label: string }[] = [
 export function StreakCelebrationFlow() {
   const { flow, closeFlow } = useStreakCelebration();
   const { statEvents, isFavorite, toggleFavorite } = usePlayer();
+  const { activeSceneId } = useSceneTheme();
+  // Con el tema Tíbet activo, el fondo del flujo usa el mismo degradado del
+  // Inicio de ese tema; con los demás temas mantiene el azul marino base.
+  const bgColors: [string, string, ...string[]] =
+    activeSceneId === "tibet"
+      ? ([...SCENE_THEMES.tibet.gradient] as [string, string, ...string[]])
+      : [NAVY_TOP, NAVY_BOTTOM];
   const insets = useSafeAreaInsets();
   const topPad = Math.max(insets.top, 40);
 
@@ -122,7 +131,7 @@ export function StreakCelebrationFlow() {
   return (
     <Modal visible transparent animationType="fade" onRequestClose={closeFlow}>
       <LinearGradient
-        colors={[NAVY_TOP, NAVY_BOTTOM]}
+        colors={bgColors}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
