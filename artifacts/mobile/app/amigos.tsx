@@ -28,6 +28,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, Stack } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useDrawer } from "@/context/DrawerContext";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -134,6 +135,9 @@ function GuestPrompt() {
 }
 
 function SignedInAmigos() {
+  // Amigos vive como overlay sobre el drawer: al navegar a otra ruta hay que
+  // cerrar el overlay o la pantalla nueva queda montada DEBAJO y no se ve.
+  const { closeOverlay } = useDrawer();
   const colors = useColors();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
@@ -244,7 +248,7 @@ function SignedInAmigos() {
             <SearchResultRow
               key={u.id}
               user={u}
-              onPress={() => router.push(`/usuario/${u.id}` as never)}
+              onPress={() => { closeOverlay(); router.push(`/usuario/${u.id}` as never); }}
               onAdd={() => sendReq.mutate({ data: { addresseeId: u.id } })}
             />
           ))}
@@ -291,8 +295,8 @@ function SignedInAmigos() {
             <FriendRow
               key={f.id}
               friend={f}
-              onOpen={() => router.push(`/usuario/${f.id}` as never)}
-              onMessage={() => router.push(`/chat/${f.id}` as never)}
+              onOpen={() => { closeOverlay(); router.push(`/usuario/${f.id}` as never); }}
+              onMessage={() => { closeOverlay(); router.push(`/chat/${f.id}` as never); }}
               onRemove={() => onRemove(f)}
             />
           ))}
@@ -428,6 +432,7 @@ function FriendRow({
 }
 
 function ConversationRow({ conversation }: { conversation: Conversation }) {
+  const { closeOverlay } = useDrawer();
   const colors = useColors();
   const { friend, lastMessage, unreadCount } = conversation;
   const preview = lastMessage
@@ -438,7 +443,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
   const time = lastMessage ? relativeShort(lastMessage.createdAt) : "";
   return (
     <Pressable
-      onPress={() => router.push(`/chat/${friend.id}` as never)}
+      onPress={() => { closeOverlay(); router.push(`/chat/${friend.id}` as never); }}
       style={({ pressed }) => [
         styles.friendRow,
         { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
