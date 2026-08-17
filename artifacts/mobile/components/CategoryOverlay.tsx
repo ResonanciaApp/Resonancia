@@ -36,7 +36,7 @@ const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
 const W = Dimensions.get("window").width;
 
 /** Resuelve la ruta de un overlay a su pantalla (con id si es parametrizada). */
-function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } | null {
+function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; defer?: boolean } | null {
   if (route === "/(tabs)/descanzo") return { node: <DescanzoScreen />, eager: true };
   if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
   if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
@@ -51,7 +51,10 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
-    if (m[1] === "session") return { node: <LazySessionDetail id={id} />, eager: false };
+    // defer: la pantalla de sesión es muy pesada de renderizar; si se monta
+    // durante el slide de entrada, retrasa el arranque de la animación y el
+    // parallax de Inicio corre solo. Se monta al terminar el deslizamiento.
+    if (m[1] === "session") return { node: <LazySessionDetail id={id} />, eager: false, defer: true };
     if (m[1] === "mezcla") return { node: <LazyMezcla id={id} />, eager: false };
     if (m[1] === "tema") return { node: <LazyTema id={id} />, eager: false };
     if (m[1] === "chakra") return { node: <LazyChakra id={id} />, eager: false };
@@ -94,6 +97,16 @@ function OverlayLayer({
   }, [layer.closing]);
 
   const resolved = resolveRoute(layer.route);
+
+  // Rutas "defer": el panel entra deslizando vacío (junto con el parallax) y
+  // el contenido pesado se monta recién al terminar la animación de entrada.
+  const [contentReady, setContentReady] = useState(!resolved?.defer);
+  useEffect(() => {
+    if (contentReady) return;
+    const t = setTimeout(() => setContentReady(true), DURATION.DRAWER + 30);
+    return () => clearTimeout(t);
+  }, [contentReady]);
+
   if (!resolved) return null;
 
   return (
@@ -117,7 +130,16 @@ function OverlayLayer({
       ]}
     >
       <BackOverrideProvider onBack={onBack}>
-        {resolved.eager ? (
+        {!contentReady ? (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: bg, alignItems: "center", justifyContent: "center" },
+            ]}
+          >
+            <ActivityIndicator size="large" color="#BE9650" />
+          </View>
+        ) : resolved.eager ? (
           resolved.node
         ) : (
           <Suspense
