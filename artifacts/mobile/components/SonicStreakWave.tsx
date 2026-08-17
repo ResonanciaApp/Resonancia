@@ -132,10 +132,10 @@ export function SonicStreakWave() {
     <View style={styles.card}>
       {/* ── Contador a la izquierda + texto a la derecha ── */}
       <View style={{ flexDirection: "row", alignItems: "center", width: COMP_W, paddingVertical: 18, marginTop: -45, gap: 16 }}>
-        <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
+        <MaterialCommunityIcons name="spa" size={68} color="#FFFFFF" />
         <View style={{ flex: 1 }}>
           <Text style={styles.countLine}>
-            {weekCount} {weekCount === 1 ? "Día" : "Días"}
+            {weekCount} {weekCount === 1 ? "Día de racha" : "Días de racha"}
           </Text>
           <Text style={styles.sideText}>
             Medita al menos 3 días a la semana y transforma tu vida
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   countLine: {
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: "700",
     color: "#F9F9F9",
     marginBottom: 4,
