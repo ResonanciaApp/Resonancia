@@ -195,9 +195,11 @@ export function SonicStreakWave() {
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: "rgba(255,255,255,0.035)",
     borderRadius: 16,
     paddingTop: 73,
     paddingBottom: 18,
+    paddingHorizontal: 16,
     gap: 13,
     alignItems: "center",
   },
