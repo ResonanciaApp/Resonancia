@@ -345,9 +345,7 @@ export default function HomeScreen2() {
     return count;
   }, [statEvents]);
 
-  // DEV: forzar racha para pruebas visuales
-  const DEV_STREAK = 3;
-  const currentStreakDisplay = DEV_STREAK > 0 ? DEV_STREAK : currentStreak;
+  const currentStreakDisplay = currentStreak;
 
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();

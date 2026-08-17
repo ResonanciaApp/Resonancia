@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useAuth } from "@/context/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
@@ -99,6 +100,7 @@ function todayLabel(): string {
 }
 
 export function MensajesAnonimosPanel() {
+  const { isSignedIn } = useAuth();
   const colors = useColors();
   const queryClient = useQueryClient();
   const { recordSentMessage } = useUserProfile();
@@ -156,10 +158,32 @@ export function MensajesAnonimosPanel() {
     submit({ data: { content: trimmed } });
   };
 
+  // El endpoint ahora exige sesión y funciona como toggle (un like por
+  // usuario). likedIds refleja el estado local del corazón y se revierte si
+  // el servidor rechaza la llamada.
+  const setLiked = (id: number, liked: boolean) =>
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (liked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
   const handleLike = (id: number) => {
-    if (likedIds.has(id)) return;
-    setLikedIds((prev) => new Set(prev).add(id));
-    like({ id });
+    if (!isSignedIn) {
+      Alert.alert(
+        "Crea tu cuenta",
+        "Necesitas una cuenta para dar me gusta a los mensajes de la comunidad.",
+        [
+          { text: "Ahora no", style: "cancel" },
+          { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
+        ],
+      );
+      return;
+    }
+    const nextLiked = !likedIds.has(id);
+    setLiked(id, nextLiked);
+    like({ id }, { onError: () => setLiked(id, !nextLiked) });
   };
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {

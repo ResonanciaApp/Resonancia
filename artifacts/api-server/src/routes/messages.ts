@@ -1,7 +1,8 @@
 import { Router, type IRouter } from "express";
-import { sql, desc, lt, eq } from "drizzle-orm";
+import { sql, desc, lt, eq, and } from "drizzle-orm";
 import { getAuth } from "@clerk/express";
-import { db, messagesTable, usersTable } from "@workspace/db";
+import { requireAuth } from "../middlewares/requireAuth";
+import { db, messagesTable, messageLikesTable, usersTable } from "@workspace/db";
 import {
   CreateMessageBody,
   GetMessagesQueryParams,
@@ -117,24 +118,57 @@ router.post("/messages", async (req, res) => {
   }
 });
 
-router.post("/messages/:id/like", async (req, res) => {
+router.post("/messages/:id/like", requireAuth, async (req, res) => {
   const parsed = LikeMessageParams.safeParse(req.params);
   if (!parsed.success) {
     res.status(400).json({ error: "ID inválido" });
     return;
   }
+  const me = req.currentUser!;
 
   try {
     // Only allow liking messages still within the active window.
     const start = windowStart();
+    const id = parsed.data.id;
 
-    const [updated] = await db
-      .update(messagesTable)
-      .set({ likes: sql`${messagesTable.likes} + 1` })
-      .where(
-        sql`${messagesTable.id} = ${parsed.data.id} AND ${messagesTable.createdAt} > ${start}`,
-      )
-      .returning();
+    // Toggle idempotente por (usuario, mensaje): igual que en mixes.ts, el
+    // contador denormalizado se recalcula desde las filas reales bajo un
+    // row lock, así que llamadas repetidas no pueden inflar el ranking.
+    const updated = await db.transaction(async (tx) => {
+      const [msg] = await tx
+        .select({ id: messagesTable.id, createdAt: messagesTable.createdAt })
+        .from(messagesTable)
+        .where(eq(messagesTable.id, id))
+        .for("update");
+      if (!msg || msg.createdAt <= start) return null;
+
+      const [alreadyLiked] = await tx
+        .select({ id: messageLikesTable.id })
+        .from(messageLikesTable)
+        .where(and(eq(messageLikesTable.messageId, id), eq(messageLikesTable.userId, me.id)))
+        .limit(1);
+
+      if (alreadyLiked) {
+        await tx.delete(messageLikesTable).where(eq(messageLikesTable.id, alreadyLiked.id));
+      } else {
+        await tx
+          .insert(messageLikesTable)
+          .values({ messageId: id, userId: me.id })
+          .onConflictDoNothing();
+      }
+
+      const [{ count }] = await tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(messageLikesTable)
+        .where(eq(messageLikesTable.messageId, id));
+
+      const [row] = await tx
+        .update(messagesTable)
+        .set({ likes: count })
+        .where(eq(messagesTable.id, id))
+        .returning();
+      return row;
+    });
 
     if (!updated) {
       res.status(404).json({ error: "Mensaje no encontrado o expirado" });

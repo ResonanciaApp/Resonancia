@@ -206,7 +206,7 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
   };
   const waveInactive: RGB = liftBrightness(hexToRgb(theme.gradient[1] ?? theme.gradient[0]), 130);
 
-  const DEBUG_STREAK = 4; // ← TEST: forzar racha; poner null para usar datos reales
+  const DEBUG_STREAK: number | null = null; // racha real (sin override de pruebas)
 
   const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
     const byDay = minutesByDay(statEvents);

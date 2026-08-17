@@ -219,10 +219,14 @@ function serializePlaylist(p: CatalogPlaylist) {
 router.get("/catalog", async (req, res) => {
   const [categories, sessions, playlists] = await Promise.all([
     db.select().from(catalogCategoriesTable)
-      .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id)),
+      .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id))
+      .limit(200),
     db.select().from(catalogSessionsTable)
       .where(eq(catalogSessionsTable.status, "published"))
-      .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id)),
+      .orderBy(asc(catalogSessionsTable.sortOrder), asc(catalogSessionsTable.id))
+      // Cota defensiva: el mobile hidrata el catálogo completo, pero el
+      // endpoint no debe volverse un full-scan sin techo si el catálogo crece.
+      .limit(1000),
     db.select().from(catalogPlaylistsTable)
       .where(and(eq(catalogPlaylistsTable.isActive, true), eq(catalogPlaylistsTable.showOnHome, true)))
       .orderBy(asc(catalogPlaylistsTable.homePosition), asc(catalogPlaylistsTable.id))

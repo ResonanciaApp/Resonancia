@@ -62,7 +62,8 @@ router.get("/friends", requireAuth, async (req, res) => {
           or(eq(friendshipsTable.requesterId, me.id), eq(friendshipsTable.addresseeId, me.id)),
         ),
       )
-      .orderBy(desc(friendshipsTable.updatedAt));
+      .orderBy(desc(friendshipsTable.updatedAt))
+      .limit(200);
 
     res.json(rows.map((r) => toProfile(r.requester.id === me.id ? r.addressee : r.requester)));
   } catch (err) {

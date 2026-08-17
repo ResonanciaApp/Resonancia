@@ -4,6 +4,7 @@
  * Tabs = píldoras (mismo diseño que "Mi Música").
  */
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useMixLike } from "@/hooks/useMixLike";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
@@ -19,14 +20,12 @@ import {
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetSharedMixes,
   useToggleSharedMixLike,
   useReportSharedMix,
-  getGetSharedMixesQueryKey,
 } from "@workspace/api-client-react";
-import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
+import type { SharedMix } from "@workspace/api-client-react";
 import { getMixImage } from "@/config/mix-images";
 
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -53,7 +52,6 @@ export function CommunityMixesCarousel() {
   const { data } = useGetSharedMixes();
   const allMixes = data?.mixes ?? [];
   const { isSignedIn } = useAuth();
-  const queryClient = useQueryClient();
   const toggleLike = useToggleSharedMixLike();
   const pendingLike = useRef<Record<number, boolean>>({});
 
@@ -63,22 +61,7 @@ export function CommunityMixesCarousel() {
   const remaining = sorted.length - visible.length;
 
   // ── Like toggle ───────────────────────────────────────────────
-  const applyOptimistic = useCallback(
-    (mixId: number, liked: boolean) => {
-      queryClient.setQueryData<SharedMixesPage>(getGetSharedMixesQueryKey(), (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          mixes: prev.mixes.map((m) =>
-            m.id === mixId
-              ? { ...m, likedByMe: liked, likes: Math.max(0, m.likes + (liked ? 1 : -1)) }
-              : m,
-          ),
-        };
-      });
-    },
-    [queryClient],
-  );
+  const { applyOptimistic, patchAll: patchMixLike } = useMixLike();
 
   const handleLike = useCallback(
     (mix: SharedMix) => {
@@ -103,22 +86,12 @@ export function CommunityMixesCarousel() {
           onError: () => applyOptimistic(mix.id, !nextLiked),
           onSettled: () => { pendingLike.current[mix.id] = false; },
           onSuccess: (updated) => {
-            queryClient.setQueryData<SharedMixesPage>(getGetSharedMixesQueryKey(), (prev) => {
-              if (!prev) return prev;
-              return {
-                ...prev,
-                mixes: prev.mixes.map((m) =>
-                  m.id === updated.id
-                    ? { ...m, likes: updated.likes, likedByMe: updated.likedByMe }
-                    : m,
-                ),
-              };
-            });
+            patchMixLike(updated.id, (m) => ({ ...m, likes: updated.likes, likedByMe: updated.likedByMe }));
           },
         },
       );
     },
-    [isSignedIn, applyOptimistic, toggleLike, queryClient],
+    [isSignedIn, applyOptimistic, patchMixLike, toggleLike],
   );
 
   const handleViewCreator = useCallback((mix: SharedMix) => {

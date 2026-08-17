@@ -3,6 +3,7 @@
  * Grid 4 columnas de sonidos + panel glass + glow en play button.
  */
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useMixLike } from "@/hooks/useMixLike";
 import { BackPill } from "@/components/BackPill";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
@@ -28,14 +29,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   getGetMixCommentsQueryKey,
-  getGetSharedMixesQueryKey,
   useAddMixComment,
   useDeleteMixComment,
   useGetMixComments,
   useGetSharedMixes,
   useToggleSharedMixLike,
 } from "@workspace/api-client-react";
-import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
+import type { MixComment } from "@workspace/api-client-react";
 
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -103,22 +103,10 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
     loadMix(preset);
   }, [mix, isThisLoaded, togglePlay, presetId, loadMix]);
 
+  const { applyOptimistic: applyMixLikeOptimistic, patchAll: patchMixLike } = useMixLike();
   const applyOptimistic = useCallback(
-    (liked: boolean) => {
-      const key = getGetSharedMixesQueryKey();
-      queryClient.setQueryData<SharedMixesPage>(key, (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          mixes: prev.mixes.map((m) =>
-            m.id === mixId
-              ? { ...m, likedByMe: liked, likes: Math.max(0, m.likes + (liked ? 1 : -1)) }
-              : m,
-          ),
-        };
-      });
-    },
-    [queryClient, mixId],
+    (liked: boolean) => applyMixLikeOptimistic(mixId, liked),
+    [applyMixLikeOptimistic, mixId],
   );
 
   const handleLike = useCallback(() => {
@@ -145,22 +133,11 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
         onError: () => applyOptimistic(!nextLiked),
         onSettled: () => { pendingLike.current = false; },
         onSuccess: (updated) => {
-          const key = getGetSharedMixesQueryKey();
-          queryClient.setQueryData<SharedMixesPage>(key, (prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              mixes: prev.mixes.map((m) =>
-                m.id === updated.id
-                  ? { ...m, likes: updated.likes, likedByMe: updated.likedByMe }
-                  : m,
-              ),
-            };
-          });
+          patchMixLike(updated.id, (m) => ({ ...m, likes: updated.likes, likedByMe: updated.likedByMe }));
         },
       },
     );
-  }, [mix, isSignedIn, applyOptimistic, toggleLike, queryClient]);
+  }, [mix, isSignedIn, applyOptimistic, patchMixLike, toggleLike]);
 
   const onAuthorPress = () => {
     if (!mix) return;

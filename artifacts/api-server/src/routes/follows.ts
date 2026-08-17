@@ -116,6 +116,14 @@ router.delete("/users/:userId/follow", requireAuth, async (req, res) => {
   }
 });
 
+
+/** Paginación opcional acotada: ?page=&pageSize= (por defecto 1/50, máx 100). */
+function pageParams(req: { query: Record<string, unknown> }): { limit: number; offset: number } {
+  const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+  const pageSize = Math.min(100, Math.max(1, parseInt(String(req.query.pageSize ?? "50"), 10) || 50));
+  return { limit: pageSize, offset: (page - 1) * pageSize };
+}
+
 /** GET /users/:userId/followers — lista de seguidores */
 router.get("/users/:userId/followers", requireAuth, async (req, res) => {
   const userId = Number(req.params.userId);
@@ -135,7 +143,9 @@ router.get("/users/:userId/followers", requireAuth, async (req, res) => {
       .from(followsTable)
       .innerJoin(usersTable, eq(usersTable.id, followsTable.followerId))
       .where(eq(followsTable.followingId, userId))
-      .orderBy(followsTable.createdAt);
+      .orderBy(followsTable.createdAt)
+      .limit(pageParams(req).limit)
+      .offset(pageParams(req).offset);
 
     res.json(
       rows.map((r) => ({
@@ -168,7 +178,9 @@ router.get("/users/:userId/following", requireAuth, async (req, res) => {
       .from(followsTable)
       .innerJoin(usersTable, eq(usersTable.id, followsTable.followingId))
       .where(eq(followsTable.followerId, userId))
-      .orderBy(followsTable.createdAt);
+      .orderBy(followsTable.createdAt)
+      .limit(pageParams(req).limit)
+      .offset(pageParams(req).offset);
 
     res.json(
       rows.map((r) => ({
