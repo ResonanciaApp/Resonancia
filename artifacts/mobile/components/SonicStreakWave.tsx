@@ -1,5 +1,4 @@
-import { Feather } from "@expo/vector-icons";
-import { SacredGlyph } from "@/components/SacredGlyph";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { computeWeekFlags } from "@/utils/stats";
 import { LinearGradient } from "expo-linear-gradient";
@@ -133,7 +132,7 @@ export function SonicStreakWave() {
     <View style={styles.card}>
       {/* ── Contador a la izquierda + texto a la derecha ── */}
       <View style={{ flexDirection: "row", alignItems: "center", width: COMP_W, paddingVertical: 18, marginTop: -45, gap: 16 }}>
-        <SacredGlyph id="loto" color="#BE9650" size={44} />
+        <MaterialCommunityIcons name="spa" size={34} color="#FFFFFF" />
         <View style={{ alignItems: "center" }}>
           <Text style={styles.ringCount}>{weekCount}</Text>
           <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
