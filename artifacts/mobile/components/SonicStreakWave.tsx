@@ -21,7 +21,7 @@ const RING_SIZE    = 79;
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const SCREEN_W  = Dimensions.get("window").width;
-const GRID_PAD  = 19;
+const GRID_PAD  = 36;
 const COMP_W    = SCREEN_W - GRID_PAD * 2;
 const SVG_H     = 64;
 const CY        = SVG_H / 2;
@@ -195,6 +195,7 @@ export function SonicStreakWave() {
 
 const styles = StyleSheet.create({
   card: {
+    width: "100%",
     backgroundColor: "rgba(255,255,255,0.035)",
     borderRadius: 16,
     paddingTop: 73,

@@ -70,8 +70,6 @@ export function ProgresoModal({ visible, onClose }: Props) {
           contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 32 }]}
           showsVerticalScrollIndicator={false}
         >
-          {/* ── Esta semana ── */}
-          <Text style={styles.sectionLabel}>ESTA SEMANA</Text>
 
           {/* ── Ondas + anillo + días (diseño original) ── */}
           <SonicStreakWave />
