@@ -62,9 +62,6 @@ export function ProgresoModal({ visible, onClose }: Props) {
           </Pressable>
           <View style={styles.headerCenter}>
             <Text style={styles.title}>Tu progreso</Text>
-            <Text style={styles.subtitle}>
-              Medita al menos 3 días a la semana y transforma tu vida
-            </Text>
           </View>
           <View style={{ width: 38 }} />
         </View>
