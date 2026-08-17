@@ -77,6 +77,16 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
 const MIX_THUMB = 65;
+
+/** Abre una playlist como panel bajo el tab bar (fallback: ruta raíz). */
+function usePlaylistPanelOpener() {
+  const overlay = useCategoryOverlayOptional();
+  return (plId: string) => {
+    if (overlay) overlay.openCategory(`/playlist/${plId}`);
+    else router.push(`/playlist/${plId}` as never);
+  };
+}
+
 function MixRow({
   mix,
   isPlayingThis,
@@ -406,10 +416,7 @@ type LibResult =
 
 function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: boolean; onClose: () => void; gradient: readonly string[]; accentColor: string }) {
   const overlay = useCategoryOverlayOptional();
-  const openPlaylistPanel = (plId: string) => {
-    if (overlay) overlay.openCategory(`/playlist/${plId}`);
-    else router.push(`/playlist/${plId}` as never);
-  };
+  const openPlaylistPanel = usePlaylistPanelOpener();
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -655,6 +662,7 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
 
 // ── Modal de nombre de playlist ───────────────────────────────────────────────
 function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor?: string }) {
+  const openPlaylistPanel = usePlaylistPanelOpener();
   const { playlists, createPlaylist } = useFoldersPlaylists();
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
@@ -1032,6 +1040,7 @@ export function BibliotecaScreen({
   embedded = false,
   onHeaderActions,
 }: { embedded?: boolean; onHeaderActions?: (state: LibHeaderActions | null) => void } = {}) {
+  const openPlaylistPanel = usePlaylistPanelOpener();
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
