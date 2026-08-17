@@ -173,6 +173,10 @@ export function CategoryOverlay() {
       await import("@/app/category/sonidos-ancestrales");
       await delay(3000);
       await import("@/app/category/musica-sonidos");
+      // Detalle de sesión: sin precarga, su split-bundle se compila justo
+      // durante el slide de entrada y traba el parallax de Inicio.
+      await delay(3000);
+      await import("@/app/session/[id]");
     })();
   }, []);
 

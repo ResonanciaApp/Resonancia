@@ -172,11 +172,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     : sceneTheme.gradient;
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
-  const isIndigoPlayBtn = sceneTheme.id === "indigo";
-  const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["#8260B5", "#5B427F"]
-    : ["#F9F9F9", "#F9F9F9"];
-  const playBtnTextColor = isIndigoPlayBtn ? "#FFFFFF" : "#0d0c26";
+  // Índigo usa los mismos botones que Tíbet (blanco #F9F9F9, texto oscuro).
+  const isIndigoPlayBtn = false;
+  const playBtnColors: [string, string, ...string[]] = ["#F9F9F9", "#F9F9F9"];
+  const playBtnTextColor = "#0d0c26";
   const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : sceneTheme.id === "tibet" ? "#F9F9F9" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
