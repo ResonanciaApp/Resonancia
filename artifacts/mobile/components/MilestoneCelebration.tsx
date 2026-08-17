@@ -38,6 +38,18 @@ export function MilestoneCelebration() {
   const [visible, setVisible] = useState(false);
   const hostId = useRef(0);
   const [isTopHost, setIsTopHost] = useState(false);
+  // Al TOMAR el relevo como host superior (p. ej. el Modal del Mezclador se
+  // cerró llevándose su instancia), iOS aún está descartando el Modal anterior:
+  // presentar de inmediato falla en silencio. Pequeña espera antes de rendir.
+  const [presentReady, setPresentReady] = useState(false);
+  useEffect(() => {
+    if (!isTopHost) {
+      setPresentReady(false);
+      return;
+    }
+    const t = setTimeout(() => setPresentReady(true), 450);
+    return () => clearTimeout(t);
+  }, [isTopHost]);
 
   useEffect(() => {
     const id = ++hostSeq;
@@ -109,7 +121,7 @@ export function MilestoneCelebration() {
     });
   };
 
-  if (!isTopHost || !celebrating || !visible) return null;
+  if (!isTopHost || !presentReady || !celebrating || !visible) return null;
 
   const badgeScale = badgePulse.interpolate({
     inputRange: [0, 1],
