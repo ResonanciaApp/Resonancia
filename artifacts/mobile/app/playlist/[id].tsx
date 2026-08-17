@@ -210,7 +210,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="list" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Playlist no encontrada</Text>
-          <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
+          <Pressable onPress={goBack} style={{ marginTop: 24 }}>
             <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
         </View>
@@ -224,7 +224,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
       `¿Eliminar "${playlist.name}"?`,
       [
         { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => { deletePlaylist(playlist.id); router.back(); } },
+        { text: "Eliminar", style: "destructive", onPress: () => { deletePlaylist(playlist.id); goBack(); } },
       ]
     );
   };

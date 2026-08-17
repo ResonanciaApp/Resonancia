@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
-import { ActivityIndicator, Animated, Dimensions, StyleSheet, View } from "react-native";
+import { BackHandler, ActivityIndicator, Animated, Dimensions, StyleSheet, View } from "react-native";
 
 import { useCategoryOverlay, type OverlayEntry } from "@/context/CategoryOverlayContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
@@ -148,6 +148,17 @@ function OverlayLayer({
  */
 export function CategoryOverlay() {
   const { stack, closeCategory, parallaxAnim } = useCategoryOverlay();
+
+  // Botón físico "atrás" (Android): con paneles abiertos, cierra el de arriba
+  // en vez de actuar sobre el stack del router.
+  useEffect(() => {
+    if (stack.length === 0) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      closeCategory();
+      return true;
+    });
+    return () => sub.remove();
+  }, [stack.length, closeCategory]);
   const { theme: sceneTheme } = useSceneTheme();
   const [layers, setLayers] = useState<LayerState[]>([]);
 
