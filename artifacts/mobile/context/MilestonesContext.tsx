@@ -67,7 +67,7 @@ interface MilestonesCtx {
 const Ctx = createContext<MilestonesCtx | null>(null);
 
 export function MilestonesProvider({ children }: { children: React.ReactNode }) {
-  const { statEvents } = usePlayer();
+  const { statEvents, lastLocalStat } = usePlayer();
   const { presets } = useMixer();
   const { isSignedIn } = useAuth();
   const todayKey = useDayRollover();
@@ -81,6 +81,10 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   const [cloudSettled, setCloudSettled] = useState(false);
   const [queue, setQueue] = useState<string[]>([]);
   const [celebrationHold, setCelebrationHold] = useState(false);
+  // Hitos "dormidos" tras un reset de prueba (familias racha/dias, cuyo
+  // progreso no se puede rebajar): no se re-evalúan hasta la PRÓXIMA escucha
+  // registrada localmente; si no, se re-desbloquean al instante.
+  const [suppressedIds, setSuppressedIds] = useState<ReadonlySet<string>>(new Set());
   const syncedRef = useRef(false);
 
   // ── Hidratación local ───────────────────────────────────────────────────────
@@ -192,7 +196,10 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
     if (!hydrated || !cloudSettled || !counters) return;
     const now = new Date().toISOString();
     const fresh = MILESTONES.filter(
-      (m) => !unlocked[m.id] && familyProgress[m.family] >= m.threshold,
+      (m) =>
+        !unlocked[m.id] &&
+        !suppressedIds.has(m.id) &&
+        familyProgress[m.family] >= m.threshold,
     );
     if (fresh.length === 0) return;
 
@@ -214,7 +221,14 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
       if (!cur || m.threshold > cur.threshold) byFamily.set(m.family, m);
     }
     setQueue((q) => [...q, ...Array.from(byFamily.values(), (m) => m.id)]);
-  }, [hydrated, cloudSettled, counters, familyProgress, unlocked]);
+  }, [hydrated, cloudSettled, counters, familyProgress, unlocked, suppressedIds]);
+
+  // La supresión se levanta con la PRÓXIMA escucha registrada localmente:
+  // ese nuevo evento vuelve a "cruzar" el umbral y celebra normalmente.
+  useEffect(() => {
+    if (!lastLocalStat) return;
+    setSuppressedIds((prev) => (prev.size ? new Set() : prev));
+  }, [lastLocalStat]);
 
   const dismissCelebration = useCallback(() => setQueue((q) => q.slice(1)), []);
 
@@ -234,7 +248,13 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
       return next;
     });
     void deleteMilestoneCloud(id);
-    // 2) Para familias de creaciones, rebajar el contador de por vida justo
+    // 2) Para racha/dias el progreso no se puede rebajar (deriva del historial
+    //    de escucha): dormir el hito hasta la próxima escucha local, si no se
+    //    re-desbloquea (y celebra) al instante.
+    if (def.family === "racha" || def.family === "dias") {
+      setSuppressedIds((prev) => new Set(prev).add(id));
+    }
+    // 3) Para familias de creaciones, rebajar el contador de por vida justo
     //    bajo el umbral: la PRÓXIMA creación vuelve a cruzarlo y celebra.
     if (def.family === "mezclas" || def.family === "geometrix") {
       setCounters((prev) => {
