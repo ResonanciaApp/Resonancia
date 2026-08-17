@@ -262,7 +262,7 @@ export default function PlaylistDetailScreen() {
 
         {/* Header — scrollea con el contenido (sin sticky) */}
         <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: -1 }] }} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: 4 }] }} />
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
