@@ -55,7 +55,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["musica", "profile", "descanzo", "video"]);
+const HIDDEN_ROUTES = new Set(["musica", "profile", "video"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -552,13 +552,13 @@ function TabLayoutInner() {
         <Tabs.Screen name="category/noches"               options={{ href: null }} />
         <Tabs.Screen name="category/[id]"                 options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
+        <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="resonadores"    options={{ href: null }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
         <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
         <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
-        <Tabs.Screen name="descanzo"       options={{ title: "Dormir", href: null }} />
         <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>
       </Animated.View>
