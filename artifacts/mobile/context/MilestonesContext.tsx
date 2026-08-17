@@ -58,6 +58,10 @@ interface MilestonesCtx {
   /** Herramienta de prueba: borra un hito conseguido (local + nube) y rebaja
    *  el contador de su familia para poder volver a ganarlo con la celebración. */
   resetMilestone: (id: string) => void;
+  /** Retiene las celebraciones (la cola sigue creciendo, pero no se muestra
+   *  nada) mientras otro flujo full-screen está abierto — p. ej. la
+   *  celebración de día de racha. Al soltar, se muestran las pendientes. */
+  setCelebrationHold: (hold: boolean) => void;
 }
 
 const Ctx = createContext<MilestonesCtx | null>(null);
@@ -76,6 +80,7 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   // la nube se resuelva, para NO re-celebrar hitos que ya existían en la cuenta.
   const [cloudSettled, setCloudSettled] = useState(false);
   const [queue, setQueue] = useState<string[]>([]);
+  const [celebrationHold, setCelebrationHold] = useState(false);
   const syncedRef = useRef(false);
 
   // ── Hidratación local ───────────────────────────────────────────────────────
@@ -257,12 +262,13 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   );
 
   const celebrating = useMemo(() => {
+    if (celebrationHold) return null;
     const id = queue[0];
     return id ? (statuses.find((s) => s.id === id) ?? null) : null;
-  }, [queue, statuses]);
+  }, [queue, statuses, celebrationHold]);
 
   const value = useMemo(
-    () => ({ statuses, celebrating, dismissCelebration, previewMilestone, resetMilestone }),
+    () => ({ statuses, celebrating, dismissCelebration, previewMilestone, resetMilestone, setCelebrationHold }),
     [statuses, celebrating, dismissCelebration, previewMilestone, resetMilestone],
   );
 

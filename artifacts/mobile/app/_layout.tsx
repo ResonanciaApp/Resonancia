@@ -47,6 +47,8 @@ import { SoundsProvider } from "@/context/SoundsContext";
 import { SaveEventProvider } from "@/context/SaveEventContext";
 import { MilestonesProvider } from "@/context/MilestonesContext";
 import { MilestoneCelebration } from "@/components/MilestoneCelebration";
+import { StreakCelebrationProvider } from "@/context/StreakCelebrationContext";
+import { StreakCelebrationFlow } from "@/components/StreakCelebrationFlow";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
@@ -508,6 +510,7 @@ export default function RootLayout() {
                     <DescansoPlayerProvider>
                     <MixerProvider>
                     <MilestonesProvider>
+                    <StreakCelebrationProvider>
                     <SaveEventProvider>
                     <UserProfileProvider>
                       <ProfileSync />
@@ -538,6 +541,8 @@ export default function RootLayout() {
                       </GreetingVisibleProvider>
                     </UserProfileProvider>
                     </SaveEventProvider>
+                    <StreakCelebrationFlow />
+                    </StreakCelebrationProvider>
                     <MilestoneCelebration />
                     </MilestonesProvider>
                     </MixerProvider>

@@ -58,6 +58,9 @@ type PlayerContextType = {
   history: HistoryEntry[];
   /** Play events for activity stats (week minutes, streak, top category) */
   statEvents: StatEvent[];
+  /** Último evento registrado LOCALMENTE (nunca lo setea la hidratación ni el
+   *  merge con la nube) — disparador confiable para la celebración de racha. */
+  lastLocalStat: { event: StatEvent; seq: number } | null;
   /** Per-session saved progress (0-1), keyed by session id */
   sessionProgress: Record<string, number>;
   /** Get saved progress for a session id (0 if none) */
@@ -146,6 +149,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [statEvents, setStatEvents] = useState<StatEvent[]>([]);
+  const [lastLocalStat, setLastLocalStat] = useState<{ event: StatEvent; seq: number } | null>(null);
   const [sessionProgress, setSessionProgress] = useState<Record<string, number>>({});
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const defaultSleepMinutesRef = useRef<number | null>(null);
@@ -747,6 +751,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       AsyncStorage.setItem(STATS_KEY, JSON.stringify(updated)).catch(() => {});
       return updated;
     });
+    setLastLocalStat((prev) => ({ event, seq: (prev?.seq ?? 0) + 1 }));
   }, []);
 
   /** Close the current play chunk into the accumulator (no-op while paused) */
@@ -1416,6 +1421,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         favorites,
         history,
         statEvents,
+        lastLocalStat,
         sessionProgress,
         getSessionProgress,
         isFavorite,

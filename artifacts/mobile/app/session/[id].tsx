@@ -32,6 +32,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
@@ -139,6 +140,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
+  const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
 
   const accentColor = "rgb(218,212,236)";
@@ -259,7 +261,11 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       !finishTriggeredRef.current
     ) {
       finishTriggeredRef.current = true;
-      setTimeout(() => setRatingModal(true), 800);
+      setTimeout(() => {
+        // Si el flujo de celebración de día de racha tomó la calificación,
+        // este popup no debe aparecer (solo esa vez; el resto sigue igual).
+        if (!shouldSuppressRating(session.id)) setRatingModal(true);
+      }, 800);
     }
     // Resetea el trigger si cambia la sesión o baja el progreso
     if (progress < 0.99) finishTriggeredRef.current = false;
