@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeWeekFlags } from "@/utils/stats";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -32,20 +34,9 @@ const N_CYCLES  = 3;
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 const GOAL_DAYS    = 7;
-const GOAL_MINUTES = 5;
 const DAY_LABELS   = ["L", "M", "M", "J", "V", "S", "D"];
 
-function dayKey(d: Date) {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
-function startOfWeek(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay();
-  copy.setDate(copy.getDate() + (dow === 0 ? -6 : 1 - dow));
-  return copy;
-}
 
 // ─── Wave paths ───────────────────────────────────────────────────────────────
 function buildRightPath(): string {
@@ -114,6 +105,7 @@ function brightenHex(hex: string, pct: number): string {
 // ─── Component ───────────────────────────────────────────────────────────────
 export function SonicStreakWave() {
   const { statEvents } = usePlayer();
+  const todayKey = useDayRollover();
   const { theme } = useSceneTheme();
 
   const isTibet = theme.id === "tibet";
@@ -125,26 +117,10 @@ export function SonicStreakWave() {
   const borderColor1 = waveMid;
 
   const { weekCount, activeFlags, todayIndex } = useMemo(() => {
-    const byDay = new Map<string, number>();
-    for (const e of statEvents) {
-      const k = dayKey(new Date(e.playedAt));
-      byDay.set(k, (byDay.get(k) ?? 0) + (e.minutes ?? 0));
-    }
-    const today  = new Date();
-    const monday = startOfWeek(today);
-    const flags: boolean[] = [];
-    let weekCnt  = 0;
-    let todayIdx = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const met = (byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES;
-      flags.push(met);
-      if (met) weekCnt++;
-      if (dayKey(d) === dayKey(today)) todayIdx = i;
-    }
+    const { flags, weekCount: weekCnt, todayIndex: todayIdx } = computeWeekFlags(statEvents);
     return { weekCount: weekCnt, activeFlags: flags, todayIndex: todayIdx };
-  }, [statEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   const rawProgress = Math.min(weekCount / GOAL_DAYS, 1);
   const progress    = rawProgress > 0 ? Math.min(rawProgress + 12 / WAVE_W, 1) : 0;

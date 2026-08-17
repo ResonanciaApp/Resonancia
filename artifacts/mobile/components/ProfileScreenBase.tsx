@@ -1,4 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeCurrentStreak, computeMaxStreak, computeWeekFlags } from "@/utils/stats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
@@ -91,56 +93,13 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 }
 
 
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
-function daysAgoDate(n: number): Date {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
 
 function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
 
-function computeCurrentStreak(events: { playedAt: string }[]): number {
-  if (!events.length) return 0;
-  const days = new Set(events.map((e) => dayKey(new Date(e.playedAt))));
-  const today = new Date();
-  let cursor: Date;
-  if (days.has(dayKey(today))) cursor = daysAgoDate(0);
-  else if (days.has(dayKey(daysAgoDate(1)))) cursor = daysAgoDate(1);
-  else return 0;
-  let count = 0;
-  const walk = new Date(cursor);
-  while (days.has(dayKey(walk))) {
-    count++;
-    walk.setDate(walk.getDate() - 1);
-  }
-  return count;
-}
 
-function computeMaxStreak(events: { playedAt: string }[]): number {
-  if (!events.length) return 0;
-  const days = Array.from(new Set(events.map((e) => dayKey(new Date(e.playedAt))))).sort();
-  let max = 1;
-  let cur = 1;
-  for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]);
-    const next = new Date(days[i]);
-    const diff = Math.round((next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
-    if (diff === 1) {
-      cur++;
-      if (cur > max) max = cur;
-    } else {
-      cur = 1;
-    }
-  }
-  return max;
-}
 
 const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -260,6 +219,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
+  const todayKey = useDayRollover();
   const { presets } = useMixer();
   const {
     username,
@@ -275,21 +235,15 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const rachaStats = useMemo(() => {
     const currentStreak = computeCurrentStreak(statEvents);
     const maxStreak = computeMaxStreak(statEvents);
-    const daysWithActivity = new Set(statEvents.map((e) => dayKey(new Date(e.playedAt))));
-    const weekActivity: boolean[] = Array(7).fill(false);
-    const today = new Date();
-    const todayDow = isoDow(today);
-    for (let d = 0; d <= todayDow; d++) {
-      const target = new Date(today);
-      target.setDate(today.getDate() - (todayDow - d));
-      weekActivity[d] = daysWithActivity.has(dayKey(target));
-    }
+    // Misma meta diaria que la racha (fuente única: utils/stats)
+    const weekActivity = computeWeekFlags(statEvents).flags;
     const totalSessions = statEvents.length;
     const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
     const timeDisplay =
       totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
     return { currentStreak, maxStreak, weekActivity, totalSessions, timeDisplay };
-  }, [statEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 

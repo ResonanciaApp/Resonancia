@@ -1,4 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeCurrentStreak } from "@/utils/stats";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -329,21 +331,9 @@ export default function HomeScreen2() {
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
 
-  const currentStreak = useMemo(() => {
-    if (!statEvents.length) return 0;
-    const dk = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    const days = new Set(statEvents.map((e) => dk(new Date(e.playedAt))));
-    const today = new Date();
-    const yest = new Date(today); yest.setDate(today.getDate() - 1);
-    let cursor: Date | null = null;
-    if (days.has(dk(today))) cursor = today;
-    else if (days.has(dk(yest))) cursor = yest;
-    else return 0;
-    let count = 0;
-    const walk = new Date(cursor);
-    while (days.has(dk(walk))) { count++; walk.setDate(walk.getDate() - 1); }
-    return count;
-  }, [statEvents]);
+  const todayKey = useDayRollover();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const currentStreak = useMemo(() => computeCurrentStreak(statEvents), [statEvents, todayKey]);
 
   const currentStreakDisplay = currentStreak;
 

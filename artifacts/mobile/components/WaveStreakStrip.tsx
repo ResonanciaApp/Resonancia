@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeCurrentStreak, computeWeekFlags } from "@/utils/stats";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -40,46 +42,8 @@ const BASE_DEPTH = 11;
 const DEPTH_INC = 5;
 
 
-const GOAL_MINUTES = 5;
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-function startOfWeek(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay();
-  copy.setDate(copy.getDate() + (dow === 0 ? -6 : 1 - dow));
-  return copy;
-}
-
-function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<string, number> {
-  const map = new Map<string, number>();
-  for (const e of events) {
-    const k = dayKey(new Date(e.playedAt));
-    map.set(k, (map.get(k) ?? 0) + (e.minutes ?? 0));
-  }
-  return map;
-}
-
-function computeConsecutiveStreak(events: { playedAt: string; minutes: number }[]): number {
-  const byDay = minutesByDay(events);
-  const today = new Date();
-  let streak = 0;
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    d.setHours(0, 0, 0, 0);
-    if ((byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-  return streak;
-}
 
 const STREAK_MESSAGE_ZERO = "Todavía no completaste ninguna sesión.\nElige una y da el primer paso.";
 
@@ -190,6 +154,7 @@ const FADE_END   = 386;
 
 export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
   const { statEvents } = usePlayer();
+  const todayKey = useDayRollover();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
     brightenHex(theme.gradient[0], 60),
@@ -209,35 +174,8 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
   const DEBUG_STREAK: number | null = null; // racha real (sin override de pruebas)
 
   const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
-    const byDay = minutesByDay(statEvents);
-    const today = new Date();
-
-    // Consecutive streak — si hoy aún no cumplió la meta, contar desde ayer
-    const todayMet = (byDay.get(dayKey(today)) ?? 0) >= GOAL_MINUTES;
-    const startI = todayMet ? 0 : 1;
-    let streak = 0;
-    for (let i = startI; i < 365; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      d.setHours(0, 0, 0, 0);
-      if ((byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES) streak++;
-      else break;
-    }
-
-    // Weekly flags (for bolitas row)
-    const monday = startOfWeek(today);
-    const flags: boolean[] = [];
-    let weekCnt = 0;
-    let todayIdx = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const met = (byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES;
-      flags.push(met);
-      if (met) weekCnt++;
-      if (dayKey(d) === dayKey(today)) todayIdx = i;
-    }
-
+    const streak = computeCurrentStreak(statEvents);
+    const { flags, weekCount: weekCnt, todayIndex: todayIdx } = computeWeekFlags(statEvents);
     const finalCnt = DEBUG_STREAK ?? weekCnt;
     return {
       consecutiveStreak: DEBUG_STREAK ?? streak,
@@ -246,7 +184,8 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
       todayIndex: todayIdx,
       weekCount: finalCnt,
     };
-  }, [statEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: scrollY

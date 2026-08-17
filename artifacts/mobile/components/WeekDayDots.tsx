@@ -3,6 +3,8 @@
  * La letra del día se muestra dentro del círculo.
  */
 import { Feather } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeWeekFlags } from "@/utils/stats";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useMemo } from "react";
@@ -16,19 +18,8 @@ const GRID_PAD = 19;
 const COMP_W   = SCREEN_W - GRID_PAD * 2;
 
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
-const GOAL_MINUTES = 5;
 
-function dayKey(d: Date) {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
-function startOfWeek(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay();
-  copy.setDate(copy.getDate() + (dow === 0 ? -6 : 1 - dow));
-  return copy;
-}
 
 function brightenHex(hex: string, pct: number): string {
   const h = hex.replace("#", "");
@@ -62,6 +53,7 @@ function brightenHex(hex: string, pct: number): string {
 
 export function WeekDayDots() {
   const { statEvents } = usePlayer();
+  const todayKey = useDayRollover();
   const { theme } = useSceneTheme();
 
   const isTibet = theme.id === "tibet";
@@ -76,24 +68,10 @@ export function WeekDayDots() {
   ] as [string, string];
 
   const { activeFlags, todayIndex } = useMemo(() => {
-    const byDay = new Map<string, number>();
-    for (const e of statEvents) {
-      const k = dayKey(new Date(e.playedAt));
-      byDay.set(k, (byDay.get(k) ?? 0) + (e.minutes ?? 0));
-    }
-    const today  = new Date();
-    const monday = startOfWeek(today);
-    const flags: boolean[] = [];
-    let todayIdx = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const met = (byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES;
-      flags.push(met);
-      if (dayKey(d) === dayKey(today)) todayIdx = i;
-    }
+    const { flags, todayIndex: todayIdx } = computeWeekFlags(statEvents);
     return { activeFlags: flags, todayIndex: todayIdx };
-  }, [statEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   return (
     <View style={s.row}>

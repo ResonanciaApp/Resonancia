@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeWeekFlags } from "@/utils/stats";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
@@ -23,7 +25,6 @@ const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 
-const GOAL_MINUTES = 5;
 
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -115,51 +116,21 @@ function brightenHex(hex: string, amount: number): string {
   return `#${toHex(rr)}${toHex(gg)}${toHex(bb)}`;
 }
 
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
-function startOfWeek(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay();
-  const diff = dow === 0 ? -6 : 1 - dow;
-  copy.setDate(copy.getDate() + diff);
-  return copy;
-}
 
-function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<string, number> {
-  const map = new Map<string, number>();
-  for (const e of events) {
-    const k = dayKey(new Date(e.playedAt));
-    map.set(k, (map.get(k) ?? 0) + (e.minutes ?? 0));
-  }
-  return map;
-}
 
 export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
+  const todayKey = useDayRollover();
   const { theme } = useSceneTheme();
 
   const streakBorderColors: [string, string] = ["#F9F9F9", "#F9F9F9"];
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
-    const byDay = minutesByDay(statEvents);
-    const monday = startOfWeek(new Date());
-    const flags: boolean[] = [];
-    let count = 0;
-    let todayIdx = 0;
-    const today = new Date();
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const met = (byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES;
-      flags.push(met);
-      if (met) count++;
-      if (dayKey(d) === dayKey(today)) todayIdx = i;
-    }
-    return { activeFlags: flags, activeCount: count, todayIndex: todayIdx };
-  }, [statEvents]);
+    const { flags, weekCount, todayIndex: todayIdx } = computeWeekFlags(statEvents);
+    return { activeFlags: flags, activeCount: weekCount, todayIndex: todayIdx };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   const dashOffset = CIRCUMFERENCE * (1 - activeCount / 7);
   const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];

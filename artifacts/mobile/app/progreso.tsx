@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeCurrentStreak, computeMaxStreak, computeWeekFlags, dayKey } from "@/utils/stats";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -22,9 +24,6 @@ import { useColors } from "@/hooks/useColors";
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
 function startOfDay(d: Date): Date {
   const copy = new Date(d);
@@ -52,49 +51,7 @@ function relativeLabel(iso: string): string {
 
 // ── Streak helpers ────────────────────────────────────────────────────────────
 
-function computeCurrentStreak(events: { playedAt: string }[]): number {
-  if (!events.length) return 0;
-  const days = new Set(events.map((e) => dayKey(new Date(e.playedAt))));
-  const today = new Date();
-  const todayKey = dayKey(today);
-  const yKey = dayKey(daysAgo(1));
 
-  let cursor: Date;
-  if (days.has(todayKey)) cursor = startOfDay(today);
-  else if (days.has(yKey)) cursor = daysAgo(1);
-  else return 0;
-
-  let count = 0;
-  const walk = new Date(cursor);
-  while (days.has(dayKey(walk))) {
-    count++;
-    walk.setDate(walk.getDate() - 1);
-  }
-  return count;
-}
-
-function computeMaxStreak(events: { playedAt: string }[]): number {
-  if (!events.length) return 0;
-  const days = Array.from(
-    new Set(events.map((e) => dayKey(new Date(e.playedAt))))
-  ).sort();
-  let max = 1;
-  let cur = 1;
-  for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]);
-    const next = new Date(days[i]);
-    const diff = Math.round(
-      (next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    if (diff === 1) {
-      cur++;
-      if (cur > max) max = cur;
-    } else {
-      cur = 1;
-    }
-  }
-  return max;
-}
 
 // ── Heat-map ──────────────────────────────────────────────────────────────────
 
@@ -175,6 +132,7 @@ export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { statEvents, history } = usePlayer();
+  const todayKey = useDayRollover();
   const [tab, setTab] = useState<"logros" | "historial">("logros");
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -199,19 +157,13 @@ export default function ProgresoScreen() {
       minutesByDay.set(k, (minutesByDay.get(k) ?? 0) + e.minutes);
     }
 
-    // This-week day activity (Mon=0..Sun=6)
-    const weekActivity: boolean[] = Array(7).fill(false);
-    const today = new Date();
-    const todayDow = isoDow(today);
-    for (let d = 0; d <= todayDow; d++) {
-      const target = new Date(today);
-      target.setDate(today.getDate() - (todayDow - d));
-      weekActivity[d] = minutesByDay.has(dayKey(target));
-    }
+    // This-week day activity (Mon=0..Sun=6) — misma meta diaria que la racha
+    const weekActivity = computeWeekFlags(statEvents).flags;
 
     // Heat-map grid: 8 cols (weeks, oldest left) × 7 rows (Mon-Sun)
     // Anchor: today is the last real cell; future cells in current column are empty
     const NUM_WEEKS = 8;
+    const today = new Date();
     const todayDowIdx = isoDow(today); // 0=Mon, 6=Sun
     const totalDaysInGrid = NUM_WEEKS * 7;
     // The grid ends on Sunday of the current week
@@ -257,7 +209,8 @@ export default function ProgresoScreen() {
       heatGrid,
       challenges,
     };
-  }, [statEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statEvents, todayKey]);
 
   // ── Recent history ────────────────────────────────────────────────────────
   const recentSessions = useMemo(() => {
