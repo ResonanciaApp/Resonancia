@@ -4,6 +4,7 @@
  * con previews animables (play/pause por card) y enlace a la pantalla completa.
  */
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -239,7 +240,7 @@ export function GeometrixCommunitySection() {
 
   const { data, isLoading } = useGetSharedGlyphs(
     { page: 1 },
-    { query: { queryKey: getGetSharedGlyphsQueryKey({ page: 1 }), refetchInterval: 5 * 60_000 } },
+    { query: { queryKey: getGetSharedGlyphsQueryKey({ page: 1 }), refetchInterval: usePollingInterval(10 * 60_000) } },
   );
 
   const glyphs = (data?.glyphs ?? []).slice(0, MAX_PREVIEW);

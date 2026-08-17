@@ -5,14 +5,14 @@ import { useFonts } from "expo-font";
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, focusManager } from "@tanstack/react-query";
 import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { setCommunityTokenGetter } from "@/lib/communityApi";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { Animated, Dimensions, I18nManager, StyleSheet, Text, TextInput, View } from "react-native";
+import { Animated, Dimensions, I18nManager, StyleSheet, Text, TextInput, View, AppState } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -86,7 +86,25 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
   };
 }
 
-const queryClient = new QueryClient();
+// Defaults globales (auditoría): datos frescos por 60 s antes de refetch,
+// reintentos acotados, y sondeos pausados cuando la app está en background
+// (refetchIntervalInBackground=false + focusManager cableado a AppState).
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      retry: 2,
+      refetchIntervalInBackground: false,
+    },
+  },
+});
+
+// React Query no conoce el AppState de React Native por sí solo: sin esto,
+// "focused" queda siempre true y los refetchInterval siguen corriendo con la
+// app minimizada.
+AppState.addEventListener("change", (state) => {
+  focusManager.setFocused(state === "active");
+});
 
 /** Attach Clerk session token to all generated API client requests and community helpers. */
 function ApiAuthBridge() {

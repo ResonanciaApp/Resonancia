@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { useAuth as useClerkAuth } from "@clerk/expo";
@@ -142,10 +143,10 @@ function SignedInAmigos() {
 
   const friendsQ = useGetFriends();
   const requestsQ = useGetFriendRequests({
-    query: { queryKey: getGetFriendRequestsQueryKey(), refetchInterval: 30_000 },
+    query: { queryKey: getGetFriendRequestsQueryKey(), refetchInterval: usePollingInterval(60_000) },
   });
   const conversationsQ = useGetConversations({
-    query: { queryKey: getGetConversationsQueryKey(), refetchInterval: 15_000 },
+    query: { queryKey: getGetConversationsQueryKey(), refetchInterval: usePollingInterval(30_000) },
   });
   const trimmed = search.trim();
   const searchQ = useSearchUsers(

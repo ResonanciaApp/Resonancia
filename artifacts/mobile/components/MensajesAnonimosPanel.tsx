@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { useAuth } from "@/context/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -117,7 +118,7 @@ export function MensajesAnonimosPanel() {
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
     { page: 1 },
-    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: 5 * 60_000 } },
+    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: usePollingInterval(10 * 60_000) } },
   );
 
   const { mutate: submit, isPending: isSubmitting } = useCreateMessage({

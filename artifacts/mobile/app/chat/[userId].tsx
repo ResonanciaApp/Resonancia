@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
@@ -113,6 +114,9 @@ export default function ChatScreen() {
   const params = useLocalSearchParams<{ userId: string }>();
   const otherId = Number(params.userId);
   const qc = useQueryClient();
+  // Sondeo solo con la pantalla en foco (pausa al salir del chat).
+  const msgPoll = usePollingInterval(3000);
+  const typingPoll = usePollingInterval(4000);
   const { isSignedIn, isLoaded } = useClerkAuth();
 
   const friendsQ = useGetFriends({
@@ -130,7 +134,7 @@ export default function ChatScreen() {
       query: {
         queryKey: getGetDirectMessagesQueryKey(otherId, {}),
         enabled: !!isSignedIn && Number.isFinite(otherId),
-        refetchInterval: 1500,
+        refetchInterval: msgPoll,
       },
     },
   );
@@ -139,7 +143,7 @@ export default function ChatScreen() {
     query: {
       queryKey: ["typing", otherId] as const,
       enabled: !!isSignedIn && Number.isFinite(otherId),
-      refetchInterval: 2500,
+      refetchInterval: typingPoll,
     },
   });
 

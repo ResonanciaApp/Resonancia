@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -44,7 +45,7 @@ export function AlmaCommunitySection() {
 
   const { data, isLoading } = useGetMessages(
     { page: 1 },
-    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: 3 * 60_000 } },
+    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: usePollingInterval(5 * 60_000) } },
   );
 
   const allMessages = data?.messages ?? [];

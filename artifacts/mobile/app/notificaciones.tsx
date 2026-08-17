@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -135,7 +136,7 @@ export default function NotificacionesScreen() {
     query: {
       queryKey: getGetNotificationsQueryKey(),
       enabled: !!isSignedIn,
-      refetchInterval: 10_000,
+      refetchInterval: usePollingInterval(30_000),
     },
   });
 

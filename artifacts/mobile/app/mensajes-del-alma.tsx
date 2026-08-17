@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { BackPill } from "@/components/BackPill";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
@@ -83,7 +84,7 @@ export default function MensajesDelAlmaScreen() {
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
     { page: 1 },
-    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: 3 * 60_000 } },
+    { query: { queryKey: getGetMessagesQueryKey({ page: 1 }), refetchInterval: usePollingInterval(5 * 60_000) } },
   );
 
   const { mutate: submit, isPending: isSubmitting } = useCreateMessage({

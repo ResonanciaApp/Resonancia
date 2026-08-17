@@ -45,7 +45,7 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     query: {
       queryKey: getGetUnreadNotificationCountQueryKey(),
       enabled: !!isSignedIn,
-      refetchInterval: 30_000,
+      refetchInterval: 60_000,
     },
   });
 
