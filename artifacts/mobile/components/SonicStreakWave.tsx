@@ -130,99 +130,10 @@ export function SonicStreakWave() {
 
   return (
     <View style={styles.card}>
-      {/* ── Ondas + número ── */}
-      <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center", marginTop: -15 }}>
-        <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
-          <Defs>
-            <SvgGradient id="swInactR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
-            </SvgGradient>
-            <SvgGradient id="swInactL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
-            </SvgGradient>
-            <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}         stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeStart} stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeEnd}   stopColor={waveLow}  stopOpacity={0} />
-              <Stop offset={1}         stopColor={waveLow}  stopOpacity={0} />
-            </SvgGradient>
-            <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}         stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeStart} stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeEnd}   stopColor={waveLow}  stopOpacity={0} />
-              <Stop offset={1}         stopColor={waveLow}  stopOpacity={0} />
-            </SvgGradient>
-          </Defs>
-
-          <G transform={`translate(${RIGHT_START + 14}, ${CY + 4})`}>
-            <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="round" fill="none" />
-            <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="round" fill="none" />
-          </G>
-
-          <G transform={`translate(${LEFT_START + 2 - 14}, ${CY + 4})`}>
-            <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="round" fill="none" />
-            <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="round" fill="none" />
-          </G>
-        </Svg>
-
-        {/* Anillo */}
-        <View
-          pointerEvents="none"
-          style={{
-            width: RING_SIZE + 18,
-            height: RING_SIZE + 18,
-            borderRadius: (RING_SIZE + 18) / 2,
-            shadowColor: "#000",
-            shadowOffset: { width: 1, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 4,
-            elevation: 2,
-            transform: [{ translateX: 1 }],
-          }}
-        >
-          <View style={[styles.ringWrap, {
-            width: RING_SIZE + 18,
-            height: RING_SIZE + 18,
-            borderRadius: (RING_SIZE + 18) / 2,
-            overflow: "hidden",
-          }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(10,4,12,0.45)" }]} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-            <View style={styles.ringCenter}>
-              <Text style={styles.ringCount}>{weekCount}</Text>
-              <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
-            </View>
-            <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
-              <Defs>
-                <SvgGradient id="swBorderGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
-                  <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
-                </SvgGradient>
-                <SvgGradient id="swBorderGlowL" x1="0" y1="0.5" x2="0.5" y2="0.5">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
-                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
-                </SvgGradient>
-                <SvgGradient id="swBorderGlowR" x1="1" y1="0.5" x2="0.5" y2="0.5">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
-                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
-                </SvgGradient>
-              </Defs>
-              <Circle cx={(RING_SIZE + 18) / 2} cy={(RING_SIZE + 18) / 2} r={(RING_SIZE + 18) / 2 - 1.5} stroke="url(#swBorderGrad)"  strokeWidth={3} fill="none" />
-              <Circle cx={(RING_SIZE + 18) / 2} cy={(RING_SIZE + 18) / 2} r={(RING_SIZE + 18) / 2 - 1.5} stroke="url(#swBorderGlowL)" strokeWidth={3} fill="none" />
-              <Circle cx={(RING_SIZE + 18) / 2} cy={(RING_SIZE + 18) / 2} r={(RING_SIZE + 18) / 2 - 1.5} stroke="url(#swBorderGlowR)" strokeWidth={3} fill="none" />
-            </Svg>
-          </View>
-        </View>
+      {/* ── Número de días (sin fondo, borde ni ondas) ── */}
+      <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 18 }}>
+        <Text style={styles.ringCount}>{weekCount}</Text>
+        <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
       </View>
 
       {/* ── Bolitas de días ── */}
