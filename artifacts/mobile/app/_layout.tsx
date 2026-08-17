@@ -529,6 +529,7 @@ export default function RootLayout() {
                                 <RootLayoutNav />
                               </KeyboardProvider>
                               <SceneThemeTransitionOverlay />
+                              <StreakCelebrationFlow />
                             </ThemedGestureRoot>
                           </IntencionDiariaProvider>
                           </RachaProvider>
@@ -541,7 +542,6 @@ export default function RootLayout() {
                       </GreetingVisibleProvider>
                     </UserProfileProvider>
                     </SaveEventProvider>
-                    <StreakCelebrationFlow />
                     </StreakCelebrationProvider>
                     <MilestoneCelebration />
                     </MilestonesProvider>
