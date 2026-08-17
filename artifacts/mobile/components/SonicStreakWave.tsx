@@ -131,7 +131,7 @@ export function SonicStreakWave() {
   return (
     <View style={styles.card}>
       {/* ── Número de días (sin fondo, borde ni ondas) ── */}
-      <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 18 }}>
+      <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 18, marginTop: -20 }}>
         <Text style={styles.ringCount}>{weekCount}</Text>
         <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
       </View>
