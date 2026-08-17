@@ -54,6 +54,24 @@ export interface FavoritesInput {
   sessionIds: string[];
 }
 
+export interface MilestoneItem {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  milestoneId: string;
+  unlockedAt: string;
+}
+
+export interface MilestoneList {
+  milestones: MilestoneItem[];
+}
+
+export interface MilestoneInput {
+  /** @maxItems 200 */
+  milestones: MilestoneItem[];
+}
+
 export interface ProgressItem {
   /**
      * @minLength 1

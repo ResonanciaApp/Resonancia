@@ -1106,6 +1106,49 @@ export const SetMyProgressResponse = zod.object({
 
 
 /**
+ * @summary Get the current user's unlocked milestones
+ */
+export const getMyMilestonesResponseMilestonesItemMilestoneIdMax = 100;
+
+
+
+export const GetMyMilestonesResponse = zod.object({
+  "milestones": zod.array(zod.object({
+  "milestoneId": zod.string().min(1).max(getMyMilestonesResponseMilestonesItemMilestoneIdMax),
+  "unlockedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Push unlocked milestones from the device (append-only union)
+ */
+export const pushMyMilestonesBodyMilestonesItemMilestoneIdMax = 100;
+
+export const pushMyMilestonesBodyMilestonesMax = 200;
+
+
+
+export const PushMyMilestonesBody = zod.object({
+  "milestones": zod.array(zod.object({
+  "milestoneId": zod.string().min(1).max(pushMyMilestonesBodyMilestonesItemMilestoneIdMax),
+  "unlockedAt": zod.coerce.date()
+})).max(pushMyMilestonesBodyMilestonesMax)
+})
+
+export const pushMyMilestonesResponseMilestonesItemMilestoneIdMax = 100;
+
+
+
+export const PushMyMilestonesResponse = zod.object({
+  "milestones": zod.array(zod.object({
+  "milestoneId": zod.string().min(1).max(pushMyMilestonesResponseMilestonesItemMilestoneIdMax),
+  "unlockedAt": zod.coerce.date()
+}))
+})
+
+
+/**
  * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
  */
 export const getCatalogResponseSessionsItemSkipDetailDefault = false;

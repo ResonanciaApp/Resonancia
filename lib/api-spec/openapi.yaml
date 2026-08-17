@@ -1391,6 +1391,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /me/milestones:
+    get:
+      tags: [users]
+      operationId: getMyMilestones
+      summary: Get the current user's unlocked milestones
+      responses:
+        "200":
+          description: Unlocked milestones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MilestoneList"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [users]
+      operationId: pushMyMilestones
+      summary: Push unlocked milestones from the device (append-only union)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MilestoneInput"
+      responses:
+        "200":
+          description: Merged milestone list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MilestoneList"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /catalog:
     get:
       operationId: getCatalog
@@ -3419,6 +3466,34 @@ components:
             minLength: 1
             maxLength: 100
       required: [sessionIds]
+    MilestoneItem:
+      type: object
+      properties:
+        milestoneId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        unlockedAt:
+          type: string
+          format: date-time
+      required: [milestoneId, unlockedAt]
+    MilestoneList:
+      type: object
+      properties:
+        milestones:
+          type: array
+          items:
+            $ref: "#/components/schemas/MilestoneItem"
+      required: [milestones]
+    MilestoneInput:
+      type: object
+      properties:
+        milestones:
+          type: array
+          maxItems: 200
+          items:
+            $ref: "#/components/schemas/MilestoneItem"
+      required: [milestones]
     ProgressItem:
       type: object
       properties:

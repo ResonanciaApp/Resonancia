@@ -8,6 +8,32 @@ const KEY = "@geometrix_creations";
 // composiciones guardadas una única vez por dispositivo.
 const WIPE_FLAG = "@geometrix_creations_wiped_v1";
 
+// ── Señal cross-instancia ─────────────────────────────────────────────────────
+// Cada instancia del hook mantiene su propio estado; este emitter avisa a
+// suscriptores externos (p. ej. el motor de hitos) cada vez que ALGUNA
+// instancia persiste, con el conteo actualizado.
+type CountListener = (count: number) => void;
+const countListeners = new Set<CountListener>();
+
+export function subscribeGeometrixCount(fn: CountListener): () => void {
+  countListeners.add(fn);
+  return () => countListeners.delete(fn);
+}
+
+function notifyCount(count: number) {
+  for (const fn of countListeners) fn(count);
+}
+
+/** Conteo directo desde storage (para hidratación inicial del motor de hitos). */
+export async function readGeometrixCount(): Promise<number> {
+  try {
+    const raw = await AsyncStorage.getItem(KEY);
+    return raw ? (JSON.parse(raw) as unknown[]).length : 0;
+  } catch {
+    return 0;
+  }
+}
+
 async function wipeOnce() {
   try {
     const done = await AsyncStorage.getItem(WIPE_FLAG);
@@ -63,6 +89,7 @@ export function useGeometrixCreations() {
   const persist = useCallback(async (next: GeometrixCreation[]) => {
     setCreations(next);
     await AsyncStorage.setItem(KEY, JSON.stringify(next));
+    notifyCount(next.length);
   }, []);
 
   /** Guarda una composición nueva (la más reciente queda primera). */

@@ -5,10 +5,12 @@ import {
   playbackHistoryTable,
   favoritesTable,
   sessionProgressTable,
+  userMilestonesTable,
 } from "@workspace/db";
 import {
   GetMyPlaysQueryParams,
   PushMyPlaysBody,
+  PushMyMilestonesBody,
   SetMyFavoritesBody,
   SetMyProgressBody,
 } from "@workspace/api-zod";
@@ -196,6 +198,70 @@ router.put("/me/progress", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error al guardar el progreso" });
+  }
+});
+
+// ── Hitos (logros) — log append-only, merge por unión ────────────────────────
+
+router.get("/me/milestones", requireAuth, async (req, res) => {
+  const me = req.currentUser!;
+  try {
+    const rows = await db
+      .select({
+        milestoneId: userMilestonesTable.milestoneId,
+        unlockedAt: userMilestonesTable.unlockedAt,
+      })
+      .from(userMilestonesTable)
+      .where(eq(userMilestonesTable.userId, me.id));
+    res.json({
+      milestones: rows.map((r) => ({
+        milestoneId: r.milestoneId,
+        unlockedAt: r.unlockedAt.toISOString(),
+      })),
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al obtener hitos" });
+  }
+});
+
+router.put("/me/milestones", requireAuth, async (req, res) => {
+  const parsed = PushMyMilestonesBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos" });
+    return;
+  }
+  const me = req.currentUser!;
+  try {
+    const incoming = parsed.data.milestones;
+    if (incoming.length > 0) {
+      await db
+        .insert(userMilestonesTable)
+        .values(
+          incoming.map((m) => ({
+            userId: me.id,
+            milestoneId: m.milestoneId,
+            unlockedAt: new Date(m.unlockedAt),
+          })),
+        )
+        .onConflictDoNothing();
+    }
+    const rows = await db
+      .select({
+        milestoneId: userMilestonesTable.milestoneId,
+        unlockedAt: userMilestonesTable.unlockedAt,
+      })
+      .from(userMilestonesTable)
+      .where(eq(userMilestonesTable.userId, me.id));
+    res.json({
+      milestones: rows.map((r) => ({
+        milestoneId: r.milestoneId,
+        unlockedAt: r.unlockedAt.toISOString(),
+      })),
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al guardar hitos" });
   }
 });
 

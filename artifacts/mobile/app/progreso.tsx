@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useMilestones } from "@/context/MilestonesContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { computeCurrentStreak, computeMaxStreak, computeWeekFlags, dayKey } from "@/utils/stats";
 import { router } from "expo-router";
@@ -71,67 +72,13 @@ function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
 
-// ── Challenges ────────────────────────────────────────────────────────────────
-
-interface Challenge {
-  id: string;
-  icon: string;
-  label: string;
-  done: number;
-  total: number;
-}
-
-function buildChallenges(
-  totalSessions: number,
-  totalMinutes: number,
-  currentStreak: number,
-  categoriesUsed: number
-): Challenge[] {
-  return [
-    {
-      id: "streak7",
-      icon: "🔥",
-      label: "Medita 7 días seguidos",
-      done: Math.min(currentStreak, 7),
-      total: 7,
-    },
-    {
-      id: "sessions10",
-      icon: "🧘",
-      label: "Completa 10 sesiones",
-      done: Math.min(totalSessions, 10),
-      total: 10,
-    },
-    {
-      id: "minutes300",
-      icon: "⏱️",
-      label: "Acumula 5 horas de escucha",
-      done: Math.min(totalMinutes, 300),
-      total: 300,
-    },
-    {
-      id: "categories3",
-      icon: "🗺️",
-      label: "Explora 3 categorías distintas",
-      done: Math.min(categoriesUsed, 3),
-      total: 3,
-    },
-    {
-      id: "streak21",
-      icon: "🏆",
-      label: "Racha de 21 días",
-      done: Math.min(currentStreak, 21),
-      total: 21,
-    },
-  ];
-}
-
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { statEvents, history } = usePlayer();
+  const { statuses: milestones } = useMilestones();
   const todayKey = useDayRollover();
   const [tab, setTab] = useState<"logros" | "historial">("logros");
 
@@ -191,13 +138,6 @@ export default function ProgresoScreen() {
       }
     }
 
-    const challenges = buildChallenges(
-      totalSessions,
-      totalMinutes,
-      currentStreak,
-      categoriesUsed
-    );
-
     return {
       currentStreak,
       maxStreak,
@@ -207,7 +147,6 @@ export default function ProgresoScreen() {
       categoriesUsed,
       weekActivity,
       heatGrid,
-      challenges,
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statEvents, todayKey]);
@@ -448,13 +387,13 @@ export default function ProgresoScreen() {
               ))}
             </View>
 
-            {/* Desafíos */}
+            {/* Hitos */}
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Desafíos
+              Hitos
             </Text>
-            {stats.challenges.map((c) => {
-              const completed = c.done >= c.total;
-              const pct = Math.min(c.done / c.total, 1);
+            {milestones.map((c) => {
+              const completed = !!c.unlockedAt;
+              const pct = Math.min(c.progress / c.threshold, 1);
               return (
                 <View
                   key={c.id}
@@ -489,7 +428,7 @@ export default function ProgresoScreen() {
                           },
                         ]}
                       >
-                        {c.label}
+                        {c.title}
                       </Text>
                       <Text
                         style={[
@@ -497,7 +436,9 @@ export default function ProgresoScreen() {
                           { color: colors.mutedForeground },
                         ]}
                       >
-                        {c.done} / {c.total}
+                        {completed && c.unlockedAt
+                          ? `Conseguido el ${new Date(c.unlockedAt).toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" })}`
+                          : `${c.progress} / ${c.threshold}`}
                       </Text>
                     </View>
                   </View>

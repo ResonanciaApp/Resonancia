@@ -45,6 +45,8 @@ import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
 import { SaveEventProvider } from "@/context/SaveEventContext";
+import { MilestonesProvider } from "@/context/MilestonesContext";
+import { MilestoneCelebration } from "@/components/MilestoneCelebration";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
@@ -505,6 +507,7 @@ export default function RootLayout() {
                   <AmbientPlayerProvider>
                     <DescansoPlayerProvider>
                     <MixerProvider>
+                    <MilestonesProvider>
                     <SaveEventProvider>
                     <UserProfileProvider>
                       <ProfileSync />
@@ -535,6 +538,8 @@ export default function RootLayout() {
                       </GreetingVisibleProvider>
                     </UserProfileProvider>
                     </SaveEventProvider>
+                    <MilestoneCelebration />
+                    </MilestonesProvider>
                     </MixerProvider>
                     </DescansoPlayerProvider>
                   </AmbientPlayerProvider>

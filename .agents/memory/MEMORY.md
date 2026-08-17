@@ -127,4 +127,5 @@
 - [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
 - [Dev client http = assets corruptos](dev-client-http-assets-corrupt.md) — URL del túnel sin https → fuentes/imágenes llegan como HTML y quedan cacheadas; tofu solo en ese dispositivo; fix = borrar caché + reconectar con https
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
-- [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (meta 5 min/día, fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
+- [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
+- [Motor de hitos (logros)](milestones-engine.md) — evaluación espera hydrated+cloudSettled; sync unión append-only; contadores de por vida para mezclas/Geometrix; orval SIEMPRE 8.9.1

@@ -35,6 +35,8 @@ import {
   setMyFavorites,
   getMyProgress,
   setMyProgress,
+  getMyMilestones,
+  pushMyMilestones,
 } from "@workspace/api-client-react";
 
 export interface SyncStatEvent {
@@ -193,3 +195,32 @@ export async function syncActivity(
   const recovered = !firstSync || (playsReadOk && favsReadOk && progressReadOk);
   return { ...merged, recovered };
 }
+
+// ── Hitos (logros) ────────────────────────────────────────────────────────────
+// Log append-only, igual que los eventos: SIEMPRE unión local ∪ server (un hito
+// conseguido nunca se pierde ni se "des-consigue"). El server deduplica por
+// (userId, milestoneId), así que empujar todo es seguro e idempotente.
+
+/** map milestoneId → unlockedAt (ISO). Devuelve el merge; nunca lanza. */
+export async function syncMilestones(
+  local: Record<string, string>,
+): Promise<Record<string, string>> {
+  try {
+    const server = await pushMyMilestones({
+      milestones: Object.entries(local).map(([milestoneId, unlockedAt]) => ({
+        milestoneId,
+        unlockedAt,
+      })),
+    });
+    const merged: Record<string, string> = { ...local };
+    for (const m of server.milestones) {
+      if (!merged[m.milestoneId]) merged[m.milestoneId] = m.unlockedAt;
+    }
+    return merged;
+  } catch {
+    return local; // offline / sin sesión → se reintenta en el próximo arranque
+  }
+}
+
+// getMyMilestones queda disponible para futuras lecturas puras.
+export { getMyMilestones };

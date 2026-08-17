@@ -1,16 +1,17 @@
 // ── Shared stats helpers ───────────────────────────────────────────────────────
 //
 // Fuente ÚNICA de verdad para la racha (Tarea de auditoría):
-// - Día activo = sumar >= GOAL_MINUTES minutos escuchados ese día (local).
+// - Día activo = sumar >= GOAL_MINUTES minutos escuchados ese día (local),
+//   O haber COMPLETADO al menos una sesión ese día (completed === true).
 // - Racha actual: si hoy aún no cumple la meta, se cuenta desde ayer
 //   (la racha "no se rompe" hasta que termina el día).
 // - Los días se comparan por clave de calendario local (nunca por diferencia
 //   de timestamps: eso se rompe con cambios de hora/DST).
 // Cualquier pantalla que muestre racha/semana debe importar de aquí.
 
-export const GOAL_MINUTES = 5;
+export const GOAL_MINUTES = 3;
 
-export type StatEventLike = { playedAt: string; minutes?: number };
+export type StatEventLike = { playedAt: string; minutes?: number; completed?: boolean };
 
 export function dayKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -46,15 +47,34 @@ export function minutesByDay(events: StatEventLike[]): Map<string, number> {
   return map;
 }
 
-function isActiveDay(byDay: Map<string, number>, d: Date): boolean {
-  return (byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES;
+type DayAgg = { minutes: number; completedSession: boolean };
+
+/** Agregado por día local: minutos + si hubo una sesión completada. */
+function aggByDay(events: StatEventLike[]): Map<string, DayAgg> {
+  const map = new Map<string, DayAgg>();
+  for (const e of events) {
+    const k = dayKey(new Date(e.playedAt));
+    const cur = map.get(k) ?? { minutes: 0, completedSession: false };
+    cur.minutes += e.minutes ?? 0;
+    if (e.completed === true) cur.completedSession = true;
+    map.set(k, cur);
+  }
+  return map;
+}
+
+function aggIsActive(agg: DayAgg | undefined): boolean {
+  return !!agg && (agg.minutes >= GOAL_MINUTES || agg.completedSession);
+}
+
+function isActiveDay(byDay: Map<string, DayAgg>, d: Date): boolean {
+  return aggIsActive(byDay.get(dayKey(d)));
 }
 
 /** Racha actual: días consecutivos con la meta cumplida, empezando hoy
  *  (o ayer si hoy aún no cumple la meta). */
 export function computeCurrentStreak(events: StatEventLike[]): number {
   if (!events.length) return 0;
-  const byDay = minutesByDay(events);
+  const byDay = aggByDay(events);
   const today = startOfDay(new Date());
   const start = isActiveDay(byDay, today) ? 0 : 1;
   let count = 0;
@@ -69,9 +89,9 @@ export function computeCurrentStreak(events: StatEventLike[]): number {
  *  Encadena por calendario local avanzando día a día, sin restar timestamps. */
 export function computeMaxStreak(events: StatEventLike[]): number {
   if (!events.length) return 0;
-  const byDay = minutesByDay(events);
+  const byDay = aggByDay(events);
   const activeKeys = new Set<string>();
-  for (const [k, m] of byDay) if (m >= GOAL_MINUTES) activeKeys.add(k);
+  for (const [k, agg] of byDay) if (aggIsActive(agg)) activeKeys.add(k);
   if (activeKeys.size === 0) return 0;
 
   let max = 0;
@@ -97,7 +117,7 @@ export function computeWeekFlags(events: StatEventLike[]): {
   weekCount: number;
   todayIndex: number;
 } {
-  const byDay = minutesByDay(events);
+  const byDay = aggByDay(events);
   const today = new Date();
   const monday = startOfWeek(today);
   const todayKey = dayKey(today);
@@ -113,6 +133,15 @@ export function computeWeekFlags(events: StatEventLike[]): {
     if (dayKey(d) === todayKey) todayIndex = i;
   }
   return { flags, weekCount, todayIndex };
+}
+
+/** Total de días activos (misma regla de meta diaria) — para hitos como
+ *  "50 días de práctica" (no necesitan ser consecutivos). */
+export function computeTotalActiveDays(events: StatEventLike[]): number {
+  const byDay = aggByDay(events);
+  let n = 0;
+  for (const agg of byDay.values()) if (aggIsActive(agg)) n++;
+  return n;
 }
 
 /** Días distintos con al menos un evento (estadística de uso, no racha). */

@@ -89,6 +89,8 @@ import type {
   HealthStatus,
   ListDescansoSounds200,
   MessagesPage,
+  MilestoneInput,
+  MilestoneList,
   MixComment,
   MixCommentInput,
   MixCommentsPage,
@@ -4322,6 +4324,154 @@ export const useSetMyProgress = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getSetMyProgressMutationOptions(options));
+    }
+
+export const getGetMyMilestonesUrl = () => {
+
+
+
+
+  return `/api/me/milestones`
+}
+
+/**
+ * @summary Get the current user's unlocked milestones
+ */
+export const getMyMilestones = async ( options?: RequestInit): Promise<MilestoneList> => {
+
+  return customFetch<MilestoneList>(getGetMyMilestonesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyMilestonesQueryKey = () => {
+    return [
+    `/api/me/milestones`
+    ] as const;
+    }
+
+
+export const getGetMyMilestonesQueryOptions = <TData = Awaited<ReturnType<typeof getMyMilestones>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyMilestones>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyMilestonesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyMilestones>>> = ({ signal }) => getMyMilestones({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyMilestones>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyMilestonesQueryResult = NonNullable<Awaited<ReturnType<typeof getMyMilestones>>>
+export type GetMyMilestonesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the current user's unlocked milestones
+ */
+
+export function useGetMyMilestones<TData = Awaited<ReturnType<typeof getMyMilestones>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyMilestones>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyMilestonesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getPushMyMilestonesUrl = () => {
+
+
+
+
+  return `/api/me/milestones`
+}
+
+/**
+ * @summary Push unlocked milestones from the device (append-only union)
+ */
+export const pushMyMilestones = async (milestoneInput: MilestoneInput, options?: RequestInit): Promise<MilestoneList> => {
+
+  return customFetch<MilestoneList>(getPushMyMilestonesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      milestoneInput,)
+  }
+);}
+
+
+
+
+export const getPushMyMilestonesMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pushMyMilestones>>, TError,{data: BodyType<MilestoneInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof pushMyMilestones>>, TError,{data: BodyType<MilestoneInput>}, TContext> => {
+
+const mutationKey = ['pushMyMilestones'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof pushMyMilestones>>, {data: BodyType<MilestoneInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  pushMyMilestones(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PushMyMilestonesMutationResult = NonNullable<Awaited<ReturnType<typeof pushMyMilestones>>>
+    export type PushMyMilestonesMutationBody = BodyType<MilestoneInput>
+    export type PushMyMilestonesMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Push unlocked milestones from the device (append-only union)
+ */
+export const usePushMyMilestones = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pushMyMilestones>>, TError,{data: BodyType<MilestoneInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof pushMyMilestones>>,
+        TError,
+        {data: BodyType<MilestoneInput>},
+        TContext
+      > => {
+      return useMutation(getPushMyMilestonesMutationOptions(options));
     }
 
 export const getGetCatalogUrl = () => {
