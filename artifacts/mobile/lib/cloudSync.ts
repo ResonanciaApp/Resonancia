@@ -37,6 +37,7 @@ import {
   setMyProgress,
   getMyMilestones,
   pushMyMilestones,
+  customFetch,
 } from "@workspace/api-client-react";
 
 export interface SyncStatEvent {
@@ -219,6 +220,17 @@ export async function syncMilestones(
     return merged;
   } catch {
     return local; // offline / sin sesión → se reintenta en el próximo arranque
+  }
+}
+
+/** Borra un hito en la nube (para re-probar celebraciones). Nunca lanza. */
+export async function deleteMilestoneCloud(milestoneId: string): Promise<void> {
+  try {
+    await customFetch(`/api/me/milestones/${encodeURIComponent(milestoneId)}`, {
+      method: "DELETE",
+    });
+  } catch {
+    // offline / sin sesión → el borrado local igual aplica en este dispositivo
   }
 }
 

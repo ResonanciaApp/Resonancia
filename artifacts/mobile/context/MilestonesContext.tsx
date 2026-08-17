@@ -23,7 +23,7 @@ import {
   computeMaxStreak,
   computeTotalActiveDays,
 } from "@/utils/stats";
-import { syncMilestones } from "@/lib/cloudSync";
+import { deleteMilestoneCloud, syncMilestones } from "@/lib/cloudSync";
 
 const STORAGE_KEY = "@resonance_milestones";
 /** Contadores de POR VIDA de creaciones (mezclas / Geometrix). Borrar un ítem
@@ -55,6 +55,9 @@ interface MilestonesCtx {
   dismissCelebration: () => void;
   /** Vista previa de diseño: muestra la celebración de un hito SIN marcarlo. */
   previewMilestone: (id: string) => void;
+  /** Herramienta de prueba: borra un hito conseguido (local + nube) y rebaja
+   *  el contador de su familia para poder volver a ganarlo con la celebración. */
+  resetMilestone: (id: string) => void;
 }
 
 const Ctx = createContext<MilestonesCtx | null>(null);
@@ -213,6 +216,35 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
     setQueue((q) => (q.includes(id) ? q : [...q, id]));
   }, []);
 
+  const resetMilestone = useCallback((id: string) => {
+    const def = MILESTONES.find((m) => m.id === id);
+    if (!def) return;
+    // 1) Quitar el desbloqueo local y en la nube
+    setUnlocked((prev) => {
+      if (!prev[id]) return prev;
+      const next = { ...prev };
+      delete next[id];
+      void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+    void deleteMilestoneCloud(id);
+    // 2) Para familias de creaciones, rebajar el contador de por vida justo
+    //    bajo el umbral: la PRÓXIMA creación vuelve a cruzarlo y celebra.
+    if (def.family === "mezclas" || def.family === "geometrix") {
+      setCounters((prev) => {
+        if (!prev) return prev;
+        const fam = prev[def.family as "mezclas" | "geometrix"];
+        if (fam.lifetime < def.threshold) return prev;
+        const next: Counters = {
+          ...prev,
+          [def.family]: { lifetime: def.threshold - 1, lastSeen: fam.lastSeen },
+        };
+        void AsyncStorage.setItem(COUNTERS_KEY, JSON.stringify(next));
+        return next;
+      });
+    }
+  }, []);
+
   const statuses = useMemo<MilestoneStatus[]>(
     () =>
       MILESTONES.map((m) => ({
@@ -229,8 +261,8 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   }, [queue, statuses]);
 
   const value = useMemo(
-    () => ({ statuses, celebrating, dismissCelebration, previewMilestone }),
-    [statuses, celebrating, dismissCelebration, previewMilestone],
+    () => ({ statuses, celebrating, dismissCelebration, previewMilestone, resetMilestone }),
+    [statuses, celebrating, dismissCelebration, previewMilestone, resetMilestone],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

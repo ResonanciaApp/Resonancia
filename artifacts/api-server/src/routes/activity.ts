@@ -265,4 +265,24 @@ router.put("/me/milestones", requireAuth, async (req, res) => {
   }
 });
 
+// Quitar un hito conseguido (p. ej. para volver a probar la celebración).
+router.delete("/me/milestones/:milestoneId", requireAuth, async (req, res) => {
+  const me = req.currentUser!;
+  const milestoneId = String(req.params.milestoneId ?? "");
+  try {
+    await db
+      .delete(userMilestonesTable)
+      .where(
+        and(
+          eq(userMilestonesTable.userId, me.id),
+          eq(userMilestonesTable.milestoneId, milestoneId),
+        ),
+      );
+    res.json({ ok: true });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al borrar el hito" });
+  }
+});
+
 export default router;

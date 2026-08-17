@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
+  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -27,7 +28,7 @@ interface Props {
 export function ProgresoModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { statEvents } = usePlayer();
-  const { statuses: milestones, previewMilestone } = useMilestones();
+  const { statuses: milestones, previewMilestone, resetMilestone } = useMilestones();
   const { theme } = useSceneTheme();
 
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
@@ -83,6 +84,21 @@ export function ProgresoModal({ visible, onClose }: Props) {
                 <Pressable
                   key={m.id}
                   onPress={() => previewMilestone(m.id)}
+                  onLongPress={() => {
+                    if (!done) return;
+                    Alert.alert(
+                      "Reiniciar hito",
+                      `¿Borrar "${m.title}" para volver a ganarlo?`,
+                      [
+                        { text: "Cancelar", style: "cancel" },
+                        {
+                          text: "Borrar",
+                          style: "destructive",
+                          onPress: () => resetMilestone(m.id),
+                        },
+                      ],
+                    );
+                  }}
                   style={[styles.milestoneRow, done && styles.milestoneRowDone]}
                 >
                   <View style={[styles.milestoneBadge, done && styles.milestoneBadgeDone]}>
