@@ -10,7 +10,7 @@
  */
 
 import { Feather } from "@expo/vector-icons";
-import { Audio } from "expo-av";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
@@ -298,23 +298,16 @@ export function PlaylistAddSessionsSheet({
   // ── Preview state ────────────────────────────────────────────────────────
   const [previewId, setPreviewId] = useState<string | null>(null);
   const progressSV   = useSharedValue(0);
-  const soundRef     = useRef<Audio.Sound | null>(null);
+  const soundRef     = useRef<AudioPlayer | null>(null);
   const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Rastrea para qué sesión se está cargando audio (evita race si el usuario
-  // cambia de preview mientras el createAsync aún no terminó).
-  const loadingForRef = useRef<string | null>(null);
-
-  // Limpia un Sound de forma secuencial con timeout de seguridad
-  const cleanupSound = useCallback(async (s: Audio.Sound) => {
-    const withTimeout = (p: Promise<unknown>) =>
-      Promise.race([p, new Promise<void>((r) => setTimeout(r, 1500))]);
-    try { await withTimeout(s.stopAsync()); } catch { /* ignorar */ }
-    try { await withTimeout(s.unloadAsync()); } catch { /* ignorar */ }
+  // Limpia un player de expo-audio (pause + remove libera el recurso nativo)
+  const cleanupSound = useCallback(async (s: AudioPlayer) => {
+    try { s.pause(); } catch { /* ignorar */ }
+    try { s.remove(); } catch { /* ignorar */ }
   }, []);
 
   const stopPreview = useCallback(async () => {
-    loadingForRef.current = null;
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     cancelAnimation(progressSV);
     progressSV.value = 0;
@@ -326,7 +319,6 @@ export function PlaylistAddSessionsSheet({
 
   const startPreview = useCallback(async (session: Session) => {
     // Cancelar temporizador y animación actuales
-    loadingForRef.current = null;
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     cancelAnimation(progressSV);
     progressSV.value = 0;
@@ -339,8 +331,8 @@ export function PlaylistAddSessionsSheet({
 
     // Fuente: AUDIO_MAP → AMBIENT_MAP → audioUri remoto
     const bundled = AUDIO_MAP[session.id] ?? AMBIENT_MAP[session.id];
-    const src: number | { uri: string } | undefined =
-      bundled ?? (session.audioUri ? { uri: session.audioUri } : undefined);
+    const src = (bundled ?? (session.audioUri ? { uri: session.audioUri } : undefined)) as
+      number | { uri: string } | undefined;
     if (!src) return;
 
     // ── Arrancar UI inmediatamente ──────────────────────────────────────────
@@ -348,16 +340,12 @@ export function PlaylistAddSessionsSheet({
     progressSV.value = 0;
     progressSV.value = withTiming(1, { duration: PREVIEW_MS, easing: Easing.linear });
     timerRef.current = setTimeout(() => { void stopPreview(); }, PREVIEW_MS);
-    loadingForRef.current = session.id;
 
-    // ── Cargar audio en background (no bloquea la animación) ────────────────
+    // ── Crear player (sincrónico; expo-audio carga y arranca solo) ──────────
     try {
-      const { sound } = await Audio.Sound.createAsync(src, { shouldPlay: true });
-      if (loadingForRef.current === session.id) {
-        soundRef.current = sound;
-      } else {
-        void cleanupSound(sound);
-      }
+      const player = createAudioPlayer(src);
+      player.play();
+      soundRef.current = player;
     } catch { /* ignorar */ }
   }, [cleanupSound, stopPreview]); // eslint-disable-line react-hooks/exhaustive-deps
 

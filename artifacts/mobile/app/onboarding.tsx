@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Audio } from "expo-av";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as Haptics from "expo-haptics";
@@ -175,33 +175,35 @@ export default function Onboarding() {
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
   // ── Audio ─────────────────────────────────────────────────────────────────
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const soundRef = useRef<AudioPlayer | null>(null);
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-        const { sound } = await Audio.Sound.createAsync(
-          require("@/assets/audio/om_mani_padme_hum.mp3"),
-          { isLooping: true, volume: 0, shouldPlay: true }
-        );
-        if (!mounted) { await sound.unloadAsync(); return; }
-        soundRef.current = sound;
-        // Fade in over 4 seconds
-        let vol = 0;
-        const step = 0.05;
-        const interval = setInterval(async () => {
-          vol = Math.min(vol + step, 0.55);
-          try { await sound.setVolumeAsync(vol); } catch {}
-          if (vol >= 0.55) clearInterval(interval);
-        }, 350);
-      } catch {}
-    })();
+    // NOTA: la sesión de audio (AVAudioSession) la configura PlayerContext;
+    // aquí solo se crea un player. expo-audio es el único dueño de la sesión.
+    let interval: ReturnType<typeof setInterval> | null = null;
+    try {
+      const player = createAudioPlayer(require("@/assets/audio/om_mani_padme_hum.mp3"));
+      player.loop = true;
+      player.volume = 0;
+      player.play();
+      soundRef.current = player;
+      // Fade in over 4 seconds
+      let vol = 0;
+      const step = 0.05;
+      interval = setInterval(() => {
+        vol = Math.min(vol + step, 0.55);
+        try { player.volume = vol; } catch {}
+        if (vol >= 0.55 && interval) { clearInterval(interval); interval = null; }
+      }, 350);
+    } catch {}
     return () => {
-      mounted = false;
-      soundRef.current?.unloadAsync().catch(() => {});
+      if (interval) clearInterval(interval);
+      const p = soundRef.current;
       soundRef.current = null;
+      if (p) {
+        try { p.pause(); } catch {}
+        try { p.remove(); } catch {}
+      }
     };
   }, []);
 
@@ -275,12 +277,12 @@ export default function Onboarding() {
     const sound = soundRef.current;
     if (sound) {
       let vol = 0.55;
-      const interval = setInterval(async () => {
+      const interval = setInterval(() => {
         vol = Math.max(vol - 0.07, 0);
-        try { await sound.setVolumeAsync(vol); } catch {}
+        try { sound.volume = vol; } catch {}
         if (vol <= 0) {
           clearInterval(interval);
-          sound.unloadAsync().catch(() => {});
+          try { sound.pause(); sound.remove(); } catch {}
           soundRef.current = null;
         }
       }, 120);
@@ -382,7 +384,7 @@ export default function Onboarding() {
               await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(answers));
               const sound = soundRef.current;
               if (sound) {
-                try { await sound.setVolumeAsync(0); await sound.unloadAsync(); } catch {}
+                try { sound.volume = 0; sound.pause(); sound.remove(); } catch {}
                 soundRef.current = null;
               }
               router.replace("/(auth)/sign-up");
