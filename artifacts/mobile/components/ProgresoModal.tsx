@@ -75,7 +75,7 @@ export function ProgresoModal({ visible, onClose }: Props) {
           <SonicStreakWave />
 
           {/* ── Hitos ── */}
-          <Text style={styles.sessionsSectionLabel}>Hitos</Text>
+          <Text style={[styles.sessionsSectionLabel, { marginTop: 20 }]}>Hitos</Text>
           <View style={styles.milestoneList}>
             {milestones.map((m) => {
               const done = !!m.unlockedAt;
