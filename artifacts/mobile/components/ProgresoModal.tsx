@@ -74,9 +74,6 @@ export function ProgresoModal({ visible, onClose }: Props) {
           {/* ── Ondas + anillo + días (diseño original) ── */}
           <SonicStreakWave />
 
-          {/* ── Divider ── */}
-          <View style={styles.divider} />
-
           {/* ── Hitos ── */}
           <Text style={styles.sessionsSectionLabel}>Hitos</Text>
           <View style={styles.milestoneList}>
