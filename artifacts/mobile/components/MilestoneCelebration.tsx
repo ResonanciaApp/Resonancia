@@ -121,15 +121,23 @@ export function MilestoneCelebration() {
     });
   };
 
-  if (!isTopHost || !presentReady || !celebrating || !visible) return null;
+  if (!isTopHost || !celebrating || !visible) return null;
+
+  // La instancia RAÍZ (primera de la pila) presenta un Modal nativo propio.
+  // Las instancias anidadas (dentro del Modal del Mezclador, ProgresoModal,
+  // etc.) rinden una CAPA en línea (absoluteFill): un Modal anidado que se
+  // desmonta con su padre desaparece a mitad de la celebración y el relevo
+  // nativo es poco confiable en iOS.
+  const isRoot = hostStack[0] === hostId.current;
+  if (isRoot && !presentReady) return null;
 
   const badgeScale = badgePulse.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 1.08],
   });
 
-  return (
-    <Modal transparent visible animationType="none" onRequestClose={close}>
+  const inner = (
+    <>
       <Animated.View style={[StyleSheet.absoluteFill, styles.backdrop, { opacity: dim }]} />
       <View style={styles.center} pointerEvents="box-none">
         <Animated.View style={[styles.card, { opacity: cardOpacity, transform: [{ scale }] }]}>
@@ -153,7 +161,20 @@ export function MilestoneCelebration() {
           </Pressable>
         </Animated.View>
       </View>
-    </Modal>
+    </>
+  );
+
+  if (isRoot) {
+    return (
+      <Modal transparent visible animationType="none" onRequestClose={close}>
+        {inner}
+      </Modal>
+    );
+  }
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="auto">
+      {inner}
+    </View>
   );
 }
 

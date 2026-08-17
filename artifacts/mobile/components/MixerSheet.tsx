@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { MilestoneCelebration } from "@/components/MilestoneCelebration";
+import { useMilestones } from "@/context/MilestonesContext";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -770,13 +771,22 @@ export function MixerSheet() {
     stopAll();
   };
 
+  const { celebrating } = useMilestones();
+  const milestoneHoldRef = useRef(false);
+
   const canShow = isSheetOpen && activeMix.length > 0;
   const canUpdate = originId != null && originPreset != null;
 
   // Mantiene el Modal visible durante el fade de cierre aunque canShow
   // cambie a false (por stopAll). Se libera al terminar la animación.
   const [forceShowModal, setForceShowModal] = useState(false);
-  const modalVisible = canShow || forceShowModal || inmersivoOpen;
+  const baseVisible = canShow || forceShowModal || inmersivoOpen;
+  // Mantiene el Modal vivo mientras hay una celebración de hito en curso que
+  // NACIÓ con la hoja abierta (si no, la celebración se desmonta a mitad).
+  // No abre el Modal por una celebración ajena (p. ej. hito de Geometrix).
+  if (baseVisible) milestoneHoldRef.current = true;
+  else if (!celebrating) milestoneHoldRef.current = false;
+  const modalVisible = baseVisible || (celebrating != null && milestoneHoldRef.current);
 
   return (
     <Modal
