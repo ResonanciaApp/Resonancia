@@ -131,7 +131,7 @@ export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
         {/* ── TITLE + DESCRIPTION ── */}
         <View style={styles.intro}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>{tema.label}</Text>
-          <Text style={[styles.pageDesc, { color: "#F4F4F4" }]} numberOfLines={1}>
+          <Text style={[styles.pageDesc, { color: "#F4F4F4" }]} numberOfLines={4}>
             {tema.description}
           </Text>
         </View>
