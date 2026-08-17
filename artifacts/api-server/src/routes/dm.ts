@@ -215,8 +215,9 @@ router.get("/dm/conversations", requireAuth, async (req, res) => {
                 recipientId: last.recipient_id,
                 body: last.body,
                 sessionId: last.session_id,
-                readAt: last.read_at ? last.read_at.toISOString() : null,
-                createdAt: last.created_at.toISOString(),
+                // db.execute (SQL crudo) devuelve timestamps como string, no Date
+                readAt: last.read_at ? new Date(last.read_at).toISOString() : null,
+                createdAt: new Date(last.created_at).toISOString(),
               }
             : null,
           unreadCount: unreadByFriend.get(f.id) ?? 0,
