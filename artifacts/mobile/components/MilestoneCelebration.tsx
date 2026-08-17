@@ -12,6 +12,17 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { useMilestones } from "@/context/MilestonesContext";
 
+// ── Pila de hosts ─────────────────────────────────────────────────────────────
+// Hay una instancia global (root layout) y puede haber otra DENTRO de un Modal
+// abierto (p. ej. ProgresoModal): en iOS un Modal hermano no aparece sobre otro
+// Modal ya presentado, así que la instancia más interna debe ser la que rinda.
+let hostSeq = 0;
+const hostStack: number[] = [];
+const hostListeners = new Set<() => void>();
+function notifyHosts() {
+  for (const fn of hostListeners) fn();
+}
+
 const GOLD = "#BE9650";
 const NAVY = "#060A0F";
 
@@ -25,6 +36,23 @@ const NAVY = "#060A0F";
 export function MilestoneCelebration() {
   const { celebrating, dismissCelebration } = useMilestones();
   const [visible, setVisible] = useState(false);
+  const hostId = useRef(0);
+  const [isTopHost, setIsTopHost] = useState(false);
+
+  useEffect(() => {
+    const id = ++hostSeq;
+    hostId.current = id;
+    hostStack.push(id);
+    const update = () => setIsTopHost(hostStack[hostStack.length - 1] === id);
+    hostListeners.add(update);
+    notifyHosts();
+    return () => {
+      const idx = hostStack.indexOf(id);
+      if (idx >= 0) hostStack.splice(idx, 1);
+      hostListeners.delete(update);
+      notifyHosts();
+    };
+  }, []);
 
   const dim = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.7)).current;
@@ -81,7 +109,7 @@ export function MilestoneCelebration() {
     });
   };
 
-  if (!celebrating || !visible) return null;
+  if (!isTopHost || !celebrating || !visible) return null;
 
   const badgeScale = badgePulse.interpolate({
     inputRange: [0, 1],

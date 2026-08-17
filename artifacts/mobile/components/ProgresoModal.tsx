@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useMilestones } from "@/context/MilestonesContext";
+import { MilestoneCelebration } from "@/components/MilestoneCelebration";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
@@ -145,6 +146,7 @@ export function ProgresoModal({ visible, onClose }: Props) {
             </View>
           )}
         </ScrollView>
+        <MilestoneCelebration />
       </LinearGradient>
     </Modal>
   );
