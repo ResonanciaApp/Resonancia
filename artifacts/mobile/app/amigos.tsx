@@ -137,7 +137,7 @@ function GuestPrompt() {
 function SignedInAmigos() {
   // Amigos vive como overlay sobre el drawer: al navegar a otra ruta hay que
   // cerrar el overlay o la pantalla nueva queda montada DEBAJO y no se ve.
-  const { closeOverlay } = useDrawer();
+  const { closeOverlay, openChat } = useDrawer();
   const colors = useColors();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
@@ -296,7 +296,7 @@ function SignedInAmigos() {
               key={f.id}
               friend={f}
               onOpen={() => { closeOverlay(); router.push(`/usuario/${f.id}` as never); }}
-              onMessage={() => { closeOverlay(); router.push(`/chat/${f.id}` as never); }}
+              onMessage={() => openChat(f.id)}
               onRemove={() => onRemove(f)}
             />
           ))}
@@ -432,7 +432,7 @@ function FriendRow({
 }
 
 function ConversationRow({ conversation }: { conversation: Conversation }) {
-  const { closeOverlay } = useDrawer();
+  const { closeOverlay, openChat } = useDrawer();
   const colors = useColors();
   const { friend, lastMessage, unreadCount } = conversation;
   const preview = lastMessage
@@ -443,7 +443,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
   const time = lastMessage ? relativeShort(lastMessage.createdAt) : "";
   return (
     <Pressable
-      onPress={() => { closeOverlay(); router.push(`/chat/${friend.id}` as never); }}
+      onPress={() => openChat(friend.id)}
       style={({ pressed }) => [
         styles.friendRow,
         { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },

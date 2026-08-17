@@ -25,6 +25,10 @@ type DrawerCtx = {
   overlayRoute: string | null;
   openOverlay: (route: string) => void;
   closeOverlay: () => void;
+  /** Chat overlay que se desliza SOBRE el overlay de amigos (queda abierto debajo). */
+  chatUserId: number | null;
+  openChat: (userId: number) => void;
+  closeChat: () => void;
   overlayParallax: Animated.Value;
 };
 
@@ -88,10 +92,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [overlayRoute, overlayParallax]);
   const openOverlay = useCallback((route: string) => setOverlayRoute(route), []);
   const closeOverlay = useCallback(() => setOverlayRoute(null), []);
+  const [chatUserId, setChatUserId] = useState<number | null>(null);
+  const openChat = useCallback((userId: number) => setChatUserId(userId), []);
+  const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

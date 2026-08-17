@@ -19,6 +19,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
+import { ChatOverlay } from "@/components/ChatOverlay";
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
@@ -383,6 +384,7 @@ function RootLayoutNav() {
           <DrawerMenu />
           <BibliotecaOverlay />
           <DrawerScreenOverlay />
+          <ChatOverlay />
           <MixerSheet />
           <EscenasSheet />
           <GlobalSceneModal />

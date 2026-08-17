@@ -24,6 +24,7 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -105,14 +106,16 @@ function formatDuration(ms: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export default function ChatScreen() {
+export default function ChatScreen({ userIdOverride }: { userIdOverride?: number } = {}) {
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 18 : insets.bottom;
   const params = useLocalSearchParams<{ userId: string }>();
-  const otherId = Number(params.userId);
+  const otherId = userIdOverride ?? Number(params.userId);
+  const backOverride = useBackOverride();
+  const goBack = backOverride ?? (() => router.back());
   const qc = useQueryClient();
   // Sondeo solo con la pantalla en foco (pausa al salir del chat).
   const msgPoll = usePollingInterval(3000);
@@ -500,7 +503,7 @@ export default function ChatScreen() {
   if (!isSignedIn || !Number.isFinite(otherId) || isForbidden) {
     return (
       <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0], paddingTop: topPad }]}>
-        <Pressable onPress={() => router.back()} style={{ padding: 16 }} hitSlop={12}>
+        <Pressable onPress={goBack} style={{ padding: 16 }} hitSlop={12}>
           <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
         </Pressable>
         <Text style={[styles.empty, { color: "#F4F4F4" }]}>
@@ -527,7 +530,7 @@ export default function ChatScreen() {
           { paddingTop: topPad + 8, borderColor: "rgba(255,255,255,0.1)", backgroundColor: sceneTheme.gradient[0] },
         ]}
       >
-        <Pressable onPress={() => router.back()} hitSlop={12} style={{ padding: 6 }}>
+        <Pressable onPress={goBack} hitSlop={12} style={{ padding: 6 }}>
           <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
         </Pressable>
         <View style={[styles.headerAvatar, { backgroundColor: friendTint + "33" }]}>

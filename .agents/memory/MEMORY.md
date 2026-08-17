@@ -126,3 +126,4 @@
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
 - [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
 - [Dev client http = assets corruptos](dev-client-http-assets-corrupt.md) — URL del túnel sin https → fuentes/imágenes llegan como HTML y quedan cacheadas; tofu solo en ese dispositivo; fix = borrar caché + reconectar con https
+- [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
