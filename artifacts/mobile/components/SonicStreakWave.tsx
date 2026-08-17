@@ -133,13 +133,14 @@ export function SonicStreakWave() {
       {/* ── Contador a la izquierda + texto a la derecha ── */}
       <View style={{ flexDirection: "row", alignItems: "center", width: COMP_W, paddingVertical: 18, marginTop: -45, gap: 16 }}>
         <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.ringCount}>{weekCount}</Text>
-          <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.countLine}>
+            {weekCount} {weekCount === 1 ? "Día" : "Días"}
+          </Text>
+          <Text style={styles.sideText}>
+            Medita al menos 3 días a la semana y transforma tu vida
+          </Text>
         </View>
-        <Text style={styles.sideText}>
-          Medita al menos 3 días a la semana y transforma tu vida
-        </Text>
       </View>
 
       {/* ── Bolitas de días ── */}
@@ -228,8 +229,14 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     letterSpacing: 0.3,
   },
+  countLine: {
+    fontFamily: "Manrope",
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#F9F9F9",
+    marginBottom: 4,
+  },
   sideText: {
-    flex: 1,
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
