@@ -701,6 +701,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           setIsPlaying(false);
           setProgress(1);
           if (sId) saveSessionProgress(sId, 1, { force: true });
+          // Llegó al final → cuenta como sesión COMPLETADA (día activo + hitos)
+          statCompletedRef.current = true;
           flushActiveStatRef.current();
           return totalSeconds;
         }
