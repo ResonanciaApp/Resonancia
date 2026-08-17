@@ -16,6 +16,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
+import { MilestoneCelebration } from "@/components/MilestoneCelebration";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -1126,6 +1127,10 @@ export function MixerSheet() {
           <InmersivoContent />
         </View>
       )}
+
+      {/* Celebración de hitos DENTRO de este Modal: una ventana hermana no
+          aparece sobre un Modal ya abierto en iOS (pantalla quedaba bloqueada) */}
+      <MilestoneCelebration />
     </Modal>
   );
 }
