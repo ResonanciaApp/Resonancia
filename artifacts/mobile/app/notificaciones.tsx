@@ -136,6 +136,7 @@ export default function NotificacionesScreen() {
     query: {
       queryKey: getGetNotificationsQueryKey(),
       enabled: !!isSignedIn,
+      staleTime: 0,
       refetchInterval: usePollingInterval(30_000),
     },
   });

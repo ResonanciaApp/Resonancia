@@ -134,6 +134,7 @@ export default function ChatScreen() {
       query: {
         queryKey: getGetDirectMessagesQueryKey(otherId, {}),
         enabled: !!isSignedIn && Number.isFinite(otherId),
+        staleTime: 0,
         refetchInterval: msgPoll,
       },
     },

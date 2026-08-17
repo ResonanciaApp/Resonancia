@@ -141,12 +141,16 @@ function SignedInAmigos() {
   // Ensure the user row exists server-side (JIT provisioning).
   useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
 
-  const friendsQ = useGetFriends();
+  // staleTime 0: al entrar a esta pantalla siempre se refresca de inmediato
+  // (el ahorro de red queda en el sondeo pausado fuera de foco).
+  const friendsQ = useGetFriends({
+    query: { queryKey: getGetFriendsQueryKey(), staleTime: 0 },
+  });
   const requestsQ = useGetFriendRequests({
-    query: { queryKey: getGetFriendRequestsQueryKey(), refetchInterval: usePollingInterval(60_000) },
+    query: { queryKey: getGetFriendRequestsQueryKey(), staleTime: 0, refetchInterval: usePollingInterval(60_000) },
   });
   const conversationsQ = useGetConversations({
-    query: { queryKey: getGetConversationsQueryKey(), refetchInterval: usePollingInterval(30_000) },
+    query: { queryKey: getGetConversationsQueryKey(), staleTime: 0, refetchInterval: usePollingInterval(30_000) },
   });
   const trimmed = search.trim();
   const searchQ = useSearchUsers(
