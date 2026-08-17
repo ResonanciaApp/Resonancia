@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: COMP_W,
-    marginTop: 13,
+    marginTop: -7,
   },
   dayCol: {
     alignItems: "center",
