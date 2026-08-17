@@ -37,6 +37,9 @@ interface StreakCelebrationCtx {
   /** La pantalla de sesión pregunta esto antes de abrir su popup de estrellas:
    *  si la celebración se encargó de la calificación, se suprime el popup. */
   shouldSuppressRating: (sessionId: string) => boolean;
+  /** Herramienta de prueba: abre el flujo con la última sesión escuchada,
+   *  SIN marcar el día como celebrado (la celebración real sigue intacta). */
+  previewFlow: () => void;
 }
 
 const Ctx = createContext<StreakCelebrationCtx | null>(null);
@@ -105,6 +108,18 @@ export function StreakCelebrationProvider({ children }: { children: React.ReactN
     setCelebrationHold(false);
   }, [setCelebrationHold]);
 
+  const previewFlow = useCallback(() => {
+    const newest = statEvents.find((e) => e.sessionId);
+    if (newest) suppressRef.current = { sessionId: newest.sessionId, at: Date.now() };
+    flowOpenRef.current = true;
+    setCelebrationHold(true);
+    setFlow({
+      sessionId: newest?.sessionId ?? "",
+      minutes: Math.max(1, newest?.minutes ?? 3),
+      streak: Math.max(1, computeCurrentStreak(statEvents)),
+    });
+  }, [statEvents, setCelebrationHold]);
+
   const shouldSuppressRating = useCallback((sessionId: string) => {
     const s = suppressRef.current;
     if (!s || s.sessionId !== sessionId) return false;
@@ -114,8 +129,8 @@ export function StreakCelebrationProvider({ children }: { children: React.ReactN
   }, []);
 
   const value = useMemo(
-    () => ({ flow, closeFlow, shouldSuppressRating }),
-    [flow, closeFlow, shouldSuppressRating],
+    () => ({ flow, closeFlow, shouldSuppressRating, previewFlow }),
+    [flow, closeFlow, shouldSuppressRating, previewFlow],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

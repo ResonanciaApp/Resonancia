@@ -71,6 +71,7 @@ import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { WaveStreakStrip } from "@/components/WaveStreakStrip";
+import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 
 const { width } = Dimensions.get("window");
 
@@ -300,6 +301,7 @@ export default function HomeScreen2() {
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history, favorites } = usePlayer();
+  const { previewFlow: previewStreakFlow } = useStreakCelebration();
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -855,9 +857,15 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}>
+        {/* Mantener presionada la tarjeta de racha = prueba del flujo de
+            celebración de día completado (no marca el día como celebrado). */}
+        <Pressable
+          onLongPress={previewStreakFlow}
+          delayLongPress={600}
+          style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}
+        >
           <WaveStreakStrip scrollY={waveScrollY} />
-        </View>
+        </Pressable>
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
