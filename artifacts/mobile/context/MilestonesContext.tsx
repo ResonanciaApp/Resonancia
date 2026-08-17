@@ -148,10 +148,11 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!hydrated || !counters) return;
     const observe = (c: LifetimeCounter, current: number): LifetimeCounter => {
+      // Solo crece por DELTAS (creaciones nuevas desde lo último visto).
+      // Sin piso Math.max(lifetime, current): eso re-subía el contador tras
+      // un reset manual de hito mientras aún existan creaciones guardadas.
       const lifetime =
-        current > c.lastSeen
-          ? c.lifetime + (current - c.lastSeen)
-          : Math.max(c.lifetime, current);
+        current > c.lastSeen ? c.lifetime + (current - c.lastSeen) : c.lifetime;
       return { lifetime, lastSeen: current };
     };
     const next: Counters = {
