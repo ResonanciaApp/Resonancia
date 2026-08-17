@@ -4130,7 +4130,7 @@ export default function GeometrixScreen() {
         <View style={styles.catRow}>
           {/* Título centrado, a la altura del chevron (igual que Mezclador) */}
           <View pointerEvents="none" style={styles.lienzoTitleWrap}>
-            <Text style={styles.lienzoTitle}>Lienzo</Text>
+            <Text style={[styles.lienzoTitle, { transform: [{ translateY: 15 }] }]}>Lienzo</Text>
           </View>
           <View style={styles.exitBtn}>
             <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
