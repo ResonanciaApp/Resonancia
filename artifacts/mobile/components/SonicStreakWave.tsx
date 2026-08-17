@@ -122,6 +122,13 @@ export function SonicStreakWave() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statEvents, todayKey]);
 
+  const weekMessage = useMemo(() => {
+    if (weekCount <= 0) return "Completa tu primer día de esta semana y empieza tu racha";
+    if (weekCount === 1) return "¡Completaste 1 día esta semana! Sigue así";
+    if (weekCount < GOAL_DAYS) return `¡Completaste ${weekCount} días esta semana! Sigue así`;
+    return "¡Semana completa! 7 de 7 días, increíble";
+  }, [weekCount]);
+
   const rawProgress = Math.min(weekCount / GOAL_DAYS, 1);
   const progress    = rawProgress > 0 ? Math.min(rawProgress + 12 / WAVE_W, 1) : 0;
   const fadeZone    = Math.min(0.18, 20 / WAVE_W);
@@ -188,6 +195,11 @@ export function SonicStreakWave() {
             </View>
           );
         })}
+      </View>
+
+      {/* ── Mensaje semanal ── */}
+      <View style={styles.messageWrap}>
+        <Text style={styles.message}>{weekMessage}</Text>
       </View>
     </View>
   );
