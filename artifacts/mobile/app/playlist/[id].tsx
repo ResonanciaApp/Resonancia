@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -94,8 +95,11 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export default function PlaylistDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {}) {
+  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const id = idProp ?? idParam;
+  const backOverride = useBackOverride();
+  const goBack = backOverride ?? (() => router.back());
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const BG_GRADIENT = sceneTheme.gradient;
@@ -262,7 +266,7 @@ export default function PlaylistDetailScreen() {
 
         {/* Header — scrollea con el contenido (sin sticky) */}
         <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: 4 }] }} />
+          <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: 4 }] }} />
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}

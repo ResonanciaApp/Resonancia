@@ -406,6 +406,10 @@ type LibResult =
 
 function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: boolean; onClose: () => void; gradient: readonly string[]; accentColor: string }) {
   const overlay = useCategoryOverlayOptional();
+  const openPlaylistPanel = (plId: string) => {
+    if (overlay) overlay.openCategory(`/playlist/${plId}`);
+    else router.push(`/playlist/${plId}` as never);
+  };
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -458,7 +462,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
   const handleSelect = (result: LibResult) => {
     onClose();
     if (result.kind === "session") { if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never); }
-    else if (result.kind === "playlist") router.push(`/playlist/${result.data.id}` as never);
+    else if (result.kind === "playlist") openPlaylistPanel(result.data.id);
     else {
       if (loadedPresetId !== result.data.id) loadMix(result.data);
     }
@@ -665,7 +669,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
     const trimmed = name.trim() || suggestedName;
     const pl = createPlaylist(trimmed);
     onClose();
-    router.push(`/playlist/${pl.id}` as never);
+    openPlaylistPanel(pl.id);
   };
 
   return (
@@ -1203,7 +1207,7 @@ export function BibliotecaScreen({
                     <Pressable
                       key={pl.id}
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                      onPress={() => router.push(`/playlist/${pl.id}` as never)}
+                      onPress={() => openPlaylistPanel(pl.id)}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
@@ -1244,7 +1248,7 @@ export function BibliotecaScreen({
                     <UserPlaylistRow
                       key={pl.id}
                       pl={pl}
-                      onPress={() => router.push(`/playlist/${pl.id}` as never)}
+                      onPress={() => openPlaylistPanel(pl.id)}
                       onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
                     />
                   ))}
@@ -1396,7 +1400,7 @@ export function BibliotecaScreen({
           <View style={[styles.gridWrap, { marginTop: 30 }]}>
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                onPress={() => router.push(`/playlist/${pl.id}` as never)}>
+                onPress={() => openPlaylistPanel(pl.id)}>
                 <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                   {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
                     <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
@@ -1435,7 +1439,7 @@ export function BibliotecaScreen({
             <UserPlaylistRow
               key={pl.id}
               pl={pl}
-              onPress={() => router.push(`/playlist/${pl.id}` as never)}
+              onPress={() => openPlaylistPanel(pl.id)}
               onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
             />
           ))}

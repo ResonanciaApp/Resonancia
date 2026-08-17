@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useState } from "react";
@@ -52,12 +53,14 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
     }
   };
 
+  const overlay = useCategoryOverlayOptional();
   const handleCreate = () => {
     const name = newName.trim();
     if (!name) return;
     const pl = createPlaylist(name, sessionId);
     handleClose();
-    router.push(`/playlist/${pl.id}` as never);
+    if (overlay) overlay.openCategory(`/playlist/${pl.id}`);
+    else router.push(`/playlist/${pl.id}` as never);
   };
 
   return (

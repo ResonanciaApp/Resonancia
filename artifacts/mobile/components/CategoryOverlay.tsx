@@ -31,6 +31,7 @@ const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
 const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
 const LazyVideos        = React.lazy(() => import("@/app/videos"));
 const LazyFavoritos     = React.lazy(() => import("@/app/favoritos-todos"));
+const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
 
 const W = Dimensions.get("window").width;
 
@@ -45,6 +46,8 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean } 
   if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };
   if (route === "/videos") return { node: <LazyVideos />, eager: false };
   if (route === "/favoritos-todos") return { node: <LazyFavoritos />, eager: false };
+  const p = route.match(/^\/playlist\/(.+)$/);
+  if (p) return { node: <LazyPlaylist id={decodeURIComponent(p[1])} />, eager: false };
   const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
