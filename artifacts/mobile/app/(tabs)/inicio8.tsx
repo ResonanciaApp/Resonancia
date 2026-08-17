@@ -1,6 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { computeCurrentStreak } from "@/utils/stats";
+import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -330,6 +331,7 @@ export default function HomeScreen2() {
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
+  const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
   const todayKey = useDayRollover();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1033,6 +1035,10 @@ export default function HomeScreen2() {
             Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
           }}
           onPress={() => setProgresoVisible(true)}
+          // Prueba escondida: presión larga abre el flujo de celebración de
+          // día de racha (no marca el día como celebrado).
+          onLongPress={previewStreakFlow}
+          delayLongPress={600}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{
