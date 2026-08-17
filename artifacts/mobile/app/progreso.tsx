@@ -78,7 +78,7 @@ export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { statEvents, history } = usePlayer();
-  const { statuses: milestones } = useMilestones();
+  const { statuses: milestones, previewMilestone } = useMilestones();
   const todayKey = useDayRollover();
   const [tab, setTab] = useState<"logros" | "historial">("logros");
 
@@ -395,8 +395,9 @@ export default function ProgresoScreen() {
               const completed = !!c.unlockedAt;
               const pct = Math.min(c.progress / c.threshold, 1);
               return (
-                <View
+                <Pressable
                   key={c.id}
+                  onPress={() => previewMilestone(c.id)}
                   style={[
                     styles.challengeCard,
                     { backgroundColor: "rgba(74,12,12,0.08)" },
@@ -457,7 +458,7 @@ export default function ProgresoScreen() {
                       />
                     </View>
                   )}
-                </View>
+                </Pressable>
               );
             })}
 

@@ -53,6 +53,8 @@ interface MilestonesCtx {
   celebrating: MilestoneStatus | null;
   /** Cierra la celebración actual y muestra la siguiente si hay. */
   dismissCelebration: () => void;
+  /** Vista previa de diseño: muestra la celebración de un hito SIN marcarlo. */
+  previewMilestone: (id: string) => void;
 }
 
 const Ctx = createContext<MilestonesCtx | null>(null);
@@ -207,6 +209,10 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
 
   const dismissCelebration = useCallback(() => setQueue((q) => q.slice(1)), []);
 
+  const previewMilestone = useCallback((id: string) => {
+    setQueue((q) => (q.includes(id) ? q : [...q, id]));
+  }, []);
+
   const statuses = useMemo<MilestoneStatus[]>(
     () =>
       MILESTONES.map((m) => ({
@@ -223,8 +229,8 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
   }, [queue, statuses]);
 
   const value = useMemo(
-    () => ({ statuses, celebrating, dismissCelebration }),
-    [statuses, celebrating, dismissCelebration],
+    () => ({ statuses, celebrating, dismissCelebration, previewMilestone }),
+    [statuses, celebrating, dismissCelebration, previewMilestone],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
