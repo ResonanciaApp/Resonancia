@@ -19,6 +19,14 @@ export interface MilestoneDef {
 
 export const MILESTONES: MilestoneDef[] = [
   {
+    id: "streak-1",
+    family: "racha",
+    threshold: 1,
+    icon: "🔥",
+    title: "Primer día en resonancia",
+    description: "Cumpliste tu primer día de práctica.",
+  },
+  {
     id: "streak-7",
     family: "racha",
     threshold: 7,
