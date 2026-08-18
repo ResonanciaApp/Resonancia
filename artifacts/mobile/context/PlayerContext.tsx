@@ -18,6 +18,10 @@ import React, {
 } from "react";
 
 import { type Session, SESSIONS, getSessionById, getSessionsByCategory } from "@/data/sessions";
+
+/** Categorías cuya cola implícita auto-avanza al azar al terminar una sesión
+ *  (Música y Sesiones — Tarea #191). */
+const RANDOM_ADVANCE_CATEGORIES = new Set(["musica-sonidos", "sonidos-ancestrales"]);
 import {
   registerSessionStopper,
   stopMixPlayback,
@@ -56,6 +60,10 @@ type PlayerContextType = {
   /** true cuando la cola es implícita (lista/categoría de origen, estilo Calm):
    *  prev/next disponibles, pero sin shuffle ni auto-avance al terminar. */
   queueImplicit: boolean;
+  /** En cola implícita de Música/Sesiones: al terminar la sesión comienza otra
+   *  de la misma categoría al azar. El icono de aleatorio del reproductor lo alterna. */
+  queueRandom: boolean;
+  toggleQueueRandom: () => void;
   /** Si está en modo aleatorio dentro de la playlist */
   shuffleMode: boolean;
   /** Reproduce una sesión registrando la cola de la playlist (habilita prev/next en el reproductor) */
@@ -198,6 +206,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [queueImplicit, setQueueImplicit] = useState(false);
   const queueImplicitRef = useRef(false);
   queueImplicitRef.current = queueImplicit;
+  // Auto-avance aleatorio al terminar (solo cola implícita de Música/Sesiones)
+  const [queueRandom, setQueueRandom] = useState(true);
+  const queueRandomRef = useRef(true);
+  queueRandomRef.current = queueRandom;
+  const toggleQueueRandom = useCallback(() => setQueueRandom((p) => !p), []);
   const [shuffleMode, setShuffleMode] = useState(false);
   /** Orden en que se reproducen las sesiones (original o barajado) */
   const playOrderRef = useRef<string[]>([]);
@@ -207,6 +220,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   shuffleModeRef.current = shuffleMode;
   /** Referencia estable a la función de avance automático (usada en didJustFinish) */
   const playlistAutoAdvanceRef = useRef<() => void>(() => {});
+  /** Generación de reproducción: se incrementa cada vez que arranca/para una
+   *  sesión. El auto-avance diferido (600 ms) solo dispara si la generación no
+   *  cambió — evita el doble salto si el usuario tocó siguiente/anterior o
+   *  cambió de sesión durante la espera. */
+  const autoAdvanceGenRef = useRef(0);
+  const scheduleAutoAdvance = useCallback(() => {
+    const gen = autoAdvanceGenRef.current;
+    // Pequeño delay para que la stat se asiente antes de iniciar la nueva sesión.
+    setTimeout(() => {
+      if (gen === autoAdvanceGenRef.current) playlistAutoAdvanceRef.current();
+    }, 600);
+  }, []);
 
   const mainVolumeRef = useRef(1.0);
   mainVolumeRef.current = mainVolume;
@@ -668,8 +693,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         const sId = currentSessionRef.current?.id;
         if (sId) saveSessionProgress(sId, 1, { force: true });
         // Auto-avance a la siguiente sesión si hay cola de playlist activa.
-        // Pequeño delay para que la stat se asiente antes de iniciar la nueva sesión.
-        setTimeout(() => { playlistAutoAdvanceRef.current(); }, 600);
+        scheduleAutoAdvance();
       }
     },
     [saveSessionProgress],
@@ -851,6 +875,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           // Llegó al final → cuenta como sesión COMPLETADA (día activo + hitos)
           statCompletedRef.current = true;
           flushActiveStatRef.current();
+          // Mismo auto-avance que el audio real (sesiones sin pista de audio).
+          scheduleAutoAdvance();
           return totalSeconds;
         }
         const p = next / totalSeconds;
@@ -1024,14 +1050,44 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   );
   const inPlaylistAdvanceRef = useRef(false);
 
+  /** Al terminar una sesión de Música/Sesiones: arranca otra de la misma
+   *  categoría elegida al azar (nunca la misma que acaba de sonar). */
+  const advancePlaylistRandom = useCallback(() => {
+    const cur = currentSessionRef.current;
+    if (!cur) return;
+    const full = getSessionsByCategory(cur.categoryId).map((s) => s.id);
+    const others = full.filter((id) => id !== cur.id);
+    if (!others.length) return;
+    const nextId = others[Math.floor(Math.random() * others.length)];
+    const session = getSessionById(nextId);
+    if (!session) return;
+    playOrderRef.current = full;
+    playIndexRef.current = Math.max(0, full.indexOf(nextId));
+    setActivePlaylistIds(full);
+    inPlaylistAdvanceRef.current = true;
+    void playSessionRef.current(session);
+  }, []);
+
   // Exponer el avance automático para didJustFinish
   useEffect(() => {
     playlistAutoAdvanceRef.current = () => {
-      // Solo las playlists explícitas auto-avanzan al terminar una sesión;
-      // la cola implícita (lista/categoría de origen) es solo navegación manual.
-      if (activePlaylistIds && !queueImplicitRef.current) advancePlaylist(1);
+      if (!activePlaylistIds) return;
+      if (!queueImplicitRef.current) {
+        // Playlist explícita: avance secuencial (respeta shuffle propio).
+        advancePlaylist(1);
+        return;
+      }
+      // Cola implícita: solo Música y Sesiones auto-avanzan, y al azar.
+      const cur = currentSessionRef.current;
+      if (
+        cur &&
+        queueRandomRef.current &&
+        RANDOM_ADVANCE_CATEGORIES.has(cur.categoryId)
+      ) {
+        advancePlaylistRandom();
+      }
     };
-  }, [activePlaylistIds, advancePlaylist]);
+  }, [activePlaylistIds, advancePlaylist, advancePlaylistRandom]);
 
   const playlistNext = useCallback(() => advancePlaylist(1), [advancePlaylist]);
   const playlistPrev = useCallback(() => advancePlaylist(-1), [advancePlaylist]);
@@ -1085,6 +1141,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
+      // Invalida cualquier auto-avance diferido pendiente (evita doble salto).
+      autoAdvanceGenRef.current += 1;
       // Si NO venimos de un avance interno, limpiar la cola de playlist y
       // registrar la cola implícita (estilo Calm): para sesiones que no son
       // meditaciones, prev/next navegan por las sesiones de su categoría.
@@ -1098,6 +1156,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           setActivePlaylistIds(contextIds);
           setQueueImplicit(true);
           queueImplicitRef.current = true;
+          setQueueRandom(true);
+          queueRandomRef.current = true;
           playOrderRef.current = contextIds;
           playIndexRef.current = contextIds.indexOf(session.id);
         } else {
@@ -1567,6 +1627,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     lastPlayingRef.current = false;
     switchingRef.current = false;
     pendingSeekRef.current = null;
+    autoAdvanceGenRef.current += 1;
     setSleepTimerRemaining(null);
     setCurrentSession(null);
     setIsPlaying(false);
@@ -1729,6 +1790,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         clearSessionProgress,
         activePlaylistIds,
         queueImplicit,
+        queueRandom,
+        toggleQueueRandom,
         shuffleMode,
         playSessionInPlaylist,
         playlistNext,

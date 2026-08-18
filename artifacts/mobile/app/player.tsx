@@ -94,6 +94,8 @@ export default function PlayerScreen() {
     setAmbientVolume,
     activePlaylistIds,
     queueImplicit,
+    queueRandom,
+    toggleQueueRandom,
     shuffleMode,
     playlistNext,
     playlistPrev,
@@ -410,6 +412,49 @@ export default function PlayerScreen() {
   const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas"];
   const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
 
+  /* ── Icono izquierdo del reproductor por categoría (Tarea #191) ──
+     Música/Sesiones → aleatorio (al terminar suena otra al azar);
+     Meditaciones → icono de música que abre Sonido Ambiente directo;
+     Dormir → espacio vacío (sin icono);
+     resto → ajustes como antes. */
+  const catId = currentSession.categoryId;
+  const leftSlot =
+    catId === "musica-sonidos" || catId === "sonidos-ancestrales" ? (
+      <Pressable
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleQueueRandom(); }}
+        style={styles.ctrlBtn}
+        hitSlop={10}
+      >
+        <Feather
+          name="shuffle"
+          size={22}
+          color={queueRandom ? "#BE9650" : "rgba(255,255,255,0.88)"}
+        />
+      </Pressable>
+    ) : catId === "meditaciones-guiadas" ? (
+      <Pressable
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowAmbientPicker(true); }}
+        style={styles.ctrlBtn}
+        hitSlop={10}
+      >
+        <Feather name="music" size={22} color="rgba(255,255,255,0.88)" />
+      </Pressable>
+    ) : catId === "descanso" ? (
+      <View style={styles.ctrlBtn} />
+    ) : (
+      <Pressable
+        onPress={isOptionsCategory ? openSheet : undefined}
+        style={styles.ctrlBtn}
+        hitSlop={10}
+      >
+        <Feather
+          name="sliders"
+          size={22}
+          color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
+        />
+      </Pressable>
+    );
+
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
   const isNature = !!getNatureSounds(currentSession.id);
   const isLoopSession = isNature;
@@ -633,18 +678,8 @@ export default function PlayerScreen() {
                  estilo Calm) → botón de ajustes como en el modo normal. */
               <>
                 {queueImplicit ? (
-                  /* Ajustes (cola implícita: sin aleatorio) */
-                  <Pressable
-                    onPress={isOptionsCategory ? openSheet : undefined}
-                    style={styles.ctrlBtn}
-                    hitSlop={10}
-                  >
-                    <Feather
-                      name="sliders"
-                      size={22}
-                      color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
-                    />
-                  </Pressable>
+                  /* Cola implícita: icono izquierdo según categoría (Tarea #191) */
+                  leftSlot
                 ) : (
                   /* Aleatorio */
                   <Pressable
@@ -715,20 +750,9 @@ export default function PlayerScreen() {
                 </Pressable>
               </>
             ) : (
-              /* ── Modo normal: ajustes · −15s · play · +15s · stop ── */
+              /* ── Modo normal: icono por categoría · −15s · play · +15s · stop ── */
               <>
-                {/* Ajustes */}
-                <Pressable
-                  onPress={isOptionsCategory ? openSheet : undefined}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Feather
-                    name="sliders"
-                    size={22}
-                    color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
-                  />
-                </Pressable>
+                {leftSlot}
 
                 {/* Retroceder 15s (oculto en loop infinito: no hay línea de tiempo) */}
                 <Pressable
