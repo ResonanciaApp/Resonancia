@@ -506,6 +506,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const v = loopEngineRef.current;
     if (v) void bpmAudioEngine.playLoopAsset(v.key, v.asset, mainVolumeRef.current);
   };
+  // El ancla muda (main.loop=true con un asset corto) reporta un micro
+  // playing=false cada vez que el loop nativo da la vuelta. Sin filtro, el
+  // mirror lo trata como pausa del usuario → apaga el motor gapless y lo
+  // re-arranca (hueco audible + botón parpadeando). Debounce: solo es pausa
+  // real si playing sigue en false pasado un instante.
+  const loopPauseDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const anchorPlayingRef = useRef(false);
+  const clearLoopPauseDebounce = () => {
+    if (loopPauseDebounceRef.current) {
+      clearTimeout(loopPauseDebounceRef.current);
+      loopPauseDebounceRef.current = null;
+    }
+  };
 
   // ── Main player status handler (referenced via ref to stay current) ───────────
   const handleMainStatus = useCallback(
@@ -543,7 +556,41 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Mirror lock-screen / system play-pause onto the simultaneous layers
+      anchorPlayingRef.current = status.playing;
       if (status.playing !== lastPlayingRef.current) {
+        // Modo motor gapless: filtrar el micro playing=false que emite el
+        // ancla muda al dar la vuelta su loop nativo. Solo aplicamos la pausa
+        // si persiste (pausa real desde lock-screen / sistema).
+        if (
+          loopCrossfadeRef.current &&
+          !loopFallbackRef.current &&
+          !status.playing
+        ) {
+          if (loopPauseDebounceRef.current == null) {
+            loopPauseDebounceRef.current = setTimeout(() => {
+              loopPauseDebounceRef.current = null;
+              if (!loopCrossfadeRef.current) return;
+              if (anchorPlayingRef.current) return; // fue un parpadeo del loop
+              if (!lastPlayingRef.current) return; // ya pausado por otra vía
+              lastPlayingRef.current = false;
+              voicePlayerRef.current?.pause();
+              ambientPlayerRef.current?.pause();
+              pauseLoopEngine();
+              if (!switchingRef.current) setIsPlaying(false);
+            }, 700);
+          }
+          return;
+        }
+        clearLoopPauseDebounce();
+        if (
+          loopCrossfadeRef.current &&
+          status.playing &&
+          lastPlayingRef.current
+        ) {
+          // playing volvió a true antes del debounce: parpadeo del loop, nada
+          // que hacer (el motor nunca se detuvo).
+          return;
+        }
         lastPlayingRef.current = status.playing;
         if (status.playing) {
           if (voiceActiveRef.current) voicePlayerRef.current?.play();
@@ -650,6 +697,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
    * loop-fade interval, so it does not need its own status listener. */
   /** Stop the gapless engine loop voice (if any) and clear the loop flags */
   const teardownLoopCrossfade = () => {
+    clearLoopPauseDebounce();
     loopCrossfadeRef.current = false;
     loopFallbackRef.current = false;
     const v = loopEngineRef.current;
