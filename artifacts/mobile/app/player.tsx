@@ -773,7 +773,8 @@ export default function PlayerScreen() {
             )}
           </View>
 
-          {/* ── Barra de progreso ─────────────────────────────────────────── */}
+          {/* ── Barra de progreso (oculta en loops infinitos: no hay línea de tiempo) ── */}
+          {!infiniteLoop && (
           <View
             ref={progressBarRef}
             style={styles.progressTrack}
@@ -795,14 +796,15 @@ export default function PlayerScreen() {
               <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
             </View>
           </View>
+          )}
 
-          {/* Etiquetas de tiempo */}
+          {/* Etiquetas de tiempo (ocultas en loops infinitos) */}
+          {!infiniteLoop && (
           <View style={styles.timeLabels}>
             <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
-            <Text style={styles.timeLabelText}>
-              {infiniteLoop ? "∞" : formatTime(remaining)}
-            </Text>
+            <Text style={styles.timeLabelText}>{formatTime(remaining)}</Text>
           </View>
+          )}
         </View>
       </RNAnimated.View>
 
