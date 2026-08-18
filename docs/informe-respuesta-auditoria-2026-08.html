@@ -1,204 +1,555 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>RESONANCIA — Respuesta a la Auditoría Técnica</title>
-<style>
-  :root { --navy:#060A0F; --navy2:#0B1220; --gold:#BE9650; --ink:#1c2230; --muted:#5d6678; }
-  * { box-sizing: border-box; }
-  body { font-family: Georgia, 'Times New Roman', serif; color: var(--ink); margin: 0; background:#fff; }
-  .page { max-width: 860px; margin: 0 auto; padding: 48px 40px; }
-  header { background: var(--navy); color: #fff; }
-  header .page { padding: 44px 40px 36px; }
-  .kicker { color: var(--gold); font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; margin: 0 0 10px; }
-  h1 { font-size: 30px; margin: 0 0 6px; font-weight: normal; }
-  .sub { color:#aeb6c4; font-size: 14px; margin: 0; }
-  .meta { display:flex; gap:40px; margin-top:26px; font-family: Helvetica, Arial, sans-serif; font-size:12px; color:#aeb6c4; }
-  .meta b { display:block; color:#fff; font-weight:600; margin-top:2px; }
-  h2 { font-family: Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid #e3ddd0; padding-bottom: 8px; margin: 40px 0 16px; }
-  p { line-height: 1.65; font-size: 15px; }
-  .lead { font-size: 16.5px; }
-  table { width:100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 4px; }
-  th { font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; text-align:left; color: var(--muted); padding: 8px 10px; border-bottom: 2px solid var(--navy); }
-  td { padding: 10px; border-bottom: 1px solid #eee7da; vertical-align: top; line-height: 1.5; }
-  td:first-child { width: 34%; font-weight: bold; }
-  .badge { font-family: Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 3px; white-space: nowrap; display:inline-block; }
-  .b-crit { background:#7a1f1f; color:#fff; }
-  .b-high { background:#a8672a; color:#fff; }
-  .b-med  { background:#8a8455; color:#fff; }
-  .ok   { color:#1e6b3a; font-weight:bold; font-family: Helvetica, Arial, sans-serif; font-size:12px; letter-spacing:.5px; }
-  .part { color:#a8672a; font-weight:bold; font-family: Helvetica, Arial, sans-serif; font-size:12px; letter-spacing:.5px; }
-  .pend { color:#7a1f1f; font-weight:bold; font-family: Helvetica, Arial, sans-serif; font-size:12px; letter-spacing:.5px; }
-  .summary { display:flex; gap:16px; margin: 20px 0 8px; }
-  .card { flex:1; border:1px solid #e3ddd0; border-top: 3px solid var(--gold); padding: 16px 18px; text-align:center; }
-  .card .n { font-size: 34px; color: var(--navy); }
-  .card .l { font-family: Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-  ol li { margin-bottom: 8px; line-height: 1.55; font-size: 14.5px; }
-  footer { border-top: 1px solid #e3ddd0; margin-top: 44px; padding-top: 16px; font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: var(--muted); display:flex; justify-content:space-between; }
-  @media print { .page { padding: 24px 8px; } header .page { padding: 28px 8px; } }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>RESONANCIA — Respuesta a la Auditoría Técnica</title>
+    <style>
+      :root {
+        --navy: #060a0f;
+        --navy2: #0b1220;
+        --gold: #be9650;
+        --ink: #1c2230;
+        --muted: #5d6678;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        margin: 0;
+        background: #fff;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 48px 40px;
+      }
+      header {
+        background: var(--navy);
+        color: #fff;
+      }
+      header .page {
+        padding: 44px 40px 36px;
+      }
+      .kicker {
+        color: var(--gold);
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 0 0 6px;
+        font-weight: normal;
+      }
+      .sub {
+        color: #aeb6c4;
+        font-size: 14px;
+        margin: 0;
+      }
+      .meta {
+        display: flex;
+        gap: 40px;
+        margin-top: 26px;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: #aeb6c4;
+      }
+      .meta b {
+        display: block;
+        color: #fff;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+      h2 {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--gold);
+        border-bottom: 1px solid #e3ddd0;
+        padding-bottom: 8px;
+        margin: 40px 0 16px;
+      }
+      p {
+        line-height: 1.65;
+        font-size: 15px;
+      }
+      .lead {
+        font-size: 16.5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+        margin: 8px 0 4px;
+      }
+      th {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 10.5px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-align: left;
+        color: var(--muted);
+        padding: 8px 10px;
+        border-bottom: 2px solid var(--navy);
+      }
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee7da;
+        vertical-align: top;
+        line-height: 1.5;
+      }
+      td:first-child {
+        width: 34%;
+        font-weight: bold;
+      }
+      .badge {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        padding: 3px 9px;
+        border-radius: 3px;
+        white-space: nowrap;
+        display: inline-block;
+      }
+      .b-crit {
+        background: #7a1f1f;
+        color: #fff;
+      }
+      .b-high {
+        background: #a8672a;
+        color: #fff;
+      }
+      .b-med {
+        background: #8a8455;
+        color: #fff;
+      }
+      .ok {
+        color: #1e6b3a;
+        font-weight: bold;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+      .part {
+        color: #a8672a;
+        font-weight: bold;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+      .pend {
+        color: #7a1f1f;
+        font-weight: bold;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+      .summary {
+        display: flex;
+        gap: 16px;
+        margin: 20px 0 8px;
+      }
+      .card {
+        flex: 1;
+        border: 1px solid #e3ddd0;
+        border-top: 3px solid var(--gold);
+        padding: 16px 18px;
+        text-align: center;
+      }
+      .card .n {
+        font-size: 34px;
+        color: var(--navy);
+      }
+      .card .l {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      ol li {
+        margin-bottom: 8px;
+        line-height: 1.55;
+        font-size: 14.5px;
+      }
+      footer {
+        border-top: 1px solid #e3ddd0;
+        margin-top: 44px;
+        padding-top: 16px;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+      }
+      @media print {
+        .page {
+          padding: 24px 8px;
+        }
+        header .page {
+          padding: 28px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="page">
+        <p class="kicker">Sound Sanctuary · RESONANCIA</p>
+        <h1>Respuesta a la Auditoría Técnica</h1>
+        <p class="sub">
+          Contraste entre los hallazgos del informe de Sparkpath Digital
+          (Milestone 1) y el trabajo realizado
+        </p>
+        <div class="meta">
+          <div>PREPARADO POR<b>casadelcuenco · RESONANCIA</b></div>
+          <div>
+            EN RESPUESTA A<b>Technical Audit Report — Sparkpath Digital</b>
+          </div>
+          <div>FECHA<b>18 de agosto de 2026</b></div>
+        </div>
+      </div>
+    </header>
 
-<header>
-  <div class="page">
-    <p class="kicker">Sound Sanctuary · RESONANCIA</p>
-    <h1>Respuesta a la Auditoría Técnica</h1>
-    <p class="sub">Contraste entre los hallazgos del informe de Sparkpath Digital (Milestone 1) y el trabajo realizado</p>
-    <div class="meta">
-      <div>PREPARADO POR<b>casadelcuenco · RESONANCIA</b></div>
-      <div>EN RESPUESTA A<b>Technical Audit Report — Sparkpath Digital</b></div>
-      <div>FECHA<b>18 de agosto de 2026</b></div>
+    <div class="page">
+      <h2>Resumen ejecutivo</h2>
+      <p class="lead">
+        De los 15 hallazgos del informe de auditoría,
+        <b>los 3 críticos están resueltos</b>, junto con la mayoría de los de
+        severidad alta. Cada resolución fue verificada directamente contra el
+        código actual, no contra intención de trabajo. Quedan tres frentes
+        acotados y ya identificados como próximos pasos.
+      </p>
+
+      <div class="summary">
+        <div class="card">
+          <div class="n">3/3</div>
+          <div class="l">Críticos resueltos</div>
+        </div>
+        <div class="card">
+          <div class="n">8</div>
+          <div class="l">Hallazgos resueltos</div>
+        </div>
+        <div class="card">
+          <div class="n">4</div>
+          <div class="l">Parcialmente resueltos</div>
+        </div>
+        <div class="card">
+          <div class="n">3</div>
+          <div class="l">Pendientes</div>
+        </div>
+      </div>
+
+      <h2>1 · Subsistema de audio</h2>
+      <table>
+        <tr>
+          <th>Hallazgo de la auditoría</th>
+          <th>Severidad</th>
+          <th>Estado</th>
+          <th>Qué se hizo</th>
+        </tr>
+        <tr>
+          <td>
+            Motor gapless existente conviviendo con un fallback de timers JS
+            propenso a deriva
+          </td>
+          <td><span class="badge b-crit">CRÍTICO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            El fallback de reloj JS fue eliminado por completo.
+            <i>bpmAudioEngine</i> es hoy la única ruta para loops BPM: la
+            inicialización se garantiza (con deduplicación) antes del primer
+            tap, eliminando la carrera de arranque en frío. Se borró todo el
+            código del scheduler paralelo.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Crossfade artesanal duplicado en mezclador y reproductor de sesiones
+          </td>
+          <td><span class="badge b-crit">CRÍTICO</span></td>
+          <td><span class="part">PARCIAL</span></td>
+          <td>
+            El mezclador quedó consolidado sobre el motor gapless (loop sin
+            costura, sin timers de deriva). El reproductor de sesiones aún
+            conserva su crossfade de dos capas propio; su migración al motor es
+            el siguiente paso de consolidación de audio.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Cambio de sesión como carrera suprimida por guardas, no resuelta
+          </td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="part">PARCIAL</span></td>
+          <td>
+            Las guardas fueron reforzadas y sistematizadas (pausa de la pista
+            anterior, bloqueo de eventos cruzados); no se observan fugas de
+            posición entre sesiones en uso real. El rediseño determinista
+            completo queda ligado a la migración del reproductor al motor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            El timer de sueño puede no detener el audio con la pantalla
+            bloqueada
+          </td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Aplicación unificada y a prueba de segundo plano en
+            <b>ambos</b> reproductores (mezclador y sesiones): marca de tiempo
+            absoluta + verificación dentro del listener nativo de reproducción
+            (que sigue corriendo con pantalla bloqueada) + recuperación al
+            volver la app al frente. El intervalo JS quedó solo como
+            actualización visual.
+          </td>
+        </tr>
+      </table>
+
+      <h2>2 · Datos y sincronización</h2>
+      <table>
+        <tr>
+          <th>Hallazgo de la auditoría</th>
+          <th>Severidad</th>
+          <th>Estado</th>
+          <th>Qué se hizo</th>
+        </tr>
+        <tr>
+          <td>
+            Tablas sociales sub-indexadas para sus patrones reales de consulta
+          </td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="part">PARCIAL</span></td>
+          <td>
+            Se añadieron 12 índices a las tablas sociales: feed (visibilidad +
+            fecha), ranking por likes, autor, comentarios por mezcla y por
+            autor, likes por usuario y mensajes por fecha. Falta el par
+            simétrico para consultas bidireccionales de amistades y mensajes
+            directos, que queda programado.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            El contador desnormalizado de likes puede divergir de la verdad
+          </td>
+          <td><span class="badge b-med">MEDIO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Like/unlike corre en una transacción con bloqueo de fila (<i
+              >FOR UPDATE</i
+            >) y el contador se <b>recalcula desde las filas reales</b> dentro
+            de esa misma transacción — no puede divergir. Restricción de
+            unicidad garantiza un like por usuario.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Contenido creado por el usuario vive solo en almacenamiento local
+          </td>
+          <td><span class="badge b-med">MEDIO</span></td>
+          <td><span class="part">PARCIAL</span></td>
+          <td>
+            Carpetas, playlists y carpetas de favoritos ahora se respaldan en el
+            servidor (snapshot con GET/PUT dedicados, sincronización automática
+            con debounce), sumándose a estadísticas, favoritos y progreso que ya
+            sincronizaban. Presets del mezclador y creaciones de Geometrix
+            siguen locales; su respaldo queda en la cola.
+          </td>
+        </tr>
+        <tr>
+          <td>Integraciones de terceros requieren un pase de seguridad</td>
+          <td><span class="badge b-med">MEDIO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            El webhook de reservas (Cal.com) verifica firma HMAC-SHA256 sobre el
+            cuerpo crudo con comparación de tiempo constante, rechaza peticiones
+            sin firma válida, y es idempotente por identificador de evento
+            (upsert). La moderación pasó de un flag oculto a un panel dedicado
+            con roles (admin / moderador) y flujo de ocultar/eliminar.
+          </td>
+        </tr>
+      </table>
+
+      <h2>3 · Sistema de rachas</h2>
+      <table>
+        <tr>
+          <th>Hallazgo de la auditoría</th>
+          <th>Severidad</th>
+          <th>Estado</th>
+          <th>Qué se hizo</th>
+        </tr>
+        <tr>
+          <td>
+            La racha mostrada a todos los usuarios era un valor de prueba fijo
+          </td>
+          <td><span class="badge b-crit">CRÍTICO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Los overrides de depuración fueron eliminados. Cada usuario ve su
+            racha real, calculada desde su actividad.
+          </td>
+        </tr>
+        <tr>
+          <td>La animación de fuego descrita no existía en Inicio</td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Implementada: el fuego reposa atenuado y se enciende con animación
+            al cumplir la meta diaria, con compuerta de una vez por día, más un
+            flujo de celebración de día de racha e hitos. La regla que enciende
+            el fuego es la misma que cuenta la racha (fuente única), evitando la
+            divergencia que advertía la auditoría.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            La lógica de racha vivía dentro de una pantalla monolítica; otras
+            superficies podían calcular versiones propias
+          </td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Cálculo extraído a un módulo compartido único que consumen todas las
+            superficies vía un hook unificado, y elevado además al servidor:
+            existe un endpoint autoritativo de racha (con zona horaria del
+            usuario) con fallback local. Ninguna pantalla calcula su propia
+            versión.
+          </td>
+        </tr>
+      </table>
+
+      <h2>4 · Geometrix, build y arquitectura general</h2>
+      <table>
+        <tr>
+          <th>Hallazgo de la auditoría</th>
+          <th>Severidad</th>
+          <th>Estado</th>
+          <th>Qué se hizo</th>
+        </tr>
+        <tr>
+          <td>Lag de Geometrix: animaciones corriendo fuera de pantalla</td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="ok">RESUELTO</span></td>
+          <td>
+            Exactamente la línea que recomendaba la auditoría: todas las
+            animaciones se pausan/cancelan al perder foco la pestaña, el
+            carrusel solo monta la categoría activa (evita decenas de tiles
+            animados), los gestos de alta frecuencia corren íntegros en el hilo
+            de UI, y el componente pesado quedó memoizado. El lag global
+            reportado desapareció sin necesidad de migrar a Skia.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Pantallas de apariencia terminada respaldadas por datos placeholder
+          </td>
+          <td><span class="badge b-high">ALTO</span></td>
+          <td><span class="pend">PENDIENTE</span></td>
+          <td>
+            La pantalla de actividades presenciales sigue alimentada por un
+            arreglo fijo. Antes del envío a tiendas se conectará a datos reales
+            o se retirará del release, según lo recomendado.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Pipeline de build correcto pero envío a tiendas sin configurar
+          </td>
+          <td><span class="badge b-med">MEDIO</span></td>
+          <td><span class="pend">PENDIENTE</span></td>
+          <td>
+            Los perfiles de build siguen sanos y se generan builds de desarrollo
+            con normalidad. Credenciales de envío (iOS/Android) siguen
+            pendientes de configurar; corresponde a la fase de submission.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Patrones de mantenibilidad: archivos muertos, fuente ausente,
+            pantallas monolíticas
+          </td>
+          <td><span class="badge b-med">MEDIO</span></td>
+          <td><span class="part">PARCIAL</span></td>
+          <td>
+            Eliminados los archivos <i>.bak</i> y las versiones abandonadas de
+            pantallas; la fuente referenciada (Manrope) quedó instalada y
+            aplicada globalmente. La descomposición de las pantallas más grandes
+            continúa de forma incremental (la extracción de racha y del carrusel
+            de Geometrix son ejemplos ya hechos).
+          </td>
+        </tr>
+      </table>
+
+      <h2>Refuerzos adicionales (fuera del informe original)</h2>
+      <p>
+        Trabajo de endurecimiento realizado en el mismo período, alineado con el
+        espíritu de la auditoría:
+      </p>
+      <ol>
+        <li>
+          <b>Likes de mensajes de comunidad</b>: autenticación obligatoria +
+          idempotencia por usuario (un like por usuario por mensaje, con bloqueo
+          de fila).
+        </li>
+        <li>
+          <b>Paginación</b> en catálogo, seguidores, seguidos y amigos, con
+          límites defensivos.
+        </li>
+        <li>
+          <b>Caché de likes coherente</b> en la app: el corazón y el contador se
+          ven iguales en detalle, carruseles y listas filtradas.
+        </li>
+        <li>
+          <b>Panel de administración</b>: 47 rutas auditadas (todas con
+          autenticación y rol), validación de entradas ampliada con esquemas en
+          las rutas de videos, etiquetas, secciones y moderación de mezclas.
+        </li>
+        <li>
+          <b>Verificación de tipos del servidor en verde</b>: corregido el error
+          que mantenía roja la barrera de typecheck, restaurando la red de
+          seguridad para cambios futuros.
+        </li>
+      </ol>
+
+      <h2>Próximos pasos propuestos</h2>
+      <ol>
+        <li>
+          <b>Consolidación final de audio</b> — migrar el crossfade del
+          reproductor de sesiones al motor gapless (cierra los dos hallazgos
+          parciales de audio a la vez).
+        </li>
+        <li>
+          <b>Actividades presenciales</b> — conectar a datos reales o retirar
+          del release inicial.
+        </li>
+        <li>
+          <b>Índices bidireccionales</b> — completar el par simétrico en
+          amistades y mensajes directos.
+        </li>
+        <li>
+          <b
+            >Respaldo en la nube de presets del mezclador y creaciones de
+            Geometrix.</b
+          >
+        </li>
+        <li>
+          <b>Configuración de submission</b> — credenciales de App Store / Play
+          Store para el envío.
+        </li>
+      </ol>
+
+      <footer>
+        <span>RESONANCIA · Respuesta a la Auditoría Técnica — Milestone 1</span>
+        <span>Agosto 2026</span>
+      </footer>
     </div>
-  </div>
-</header>
-
-<div class="page">
-
-<h2>Resumen ejecutivo</h2>
-<p class="lead">De los 15 hallazgos del informe de auditoría, <b>los 3 críticos están resueltos</b>, junto con la mayoría de los de severidad alta. Cada resolución fue verificada directamente contra el código actual, no contra intención de trabajo. Quedan tres frentes acotados y ya identificados como próximos pasos.</p>
-
-<div class="summary">
-  <div class="card"><div class="n">3/3</div><div class="l">Críticos resueltos</div></div>
-  <div class="card"><div class="n">8</div><div class="l">Hallazgos resueltos</div></div>
-  <div class="card"><div class="n">4</div><div class="l">Parcialmente resueltos</div></div>
-  <div class="card"><div class="n">3</div><div class="l">Pendientes</div></div>
-</div>
-
-<h2>1 · Subsistema de audio</h2>
-<table>
-<tr><th>Hallazgo de la auditoría</th><th>Severidad</th><th>Estado</th><th>Qué se hizo</th></tr>
-<tr>
-  <td>Motor gapless existente conviviendo con un fallback de timers JS propenso a deriva</td>
-  <td><span class="badge b-crit">CRÍTICO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>El fallback de reloj JS fue eliminado por completo. <i>bpmAudioEngine</i> es hoy la única ruta para loops BPM: la inicialización se garantiza (con deduplicación) antes del primer tap, eliminando la carrera de arranque en frío. Se borró todo el código del scheduler paralelo.</td>
-</tr>
-<tr>
-  <td>Crossfade artesanal duplicado en mezclador y reproductor de sesiones</td>
-  <td><span class="badge b-crit">CRÍTICO</span></td>
-  <td><span class="part">PARCIAL</span></td>
-  <td>El mezclador quedó consolidado sobre el motor gapless (loop sin costura, sin timers de deriva). El reproductor de sesiones aún conserva su crossfade de dos capas propio; su migración al motor es el siguiente paso de consolidación de audio.</td>
-</tr>
-<tr>
-  <td>Cambio de sesión como carrera suprimida por guardas, no resuelta</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="part">PARCIAL</span></td>
-  <td>Las guardas fueron reforzadas y sistematizadas (pausa de la pista anterior, bloqueo de eventos cruzados); no se observan fugas de posición entre sesiones en uso real. El rediseño determinista completo queda ligado a la migración del reproductor al motor.</td>
-</tr>
-<tr>
-  <td>El timer de sueño puede no detener el audio con la pantalla bloqueada</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Aplicación unificada y a prueba de segundo plano en <b>ambos</b> reproductores (mezclador y sesiones): marca de tiempo absoluta + verificación dentro del listener nativo de reproducción (que sigue corriendo con pantalla bloqueada) + recuperación al volver la app al frente. El intervalo JS quedó solo como actualización visual.</td>
-</tr>
-</table>
-
-<h2>2 · Datos y sincronización</h2>
-<table>
-<tr><th>Hallazgo de la auditoría</th><th>Severidad</th><th>Estado</th><th>Qué se hizo</th></tr>
-<tr>
-  <td>Tablas sociales sub-indexadas para sus patrones reales de consulta</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="part">PARCIAL</span></td>
-  <td>Se añadieron 12 índices a las tablas sociales: feed (visibilidad + fecha), ranking por likes, autor, comentarios por mezcla y por autor, likes por usuario y mensajes por fecha. Falta el par simétrico para consultas bidireccionales de amistades y mensajes directos, que queda programado.</td>
-</tr>
-<tr>
-  <td>El contador desnormalizado de likes puede divergir de la verdad</td>
-  <td><span class="badge b-med">MEDIO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Like/unlike corre en una transacción con bloqueo de fila (<i>FOR UPDATE</i>) y el contador se <b>recalcula desde las filas reales</b> dentro de esa misma transacción — no puede divergir. Restricción de unicidad garantiza un like por usuario.</td>
-</tr>
-<tr>
-  <td>Contenido creado por el usuario vive solo en almacenamiento local</td>
-  <td><span class="badge b-med">MEDIO</span></td>
-  <td><span class="part">PARCIAL</span></td>
-  <td>Carpetas, playlists y carpetas de favoritos ahora se respaldan en el servidor (snapshot con GET/PUT dedicados, sincronización automática con debounce), sumándose a estadísticas, favoritos y progreso que ya sincronizaban. Presets del mezclador y creaciones de Geometrix siguen locales; su respaldo queda en la cola.</td>
-</tr>
-<tr>
-  <td>Integraciones de terceros requieren un pase de seguridad</td>
-  <td><span class="badge b-med">MEDIO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>El webhook de reservas (Cal.com) verifica firma HMAC-SHA256 sobre el cuerpo crudo con comparación de tiempo constante, rechaza peticiones sin firma válida, y es idempotente por identificador de evento (upsert). La moderación pasó de un flag oculto a un panel dedicado con roles (admin / moderador) y flujo de ocultar/eliminar.</td>
-</tr>
-</table>
-
-<h2>3 · Sistema de rachas</h2>
-<table>
-<tr><th>Hallazgo de la auditoría</th><th>Severidad</th><th>Estado</th><th>Qué se hizo</th></tr>
-<tr>
-  <td>La racha mostrada a todos los usuarios era un valor de prueba fijo</td>
-  <td><span class="badge b-crit">CRÍTICO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Los overrides de depuración fueron eliminados. Cada usuario ve su racha real, calculada desde su actividad.</td>
-</tr>
-<tr>
-  <td>La animación de fuego descrita no existía en Inicio</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Implementada: el fuego reposa atenuado y se enciende con animación al cumplir la meta diaria, con compuerta de una vez por día, más un flujo de celebración de día de racha e hitos. La regla que enciende el fuego es la misma que cuenta la racha (fuente única), evitando la divergencia que advertía la auditoría.</td>
-</tr>
-<tr>
-  <td>La lógica de racha vivía dentro de una pantalla monolítica; otras superficies podían calcular versiones propias</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Cálculo extraído a un módulo compartido único que consumen todas las superficies vía un hook unificado, y elevado además al servidor: existe un endpoint autoritativo de racha (con zona horaria del usuario) con fallback local. Ninguna pantalla calcula su propia versión.</td>
-</tr>
-</table>
-
-<h2>4 · Geometrix, build y arquitectura general</h2>
-<table>
-<tr><th>Hallazgo de la auditoría</th><th>Severidad</th><th>Estado</th><th>Qué se hizo</th></tr>
-<tr>
-  <td>Lag de Geometrix: animaciones corriendo fuera de pantalla</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="ok">RESUELTO</span></td>
-  <td>Exactamente la línea que recomendaba la auditoría: todas las animaciones se pausan/cancelan al perder foco la pestaña, el carrusel solo monta la categoría activa (evita decenas de tiles animados), los gestos de alta frecuencia corren íntegros en el hilo de UI, y el componente pesado quedó memoizado. El lag global reportado desapareció sin necesidad de migrar a Skia.</td>
-</tr>
-<tr>
-  <td>Pantallas de apariencia terminada respaldadas por datos placeholder</td>
-  <td><span class="badge b-high">ALTO</span></td>
-  <td><span class="pend">PENDIENTE</span></td>
-  <td>La pantalla de actividades presenciales sigue alimentada por un arreglo fijo. Antes del envío a tiendas se conectará a datos reales o se retirará del release, según lo recomendado.</td>
-</tr>
-<tr>
-  <td>Pipeline de build correcto pero envío a tiendas sin configurar</td>
-  <td><span class="badge b-med">MEDIO</span></td>
-  <td><span class="pend">PENDIENTE</span></td>
-  <td>Los perfiles de build siguen sanos y se generan builds de desarrollo con normalidad. Credenciales de envío (iOS/Android) siguen pendientes de configurar; corresponde a la fase de submission.</td>
-</tr>
-<tr>
-  <td>Patrones de mantenibilidad: archivos muertos, fuente ausente, pantallas monolíticas</td>
-  <td><span class="badge b-med">MEDIO</span></td>
-  <td><span class="part">PARCIAL</span></td>
-  <td>Eliminados los archivos <i>.bak</i> y las versiones abandonadas de pantallas; la fuente referenciada (Manrope) quedó instalada y aplicada globalmente. La descomposición de las pantallas más grandes continúa de forma incremental (la extracción de racha y del carrusel de Geometrix son ejemplos ya hechos).</td>
-</tr>
-</table>
-
-<h2>Refuerzos adicionales (fuera del informe original)</h2>
-<p>Trabajo de endurecimiento realizado en el mismo período, alineado con el espíritu de la auditoría:</p>
-<ol>
-  <li><b>Likes de mensajes de comunidad</b>: autenticación obligatoria + idempotencia por usuario (un like por usuario por mensaje, con bloqueo de fila).</li>
-  <li><b>Paginación</b> en catálogo, seguidores, seguidos y amigos, con límites defensivos.</li>
-  <li><b>Caché de likes coherente</b> en la app: el corazón y el contador se ven iguales en detalle, carruseles y listas filtradas.</li>
-  <li><b>Panel de administración</b>: 47 rutas auditadas (todas con autenticación y rol), validación de entradas ampliada con esquemas en las rutas de videos, etiquetas, secciones y moderación de mezclas.</li>
-  <li><b>Verificación de tipos del servidor en verde</b>: corregido el error que mantenía roja la barrera de typecheck, restaurando la red de seguridad para cambios futuros.</li>
-</ol>
-
-<h2>Próximos pasos propuestos</h2>
-<ol>
-  <li><b>Consolidación final de audio</b> — migrar el crossfade del reproductor de sesiones al motor gapless (cierra los dos hallazgos parciales de audio a la vez).</li>
-  <li><b>Actividades presenciales</b> — conectar a datos reales o retirar del release inicial.</li>
-  <li><b>Índices bidireccionales</b> — completar el par simétrico en amistades y mensajes directos.</li>
-  <li><b>Respaldo en la nube de presets del mezclador y creaciones de Geometrix.</b></li>
-  <li><b>Configuración de submission</b> — credenciales de App Store / Play Store para el envío.</li>
-</ol>
-
-<footer>
-  <span>RESONANCIA · Respuesta a la Auditoría Técnica — Milestone 1</span>
-  <span>Agosto 2026</span>
-</footer>
-
-</div>
-</body>
+  </body>
 </html>

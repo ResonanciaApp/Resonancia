@@ -2496,3 +2496,10 @@ uri = "file://docs/informe-respuesta-auditoria-2026-08.html"
 type = "text"
 title = "Respuesta a la Auditoría Técnica — RESONANCIA"
 description = "Informe que contrasta cada hallazgo de la auditoría de Sparkpath con el trabajo realizado, verificado contra el código actual."
+
+[[outputs]]
+id = "wmSl9MZcPBhaiQfxn5ONo"
+uri = "file://docs/Informe-Respuesta-Auditoria-RESONANCIA.pdf"
+type = "pdf"
+title = "Respuesta a la Auditoría Técnica — RESONANCIA (PDF)"
+description = "Informe en PDF listo para enviar: contraste de cada hallazgo de la auditoría con el trabajo realizado."
