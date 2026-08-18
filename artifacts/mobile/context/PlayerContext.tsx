@@ -7,6 +7,7 @@ import {
 import { AppState, type AppStateStatus, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AMBIENT_MAP, AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
+import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
 import React, {
   createContext,
   useCallback,
@@ -212,17 +213,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
    *  se haya throttleado o congelado con la pantalla bloqueada. */
   const sleepEndTimeRef = useRef<number | null>(null);
 
-  // ── Loop crossfade (Música y Sonidos / Sonidos Naturaleza) ──────────────────
-  /** Second layer of the constant-power crossfade (A = mainPlayerRef) */
-  const loopBPlayerRef = useRef<AudioPlayer | null>(null);
-  /** Interval that drives the A/B crossfade gains + B alignment (~100ms) */
-  const loopFadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  /** True when the current loop session is playing as a two-layer crossfade */
+  // ── Loop gapless (Música y Sonidos / Sonidos Naturaleza) ────────────────────
+  // El audio de las sesiones en loop suena por el motor nativo gapless
+  // (bpmAudioEngine / react-native-audio-api): AudioBufferSourceNode con loop
+  // por buffer.duration → empalme exacto, sin crossfade JS. El main player de
+  // expo-audio queda como ancla MUDA (volume 0, loop nativo) para conservar
+  // Now Playing / pantalla de bloqueo, sleep timer en background y el mirror
+  // de play/pause del sistema — expo-audio sigue siendo el dueño único de la
+  // AVAudioSession.
+  /** True when the current session plays as a gapless engine loop */
   const loopCrossfadeRef = useRef(false);
-  /** True once layer B is aligned dur/2 ahead of A (B stays muted until then) */
-  const loopOffsetConfirmedRef = useRef(false);
-  /** Throttle timestamp (ms) for long-run drift re-centering of layer B */
-  const loopLastResyncRef = useRef(0);
+  /** Voz activa del motor para la sesión en loop (null = motor no disponible) */
+  const loopEngineRef = useRef<{ key: string; asset: number } | null>(null);
+  /** True cuando el motor NO está disponible y el main suena audible (fallback) */
+  const loopFallbackRef = useRef(false);
 
   /** True when the current session is backed by a real audio file (vs simulation) */
   const hasRealAudioRef = useRef(false);
@@ -486,6 +490,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     ((session: Session, withSeek: boolean) => void) | null
   >(null);
 
+  // ── Loop engine pause/resume (mirror del play/pause del sistema) ─────────────
+  // Un AudioBufferSourceNode no se puede pausar: pausar = stop (fade corto) y
+  // reanudar = volver a arrancar el loop desde 0 — irrelevante para texturas
+  // ambientales en loop. Resume vive en un ref para leer siempre el volumen
+  // vigente sin re-crear el status handler.
+  const pauseLoopEngine = () => {
+    const v = loopEngineRef.current;
+    if (v) {
+      try { bpmAudioEngine.stop(v.key); } catch (_) {}
+    }
+  };
+  const resumeLoopEngineRef = useRef<() => void>(() => {});
+  resumeLoopEngineRef.current = () => {
+    const v = loopEngineRef.current;
+    if (v) void bpmAudioEngine.playLoopAsset(v.key, v.asset, mainVolumeRef.current);
+  };
+
   // ── Main player status handler (referenced via ref to stay current) ───────────
   const handleMainStatus = useCallback(
     (status: AudioStatus) => {
@@ -527,11 +548,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (status.playing) {
           if (voiceActiveRef.current) voicePlayerRef.current?.play();
           if (ambientActiveRef.current) ambientPlayerRef.current?.play();
-          if (loopCrossfadeRef.current) loopBPlayerRef.current?.play();
+          if (loopCrossfadeRef.current) resumeLoopEngineRef.current();
         } else {
           voicePlayerRef.current?.pause();
           ambientPlayerRef.current?.pause();
-          if (loopCrossfadeRef.current) loopBPlayerRef.current?.pause();
+          if (loopCrossfadeRef.current) pauseLoopEngine();
         }
         // While switching sessions we manage isPlaying manually — ignore stale toggles
         if (!switchingRef.current) setIsPlaying(status.playing);
@@ -627,22 +648,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   /** Lazily create the second crossfade layer (B). Its gain is driven by the
    * loop-fade interval, so it does not need its own status listener. */
-  const ensureLoopBPlayer = useCallback((): AudioPlayer => {
-    if (!loopBPlayerRef.current) {
-      loopBPlayerRef.current = createAudioPlayer(null, { updateInterval: 1000 });
-    }
-    return loopBPlayerRef.current;
-  }, []);
-
-  /** Stop the crossfade interval + mute/pause layer B */
+  /** Stop the gapless engine loop voice (if any) and clear the loop flags */
   const teardownLoopCrossfade = () => {
-    if (loopFadeIntervalRef.current) {
-      clearInterval(loopFadeIntervalRef.current);
-      loopFadeIntervalRef.current = null;
-    }
     loopCrossfadeRef.current = false;
-    loopOffsetConfirmedRef.current = false;
-    try { loopBPlayerRef.current?.pause(); } catch (_) {}
+    loopFallbackRef.current = false;
+    const v = loopEngineRef.current;
+    loopEngineRef.current = null;
+    if (v) {
+      try { bpmAudioEngine.stop(v.key); } catch (_) {}
+    }
   };
 
   /** Pause the optional layers and mark them inactive */
@@ -674,7 +688,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       try { mainPlayerRef.current?.remove(); } catch (_) {}
       try { voicePlayerRef.current?.remove(); } catch (_) {}
       try { ambientPlayerRef.current?.remove(); } catch (_) {}
-      try { loopBPlayerRef.current?.remove(); } catch (_) {}
       clearSim();
       teardownLoopCrossfade();
       clearSleepInterval();
@@ -757,13 +770,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (simIntervalRef.current) {
       clearInterval(simIntervalRef.current);
       simIntervalRef.current = null;
-    }
-  };
-
-  const clearLoopFade = () => {
-    if (loopFadeIntervalRef.current) {
-      clearInterval(loopFadeIntervalRef.current);
-      loopFadeIntervalRef.current = null;
     }
   };
 
@@ -1198,28 +1204,43 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           const ambientFile = AMBIENT_MAP[session.id];
 
           if (isLoopSession) {
-            // ── Loop con crossfade de DOS capas (mismo algoritmo del mezclador) ──
-            // Un solo audio no puede solaparse consigo mismo: el corte del loop
-            // nativo siempre se nota. Solución: dos copias del mismo sonido en loop
-            // nativo, desfasadas dur/2. A cada capa se le aplica gain = |sin(pi*pos/dur)|
-            // según su propia posición → gainA² + gainB² = 1 (potencia constante):
-            // cuando una llega a su corte (gain 0) la otra está en su pico → empalme
-            // imperceptible. Los gains los maneja un intervalo dedicado (no los
-            // status listeners), para que varíen de forma continua.
+            // ── Loop gapless por el motor nativo (bpmAudioEngine) ──
+            // El audio audible sale del motor (AudioBufferSourceNode con loop
+            // por buffer.duration → empalme exacto, sin hueco ni crossfade JS).
+            // El main player de expo-audio suena MUDO (volume 0, loop nativo):
+            // es el ancla de Now Playing / pantalla de bloqueo, del sleep timer
+            // en background y del mirror de play/pause del sistema.
             loopCrossfadeRef.current = true;
-            loopOffsetConfirmedRef.current = false;
-            loopLastResyncRef.current = 0;
+            loopEngineRef.current = null;
+            loopFallbackRef.current = false;
 
             main.loop = true;
             main.replace(audioFile);
-            main.volume = 0; // el crossfade sube el gain
+            main.volume = 0; // ancla muda: el audio audible sale del motor
             main.play();
 
-            const layerB = ensureLoopBPlayer();
-            layerB.loop = true;
-            layerB.replace(audioFile);
-            layerB.volume = 0;
-            layerB.play();
+            const engineKey = `session:${session.id}`;
+            void (async () => {
+              const ok = await bpmAudioEngine.init();
+              // La sesión pudo cambiar/cerrarse mientras el motor iniciaba.
+              if (!loopCrossfadeRef.current || currentSessionRef.current?.id !== session.id) return;
+              if (ok && typeof audioFile === "number") {
+                loopEngineRef.current = { key: engineKey, asset: audioFile };
+                if (lastPlayingRef.current) {
+                  void bpmAudioEngine.playLoopAsset(engineKey, audioFile, mainVolumeRef.current);
+                }
+              } else {
+                // Motor no disponible (web / Expo Go / dev client viejo):
+                // degradar al loop nativo audible del main (empalme perceptible
+                // pero funcional). Sin fallback de crossfade JS — eliminado.
+                loopFallbackRef.current = true;
+                try {
+                  if (mainPlayerRef.current?.isLoaded) {
+                    mainPlayerRef.current.volume = mainVolumeRef.current;
+                  }
+                } catch (_) {}
+              }
+            })();
 
             if (ambientFile) {
               const ambient = ensureAmbientPlayer();
@@ -1272,40 +1293,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 return next;
               });
             }, 1000);
-
-            // Crossfade de potencia constante entre A (main) y B (layerB).
-            clearLoopFade();
-            loopFadeIntervalRef.current = setInterval(() => {
-              const a = mainPlayerRef.current;
-              const b = loopBPlayerRef.current;
-              if (!a?.isLoaded || !b?.isLoaded) return;
-              const dur = a.duration ?? 0;
-              if (!(dur > 0)) return;
-              const posA = a.currentTime ?? 0;
-              const posB = b.currentTime ?? 0;
-              const gainA = Math.abs(Math.sin(Math.PI * (posA / dur)));
-              const gainB = Math.abs(Math.sin(Math.PI * (posB / dur)));
-              // B queda muteada hasta confirmar su alineación dur/2 adelante.
-              const targetB = loopOffsetConfirmedRef.current ? gainB : 0;
-              const mv = mainVolumeRef.current;
-              try { if (Math.abs(a.volume - gainA * mv) > 0.004) a.volume = gainA * mv; } catch (_) {}
-              try { if (Math.abs(b.volume - targetB * mv) > 0.004) b.volume = targetB * mv; } catch (_) {}
-
-              const desired = (((posA + dur / 2) % dur) + dur) % dur;
-              let err = Math.abs(posB - desired);
-              err = Math.min(err, dur - err); // distancia circular
-              if (!loopOffsetConfirmedRef.current) {
-                if (err < 0.15) loopOffsetConfirmedRef.current = true;
-                else { try { void b.seekTo(desired); } catch (_) {} }
-              } else if (gainB < 0.12) {
-                // Drift de largo plazo: recentrar solo en el valle de B (inaudible).
-                const now = Date.now();
-                if (err > 0.06 && now - loopLastResyncRef.current > 2000) {
-                  loopLastResyncRef.current = now;
-                  try { void b.seekTo(desired); } catch (_) {}
-                }
-              }
-            }, 100);
           } else {
             // ── Sesión de duración fija sin loop (sin crossfade) ──
             main.loop = false;
@@ -1366,6 +1353,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (err) {
           console.warn("[RESONANCE] Loop audio load failed:", err);
+          // Apagar cualquier arranque parcial (incl. voz del motor pendiente o
+          // ya sonando y el ancla muda) antes de caer a la simulación.
+          teardownLayers();
+          try { mainPlayerRef.current?.pause(); } catch (_) {}
           hasRealAudioRef.current = false;
           loopModeRef.current = false;
           switchingRef.current = false;
@@ -1402,7 +1393,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         main.pause();
         if (voiceActiveRef.current) voicePlayerRef.current?.pause();
         if (ambientActiveRef.current) ambientPlayerRef.current?.pause();
-        if (loopCrossfadeRef.current) loopBPlayerRef.current?.pause();
+        if (loopCrossfadeRef.current) pauseLoopEngine();
         lastPlayingRef.current = false;
         setIsPlaying(false);
         const sId = currentSessionRef.current?.id;
@@ -1413,7 +1404,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         main.play();
         if (voiceActiveRef.current) voicePlayerRef.current?.play();
         if (ambientActiveRef.current) ambientPlayerRef.current?.play();
-        if (loopCrossfadeRef.current) loopBPlayerRef.current?.play();
+        if (loopCrossfadeRef.current) resumeLoopEngineRef.current();
         lastPlayingRef.current = true;
         setIsPlaying(true);
       }
@@ -1527,6 +1518,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const setMainVolume = useCallback((volume: number) => {
     const clamped = Math.max(0, Math.min(1, volume));
     setMainVolumeState(clamped);
+    // Sesión en loop por el motor: el volumen vive en la voz del motor y el
+    // main player debe seguir MUDO (es solo el ancla de pantalla de bloqueo).
+    // Cubre también la ventana de init/decode (voz aún no creada): el ancla no
+    // debe des-mutearse salvo en el fallback confirmado sin motor.
+    if (loopCrossfadeRef.current && !loopFallbackRef.current) {
+      const v = loopEngineRef.current;
+      if (v) {
+        try { bpmAudioEngine.setVolume(v.key, clamped); } catch (_) {}
+      }
+      // Si la voz aún no existe, playLoopAsset arrancará con mainVolumeRef
+      // actualizado (el resume lee mainVolumeRef.current).
+      return;
+    }
     if (mainPlayerRef.current?.isLoaded) {
       try { mainPlayerRef.current.volume = clamped; } catch (_) {}
     }

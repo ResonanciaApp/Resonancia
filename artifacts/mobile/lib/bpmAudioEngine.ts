@@ -52,9 +52,17 @@ type Voice = {
   source: SourceNodeType;
   gain: GainNodeType;
   base: number;
+  /** true = voz externa al Mezclador (p. ej. loop de sesión del reproductor):
+   *  va directo a destination y stopAll() del Mezclador no la toca. */
+  external?: boolean;
 };
 
 const FADE_OUT_SEC = 0.25;
+
+/** Recorta un volumen al rango [0, 1]. */
+function clamp01(v: number): number {
+  return Math.max(0, Math.min(1, v));
+}
 /** Crossfade corto al reemplazar una voz que ya suena: evita el click de empalme. */
 const XFADE_SEC = 0.02;
 
@@ -170,28 +178,38 @@ class BpmAudioEngine {
     }
   }
 
-  /** Decodifica (y cachea) el WAV de un id. Dedup de llamadas concurrentes. */
+  /** Decodifica (y cachea) el WAV de un id del mixer (SOUND_MAP). */
   private getBuffer(id: string): Promise<AudioBufferType | null> {
-    const cached = this.buffers.get(id);
+    return this.getBufferFor(id, SOUND_MAP[id] as number | undefined);
+  }
+
+  /**
+   * Decodifica (y cachea) un asset arbitrario bajo una clave propia.
+   * Dedup de llamadas concurrentes. `asset` = id numérico de require().
+   */
+  private getBufferFor(
+    key: string,
+    asset: number | null | undefined,
+  ): Promise<AudioBufferType | null> {
+    const cached = this.buffers.get(key);
     if (cached) return Promise.resolve(cached);
-    const inflight = this.decoding.get(id);
+    const inflight = this.decoding.get(key);
     if (inflight) return inflight;
     const ctx = this.ctx;
-    const asset = SOUND_MAP[id];
     if (!ctx || asset == null) return Promise.resolve(null);
     const p = (async () => {
       try {
         // decodeAudioData acepta el id numérico del require() (DecodeDataInput).
         const buf = await ctx.decodeAudioData(asset as unknown as number);
-        this.buffers.set(id, buf);
+        this.buffers.set(key, buf);
         return buf;
       } catch {
         return null;
       } finally {
-        this.decoding.delete(id);
+        this.decoding.delete(key);
       }
     })();
-    this.decoding.set(id, p);
+    this.decoding.set(key, p);
     return p;
   }
 
@@ -266,10 +284,32 @@ class BpmAudioEngine {
    * loop BPM pero sin necesidad de tempo ni reloj maestro.
    */
   async playLoop(id: string, volume: number): Promise<void> {
+    return this.playLoopBuffer(id, () => this.getBuffer(id), volume, false);
+  }
+
+  /**
+   * Igual que playLoop pero con un asset arbitrario (fuera de SOUND_MAP),
+   * bajo una clave propia — p. ej. `session:<id>` para los loops de sesiones
+   * del reproductor. Mismo empalme gapless por `buffer.duration`.
+   *
+   * Las voces "externas" (no-mixer) van directo a `ctx.destination`, NO al
+   * masterGain del Mezclador: el slider master del Mezclador y su `stopAll()`
+   * no deben afectarlas.
+   */
+  async playLoopAsset(key: string, asset: number, volume: number): Promise<void> {
+    return this.playLoopBuffer(key, () => this.getBufferFor(key, asset), volume, true);
+  }
+
+  private async playLoopBuffer(
+    id: string,
+    getBuffer: () => Promise<AudioBufferType | null>,
+    volume: number,
+    external: boolean,
+  ): Promise<void> {
     if (!this.isReady()) return;
     const token = ++this.playSeq;
     this.wanted.set(id, token);
-    const buffer = await this.getBuffer(id);
+    const buffer = await getBuffer();
     const ctx = this.ctx;
     const masterGain = this.masterGain;
     if (!buffer || !ctx || !masterGain || this.wanted.get(id) !== token) return;
@@ -294,14 +334,15 @@ class BpmAudioEngine {
       gain.gain.value = target;
     }
     source.connect(gain);
-    gain.connect(masterGain);
+    // Voces externas: directo a destination (fuera del master del Mezclador).
+    gain.connect(external ? ctx.destination : masterGain);
     try {
       source.start(now, 0);
     } catch {
       /* ignore */
     }
     if (prev) this.fadeOutAndStop(prev, now, XFADE_SEC);
-    this.voices.set(id, { source, gain, base: volume });
+    this.voices.set(id, { source, gain, base: volume, external });
 
     if (ctx.state !== "running") {
       try {
@@ -401,11 +442,17 @@ class BpmAudioEngine {
     }
   }
 
-  /** Apaga TODOS los loops BPM. */
+  /** Apaga TODOS los loops del Mezclador (las voces externas no se tocan). */
   stopAll(): void {
-    // Cancelar todo play() en vuelo (ids que aún no son voces por estar decodificando).
-    this.wanted.clear();
-    for (const id of [...this.voices.keys()]) this.stop(id);
+    for (const [id, v] of [...this.voices.entries()]) {
+      if (v.external) continue;
+      this.stop(id); // stop() también cancela el play() en vuelo de ese id
+    }
+    // Cancelar los play() en vuelo que aún no son voces (decodificando),
+    // salvo los externos (claves de sesión, fuera del Mezclador).
+    for (const id of [...this.wanted.keys()]) {
+      if (!this.voices.has(id) && !id.startsWith("session:")) this.wanted.delete(id);
+    }
   }
 
   /** Ajusta el volumen base (0-1) de un loop en curso. */
