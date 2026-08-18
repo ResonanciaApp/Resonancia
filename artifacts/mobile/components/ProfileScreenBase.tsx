@@ -1,6 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeCurrentStreak, computeMaxStreak, computeWeekFlags } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
@@ -219,7 +218,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
-  const todayKey = useDayRollover();
   const { presets } = useMixer();
   const {
     username,
@@ -232,18 +230,15 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     setPhotoUri,
   } = useUserProfile();
 
+  const { currentStreak, maxStreak, weekFlags } = useStreak();
   const rachaStats = useMemo(() => {
-    const currentStreak = computeCurrentStreak(statEvents);
-    const maxStreak = computeMaxStreak(statEvents);
-    // Misma meta diaria que la racha (fuente única: utils/stats)
-    const weekActivity = computeWeekFlags(statEvents).flags;
+    const weekActivity = weekFlags;
     const totalSessions = statEvents.length;
     const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
     const timeDisplay =
       totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
     return { currentStreak, maxStreak, weekActivity, totalSessions, timeDisplay };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statEvents, todayKey]);
+  }, [statEvents, currentStreak, maxStreak, weekFlags]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 

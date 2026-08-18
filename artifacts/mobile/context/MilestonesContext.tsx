@@ -18,11 +18,7 @@ import {
   subscribeGeometrixCount,
 } from "@/hooks/useGeometrixCreations";
 import { useDayRollover } from "@/hooks/useDayRollover";
-import {
-  computeCurrentStreak,
-  computeMaxStreak,
-  computeTotalActiveDays,
-} from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import { deleteMilestoneCloud, syncMilestones } from "@/lib/cloudSync";
 
 const STORAGE_KEY = "@resonance_milestones";
@@ -181,14 +177,15 @@ export function MilestonesProvider({ children }: { children: React.ReactNode }) 
 
   // ── Progreso actual por familia ────────────────────────────────────────────
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { currentStreak: streakNow, maxStreak: streakMax, totalActiveDays } = useStreak();
   const familyProgress = useMemo(
     () => ({
-      racha: Math.max(computeCurrentStreak(statEvents), computeMaxStreak(statEvents)),
-      dias: computeTotalActiveDays(statEvents),
+      racha: Math.max(streakNow, streakMax),
+      dias: totalActiveDays,
       mezclas: counters?.mezclas.lifetime ?? 0,
       geometrix: counters?.geometrix.lifetime ?? 0,
     }),
-    [statEvents, counters, todayKey],
+    [streakNow, streakMax, totalActiveDays, counters],
   );
 
   // ── Evaluación: detectar hitos recién cumplidos (una sola vez cada uno) ────

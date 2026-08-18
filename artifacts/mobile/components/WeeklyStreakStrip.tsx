@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeWeekFlags } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
@@ -8,7 +7,6 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#F9F9F9";
 
@@ -120,17 +118,13 @@ function brightenHex(hex: string, amount: number): string {
 
 
 export function WeeklyStreakStrip() {
-  const { statEvents } = usePlayer();
-  const todayKey = useDayRollover();
+  const { weekFlags, weekCount, todayIndex } = useStreak();
   const { theme } = useSceneTheme();
 
   const streakBorderColors: [string, string] = ["#F9F9F9", "#F9F9F9"];
 
-  const { activeFlags, activeCount, todayIndex } = useMemo(() => {
-    const { flags, weekCount, todayIndex: todayIdx } = computeWeekFlags(statEvents);
-    return { activeFlags: flags, activeCount: weekCount, todayIndex: todayIdx };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statEvents, todayKey]);
+  const activeFlags = weekFlags;
+  const activeCount = weekCount;
 
   const dashOffset = CIRCUMFERENCE * (1 - activeCount / 7);
   const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];

@@ -3,14 +3,12 @@
  * La letra del día se muestra dentro del círculo.
  */
 import { Feather } from "@expo/vector-icons";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeWeekFlags } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useMemo } from "react";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Stop } from "react-native-svg";
 
-import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const SCREEN_W = Dimensions.get("window").width;
@@ -52,8 +50,7 @@ function brightenHex(hex: string, pct: number): string {
 }
 
 export function WeekDayDots() {
-  const { statEvents } = usePlayer();
-  const todayKey = useDayRollover();
+  const { weekFlags, todayIndex } = useStreak();
   const { theme } = useSceneTheme();
 
   const isTibet = theme.id === "tibet";
@@ -67,11 +64,7 @@ export function WeekDayDots() {
     brightenHex(theme.gradient[1] ?? theme.gradient[0], 10),
   ] as [string, string];
 
-  const { activeFlags, todayIndex } = useMemo(() => {
-    const { flags, todayIndex: todayIdx } = computeWeekFlags(statEvents);
-    return { activeFlags: flags, todayIndex: todayIdx };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statEvents, todayKey]);
+  const activeFlags = weekFlags;
 
   return (
     <View style={s.row}>

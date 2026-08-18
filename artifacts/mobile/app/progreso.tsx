@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { useMilestones } from "@/context/MilestonesContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeCurrentStreak, computeMaxStreak, computeWeekFlags, dayKey } from "@/utils/stats";
-import { useGetMyStreak } from "@workspace/api-client-react";
+import { dayKey } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -21,7 +21,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
-import { useAuth } from "@/context/AuthContext";
 import { getSessionById } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
@@ -87,18 +86,11 @@ export default function ProgresoScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // Racha canónica del servidor; fallback local si offline / sin sesión.
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const { isSignedIn } = useAuth();
-  const streakQ = useGetMyStreak(
-    { tz },
-    { query: { enabled: !!isSignedIn, staleTime: 5 * 60_000 } },
-  );
+  // Racha canónica (server-authoritative con fallback local) via useStreak.
+  const { currentStreak, maxStreak, weekFlags } = useStreak();
 
   // ── Derived stats ─────────────────────────────────────────────────────────
   const stats = useMemo(() => {
-    const currentStreak = streakQ.data?.currentStreak ?? computeCurrentStreak(statEvents);
-    const maxStreak = streakQ.data?.maxStreak ?? computeMaxStreak(statEvents);
     const totalSessions = statEvents.length;
     const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
     const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -115,7 +107,7 @@ export default function ProgresoScreen() {
     }
 
     // This-week day activity (Mon=0..Sun=6) — misma meta diaria que la racha
-    const weekActivity = computeWeekFlags(statEvents).flags;
+    const weekActivity = weekFlags;
 
     // Heat-map grid: 8 cols (weeks, oldest left) × 7 rows (Mon-Sun)
     // Anchor: today is the last real cell; future cells in current column are empty

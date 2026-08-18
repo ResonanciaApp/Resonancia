@@ -1,8 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeCurrentStreak } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
-import { useGetMyStreak } from "@workspace/api-client-react";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -82,7 +81,6 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { RESONADORES } from "@/data/resonadores";
 import { usePremium } from "@/context/PremiumContext";
-import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -336,19 +334,7 @@ export default function HomeScreen2() {
   const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
   const todayKey = useDayRollover();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const localStreak = useMemo(() => computeCurrentStreak(statEvents), [statEvents, todayKey]);
-
-  // Racha canónica del servidor (anti-spoofing). Fallback al cálculo local si
-  // no hay conexión o el usuario no inició sesión.
-  const { isSignedIn } = useAuth();
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const streakQ = useGetMyStreak(
-    { tz },
-    { query: { enabled: !!isSignedIn, staleTime: 5 * 60_000 } },
-  );
-  const currentStreak = streakQ.data?.currentStreak ?? localStreak;
-  const currentStreakDisplay = currentStreak;
+  const { currentStreak: currentStreakDisplay } = useStreak();
 
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();

@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeCurrentStreak, computeWeekFlags } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -11,7 +10,6 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle, Defs, G, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 
-import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const SCREEN_W = Dimensions.get("window").width;
@@ -153,8 +151,7 @@ const FADE_START = 146;
 const FADE_END   = 386;
 
 export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
-  const { statEvents } = usePlayer();
-  const todayKey = useDayRollover();
+  const { currentStreak, weekFlags, weekCount: weekCnt, todayIndex: todayIdx } = useStreak();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
     brightenHex(theme.gradient[0], 60),
@@ -173,19 +170,12 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
 
   const DEBUG_STREAK: number | null = null; // racha real (sin override de pruebas)
 
-  const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
-    const streak = computeCurrentStreak(statEvents);
-    const { flags, weekCount: weekCnt, todayIndex: todayIdx } = computeWeekFlags(statEvents);
-    const finalCnt = DEBUG_STREAK ?? weekCnt;
-    return {
-      consecutiveStreak: DEBUG_STREAK ?? streak,
-      activeWaves: Math.min(finalCnt, N_WAVES),
-      activeFlags: DEBUG_STREAK != null ? Array.from({ length: 7 }, (_, i) => i < DEBUG_STREAK) : flags,
-      todayIndex: todayIdx,
-      weekCount: finalCnt,
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statEvents, todayKey]);
+  const finalCnt = DEBUG_STREAK ?? weekCnt;
+  const consecutiveStreak = DEBUG_STREAK ?? currentStreak;
+  const activeWaves = Math.min(finalCnt, N_WAVES);
+  const activeFlags = DEBUG_STREAK != null ? Array.from({ length: 7 }, (_, i) => i < DEBUG_STREAK) : weekFlags;
+  const todayIndex = todayIdx;
+  const weekCount = finalCnt;
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: scrollY
