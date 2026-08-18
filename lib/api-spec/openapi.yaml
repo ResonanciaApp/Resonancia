@@ -1488,6 +1488,31 @@ paths:
           description: sessionId inválido
         "404":
           description: Sesión no encontrada
+  /me/streak:
+    get:
+      tags: [users]
+      operationId: getMyStreak
+      summary: Get the current user's canonical streak computed server-side
+      parameters:
+        - name: tz
+          in: query
+          required: false
+          description: IANA timezone name (e.g. America/Santiago). Defaults to UTC.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Streak data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /catalog/sessions/{id}/plays:
     get:
       operationId: getSessionPlayCount
@@ -3430,6 +3455,30 @@ components:
           format: date-time
       required:
         [clientEventId, sessionId, categoryId, categoryLabel, minutes, completed, playedAt]
+    StreakResponse:
+      type: object
+      properties:
+        currentStreak:
+          type: integer
+          description: Días consecutivos actuales con la meta cumplida
+        maxStreak:
+          type: integer
+          description: Racha máxima histórica
+        weekFlags:
+          type: array
+          items:
+            type: boolean
+          description: Lun-Dom de la semana actual (true = meta cumplida)
+        weekCount:
+          type: integer
+          description: Días de la semana actual con meta cumplida
+        todayIndex:
+          type: integer
+          description: Índice (0-6) del día de hoy en weekFlags
+        totalActiveDays:
+          type: integer
+          description: Total de días distintos con meta cumplida (histórico)
+      required: [currentStreak, maxStreak, weekFlags, weekCount, todayIndex, totalActiveDays]
     PlaybackEventList:
       type: object
       properties:
