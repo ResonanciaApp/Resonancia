@@ -1182,7 +1182,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       void addToHistory(session);
       startStatTracking(sessionOverride);
 
-      const audioFile = AUDIO_MAP[session.id];
+      // Igual que el path normal: si no hay asset bundleado, usar el audio
+      // subido al servidor (audioUri). Los loops con URI remota degradan al
+      // loop nativo audible del main (el motor requiere asset bundleado).
+      const audioFile =
+        AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
       const isLoopSession = LOOP_SESSIONS.has(session.id);
 
       if (audioFile) {
