@@ -596,6 +596,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         // Clear loading once the track is ready
         setIsLoading(false);
 
+        // Loop fallback con URI remota: el motor BPM no puede usar assets
+        // remotos, así que expo-audio es el reproductor audible. Pero al
+        // arrancar se pone a volume=0 como ancla muda (igual que el path BPM).
+        // Aquí restauramos el volumen al cargar, porque en el momento en que
+        // el motor detectó el fallback el track todavía no estaba listo.
+        if (loopFallbackRef.current) {
+          try {
+            if (mainPlayerRef.current && mainPlayerRef.current.volume === 0) {
+              mainPlayerRef.current.volume = mainVolumeRef.current;
+            }
+          } catch (_) {}
+        }
+
         // Activar lock-screen / Now Playing recién cuando el track tiene una
         // duración real. Hacerlo antes (justo tras replace()) escribe NaN en
         // MPNowPlayingInfoCenter y iOS descarta toda la entrada → "Sin Reproducción".
