@@ -93,6 +93,7 @@ export default function PlayerScreen() {
     ambientVolume,
     setAmbientVolume,
     activePlaylistIds,
+    queueImplicit,
     shuffleMode,
     playlistNext,
     playlistPrev,
@@ -627,20 +628,37 @@ export default function PlayerScreen() {
           {/* ── Fila de controles ─────────────────────────────────────────── */}
           <View style={styles.controlsRow}>
             {isInPlaylist ? (
-              /* ── Modo playlist: shuffle · prev · play · next · stop ── */
+              /* ── Modo cola: (shuffle|ajustes) · prev · play · next · stop ──
+                 Playlist explícita → aleatorio; cola implícita (categoría,
+                 estilo Calm) → botón de ajustes como en el modo normal. */
               <>
-                {/* Aleatorio */}
-                <Pressable
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleShuffle(); }}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Feather
-                    name="shuffle"
-                    size={22}
-                    color={shuffleMode ? "#BE9650" : "rgba(255,255,255,0.88)"}
-                  />
-                </Pressable>
+                {queueImplicit ? (
+                  /* Ajustes (cola implícita: sin aleatorio) */
+                  <Pressable
+                    onPress={isOptionsCategory ? openSheet : undefined}
+                    style={styles.ctrlBtn}
+                    hitSlop={10}
+                  >
+                    <Feather
+                      name="sliders"
+                      size={22}
+                      color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
+                    />
+                  </Pressable>
+                ) : (
+                  /* Aleatorio */
+                  <Pressable
+                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleShuffle(); }}
+                    style={styles.ctrlBtn}
+                    hitSlop={10}
+                  >
+                    <Feather
+                      name="shuffle"
+                      size={22}
+                      color={shuffleMode ? "#BE9650" : "rgba(255,255,255,0.88)"}
+                    />
+                  </Pressable>
+                )}
 
                 {/* Sesión anterior */}
                 <Pressable

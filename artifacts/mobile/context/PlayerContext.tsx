@@ -17,7 +17,7 @@ import React, {
   useState,
 } from "react";
 
-import { type Session, SESSIONS, getSessionById } from "@/data/sessions";
+import { type Session, SESSIONS, getSessionById, getSessionsByCategory } from "@/data/sessions";
 import {
   registerSessionStopper,
   stopMixPlayback,
@@ -53,6 +53,9 @@ type PlayerContextType = {
   currentSession: Session | null;
   /** Si la sesión actual proviene de una cola de playlist, sus IDs en orden original */
   activePlaylistIds: string[] | null;
+  /** true cuando la cola es implícita (lista/categoría de origen, estilo Calm):
+   *  prev/next disponibles, pero sin shuffle ni auto-avance al terminar. */
+  queueImplicit: boolean;
   /** Si está en modo aleatorio dentro de la playlist */
   shuffleMode: boolean;
   /** Reproduce una sesión registrando la cola de la playlist (habilita prev/next en el reproductor) */
@@ -192,6 +195,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // ── Cola de playlist (prev / next / shuffle) ─────────────────────────────
   const [activePlaylistIds, setActivePlaylistIds] = useState<string[] | null>(null);
+  const [queueImplicit, setQueueImplicit] = useState(false);
+  const queueImplicitRef = useRef(false);
+  queueImplicitRef.current = queueImplicit;
   const [shuffleMode, setShuffleMode] = useState(false);
   /** Orden en que se reproducen las sesiones (original o barajado) */
   const playOrderRef = useRef<string[]>([]);
@@ -989,6 +995,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Avanza (o retrocede) en la cola y arranca la siguiente sesión. */
   const advancePlaylist = useCallback(
     (direction: 1 | -1) => {
+      // Cola implícita: reconstruirla al momento de navegar desde el catálogo
+      // vigente (la hidratación muta SESSIONS in-place y añade sesiones de DB;
+      // una cola armada antes quedaría desactualizada).
+      if (queueImplicitRef.current) {
+        const cur = currentSessionRef.current;
+        if (cur) {
+          const ids = getSessionsByCategory(cur.categoryId).map((s) => s.id);
+          if (ids.length > 1) {
+            playOrderRef.current = ids;
+            playIndexRef.current = Math.max(0, ids.indexOf(cur.id));
+            setActivePlaylistIds(ids);
+          }
+        }
+      }
       const order = playOrderRef.current;
       if (!order.length) return;
       const next = (playIndexRef.current + direction + order.length) % order.length;
@@ -1007,7 +1027,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Exponer el avance automático para didJustFinish
   useEffect(() => {
     playlistAutoAdvanceRef.current = () => {
-      if (activePlaylistIds) advancePlaylist(1);
+      // Solo las playlists explícitas auto-avanzan al terminar una sesión;
+      // la cola implícita (lista/categoría de origen) es solo navegación manual.
+      if (activePlaylistIds && !queueImplicitRef.current) advancePlaylist(1);
     };
   }, [activePlaylistIds, advancePlaylist]);
 
@@ -1038,6 +1060,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     // Registrar la cola y el índice ANTES de llamar a playSession.
     // playSession detectará inPlaylistAdvanceRef = false → registra la cola nueva.
     setActivePlaylistIds(sessionIds);
+    setQueueImplicit(false);
+    queueImplicitRef.current = false;
     const idx = sessionIds.indexOf(session.id);
     if (shuffleModeRef.current) {
       const shuffled = buildShuffledOrder(sessionIds, session.id);
@@ -1061,12 +1085,28 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
-      // Si NO venimos de un avance interno, limpiar la cola de playlist.
+      // Si NO venimos de un avance interno, limpiar la cola de playlist y
+      // registrar la cola implícita (estilo Calm): para sesiones que no son
+      // meditaciones, prev/next navegan por las sesiones de su categoría.
       if (!inPlaylistAdvanceRef.current) {
-        setActivePlaylistIds(null);
         setShuffleMode(false);
-        playOrderRef.current = [];
-        playIndexRef.current = 0;
+        const contextIds =
+          session.categoryId !== "meditaciones-guiadas"
+            ? getSessionsByCategory(session.categoryId).map((s) => s.id)
+            : [];
+        if (contextIds.length > 1 && contextIds.includes(session.id)) {
+          setActivePlaylistIds(contextIds);
+          setQueueImplicit(true);
+          queueImplicitRef.current = true;
+          playOrderRef.current = contextIds;
+          playIndexRef.current = contextIds.indexOf(session.id);
+        } else {
+          setActivePlaylistIds(null);
+          setQueueImplicit(false);
+          queueImplicitRef.current = false;
+          playOrderRef.current = [];
+          playIndexRef.current = 0;
+        }
       }
       inPlaylistAdvanceRef.current = false;
       // Las sesiones en loop (Sonidos Naturaleza) SIEMPRE van por el camino de
@@ -1534,6 +1574,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setElapsed(0);
     setActualDurationSeconds(0);
     setInfiniteLoop(false);
+    // Al detener no queda nada sonando: limpiar también la cola de navegación.
+    setActivePlaylistIds(null);
+    setQueueImplicit(false);
+    queueImplicitRef.current = false;
+    setShuffleMode(false);
+    playOrderRef.current = [];
+    playIndexRef.current = 0;
   }, [saveSessionProgress, actualDurationSeconds, elapsed, flushActiveStat, teardownPlayback, teardownLayers]);
 
   // ── Registrar la sesión como "stoppable" por la mezcla ────────────
@@ -1681,6 +1728,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         toggleFavorite,
         clearSessionProgress,
         activePlaylistIds,
+        queueImplicit,
         shuffleMode,
         playSessionInPlaylist,
         playlistNext,
