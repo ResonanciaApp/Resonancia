@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Animated, Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
 import type { DescansoSound } from "@/data/descanso-sounds";
@@ -11,6 +11,8 @@ const PLAYER_H = 64;
 interface Props {
   sound: DescansoSound;
   isPlaying: boolean;
+  /** Muestra una ruedita en lugar del play/pause mientras el audio carga. */
+  isLoading?: boolean;
   onToggle: () => void;
   onStop: () => void;
   bottomOffset: number;
@@ -20,7 +22,7 @@ interface Props {
   onExpand: () => void;
 }
 
-export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOffset, closeColor, isExpanded, topOffset, onExpand }: Props) {
+export function DormirMiniPlayer({ sound, isPlaying, isLoading, onToggle, onStop, bottomOffset, closeColor, isExpanded, topOffset, onExpand }: Props) {
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#160f28" : "rgba(0,0,0,0.40)";
 
@@ -84,16 +86,20 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
           style={styles.playBtn}
           hitSlop={8}
         >
-          <Svg width={26} height={26} viewBox="0 0 48 48">
-            {isPlaying ? (
-              <>
-                <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-              </>
-            ) : (
-              <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-            )}
-          </Svg>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+            <Svg width={26} height={26} viewBox="0 0 48 48">
+              {isPlaying ? (
+                <>
+                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                </>
+              ) : (
+                <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+              )}
+            </Svg>
+          )}
         </Pressable>
 
         <View style={{ flex: 1 }}>

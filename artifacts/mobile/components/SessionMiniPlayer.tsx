@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   Image,
@@ -32,7 +33,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
   // delta = (topOffset + 56) − (SCREEN_H − bottomOffset − PLAYER_H)
   const startY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
 
-  const { currentSession, isPlaying, pauseResume, stop, progress } = usePlayer();
+  const { currentSession, isPlaying, isLoading, pauseResume, stop, progress } = usePlayer();
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#160f28" : "rgba(0,0,0,0.40)";
 
@@ -107,16 +108,20 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
           style={styles.playBtn}
           hitSlop={8}
         >
-          <Svg width={26} height={26} viewBox="0 0 48 48">
-            {isPlaying ? (
-              <>
-                <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-              </>
-            ) : (
-              <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-            )}
-          </Svg>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+            <Svg width={26} height={26} viewBox="0 0 48 48">
+              {isPlaying ? (
+                <>
+                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                </>
+              ) : (
+                <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+              )}
+            </Svg>
+          )}
         </Pressable>
 
         <View style={{ flex: 1 }}>

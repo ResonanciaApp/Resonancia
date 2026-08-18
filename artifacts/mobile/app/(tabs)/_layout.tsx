@@ -614,6 +614,7 @@ function TabLayoutInner() {
           <DormirMiniPlayer
             sound={selectedSound}
             isPlaying={descansoPlayer.isPlaying}
+            isLoading={descansoPlayer.isLoading}
             onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
             onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
             bottomOffset={miniPlayerBottom}

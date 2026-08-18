@@ -10,6 +10,8 @@ interface UseDescansoPlayerOptions {
 interface UseDescansoPlayerReturn {
   selectedId: string | null;
   isPlaying: boolean;
+  /** True mientras el audio remoto todavía está cargando (antes del primer frame audible). */
+  isLoading: boolean;
   elapsedSeconds: number;
   durationSeconds: number;
   toggle: (id: string, audioUri: string | null) => void;
@@ -29,6 +31,7 @@ export function useDescansoPlayer({
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const [isPlaying,   setIsPlaying]   = useState(false);
+  const [isLoading,   setIsLoading]   = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const durationSeconds = timerMinutes > 0 ? timerMinutes * 60 : 0;
 
@@ -56,6 +59,7 @@ export function useDescansoPlayer({
     }
     setSelectedId(null);
     setIsPlaying(false);
+    setIsLoading(false);
     setElapsedSeconds(0);
   }, [clearFade, clearElapsed]);
 
@@ -108,6 +112,16 @@ export function useDescansoPlayer({
     player.loop  = true;
     player.play();
     playerRef.current = player;
+    // Spinner de carga hasta que el buffer remoto realmente empieza a sonar.
+    setIsLoading(true);
+    const sub = player.addListener("playbackStatusUpdate", (status) => {
+      // Ignorar si este player ya fue reemplazado/parado.
+      if (playerRef.current !== player) { sub.remove(); return; }
+      if (status.isLoaded && (status.playing || status.currentTime > 0)) {
+        setIsLoading(false);
+        sub.remove();
+      }
+    });
     setSelectedId(id);
     setIsPlaying(true);
     setElapsedSeconds(0);
@@ -133,5 +147,5 @@ export function useDescansoPlayer({
 
   useEffect(() => () => { stopCurrent(); }, [stopCurrent]);
 
-  return { selectedId, isPlaying, elapsedSeconds, durationSeconds, toggle, togglePause, stop: stopCurrent };
+  return { selectedId, isPlaying, isLoading, elapsedSeconds, durationSeconds, toggle, togglePause, stop: stopCurrent };
 }

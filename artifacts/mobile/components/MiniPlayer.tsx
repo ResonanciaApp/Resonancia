@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import {
+  ActivityIndicator,
   Animated,
   Image,
   PanResponder,
@@ -85,7 +86,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
 export function MiniPlayer() {
   const { activeSceneId } = useSceneTheme();
   const tibetTint = null;
-  const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
+  const { currentSession, isPlaying, isLoading, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
     isPlaying: mixPlaying,
@@ -391,16 +392,20 @@ export function MiniPlayer() {
             onPress={(e) => { e.stopPropagation(); pauseResume(); }}
             style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)", transform: [{ translateY: -2 }] }]}
           >
-            <Svg width={18} height={18} viewBox="0 0 48 48">
-              {isPlaying ? (
-                <>
-                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                </>
-              ) : (
-                <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-              )}
-            </Svg>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Svg width={18} height={18} viewBox="0 0 48 48">
+                {isPlaying ? (
+                  <>
+                    <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                    <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  </>
+                ) : (
+                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                )}
+              </Svg>
+            )}
           </Pressable>
         </View>
       </View>
