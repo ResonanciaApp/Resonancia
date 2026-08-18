@@ -4,8 +4,9 @@ import {
   RecordingPresets,
   setAudioModeAsync,
   useAudioRecorder,
+  createAudioPlayer,
+  type AudioPlayer,
 } from "expo-audio";
-import { Audio } from "expo-av";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type VozEntry = {
@@ -27,7 +28,7 @@ export function useVozInterior() {
   const [playingPositionMs, setPlayingPositionMs] = useState(0);
 
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const soundRef = useRef<AudioPlayer | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
   const isRecordingRef = useRef(false);
@@ -38,7 +39,7 @@ export function useVozInterior() {
       .catch(() => {});
     return () => {
       timerRef.current && clearInterval(timerRef.current);
-      soundRef.current?.unloadAsync().catch(() => {});
+      try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
     };
   }, []);
 
@@ -52,12 +53,9 @@ export function useVozInterior() {
       const perm = await AudioModule.requestRecordingPermissionsAsync();
       if (!perm.granted) return false;
 
-      // Stop any active expo-av playback that may be holding the audio session
-      try {
-        await soundRef.current?.stopAsync().catch(() => {});
-        await soundRef.current?.unloadAsync().catch(() => {});
-        soundRef.current = null;
-      } catch {}
+      // Detener reproducción activa antes de grabar
+      try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
+      soundRef.current = null;
 
       try {
         await setAudioModeAsync({
@@ -126,8 +124,7 @@ export function useVozInterior() {
   }, [audioRecorder]);
 
   const deleteAllEntries = useCallback(async () => {
-    await soundRef.current?.stopAsync().catch(() => {});
-    await soundRef.current?.unloadAsync().catch(() => {});
+    try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
     soundRef.current = null;
     setPlayingId(null);
     setPlayingPositionMs(0);
@@ -143,8 +140,7 @@ export function useVozInterior() {
         return updated;
       });
       if (playingId === id) {
-        await soundRef.current?.stopAsync().catch(() => {});
-        await soundRef.current?.unloadAsync().catch(() => {});
+        try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
         soundRef.current = null;
         setPlayingId(null);
         setPlayingPositionMs(0);
@@ -167,40 +163,44 @@ export function useVozInterior() {
   const playEntry = useCallback(
     async (entry: VozEntry) => {
       try {
+        // Limpiar player anterior
         if (soundRef.current) {
-          await soundRef.current.stopAsync().catch(() => {});
-          await soundRef.current.unloadAsync().catch(() => {});
+          try { soundRef.current.pause(); soundRef.current.remove(); } catch {}
           soundRef.current = null;
         }
 
+        // Tap en la misma entrada → detener
         if (playingId === entry.id) {
           setPlayingId(null);
           setPlayingPositionMs(0);
           return;
         }
 
-        try {
-          await Audio.setAudioModeAsync({
-            allowsRecordingIOS: false,
-            playsInSilentModeIOS: true,
-          });
-        } catch {}
+        // expo-audio es el dueño único de la sesión de audio; no reconfigurar aquí.
+        const player = createAudioPlayer({ uri: entry.uri });
+        player.play();
 
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: entry.uri },
-          { shouldPlay: true },
-          (status) => {
-            if (!status.isLoaded) return;
-            setPlayingPositionMs(status.positionMillis ?? 0);
-            if (status.didJustFinish) {
-              setPlayingId(null);
-              setPlayingPositionMs(0);
-              sound.unloadAsync().catch(() => {});
-              soundRef.current = null;
-            }
-          },
-        );
-        soundRef.current = sound;
+        // Seguimiento de posición mediante polling liviano (~200ms)
+        const pollInterval = setInterval(() => {
+          if (!soundRef.current) { clearInterval(pollInterval); return; }
+          try {
+            const pos = Math.round((soundRef.current.currentTime ?? 0) * 1000);
+            setPlayingPositionMs(pos);
+          } catch {}
+        }, 200);
+
+        // Al terminar, limpiar
+        player.addListener("playbackStatusUpdate", (status) => {
+          if (status.didJustFinish) {
+            clearInterval(pollInterval);
+            try { player.remove(); } catch {}
+            if (soundRef.current === player) soundRef.current = null;
+            setPlayingId(null);
+            setPlayingPositionMs(0);
+          }
+        });
+
+        soundRef.current = player;
         setPlayingId(entry.id);
         setPlayingPositionMs(0);
       } catch {
