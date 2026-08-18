@@ -13,6 +13,8 @@ type CategoryOverlayCtx = {
   openCategory: (route: string) => void;
   /** Cierra el overlay del tope de la pila. */
   closeCategory: () => void;
+  /** Cierra TODA la pila de overlays (p.ej. al cambiar de tab). */
+  closeAllCategories: () => void;
   /** Profundidad animada de la pila (0, 1, 2…) para el parallax del fondo. */
   parallaxAnim: Animated.Value;
 };
@@ -56,6 +58,10 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
     setStack((prev) => (prev.length ? prev.slice(0, -1) : prev));
   }, []);
 
+  const closeAllCategories = useCallback(() => {
+    setStack((prev) => (prev.length ? [] : prev));
+  }, []);
+
   useEffect(() => {
     globalOpen = openCategory;
     return () => { if (globalOpen === openCategory) globalOpen = null; };
@@ -64,8 +70,8 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
   const categoryRoute = stack.length ? stack[stack.length - 1].route : null;
 
   const value = React.useMemo(
-    () => ({ stack, categoryRoute, openCategory, closeCategory, parallaxAnim }),
-    [stack, categoryRoute, openCategory, closeCategory, parallaxAnim],
+    () => ({ stack, categoryRoute, openCategory, closeCategory, closeAllCategories, parallaxAnim }),
+    [stack, categoryRoute, openCategory, closeCategory, closeAllCategories, parallaxAnim],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

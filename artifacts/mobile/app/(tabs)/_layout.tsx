@@ -152,6 +152,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { openMixer, isMixerOpen } = useMixerPanel();
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
   const { isGeometrixOpen } = useGeometrixPanel();
+  const { closeAllCategories } = useCategoryOverlay();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5) - 1;
@@ -346,6 +347,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 openMixer();
                 return;
               }
+              // Cerrar la pila de overlays (playlist, categoría, sesión…) al
+              // cambiar de tab; si no, el overlay tapa la nueva pantalla y el
+              // tab bar parece "trabado".
+              closeAllCategories();
               const event = navigation.emit({
                 type: "tabPress",
                 target: route.key,
