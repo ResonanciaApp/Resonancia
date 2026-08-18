@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -32,18 +33,29 @@ export type GlyphRecipe = {
   soloId?: string | null;
 };
 
-export const sharedGlyphsTable = pgTable("shared_glyphs", {
-  id: serial("id").primaryKey(),
-  authorId: integer("author_id")
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  description: text("description"),
-  recipe: jsonb("recipe").$type<GlyphRecipe>().notNull(),
-  likes: integer("likes").default(0).notNull(),
-  hidden: boolean("hidden").default(false).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const sharedGlyphsTable = pgTable(
+  "shared_glyphs",
+  {
+    id: serial("id").primaryKey(),
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    recipe: jsonb("recipe").$type<GlyphRecipe>().notNull(),
+    likes: integer("likes").default(0).notNull(),
+    hidden: boolean("hidden").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    // Feed público: ORDER BY created_at DESC WHERE hidden = false
+    index("shared_glyphs_feed_idx").on(t.hidden, t.createdAt),
+    // Feed trending: WHERE hidden = false AND likes >= N
+    index("shared_glyphs_likes_idx").on(t.hidden, t.likes),
+    // "Mis glyphs" por usuario
+    index("shared_glyphs_author_idx").on(t.authorId),
+  ],
+);
 
 const glyphMasterSchema = z.object({
   opacity: z.number().min(0).max(1),

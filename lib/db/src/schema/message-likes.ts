@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   serial,
@@ -27,6 +28,8 @@ export const messageLikesTable = pgTable(
   },
   (table) => ({
     uniquePair: uniqueIndex("message_likes_pair_idx").on(table.messageId, table.userId),
+    // "Mensajes que le gustan al usuario" (messageId cubierto por el unique compuesto)
+    userIdx: index("message_likes_user_idx").on(table.userId),
   }),
 );
 

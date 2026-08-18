@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -23,20 +24,31 @@ export type SharedMixCategory = (typeof SHARED_MIX_CATEGORIES)[number];
 
 export type SharedMixSound = { id: string; volume: number };
 
-export const sharedMixesTable = pgTable("shared_mixes", {
-  id: serial("id").primaryKey(),
-  authorId: integer("author_id")
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  description: text("description"),
-  image: text("image"),
-  category: text("category").$type<SharedMixCategory>().notNull(),
-  sounds: jsonb("sounds").$type<SharedMixSound[]>().notNull(),
-  likes: integer("likes").default(0).notNull(),
-  hidden: boolean("hidden").default(false).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const sharedMixesTable = pgTable(
+  "shared_mixes",
+  {
+    id: serial("id").primaryKey(),
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    image: text("image"),
+    category: text("category").$type<SharedMixCategory>().notNull(),
+    sounds: jsonb("sounds").$type<SharedMixSound[]>().notNull(),
+    likes: integer("likes").default(0).notNull(),
+    hidden: boolean("hidden").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    // Feed público: ORDER BY created_at DESC WHERE hidden = false
+    index("shared_mixes_feed_idx").on(t.hidden, t.createdAt),
+    // Feed trending: WHERE hidden = false AND likes >= N
+    index("shared_mixes_likes_idx").on(t.hidden, t.likes),
+    // "Mis mezclas" por usuario
+    index("shared_mixes_author_idx").on(t.authorId),
+  ],
+);
 
 export const insertSharedMixSchema = createInsertSchema(sharedMixesTable)
   .omit({ id: true, authorId: true, likes: true, hidden: true, createdAt: true })

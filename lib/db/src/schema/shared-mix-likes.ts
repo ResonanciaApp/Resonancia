@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   serial,
@@ -22,6 +23,8 @@ export const sharedMixLikesTable = pgTable(
   },
   (table) => ({
     uniquePair: uniqueIndex("shared_mix_likes_pair_idx").on(table.mixId, table.userId),
+    // "Mezclas que le gustan al usuario" (mixId cubierto por el unique compuesto)
+    userIdx: index("shared_mix_likes_user_idx").on(table.userId),
   }),
 );
 
