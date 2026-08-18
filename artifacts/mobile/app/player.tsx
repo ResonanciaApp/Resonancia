@@ -91,7 +91,15 @@ export default function PlayerScreen() {
     hasAmbientTrack,
     ambientVolume,
     setAmbientVolume,
+    activePlaylistIds,
+    shuffleMode,
+    playlistNext,
+    playlistPrev,
+    toggleShuffle,
   } = usePlayer();
+
+  // En modo playlist los controles de ±15s y ajustes se reemplazan
+  const isInPlaylist = !!activePlaylistIds?.length;
 
   // Options sheet
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
@@ -617,66 +625,141 @@ export default function PlayerScreen() {
 
           {/* ── Fila de controles ─────────────────────────────────────────── */}
           <View style={styles.controlsRow}>
-            {/* Ajustes */}
-            <Pressable
-              onPress={isOptionsCategory ? openSheet : undefined}
-              style={styles.ctrlBtn}
-              hitSlop={10}
-            >
-              <Feather
-                name="sliders"
-                size={22}
-                color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
-              />
-            </Pressable>
+            {isInPlaylist ? (
+              /* ── Modo playlist: shuffle · prev · play · next · stop ── */
+              <>
+                {/* Aleatorio */}
+                <Pressable
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleShuffle(); }}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Feather
+                    name="shuffle"
+                    size={22}
+                    color={shuffleMode ? "#BE9650" : "rgba(255,255,255,0.88)"}
+                  />
+                </Pressable>
 
-            {/* Retroceder 15s */}
-            <Pressable onPress={skipBackward} style={styles.ctrlBtn} hitSlop={10}>
-              <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
-              <Text style={styles.ctrlSkipLabel}>15</Text>
-            </Pressable>
+                {/* Sesión anterior */}
+                <Pressable
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); playlistPrev(); }}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Feather name="skip-back" size={28} color="rgba(255,255,255,0.90)" />
+                </Pressable>
 
-            {/* Play / Pause */}
-            <Pressable
-              onPress={handlePlayPause}
-              disabled={isLoading}
-              style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
-              hitSlop={4}
-            >
-              {isLoading ? (
-                <Feather name="loader" size={36} color="#FBFBFB" />
-              ) : isPlaying ? (
-                <Svg width={36} height={36} viewBox="0 0 46 46">
-                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                </Svg>
-              ) : (
-                <Svg width={36} height={36} viewBox="0 0 46 46">
-                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-                </Svg>
-              )}
-            </Pressable>
+                {/* Play / Pause */}
+                <Pressable
+                  onPress={handlePlayPause}
+                  disabled={isLoading}
+                  style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
+                  hitSlop={4}
+                >
+                  {isLoading ? (
+                    <Feather name="loader" size={36} color="#FBFBFB" />
+                  ) : isPlaying ? (
+                    <Svg width={36} height={36} viewBox="0 0 46 46">
+                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                    </Svg>
+                  ) : (
+                    <Svg width={36} height={36} viewBox="0 0 46 46">
+                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                    </Svg>
+                  )}
+                </Pressable>
 
-            {/* Avanzar 15s */}
-            <Pressable onPress={skipForward} style={styles.ctrlBtn} hitSlop={10}>
-              <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
-              <Text style={styles.ctrlSkipLabel}>15</Text>
-            </Pressable>
+                {/* Sesión siguiente */}
+                <Pressable
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); playlistNext(); }}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Feather name="skip-forward" size={28} color="rgba(255,255,255,0.90)" />
+                </Pressable>
 
-            {/* Stop */}
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                stop();
-                router.back();
-              }}
-              style={styles.ctrlBtn}
-              hitSlop={10}
-            >
-              <Svg width={22} height={22} viewBox="0 0 24 24">
-                <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
-              </Svg>
-            </Pressable>
+                {/* Stop */}
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    stop();
+                    router.back();
+                  }}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Svg width={22} height={22} viewBox="0 0 24 24">
+                    <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
+                  </Svg>
+                </Pressable>
+              </>
+            ) : (
+              /* ── Modo normal: ajustes · −15s · play · +15s · stop ── */
+              <>
+                {/* Ajustes */}
+                <Pressable
+                  onPress={isOptionsCategory ? openSheet : undefined}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Feather
+                    name="sliders"
+                    size={22}
+                    color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
+                  />
+                </Pressable>
+
+                {/* Retroceder 15s */}
+                <Pressable onPress={skipBackward} style={styles.ctrlBtn} hitSlop={10}>
+                  <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
+                  <Text style={styles.ctrlSkipLabel}>15</Text>
+                </Pressable>
+
+                {/* Play / Pause */}
+                <Pressable
+                  onPress={handlePlayPause}
+                  disabled={isLoading}
+                  style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
+                  hitSlop={4}
+                >
+                  {isLoading ? (
+                    <Feather name="loader" size={36} color="#FBFBFB" />
+                  ) : isPlaying ? (
+                    <Svg width={36} height={36} viewBox="0 0 46 46">
+                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                    </Svg>
+                  ) : (
+                    <Svg width={36} height={36} viewBox="0 0 46 46">
+                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                    </Svg>
+                  )}
+                </Pressable>
+
+                {/* Avanzar 15s */}
+                <Pressable onPress={skipForward} style={styles.ctrlBtn} hitSlop={10}>
+                  <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
+                  <Text style={styles.ctrlSkipLabel}>15</Text>
+                </Pressable>
+
+                {/* Stop */}
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    stop();
+                    router.back();
+                  }}
+                  style={styles.ctrlBtn}
+                  hitSlop={10}
+                >
+                  <Svg width={22} height={22} viewBox="0 0 24 24">
+                    <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
+                  </Svg>
+                </Pressable>
+              </>
+            )}
           </View>
 
           {/* ── Barra de progreso ─────────────────────────────────────────── */}

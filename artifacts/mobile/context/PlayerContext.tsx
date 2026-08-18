@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 
-import { type Session } from "@/data/sessions";
+import { type Session, SESSIONS, getSessionById } from "@/data/sessions";
 import {
   registerSessionStopper,
   stopMixPlayback,
@@ -49,6 +49,18 @@ export interface StatEvent {
 
 type PlayerContextType = {
   currentSession: Session | null;
+  /** Si la sesión actual proviene de una cola de playlist, sus IDs en orden original */
+  activePlaylistIds: string[] | null;
+  /** Si está en modo aleatorio dentro de la playlist */
+  shuffleMode: boolean;
+  /** Reproduce una sesión registrando la cola de la playlist (habilita prev/next en el reproductor) */
+  playSessionInPlaylist: (session: Session, sessionIds: string[]) => void;
+  /** Avanza a la siguiente sesión de la cola (respeta shuffle) */
+  playlistNext: () => void;
+  /** Retrocede a la sesión anterior de la cola (respeta shuffle) */
+  playlistPrev: () => void;
+  /** Alterna el modo aleatorio */
+  toggleShuffle: () => void;
   isPlaying: boolean;
   progress: number;
   elapsed: number;
@@ -170,6 +182,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [mainVolume, setMainVolumeState] = useState(1.0);
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
   const [ambientVolume, setAmbientVolumeState] = useState(0.7);
+
+  // ── Cola de playlist (prev / next / shuffle) ─────────────────────────────
+  const [activePlaylistIds, setActivePlaylistIds] = useState<string[] | null>(null);
+  const [shuffleMode, setShuffleMode] = useState(false);
+  /** Orden en que se reproducen las sesiones (original o barajado) */
+  const playOrderRef = useRef<string[]>([]);
+  /** Índice actual dentro de playOrderRef */
+  const playIndexRef = useRef<number>(0);
+  const shuffleModeRef = useRef(false);
+  shuffleModeRef.current = shuffleMode;
+  /** Referencia estable a la función de avance automático (usada en didJustFinish) */
+  const playlistAutoAdvanceRef = useRef<() => void>(() => {});
 
   const mainVolumeRef = useRef(1.0);
   mainVolumeRef.current = mainVolume;
@@ -541,6 +565,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setProgress(1);
         const sId = currentSessionRef.current?.id;
         if (sId) saveSessionProgress(sId, 1, { force: true });
+        // Auto-avance a la siguiente sesión si hay cola de playlist activa.
+        // Pequeño delay para que la stat se asiente antes de iniciar la nueva sesión.
+        setTimeout(() => { playlistAutoAdvanceRef.current(); }, 600);
       }
     },
     [saveSessionProgress],
@@ -842,8 +869,92 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   );
   activateLockScreenRef.current = activateLockScreen;
 
+  // ── Helpers de cola de playlist ──────────────────────────────────────────
+  /** Baraja un arreglo y pone el elemento con id `currentId` primero. */
+  function buildShuffledOrder(ids: string[], currentId: string): string[] {
+    const rest = ids.filter((id) => id !== currentId).sort(() => Math.random() - 0.5);
+    return [currentId, ...rest];
+  }
+
+  /** Avanza (o retrocede) en la cola y arranca la siguiente sesión. */
+  const advancePlaylist = useCallback(
+    (direction: 1 | -1) => {
+      const order = playOrderRef.current;
+      if (!order.length) return;
+      const next = (playIndexRef.current + direction + order.length) % order.length;
+      playIndexRef.current = next;
+      const session = getSessionById(order[next]);
+      if (!session) return;
+      // Llamar playSession internamente SIN limpiar la cola: lo hacemos con un
+      // flag que el propio playSession comprueba.
+      inPlaylistAdvanceRef.current = true;
+      void playSessionRef.current(session);
+    },
+    [],
+  );
+  const inPlaylistAdvanceRef = useRef(false);
+
+  // Exponer el avance automático para didJustFinish
+  useEffect(() => {
+    playlistAutoAdvanceRef.current = () => {
+      if (activePlaylistIds) advancePlaylist(1);
+    };
+  }, [activePlaylistIds, advancePlaylist]);
+
+  const playlistNext = useCallback(() => advancePlaylist(1), [advancePlaylist]);
+  const playlistPrev = useCallback(() => advancePlaylist(-1), [advancePlaylist]);
+
+  const toggleShuffle = useCallback(() => {
+    setShuffleMode((prev) => {
+      const next = !prev;
+      const currentId = playOrderRef.current[playIndexRef.current];
+      if (next) {
+        // Activar: barajar a partir de la sesión actual
+        const original = activePlaylistIds ?? [];
+        const shuffled = buildShuffledOrder(original, currentId);
+        playOrderRef.current = shuffled;
+        playIndexRef.current = 0;
+      } else {
+        // Desactivar: volver al orden original y localizar la sesión actual
+        const original = activePlaylistIds ?? [];
+        playOrderRef.current = original;
+        playIndexRef.current = Math.max(0, original.indexOf(currentId));
+      }
+      return next;
+    });
+  }, [activePlaylistIds]);
+
+  const playSessionInPlaylist = useCallback((session: Session, sessionIds: string[]) => {
+    // Registrar la cola y el índice ANTES de llamar a playSession.
+    // playSession detectará inPlaylistAdvanceRef = false → registra la cola nueva.
+    setActivePlaylistIds(sessionIds);
+    const idx = sessionIds.indexOf(session.id);
+    if (shuffleModeRef.current) {
+      const shuffled = buildShuffledOrder(sessionIds, session.id);
+      playOrderRef.current = shuffled;
+      playIndexRef.current = 0;
+    } else {
+      playOrderRef.current = sessionIds;
+      playIndexRef.current = Math.max(0, idx);
+    }
+    inPlaylistAdvanceRef.current = true; // no limpiar la cola en playSession
+    void playSessionRef.current(session);
+  }, []);
+
+  /** Referencia estable a playSession para usarla dentro de advancePlaylist
+   *  sin crear dependencias circulares de useCallback. */
+  const playSessionRef = useRef<(s: Session) => Promise<void>>(async () => {});
+
   const playSession = useCallback(
     async (session: Session) => {
+      // Si NO venimos de un avance interno, limpiar la cola de playlist.
+      if (!inPlaylistAdvanceRef.current) {
+        setActivePlaylistIds(null);
+        setShuffleMode(false);
+        playOrderRef.current = [];
+        playIndexRef.current = 0;
+      }
+      inPlaylistAdvanceRef.current = false;
       // Sesión, mezcla y sonido de Descanso son mutuamente excluyentes (comparten Now Playing).
       stopMixPlayback();
       stopSoundPlayback();
@@ -975,6 +1086,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     },
     [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers],
   );
+
+  // Mantener la ref de playSession actualizada (usada por advancePlaylist).
+  playSessionRef.current = playSession;
 
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
@@ -1427,6 +1541,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         isFavorite,
         toggleFavorite,
         clearSessionProgress,
+        activePlaylistIds,
+        shuffleMode,
+        playSessionInPlaylist,
+        playlistNext,
+        playlistPrev,
+        toggleShuffle,
         playSession,
         playSessionWithDuration,
         pauseResume,

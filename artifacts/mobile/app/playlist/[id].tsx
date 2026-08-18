@@ -114,7 +114,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
   const { videos: allVideos } = useVideos();
-  const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
+  const { playSession, playSessionInPlaylist, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -232,14 +232,15 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const handlePlayAll = () => {
     const first = sessions.find((s) => !s.isPremium || isPremium);
     if (!first) return;
-    playSession(first);
+    playSessionInPlaylist(first, sessions.map((s) => s.id));
   };
 
   const handleShuffle = () => {
     const available = sessions.filter((s) => !s.isPremium || isPremium);
     if (!available.length) return;
     const random = available[Math.floor(Math.random() * available.length)];
-    playSession(random);
+    // Usar playSessionInPlaylist con shuffle activado (se barajará en el contexto)
+    playSessionInPlaylist(random, sessions.map((s) => s.id));
   };
 
   const handleShare = async () => {
@@ -380,7 +381,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             isPremium={isPremium}
             isActive={currentSession?.id === session.id}
             isPlaying={displayIsPlaying}
-            onPlay={() => playSession(session)}
+            onPlay={() => playSessionInPlaylist(session, sessions.map((s) => s.id))}
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
           />
