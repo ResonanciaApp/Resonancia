@@ -41,11 +41,19 @@ function serializeRequest(f: Friendship, requester: User, addressee: User) {
   };
 }
 
+/** Paginación acotada: ?page=&pageSize= (por defecto 1/50, máx 100). */
+function pageParams(req: { query: Record<string, unknown> }): { limit: number; offset: number } {
+  const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+  const pageSize = Math.min(100, Math.max(1, parseInt(String(req.query.pageSize ?? "50"), 10) || 50));
+  return { limit: pageSize, offset: (page - 1) * pageSize };
+}
+
 router.get("/friends", requireAuth, async (req, res) => {
   const me = req.currentUser!;
   try {
     const requesterUser = alias(usersTable, "requester_user");
     const addresseeUser = alias(usersTable, "addressee_user");
+    const { limit, offset } = pageParams(req);
 
     const rows = await db
       .select({
@@ -63,7 +71,8 @@ router.get("/friends", requireAuth, async (req, res) => {
         ),
       )
       .orderBy(desc(friendshipsTable.updatedAt))
-      .limit(200);
+      .limit(limit)
+      .offset(offset);
 
     res.json(rows.map((r) => toProfile(r.requester.id === me.id ? r.addressee : r.requester)));
   } catch (err) {
