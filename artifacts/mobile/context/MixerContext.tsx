@@ -27,6 +27,7 @@ import { GEOMETRIX_PRESETS } from "@/data/geometrix-presets";
 import {
   registerMixStopper,
   stopSessionPlayback,
+  stopChatPlayback,
 } from "@/context/audioBridge";
 
 /** Resuelve un asset (`require(...)`) a un URL usable como carátula.
@@ -1357,8 +1358,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
 
-      // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
+      // Mezcla, sesión y audio de chat son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
+      stopChatPlayback();
       void ensureAudioMode();
 
       // ── Sonido BPM por el MOTOR (react-native-audio-api) ──────────────────
@@ -1597,8 +1599,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const togglePlay = useCallback(() => {
     if (activeSoundsRef.current.length === 0) return;
     const next = !isPlayingRef.current;
-    // Al retomar la mezcla, cortar la sesión (comparten Now Playing).
-    if (next) stopSessionPlayback();
+    // Al retomar la mezcla, cortar la sesión y el audio de chat (comparten Now Playing).
+    if (next) { stopSessionPlayback(); stopChatPlayback(); }
     applyPlaying(next);
     // Al pausar mantenemos el lock screen (en estado pausado) para poder
     // retomar desde la pantalla bloqueada; al retomar reaseguramos el owner.
@@ -1850,8 +1852,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const loadPreset = useCallback(
     (preset: MixPreset) => {
-      // Mezcla y sesión son mutuamente excluyentes (comparten Now Playing).
+      // Mezcla, sesión y audio de chat son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
+      stopChatPlayback();
       // Soltar el lock screen del owner viejo antes de desmontarlo.
       clearLockScreen();
       // Desmontar la mezcla actual

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
-import { registerSoundStopper, stopSessionPlayback, stopMixPlayback } from "@/context/audioBridge";
+import { registerSoundStopper, stopSessionPlayback, stopMixPlayback, stopChatPlayback } from "@/context/audioBridge";
 
 interface UseDescansoPlayerOptions {
   timerMinutes: number;
@@ -98,6 +98,7 @@ export function useDescansoPlayer({
     // Sonido de Descanso y sesión/mezcla son mutuamente excluyentes (comparten Now Playing).
     stopSessionPlayback();
     stopMixPlayback();
+    stopChatPlayback();
     if (!audioUri) {
       setSelectedId(id);
       setIsPlaying(false);

@@ -1,7 +1,6 @@
 /**
- * Coordinador de audio: la sesión (PlayerContext) y la mezcla (MixerContext)
- * son mutuamente excluyentes — comparten el slot de "Now Playing" / pantalla
- * bloqueada, así que solo una puede sonar a la vez.
+ * Coordinador de audio: la sesión (PlayerContext), la mezcla (MixerContext),
+ * los sonidos de Descanso y el audio del chat son mutuamente excluyentes.
  *
  * Como PlayerProvider envuelve a MixerProvider (y no al revés), no podemos
  * acoplarlos vía contexto en ambas direcciones. Este módulo singleton deja que
@@ -14,6 +13,7 @@ type Stopper = () => void;
 let sessionStopper: Stopper | null = null;
 let mixStopper: Stopper | null = null;
 let soundStopper: Stopper | null = null;
+let chatStopper: Stopper | null = null;
 
 export function registerSessionStopper(fn: Stopper | null) {
   sessionStopper = fn;
@@ -28,7 +28,15 @@ export function registerSoundStopper(fn: Stopper | null) {
   soundStopper = fn;
 }
 
-/** Detiene la sesión que estuviera sonando (llamar al iniciar una mezcla o un sonido de Descanso). */
+/**
+ * Audio del chat (mensajes de voz) — mutuamente excluyente con todo lo demás.
+ * AudioAttachment registra el stopper al empezar a reproducir y lo limpia al pausar/desmontar.
+ */
+export function registerChatStopper(fn: Stopper | null) {
+  chatStopper = fn;
+}
+
+/** Detiene la sesión que estuviera sonando (llamar al iniciar una mezcla, sonido de Descanso o audio de chat). */
 export function stopSessionPlayback() {
   try {
     sessionStopper?.();
@@ -37,7 +45,7 @@ export function stopSessionPlayback() {
   }
 }
 
-/** Detiene la mezcla que estuviera sonando (llamar al iniciar una sesión). */
+/** Detiene la mezcla que estuviera sonando (llamar al iniciar una sesión, sonido de Descanso o audio de chat). */
 export function stopMixPlayback() {
   try {
     mixStopper?.();
@@ -50,6 +58,15 @@ export function stopMixPlayback() {
 export function stopSoundPlayback() {
   try {
     soundStopper?.();
+  } catch {
+    // ignore
+  }
+}
+
+/** Detiene cualquier audio de chat que estuviera reproduciéndose (llamar al iniciar sesión/mezcla/sonido). */
+export function stopChatPlayback() {
+  try {
+    chatStopper?.();
   } catch {
     // ignore
   }

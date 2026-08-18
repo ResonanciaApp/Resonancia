@@ -53,6 +53,13 @@ import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { uploadLocalFile } from "@/lib/upload";
+import {
+  registerChatStopper,
+  stopChatPlayback,
+  stopSessionPlayback,
+  stopMixPlayback,
+  stopSoundPlayback,
+} from "@/context/audioBridge";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 function initialsFor(name: string): string {
@@ -338,6 +345,11 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
         Alert.alert("Permiso", "Necesitamos acceso al micrófono para grabar.");
         return;
       }
+      // La grabación requiere la sesión de audio exclusiva; detener todo lo demás.
+      stopSessionPlayback();
+      stopMixPlayback();
+      stopSoundPlayback();
+      stopChatPlayback();
       await audioSetMode({ allowsRecording: true, playsInSilentMode: true });
       await audioRecorder.prepareToRecordAsync();
       audioRecorder.record();
@@ -1078,12 +1090,13 @@ function AudioAttachment({
   const [loading, setLoading] = useState(false);
   const totalMs = durationMs > 0 ? durationMs : 0;
 
-  // Limpiar player al desmontar
+  // Limpiar player al desmontar y desregistrar del audioBridge
   useEffect(() => {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
       try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
       soundRef.current = null;
+      registerChatStopper(null);
     };
   }, []);
 
@@ -1135,25 +1148,42 @@ function AudioAttachment({
         const a = webAudioRef.current;
         if (!a) return;
         if (a.paused) {
+          // Detener todo lo demás antes de reproducir
+          stopSessionPlayback();
+          stopMixPlayback();
+          stopSoundPlayback();
+          stopChatPlayback();
           setLoading(true);
           try {
             await a.play();
           } finally {
             setLoading(false);
           }
+          // Registrar stopper para que sesión/mezcla puedan cortarnos
+          registerChatStopper(() => {
+            try { webAudioRef.current?.pause(); } catch {}
+            setIsPlaying(false);
+          });
         } else {
           a.pause();
+          registerChatStopper(null);
         }
         return;
       }
       // Crear player si no existe aún
       if (!soundRef.current) {
+        // Detener todo lo demás antes de reproducir
+        stopSessionPlayback();
+        stopMixPlayback();
+        stopSoundPlayback();
+        stopChatPlayback();
         setLoading(true);
         const player = createAudioPlayer({ uri: url });
         player.addListener("playbackStatusUpdate", (status) => {
           if (status.didJustFinish) {
             setIsPlaying(false);
             setPositionMs(0);
+            registerChatStopper(null);
             try { player.seekTo(0); } catch {}
           }
         });
@@ -1166,14 +1196,31 @@ function AudioAttachment({
         player.play();
         setLoading(false);
         setIsPlaying(true);
+        // Registrar stopper para que sesión/mezcla puedan cortarnos
+        registerChatStopper(() => {
+          try { soundRef.current?.pause(); } catch {}
+          setIsPlaying(false);
+          registerChatStopper(null);
+        });
         return;
       }
       if (isPlaying) {
         soundRef.current.pause();
         setIsPlaying(false);
+        registerChatStopper(null);
       } else {
+        // Detener todo lo demás antes de retomar
+        stopSessionPlayback();
+        stopMixPlayback();
+        stopSoundPlayback();
+        stopChatPlayback();
         soundRef.current.play();
         setIsPlaying(true);
+        registerChatStopper(() => {
+          try { soundRef.current?.pause(); } catch {}
+          setIsPlaying(false);
+          registerChatStopper(null);
+        });
       }
     } catch (err) {
       console.log("[audio] toggle error", err);
