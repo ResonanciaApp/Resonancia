@@ -3,9 +3,12 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -137,6 +140,13 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
 const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 
+/**
+ * Marca de primera sincronización de biblioteca con la nube.
+ * En el firstSync hacemos unión local∪server (recuperación tras reinstalar).
+ * En las siguientes lo local es autoritativo (los borrados persisten).
+ */
+const LIBRARY_FIRST_SYNC_KEY = "@resonance_library_first_sync";
+
 // ─── Context ──────────────────────────────────────────────────────────────────
 
 const Ctx = createContext<FoldersPlaylistsCtx | null>(null);
@@ -147,6 +157,21 @@ export function useFoldersPlaylists(): FoldersPlaylistsCtx {
   return ctx;
 }
 
+// ─── Helpers de merge ─────────────────────────────────────────────────────────
+
+function mergeById<T extends { id: string }>(local: T[], server: T[]): T[] {
+  const map = new Map<string, T>();
+  for (const item of server) map.set(item.id, item);
+  // Lo local gana sobre lo del server (más reciente), pero añadimos los que
+  // solo están en el server (recuperación tras reinstalar).
+  for (const item of local) map.set(item.id, item);
+  return Array.from(map.values());
+}
+
+function mergeStringArrays(local: string[], server: string[]): string[] {
+  return Array.from(new Set([...local, ...server]));
+}
+
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function FoldersPlaylistsProvider({ children }: { children: React.ReactNode }) {
@@ -155,37 +180,121 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const [favFolders, setFavFolders] = useState<FavFolder[]>([]);
   const [pinnedFavoriteIds, setPinnedFavoriteIds] = useState<string[]>([]);
 
-  // Load from storage
+  // True mientras se carga desde storage (no empujar al server aún)
+  const hydrating = useRef(true);
+  // Debounce timer para no saturar el server con un push por cada keystroke
+  const pushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { isSignedIn } = useAuth();
+
+  // ── Carga inicial desde AsyncStorage + merge con server ─────────────────────
+
   useEffect(() => {
-    AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY, DEFAULT_PLAYLISTS_SEEDED_KEY]).then(
-      ([fEntry, pEntry, ffEntry, pfEntry, seededEntry]) => {
-        if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
-        let storedPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
-        // Migración: playlists por defecto sembradas con portada de geometría
-        // pasan a usar la imagen bundleada (limpiando el coverType persistido).
-        let migrated = false;
-        storedPlaylists = storedPlaylists.map((p) => {
-          if (p.id.startsWith("default_") && p.coverType === "geometrix" && !p.coverUri) {
-            migrated = true;
-            const { coverType, coverGeometryId, ...rest } = p;
-            return rest;
-          }
-          return p;
-        });
-        if (migrated) AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(storedPlaylists));
-        if (storedPlaylists.length > 0) {
-          setPlaylists(storedPlaylists);
-        } else if (!seededEntry[1]) {
-          // Usuario nuevo: sembrar las playlists por defecto una sola vez.
-          setPlaylists(DEFAULT_PLAYLISTS);
-          AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(DEFAULT_PLAYLISTS));
+    AsyncStorage.multiGet([
+      FOLDERS_KEY,
+      PLAYLISTS_KEY,
+      FAV_FOLDERS_KEY,
+      PINNED_FAVORITES_KEY,
+      DEFAULT_PLAYLISTS_SEEDED_KEY,
+      LIBRARY_FIRST_SYNC_KEY,
+    ]).then(async ([fEntry, pEntry, ffEntry, pfEntry, seededEntry, firstSyncEntry]) => {
+      // ── Folders ──
+      const localFolders: Folder[] = fEntry[1] ? JSON.parse(fEntry[1]) : [];
+
+      // ── Playlists (con migración de coverType geometrix) ──
+      let localPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
+      let migrated = false;
+      localPlaylists = localPlaylists.map((p) => {
+        if (p.id.startsWith("default_") && p.coverType === "geometrix" && !p.coverUri) {
+          migrated = true;
+          const { coverType, coverGeometryId, ...rest } = p;
+          return rest;
         }
-        if (!seededEntry[1]) AsyncStorage.setItem(DEFAULT_PLAYLISTS_SEEDED_KEY, "1");
-        if (ffEntry[1]) setFavFolders(JSON.parse(ffEntry[1]));
-        if (pfEntry[1]) setPinnedFavoriteIds(JSON.parse(pfEntry[1]));
+        return p;
+      });
+      if (migrated) AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(localPlaylists));
+
+      // Usuarios nuevos: sembrar playlists por defecto una sola vez
+      if (localPlaylists.length === 0 && !seededEntry[1]) {
+        localPlaylists = DEFAULT_PLAYLISTS;
+        AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(DEFAULT_PLAYLISTS));
       }
-    );
+      if (!seededEntry[1]) AsyncStorage.setItem(DEFAULT_PLAYLISTS_SEEDED_KEY, "1");
+
+      // ── Fav folders & pinned ──
+      const localFavFolders: FavFolder[] = ffEntry[1] ? JSON.parse(ffEntry[1]) : [];
+      const localPinned: string[] = pfEntry[1] ? JSON.parse(pfEntry[1]) : [];
+
+      // ── Sync con server ──────────────────────────────────────────────────────
+      if (isSignedIn) {
+        try {
+          const snap = await getMyLibrary();
+          const serverFolders = (snap.folders ?? []) as Folder[];
+          const serverPlaylists = (snap.playlists ?? []) as Playlist[];
+          const serverFavFolders = (snap.favFolders ?? []) as FavFolder[];
+          const serverPinned = (snap.pinnedFavoriteIds ?? []) as string[];
+
+          const firstSync = !firstSyncEntry[1];
+
+          let finalFolders: Folder[];
+          let finalPlaylists: Playlist[];
+          let finalFavFolders: FavFolder[];
+          let finalPinned: string[];
+
+          if (firstSync) {
+            // Primera sync de este dispositivo: unión para recuperar datos de la nube
+            finalFolders = mergeById(localFolders, serverFolders);
+            finalPlaylists = mergeById(localPlaylists, serverPlaylists);
+            finalFavFolders = mergeById(localFavFolders, serverFavFolders);
+            finalPinned = mergeStringArrays(localPinned, serverPinned);
+            await AsyncStorage.setItem(LIBRARY_FIRST_SYNC_KEY, "1");
+            // Guardar el resultado fusionado localmente
+            AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(finalFolders));
+            AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(finalPlaylists));
+            AsyncStorage.setItem(FAV_FOLDERS_KEY, JSON.stringify(finalFavFolders));
+            AsyncStorage.setItem(PINNED_FAVORITES_KEY, JSON.stringify(finalPinned));
+          } else {
+            // Syncs siguientes: local es autoritativo
+            finalFolders = localFolders;
+            finalPlaylists = localPlaylists;
+            finalFavFolders = localFavFolders;
+            finalPinned = localPinned;
+          }
+
+          setFolders(finalFolders);
+          setPlaylists(finalPlaylists);
+          setFavFolders(finalFavFolders);
+          setPinnedFavoriteIds(finalPinned);
+        } catch {
+          // Sin red: usar datos locales
+          setFolders(localFolders);
+          setPlaylists(localPlaylists);
+          setFavFolders(localFavFolders);
+          setPinnedFavoriteIds(localPinned);
+        }
+      } else {
+        setFolders(localFolders);
+        setPlaylists(localPlaylists);
+        setFavFolders(localFavFolders);
+        setPinnedFavoriteIds(localPinned);
+      }
+
+      hydrating.current = false;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Push debounced al server cuando cambian los datos ─────────────────────
+
+  useEffect(() => {
+    if (hydrating.current || !isSignedIn) return;
+    if (pushTimer.current) clearTimeout(pushTimer.current);
+    pushTimer.current = setTimeout(() => {
+      setMyLibrary({ folders, playlists, favFolders, pinnedFavoriteIds }).catch(() => {
+        // Sin red: silencioso; se intentará en la siguiente sesión
+      });
+    }, 1500);
+  }, [folders, playlists, favFolders, pinnedFavoriteIds, isSignedIn]);
 
   // Functional updaters — always read latest state (no stale closure)
   const updateFolders = useCallback((updater: (prev: Folder[]) => Folder[]) => {

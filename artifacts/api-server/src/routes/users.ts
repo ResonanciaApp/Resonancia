@@ -7,6 +7,7 @@ import {
   followsTable,
   playbackHistoryTable,
   expansorProfilesTable,
+  userLibraryTable,
   type User,
 } from "@workspace/db";
 import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody, UpdateMyExpansorProfileBody } from "@workspace/api-zod";
@@ -319,6 +320,57 @@ router.patch("/users/:userId/role", requireAuth, requireRole("admin"), async (re
     req.log.error(err);
     res.status(500).json({ error: "Error al actualizar el rol" });
   }
+});
+
+// ─── Library snapshot ─────────────────────────────────────────────────────────
+
+router.get("/me/library", requireAuth, async (req, res) => {
+  const me = req.currentUser!;
+  const rows = await db
+    .select()
+    .from(userLibraryTable)
+    .where(eq(userLibraryTable.userId, me.id))
+    .limit(1);
+  if (rows.length === 0) {
+    res.json({ folders: [], playlists: [], favFolders: [], pinnedFavoriteIds: [] });
+    return;
+  }
+  const r = rows[0];
+  res.json({
+    folders: r.folders,
+    playlists: r.playlists,
+    favFolders: r.favFolders,
+    pinnedFavoriteIds: r.pinnedFavoriteIds,
+  });
+});
+
+router.put("/me/library", requireAuth, async (req, res) => {
+  const { folders, playlists, favFolders, pinnedFavoriteIds } = req.body ?? {};
+  if (
+    !Array.isArray(folders) ||
+    !Array.isArray(playlists) ||
+    !Array.isArray(favFolders) ||
+    !Array.isArray(pinnedFavoriteIds)
+  ) {
+    res.status(400).json({ error: "Payload inválido: se esperan arrays" });
+    return;
+  }
+  const me = req.currentUser!;
+  const now = new Date();
+  const [row] = await db
+    .insert(userLibraryTable)
+    .values({ userId: me.id, folders, playlists, favFolders, pinnedFavoriteIds, updatedAt: now })
+    .onConflictDoUpdate({
+      target: userLibraryTable.userId,
+      set: { folders, playlists, favFolders, pinnedFavoriteIds, updatedAt: now },
+    })
+    .returning();
+  res.json({
+    folders: row.folders,
+    playlists: row.playlists,
+    favFolders: row.favFolders,
+    pinnedFavoriteIds: row.pinnedFavoriteIds,
+  });
 });
 
 export default router;

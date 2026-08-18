@@ -1488,6 +1488,53 @@ paths:
           description: sessionId inválido
         "404":
           description: Sesión no encontrada
+  /me/library:
+    get:
+      tags: [users]
+      operationId: getMyLibrary
+      summary: Get the current user's full library snapshot (folders, playlists, fav-folders, pinned favorites)
+      responses:
+        "200":
+          description: Library snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibrarySnapshot"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [users]
+      operationId: setMyLibrary
+      summary: Replace the current user's library snapshot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibrarySnapshot"
+      responses:
+        "200":
+          description: Updated library snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibrarySnapshot"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /me/streak:
     get:
       tags: [users]
@@ -3455,6 +3502,28 @@ components:
           format: date-time
       required:
         [clientEventId, sessionId, categoryId, categoryLabel, minutes, completed, playedAt]
+    LibrarySnapshot:
+      type: object
+      description: Snapshot completo de la biblioteca personal del usuario
+      properties:
+        folders:
+          type: array
+          items: {}
+          description: Carpetas de sesiones/playlists (Folder[])
+        playlists:
+          type: array
+          items: {}
+          description: Playlists ordenadas (Playlist[])
+        favFolders:
+          type: array
+          items: {}
+          description: Carpetas de favoritos (FavFolder[])
+        pinnedFavoriteIds:
+          type: array
+          items:
+            type: string
+          description: IDs de favoritos fijados
+      required: [folders, playlists, favFolders, pinnedFavoriteIds]
     StreakResponse:
       type: object
       properties:

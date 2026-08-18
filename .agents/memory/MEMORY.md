@@ -130,5 +130,6 @@
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
 - [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
 - [Server streak endpoint + Orval Zod crash](server-streak-endpoint.md) — GET /me/streak?tz= server-authoritative; Orval ^8.9.1 se actualizó a 8.23.0 → genera zod.int() (v4) → crash API; fix: pin exacto "8.9.1" + parche sed en api-zod/generated
+- [Library sync](library-sync.md) — carpetas/playlists/favFolders sincronizadas al server; snapshot JSONB en user_library; GET+PUT /me/library; firstSync=unión, siguientes=local autoritativo; push debounced 1.5s
 - [Motor de hitos (logros)](milestones-engine.md) — evaluación espera hydrated+cloudSettled; sync unión append-only; contadores de por vida para mezclas/Geometrix; orval SIEMPRE 8.9.1
 - [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto

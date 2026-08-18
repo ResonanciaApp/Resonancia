@@ -52,4 +52,5 @@ export * from "./scene-animations";
 export * from "./explore-sections";
 export * from "./community-activity-events";
 export * from "./user-milestones";
+export * from "./user-library";
 
