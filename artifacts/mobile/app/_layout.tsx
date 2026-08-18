@@ -339,7 +339,6 @@ function NavStack() {
         <Stack.Screen name="category/meditaciones-guiadas"  options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="category/sonidos-ancestrales"   options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="videos"  options={{ headerShown: false, animation: "slide_from_right" }} />
-        <Stack.Screen name="dev-reset" options={{ headerShown: false }} />
         <Stack.Screen
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}

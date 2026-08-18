@@ -7,12 +7,9 @@ import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { dayKey } from "@/utils/stats";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
-
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
 function isSameDay(a: Date, b: Date): boolean {
   return dayKey(a) === dayKey(b);

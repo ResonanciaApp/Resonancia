@@ -546,8 +546,6 @@ function TabLayoutInner() {
         tabBar={(props) => <TabBarPropsBridge props={props} onProps={setBarProps} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
-        <Tabs.Screen name="inicio5"        options={{ href: null }} />
-        <Tabs.Screen name="inicio6"        options={{ href: null }} />
         <Tabs.Screen name="inicio8"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="category/meditaciones-guiadas" options={{ href: null }} />
@@ -559,10 +557,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
-        <Tabs.Screen name="resonadores"    options={{ href: null }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
-        <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
-        <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
         <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>

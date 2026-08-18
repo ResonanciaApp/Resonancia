@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { type DiarioEntry, useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { dayKey } from "@/utils/stats";
 
 function formatMonth(iso: string) {
   const d = new Date(iso);
@@ -44,10 +45,6 @@ function formatTime(iso: string) {
   });
 }
 
-function dayKey(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
 type DiarioDayGroup = { key: string; createdAt: string; entries: DiarioEntry[] };
 
@@ -55,7 +52,7 @@ function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
   const groups: DiarioDayGroup[] = [];
   const index = new Map<string, DiarioDayGroup>();
   for (const entry of entries) {
-    const key = dayKey(entry.createdAt);
+    const key = dayKey(new Date(entry.createdAt));
     let group = index.get(key);
     if (!group) {
       group = { key, createdAt: entry.createdAt, entries: [] };
