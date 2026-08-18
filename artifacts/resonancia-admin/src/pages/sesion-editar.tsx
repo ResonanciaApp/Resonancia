@@ -16,11 +16,14 @@ export default function SesionEditarPage() {
   const [, setLocation] = useLocation();
   const id = params?.id ?? "";
 
-  const { data, isLoading, isError } = useGetAdminSession(id, {
+  const { data, isLoading, isFetching, isError } = useGetAdminSession(id, {
     query: { queryKey: getGetAdminSessionQueryKey(id), enabled: !!id },
   });
 
-  if (isLoading) return <Spinner />;
+  // Mostrar spinner durante carga inicial Y durante refetch en background.
+  // Sin esto, React Query sirve el caché viejo mientras refetch corre en
+  // silencio y SessionForm inicializa useState desde valores obsoletos.
+  if (isLoading || isFetching) return <Spinner />;
 
   if (isError || !data) {
     return (

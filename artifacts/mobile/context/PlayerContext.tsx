@@ -1215,6 +1215,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }
       }
       inPlaylistAdvanceRef.current = false;
+      // Sesiones "pasar directo al miniplayer": mostrar la barra flotante
+      // (SessionMiniPlayer) de inmediato en la pantalla donde se tocó.
+      // Se dispara ANTES del return del path isLoop para que sesiones con
+      // ambos flags (isLoop + skipMiniPlayer) también muestren el miniplayer.
+      if (session.skipMiniPlayer) {
+        sessionMiniPlayerEvents.triggerShow("bottom");
+      }
+
       // Las sesiones en loop (Sonidos Naturaleza) SIEMPRE van por el camino de
       // loop: audio gapless por el motor, con duración INFINITA — suenan hasta
       // que el usuario pause, cambie de sesión o salte el temporizador.
@@ -1242,11 +1250,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       pendingSeekRef.current = null;
 
       setCurrentSession(session);
-      // Sesiones "pasar directo al miniplayer": mostrar la barra flotante
-      // (SessionMiniPlayer) de inmediato en la pantalla donde se tocó.
-      if (session.skipMiniPlayer) {
-        sessionMiniPlayerEvents.triggerShow("bottom");
-      }
       const savedProgress = sessionProgressRef.current[session.id] ?? 0;
       const resumeFraction =
         savedProgress > 0 && savedProgress < COMPLETED_THRESHOLD ? savedProgress : 0;
