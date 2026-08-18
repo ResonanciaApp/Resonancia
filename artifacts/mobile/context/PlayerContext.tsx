@@ -599,9 +599,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         // Loop fallback con URI remota: el motor BPM no puede usar assets
         // remotos, así que expo-audio es el reproductor audible. Pero al
         // arrancar se pone a volume=0 como ancla muda (igual que el path BPM).
-        // Aquí restauramos el volumen al cargar, porque en el momento en que
-        // el motor detectó el fallback el track todavía no estaba listo.
+        // Restauramos volumen cuando el track ya está sonando (playing), no
+        // solo al recibir isLoaded — expo-audio reporta isLoaded casi de
+        // inmediato para URLs remotas aunque aún no haya buffereado suficiente.
+        // El spinner se mantiene hasta que status.playing sea true.
         if (loopFallbackRef.current) {
+          if (!status.playing) {
+            // Aún buffereando: mantener spinner hasta que arranque de verdad.
+            return;
+          }
           try {
             if (mainPlayerRef.current && mainPlayerRef.current.volume === 0) {
               mainPlayerRef.current.volume = mainVolumeRef.current;
