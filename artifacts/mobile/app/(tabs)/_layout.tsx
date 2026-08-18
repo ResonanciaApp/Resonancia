@@ -626,6 +626,7 @@ function TabLayoutInner() {
           <DormirExpandedPlayer
             sound={selectedSound}
             isPlaying={descansoPlayer.isPlaying}
+            isLoading={descansoPlayer.isLoading}
             isExpanded={isExpanded}
             onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
             onCollapse={() => setIsExpanded(false)}
