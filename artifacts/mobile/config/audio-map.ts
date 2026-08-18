@@ -17,6 +17,7 @@
 export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> = {
   "1": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
+  "21": require("@/assets/audio/rio_orilla_mar.wav"),
   "22": require("@/assets/audio/rio_orilla_mar.wav"),
   "27": require("@/assets/audio/riachuelo_stream.mp3"),
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
