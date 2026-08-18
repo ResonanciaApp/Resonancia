@@ -89,7 +89,8 @@
                 "name": "RecaptchaInterop",
                 "modular_headers": true
               }
-            ]
+            ],
+            "deploymentTarget": "17.0"
           }
         }
       ],
