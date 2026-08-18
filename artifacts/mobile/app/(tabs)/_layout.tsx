@@ -508,6 +508,21 @@ function TabLayoutInner() {
     : null;
   const { isExpanded, setIsExpanded } = descansoPlayer;
 
+  // Navegar entre sonidos de Dormir desde el reproductor expandido
+  const dormirSoundIdx = descansoPlayer.selectedId
+    ? DESCANSO_SOUNDS.findIndex((s) => s.id === descansoPlayer.selectedId)
+    : -1;
+  const handleDormirPrev = useCallback(() => {
+    if (dormirSoundIdx < 0) return;
+    const prev = DESCANSO_SOUNDS[(dormirSoundIdx - 1 + DESCANSO_SOUNDS.length) % DESCANSO_SOUNDS.length];
+    descansoPlayer.toggle(prev.id, prev.audioUri ?? null);
+  }, [dormirSoundIdx, descansoPlayer]);
+  const handleDormirNext = useCallback(() => {
+    if (dormirSoundIdx < 0) return;
+    const next = DESCANSO_SOUNDS[(dormirSoundIdx + 1) % DESCANSO_SOUNDS.length];
+    descansoPlayer.toggle(next.id, next.audioUri ?? null);
+  }, [dormirSoundIdx, descansoPlayer]);
+
   // ¿La sesión actual pertenece a alguna playlist?
   const activePlaylist = currentSession
     ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
@@ -631,6 +646,10 @@ function TabLayoutInner() {
             onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
             onCollapse={() => setIsExpanded(false)}
             onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
+            onPrev={handleDormirPrev}
+            onNext={handleDormirNext}
+            timerMinutes={descansoPlayer.timerMinutes}
+            onSetTimer={descansoPlayer.setTimerMinutes}
             bottomInset={bottomPb}
             topInset={topPad}
           />
