@@ -1002,6 +1002,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
    *  sin crear dependencias circulares de useCallback. */
   const playSessionRef = useRef<(s: Session) => Promise<void>>(async () => {});
 
+  /** Referencia estable a playSessionWithDuration (definida más abajo) para
+   *  que playSession pueda delegar las sesiones en loop sin dependencia circular. */
+  const playSessionWithDurationRef = useRef<(s: Session, minutes: number) => void>(() => {});
+
   const playSession = useCallback(
     async (session: Session) => {
       // Si NO venimos de un avance interno, limpiar la cola de playlist.
@@ -1012,6 +1016,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         playIndexRef.current = 0;
       }
       inPlaylistAdvanceRef.current = false;
+      // Las sesiones en loop (Sonidos Naturaleza) SIEMPRE van por el camino de
+      // loop: audio gapless por el motor + duración total de la sesión. Sin
+      // esto, una pista corta (p. ej. 9s) sonaría una sola vez y terminaría.
+      if (LOOP_SESSIONS.has(session.id)) {
+        playSessionWithDurationRef.current(session, session.duration);
+        return;
+      }
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
       stopSoundPlayback();
@@ -1389,6 +1400,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       saveSessionProgress,
     ],
   );
+  // Mantener la referencia estable que usa playSession para delegar loops.
+  playSessionWithDurationRef.current = playSessionWithDuration;
 
   const pauseResume = useCallback(async () => {
     if (hasRealAudioRef.current && mainPlayerRef.current?.isLoaded) {
