@@ -4,7 +4,7 @@ import {
   createAudioPlayer,
   setAudioModeAsync,
 } from "expo-audio";
-import { Image } from "react-native";
+import { AppState, type AppStateStatus, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AMBIENT_MAP, AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
 import React, {
@@ -207,6 +207,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** Timestamp (ms) en que expira el sleep timer; null si no hay timer activo.
+   *  Permite computar el tiempo restante real con Date.now() aunque el setInterval
+   *  se haya throttleado o congelado con la pantalla bloqueada. */
+  const sleepEndTimeRef = useRef<number | null>(null);
 
   // ── Loop crossfade (Música y Sonidos / Sonidos Naturaleza) ──────────────────
   /** Second layer of the constant-power crossfade (A = mainPlayerRef) */
@@ -487,6 +491,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     (status: AudioStatus) => {
       if (!status.isLoaded) return;
 
+      // ── Enforcement del sleep timer en background ──────────────────────────
+      // El setInterval de JS se congela con la pantalla bloqueada, pero este
+      // listener se sigue ejecutando en background gracias a UIBackgroundModes:
+      // ["audio"]. Por eso chequeamos aquí la expiración real con Date.now().
+      const sleepEndTs = sleepEndTimeRef.current;
+      if (sleepEndTs != null && Date.now() >= sleepEndTs) {
+        sleepEndTimeRef.current = null;
+        if (sleepIntervalRef.current) {
+          clearInterval(sleepIntervalRef.current);
+          sleepIntervalRef.current = null;
+        }
+        // Poner remaining a 0 dispara el useEffect de expiración existente,
+        // que ya maneja el teardown completo (flush stats, stop audio, etc.)
+        // sin necesitar referencias a funciones potencialmente stale.
+        setSleepTimerRemaining(0);
+        return;
+      }
+
       // Clear loading once the track is ready
       setIsLoading(false);
 
@@ -660,17 +682,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // ── Sleep timer tick ────────────────────────────────────────────────────────
-  // Start/stop the countdown interval whenever playing state or timer active/inactive changes
+  // Arranca/para el interval de UI según isPlaying y si el timer está activo.
+  // El tick recalcula el restante con Date.now() (no decrementa ciegamente),
+  // de modo que si el interval se throttlea en background, al despertar vuelve
+  // a mostrar el valor correcto sin acumular error. La pausa real en background
+  // la garantiza el listener nativo de playbackStatusUpdate (ver abajo).
   useEffect(() => {
     clearSleepInterval();
     if (!isPlaying || sleepTimerRemaining === null) return;
 
     sleepIntervalRef.current = setInterval(() => {
-      setSleepTimerRemaining((prev) => {
-        if (prev === null) return null;
-        if (prev <= 1) return 0;
-        return prev - 1;
-      });
+      const endTs = sleepEndTimeRef.current;
+      if (endTs == null) return;
+      const remaining = Math.ceil((endTs - Date.now()) / 1000);
+      setSleepTimerRemaining(remaining <= 0 ? 0 : remaining);
     }, 1000);
 
     return () => clearSleepInterval();
@@ -694,6 +719,30 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     teardownLayers();
     setIsPlaying(false);
   }, [sleepTimerRemaining, teardownPlayback, teardownLayers]);
+  // ── AppState: cuando la app vuelve al frente, corregir el restante ──────────
+  // setInterval se throttlea en background/pantalla bloqueada. Al reanudar,
+  // recalculamos el tiempo restante real con sleepEndTimeRef y paramos si expiró.
+  useEffect(() => {
+    const handleAppState = (nextState: AppStateStatus) => {
+      if (nextState !== "active") return;
+      const endTs = sleepEndTimeRef.current;
+      if (endTs == null) return;
+      const remaining = Math.ceil((endTs - Date.now()) / 1000);
+      if (remaining <= 0) {
+        // Expiró mientras estaba en background: disparar expiración
+        if (sleepIntervalRef.current) {
+          clearInterval(sleepIntervalRef.current);
+          sleepIntervalRef.current = null;
+        }
+        sleepEndTimeRef.current = null;
+        setSleepTimerRemaining(0); // dispara el useEffect de expiración
+      } else {
+        setSleepTimerRemaining(remaining); // corregir UI con el restante real
+      }
+    };
+    const sub = AppState.addEventListener("change", handleAppState);
+    return () => sub.remove();
+  }, []);
   // ────────────────────────────────────────────────────────────────────────────
 
   const clearSleepInterval = () => {
@@ -701,6 +750,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       clearInterval(sleepIntervalRef.current);
       sleepIntervalRef.current = null;
     }
+    sleepEndTimeRef.current = null;
   };
 
   const clearSim = () => {
@@ -1459,6 +1509,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setSleepTimerRemaining(null);
       return;
     }
+    sleepEndTimeRef.current = Date.now() + minutes * 60 * 1000;
     setSleepTimerRemaining(minutes * 60);
   }, []);
 
