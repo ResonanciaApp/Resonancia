@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { z } from "zod";
 import { and, asc, count, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import {
   db,
@@ -376,7 +377,12 @@ router.post("/admin/mixes/:id/hide", requireAuth, requireRole("admin"), async (r
     res.status(400).json({ error: "ID inválido" });
     return;
   }
-  const hidden = req.body?.hidden !== false;
+  const parsedBody = z.object({ hidden: z.boolean().optional() }).safeParse(req.body ?? {});
+  if (!parsedBody.success) {
+    res.status(400).json({ error: "Datos inválidos" });
+    return;
+  }
+  const hidden = parsedBody.data.hidden !== false;
   try {
     const [updated] = await db
       .update(sharedMixesTable)
@@ -745,7 +751,14 @@ router.delete("/admin/guide-configs/:guideId", requireAuth, requireRole("admin")
 // ── Tag options ────────────────────────────────────────────────────────────
 
 router.get("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
-  const type = req.query.type ? String(req.query.type) : undefined;
+  const parsedQuery = z
+    .object({ type: z.string().trim().min(1).max(60).optional() })
+    .safeParse(req.query);
+  if (!parsedQuery.success) {
+    res.status(400).json({ error: "Parámetros inválidos" });
+    return;
+  }
+  const type = parsedQuery.data.type;
   try {
     const rows = await db
       .select()
@@ -760,15 +773,21 @@ router.get("/admin/tag-options", requireAuth, requireRole("admin"), async (req, 
 });
 
 router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
-  const { type, label } = req.body as { type?: string; label?: string };
-  if (!type || !label || !label.trim()) {
+  const parsedBody = z
+    .object({
+      type: z.string().trim().min(1, "type es requerido").max(60),
+      label: z.string().trim().min(1, "label es requerido").max(120),
+    })
+    .safeParse(req.body);
+  if (!parsedBody.success) {
     res.status(400).json({ error: "type y label son requeridos" });
     return;
   }
+  const { type, label } = parsedBody.data;
   try {
     const [row] = await db
       .insert(catalogTagOptionsTable)
-      .values({ type: type.trim(), label: label.trim() })
+      .values({ type, label })
       .returning();
     req.log.info({ type, label }, "tag option created");
     res.status(201).json(row);
@@ -1065,19 +1084,31 @@ router.get("/explore-sections", async (req, res) => {
 // PATCH /admin/explore-sections — actualizar orden y visibilidad de una lista de secciones.
 // Body: { sections: [{ id, sortOrder, visible }] }
 router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
-  const items = req.body?.sections;
-  if (!Array.isArray(items) || items.length === 0) {
+  const parsedBody = z
+    .object({
+      sections: z
+        .array(
+          z.object({
+            id: z.coerce.number().int(),
+            visible: z.boolean().optional(),
+            sortOrder: z.number().int().optional(),
+          }),
+        )
+        .min(1),
+    })
+    .safeParse(req.body);
+  if (!parsedBody.success) {
     res.status(400).json({ error: "Se esperaba un array de secciones" });
     return;
   }
+  const items = parsedBody.data.sections;
   try {
     await db.transaction(async (tx) => {
       for (const item of items) {
-        const id = typeof item.id === "number" ? item.id : parseInt(String(item.id), 10);
-        if (isNaN(id)) continue;
+        const id = item.id;
         const updates: Partial<{ visible: boolean; sortOrder: number }> = {};
-        if (typeof item.visible === "boolean") updates.visible = item.visible;
-        if (typeof item.sortOrder === "number") updates.sortOrder = item.sortOrder;
+        if (item.visible !== undefined) updates.visible = item.visible;
+        if (item.sortOrder !== undefined) updates.sortOrder = item.sortOrder;
         if (Object.keys(updates).length === 0) continue;
         await tx
           .update(exploreSectionsTable)
@@ -1099,11 +1130,17 @@ router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async
 
 // POST /admin/explore-sections — agregar una sección nueva (tag custom no en la lista por defecto).
 router.post("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
-  const { slug, label } = req.body as { slug?: string; label?: string };
-  if (!slug?.trim() || !label?.trim()) {
+  const parsedBody = z
+    .object({
+      slug: z.string().trim().min(1, "slug es requerido").max(60),
+      label: z.string().trim().min(1, "label es requerido").max(120),
+    })
+    .safeParse(req.body);
+  if (!parsedBody.success) {
     res.status(400).json({ error: "slug y label son requeridos" });
     return;
   }
+  const { slug, label } = parsedBody.data;
   try {
     const [maxRow] = await db
       .select({ max: sql<number>`max(sort_order)` })

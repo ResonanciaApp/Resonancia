@@ -28,6 +28,7 @@ import {
   Film,
   Sparkles,
   LayoutList,
+  Moon,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -174,6 +175,7 @@ const NAV = [
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
+  { href: "/descanso-sonidos", label: "Sonidos de descanso", icon: Moon },
   { href: "/escenas", label: "Escenas Geometrix", icon: Sparkles },
   { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
 ];

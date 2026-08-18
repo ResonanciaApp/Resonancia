@@ -1,10 +1,38 @@
 import { Router, type IRouter } from "express";
 import { and, asc, desc, eq } from "drizzle-orm";
+import { z } from "zod";
 import { db, catalogVideosTable, CATALOG_VIDEO_THEMES, type CatalogVideo } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 
 const router: IRouter = Router();
+
+// ── Schemas Zod (admin) ──────────────────────────────────────────────────────
+
+const VideoIdParams = z.object({ id: z.coerce.number().int().positive() });
+
+const CreateVideoBody = z.object({
+  title: z.string().trim().min(1, "El título es requerido"),
+  subtitle: z.string().optional(),
+  description: z.string().optional(),
+  durationLabel: z.string().optional(),
+  bunnyVideoId: z.string().trim().min(1, "El bunnyVideoId es requerido"),
+  thumbnailObjectPath: z.string().nullable().optional(),
+  author: z.string().optional(),
+  theme: z.string().nullable().optional(),
+  isPremium: z.boolean().optional(),
+  isNew: z.boolean().optional(),
+  status: z.enum(["published", "draft"]).optional(),
+  sortOrder: z.number().int().optional(),
+});
+
+const UpdateVideoBody = CreateVideoBody.partial();
+
+const UploadUrlBody = z.object({ title: z.string().optional() }).partial();
+
+const BunnyIdParams = z.object({
+  bunnyVideoId: z.string().trim().min(1).max(120),
+});
 
 const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID ?? "";
 const BUNNY_API_KEY = process.env.BUNNY_API_KEY ?? "";
@@ -103,6 +131,14 @@ router.get("/admin/videos", requireAuth, requireRole("admin"), async (req, res) 
 
 // POST /admin/videos — crear registro de video (tras subirlo a Bunny)
 router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = CreateVideoBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({
+      error: parsed.error.issues[0]?.message ?? "Datos inválidos",
+      details: parsed.error.issues,
+    });
+    return;
+  }
   const {
     title,
     subtitle,
@@ -116,29 +152,8 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     isNew,
     status,
     sortOrder,
-  } = req.body as {
-    title: string;
-    subtitle?: string;
-    description?: string;
-    durationLabel?: string;
-    bunnyVideoId: string;
-    thumbnailObjectPath?: string;
-    author?: string;
-    theme?: string | null;
-    isPremium?: boolean;
-    isNew?: boolean;
-    status?: "published" | "draft";
-    sortOrder?: number;
-  };
+  } = parsed.data;
 
-  if (!title?.trim()) {
-    res.status(400).json({ error: "El título es requerido" });
-    return;
-  }
-  if (!bunnyVideoId?.trim()) {
-    res.status(400).json({ error: "El bunnyVideoId es requerido" });
-    return;
-  }
   if (theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(theme)) {
     res.status(400).json({ error: "Tema inválido" });
     return;
@@ -148,11 +163,11 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     const [created] = await db
       .insert(catalogVideosTable)
       .values({
-        title: title.trim(),
+        title,
         subtitle: subtitle?.trim() ?? "",
         description: description?.trim() ?? "",
         durationLabel: durationLabel?.trim() ?? "",
-        bunnyVideoId: bunnyVideoId.trim(),
+        bunnyVideoId,
         thumbnailObjectPath: thumbnailObjectPath ?? null,
         author: author?.trim() ?? "Casa del Cuenco",
         theme: theme?.trim() || null,
@@ -172,9 +187,15 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
 
 // PATCH /admin/videos/:id — actualizar metadata
 router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req, res) => {
-  const id = parseInt(String(req.params.id), 10);
-  if (isNaN(id)) {
+  const params = VideoIdParams.safeParse(req.params);
+  if (!params.success) {
     res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  const id = params.data.id;
+  const parsedBody = UpdateVideoBody.safeParse(req.body);
+  if (!parsedBody.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsedBody.error.issues });
     return;
   }
   try {
@@ -188,20 +209,7 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
       return;
     }
 
-    const body = req.body as {
-      title?: string;
-      subtitle?: string;
-      description?: string;
-      durationLabel?: string;
-      bunnyVideoId?: string;
-      thumbnailObjectPath?: string | null;
-      author?: string;
-      theme?: string | null;
-      isPremium?: boolean;
-      isNew?: boolean;
-      status?: "published" | "draft";
-      sortOrder?: number;
-    };
+    const body = parsedBody.data;
     if (body.theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(body.theme)) {
       res.status(400).json({ error: "Tema inválido" });
       return;
@@ -234,11 +242,12 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
 
 // DELETE /admin/videos/:id — borrar registro + video en Bunny
 router.delete("/admin/videos/:id", requireAuth, requireRole("admin"), async (req, res) => {
-  const id = parseInt(String(req.params.id), 10);
-  if (isNaN(id)) {
+  const params = VideoIdParams.safeParse(req.params);
+  if (!params.success) {
     res.status(400).json({ error: "ID inválido" });
     return;
   }
+  const id = params.data.id;
   try {
     const [existing] = await db
       .select()
@@ -282,7 +291,12 @@ router.post(
   requireAuth,
   requireRole("admin"),
   async (req, res) => {
-    const { title } = req.body as { title?: string };
+    const parsed = UploadUrlBody.safeParse(req.body ?? {});
+    if (!parsed.success) {
+      res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+      return;
+    }
+    const { title } = parsed.data;
     if (!BUNNY_LIBRARY_ID || !BUNNY_API_KEY) {
       res.status(503).json({ error: "Bunny no configurado (falta BUNNY_LIBRARY_ID o BUNNY_API_KEY)" });
       return;
@@ -319,7 +333,12 @@ router.get(
   requireAuth,
   requireRole("admin"),
   async (req, res) => {
-    const { bunnyVideoId } = req.params;
+    const params = BunnyIdParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: "ID de Bunny inválido" });
+      return;
+    }
+    const { bunnyVideoId } = params.data;
     if (!BUNNY_LIBRARY_ID || !BUNNY_API_KEY) {
       res.status(503).json({ error: "Bunny no configurado" });
       return;
