@@ -1009,8 +1009,6 @@ export default function HomeScreen2() {
             hitSlop={10}
             style={({ pressed }) => ({
               opacity: pressed ? 0.7 : 1,
-              backgroundColor: activeSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
-              borderRadius: 18,
               width: 36,
               height: 36,
               alignItems: "center",
