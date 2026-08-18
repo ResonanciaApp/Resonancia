@@ -1153,6 +1153,8 @@ export const PushMyMilestonesResponse = zod.object({
  */
 export const getCatalogResponseSessionsItemSkipDetailDefault = false;
 export const getCatalogResponseSessionsItemSkipMiniPlayerDefault = false;
+export const getCatalogResponseSessionsItemIsLoopDefault = false;
+export const getCatalogResponseSessionsItemIsPinnedFeaturedDefault = false;
 
 export const GetCatalogResponse = zod.object({
   "categories": zod.array(zod.object({
@@ -1187,6 +1189,8 @@ export const GetCatalogResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getCatalogResponseSessionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getCatalogResponseSessionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getCatalogResponseSessionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getCatalogResponseSessionsItemIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1246,6 +1250,8 @@ export const GetCatalogResponse = zod.object({
  */
 export const getPinnedFeaturedResponseSessionOneSkipDetailDefault = false;
 export const getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault = false;
+export const getPinnedFeaturedResponseSessionOneIsLoopDefault = false;
+export const getPinnedFeaturedResponseSessionOneIsPinnedFeaturedDefault = false;
 
 export const GetPinnedFeaturedResponse = zod.object({
   "session": zod.union([zod.object({
@@ -1267,6 +1273,8 @@ export const GetPinnedFeaturedResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getPinnedFeaturedResponseSessionOneIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getPinnedFeaturedResponseSessionOneIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1399,6 +1407,8 @@ export const GetPopularSessionsQueryParams = zod.object({
 
 export const getPopularSessionsResponseSessionsItemSkipDetailDefault = false;
 export const getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
+export const getPopularSessionsResponseSessionsItemIsLoopDefault = false;
+export const getPopularSessionsResponseSessionsItemIsPinnedFeaturedDefault = false;
 
 export const GetPopularSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -1420,6 +1430,8 @@ export const GetPopularSessionsResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getPopularSessionsResponseSessionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getPopularSessionsResponseSessionsItemIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1483,6 +1495,7 @@ export const createSubmissionBodyInstrumentsMax = 12;
 
 export const createSubmissionBodySkipDetailDefault = false;
 export const createSubmissionBodySkipMiniPlayerDefault = false;
+export const createSubmissionBodyIsLoopDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
 export const createSubmissionBodyPlayerDescriptionMax = 300;
@@ -1511,6 +1524,8 @@ export const CreateSubmissionBody = zod.object({
   "isPremium": zod.boolean().optional(),
   "skipDetail": zod.boolean().default(createSubmissionBodySkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(createSubmissionBodySkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(createSubmissionBodyIsLoopDefault),
+  "status": zod.enum(['draft', 'pending']).optional().describe('Solo un admin puede crear directamente como borrador (draft)'),
   "imageObjectPath": zod.string().nullish(),
   "imageContentType": zod.string().nullish(),
   "imageSizeBytes": zod.number().min(1).nullish(),
@@ -1554,6 +1569,8 @@ export const GetPendingSubmissionsQueryParams = zod.object({
 
 export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
+export const getPendingSubmissionsResponseSubmissionsItemIsLoopDefault = false;
+export const getPendingSubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = false;
 
 export const GetPendingSubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1575,6 +1592,8 @@ export const GetPendingSubmissionsResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1589,6 +1608,11 @@ export const GetPendingSubmissionsResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -1639,6 +1663,8 @@ export const GetSubmissionFilterOptionsResponse = zod.object({
  */
 export const getMySubmissionsResponseSubmissionsItemSkipDetailDefault = false;
 export const getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
+export const getMySubmissionsResponseSubmissionsItemIsLoopDefault = false;
+export const getMySubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = false;
 
 export const GetMySubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1660,6 +1686,8 @@ export const GetMySubmissionsResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getMySubmissionsResponseSubmissionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getMySubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1674,6 +1702,11 @@ export const GetMySubmissionsResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -1715,6 +1748,8 @@ export const ApproveSubmissionParams = zod.object({
 
 export const approveSubmissionResponseSkipDetailDefault = false;
 export const approveSubmissionResponseSkipMiniPlayerDefault = false;
+export const approveSubmissionResponseIsLoopDefault = false;
+export const approveSubmissionResponseIsPinnedFeaturedDefault = false;
 
 export const ApproveSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1735,6 +1770,8 @@ export const ApproveSubmissionResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(approveSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(approveSubmissionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(approveSubmissionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(approveSubmissionResponseIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1749,6 +1786,11 @@ export const ApproveSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -1797,6 +1839,8 @@ export const RejectSubmissionBody = zod.object({
 
 export const rejectSubmissionResponseSkipDetailDefault = false;
 export const rejectSubmissionResponseSkipMiniPlayerDefault = false;
+export const rejectSubmissionResponseIsLoopDefault = false;
+export const rejectSubmissionResponseIsPinnedFeaturedDefault = false;
 
 export const RejectSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1817,6 +1861,8 @@ export const RejectSubmissionResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(rejectSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(rejectSubmissionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(rejectSubmissionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(rejectSubmissionResponseIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1831,6 +1877,11 @@ export const RejectSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -1892,6 +1943,9 @@ export const editSubmissionBodySkipDetailDefault = false;
 export const editSubmissionBodySkipMiniPlayerDefault = false;
 export const editSubmissionBodyPlayerDescriptionMax = 300;
 
+export const editSubmissionBodyFrequencyMax = 60;
+
+
 
 
 export const EditSubmissionBody = zod.object({
@@ -1916,11 +1970,31 @@ export const EditSubmissionBody = zod.object({
   "sleepTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).optional(),
   "temaTag": zod.array(zod.string()).optional(),
-  "playerDescription": zod.string().max(editSubmissionBodyPlayerDescriptionMax).nullish()
+  "playerDescription": zod.string().max(editSubmissionBodyPlayerDescriptionMax).nullish(),
+  "frequency": zod.string().max(editSubmissionBodyFrequencyMax).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
+  "sortOrder": zod.number().optional(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "isPinnedFeatured": zod.boolean().optional(),
+  "isLoop": zod.boolean().optional(),
+  "imageObjectPath": zod.string().nullish(),
+  "imageContentType": zod.string().nullish(),
+  "imageSizeBytes": zod.number().min(1).nullish()
 })
 
 export const editSubmissionResponseSkipDetailDefault = false;
 export const editSubmissionResponseSkipMiniPlayerDefault = false;
+export const editSubmissionResponseIsLoopDefault = false;
+export const editSubmissionResponseIsPinnedFeaturedDefault = false;
 
 export const EditSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1941,6 +2015,8 @@ export const EditSubmissionResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(editSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(editSubmissionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(editSubmissionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(editSubmissionResponseIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1955,6 +2031,11 @@ export const EditSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -2007,6 +2088,8 @@ export const HideSubmissionParams = zod.object({
 
 export const hideSubmissionResponseSkipDetailDefault = false;
 export const hideSubmissionResponseSkipMiniPlayerDefault = false;
+export const hideSubmissionResponseIsLoopDefault = false;
+export const hideSubmissionResponseIsPinnedFeaturedDefault = false;
 
 export const HideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2027,6 +2110,8 @@ export const HideSubmissionResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(hideSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(hideSubmissionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(hideSubmissionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(hideSubmissionResponseIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -2041,6 +2126,11 @@ export const HideSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
@@ -2081,6 +2171,8 @@ export const UnhideSubmissionParams = zod.object({
 
 export const unhideSubmissionResponseSkipDetailDefault = false;
 export const unhideSubmissionResponseSkipMiniPlayerDefault = false;
+export const unhideSubmissionResponseIsLoopDefault = false;
+export const unhideSubmissionResponseIsPinnedFeaturedDefault = false;
 
 export const UnhideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2101,6 +2193,8 @@ export const UnhideSubmissionResponse = zod.object({
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(unhideSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(unhideSubmissionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(unhideSubmissionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(unhideSubmissionResponseIsPinnedFeaturedDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -2115,6 +2209,376 @@ export const UnhideSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
+  "createdAt": zod.coerce.date()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Listar todas las sesiones del catálogo con filtro, búsqueda y paginación (admin)
+ */
+
+export const getAdminSessionsQueryPageSizeMax = 100;
+
+
+
+export const GetAdminSessionsQueryParams = zod.object({
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional(),
+  "q": zod.coerce.string().optional().describe('Búsqueda por título (parcial, sin distinguir mayúsculas)'),
+  "page": zod.coerce.number().min(1).optional(),
+  "pageSize": zod.coerce.number().min(1).max(getAdminSessionsQueryPageSizeMax).optional()
+})
+
+export const getAdminSessionsResponseSessionsItemSkipDetailDefault = false;
+export const getAdminSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
+export const getAdminSessionsResponseSessionsItemIsLoopDefault = false;
+export const getAdminSessionsResponseSessionsItemIsPinnedFeaturedDefault = false;
+
+export const GetAdminSessionsResponse = zod.object({
+  "sessions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getAdminSessionsResponseSessionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getAdminSessionsResponseSessionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getAdminSessionsResponseSessionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getAdminSessionsResponseSessionsItemIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
+  "createdAt": zod.coerce.date()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number()
+})
+
+
+/**
+ * @summary Detalle completo de una sesión incluyendo audios (admin)
+ */
+export const GetAdminSessionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const getAdminSessionResponseSkipDetailDefault = false;
+export const getAdminSessionResponseSkipMiniPlayerDefault = false;
+export const getAdminSessionResponseIsLoopDefault = false;
+export const getAdminSessionResponseIsPinnedFeaturedDefault = false;
+
+export const GetAdminSessionResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getAdminSessionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getAdminSessionResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getAdminSessionResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getAdminSessionResponseIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
+  "createdAt": zod.coerce.date()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Añadir o reemplazar un audio slot de una sesión (admin)
+ */
+export const AddAdminSessionAudioParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+export const addAdminSessionAudioBodyNameMax = 200;
+
+
+
+export const addAdminSessionAudioBodyRoleDefault = `main`;
+export const addAdminSessionAudioBodyIsLoopDefault = false;
+
+export const AddAdminSessionAudioBody = zod.object({
+  "objectPath": zod.string().min(1),
+  "name": zod.string().min(1).max(addAdminSessionAudioBodyNameMax),
+  "contentType": zod.string().min(1),
+  "sizeBytes": zod.number().min(1),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']).default(addAdminSessionAudioBodyRoleDefault),
+  "durationSeconds": zod.number().min(1).nullish(),
+  "isLoop": zod.boolean().default(addAdminSessionAudioBodyIsLoopDefault),
+  "replaceAudioId": zod.number().nullish().describe('Si viene, elimina ese audio y lo sustituye por el nuevo')
+})
+
+export const addAdminSessionAudioResponseSkipDetailDefault = false;
+export const addAdminSessionAudioResponseSkipMiniPlayerDefault = false;
+export const addAdminSessionAudioResponseIsLoopDefault = false;
+export const addAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
+
+export const AddAdminSessionAudioResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(addAdminSessionAudioResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(addAdminSessionAudioResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(addAdminSessionAudioResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(addAdminSessionAudioResponseIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "rejectionReason": zod.string().nullish(),
+  "sortOrder": zod.number(),
+  "creator": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string(),
+  "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "role": zod.enum(['user', 'creator', 'admin', 'moderador', 'expansor', 'resonador']).optional(),
+  "createdAt": zod.coerce.date()
+}).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Eliminar un audio slot de una sesión (admin) — debe quedar al menos uno
+ */
+export const DeleteAdminSessionAudioParams = zod.object({
+  "id": zod.coerce.string(),
+  "audioId": zod.coerce.number()
+})
+
+export const deleteAdminSessionAudioResponseSkipDetailDefault = false;
+export const deleteAdminSessionAudioResponseSkipMiniPlayerDefault = false;
+export const deleteAdminSessionAudioResponseIsLoopDefault = false;
+export const deleteAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
+
+export const DeleteAdminSessionAudioResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(deleteAdminSessionAudioResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(deleteAdminSessionAudioResponseSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(deleteAdminSessionAudioResponseIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(deleteAdminSessionAudioResponseIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
   "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),

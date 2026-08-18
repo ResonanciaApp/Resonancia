@@ -775,6 +775,8 @@ export interface CatalogSession {
   isPremium: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
+  isLoop?: boolean;
+  isPinnedFeatured?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -939,6 +941,17 @@ export interface CreatorSubmissionAudioInput {
   isLoop?: boolean;
 }
 
+/**
+ * Solo un admin puede crear directamente como borrador (draft)
+ */
+export type CreatorSubmissionInputStatus = typeof CreatorSubmissionInputStatus[keyof typeof CreatorSubmissionInputStatus];
+
+
+export const CreatorSubmissionInputStatus = {
+  draft: 'draft',
+  pending: 'pending',
+} as const;
+
 export type CreatorSubmissionInputVoiceTag = typeof CreatorSubmissionInputVoiceTag[keyof typeof CreatorSubmissionInputVoiceTag] | null;
 
 
@@ -982,6 +995,9 @@ export interface CreatorSubmissionInput {
   isPremium?: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
+  isLoop?: boolean;
+  /** Solo un admin puede crear directamente como borrador (draft) */
+  status?: CreatorSubmissionInputStatus;
   imageObjectPath?: string | null;
   imageContentType?: string | null;
   /** @minimum 1 */
@@ -1127,6 +1143,8 @@ export interface Submission {
   isPremium: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
+  isLoop?: boolean;
+  isPinnedFeatured?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -1141,6 +1159,7 @@ export interface Submission {
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
   artistId?: string | null;
+  guests?: CatalogSessionGuest[] | null;
   playerDescription?: string | null;
   status: SubmissionStatus;
   rejectionReason?: string | null;
@@ -1229,6 +1248,60 @@ export interface ReviewEditBody {
   temaTag?: string[];
   /** @maxLength 300 */
   playerDescription?: string | null;
+  /** @maxLength 60 */
+  frequency?: string | null;
+  guideId?: string | null;
+  artistId?: string | null;
+  sabiduriaTag?: string | null;
+  podcastTag?: string | null;
+  sonidosTag?: string | null;
+  descansoTag?: string | null;
+  sortOrder?: number;
+  guests?: CatalogSessionGuest[] | null;
+  isPinnedFeatured?: boolean;
+  isLoop?: boolean;
+  imageObjectPath?: string | null;
+  imageContentType?: string | null;
+  /** @minimum 1 */
+  imageSizeBytes?: number | null;
+}
+
+export interface AdminSessionsPage {
+  sessions: Submission[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export type AdminSessionAudioInputRole = typeof AdminSessionAudioInputRole[keyof typeof AdminSessionAudioInputRole];
+
+
+export const AdminSessionAudioInputRole = {
+  main: 'main',
+  voice: 'voice',
+  ambient: 'ambient',
+  base: 'base',
+  sound: 'sound',
+} as const;
+
+export interface AdminSessionAudioInput {
+  /** @minLength 1 */
+  objectPath: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /** @minLength 1 */
+  contentType: string;
+  /** @minimum 1 */
+  sizeBytes: number;
+  role?: AdminSessionAudioInputRole;
+  /** @minimum 1 */
+  durationSeconds?: number | null;
+  isLoop?: boolean;
+  /** Si viene, elimina ese audio y lo sustituye por el nuevo */
+  replaceAudioId?: number | null;
 }
 
 export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];
@@ -2014,6 +2087,33 @@ export const GetPendingSubmissionsStatus = {
 export type DeleteSubmission200 = {
   ok: boolean;
 };
+
+export type GetAdminSessionsParams = {
+status?: GetAdminSessionsStatus;
+/**
+ * Búsqueda por título (parcial, sin distinguir mayúsculas)
+ */
+q?: string;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: number;
+};
+
+export type GetAdminSessionsStatus = typeof GetAdminSessionsStatus[keyof typeof GetAdminSessionsStatus];
+
+
+export const GetAdminSessionsStatus = {
+  draft: 'draft',
+  pending: 'pending',
+  published: 'published',
+  rejected: 'rejected',
+} as const;
 
 export type GetAdminUsersParams = {
 q?: string;

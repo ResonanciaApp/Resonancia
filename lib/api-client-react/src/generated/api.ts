@@ -29,6 +29,8 @@ import type {
   AdminMixesPage,
   AdminPlaylistInput,
   AdminPlaylistUpdate,
+  AdminSessionAudioInput,
+  AdminSessionsPage,
   AdminStats,
   AdminUsersPage,
   Application,
@@ -68,6 +70,7 @@ import type {
   GetAdminDescansoSounds200,
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
+  GetAdminSessionsParams,
   GetAdminSounds200,
   GetAdminTagOptionsParams,
   GetAdminUsersParams,
@@ -5826,6 +5829,311 @@ export const useUnhideSubmission = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUnhideSubmissionMutationOptions(options));
+    }
+
+export const getGetAdminSessionsUrl = (params?: GetAdminSessionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/sessions?${stringifiedParams}` : `/api/admin/sessions`
+}
+
+/**
+ * @summary Listar todas las sesiones del catálogo con filtro, búsqueda y paginación (admin)
+ */
+export const getAdminSessions = async (params?: GetAdminSessionsParams, options?: RequestInit): Promise<AdminSessionsPage> => {
+
+  return customFetch<AdminSessionsPage>(getGetAdminSessionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSessionsQueryKey = (params?: GetAdminSessionsParams,) => {
+    return [
+    `/api/admin/sessions`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminSessionsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSessions>>, TError = ErrorType<ErrorResponse>>(params?: GetAdminSessionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSessionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSessions>>> = ({ signal }) => getAdminSessions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSessions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSessions>>>
+export type GetAdminSessionsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todas las sesiones del catálogo con filtro, búsqueda y paginación (admin)
+ */
+
+export function useGetAdminSessions<TData = Awaited<ReturnType<typeof getAdminSessions>>, TError = ErrorType<ErrorResponse>>(
+ params?: GetAdminSessionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSessionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminSessionUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sessions/${id}`
+}
+
+/**
+ * @summary Detalle completo de una sesión incluyendo audios (admin)
+ */
+export const getAdminSession = async (id: string, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getGetAdminSessionUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSessionQueryKey = (id: string,) => {
+    return [
+    `/api/admin/sessions/${id}`
+    ] as const;
+    }
+
+
+export const getGetAdminSessionQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSession>>, TError = ErrorType<ErrorResponse>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSession>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSessionQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSession>>> = ({ signal }) => getAdminSession(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSession>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSessionQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSession>>>
+export type GetAdminSessionQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Detalle completo de una sesión incluyendo audios (admin)
+ */
+
+export function useGetAdminSession<TData = Awaited<ReturnType<typeof getAdminSession>>, TError = ErrorType<ErrorResponse>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSession>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSessionQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getAddAdminSessionAudioUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/sessions/${id}/audio`
+}
+
+/**
+ * @summary Añadir o reemplazar un audio slot de una sesión (admin)
+ */
+export const addAdminSessionAudio = async (id: string,
+    adminSessionAudioInput: AdminSessionAudioInput, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getAddAdminSessionAudioUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminSessionAudioInput,)
+  }
+);}
+
+
+
+
+export const getAddAdminSessionAudioMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addAdminSessionAudio>>, TError,{id: string;data: BodyType<AdminSessionAudioInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof addAdminSessionAudio>>, TError,{id: string;data: BodyType<AdminSessionAudioInput>}, TContext> => {
+
+const mutationKey = ['addAdminSessionAudio'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addAdminSessionAudio>>, {id: string;data: BodyType<AdminSessionAudioInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  addAdminSessionAudio(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddAdminSessionAudioMutationResult = NonNullable<Awaited<ReturnType<typeof addAdminSessionAudio>>>
+    export type AddAdminSessionAudioMutationBody = BodyType<AdminSessionAudioInput>
+    export type AddAdminSessionAudioMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Añadir o reemplazar un audio slot de una sesión (admin)
+ */
+export const useAddAdminSessionAudio = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addAdminSessionAudio>>, TError,{id: string;data: BodyType<AdminSessionAudioInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof addAdminSessionAudio>>,
+        TError,
+        {id: string;data: BodyType<AdminSessionAudioInput>},
+        TContext
+      > => {
+      return useMutation(getAddAdminSessionAudioMutationOptions(options));
+    }
+
+export const getDeleteAdminSessionAudioUrl = (id: string,
+    audioId: number,) => {
+
+
+
+
+  return `/api/admin/sessions/${id}/audio/${audioId}`
+}
+
+/**
+ * @summary Eliminar un audio slot de una sesión (admin) — debe quedar al menos uno
+ */
+export const deleteAdminSessionAudio = async (id: string,
+    audioId: number, options?: RequestInit): Promise<Submission> => {
+
+  return customFetch<Submission>(getDeleteAdminSessionAudioUrl(id,audioId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminSessionAudioMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSessionAudio>>, TError,{id: string;audioId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSessionAudio>>, TError,{id: string;audioId: number}, TContext> => {
+
+const mutationKey = ['deleteAdminSessionAudio'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminSessionAudio>>, {id: string;audioId: number}> = (props) => {
+          const {id,audioId} = props ?? {};
+
+          return  deleteAdminSessionAudio(id,audioId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminSessionAudioMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminSessionAudio>>>
+
+    export type DeleteAdminSessionAudioMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar un audio slot de una sesión (admin) — debe quedar al menos uno
+ */
+export const useDeleteAdminSessionAudio = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSessionAudio>>, TError,{id: string;audioId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminSessionAudio>>,
+        TError,
+        {id: string;audioId: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminSessionAudioMutationOptions(options));
     }
 
 export const getGetAdminUsersUrl = (params?: GetAdminUsersParams,) => {

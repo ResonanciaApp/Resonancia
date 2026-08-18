@@ -50,6 +50,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   skipDetail: boolean("skip_detail").notNull().default(false),
   /** Si es true, el tap en la card empieza a reproducir directo en el miniplayer (sin abrir descripción ni reproductor). */
   skipMiniPlayer: boolean("skip_mini_player").notNull().default(false),
+  /** Si es true, la sesión se reproduce en loop infinito (motor gapless, duración infinita). */
+  isLoop: boolean("is_loop").notNull().default(false),
   frequency: text("frequency"),
   soundTag: text("sound_tag"),
   meditationTag: text("meditation_tag"),

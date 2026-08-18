@@ -29,6 +29,7 @@ import {
   Sparkles,
   LayoutList,
   Moon,
+  AudioLines,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -40,6 +41,8 @@ import ModeracionPage from "@/pages/moderacion";
 import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
 import SesionesPage from "@/pages/sesiones";
+import SesionesListaPage from "@/pages/sesiones-lista";
+import SesionEditarPage from "@/pages/sesion-editar";
 import SonidosPage from "@/pages/sonidos";
 import GeometrixPage from "@/pages/geometrix";
 import PlaylistsPage from "@/pages/playlists";
@@ -170,6 +173,7 @@ const NAV = [
   { href: "/mezclas", label: "Mezclas", icon: ListMusic },
   { href: "/categorias", label: "Categorías", icon: FolderTree },
   { href: "/playlists", label: "Playlists", icon: Library },
+  { href: "/sesiones", label: "Sesiones", icon: AudioLines },
   { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
@@ -181,7 +185,13 @@ const NAV = [
 ];
 
 function isActive(location: string, href: string) {
-  return href === "/" ? location === "/" : location.startsWith(href);
+  if (href === "/") return location === "/";
+  // "/sesiones" solo se marca activo en la lista o en la edición,
+  // no en "/sesiones/nueva" (que tiene su propia entrada).
+  if (href === "/sesiones") {
+    return location === "/sesiones" || /^\/sesiones\/[^/]+\/editar$/.test(location);
+  }
+  return location.startsWith(href);
 }
 
 function DashboardShell({
@@ -319,6 +329,8 @@ function AdminGate() {
         <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />
         <Route path="/sesiones/nueva" component={SesionesPage} />
+        <Route path="/sesiones/:id/editar" component={SesionEditarPage} />
+        <Route path="/sesiones" component={SesionesListaPage} />
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />

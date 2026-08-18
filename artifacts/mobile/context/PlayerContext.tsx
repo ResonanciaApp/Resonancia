@@ -1199,7 +1199,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Las sesiones en loop (Sonidos Naturaleza) SIEMPRE van por el camino de
       // loop: audio gapless por el motor, con duración INFINITA — suenan hasta
       // que el usuario pause, cambie de sesión o salte el temporizador.
-      if (LOOP_SESSIONS.has(session.id)) {
+      if (session.isLoop || LOOP_SESSIONS.has(session.id)) {
         playSessionWithDurationRef.current(session, Infinity);
         return;
       }
@@ -1401,7 +1401,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // loop nativo audible del main (el motor requiere asset bundleado).
       const audioFile =
         AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
-      const isLoopSession = LOOP_SESSIONS.has(session.id);
+      const isLoopSession = session.isLoop === true || LOOP_SESSIONS.has(session.id);
 
       if (audioFile) {
         setIsLoading(true);

@@ -139,4 +139,5 @@
 - [Library sync](library-sync.md) — snapshot JSONB user_library ahora incluye mixerPresets+geometrixCreations; PUT /me/library es parcial (campo omitido se preserva); firstSync=unión, luego local autoritativo; push debounced lee estado fresco al disparar
 - [AudioBridge chat slot](audiobridge-chat-slot.md) — chatStopper = 4to slot del audioBridge; AudioAttachment registra/desregistra al play/pause/finish/unmount; startRecording también corta todo antes de grabar
 - [Motor de hitos (logros)](milestones-engine.md) — evaluación espera hydrated+cloudSettled; sync unión append-only; contadores de por vida para mezclas/Geometrix; orval SIEMPRE 8.9.1
+- [Session-level isLoop](session-isloop.md) — loop = session.isLoop || LOOP_SESSIONS.has(id); snapshot solo asigna isLoop si remoto es true (no clobbear bundles a false)
 - [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto

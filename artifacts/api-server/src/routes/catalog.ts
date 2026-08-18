@@ -24,6 +24,8 @@ import {
   RejectSubmissionBody,
   EditSubmissionBody,
   GetPendingSubmissionsQueryParams,
+  GetAdminSessionsQueryParams,
+  AddAdminSessionAudioBody,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
@@ -86,6 +88,8 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     isPremium: s.isPremium,
     skipDetail: s.skipDetail,
     skipMiniPlayer: s.skipMiniPlayer,
+    isLoop: s.isLoop,
+    isPinnedFeatured: s.isPinnedFeatured,
     frequency: s.frequency,
     soundTag: s.soundTag,
     meditationTag: s.meditationTag,
@@ -472,6 +476,7 @@ router.post(
           isPremium: body.isPremium ?? false,
           skipDetail: body.skipDetail ?? false,
           skipMiniPlayer: body.skipMiniPlayer ?? false,
+          isLoop: body.isLoop ?? false,
           frequency: body.frequency ?? null,
           soundTag: body.soundTag ?? null,
           meditationTag: body.meditationTag ?? null,
@@ -487,7 +492,10 @@ router.post(
           guideId: body.guideId ?? null,
           artistId: body.artistId ?? null,
           playerDescription: body.playerDescription ?? null,
-          status: "pending",
+          // Solo un admin puede crear directamente como borrador; los creadores
+          // siempre entran a la cola de revisión (pending).
+          status:
+            body.status === "draft" && me.role === "admin" ? "draft" : "pending",
           createdBy: me.id,
         });
 
@@ -777,6 +785,41 @@ router.patch(
     if (data.themeTag !== undefined) updates.themeTag = data.themeTag;
     if (data.temaTag !== undefined) updates.temaTag = data.temaTag;
     if (data.playerDescription !== undefined) updates.playerDescription = data.playerDescription ?? null;
+    if (data.frequency !== undefined) updates.frequency = data.frequency ?? null;
+    if (data.guideId !== undefined) updates.guideId = data.guideId ?? null;
+    if (data.artistId !== undefined) updates.artistId = data.artistId ?? null;
+    if (data.sabiduriaTag !== undefined) updates.sabiduriaTag = data.sabiduriaTag ?? null;
+    if (data.podcastTag !== undefined) updates.podcastTag = data.podcastTag ?? null;
+    if (data.sonidosTag !== undefined) updates.sonidosTag = data.sonidosTag ?? null;
+    if (data.descansoTag !== undefined) updates.descansoTag = data.descansoTag ?? null;
+    if (data.sortOrder !== undefined) updates.sortOrder = data.sortOrder;
+    if (data.guests !== undefined)
+      updates.guests =
+        data.guests?.map((g) => ({
+          name: g.name,
+          role: g.role,
+          instagram: g.instagram ?? undefined,
+        })) ?? null;
+    if (data.isPinnedFeatured !== undefined) updates.isPinnedFeatured = data.isPinnedFeatured;
+    if (data.isLoop !== undefined) updates.isLoop = data.isLoop;
+    if (data.imageObjectPath !== undefined) {
+      if (data.imageObjectPath != null) {
+        if (!data.imageObjectPath.startsWith("/objects/")) {
+          res.status(400).json({ error: "Ruta de portada inválida" });
+          return;
+        }
+        if (data.imageContentType && !data.imageContentType.startsWith("image/")) {
+          res.status(400).json({ error: "La portada debe ser una imagen" });
+          return;
+        }
+        if (data.imageSizeBytes != null && data.imageSizeBytes > MAX_IMAGE_BYTES) {
+          res.status(400).json({ error: "La portada supera el tamaño máximo (15 MB)" });
+          return;
+        }
+      }
+      updates.imageKey = data.imageObjectPath ?? null;
+      updates.imageUrl = data.imageObjectPath ?? null;
+    }
 
     try {
       const [updated] = await db
@@ -909,6 +952,201 @@ router.delete(
     } catch (err) {
       req.log.error({ err }, "error deleting submission");
       res.status(500).json({ error: "Error al borrar la pieza" });
+    }
+  },
+);
+
+// ── Admin: gestión completa de sesiones ─────────────────────────────────────
+
+// GET /admin/sessions — lista todas las sesiones con filtro por status,
+// búsqueda por título y paginación (admin).
+router.get(
+  "/admin/sessions",
+  requireAuth,
+  requireRole("admin", "moderador"),
+  async (req, res) => {
+    const parsed = GetAdminSessionsQueryParams.safeParse(req.query);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Consulta inválida" });
+      return;
+    }
+    const { status, q } = parsed.data;
+    const page = parsed.data.page ?? 1;
+    const pageSize = parsed.data.pageSize ?? 25;
+    try {
+      const conditions = [];
+      if (status) conditions.push(eq(catalogSessionsTable.status, status));
+      if (q && q.trim()) {
+        conditions.push(
+          sql`${catalogSessionsTable.title} ILIKE ${"%" + q.trim() + "%"}`,
+        );
+      }
+      const where = conditions.length ? and(...conditions) : undefined;
+
+      const [countRow] = await db
+        .select({ total: sql<number>`cast(count(*) as int)` })
+        .from(catalogSessionsTable)
+        .where(where);
+
+      const sessions = await db
+        .select()
+        .from(catalogSessionsTable)
+        .where(where)
+        .orderBy(desc(catalogSessionsTable.createdAt))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize);
+
+      res.json({
+        sessions: await serializeSubmissionList(sessions),
+        total: countRow?.total ?? 0,
+        page,
+        pageSize,
+      });
+    } catch (err) {
+      req.log.error({ err }, "error listing admin sessions");
+      res.status(500).json({ error: "Error al obtener las sesiones" });
+    }
+  },
+);
+
+// GET /admin/sessions/:id — detalle completo de una sesión (admin).
+router.get(
+  "/admin/sessions/:id",
+  requireAuth,
+  requireRole("admin", "moderador"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    try {
+      const loaded = await loadSubmission(id);
+      if (!loaded) {
+        res.status(404).json({ error: "Sesión no encontrada" });
+        return;
+      }
+      res.json(serializeSubmission(loaded.session, loaded.audioFiles, loaded.creator));
+    } catch (err) {
+      req.log.error({ err }, "error loading admin session");
+      res.status(500).json({ error: "Error al obtener la sesión" });
+    }
+  },
+);
+
+// POST /admin/sessions/:id/audio — añadir o reemplazar un audio slot (admin).
+// Si `replaceAudioId` viene, elimina ese audio y lo sustituye por el nuevo.
+router.post(
+  "/admin/sessions/:id/audio",
+  requireAuth,
+  requireRole("admin", "moderador"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    const parsed = AddAdminSessionAudioBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Datos inválidos" });
+      return;
+    }
+    const body = parsed.data;
+    if (!body.objectPath.startsWith("/objects/")) {
+      res.status(400).json({ error: "Ruta de audio inválida" });
+      return;
+    }
+    if (!body.contentType.startsWith("audio/")) {
+      res.status(400).json({ error: "El archivo debe ser audio" });
+      return;
+    }
+    if (body.sizeBytes > MAX_AUDIO_BYTES) {
+      res.status(400).json({ error: "El audio supera el tamaño máximo (200 MB)" });
+      return;
+    }
+    const me = req.currentUser!;
+    try {
+      const [session] = await db
+        .select({ id: catalogSessionsTable.id })
+        .from(catalogSessionsTable)
+        .where(eq(catalogSessionsTable.id, id))
+        .limit(1);
+      if (!session) {
+        res.status(404).json({ error: "Sesión no encontrada" });
+        return;
+      }
+      await db.transaction(async (tx) => {
+        if (body.replaceAudioId != null) {
+          await tx
+            .delete(catalogAudioFilesTable)
+            .where(
+              and(
+                eq(catalogAudioFilesTable.id, body.replaceAudioId),
+                eq(catalogAudioFilesTable.sessionId, id),
+              ),
+            );
+        }
+        await tx.insert(catalogAudioFilesTable).values({
+          sessionId: id,
+          role: body.role ?? ("main" as const),
+          url: body.objectPath,
+          name: body.name,
+          contentType: body.contentType,
+          sizeBytes: body.sizeBytes,
+          durationSeconds: body.durationSeconds ?? null,
+          isLoop: body.isLoop ?? false,
+          uploadedBy: me.id,
+        });
+        await tx
+          .update(catalogSessionsTable)
+          .set({ updatedAt: new Date() })
+          .where(eq(catalogSessionsTable.id, id));
+      });
+      const loaded = await loadSubmission(id);
+      req.log.info({ sessionId: id, replaced: body.replaceAudioId ?? null }, "admin session audio added");
+      res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
+    } catch (err) {
+      req.log.error({ err }, "error adding session audio");
+      res.status(500).json({ error: "Error al guardar el audio" });
+    }
+  },
+);
+
+// DELETE /admin/sessions/:id/audio/:audioId — eliminar un audio slot (admin).
+router.delete(
+  "/admin/sessions/:id/audio/:audioId",
+  requireAuth,
+  requireRole("admin", "moderador"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    const audioId = Number(req.params.audioId);
+    if (!Number.isInteger(audioId)) {
+      res.status(400).json({ error: "audioId inválido" });
+      return;
+    }
+    try {
+      const existing = await db
+        .select({ id: catalogAudioFilesTable.id })
+        .from(catalogAudioFilesTable)
+        .where(eq(catalogAudioFilesTable.sessionId, id));
+      if (!existing.some((a) => a.id === audioId)) {
+        res.status(404).json({ error: "Audio no encontrado" });
+        return;
+      }
+      if (existing.length <= 1) {
+        res.status(409).json({ error: "La sesión debe conservar al menos un audio" });
+        return;
+      }
+      await db
+        .delete(catalogAudioFilesTable)
+        .where(
+          and(
+            eq(catalogAudioFilesTable.id, audioId),
+            eq(catalogAudioFilesTable.sessionId, id),
+          ),
+        );
+      await db
+        .update(catalogSessionsTable)
+        .set({ updatedAt: new Date() })
+        .where(eq(catalogSessionsTable.id, id));
+      const loaded = await loadSubmission(id);
+      req.log.info({ sessionId: id, audioId }, "admin session audio deleted");
+      res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
+    } catch (err) {
+      req.log.error({ err }, "error deleting session audio");
+      res.status(500).json({ error: "Error al eliminar el audio" });
     }
   },
 );

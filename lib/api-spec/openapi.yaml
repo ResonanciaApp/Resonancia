@@ -1984,6 +1984,187 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/sessions:
+    get:
+      operationId: getAdminSessions
+      tags: [admin]
+      summary: Listar todas las sesiones del catálogo con filtro, búsqueda y paginación (admin)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [draft, pending, published, rejected]
+        - name: q
+          in: query
+          required: false
+          description: Búsqueda por título (parcial, sin distinguir mayúsculas)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Página de sesiones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSessionsPage"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/sessions/{id}:
+    get:
+      operationId: getAdminSession
+      tags: [admin]
+      summary: Detalle completo de una sesión incluyendo audios (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detalle de la sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sesión no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/sessions/{id}/audio:
+    post:
+      operationId: addAdminSessionAudio
+      tags: [admin]
+      summary: Añadir o reemplazar un audio slot de una sesión (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSessionAudioInput"
+      responses:
+        "200":
+          description: Sesión actualizada con el nuevo audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sesión no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/sessions/{id}/audio/{audioId}:
+    delete:
+      operationId: deleteAdminSessionAudio
+      tags: [admin]
+      summary: Eliminar un audio slot de una sesión (admin) — debe quedar al menos uno
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: audioId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Sesión actualizada sin el audio eliminado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Audio no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: La sesión debe conservar al menos un audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/users:
     get:
       operationId: getAdminUsers
@@ -4432,6 +4613,12 @@ components:
         skipMiniPlayer:
           type: boolean
           default: false
+        isLoop:
+          type: boolean
+          default: false
+        isPinnedFeatured:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -4728,6 +4915,13 @@ components:
         skipMiniPlayer:
           type: boolean
           default: false
+        isLoop:
+          type: boolean
+          default: false
+        status:
+          type: string
+          enum: [draft, pending]
+          description: Solo un admin puede crear directamente como borrador (draft)
         imageObjectPath:
           type: string
           nullable: true
@@ -4920,6 +5114,12 @@ components:
         skipMiniPlayer:
           type: boolean
           default: false
+        isLoop:
+          type: boolean
+          default: false
+        isPinnedFeatured:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -4967,6 +5167,11 @@ components:
         artistId:
           type: string
           nullable: true
+        guests:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/CatalogSessionGuest"
         playerDescription:
           type: string
           nullable: true
@@ -5112,6 +5317,95 @@ components:
           type: string
           maxLength: 300
           nullable: true
+        frequency:
+          type: string
+          maxLength: 60
+          nullable: true
+        guideId:
+          type: string
+          nullable: true
+        artistId:
+          type: string
+          nullable: true
+        sabiduriaTag:
+          type: string
+          nullable: true
+        podcastTag:
+          type: string
+          nullable: true
+        sonidosTag:
+          type: string
+          nullable: true
+        descansoTag:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        guests:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/CatalogSessionGuest"
+        isPinnedFeatured:
+          type: boolean
+        isLoop:
+          type: boolean
+        imageObjectPath:
+          type: string
+          nullable: true
+        imageContentType:
+          type: string
+          nullable: true
+        imageSizeBytes:
+          type: integer
+          minimum: 1
+          nullable: true
+    AdminSessionsPage:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Submission"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+      required: [sessions, total, page, pageSize]
+    AdminSessionAudioInput:
+      type: object
+      required: [objectPath, name, contentType, sizeBytes]
+      properties:
+        objectPath:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        contentType:
+          type: string
+          minLength: 1
+        sizeBytes:
+          type: integer
+          minimum: 1
+        role:
+          type: string
+          enum: [main, voice, ambient, base, sound]
+          default: main
+        durationSeconds:
+          type: integer
+          minimum: 1
+          nullable: true
+        isLoop:
+          type: boolean
+          default: false
+        replaceAudioId:
+          type: integer
+          nullable: true
+          description: Si viene, elimina ese audio y lo sustituye por el nuevo
     AdminUser:
       type: object
       properties:

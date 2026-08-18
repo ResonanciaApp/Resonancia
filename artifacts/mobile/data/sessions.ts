@@ -60,6 +60,8 @@ export type Session = {
   skipDetail?: boolean;
   /** Al tocar la card: reproduce al instante y solo aparece el miniplayer (sin abrir pantallas). */
   skipMiniPlayer?: boolean;
+  /** Loop infinito a nivel sesión (complementa LOOP_SESSIONS para bundles). */
+  isLoop?: boolean;
   frequency?: string;
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
@@ -1232,6 +1234,8 @@ export type CatalogSessionSnapshot = {
   isPremium: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
+  /** Loop infinito a nivel sesión (motor gapless, duración infinita). */
+  isLoop?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -1388,6 +1392,9 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.isPremium = r.isPremium;
     local.skipDetail = r.skipDetail ?? false;
     local.skipMiniPlayer = r.skipMiniPlayer ?? false;
+    // Complemento del Set hardcodeado LOOP_SESSIONS: solo fijar si viene true
+    // (no clobbear a false las sesiones bundleadas que loopean por el Set).
+    if (r.isLoop != null) local.isLoop = r.isLoop;
     local.frequency = r.frequency ?? undefined;
     local.soundTag = (r.soundTag ?? undefined) as SoundTag | undefined;
     local.meditationTag = (r.meditationTag ?? undefined) as MeditationTag | undefined;
@@ -1454,6 +1461,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       isPremium: r.isPremium,
       skipDetail: r.skipDetail ?? false,
       skipMiniPlayer: r.skipMiniPlayer ?? false,
+      isLoop: r.isLoop ?? false,
       frequency: r.frequency ?? undefined,
       soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,
       meditationTag: (r.meditationTag ?? undefined) as MeditationTag | undefined,
