@@ -26,7 +26,7 @@ const FUTURE_SLACK_MS = 5 * 60 * 1000; // 5 min de holgura de reloj
 const GOAL_MINUTES = 3;
 
 /** Formatea una fecha ISO como "YYYY-MM-DD" en la zona horaria dada. */
-function dayKeyInTz(isoString: string, tz: string): string {
+function dayKeyInTz(isoString: string | Date, tz: string): string {
   try {
     return new Intl.DateTimeFormat("en-CA", {
       timeZone: tz,
@@ -70,7 +70,7 @@ function addDays(dateStr: string, n: number): string {
 type DayAgg = { minutes: number; completed: boolean };
 
 function buildAggByDay(
-  rows: Array<{ minutes: number | null; completed: boolean | null; playedAt: string }>,
+  rows: Array<{ minutes: number | null; completed: boolean | null; playedAt: string | Date }>,
   tz: string,
 ): Map<string, DayAgg> {
   const map = new Map<string, DayAgg>();
@@ -89,7 +89,7 @@ function isActive(agg: DayAgg | undefined): boolean {
 }
 
 function computeStreakServer(
-  rows: Array<{ minutes: number | null; completed: boolean | null; playedAt: string }>,
+  rows: Array<{ minutes: number | null; completed: boolean | null; playedAt: string | Date }>,
   tz: string,
 ): {
   currentStreak: number;
