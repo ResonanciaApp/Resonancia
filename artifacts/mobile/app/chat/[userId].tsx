@@ -17,7 +17,14 @@ import {
   type DirectMessage,
   type UserProfile,
 } from "@workspace/api-client-react";
-import { Audio } from "expo-av";
+import {
+  AudioModule,
+  RecordingPresets,
+  setAudioModeAsync as audioSetMode,
+  useAudioRecorder,
+  createAudioPlayer,
+  type AudioPlayer,
+} from "expo-audio";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
@@ -222,7 +229,8 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [pending, setPending] = useState<PendingAttachment[]>([]);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const [isRecording, setIsRecording] = useState(false);
   const [recElapsedMs, setRecElapsedMs] = useState(0);
   const recStartRef = useRef<number>(0);
   const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -324,50 +332,19 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
 
   const startRecording = async () => {
     try {
-      const perm = await Audio.requestPermissionsAsync();
+      const perm = await AudioModule.requestRecordingPermissionsAsync();
       if (!perm.granted) {
         setShowAttachMenu(false);
         Alert.alert("Permiso", "Necesitamos acceso al micrófono para grabar.");
         return;
       }
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-      const rec = new Audio.Recording();
-      // Voice-grade AAC: 22050Hz mono 48kbps — ~8x smaller than the
-      // previous 44.1kHz stereo 192kbps, perfectly fine for voice messages.
-      await rec.prepareToRecordAsync({
-        isMeteringEnabled: false,
-        android: {
-          extension: ".m4a",
-          outputFormat: Audio.AndroidOutputFormat.MPEG_4,
-          audioEncoder: Audio.AndroidAudioEncoder.AAC,
-          sampleRate: 22050,
-          numberOfChannels: 1,
-          bitRate: 48000,
-        },
-        ios: {
-          extension: ".m4a",
-          outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
-          audioQuality: Audio.IOSAudioQuality.MEDIUM,
-          sampleRate: 22050,
-          numberOfChannels: 1,
-          bitRate: 48000,
-          linearPCMBitDepth: 16,
-          linearPCMIsBigEndian: false,
-          linearPCMIsFloat: false,
-        },
-        web: {
-          mimeType: "audio/webm",
-          bitsPerSecond: 48000,
-        },
-      });
-      await rec.startAsync();
+      await audioSetMode({ allowsRecording: true, playsInSilentMode: true });
+      await audioRecorder.prepareToRecordAsync();
+      audioRecorder.record();
       setShowAttachMenu(false);
       recStartRef.current = Date.now();
       setRecElapsedMs(0);
-      setRecording(rec);
+      setIsRecording(true);
       recTimerRef.current = setInterval(() => {
         setRecElapsedMs(Date.now() - recStartRef.current);
       }, 200);
@@ -380,36 +357,23 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
     if (recTimerRef.current) clearInterval(recTimerRef.current);
     recTimerRef.current = null;
     setRecElapsedMs(0);
-    if (!recording) return;
-    try {
-      await recording.stopAndUnloadAsync();
-    } catch {
-      // ignore
-    }
-    setRecording(null);
+    if (!isRecording) return;
+    try { await audioRecorder.stop(); } catch {}
+    setIsRecording(false);
+    await audioSetMode({ allowsRecording: false, playsInSilentMode: true }).catch(() => {});
   };
 
   const sendRecording = () => {
-    if (!recording) return;
+    if (!isRecording) return;
     if (recTimerRef.current) clearInterval(recTimerRef.current);
     recTimerRef.current = null;
     const durationMs = Date.now() - recStartRef.current;
-    const rec = recording;
-    setRecording(null);
+    setIsRecording(false);
     setRecElapsedMs(0);
 
     if (durationMs < 600) {
       Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
-      rec.stopAndUnloadAsync().catch(() => {});
-      return;
-    }
-
-    // Get URI immediately — it's set by prepareToRecordAsync and is the same
-    // path stopAndUnloadAsync will finalize the audio to.
-    const uri = rec.getURI();
-    if (!uri) {
-      Alert.alert("Error", "No se pudo obtener el audio.");
-      rec.stopAndUnloadAsync().catch(() => {});
+      audioRecorder.stop().catch(() => {});
       return;
     }
 
@@ -417,27 +381,21 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
     const ext = "m4a";
     const tempId = `tmp-aud-${Date.now()}`;
 
-    // Optimistic bubble appears instantly — no awaiting stopAndUnloadAsync.
-    setPending((p) => [
-      ...p,
-      { tempId, kind: "audio", localUri: uri, durationMs },
-    ]);
-
-    // Everything below runs in the background.
+    // Detener la grabación y subir en background.
     (async () => {
       try {
-        await rec.stopAndUnloadAsync();
-        Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          playsInSilentModeIOS: true,
-        }).catch(() => {});
+        await audioRecorder.stop();
+        const uri = audioRecorder.uri;
+        if (!uri) {
+          Alert.alert("Error", "No se pudo obtener el audio.");
+          return;
+        }
+        await audioSetMode({ allowsRecording: false, playsInSilentMode: true }).catch(() => {});
 
-        const objectPath = await uploadLocalFile(
-          uri,
-          contentType,
-          `voice-${Date.now()}.${ext}`,
-          1,
-        );
+        // Optimistic bubble una vez que tenemos la URI
+        setPending((p) => [...p, { tempId, kind: "audio", localUri: uri, durationMs }]);
+
+        const objectPath = await uploadLocalFile(uri, contentType, `voice-${Date.now()}.${ext}`, 1);
         setPending((p) =>
           p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
         );
@@ -461,9 +419,7 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
   useEffect(() => {
     return () => {
       if (recTimerRef.current) clearInterval(recTimerRef.current);
-      if (recording) {
-        recording.stopAndUnloadAsync().catch(() => {});
-      }
+      if (isRecording) { audioRecorder.stop().catch(() => {}); }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -625,7 +581,7 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
             },
           ]}
         >
-          {recording ? (
+          {isRecording ? (
             <>
               <Pressable
                 onPress={cancelRecording}
@@ -1115,49 +1071,21 @@ function AudioAttachment({
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const soundRef = useRef<AudioPlayer | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [positionMs, setPositionMs] = useState(0);
   const [loading, setLoading] = useState(false);
   const totalMs = durationMs > 0 ? durationMs : 0;
 
-  // Native: preload Sound on mount so first tap plays instantly
+  // Limpiar player al desmontar
   useEffect(() => {
-    if (Platform.OS === "web") return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: url },
-          { shouldPlay: false },
-          (status) => {
-            if (!status.isLoaded) return;
-            setPositionMs(status.positionMillis ?? 0);
-            setIsPlaying(status.isPlaying);
-            if (status.didJustFinish) {
-              setIsPlaying(false);
-              setPositionMs(0);
-              soundRef.current?.setPositionAsync(0).catch(() => {});
-            }
-          },
-        );
-        if (cancelled) {
-          sound.unloadAsync().catch(() => {});
-          return;
-        }
-        soundRef.current = sound;
-      } catch (err) {
-        console.log("[audio] preload error", err);
-      }
-    })();
     return () => {
-      cancelled = true;
-      if (soundRef.current) {
-        soundRef.current.unloadAsync().catch(() => {});
-        soundRef.current = null;
-      }
+      if (pollRef.current) clearInterval(pollRef.current);
+      try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
+      soundRef.current = null;
     };
-  }, [url]);
+  }, []);
 
   const webAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -1218,33 +1146,33 @@ function AudioAttachment({
         }
         return;
       }
+      // Crear player si no existe aún
       if (!soundRef.current) {
         setLoading(true);
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: url },
-          { shouldPlay: true },
-          (status) => {
-            if (!status.isLoaded) return;
-            setPositionMs(status.positionMillis ?? 0);
-            setIsPlaying(status.isPlaying);
-            if (status.didJustFinish) {
-              setIsPlaying(false);
-              setPositionMs(0);
-              soundRef.current?.setPositionAsync(0).catch(() => {});
-            }
-          },
-        );
-        soundRef.current = sound;
+        const player = createAudioPlayer({ uri: url });
+        player.addListener("playbackStatusUpdate", (status) => {
+          if (status.didJustFinish) {
+            setIsPlaying(false);
+            setPositionMs(0);
+            try { player.seekTo(0); } catch {}
+          }
+        });
+        if (pollRef.current) clearInterval(pollRef.current);
+        pollRef.current = setInterval(() => {
+          if (!soundRef.current) { clearInterval(pollRef.current!); return; }
+          try { setPositionMs(Math.round((soundRef.current.currentTime ?? 0) * 1000)); } catch {}
+        }, 200);
+        soundRef.current = player;
+        player.play();
         setLoading(false);
         setIsPlaying(true);
         return;
       }
-      const status = await soundRef.current.getStatusAsync();
-      if (status.isLoaded && status.isPlaying) {
-        await soundRef.current.pauseAsync();
+      if (isPlaying) {
+        soundRef.current.pause();
         setIsPlaying(false);
       } else {
-        await soundRef.current.playAsync();
+        soundRef.current.play();
         setIsPlaying(true);
       }
     } catch (err) {
