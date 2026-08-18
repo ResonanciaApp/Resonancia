@@ -72,6 +72,8 @@ class BpmAudioEngine {
   /** null = sin probar; true/false = resultado de la probada. */
   private available: boolean | null = null;
   private ready = false;
+  /** Caché de la promesa de init para deduplicar llamadas concurrentes. */
+  private _initPromise: Promise<boolean> | null = null;
 
   private masterVolume = 1;
 
@@ -99,9 +101,18 @@ class BpmAudioEngine {
    * Inicializa el contexto de audio. Idempotente y seguro: si el módulo nativo
    * no existe o estamos en web, deja `ready=false` y NO lanza. Llamar DESPUÉS de
    * que expo-audio configuró la sesión (ensureAudioMode), nunca en el arranque.
+   *
+   * Llamadas concurrentes devuelven la misma promesa (dedup): sin importar
+   * cuántas veces se llame mientras init() está en vuelo, solo corre una vez.
    */
   async init(): Promise<boolean> {
     if (this.available !== null) return this.isReady();
+    if (this._initPromise) return this._initPromise;
+    this._initPromise = this._doInit();
+    return this._initPromise;
+  }
+
+  private async _doInit(): Promise<boolean> {
     if (Platform.OS === "web") {
       this.available = false;
       return false;
@@ -457,6 +468,7 @@ class BpmAudioEngine {
     this.masterGain = null;
     this.ready = false;
     this.available = null;
+    this._initPromise = null;
     if (ctx) {
       try {
         await ctx.close();
