@@ -220,16 +220,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   shuffleModeRef.current = shuffleMode;
   /** Referencia estable a la función de avance automático (usada en didJustFinish) */
   const playlistAutoAdvanceRef = useRef<() => void>(() => {});
-  /** Generación de reproducción: se incrementa cada vez que arranca/para una
-   *  sesión. El auto-avance diferido (600 ms) solo dispara si la generación no
-   *  cambió — evita el doble salto si el usuario tocó siguiente/anterior o
-   *  cambió de sesión durante la espera. */
-  const autoAdvanceGenRef = useRef(0);
+  /** Generación de reproducción (token único de coordinación).
+   *  Se incrementa al inicio de CADA playSession / playSessionWithDuration /
+   *  stop. Todo callback asíncrono (continuaciones tras await, init del motor
+   *  gapless, intervals de simulación, auto-avance diferido) captura su
+   *  generación al nacer y se descarta solo si ya no es la vigente. Así un
+   *  cambio rápido de sesión nunca deja que un callback atrasado de la sesión
+   *  anterior pise el audio, el lock-screen o el estado de la nueva. */
+  const playGenRef = useRef(0);
   const scheduleAutoAdvance = useCallback(() => {
-    const gen = autoAdvanceGenRef.current;
+    const gen = playGenRef.current;
     // Pequeño delay para que la stat se asiente antes de iniciar la nueva sesión.
     setTimeout(() => {
-      if (gen === autoAdvanceGenRef.current) playlistAutoAdvanceRef.current();
+      if (gen === playGenRef.current) playlistAutoAdvanceRef.current();
     }, 600);
   }, []);
 
@@ -275,7 +278,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const pendingSeekRef = useRef<number | null>(null);
   /** Last known playing state of the main player — to mirror lock-screen play/pause onto layers */
   const lastPlayingRef = useRef(false);
-  /** True while switching sessions — suppresses stale status events from the prior track */
+  /** True while switching sessions — suppresses stale status events from the
+   *  prior track en el status listener del main player (posición/toggles del
+   *  primer tick). Complementa a playGenRef: la generación invalida callbacks
+   *  asíncronos huérfanos; este flag filtra los eventos del pipeline nativo,
+   *  que no puede capturar una generación. Toda liberación de este flag en un
+   *  camino asíncrono debe estar gateada por la generación vigente. */
   const switchingRef = useRef(false);
 
   // Keep latest isPlaying in a ref so timer callbacks see the current value
@@ -579,16 +587,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Clear loading once the track is ready
-      setIsLoading(false);
+      // Mientras switchingRef está activo, este evento puede ser un status
+      // encolado del track ANTERIOR (con su duración vieja, aún válida): no
+      // debe limpiar el loading nuevo ni activar el lock-screen pendiente de
+      // la sesión nueva con datos del track viejo. El primer tick post-switch
+      // consume el flag más abajo; del segundo en adelante es seguro.
+      if (!switchingRef.current) {
+        // Clear loading once the track is ready
+        setIsLoading(false);
 
-      // Activar lock-screen / Now Playing recién cuando el track tiene una
-      // duración real. Hacerlo antes (justo tras replace()) escribe NaN en
-      // MPNowPlayingInfoCenter y iOS descarta toda la entrada → "Sin Reproducción".
-      if (lockScreenPendingRef.current && (status.duration ?? 0) > 0) {
-        const pending = lockScreenPendingRef.current;
-        lockScreenPendingRef.current = null;
-        activateLockScreenRef.current?.(pending.session, pending.withSeek);
+        // Activar lock-screen / Now Playing recién cuando el track tiene una
+        // duración real. Hacerlo antes (justo tras replace()) escribe NaN en
+        // MPNowPlayingInfoCenter y iOS descarta toda la entrada → "Sin Reproducción".
+        if (lockScreenPendingRef.current && (status.duration ?? 0) > 0) {
+          const pending = lockScreenPendingRef.current;
+          lockScreenPendingRef.current = null;
+          activateLockScreenRef.current?.(pending.session, pending.withSeek);
+        }
       }
 
       // Mirror lock-screen / system play-pause onto the simultaneous layers
@@ -728,8 +743,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return ambientPlayerRef.current;
   }, []);
 
-  /** Lazily create the second crossfade layer (B). Its gain is driven by the
-   * loop-fade interval, so it does not need its own status listener. */
   /** Stop the gapless engine loop voice (if any) and clear the loop flags */
   const teardownLoopCrossfade = () => {
     clearLoopPauseDebounce();
@@ -860,14 +873,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const startSimulation = (session: Session) => {
+  /** Simulación de progreso (sesiones sin pista principal). `gen` ata el
+   *  interval a la generación que lo creó: si la sesión cambió, el tick se
+   *  auto-destruye sin tocar estado. */
+  const startSimulation = (session: Session, gen?: number) => {
     const totalSeconds = session.duration * 60;
     setActualDurationSeconds(totalSeconds);
     setIsPlaying(true);
     if (statTrackerRef.current && playStartRef.current === null) {
       playStartRef.current = Date.now();
     }
-    simIntervalRef.current = setInterval(() => {
+    const intervalId = setInterval(() => {
+      if (gen !== undefined && gen !== playGenRef.current) {
+        clearInterval(intervalId);
+        if (simIntervalRef.current === intervalId) simIntervalRef.current = null;
+        return;
+      }
       setElapsed((prev) => {
         const next = prev + 1;
         const sId = currentSessionRef.current?.id;
@@ -889,6 +910,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return next;
       });
     }, 1000);
+    simIntervalRef.current = intervalId;
   };
 
   const addToHistory = useCallback(async (session: Session) => {
@@ -1145,8 +1167,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
-      // Invalida cualquier auto-avance diferido pendiente (evita doble salto).
-      autoAdvanceGenRef.current += 1;
+      // Nueva generación: invalida todo callback pendiente de la sesión
+      // anterior (auto-avance diferido, continuaciones tras await, intervals).
+      const gen = ++playGenRef.current;
       // Si NO venimos de un avance interno, limpiar la cola de playlist y
       // registrar la cola implícita (estilo Calm): para sesiones que no son
       // meditaciones, prev/next navegan por las sesiones de su categoría.
@@ -1229,6 +1252,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
             interruptionMode: "doNotMix",
           });
+          // Otra sesión arrancó mientras esperábamos: abortar sin tocar nada
+          // (si siguiéramos, pisaríamos el audio de la sesión nueva).
+          if (gen !== playGenRef.current) return;
 
           const main = ensureMainPlayer();
           main.loop = false;
@@ -1268,15 +1294,21 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (err) {
           console.warn("[RESONANCE] Audio load failed:", err);
-          hasRealAudioRef.current = false;
-          switchingRef.current = false;
-          lockScreenPendingRef.current = null;
-          startSimulation(session);
+          if (gen === playGenRef.current) {
+            hasRealAudioRef.current = false;
+            switchingRef.current = false;
+            lockScreenPendingRef.current = null;
+            startSimulation(session, gen);
+          }
         } finally {
-          setIsLoading(false);
+          if (gen === playGenRef.current) setIsLoading(false);
         }
       } else {
         // ── Sesión sin AUDIO_MAP: cargar solo la voz si existe (ej: Meditaciones) ──
+        // Un playSession con audio pudo quedar superseded dejando isLoading en
+        // true (su finally no lo limpia por generación stale): esta generación
+        // no carga main → limpiar explícitamente.
+        setIsLoading(false);
         const voiceOnlyFile = VOICE_MAP[session.id] ?? (session.voiceUri ? { uri: session.voiceUri } : undefined);
         hasRealAudioRef.current = false;
         switchingRef.current = false;
@@ -1288,6 +1320,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               shouldPlayInBackground: true,
               interruptionMode: "doNotMix",
             });
+            if (gen !== playGenRef.current) return; // otra sesión arrancó mientras esperábamos
             const voice = ensureVoicePlayer();
             voice.loop = false;
             voice.replace(voiceOnlyFile);
@@ -1297,9 +1330,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             ambientActiveRef.current = false;
           } catch (err) {
             console.warn("[RESONANCE] Voice-only load failed:", err);
+            if (gen !== playGenRef.current) return;
             voiceActiveRef.current = false;
           }
-          startSimulation(session);
+          if (gen !== playGenRef.current) return;
+          startSimulation(session, gen);
           if (defaultSleepMinutesRef.current !== null) {
             const capped =
               !isPremiumRef.current && defaultSleepMinutesRef.current > FREE_TIMER_MAX_MINUTES
@@ -1309,7 +1344,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             setSleepTimerRemaining(capped * 60);
           }
         } else {
-          startSimulation(session);
+          startSimulation(session, gen);
         }
       }
     },
@@ -1322,6 +1357,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
     async (session: Session, minutes: number) => {
+      // Nueva generación: invalida todo callback pendiente de la sesión anterior.
+      const gen = ++playGenRef.current;
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
       stopSoundPlayback();
@@ -1380,6 +1417,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
             interruptionMode: "doNotMix",
           });
+          // Otra sesión arrancó mientras esperábamos: abortar sin tocar nada.
+          if (gen !== playGenRef.current) return;
 
           const main = ensureMainPlayer();
           const ambientFile = AMBIENT_MAP[session.id];
@@ -1403,8 +1442,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             const engineKey = `session:${session.id}`;
             void (async () => {
               const ok = await bpmAudioEngine.init();
-              // La sesión pudo cambiar/cerrarse mientras el motor iniciaba.
-              if (!loopCrossfadeRef.current || currentSessionRef.current?.id !== session.id) return;
+              // La sesión pudo cambiar/cerrarse mientras el motor iniciaba:
+              // la generación lo detecta sin ambigüedad (incluye re-play de la
+              // misma sesión, que un chequeo por id dejaría pasar).
+              if (gen !== playGenRef.current || !loopCrossfadeRef.current) return;
               if (ok && typeof audioFile === "number") {
                 loopEngineRef.current = { key: engineKey, asset: audioFile };
                 if (lastPlayingRef.current) {
@@ -1449,6 +1490,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // saltos por vuelta del loop). El audio sigue en loop por debajo con
             // crossfade; este intervalo cuenta el tiempo de sesión y auto-apaga.
             simIntervalRef.current = setInterval(() => {
+              if (gen !== playGenRef.current) return; // sesión cambiada: tick huérfano
               setElapsed((prev) => {
                 // Congelar el conteo cuando está en pausa (in-app o lock-screen)
                 if (!lastPlayingRef.current) return prev;
@@ -1508,6 +1550,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
             // Drive progress with a countdown interval
             simIntervalRef.current = setInterval(() => {
+              if (gen !== playGenRef.current) return; // sesión cambiada: tick huérfano
               setElapsed((prev) => {
                 // Congelar el conteo cuando está en pausa (in-app o lock-screen)
                 if (!lastPlayingRef.current) return prev;
@@ -1535,24 +1578,29 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (err) {
           console.warn("[RESONANCE] Loop audio load failed:", err);
-          // Apagar cualquier arranque parcial (incl. voz del motor pendiente o
-          // ya sonando y el ancla muda) antes de caer a la simulación.
-          teardownLayers();
-          try { mainPlayerRef.current?.pause(); } catch (_) {}
-          hasRealAudioRef.current = false;
-          loopModeRef.current = false;
-          switchingRef.current = false;
-          lockScreenPendingRef.current = null;
-          startSimulation(sessionOverride);
+          if (gen === playGenRef.current) {
+            // Apagar cualquier arranque parcial (incl. voz del motor pendiente o
+            // ya sonando y el ancla muda) antes de caer a la simulación.
+            teardownLayers();
+            try { mainPlayerRef.current?.pause(); } catch (_) {}
+            hasRealAudioRef.current = false;
+            loopModeRef.current = false;
+            switchingRef.current = false;
+            lockScreenPendingRef.current = null;
+            startSimulation(sessionOverride, gen);
+          }
         } finally {
-          setIsLoading(false);
+          if (gen === playGenRef.current) setIsLoading(false);
         }
       } else {
+        // Igual que en playSession: limpiar un loading huérfano de una carga
+        // de audio superseded (esta generación no carga main).
+        setIsLoading(false);
         hasRealAudioRef.current = false;
         loopModeRef.current = false;
         switchingRef.current = false;
         lockScreenPendingRef.current = null;
-        startSimulation(sessionOverride);
+        startSimulation(sessionOverride, gen);
       }
     },
     [
@@ -1599,7 +1647,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (voiceActiveRef.current) voicePlayerRef.current?.pause();
         setIsPlaying(false);
       } else if (currentSession) {
-        startSimulation(currentSession);
+        startSimulation(currentSession, playGenRef.current);
         if (voiceActiveRef.current) voicePlayerRef.current?.play();
       }
     }
@@ -1633,7 +1681,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     lastPlayingRef.current = false;
     switchingRef.current = false;
     pendingSeekRef.current = null;
-    autoAdvanceGenRef.current += 1;
+    // Nueva generación: invalida auto-avances diferidos y callbacks huérfanos.
+    playGenRef.current += 1;
     sleepEndTimeRef.current = null;
     setSleepTimerRemaining(null);
     setCurrentSession(null);
