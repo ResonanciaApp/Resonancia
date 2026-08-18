@@ -45,6 +45,13 @@ export const directMessagesTable = pgTable(
       table.recipientId,
       table.readAt,
     ),
+    // Par inverso: el hilo de conversación consulta ambas direcciones (OR); sin este índice
+    // la mitad recipient→sender degrada a scan al crecer la tabla.
+    reversePairIdx: index("direct_messages_reverse_pair_idx").on(
+      table.recipientId,
+      table.senderId,
+      table.createdAt,
+    ),
   }),
 );
 

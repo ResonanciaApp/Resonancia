@@ -332,7 +332,14 @@ router.get("/me/library", requireAuth, async (req, res) => {
     .where(eq(userLibraryTable.userId, me.id))
     .limit(1);
   if (rows.length === 0) {
-    res.json({ folders: [], playlists: [], favFolders: [], pinnedFavoriteIds: [] });
+    res.json({
+      folders: [],
+      playlists: [],
+      favFolders: [],
+      pinnedFavoriteIds: [],
+      mixerPresets: [],
+      geometrixCreations: [],
+    });
     return;
   }
   const r = rows[0];
@@ -341,17 +348,35 @@ router.get("/me/library", requireAuth, async (req, res) => {
     playlists: r.playlists,
     favFolders: r.favFolders,
     pinnedFavoriteIds: r.pinnedFavoriteIds,
+    mixerPresets: r.mixerPresets,
+    geometrixCreations: r.geometrixCreations,
   });
 });
 
 router.put("/me/library", requireAuth, async (req, res) => {
-  const { folders, playlists, favFolders, pinnedFavoriteIds } = req.body ?? {};
-  if (
-    !Array.isArray(folders) ||
-    !Array.isArray(playlists) ||
-    !Array.isArray(favFolders) ||
-    !Array.isArray(pinnedFavoriteIds)
-  ) {
+  const body = (req.body ?? {}) as Record<string, unknown>;
+  // Todos los campos son opcionales: cada campo omitido se preserva en el
+  // servidor, permitiendo que módulos distintos (biblioteca, mezclador,
+  // Geometrix) sincronicen solo lo suyo sin pisarse entre sí.
+  const FIELDS = [
+    "folders",
+    "playlists",
+    "favFolders",
+    "pinnedFavoriteIds",
+    "mixerPresets",
+    "geometrixCreations",
+  ] as const;
+  const updates: Record<string, unknown> = {};
+  for (const f of FIELDS) {
+    const v = body[f];
+    if (v === undefined) continue;
+    if (!Array.isArray(v)) {
+      res.status(400).json({ error: `Payload inválido: ${f} debe ser un array` });
+      return;
+    }
+    updates[f] = v;
+  }
+  if (Object.keys(updates).length === 0) {
     res.status(400).json({ error: "Payload inválido: se esperan arrays" });
     return;
   }
@@ -359,10 +384,10 @@ router.put("/me/library", requireAuth, async (req, res) => {
   const now = new Date();
   const [row] = await db
     .insert(userLibraryTable)
-    .values({ userId: me.id, folders, playlists, favFolders, pinnedFavoriteIds, updatedAt: now })
+    .values({ userId: me.id, ...updates, updatedAt: now })
     .onConflictDoUpdate({
       target: userLibraryTable.userId,
-      set: { folders, playlists, favFolders, pinnedFavoriteIds, updatedAt: now },
+      set: { ...updates, updatedAt: now },
     })
     .returning();
   res.json({
@@ -370,6 +395,8 @@ router.put("/me/library", requireAuth, async (req, res) => {
     playlists: row.playlists,
     favFolders: row.favFolders,
     pinnedFavoriteIds: row.pinnedFavoriteIds,
+    mixerPresets: row.mixerPresets,
+    geometrixCreations: row.geometrixCreations,
   });
 });
 

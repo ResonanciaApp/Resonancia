@@ -234,11 +234,11 @@
           <div class="l">Críticos resueltos</div>
         </div>
         <div class="card">
-          <div class="n">8</div>
+          <div class="n">10</div>
           <div class="l">Hallazgos resueltos</div>
         </div>
         <div class="card">
-          <div class="n">4</div>
+          <div class="n">2</div>
           <div class="l">Parcialmente resueltos</div>
         </div>
         <div class="card">
@@ -327,13 +327,14 @@
             Tablas sociales sub-indexadas para sus patrones reales de consulta
           </td>
           <td><span class="badge b-high">ALTO</span></td>
-          <td><span class="part">PARCIAL</span></td>
+          <td><span class="ok">RESUELTO</span></td>
           <td>
-            Se añadieron 12 índices a las tablas sociales: feed (visibilidad +
+            Se añadieron 15 índices a las tablas sociales: feed (visibilidad +
             fecha), ranking por likes, autor, comentarios por mezcla y por
-            autor, likes por usuario y mensajes por fecha. Falta el par
-            simétrico para consultas bidireccionales de amistades y mensajes
-            directos, que queda programado.
+            autor, likes por usuario y mensajes por fecha, más el par simétrico
+            para consultas bidireccionales de amistades (solicitante y
+            destinatario con estado) y mensajes directos (par inverso del hilo
+            de conversación). Aplicados en base de datos.
           </td>
         </tr>
         <tr>
@@ -355,13 +356,15 @@
             Contenido creado por el usuario vive solo en almacenamiento local
           </td>
           <td><span class="badge b-med">MEDIO</span></td>
-          <td><span class="part">PARCIAL</span></td>
+          <td><span class="ok">RESUELTO</span></td>
           <td>
-            Carpetas, playlists y carpetas de favoritos ahora se respaldan en el
-            servidor (snapshot con GET/PUT dedicados, sincronización automática
-            con debounce), sumándose a estadísticas, favoritos y progreso que ya
-            sincronizaban. Presets del mezclador y creaciones de Geometrix
-            siguen locales; su respaldo queda en la cola.
+            Todo el contenido creado por el usuario se respalda ahora en el
+            servidor: carpetas, playlists y carpetas de favoritos (snapshot con
+            GET/PUT dedicados y sincronización automática con debounce), y se
+            sumaron los <b>presets del mezclador</b> y las <b>creaciones de
+            Geometrix</b> al mismo snapshot, con actualización parcial por campo
+            (cada módulo sincroniza lo suyo sin pisar al resto) y recuperación
+            por unión en la primera sincronización de cada dispositivo.
           </td>
         </tr>
         <tr>
@@ -529,16 +532,6 @@
         <li>
           <b>Actividades presenciales</b> — conectar a datos reales o retirar
           del release inicial.
-        </li>
-        <li>
-          <b>Índices bidireccionales</b> — completar el par simétrico en
-          amistades y mensajes directos.
-        </li>
-        <li>
-          <b
-            >Respaldo en la nube de presets del mezclador y creaciones de
-            Geometrix.</b
-          >
         </li>
         <li>
           <b>Configuración de submission</b> — credenciales de App Store / Play

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
+import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
 
 import type { GeometrixCreation } from "@/data/geometrix-creations";
 
@@ -7,6 +8,61 @@ const KEY = "@geometrix_creations";
 // Limpieza one-shot pedida por el usuario (jul 2026): borra todas las
 // composiciones guardadas una única vez por dispositivo.
 const WIPE_FLAG = "@geometrix_creations_wiped_v1";
+// Marca de primera sincronización con la nube (unión una sola vez por dispositivo).
+const CLOUD_SYNC_FLAG = "@geometrix_creations_cloud_sync_v1";
+
+// ── Respaldo en la nube ───────────────────────────────────────────────────────
+// Push debounced a nivel de módulo (varias instancias del hook comparten timer).
+// Al disparar: espera la restauración inicial y relee storage, de modo que
+// nunca sube un snapshot viejo por encima de la copia de la nube.
+let cloudPushTimer: ReturnType<typeof setTimeout> | null = null;
+function pushToCloud() {
+  if (cloudPushTimer) clearTimeout(cloudPushTimer);
+  cloudPushTimer = setTimeout(async () => {
+    try {
+      await restoreFromCloudOnce();
+      const raw = await AsyncStorage.getItem(KEY);
+      const latest: GeometrixCreation[] = raw ? JSON.parse(raw) : [];
+      await setMyLibrary({ geometrixCreations: latest });
+    } catch {
+      // Sin sesión o sin red: silencioso, se reintenta en el próximo cambio
+    }
+  }, 1500);
+}
+
+// Primera sync: unión con la nube, deduplicada por promesa compartida para que
+// instancias paralelas del hook no la ejecuten dos veces.
+let cloudRestorePromise: Promise<void> | null = null;
+function restoreFromCloudOnce(): Promise<void> {
+  if (!cloudRestorePromise) {
+    cloudRestorePromise = (async () => {
+      try {
+        const synced = await AsyncStorage.getItem(CLOUD_SYNC_FLAG);
+        if (synced) return;
+        const snap = await getMyLibrary();
+        const server = (snap.geometrixCreations ?? []) as GeometrixCreation[];
+        if (server.length > 0) {
+          const raw = await AsyncStorage.getItem(KEY);
+          const local: GeometrixCreation[] = raw ? JSON.parse(raw) : [];
+          const localIds = new Set(local.map((c) => c.id));
+          const merged = [...local, ...server.filter((c) => c && !localIds.has(c.id))];
+          await AsyncStorage.setItem(KEY, JSON.stringify(merged));
+          notifyCount(merged.length);
+          // Subir la unión para que la nube converja aunque un push temprano
+          // hubiera enviado solo lo local.
+          if (local.length > 0) {
+            setMyLibrary({ geometrixCreations: merged }).catch(() => {});
+          }
+        }
+        await AsyncStorage.setItem(CLOUD_SYNC_FLAG, "1");
+      } catch {
+        // Sin sesión o sin red: permitir reintento en el próximo load
+        cloudRestorePromise = null;
+      }
+    })();
+  }
+  return cloudRestorePromise;
+}
 
 // ── Señal cross-instancia ─────────────────────────────────────────────────────
 // Cada instancia del hook mantiene su propio estado; este emitter avisa a
@@ -64,6 +120,7 @@ export function useGeometrixCreations() {
   const load = useCallback(async () => {
     try {
       await wipeOnce();
+      await restoreFromCloudOnce();
       const raw = await AsyncStorage.getItem(KEY);
       setCreations(raw ? (JSON.parse(raw) as GeometrixCreation[]) : []);
     } catch {
@@ -90,6 +147,7 @@ export function useGeometrixCreations() {
     setCreations(next);
     await AsyncStorage.setItem(KEY, JSON.stringify(next));
     notifyCount(next.length);
+    pushToCloud();
   }, []);
 
   /** Guarda una composición nueva (la más reciente queda primera). */

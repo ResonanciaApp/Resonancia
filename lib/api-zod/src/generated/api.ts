@@ -1322,10 +1322,12 @@ export const SetPinnedFeaturedResponse = zod.object({
  * @summary Get the current user's full library snapshot (folders, playlists, fav-folders, pinned favorites)
  */
 export const GetMyLibraryResponse = zod.object({
-  "folders": zod.array(zod.unknown()).describe('Carpetas de sesiones\/playlists (Folder[])'),
-  "playlists": zod.array(zod.unknown()).describe('Playlists ordenadas (Playlist[])'),
-  "favFolders": zod.array(zod.unknown()).describe('Carpetas de favoritos (FavFolder[])'),
-  "pinnedFavoriteIds": zod.array(zod.string()).describe('IDs de favoritos fijados')
+  "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
+  "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
+  "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
+  "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
+  "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
 
 
@@ -1333,17 +1335,21 @@ export const GetMyLibraryResponse = zod.object({
  * @summary Replace the current user's library snapshot
  */
 export const SetMyLibraryBody = zod.object({
-  "folders": zod.array(zod.unknown()).describe('Carpetas de sesiones\/playlists (Folder[])'),
-  "playlists": zod.array(zod.unknown()).describe('Playlists ordenadas (Playlist[])'),
-  "favFolders": zod.array(zod.unknown()).describe('Carpetas de favoritos (FavFolder[])'),
-  "pinnedFavoriteIds": zod.array(zod.string()).describe('IDs de favoritos fijados')
+  "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
+  "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
+  "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
+  "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
+  "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
 
 export const SetMyLibraryResponse = zod.object({
-  "folders": zod.array(zod.unknown()).describe('Carpetas de sesiones\/playlists (Folder[])'),
-  "playlists": zod.array(zod.unknown()).describe('Playlists ordenadas (Playlist[])'),
-  "favFolders": zod.array(zod.unknown()).describe('Carpetas de favoritos (FavFolder[])'),
-  "pinnedFavoriteIds": zod.array(zod.string()).describe('IDs de favoritos fijados')
+  "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
+  "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
+  "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
+  "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
+  "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
 
 

@@ -41,13 +41,17 @@ export interface PlaybackEvent {
  */
 export interface LibrarySnapshot {
   /** Carpetas de sesiones/playlists (Folder[]) */
-  folders: unknown[];
+  folders?: unknown[];
   /** Playlists ordenadas (Playlist[]) */
-  playlists: unknown[];
+  playlists?: unknown[];
   /** Carpetas de favoritos (FavFolder[]) */
-  favFolders: unknown[];
+  favFolders?: unknown[];
   /** IDs de favoritos fijados */
-  pinnedFavoriteIds: string[];
+  pinnedFavoriteIds?: string[];
+  /** Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite */
+  mixerPresets?: unknown[];
+  /** Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite */
+  geometrixCreations?: unknown[];
 }
 
 export interface StreakResponse {

@@ -2501,5 +2501,5 @@ description = "Informe que contrasta cada hallazgo de la auditoría de Sparkpath
 id = "wmSl9MZcPBhaiQfxn5ONo"
 uri = "file://docs/Informe-Respuesta-Auditoria-RESONANCIA.pdf"
 type = "pdf"
-title = "Respuesta a la Auditoría Técnica — RESONANCIA (PDF)"
-description = "Informe en PDF listo para enviar: contraste de cada hallazgo de la auditoría con el trabajo realizado."
+title = "Informe de Respuesta a la Auditoría (actualizado)"
+description = "Versión actualizada: 10 hallazgos resueltos, 2 parciales, 3 pendientes."

@@ -20,6 +20,8 @@ export const userLibraryTable = pgTable("user_library", {
   playlists: jsonb("playlists").notNull().default([]),
   favFolders: jsonb("fav_folders").notNull().default([]),
   pinnedFavoriteIds: jsonb("pinned_favorite_ids").notNull().default([]),
+  mixerPresets: jsonb("mixer_presets").notNull().default([]),
+  geometrixCreations: jsonb("geometrix_creations").notNull().default([]),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

@@ -3523,7 +3523,16 @@ components:
           items:
             type: string
           description: IDs de favoritos fijados
-      required: [folders, playlists, favFolders, pinnedFavoriteIds]
+        mixerPresets:
+          type: array
+          items: {}
+          description: Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite
+        geometrixCreations:
+          type: array
+          items: {}
+          description: Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite
+      # Todos los campos son opcionales en el PUT: cada campo omitido se preserva
+      # en el servidor, permitiendo que módulos distintos sincronicen solo lo suyo.
     StreakResponse:
       type: object
       properties:

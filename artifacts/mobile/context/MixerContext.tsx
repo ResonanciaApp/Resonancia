@@ -14,6 +14,7 @@ import { DEFAULT_MIXER_BG_PALETTE, getMixerBgPalette, type MixerBgPaletteId } fr
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
+import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
 import { sendHeartbeat } from "@/lib/communityApi";
 import { getSoundById, soundMatchesBpm, resolveSoundBpm } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
@@ -82,6 +83,8 @@ export const MAX_ACTIVE_SOUNDS = 10;
  */
 const IDLE_CACHE_MAX = 12;
 const PRESETS_KEY = "@resonance_mixer_presets";
+// Marca de primera sincronización con la nube de presets (unión una sola vez).
+const PRESETS_CLOUD_SYNC_KEY = "@resonance_mixer_presets_cloud_sync_v1";
 const MIX_FOLDERS_KEY = "@resonance_mixer_folders";
 const DEFAULT_VOLUME = 0.7;
 
@@ -529,28 +532,75 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     });
   }, [clearLockScreen, lockMetadata]);
 
-  // ── Cargar presets guardados ──────────────────────────────────────
+  // ── Cargar presets guardados (+ recuperación desde la nube) ────────
   useEffect(() => {
-    AsyncStorage.getItem(PRESETS_KEY).then((val) => {
-      if (!val) return;
+    (async () => {
+      let local: MixPreset[] = [];
       try {
-        const parsed = JSON.parse(val) as MixPreset[];
-        // Migración: mezclas viejas sin categoría → "dormir"; la categoría
-        // "trabajar" fue removida → se reasigna a "dormir" (Para Dormir).
-        const migrated = parsed.map((p) => ({
-          ...p,
-          category: !p.category || p.category === "trabajar" ? "dormir" : p.category,
-        }));
-        setPresets(migrated);
+        const val = await AsyncStorage.getItem(PRESETS_KEY);
+        if (val) {
+          const parsed = JSON.parse(val) as MixPreset[];
+          // Migración: mezclas viejas sin categoría → "dormir"; la categoría
+          // "trabajar" fue removida → se reasigna a "dormir" (Para Dormir).
+          local = parsed.map((p) => ({
+            ...p,
+            category: !p.category || p.category === "trabajar" ? "dormir" : p.category,
+          }));
+        }
       } catch {
         // ignore corrupt data
       }
-    });
+      // Primera sync de este dispositivo: unión con la copia de la nube para
+      // recuperar presets tras reinstalación. Syncs siguientes: local autoritativo.
+      try {
+        const synced = await AsyncStorage.getItem(PRESETS_CLOUD_SYNC_KEY);
+        if (!synced) {
+          const snap = await getMyLibrary();
+          const server = (snap.mixerPresets ?? []) as MixPreset[];
+          if (server.length > 0) {
+            // Releer lo persistido por si hubo un guardado durante el fetch,
+            // y unir contra el estado más reciente (ref) además del storage.
+            const latest =
+              presetsRef.current.length > 0 ? presetsRef.current : local;
+            const localIds = new Set(latest.map((p) => p.id));
+            local = [...latest, ...server.filter((p) => p && !localIds.has(p.id))];
+            AsyncStorage.setItem(PRESETS_KEY, JSON.stringify(local)).catch(() => {});
+            // Subir la unión para que la nube converja aunque un push temprano
+            // hubiera enviado solo lo local.
+            if (latest.length > 0) {
+              setMyLibrary({ mixerPresets: local }).catch(() => {});
+            }
+          }
+          await AsyncStorage.setItem(PRESETS_CLOUD_SYNC_KEY, "1");
+        }
+      } catch {
+        // Sin sesión o sin red: se reintenta en el próximo arranque
+      }
+      presetsCloudReadyRef.current = true;
+      // Si hubo un guardado mientras corría la hidratación, ese estado gana;
+      // solo aplicamos el snapshot hidratado cuando no hay nada más reciente.
+      const hydrated = local;
+      setPresets((prev) => (prev.length > 0 ? prev : hydrated));
+    })();
   }, []);
 
+  const presetsCloudReadyRef = useRef(false);
+  const presetsPushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistPresets = useCallback((next: MixPreset[]) => {
     setPresets(next);
+    presetsRef.current = next;
     AsyncStorage.setItem(PRESETS_KEY, JSON.stringify(next)).catch(() => {});
+    // Respaldo en la nube (debounced); solo actualiza el campo mixerPresets.
+    // No se sube nada hasta que la restauración inicial terminó (evita pisar
+    // la copia de la nube con un snapshot local incompleto), y al disparar se
+    // lee el ref (estado más reciente), no el valor capturado.
+    if (presetsPushTimer.current) clearTimeout(presetsPushTimer.current);
+    presetsPushTimer.current = setTimeout(() => {
+      if (!presetsCloudReadyRef.current) return;
+      setMyLibrary({ mixerPresets: presetsRef.current }).catch(() => {
+        // Sin sesión o sin red: silencioso, se reintenta en el próximo cambio
+      });
+    }, 1500);
   }, []);
 
   // ── Cargar carpetas de mezclas guardadas ───────────────────────────

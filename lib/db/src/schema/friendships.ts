@@ -34,6 +34,9 @@ export const friendshipsTable = pgTable(
   (table) => ({
     uniquePair: uniqueIndex("friendships_pair_idx").on(table.requesterId, table.addresseeId),
     addresseeIdx: index("friendships_addressee_idx").on(table.addresseeId),
+    // Cobertura bidireccional: la lista de amigos consulta ambas direcciones con filtro de estado.
+    requesterStatusIdx: index("friendships_requester_status_idx").on(table.requesterId, table.status),
+    addresseeStatusIdx: index("friendships_addressee_status_idx").on(table.addresseeId, table.status),
   }),
 );
 
