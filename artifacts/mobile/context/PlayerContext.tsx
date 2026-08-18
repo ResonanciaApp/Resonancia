@@ -86,6 +86,8 @@ type PlayerContextType = {
   playSession: (session: Session) => void;
   /** Play a looping session for a specific number of minutes */
   playSessionWithDuration: (session: Session, minutes: number) => void;
+  /** true cuando la sesión actual es un loop infinito (suena hasta pausar/temporizador) */
+  infiniteLoop: boolean;
   pauseResume: () => void;
   stop: () => void;
   seekTo: (progress: number) => void;
@@ -159,6 +161,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [progress, setProgress] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [actualDurationSeconds, setActualDurationSeconds] = useState(0);
+  const [infiniteLoop, setInfiniteLoop] = useState(false);
+  const infiniteLoopRef = useRef(false);
+  infiniteLoopRef.current = infiniteLoop;
   const [isLoading, setIsLoading] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -1065,12 +1070,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       }
       inPlaylistAdvanceRef.current = false;
       // Las sesiones en loop (Sonidos Naturaleza) SIEMPRE van por el camino de
-      // loop: audio gapless por el motor + duración total de la sesión. Sin
-      // esto, una pista corta (p. ej. 9s) sonaría una sola vez y terminaría.
+      // loop: audio gapless por el motor, con duración INFINITA — suenan hasta
+      // que el usuario pause, cambie de sesión o salte el temporizador.
       if (LOOP_SESSIONS.has(session.id)) {
-        playSessionWithDurationRef.current(session, session.duration);
+        playSessionWithDurationRef.current(session, Infinity);
         return;
       }
+      setInfiniteLoop(false);
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
       stopSoundPlayback();
@@ -1227,17 +1233,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       lastPlayingRef.current = false;
       pendingSeekRef.current = null;
 
-      const totalSeconds = minutes * 60;
-      const sessionOverride: Session = {
-        ...session,
-        duration: minutes,
-        durationLabel: `${minutes} min`,
-      };
+      // minutes = Infinity → loop infinito: suena hasta pausar / cambiar de
+      // sesión / temporizador de sueño. Sin auto-apagado ni barra de progreso.
+      const infinite = !Number.isFinite(minutes);
+      const totalSeconds = infinite ? Infinity : minutes * 60;
+      const sessionOverride: Session = infinite
+        ? { ...session, durationLabel: "∞" }
+        : {
+            ...session,
+            duration: minutes,
+            durationLabel: `${minutes} min`,
+          };
 
+      setInfiniteLoop(infinite);
       setCurrentSession(sessionOverride);
       setProgress(0);
       setElapsed(0);
-      setActualDurationSeconds(totalSeconds);
+      setActualDurationSeconds(infinite ? 0 : totalSeconds);
       void addToHistory(session);
       startStatTracking(sessionOverride);
 
@@ -1336,6 +1348,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 if (!lastPlayingRef.current) return prev;
                 const next = prev + 1;
                 const sId = currentSessionRef.current?.id;
+                if (infinite) return next; // loop infinito: sin auto-apagado ni progreso
                 if (next >= totalSeconds) {
                   clearSim();
                   teardownPlayback();
@@ -1520,6 +1533,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setProgress(0);
     setElapsed(0);
     setActualDurationSeconds(0);
+    setInfiniteLoop(false);
   }, [saveSessionProgress, actualDurationSeconds, elapsed, flushActiveStat, teardownPlayback, teardownLayers]);
 
   // ── Registrar la sesión como "stoppable" por la mezcla ────────────
@@ -1535,6 +1549,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const seekTo = useCallback(
     async (p: number) => {
+      // Loop infinito: no hay línea de tiempo — el seek no tiene sentido.
+      if (infiniteLoopRef.current) return;
       const clamped = Math.max(0, Math.min(1, p));
       setProgress(clamped);
       if (
@@ -1672,6 +1688,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         toggleShuffle,
         playSession,
         playSessionWithDuration,
+        infiniteLoop,
         pauseResume,
         stop,
         seekTo,

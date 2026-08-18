@@ -14,3 +14,7 @@ Las sesiones en loop (LOOP_SESSIONS) ya NO usan el crossfade JS de dos capas (la
 - El catch de carga de loop debe hacer `teardownLayers()` (apaga voz del motor pendiente/sonando) antes de caer a simulación.
 
 **Why:** un ctx compartido entre reproductor y Mezclador contamina volumen master/stopAll; y el ancla muda es lo único que mantiene lock-screen + sleep timer sin que expo-audio pierda la AVAudioSession.
+
+## Loop infinito + parpadeo del ancla (ago 18)
+- LOOP_SESSIONS ahora son INFINITAS: playSession delega a playSessionWithDuration(session, Infinity) vía playSessionWithDurationRef (no hay callers externos de WithDuration — era código muerto). infinite → sin auto-apagado, progress 0, elapsed cuenta, `infiniteLoop` expuesto en el context; UI muestra "∞", seek/±15 deshabilitados y seekTo hace no-op (infiniteLoopRef).
+- El ancla muda (main.loop=true con asset corto) emite un micro playing=false en cada vuelta del loop nativo → el mirror lo tomaba como pausa del usuario (apagaba el motor = hueco + botón parpadeando). Fix: debounce 700ms (loopPauseDebounceRef + anchorPlayingRef) — solo es pausa real si persiste; limpiar en teardownLoopCrossfade.

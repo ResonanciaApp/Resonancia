@@ -75,6 +75,7 @@ export default function PlayerScreen() {
     progress,
     elapsed,
     actualDurationSeconds,
+    infiniteLoop,
     pauseResume,
     stop,
     isFavorite,
@@ -432,7 +433,7 @@ export default function PlayerScreen() {
   };
 
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
-  const remaining = totalSeconds - elapsed;
+  const remaining = infiniteLoop ? Infinity : totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
   const bounce = (sv: RNAnimated.Value) => {
@@ -711,8 +712,13 @@ export default function PlayerScreen() {
                   />
                 </Pressable>
 
-                {/* Retroceder 15s */}
-                <Pressable onPress={skipBackward} style={styles.ctrlBtn} hitSlop={10}>
+                {/* Retroceder 15s (oculto en loop infinito: no hay línea de tiempo) */}
+                <Pressable
+                  onPress={skipBackward}
+                  style={[styles.ctrlBtn, infiniteLoop && { opacity: 0 }]}
+                  hitSlop={10}
+                  disabled={infiniteLoop}
+                >
                   <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
                   <Text style={styles.ctrlSkipLabel}>15</Text>
                 </Pressable>
@@ -738,8 +744,13 @@ export default function PlayerScreen() {
                   )}
                 </Pressable>
 
-                {/* Avanzar 15s */}
-                <Pressable onPress={skipForward} style={styles.ctrlBtn} hitSlop={10}>
+                {/* Avanzar 15s (oculto en loop infinito) */}
+                <Pressable
+                  onPress={skipForward}
+                  style={[styles.ctrlBtn, infiniteLoop && { opacity: 0 }]}
+                  hitSlop={10}
+                  disabled={infiniteLoop}
+                >
                   <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
                   <Text style={styles.ctrlSkipLabel}>15</Text>
                 </Pressable>
@@ -772,8 +783,8 @@ export default function PlayerScreen() {
                 progressBarPageX.current = px;
               });
             }}
-            onStartShouldSetResponder={() => true}
-            onMoveShouldSetResponder={() => true}
+            onStartShouldSetResponder={() => !infiniteLoop}
+            onMoveShouldSetResponder={() => !infiniteLoop}
             onResponderGrant={handleProgressGrant}
             onResponderMove={handleProgressMove}
             onResponderRelease={handleProgressRelease}
@@ -788,7 +799,9 @@ export default function PlayerScreen() {
           {/* Etiquetas de tiempo */}
           <View style={styles.timeLabels}>
             <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
-            <Text style={styles.timeLabelText}>{formatTime(remaining)}</Text>
+            <Text style={styles.timeLabelText}>
+              {infiniteLoop ? "∞" : formatTime(remaining)}
+            </Text>
           </View>
         </View>
       </RNAnimated.View>
