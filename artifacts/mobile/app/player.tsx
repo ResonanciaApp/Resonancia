@@ -400,6 +400,8 @@ export default function PlayerScreen() {
   const scaleHeart    = useRef(new RNAnimated.Value(1)).current;
   const scaleShare    = useRef(new RNAnimated.Value(1)).current;
   const scalePlaylist = useRef(new RNAnimated.Value(1)).current;
+  const scaleTimer    = useRef(new RNAnimated.Value(1)).current;
+  const [showTimerSheet, setShowTimerSheet] = useState(false);
 
   // ─────────────────────────────────────────────────────────────────────────
   const topPad = Platform.OS === "web" ? 20 : (insets.top || 12);
@@ -659,13 +661,34 @@ export default function PlayerScreen() {
                 <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
               </RNAnimated.View>
             </Pressable>
+            {/* Playlist: oculto en Meditaciones y Dormir (Tarea #193) */}
+            {catId !== "meditaciones-guiadas" && catId !== "descanso" && (
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => { bounce(scalePlaylist); setShowPlaylistSheet(true); }}
+                hitSlop={8}
+              >
+                <RNAnimated.View style={{ transform: [{ scale: scalePlaylist }] }}>
+                  <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
+                </RNAnimated.View>
+              </Pressable>
+            )}
+            {/* Temporizador (Tarea #193) */}
             <Pressable
               style={styles.actionBtn}
-              onPress={() => { bounce(scalePlaylist); setShowPlaylistSheet(true); }}
+              onPress={() => {
+                bounce(scaleTimer);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setShowTimerSheet(true);
+              }}
               hitSlop={8}
             >
-              <RNAnimated.View style={{ transform: [{ scale: scalePlaylist }] }}>
-                <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
+              <RNAnimated.View style={{ transform: [{ scale: scaleTimer }] }}>
+                <Feather
+                  name="clock"
+                  size={22}
+                  color={sleepTimerRemaining !== null ? "#BE9650" : "rgba(255,255,255,0.92)"}
+                />
               </RNAnimated.View>
             </Pressable>
           </View>
@@ -976,7 +999,10 @@ export default function PlayerScreen() {
               </Pressable>
 
               {/* Temporizador */}
-              <Pressable style={styles.optRow} onPress={closeSheet}>
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { closeSheet(); setTimeout(() => setShowTimerSheet(true), 300); }}
+              >
                 <Feather name="clock" size={18} color="#FBFBFB" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Temporizador</Text>
                 {selectedTimerMinutes !== null && (
@@ -1056,6 +1082,56 @@ export default function PlayerScreen() {
               </Pressable>
             </ScrollView>
           </Animated.View>
+        </View>
+      </Modal>
+
+      {/* ── Temporizador Sheet (Tarea #193) ───────────────────────────────── */}
+      <Modal
+        visible={showTimerSheet}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowTimerSheet(false)}
+        statusBarTranslucent
+      >
+        <View style={[StyleSheet.absoluteFill, { justifyContent: "flex-end" }]} pointerEvents="box-none">
+          <Pressable
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.45)" }]}
+            onPress={() => setShowTimerSheet(false)}
+          />
+          <View style={[styles.timerSheet, { paddingBottom: bottomPad + 16 }]}>
+            <LinearGradient
+              colors={theme.id === "tibet" ? ["#2d1c52", "#1f2a62"] : [theme.gradient[0] as string, theme.gradient[0] as string]}
+              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
+              pointerEvents="none"
+            />
+            <View style={styles.optHandle} />
+            <View style={styles.timerSheetHeader}>
+              <Feather name="clock" size={18} color="#FBFBFB" />
+              <Text style={styles.timerSheetTitle}>Temporizador</Text>
+              {sleepTimerRemaining !== null && (
+                <Text style={styles.timerSheetRemaining}>{formatRemaining(sleepTimerRemaining)}</Text>
+              )}
+            </View>
+            <View style={styles.timerChips}>
+              {TIMER_OPTIONS.map((opt) => {
+                const selected = selectedTimerMinutes === opt.minutes;
+                return (
+                  <Pressable
+                    key={opt.label}
+                    style={[styles.timerChip, selected && styles.timerChipSelected]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      handleSelectTimer(opt.minutes);
+                    }}
+                  >
+                    <Text style={[styles.timerChipText, selected && styles.timerChipTextSelected]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
         </View>
       </Modal>
 
@@ -1325,7 +1401,34 @@ const styles = StyleSheet.create({
   timerHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 12 },
   timerLabel: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(255,255,255,0.50)" },
   timerCountdown: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
-  timerChips: { flexDirection: "row", gap: 8, paddingVertical: 2 },
+  timerSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    overflow: "hidden",
+  },
+  timerSheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 14,
+    marginBottom: 16,
+  },
+  timerSheetTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    flex: 1,
+  },
+  timerSheetRemaining: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#BE9650",
+  },
+  timerChips: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingVertical: 2 },
   timerChip: {
     paddingHorizontal: 14,
     paddingVertical: 7,

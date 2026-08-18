@@ -33,3 +33,7 @@ Sigue existiendo pero solo actualiza el display (segundos en pantalla). Calcula 
 ## How to apply
 - Cualquier nuevo timer de duración en audio: usar `endTimeRef` timestamp + chequear en el listener nativo + AppState recovery.
 - NO confiar en que `setInterval` dispare la acción crítica; usarlo solo para el display.
+
+## Deadline vs interval (ago 18)
+- clearSleepInterval SOLO debe parar el interval de UI; NUNCA borrar sleepEndTimeRef ahí (el effect del countdown lo llama en cada arranque → el timer nunca expiraba). El deadline se borra explícito en: expiración, stop(), y setSleepTimer(null). Los paths de "timer por defecto" también deben setear sleepEndTimeRef, no solo el remaining.
+- El temporizador del reproductor ahora vive en un sheet propio (icono reloj en la fila de acciones, Tarea #193); el menú de ajustes quedó solo para categorías sin lógica propia.

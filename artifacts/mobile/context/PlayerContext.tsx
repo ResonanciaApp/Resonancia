@@ -802,6 +802,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (sleepTimerRemaining !== 0) return;
     clearSleepInterval();
+    sleepEndTimeRef.current = null;
     setSleepTimerRemaining(null);
     // The scheduled timer elapsed → count it as a completed listen.
     statCompletedRef.current = true;
@@ -841,12 +842,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, []);
   // ────────────────────────────────────────────────────────────────────────────
 
+  /** Solo detiene el interval de UI. NO borra sleepEndTimeRef: la hora de
+   *  término debe sobrevivir a los re-arranques del interval (pausa/reanudar,
+   *  re-render del effect) o el timer nunca expira. El deadline se borra
+   *  explícitamente al expirar, en stop() y al cancelar el timer. */
   const clearSleepInterval = () => {
     if (sleepIntervalRef.current) {
       clearInterval(sleepIntervalRef.current);
       sleepIntervalRef.current = null;
     }
-    sleepEndTimeRef.current = null;
   };
 
   const clearSim = () => {
@@ -1259,6 +1263,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               defaultSleepMinutesRef.current > FREE_TIMER_MAX_MINUTES
                 ? FREE_TIMER_MAX_MINUTES
                 : defaultSleepMinutesRef.current;
+            sleepEndTimeRef.current = Date.now() + capped * 60 * 1000;
             setSleepTimerRemaining(capped * 60);
           }
         } catch (err) {
@@ -1300,6 +1305,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               !isPremiumRef.current && defaultSleepMinutesRef.current > FREE_TIMER_MAX_MINUTES
                 ? FREE_TIMER_MAX_MINUTES
                 : defaultSleepMinutesRef.current;
+            sleepEndTimeRef.current = Date.now() + capped * 60 * 1000;
             setSleepTimerRemaining(capped * 60);
           }
         } else {
@@ -1628,6 +1634,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     switchingRef.current = false;
     pendingSeekRef.current = null;
     autoAdvanceGenRef.current += 1;
+    sleepEndTimeRef.current = null;
     setSleepTimerRemaining(null);
     setCurrentSession(null);
     setIsPlaying(false);
@@ -1686,6 +1693,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const setSleepTimer = useCallback((minutes: number | null) => {
     clearSleepInterval();
     if (minutes === null) {
+      sleepEndTimeRef.current = null;
       setSleepTimerRemaining(null);
       return;
     }
