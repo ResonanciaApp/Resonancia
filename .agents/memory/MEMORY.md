@@ -144,3 +144,4 @@
 - [Session-level isLoop](session-isloop.md) — loop = session.isLoop || LOOP_SESSIONS.has(id); snapshot solo asigna isLoop si remoto es true (no clobbear bundles a false)
 - [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto
 - [Resonador self-edit endpoints](resonador-self-edit.md) — GET/PATCH /me/resonador-profile busca por clerkId; whitelist explícita de campos editables; mobile usa useClerkAuth().getToken
+- [Resonador gallery URL resolution](resonador-gallery-urls.md) — photos[] en ApiResonador son objectPaths crudos; deben pasar por resolveResonadorUrl igual que photoUrl/coverPhotoUrl; DB foto tiene prioridad sobre asset bundleado
