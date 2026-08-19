@@ -30,6 +30,7 @@ import {
   LayoutList,
   Moon,
   AudioLines,
+  UserRound,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -183,6 +184,7 @@ const NAV = [
   { href: "/descanso-sonidos", label: "Sonidos de descanso", icon: Moon },
   { href: "/escenas", label: "Escenas Geometrix", icon: Sparkles },
   { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
+  { href: "/resonadores", label: "Resonadores", icon: UserRound },
 ];
 
 function isActive(location: string, href: string) {
