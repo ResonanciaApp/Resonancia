@@ -29,6 +29,7 @@ import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { usePlayer } from "@/context/PlayerContext";
+import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -464,6 +465,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
 function TabLayoutInner() {
   const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
+  const { activeSounds }   = useMixer();
   const { playlists }      = useFoldersPlaylists();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
@@ -613,8 +615,8 @@ function TabLayoutInner() {
         </>
       )}
 
-      {/* ── MezclaMiniPlayer (mezclas cargadas desde Biblioteca) ─────────── */}
-      {!isMixerOpen && (
+      {/* ── MezclaMiniPlayer (presets y mezclas creadas en el Mezclador) ── */}
+      {(!isMixerOpen || activeSounds.length > 0) && (
         <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
       )}
 

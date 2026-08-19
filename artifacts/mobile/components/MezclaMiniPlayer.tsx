@@ -42,14 +42,21 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
   const prevIdRef      = useRef<string | null>(null);
   const expandMounted  = useRef(false);
 
-  const visible      = !!(loadedPresetId && activeSounds.length > 0);
+  // Una mezcla también puede nacer directamente desde el Mezclador, sin
+  // cargar un preset. En ese caso el primer sonido activo ya debe crear la
+  // barra con el título genérico "Tu mezcla".
+  const visible      = activeSounds.length > 0;
   const loadedPreset = presets.find((p) => p.id === loadedPresetId) ?? null;
+  const mixIdentity  = loadedPresetId ?? (visible ? "__active-mix__" : null);
 
   // ── Entrada al cargar una nueva mezcla ──────────────────────────────────────
   useEffect(() => {
-    if (!visible) return;
-    if (loadedPresetId === prevIdRef.current) return;
-    prevIdRef.current  = loadedPresetId;
+    if (!visible) {
+      prevIdRef.current = null;
+      return;
+    }
+    if (mixIdentity === prevIdRef.current) return;
+    prevIdRef.current  = mixIdentity;
     expandMounted.current = false;   // reset para el efecto de expansión
 
     closingRef.current = false;
@@ -59,7 +66,7 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
       Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
     ]).start();
-  }, [loadedPresetId, visible]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [mixIdentity, visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Expansión / colapso al abrir/cerrar la MixerSheet ───────────────────────
   useEffect(() => {
@@ -98,9 +105,12 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
     });
   };
 
-  if (!visible || !loadedPreset) return null;
+  if (!visible) return null;
 
-  const thumbSounds = loadedPreset.sounds.slice(0, 3);
+  const displaySounds = loadedPreset?.sounds ?? activeSounds;
+  const title = loadedPreset?.name ?? "Tu mezcla";
+  const soundCount = displaySounds.length;
+  const thumbSounds = displaySounds.slice(0, 3);
   const stackW      = THUMB_SZ + Math.max(0, thumbSounds.length - 1) * THUMB_OFF;
 
   return (
@@ -165,9 +175,9 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
 
         {/* ── Nombre + conteo ──────────────────────────────────────── */}
         <View style={{ flex: 1 }}>
-          <Text style={styles.title} numberOfLines={1}>{loadedPreset.name}</Text>
+          <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <Text style={styles.sub}>
-            {loadedPreset.sounds.length} sonido{loadedPreset.sounds.length !== 1 ? "s" : ""}
+            {soundCount} sonido{soundCount !== 1 ? "s" : ""}
           </Text>
         </View>
 

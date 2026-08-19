@@ -14,16 +14,17 @@ El audioBridge tiene 4 slots: session / mix / sound / **chat**. Cada uno registr
 
 Abrir el drawer del Mezclador también debe pedir exclusividad de sesión, aunque el
 usuario todavía no haya activado un sonido de la mezcla. La barra de la sesión debe
-cerrarse y no debe mostrarse ninguna barra persistente dentro o sobre el drawer.
+cerrarse inmediatamente.
 
 **Why:** el drawer queda montado sobre las tabs; sin esa transición, una sesión conserva
 su estado visual y puede aparecer como un miniplayer morado duplicado dentro del
 Mezclador.
 
 **How to apply:** tratar la apertura del Mezclador como el límite entre sesión y mezcla:
-detener la sesión mediante el coordinador y suprimir las barras globales mientras el
-drawer está abierto. Una barra de mezcla solo puede reaparecer fuera del drawer cuando
-existe una mezcla realmente activa.
+detener la sesión mediante el coordinador y suprimir su barra mientras el drawer está
+abierto. La barra de mezcla no aparece al entrar vacío, pero sí debe mostrarse al activar
+el primer sonido, incluso dentro del drawer; una mezcla manual no necesariamente tiene
+un preset cargado.
 
 ## Archivos tocados
 - `artifacts/mobile/context/audioBridge.ts` — añadido `chatStopper`, `registerChatStopper()`, `stopChatPlayback()`
