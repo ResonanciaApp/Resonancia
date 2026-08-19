@@ -222,10 +222,10 @@
       <h2>Resumen ejecutivo</h2>
       <p class="lead">
         De los 15 hallazgos del informe de auditoría,
-        <b>los 3 críticos están resueltos</b>, junto con la mayoría de los de
-        severidad alta. Cada resolución fue verificada directamente contra el
-        código actual, no contra intención de trabajo. Quedan tres frentes
-        acotados y ya identificados como próximos pasos.
+        <b>12 están completamente resueltos</b>, incluyendo los 3 críticos y
+        todos los de severidad alta. Cada resolución fue verificada
+        directamente contra el código actual, no contra intención de trabajo.
+        Quedan tres frentes acotados de severidad media/baja.
       </p>
 
       <div class="summary">
@@ -234,11 +234,11 @@
           <div class="l">Críticos resueltos</div>
         </div>
         <div class="card">
-          <div class="n">10</div>
+          <div class="n">12</div>
           <div class="l">Hallazgos resueltos</div>
         </div>
         <div class="card">
-          <div class="n">2</div>
+          <div class="n">0</div>
           <div class="l">Parcialmente resueltos</div>
         </div>
         <div class="card">
@@ -275,12 +275,13 @@
             Crossfade artesanal duplicado en mezclador y reproductor de sesiones
           </td>
           <td><span class="badge b-crit">CRÍTICO</span></td>
-          <td><span class="part">PARCIAL</span></td>
+          <td><span class="ok">RESUELTO</span></td>
           <td>
-            El mezclador quedó consolidado sobre el motor gapless (loop sin
-            costura, sin timers de deriva). El reproductor de sesiones aún
-            conserva su crossfade de dos capas propio; su migración al motor es
-            el siguiente paso de consolidación de audio.
+            El crossfade artesanal del reproductor de sesiones fue eliminado.
+            Las sesiones de loop (<i>LOOP_SESSIONS</i>) suenan ahora íntegramente
+            por <i>bpmAudioEngine</i>, con el reproductor expo-audio actuando
+            como ancla muda para la pantalla de bloqueo. No existe ningún
+            crossfade de timers JS en ninguna ruta de reproducción.
           </td>
         </tr>
         <tr>
@@ -288,12 +289,14 @@
             Cambio de sesión como carrera suprimida por guardas, no resuelta
           </td>
           <td><span class="badge b-high">ALTO</span></td>
-          <td><span class="part">PARCIAL</span></td>
+          <td><span class="ok">RESUELTO</span></td>
           <td>
-            Las guardas fueron reforzadas y sistematizadas (pausa de la pista
-            anterior, bloqueo de eventos cruzados); no se observan fugas de
-            posición entre sesiones en uso real. El rediseño determinista
-            completo queda ligado a la migración del reproductor al motor.
+            Implementado un token de generación de reproducción
+            (<i>mainPlayerGenRef</i>) que sella cada llamada a
+            <i>replace()</i>: el listener nativo descarta en el hilo de UI
+            cualquier evento de una generación anterior, eliminando la carrera
+            por diseño. El guard <i>switchingRef</i> permanece como segunda
+            línea de defensa.
           </td>
         </tr>
         <tr>
@@ -525,17 +528,16 @@
       <h2>Próximos pasos propuestos</h2>
       <ol>
         <li>
-          <b>Consolidación final de audio</b> — migrar el crossfade del
-          reproductor de sesiones al motor gapless (cierra los dos hallazgos
-          parciales de audio a la vez).
-        </li>
-        <li>
           <b>Actividades presenciales</b> — conectar a datos reales o retirar
           del release inicial.
         </li>
         <li>
           <b>Configuración de submission</b> — credenciales de App Store / Play
           Store para el envío.
+        </li>
+        <li>
+          <b>Limpieza de código</b> — eliminar pantallas muertas y código
+          duplicado de forma incremental antes del release.
         </li>
       </ol>
 
