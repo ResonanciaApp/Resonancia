@@ -180,11 +180,13 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     : sceneTheme.gradient;
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
-  // Índigo usa los mismos botones que Tíbet (blanco #F9F9F9, texto oscuro).
-  const isIndigoPlayBtn = false;
-  const playBtnColors: [string, string, ...string[]] = ["#F9F9F9", "#F9F9F9"];
-  const playBtnTextColor = "#0d0c26";
-  const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : sceneTheme.id === "tibet" ? "#F9F9F9" : "#F9F9F9";
+  const isIndigoPlayBtn = sceneTheme.id === "indigo";
+  const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
+    ? ["#283673", "#283673"]
+    : ["#F9F9F9", "#F9F9F9"];
+  const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
+  const shareBtnTextColor = "#F9F9F9";
+  const shareBtnBorder = isIndigoPlayBtn ? "#283673" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -538,9 +540,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 onPress={handleShare}
                 style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: shareBtnAccent }]}>
-                  <Text style={[styles.shareBtnText, { color: shareBtnAccent }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={shareBtnAccent} />
+                <View style={[styles.shareBtnInner, { borderColor: shareBtnBorder }]}>
+                  <Text style={[styles.shareBtnText, { color: shareBtnTextColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={shareBtnTextColor} />
                 </View>
               </Pressable>
             </>
@@ -572,9 +574,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 onPress={handleShare}
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: isIndigoPlayBtn ? "#8260B5" : shareBtnAccent, flex: 1 }]}>
-                  <Text style={[styles.shareBtnText, { color: isIndigoPlayBtn ? "#D9BFFF" : shareBtnAccent }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={isIndigoPlayBtn ? "#D9BFFF" : shareBtnAccent} />
+                <View style={[styles.shareBtnInner, { borderColor: shareBtnBorder, flex: 1 }]}>
+                  <Text style={[styles.shareBtnText, { color: shareBtnTextColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={shareBtnTextColor} />
                 </View>
               </Pressable>
             </View>
