@@ -46,6 +46,7 @@ export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
   const openSession = (sid: string) => {
     const s = getSessionById(sid);
     if (s?.skipMiniPlayer) { playSession(s); return; }
+    if (s?.skipDetail) { playSession(s); router.push("/player" as never); return; }
     if (overlay) overlay.openCategory(`/session/${sid}`);
     else router.push(`/session/${sid}` as never);
   };

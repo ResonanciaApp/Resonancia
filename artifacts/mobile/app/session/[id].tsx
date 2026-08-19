@@ -140,6 +140,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const openSession = (sid: string) => {
     const s = getSessionById(sid);
     if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
+    if (s?.skipDetail) { playSession(s); router.push("/player" as never); return; }
     if (overlay) overlay.openCategory(`/session/${sid}`);
     else router.push(`/session/${sid}` as never);
   };

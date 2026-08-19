@@ -504,6 +504,7 @@ export default function ResonadorPerfilScreen() {
                     key={session.id}
                     onPress={() => {
                       if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
+                      if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
                       router.push(`/session/${session.id}` as never);
                     }}
                     style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}

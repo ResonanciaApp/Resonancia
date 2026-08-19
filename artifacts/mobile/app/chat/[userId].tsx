@@ -757,6 +757,7 @@ function MessageBubble({
         <Pressable
           onPress={() => {
             if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
+            if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
             router.push(`/session/${session.id}`);
           }}
           style={[

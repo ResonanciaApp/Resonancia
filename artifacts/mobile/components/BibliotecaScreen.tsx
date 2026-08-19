@@ -471,6 +471,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
     onClose();
     if (result.kind === "session") {
       if (result.data.skipMiniPlayer && !(result.data.isPremium && !libIsPremium)) { playSession(result.data); return; }
+      if (result.data.skipDetail) { playSession(result.data); router.push("/player" as never); return; }
       if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never);
     }
     else if (result.kind === "playlist") openPlaylistPanel(result.data.id);

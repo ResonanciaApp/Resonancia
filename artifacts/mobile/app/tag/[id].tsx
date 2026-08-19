@@ -234,6 +234,7 @@ export default function TagScreen({ id: idProp }: { id?: string } = {}) {
                   overridePress={() => {
                     if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }
                     if (session.skipMiniPlayer) { playSession(session); return; }
+                    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
                     if (overlay) overlay.openCategory(`/session/${session.id}`);
                     else router.push(`/session/${session.id}` as never);
                   }}

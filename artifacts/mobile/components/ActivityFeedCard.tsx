@@ -127,6 +127,7 @@ export function ActivityFeedCard({ event }: Props) {
           onPress={() => {
             const s = SESSIONS.find((x) => String(x.id) === String(event.payload.sessionId));
             if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
+            if (s?.skipDetail) { playSession(s); router.push("/player" as never); return; }
             if (overlay) overlay.openCategory(`/session/${event.payload.sessionId}`);
             else router.push(`/session/${event.payload.sessionId}` as never);
           }}

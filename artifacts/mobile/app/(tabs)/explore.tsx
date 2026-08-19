@@ -243,6 +243,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                   onPress={() => {
                     onClose();
                     if (item.skipMiniPlayer && !(item.isPremium && !srIsPremium)) { playSession(item); return; }
+                    if (item.skipDetail) { playSession(item); router.push("/player" as never); return; }
                     openCategory(`/session/${item.id}`);
                   }}
                   style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
