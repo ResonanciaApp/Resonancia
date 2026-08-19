@@ -20,7 +20,7 @@
 - [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
 - [MixerSheet save-popup fade](mixer-sheet-fade.md) — un popup que es <Modal> aparte NO puede desvanecer sincronizado con el contenido detrás (su backdrop lo aclara); ponerlo in-tree dentro del mismo Animated.View de opacidad
-- [Player play-generation token](player-play-generation.md) — todo callback asíncrono del reproductor verifica playGenRef; switchingRef solo filtra el status listener nativo; paths sin main limpian isLoading explícito
+- [Player play-generation token](player-play-generation.md) — mainPlayerGenRef sella la generación en replace(); listener descarta eventos nativos stale con early-exit; switchingRef queda como belt-and-suspenders (no es el guard principal); first-tick-skip eliminado
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Mixer loop + lock-screen mirror](mixer-loop-and-lockscreen.md) — seamless crossfade loop, idle-player cache for instant re-tap, lock-screen owner mirror; no full-volume warmup
 - [Crossfade B-entry click fix](crossfade-b-entry-click.md) — fade de entrada de B requiere setInterval a 16ms, NO Date.now() inline en el listener (iOS ticks cada ~200ms → bEntry ya vale 1 en el primer tick siguiente)

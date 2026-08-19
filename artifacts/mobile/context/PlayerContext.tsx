@@ -275,6 +275,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
    *  que no puede capturar una generación. Toda liberación de este flag en un
    *  camino asíncrono debe estar gateada por la generación vigente. */
   const switchingRef = useRef(false);
+  /** Generation stamped onto the main player at replace() time. Status events
+   *  from the native pipeline don't carry a generation; we compare this ref
+   *  against playGenRef at the top of handleMainStatus to discard events from
+   *  a prior track before they touch any state — eliminates the stale-event
+   *  race window that switchingRef alone couldn't fully close. */
+  const mainPlayerGenRef = useRef(0);
 
   // Keep latest isPlaying in a ref so timer callbacks see the current value
   const isPlayingRef = useRef(false);
@@ -574,11 +580,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Mientras switchingRef está activo, este evento puede ser un status
-      // encolado del track ANTERIOR (con su duración vieja, aún válida): no
-      // debe limpiar el loading nuevo ni activar el lock-screen pendiente de
-      // la sesión nueva con datos del track viejo. El primer tick post-switch
-      // consume el flag más abajo; del segundo en adelante es seguro.
+      // Descarta eventos del track anterior: mainPlayerGenRef almacena la
+      // generación que llamó a main.replace(); si no coincide con la vigente
+      // el evento viene del track viejo y se ignora antes de tocar estado.
+      if (mainPlayerGenRef.current !== playGenRef.current) return;
+
+      // Mientras switchingRef está activo el track nuevo aún no tiene duración
+      // real: no activar lock-screen ni limpiar loading hasta que se libere.
       if (!switchingRef.current) {
         // Clear loading once the track is ready
         setIsLoading(false);
@@ -659,10 +667,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (!switchingRef.current) setIsPlaying(status.playing);
       }
 
-      // Loop/duration sessions (incl. crossfade loops) are driven by the session
-      // countdown interval, not the audio position. The audio loops underneath
-      // (seamlessly via crossfade); the progress bar tracks the chosen session
-      // length so it advances monotonically and never resets per loop cycle.
+      // Loop/duration sessions son guiadas por el intervalo de cuenta atrás,
+      // no por la posición del audio. El audio repite gapless por debajo (motor
+      // nativo); la barra sigue la duración elegida sin saltos por vuelta.
       if (loopModeRef.current) return;
 
       const dur = status.duration ?? 0;
@@ -674,20 +681,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (dur > 0) {
           const target = pendingSeekRef.current * dur;
           pendingSeekRef.current = null;
-          switchingRef.current = false;
           setActualDurationSeconds(Math.floor(dur));
           mainPlayerRef.current?.seekTo(target).catch(() => {});
         }
         return;
       }
 
-      // Skip the first tick after a session switch so the previous track's
-      // position is never attributed to the new session
-      if (switchingRef.current) {
-        switchingRef.current = false;
-        if (dur > 0) setActualDurationSeconds(Math.floor(dur));
-        return;
-      }
+      // (El "first-tick skip" ya no es necesario: mainPlayerGenRef descarta
+      //  cualquier evento de un track anterior antes de llegar aquí.)
 
       if (dur > 0) {
         setActualDurationSeconds(Math.floor(dur));
@@ -1252,6 +1253,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           const main = ensureMainPlayer();
           main.loop = false;
           pendingSeekRef.current = resumeFraction > 0 ? resumeFraction : null;
+          mainPlayerGenRef.current = gen; // sella la generación antes del replace
           main.replace(audioFile);
           main.volume = mainVolumeRef.current;
           main.play();
@@ -1425,6 +1427,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             loopFallbackRef.current = false;
 
             main.loop = true;
+            mainPlayerGenRef.current = gen; // sella la generación antes del replace
             main.replace(audioFile);
             main.volume = 0; // ancla muda: el audio audible sale del motor
             main.play();
@@ -1466,8 +1469,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             switchingRef.current = false;
 
             // La barra refleja la duración elegida de la sesión (monótona, sin
-            // saltos por vuelta del loop). El audio sigue en loop por debajo con
-            // crossfade; este intervalo cuenta el tiempo de sesión y auto-apaga.
+            // saltos por vuelta del loop). El audio repite gapless por debajo
+            // (motor nativo); este intervalo cuenta el tiempo de sesión y auto-apaga.
             simIntervalRef.current = setInterval(() => {
               if (gen !== playGenRef.current) return; // sesión cambiada: tick huérfano
               setElapsed((prev) => {
@@ -1498,6 +1501,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           } else {
             // ── Sesión de duración fija sin loop (sin crossfade) ──
             main.loop = false;
+            mainPlayerGenRef.current = gen; // sella la generación antes del replace
             main.replace(audioFile);
             main.volume = mainVolumeRef.current;
             main.play();
@@ -1511,8 +1515,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             lastPlayingRef.current = true;
             setIsPlaying(true);
             markPlayStarted();
-            // Progress is interval-driven (no position attribution risk), so the
-            // switch guard can be released immediately to let lock-screen toggles reflect in the UI
+            // Progress is interval-driven; release the switch guard immediately
+            // so lock-screen play/pause toggles are reflected in the UI.
             switchingRef.current = false;
 
             // Drive progress with a countdown interval
