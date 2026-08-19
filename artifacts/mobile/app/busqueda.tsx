@@ -41,7 +41,7 @@ export type DurSlotLabel = (typeof DURATION_SLOTS)[number]["label"];
 
 const CATEGORY_OPTIONS = [
   { label: "Meditaciones", categoryId: "meditaciones-guiadas" },
-  { label: "Sesiones",     categoryId: "sonidos-ancestrales" },
+  { label: "Sonoterapia",  categoryId: "sonidos-ancestrales" },
   { label: "Música",       categoryId: "musica-sonidos" },
   { label: "Dormir",       categoryId: "descanso" },
 ] as const;

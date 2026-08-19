@@ -98,7 +98,7 @@ const { width, height } = Dimensions.get("window");
 const TODOS_TAB_ID = "todos";
 const NAV_TABS = [
   { id: "meditaciones",  label: "Meditaciones",   cats: ["meditaciones-guiadas"] },
-  { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
+  { id: "sesiones",      label: "Sonoterapia",  cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
 ];
 const GRID_GAP = 12;
@@ -1228,7 +1228,7 @@ export default function HomeScreen2() {
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20, justifyContent: "center" }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
-              { id: "sonidos-ancestrales",  label: "Sesiones",   color: "#E7A36E", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
+              { id: "sonidos-ancestrales",  label: "Sonoterapia", color: "#E7A36E", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
               { id: "musica-sonidos",        label: "Música",     color: "#6FD7D8", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
               { id: "__descanzo__",           label: "Dormir",     color: "#8ED9FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 22, height: 22 }} contentFit="contain" tintColor="#f9f9f9" /> },
               { id: "__mezcla__",             label: "Mezclador",  color: "#E6BE67", icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },

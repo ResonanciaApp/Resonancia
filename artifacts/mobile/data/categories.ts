@@ -13,7 +13,7 @@ export type Category = {
 export const CATEGORIES: Category[] = [
   {
     id: "sonidos-ancestrales",
-    title: "Sesiones",
+    title: "Sonoterapia",
     subtitle: "Cuencos, gongs y frecuencias sagradas",
     icon: "bowl-mix",
     iconFamily: "MaterialCommunityIcons",

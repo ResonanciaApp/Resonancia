@@ -473,7 +473,7 @@ export default function SonidosAncestalesScreen() {
     if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
-        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Sesiones"}</Text>
+        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Sonoterapia"}</Text>
         <Text style={styles.emptySub}>Estamos preparando este espacio con las mejores sesiones sonoras.</Text>
       </View>
     );
@@ -550,7 +550,7 @@ export default function SonidosAncestalesScreen() {
             onPress={() => setAllVisible(true)}
             style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
           >
-            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>Todos los Sonidos Ancestrales</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>Toda la Sonoterapia</Text>
             <Feather name="chevron-right" size={16} color="#F9F9F9" />
           </Pressable>
         )}
@@ -603,7 +603,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Sesiones</Text>
+          <Text style={styles.profileTitle}>Sonoterapia</Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -626,7 +626,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.stickyHeaderRow}>
           <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Sesiones</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Sonoterapia</Text>
           </View>
           <View style={{ width: 40 }} />
         </View>
@@ -641,7 +641,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sesiones..." />
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sonoterapia..." />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
@@ -655,7 +655,7 @@ export default function SonidosAncestalesScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Todos los Sonidos Ancestrales</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Toda la Sonoterapia</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
             {getSessionsForTab(null).map((s) => (

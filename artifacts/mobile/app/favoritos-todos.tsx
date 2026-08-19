@@ -33,7 +33,7 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 const FAV_TABS = [
-  { id: "sesiones",     label: "Sesiones",     categoryId: "sonidos-ancestrales" },
+  { id: "sesiones",     label: "Sonoterapia",  categoryId: "sonidos-ancestrales" },
   { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
   { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
   { id: "dormir",       label: "Dormir",       categoryId: "descanso" },

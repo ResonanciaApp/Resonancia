@@ -62,7 +62,7 @@ import {
 // ── Constantes de taxonomía ────────────────────────────────────────────────
 
 const CATS = [
-  { id: "sonidos-ancestrales", label: "Sesiones",  categoryLabel: "Sesiones", color: "#D4AF37" },
+  { id: "sonidos-ancestrales", label: "Sonoterapia", categoryLabel: "Sonoterapia", color: "#D4AF37" },
   { id: "descanso", label: "Dormir", categoryLabel: "Dormir", color: "#8AAAD4" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
   { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },

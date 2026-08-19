@@ -35,7 +35,7 @@ import { useVideos } from "@/hooks/useVideos";
 
 // ── Constantes ────────────────────────────────────────────────────
 const TABS = [
-  { id: "sesiones" as const, label: "Sesiones" },
+  { id: "sesiones" as const, label: "Sonoterapia" },
   { id: "mezclas"  as const, label: "Mezclas"  },
   { id: "videos"   as const, label: "Videos"   },
   { id: "musica"   as const, label: "Música"   },

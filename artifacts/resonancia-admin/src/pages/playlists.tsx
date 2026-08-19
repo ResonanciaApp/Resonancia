@@ -89,7 +89,7 @@ function toSlug(text: string) {
 const SESSION_CATEGORY_TABS = [
   { id: "todas", label: "Todas" },
   { id: "meditaciones-guiadas", label: "Meditaciones" },
-  { id: "sonidos-ancestrales", label: "Sesiones" },
+  { id: "sonidos-ancestrales", label: "Sonoterapia" },
 ] as const;
 
 function SessionPicker({
