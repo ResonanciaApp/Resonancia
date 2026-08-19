@@ -462,7 +462,7 @@ export default function MezcladorScreen() {
   const { sounds: allSounds, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
   const { isMixerOpen, closeMixer } = useMixerPanel();
-  const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId } = useMixer();
+  const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId, pauseMix } = useMixer();
   const { lastSavedAt } = useSaveEvent();
   const { theme } = useSceneTheme();
 
@@ -609,6 +609,16 @@ export default function MezcladorScreen() {
         setTabBarColors(null);
       };
     }, [isMixerOpen, requestHide, showMenu, setTabBarColors]),
+  );
+
+  // Al abandonar la pantalla, pausar sin destruir la mezcla. Se mantiene en
+  // memoria para que el miniplayer y el botón Play puedan retomarla después.
+  // Este efecto es independiente del estado del panel: abrir/cerrar el panel
+  // no debe provocar una pausa accidental.
+  useFocusEffect(
+    useCallback(() => {
+      return () => pauseMix();
+    }, [pauseMix]),
   );
 
   const [bannerIdx,     setBannerIdx]     = useState(0);

@@ -15,3 +15,17 @@ cleanup never runs on a tab switch and the loop keeps playing in other tabs. Wit
 `useFocusEffect(useCallback(() => () => { stopSound(); setActiveSound(null); }, [stopSound]))`
 in addition to the unmount cleanup. Also reset the "active" UI state when the audio
 source is missing, or the thumbnail shows active with no player.
+
+## Global mixer exception: pause, never stop, on blur
+
+The mixer is shared app state rather than screen-local audio. When the mixer screen loses
+focus, it must call an explicit idempotent pause operation, not its toggle and not its
+destructive stop path.
+
+**Why:** a tab-focus cleanup can run more than once during navigation. A toggle can
+accidentally resume playback; stopping would discard the user's selected sounds, volumes,
+preset, and miniplayer state.
+
+**How to apply:** keep the focus effect independent from panel open/close state (whose
+changes also rerun effect cleanups). The pause operation only changes playback state and
+keeps players and mix metadata intact, so playback resumes solely after an explicit Play.

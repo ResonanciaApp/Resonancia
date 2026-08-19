@@ -158,6 +158,8 @@ type MixerContextType = {
   reorderSounds: (from: number, to: number) => void;
   isPlaying: boolean;
   togglePlay: () => void;
+  /** Pausa la mezcla sin quitar sonidos, preset, volúmenes ni miniplayer. */
+  pauseMix: () => void;
   stopAll: () => void;
   presets: MixPreset[];
   savePreset: (input: SaveMixInput) => void;
@@ -1534,6 +1536,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     if (next) syncLockScreen();
   }, [applyPlaying, syncLockScreen]);
 
+  /**
+   * Pausa explícita e idempotente para perder el foco de la pantalla.
+   * A diferencia de togglePlay, una ejecución repetida nunca puede reanudar
+   * accidentalmente la mezcla. Los players permanecen cargados y las refs del
+   * preset/sonidos no se tocan, por lo que el miniplayer sigue disponible.
+   */
+  const pauseMix = useCallback(() => {
+    if (!isPlayingRef.current) return;
+    applyPlaying(false);
+  }, [applyPlaying]);
+
   const stopAll = useCallback(() => {
     // Liberar el BPM activo y detener el motor nativo.
     bpmValueRef.current = null;
@@ -2056,6 +2069,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         reorderSounds,
         isPlaying,
         togglePlay,
+        pauseMix,
         stopAll,
         presets,
         savePreset,
