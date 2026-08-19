@@ -24,19 +24,8 @@ Mezclador.
 detener la sesión mediante el coordinador y suprimir su barra mientras el drawer está
 abierto. La barra de mezcla no aparece al entrar vacío, pero sí debe mostrarse al activar
 el primer sonido, incluso dentro del drawer; una mezcla manual no necesariamente tiene
-un preset cargado.
-
-## Capas del miniplayer de mezcla
-
-La barra de mezcla persistente es hermana del drawer, no hija del panel. Debe tener una
-capa visual superior al drawer para que no quede montada pero invisible.
-
-**Why:** el panel del Mezclador usa una capa elevada; el orden JSX no basta cuando el
-panel tiene prioridad de apilamiento.
-
-**How to apply:** si se mantiene la barra fuera del panel para reutilizarla entre pantallas,
-darle una prioridad visual mayor que el drawer y mantener sus controles táctiles por
-encima de él.
+un preset cargado. Dentro del drawer debe usarse el diseño compacto propio del Mezclador
+en modo mezcla forzado, no la barra persistente de presets que se parece a una sesión.
 
 ## Archivos tocados
 - `artifacts/mobile/context/audioBridge.ts` — añadido `chatStopper`, `registerChatStopper()`, `stopChatPlayback()`

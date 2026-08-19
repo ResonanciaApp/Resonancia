@@ -83,7 +83,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
   );
 }
 
-export function MiniPlayer() {
+export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
   const { activeSceneId } = useSceneTheme();
   const tibetTint = null;
   const { currentSession, isPlaying, isLoading, progress, pauseResume } = usePlayer();
@@ -120,7 +120,8 @@ export function MiniPlayer() {
   // ── Ondas sutiles ──────────────────────────────────────────────
   const wave1 = useRef(new Animated.Value(0)).current;
   const wave2 = useRef(new Animated.Value(0)).current;
-  const activeIsPlaying = currentSession ? isPlaying : mixPlaying;
+  const displaySession = forceMix ? null : currentSession;
+  const activeIsPlaying = displaySession ? isPlaying : mixPlaying;
 
   useEffect(() => {
     const makeLoop = (val: Animated.Value, delay: number) =>
@@ -141,7 +142,7 @@ export function MiniPlayer() {
     }
   }, [activeIsPlaying, wave1, wave2]);
 
-  const mixActive = !currentSession && activeSounds.length > 0;
+  const mixActive = !displaySession && activeSounds.length > 0;
 
   // ── Entrada del miniplayer al activar el primer sonido ─────────
   const entryAnim     = useRef(new Animated.Value(0)).current;
@@ -232,7 +233,7 @@ export function MiniPlayer() {
     }
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!currentSession && !mixActive) {
+  if (!displaySession && !mixActive) {
     // El miniplayer del Mezclador solo aparece con el primer sonido activo.
     return null;
   }
@@ -372,13 +373,13 @@ export function MiniPlayer() {
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.row}>
-        <Image source={currentSession!.image} style={styles.art} resizeMode="cover" />
+        <Image source={displaySession!.image} style={styles.art} resizeMode="cover" />
         <View style={styles.info}>
           <Text style={[styles.title, { color: "#FFFFFF" }]} numberOfLines={1}>
-            {currentSession!.title}
+            {displaySession!.title}
           </Text>
           <Text style={[styles.sub, { color: "#F4F4F4" }]} numberOfLines={1}>
-            {currentSession!.categoryLabel} · {currentSession!.durationLabel}
+            {displaySession!.categoryLabel} · {displaySession!.durationLabel}
           </Text>
         </View>
         <View style={styles.waveWrap}>

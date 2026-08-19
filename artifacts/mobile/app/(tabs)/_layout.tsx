@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { MiniPlayer } from "@/components/MiniPlayer";
 import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
@@ -589,6 +590,11 @@ function TabLayoutInner() {
         style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
       >
         <MezcladorScreen />
+        {activeSounds.length > 0 && (
+          <View style={styles.miniPlayerFloat} pointerEvents="box-none">
+            <MiniPlayer forceMix />
+          </View>
+        )}
       </Animated.View>
       <Animated.View
         pointerEvents={isMixerOpen ? "auto" : "none"}
@@ -616,7 +622,7 @@ function TabLayoutInner() {
       )}
 
       {/* ── MezclaMiniPlayer (presets y mezclas creadas en el Mezclador) ── */}
-      {(!isMixerOpen || activeSounds.length > 0) && (
+      {!isMixerOpen && (
         <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
       )}
 
@@ -778,6 +784,12 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 99,
     backgroundColor: "rgba(255,255,255,0.18)",
+  },
+  miniPlayerFloat: {
+    position: "absolute",
+    left: PILL_MARGIN_H,
+    right: PILL_MARGIN_H,
+    bottom: 29,
   },
   mixerPanel: {
     position: "absolute",
