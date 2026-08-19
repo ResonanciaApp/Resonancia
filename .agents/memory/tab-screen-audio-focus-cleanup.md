@@ -31,3 +31,6 @@ changes also rerun effect cleanups), but also observe the mixer drawer's actual
 `open → closed` transition: it stays mounted, so closing it does not blur the route.
 The pause operation only changes playback state and keeps players and mix metadata intact,
 so playback resumes solely after an explicit Play.
+
+This drawer-transition plus focus-cleanup pattern has been confirmed working in the
+Mezclador.
