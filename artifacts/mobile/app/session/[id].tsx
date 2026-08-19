@@ -182,7 +182,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const stickyHeaderColor = sessionGradient[0];
   const isIndigoPlayBtn = sceneTheme.id === "indigo";
   const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["#6757C8", "#6757C8"]
+    ? ["#5146A8", "#5146A8"]
     : ["#F9F9F9", "#F9F9F9"];
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
