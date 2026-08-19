@@ -186,7 +186,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     : ["#F9F9F9", "#F9F9F9"];
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
-  const shareBtnBorder = isIndigoPlayBtn ? "#283673" : "#F9F9F9";
+  const shareBtnBorder = "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
