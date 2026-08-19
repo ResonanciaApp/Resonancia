@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(218,212,236,0.1)",
+    backgroundColor: "#5146A8",
     borderRadius: 30,
     borderWidth: 1,
     borderColor: "rgba(218,212,236,0.25)",
