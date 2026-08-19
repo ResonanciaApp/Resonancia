@@ -184,6 +184,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
     ? ["#5146A8", "#5146A8"]
     : ["#F9F9F9", "#F9F9F9"];
+  const listenNowBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
+    ? ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]
+    : playBtnColors;
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
   const shareBtnBorder = isIndigoPlayBtn ? "#6757C8" : "#F9F9F9";
@@ -553,10 +556,20 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 onPress={handlePlay}
                 style={({ pressed }) => [
                   styles.playBtn,
-                  { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
+                  {
+                    flex: 1,
+                    overflow: "hidden",
+                    opacity: pressed ? 0.88 : 1,
+                    ...(isIndigoPlayBtn
+                      ? {
+                          borderWidth: 2,
+                          borderColor: "rgba(255,255,255,0.10)",
+                        }
+                      : {}),
+                  },
                 ]}
               >
-                <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
