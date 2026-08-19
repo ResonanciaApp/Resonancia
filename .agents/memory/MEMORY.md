@@ -49,6 +49,7 @@
 - [Shared-mix likes consistency](shared-mix-likes-consistency.md) — feed ordena por likes DESC + trending=likes>=3; columna likes denormalizada se recalcula bajo row lock (.for("update")); compartir exige min 2 sonidos
 - [Mixer sounds DB system](mixer-sounds-db.md) — sonidos gestionados desde DB; SOUND_MAP (bundle) → REMOTE_SOUND_MAP (API) como fallback en MixerContext; SoundsContext fusiona local + DB al init
 - [Recientes/Nuevas ordering](recientes-sort-by-id.md) — listas "más recientes/nuevas" deben sort por parseInt(id) desc + dep en useCatalog().version, o las sesiones de DB (SESSIONS.push runtime) no salen primeras
+- [Skip-flags only-if-true](skip-flags-only-if-true.md) — snapshot solo aplica skipDetail/skipMiniPlayer/isLoop si remoto true (false clobbea defaults de categoría); miniplayer trigger ANTES del return isLoop; form admin bloquea solo hidratación inicial
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
 - [Tab bar hide on Geometrix](tab-bar-hide-geometrix.md) — menú inferior se esconde en Geometrix vía contexto compartido + pestañita para recuperarlo (es la única navegación entre tabs: no atrapar al usuario)

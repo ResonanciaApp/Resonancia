@@ -1390,11 +1390,15 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.isFeaturedCategory = r.isFeaturedCategory ?? false;
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
-    local.skipDetail = r.skipDetail ?? false;
-    local.skipMiniPlayer = r.skipMiniPlayer ?? false;
+    // La BD no distingue "nunca tocado" de "explícitamente false" (columna
+    // boolean default false). Solo aplicar cuando viene true: un false NO debe
+    // clobbear los skipDetail:true bundleados ni el default por categoría de
+    // SessionCard (skipDetail !== false), que un false explícito rompería.
+    if (r.skipDetail) local.skipDetail = true;
+    if (r.skipMiniPlayer) local.skipMiniPlayer = true;
     // Complemento del Set hardcodeado LOOP_SESSIONS: solo fijar si viene true
     // (no clobbear a false las sesiones bundleadas que loopean por el Set).
-    if (r.isLoop != null) local.isLoop = r.isLoop;
+    if (r.isLoop) local.isLoop = true;
     local.frequency = r.frequency ?? undefined;
     local.soundTag = (r.soundTag ?? undefined) as SoundTag | undefined;
     local.meditationTag = (r.meditationTag ?? undefined) as MeditationTag | undefined;
@@ -1459,9 +1463,12 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       isFeaturedCategory: r.isFeaturedCategory ?? false,
       isNew: r.isNew,
       isPremium: r.isPremium,
-      skipDetail: r.skipDetail ?? false,
-      skipMiniPlayer: r.skipMiniPlayer ?? false,
-      isLoop: r.isLoop ?? false,
+      // false de la BD → undefined: así aplican los defaults por categoría
+      // (p.ej. SessionCard manda sonidos-ancestrales directo al player salvo
+      // skipDetail === false explícito, que la BD no puede expresar).
+      skipDetail: r.skipDetail ? true : undefined,
+      skipMiniPlayer: r.skipMiniPlayer ? true : undefined,
+      isLoop: r.isLoop ? true : undefined,
       frequency: r.frequency ?? undefined,
       soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,
       meditationTag: (r.meditationTag ?? undefined) as MeditationTag | undefined,

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useGetAdminSession, getGetAdminSessionQueryKey } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,17 @@ export default function SesionEditarPage() {
     query: { queryKey: getGetAdminSessionQueryKey(id), enabled: !!id },
   });
 
-  // Mostrar spinner durante carga inicial Y durante refetch en background.
-  // Sin esto, React Query sirve el caché viejo mientras refetch corre en
-  // silencio y SessionForm inicializa useState desde valores obsoletos.
-  if (isLoading || isFetching) return <Spinner />;
+  // Esperar a que termine el PRIMER fetch tras montar antes de renderizar el
+  // formulario: React Query sirve caché stale mientras refetch corre en
+  // silencio y SessionForm inicializaría useState con valores obsoletos.
+  // Solo se bloquea la hidratación inicial — una vez montado el formulario,
+  // los refetch en background NO lo desmontan (no se pierden ediciones).
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    if (!isFetching && data) setHydrated(true);
+  }, [isFetching, data]);
+
+  if (isLoading || (!hydrated && isFetching)) return <Spinner />;
 
   if (isError || !data) {
     return (
