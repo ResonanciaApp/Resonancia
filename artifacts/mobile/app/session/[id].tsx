@@ -558,18 +558,20 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                   styles.playBtn,
                   {
                     flex: 1,
-                    overflow: "hidden",
                     opacity: pressed ? 0.88 : 1,
                     ...(isIndigoPlayBtn
                       ? {
                           borderWidth: 2,
-                          borderColor: "rgba(255,255,255,0.10)",
+                          borderColor: "#F9F9F9",
                         }
                       : {}),
                   },
                 ]}
               >
-                <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                {/* gradiente en View propio con overflow hidden para no recortar el borde */}
+                <View style={[StyleSheet.absoluteFill, { borderRadius: styles.playBtn.borderRadius, overflow: "hidden" }]}>
+                  <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                </View>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
