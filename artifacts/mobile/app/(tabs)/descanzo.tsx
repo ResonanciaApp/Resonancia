@@ -26,6 +26,7 @@ import { getSessionsByDescansoTag, getSessionById } from "@/data/sessions";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -791,9 +792,7 @@ export default function DescansoScreen() {
                 >
                   <View style={{ width: "100%", aspectRatio: 1, borderRadius: 17, overflow: "hidden" }}>
                     <Image source={s.image as number} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
-                    <View style={{ position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                      <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" }}>{s.durationLabel}</Text>
-                    </View>
+                    <SessionDurationBadge label={s.durationLabel} style={{ position: "absolute", bottom: 8, left: 8 }} />
                     {locked && (
                       <View style={{ position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" }}>
                         <Feather name="lock" size={9} color="#fff" />

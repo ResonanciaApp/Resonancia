@@ -21,6 +21,7 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 type Props = {
   session: Session;
@@ -166,9 +167,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {locked && <LockStar />}
         {showDuration && (
-          <View style={styles.durationBadge}>
-            <Text style={styles.durationBadgeText}>{session.durationLabel}</Text>
-          </View>
+          <SessionDurationBadge
+            label={session.durationLabel}
+            style={styles.durationBadge}
+            textStyle={styles.durationBadgeText}
+          />
         )}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
@@ -246,6 +249,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 8,
+    borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 2,
   },

@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -120,7 +121,7 @@ function CategoryCard({
         style={({ pressed }) => [ac.lCard, { opacity: pressed ? 0.85 : 1 }]}>
         <View style={ac.lImgWrap}>
           <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
-          <View style={ac.lDurPill}><Text style={ac.lDur}>{session.durationLabel}</Text></View>
+          <SessionDurationBadge label={session.durationLabel} style={ac.lDurPill} textStyle={ac.lDur} />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
         <Text style={ac.lTitle} numberOfLines={2}>{session.title}</Text>
@@ -152,7 +153,7 @@ function CategoryCard({
       <View style={ac.imgContainer}>
         <Image source={session.image} style={ac.cardImage} contentFit="cover" />
         {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-        <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
+        <SessionDurationBadge label={session.durationLabel} style={ac.durationBadge} textStyle={ac.durationBadgeText} />
       </View>
       <Text style={ac.cardTitle} numberOfLines={2}>{session.title}</Text>
       {!!author && <Text style={ac.cardAuthor} numberOfLines={1}>{author}</Text>}
@@ -174,12 +175,12 @@ const ac = StyleSheet.create({
   cardImage: { width: "100%", height: "100%" },
   cardTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 18 },
   cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4" },
-  durationBadge: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  durationBadge: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   durationBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lockDot: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
   lCard: { width: 299 },
   lImgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
-  lDurPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  lDurPill: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   lDur: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 17, marginTop: 10 },
   lAuthor: { fontFamily: "Manrope", fontSize: 11, color: MUTED, marginTop: 3 },

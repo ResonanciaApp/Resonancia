@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SLEEP_TAG_CARDS } from "@/data/tags";
@@ -139,11 +140,11 @@ export default function SleepTagDetailScreen() {
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
                       />
-                      <View style={styles.durationBadge}>
-                        <Text style={styles.durationText}>
-                          {session.durationLabel}
-                        </Text>
-                      </View>
+                      <SessionDurationBadge
+                        label={session.durationLabel}
+                        style={styles.durationBadge}
+                        textStyle={styles.durationText}
+                      />
                       <PremiumBadge session={session} />
                     </View>
                     <Text
@@ -243,7 +244,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 7,
     left: 7,
-    backgroundColor: "rgba(0,0,0,0.62)",
     borderRadius: 6,
     paddingHorizontal: 6,
     paddingVertical: 2,

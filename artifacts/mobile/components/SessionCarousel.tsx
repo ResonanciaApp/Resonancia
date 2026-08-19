@@ -14,6 +14,7 @@ import { useColors } from "@/hooks/useColors";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
@@ -72,7 +73,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
             >
               <View style={[styles.thumbWrap, thumbStyle]}>
                 <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
-                <View style={styles.durBadge}><Text style={styles.durText}>{s.durationLabel}</Text></View>
+                <SessionDurationBadge label={s.durationLabel} style={styles.durBadge} textStyle={styles.durText} />
                 {locked && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
@@ -179,7 +180,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 8,
-    backgroundColor: "rgba(27,6,15,0.72)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,

@@ -16,6 +16,7 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -146,9 +147,11 @@ export default function SerieScreen() {
                 </View>
                 <View style={[styles.thumb, { backgroundColor: colors.card }]}>
                   <Image source={session.image as number} style={StyleSheet.absoluteFill} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-                  <View style={styles.durationBadge}>
-                    <Text style={styles.durationText}>{session.durationLabel}</Text>
-                  </View>
+                  <SessionDurationBadge
+                    label={session.durationLabel}
+                    style={styles.durationBadge}
+                    textStyle={styles.durationText}
+                  />
                   <PremiumBadge session={session} />
                 </View>
                 <View style={styles.meta}>
@@ -265,7 +268,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 4,
     left: 4,
-    backgroundColor: "rgba(0,0,0,0.62)",
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingVertical: 1,
