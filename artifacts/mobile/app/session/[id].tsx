@@ -561,8 +561,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                     opacity: pressed ? 0.88 : 1,
                     ...(isIndigoPlayBtn
                       ? {
-                          borderWidth: 2,
-                          borderColor: "rgba(249,249,249,0.15)",
                           shadowOpacity: 0,
                           shadowRadius: 0,
                           elevation: 0,
