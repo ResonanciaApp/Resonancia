@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from "react";
 import { Animated, Dimensions } from "react-native";
 import { DURATION, easeOutCubic } from "@/constants/motion";
+import { stopSessionPlayback } from "@/context/audioBridge";
 
 export const MIXER_PANEL_W = Dimensions.get("window").width;
 
@@ -31,6 +32,9 @@ export function MixerPanelProvider({ children }: { children: React.ReactNode }) 
   );
 
   const openMixer = useCallback(() => {
+    // Abrir el Mezclador es un cambio de contexto: la sesión previa no debe
+    // quedar sonando ni mantener su miniplayer debajo/dentro del drawer.
+    stopSessionPlayback();
     setIsMixerOpen(true);
     animate(true);
   }, [animate]);

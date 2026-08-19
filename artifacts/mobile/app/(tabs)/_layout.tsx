@@ -23,14 +23,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { MiniPlayer } from "@/components/MiniPlayer";
 import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { usePlayer } from "@/context/PlayerContext";
-import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -466,7 +464,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
 function TabLayoutInner() {
   const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
-  const { activeSounds }   = useMixer();
   const { playlists }      = useFoldersPlaylists();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
@@ -498,7 +495,6 @@ function TabLayoutInner() {
     outputRange: [0, 0.55],
   });
 
-  const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
   const topPad         = isWeb ? 67 : Math.max(insets.top, 40);
 
@@ -591,9 +587,6 @@ function TabLayoutInner() {
         style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
       >
         <MezcladorScreen />
-        <View style={styles.miniPlayerFloat} pointerEvents="box-none">
-          <MiniPlayer />
-        </View>
       </Animated.View>
       <Animated.View
         pointerEvents={isMixerOpen ? "auto" : "none"}
@@ -621,7 +614,9 @@ function TabLayoutInner() {
       )}
 
       {/* ── MezclaMiniPlayer (mezclas cargadas desde Biblioteca) ─────────── */}
-      <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
+      {!isMixerOpen && (
+        <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
+      )}
 
       {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
       {selectedSound && (
@@ -660,6 +655,7 @@ function TabLayoutInner() {
       <SessionMiniPlayer
         bottomOffset={miniPlayerBottom}
         topOffset={topPad}
+        suppressed={isMixerOpen}
       />
 
     </View>
@@ -780,12 +776,6 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 99,
     backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  miniPlayerFloat: {
-    position: "absolute",
-    left: PILL_MARGIN_H,
-    right: PILL_MARGIN_H,
-    bottom: 29,
   },
   mixerPanel: {
     position: "absolute",
