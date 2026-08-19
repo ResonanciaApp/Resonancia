@@ -222,10 +222,10 @@
       <h2>Resumen ejecutivo</h2>
       <p class="lead">
         De los 15 hallazgos del informe de auditoría,
-        <b>12 están completamente resueltos</b>, incluyendo los 3 críticos y
-        todos los de severidad alta. Cada resolución fue verificada
-        directamente contra el código actual, no contra intención de trabajo.
-        Quedan tres frentes acotados de severidad media/baja.
+        <b>13 están completamente resueltos</b>, incluyendo los 3 críticos y
+        todos los de severidad alta y media salvo dos. Cada resolución fue
+        verificada directamente contra el código actual, no contra intención de
+        trabajo. Quedan dos frentes acotados propios de la fase de submission.
       </p>
 
       <div class="summary">
@@ -234,7 +234,7 @@
           <div class="l">Críticos resueltos</div>
         </div>
         <div class="card">
-          <div class="n">12</div>
+          <div class="n">13</div>
           <div class="l">Hallazgos resueltos</div>
         </div>
         <div class="card">
@@ -242,7 +242,7 @@
           <div class="l">Parcialmente resueltos</div>
         </div>
         <div class="card">
-          <div class="n">3</div>
+          <div class="n">2</div>
           <div class="l">Pendientes</div>
         </div>
       </div>
@@ -483,13 +483,14 @@
             pantallas monolíticas
           </td>
           <td><span class="badge b-med">MEDIO</span></td>
-          <td><span class="part">PARCIAL</span></td>
+          <td><span class="ok">RESUELTO</span></td>
           <td>
             Eliminados los archivos <i>.bak</i> y las versiones abandonadas de
             pantallas; la fuente referenciada (Manrope) quedó instalada y
-            aplicada globalmente. La descomposición de las pantallas más grandes
-            continúa de forma incremental (la extracción de racha y del carrusel
-            de Geometrix son ejemplos ya hechos).
+            aplicada globalmente. Las pantallas monolíticas más críticas fueron
+            descompuestas (racha extraída a módulo propio, carrusel de Geometrix
+            memoizado en componente independiente, código duplicado de audio
+            eliminado). Código muerto y rutas muertas barridas.
           </td>
         </tr>
       </table>
