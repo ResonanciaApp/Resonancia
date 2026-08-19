@@ -562,7 +562,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                     ...(isIndigoPlayBtn
                       ? {
                           borderWidth: 2,
-                          borderColor: "rgba(249,249,249,0.70)",
+                          borderColor: "rgba(249,249,249,0.15)",
                         }
                       : {}),
                   },
