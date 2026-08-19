@@ -450,7 +450,7 @@ export default function MananasScreen() {
                     title="Escuchadas recientemente"
                     sessions={recentInCategory}
                     isPremium={isPremium}
-                    onPress={(s) => { playSession(s); router.push("/player" as never); }}
+                    onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                     style={{ marginTop: 24, marginBottom: 0 }}
                     cardWidth={RECENT_CARD_W}
                   />
