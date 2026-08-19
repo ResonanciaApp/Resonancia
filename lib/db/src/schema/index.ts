@@ -53,4 +53,5 @@ export * from "./explore-sections";
 export * from "./community-activity-events";
 export * from "./user-milestones";
 export * from "./user-library";
+export * from "./resonadores";
 

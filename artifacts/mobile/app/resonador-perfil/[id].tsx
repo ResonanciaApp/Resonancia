@@ -25,7 +25,8 @@ import { usePremium } from "@/context/PremiumContext";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { COUNTRY_FLAGS, getResonadorById, type ExternalProject, type Resonador } from "@/data/resonadores";
+import { COUNTRY_FLAGS, type ExternalProject, type Resonador } from "@/data/resonadores";
+import { useResonadorById } from "@/hooks/useResonadores";
 import { getSessionById } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { useColors } from "@/hooks/useColors";
@@ -71,7 +72,7 @@ export default function ResonadorPerfilScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const _resonador = getResonadorById(id);
+  const { resonador: _resonador } = useResonadorById(id);
 
   useFocusEffect(
     React.useCallback(() => {

@@ -52,6 +52,7 @@ import VideosPage from "@/pages/videos";
 import DescansoSonidosPage from "@/pages/descanso-sonidos";
 import EscenasPage from "@/pages/escenas";
 import ExplorarPage from "@/pages/explorar";
+import ResonadoresPage from "@/pages/resonadores";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -339,6 +340,7 @@ function AdminGate() {
         <Route path="/descanso-sonidos" component={DescansoSonidosPage} />
         <Route path="/escenas" component={EscenasPage} />
         <Route path="/explorar" component={ExplorarPage} />
+        <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>

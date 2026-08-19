@@ -79,7 +79,7 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { RESONADORES } from "@/data/resonadores";
+import { useResonadores } from "@/hooks/useResonadores";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -339,6 +339,7 @@ export default function HomeScreen2() {
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
+  const { resonadores } = useResonadores();
   const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -1540,7 +1541,7 @@ export default function HomeScreen2() {
             style={{ marginTop: 20 }}
             contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
           >
-            {RESONADORES.map((r) => (
+            {resonadores.map((r) => (
               <Pressable
                 key={r.id}
                 onPress={() => router.push(`/resonador/${r.id}` as never)}

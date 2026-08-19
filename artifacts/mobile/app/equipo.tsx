@@ -21,7 +21,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { RESONADORES, type Resonador } from "@/data/resonadores";
+import { type Resonador } from "@/data/resonadores";
+import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -268,13 +269,14 @@ export default function EquipoScreen() {
 
   const { width: screenWidth } = useWindowDimensions();
 
+  const { resonadores } = useResonadores();
   const [activeFilter, setActiveFilter] = useState<FilterId | null>(null);
   const items: CardItem[] = useMemo(() => {
-    return RESONADORES.filter((r) => {
+    return resonadores.filter((r) => {
       if (activeFilter !== null && r.subtipo !== activeFilter) return false;
       return true;
     }).map((r) => ({ kind: "resonador" as const, data: r }));
-  }, [activeFilter]);
+  }, [resonadores, activeFilter]);
 
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;

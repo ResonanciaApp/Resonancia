@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { getResonadorById } from "@/data/resonadores";
+import { useResonadorById } from "@/hooks/useResonadores";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 20;
@@ -38,7 +38,7 @@ export default function ResonadorServicioScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const resonador = getResonadorById(id ?? "");
+  const { resonador } = useResonadorById(id);
 
   if (!resonador) {
     return (

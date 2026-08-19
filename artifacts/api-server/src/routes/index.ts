@@ -21,6 +21,7 @@ import videosRouter from "./videos";
 import descansoRouter from "./descanso";
 import calendarRouter from "./calendar";
 import communityRouter from "./community";
+import resonadoresRouter from "./resonadores";
 
 const router: IRouter = Router();
 
@@ -46,5 +47,6 @@ router.use(videosRouter);
 router.use(descansoRouter);
 router.use(calendarRouter);
 router.use(communityRouter);
+router.use(resonadoresRouter);
 
 export default router;
