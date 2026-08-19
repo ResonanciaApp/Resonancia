@@ -5,9 +5,9 @@
  *   1. GET /resonadores (API/BD) si devuelve datos
  *   2. Fallback a RESONADORES estático (data/resonadores.ts)
  *
- * Para las fotos: si el resonador existe en el catálogo estático, usa la imagen
- * bundleada (más rápida). Si viene solo de la BD (nuevo resonador sin bundle)
- * usa { uri: photoUrl }. Si no hay ninguna, usa una imagen por defecto.
+ * Para las fotos: la foto de la BD tiene prioridad. Si no hay foto en la BD,
+ * usa la imagen bundleada como fallback. Si tampoco hay bundle, usa la imagen
+ * por defecto del primer resonador.
  */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth as useClerkAuth } from "@clerk/expo";
@@ -77,13 +77,15 @@ function apiToResonador(r: ApiResonador): Resonador {
     id: r.id,
     clerkId: r.clerkId ?? undefined,
     name: r.name,
-    // Prefer bundled asset; fallback to URI; last resort = first static photo
+    // DB photo takes priority; bundled asset is fallback; last resort = default
     photo:
+      (photoUrl ? { uri: photoUrl } : null) ??
       staticEntry?.photo ??
-      (photoUrl ? { uri: photoUrl } : RESONADORES[0].photo),
+      RESONADORES[0].photo,
     coverPhoto:
+      (coverUrl ? { uri: coverUrl } : null) ??
       staticEntry?.coverPhoto ??
-      (coverUrl ? { uri: coverUrl } : undefined),
+      undefined,
     subtipo: r.subtipo as Resonador["subtipo"],
     bio: r.bio,
     city: r.city,
