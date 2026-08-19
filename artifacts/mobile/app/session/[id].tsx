@@ -35,6 +35,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, SESSIONS } from "@/data/sessions";
+import { usePremium } from "@/context/PremiumContext";
 import { getGuide } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
@@ -136,10 +137,16 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const overlay = useCategoryOverlayOptional();
-  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
+  const openSession = (sid: string) => {
+    const s = getSessionById(sid);
+    if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
+    if (overlay) overlay.openCategory(`/session/${sid}`);
+    else router.push(`/session/${sid}` as never);
+  };
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
+  const { isPremium } = usePremium();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
 
@@ -331,6 +338,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     playSession(session);
+    if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };
 
@@ -338,12 +346,14 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     clearSessionProgress(session.id);
     playSession(session);
+    if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };
 
   const handleContinue = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     playSession(session);
+    if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };
 

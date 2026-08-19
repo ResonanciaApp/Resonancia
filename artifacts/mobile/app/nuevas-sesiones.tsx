@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -25,6 +26,7 @@ const PAGE_SIZE = 10;
 export default function NuevasSessionesScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -97,7 +99,11 @@ export default function NuevasSessionesScreen() {
           const locked = !!session.isPremium && !isPremium;
           return (
           <Pressable
-            onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+            onPress={() => {
+              if (locked) { router.push("/membresia" as never); return; }
+              if (session.skipMiniPlayer) { playSession(session); return; }
+              router.push(`/session/${session.id}` as never);
+            }}
             style={({ pressed }) => [
               styles.card,
               {

@@ -4,6 +4,8 @@ import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { SESSIONS } from "@/data/sessions";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -90,6 +92,8 @@ function ActionText({ event }: { event: CommunityFeedEvent }) {
 
 export function ActivityFeedCard({ event }: Props) {
   const overlay = useCategoryOverlayOptional();
+  const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const { user, isLive } = event;
   const thumb = sessionThumbnail(event.payload.sessionId);
   const nameLine = user.location
@@ -120,7 +124,12 @@ export function ActivityFeedCard({ event }: Props) {
       {/* Session thumbnail — tappable, navega a la sesión */}
       {thumb && event.payload.sessionId && (
         <Pressable
-          onPress={() => (overlay ? overlay.openCategory(`/session/${event.payload.sessionId}`) : router.push(`/session/${event.payload.sessionId}` as never))}
+          onPress={() => {
+            const s = SESSIONS.find((x) => String(x.id) === String(event.payload.sessionId));
+            if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
+            if (overlay) overlay.openCategory(`/session/${event.payload.sessionId}`);
+            else router.push(`/session/${event.payload.sessionId}` as never);
+          }}
           hitSlop={8}
         >
           <ExpoImage

@@ -25,6 +25,7 @@ import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionCard } from "@/components/SessionCard";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS, type Session } from "@/data/sessions";
@@ -59,6 +60,7 @@ export default function TagScreen({ id: idProp }: { id?: string } = {}) {
   const overlay = useCategoryOverlayOptional();
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const insets = useSafeAreaInsets();
   const { theme: activeTheme } = useSceneTheme();
 
@@ -231,6 +233,7 @@ export default function TagScreen({ id: idProp }: { id?: string } = {}) {
                   showAuthorAvatar={false}
                   overridePress={() => {
                     if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                    if (session.skipMiniPlayer) { playSession(session); return; }
                     if (overlay) overlay.openCategory(`/session/${session.id}`);
                     else router.push(`/session/${session.id}` as never);
                   }}

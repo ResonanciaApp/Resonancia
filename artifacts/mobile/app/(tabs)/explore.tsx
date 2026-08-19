@@ -132,6 +132,8 @@ function getSessionAuthor(s: Session): string {
 // ── Overlay de búsqueda ────────────────────────────────────────────────────
 function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { openCategory } = useCategoryOverlay();
+  const { playSession } = usePlayer();
+  const { isPremium: srIsPremium } = usePremium();
   const { theme: srTheme } = useSceneTheme();
   const srBg =
     srTheme.id === "tibet"
@@ -238,7 +240,11 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                 : item.subtitle ?? null;
               return (
                 <Pressable
-                  onPress={() => { onClose(); openCategory(`/session/${item.id}`); }}
+                  onPress={() => {
+                    onClose();
+                    if (item.skipMiniPlayer && !(item.isPremium && !srIsPremium)) { playSession(item); return; }
+                    openCategory(`/session/${item.id}`);
+                  }}
                   style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
                 >
                   <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />

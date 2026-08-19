@@ -51,6 +51,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { uploadLocalFile } from "@/lib/upload";
 import {
@@ -724,6 +726,8 @@ function MessageBubble({
   const session = message.sessionId != null
     ? SESSIONS.find((s) => Number(s.id) === message.sessionId)
     : undefined;
+  const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const marginBottom = groupedWithNext ? 2 : 8;
   const tailRadius = 4;
   const compactRadius = 14;
@@ -751,7 +755,10 @@ function MessageBubble({
         />
       ) : session ? (
         <Pressable
-          onPress={() => router.push(`/session/${session.id}`)}
+          onPress={() => {
+            if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
+            router.push(`/session/${session.id}`);
+          }}
           style={[
             styles.sessionCard,
             {

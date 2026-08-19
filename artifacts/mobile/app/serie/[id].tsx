@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { getSeriesById, getSeriesSessions } from "@/data/series";
 import { useColors } from "@/hooks/useColors";
 
@@ -29,6 +30,7 @@ export default function SerieScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const insets = useSafeAreaInsets();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -124,7 +126,11 @@ export default function SerieScreen() {
             return (
               <Pressable
                 key={session.id}
-                onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+                onPress={() => {
+                  if (locked) { router.push("/membresia" as never); return; }
+                  if (session.skipMiniPlayer) { playSession(session); return; }
+                  router.push(`/session/${session.id}` as never);
+                }}
                 style={({ pressed }) => [
                   styles.row,
                   {

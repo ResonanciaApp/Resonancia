@@ -499,7 +499,7 @@ export default function DescansoScreen() {
                   title="Escuchadas recientemente"
                   sessions={recentInDescanso}
                   isPremium={isPremium}
-                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -513,7 +513,7 @@ export default function DescansoScreen() {
                   title="Favoritos"
                   sessions={favoritesInDescanso}
                   isPremium={isPremium}
-                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -527,7 +527,7 @@ export default function DescansoScreen() {
                   title="Historias"
                   sessions={historiasForTodos.slice(0, 5)}
                   isPremium={isPremium}
-                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -542,7 +542,7 @@ export default function DescansoScreen() {
                   title="ASMR"
                   sessions={asmrForTodos.slice(0, 5)}
                   isPremium={isPremium}
-                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -673,6 +673,7 @@ export default function DescansoScreen() {
                   if (currentSession?.id !== session.id) {
                     playSession(session);
                   }
+                  if (session.skipMiniPlayer) return;
                   router.push("/player" as never);
                 }}
                 playing={currentSession?.id === session.id}
@@ -783,6 +784,7 @@ export default function DescansoScreen() {
                     if (locked) { router.push("/membresia" as never); return; }
                     closeAll();
                     if (currentSession?.id !== s.id) playSession(s);
+                    if (s.skipMiniPlayer) return;
                     router.push("/player" as never);
                   }}
                   style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.85 : 1 }]}

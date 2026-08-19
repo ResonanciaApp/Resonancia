@@ -68,6 +68,7 @@ export default function ArtistaScreen() {
       return;
     }
     playSession(session);
+    if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };
 

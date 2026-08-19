@@ -19,6 +19,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
@@ -62,6 +64,8 @@ export default function ResonadorPerfilScreen() {
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
   const { theme: activeTheme } = useSceneTheme();
+  const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const bgColors: readonly string[] = activeTheme.gradient;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -498,7 +502,10 @@ export default function ResonadorPerfilScreen() {
                 {sessions.slice(0, 6).map((session, i) => (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    onPress={() => {
+                      if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
+                      router.push(`/session/${session.id}` as never);
+                    }}
                     style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}
                   >
                     <Image

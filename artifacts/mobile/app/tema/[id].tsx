@@ -24,7 +24,8 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
+import { usePlayer } from "@/context/PlayerContext";
 import { getTemaById } from "@/data/temas";
 
 const { width } = Dimensions.get("window");
@@ -41,7 +42,13 @@ export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const overlay = useCategoryOverlayOptional();
-  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
+  const { playSession } = usePlayer();
+  const openSession = (sid: string) => {
+    const s = getSessionById(sid);
+    if (s?.skipMiniPlayer) { playSession(s); return; }
+    if (overlay) overlay.openCategory(`/session/${sid}`);
+    else router.push(`/session/${sid}` as never);
+  };
   const colors  = useColors();
   const insets  = useSafeAreaInsets();
   const { theme: activeTheme } = useSceneTheme();

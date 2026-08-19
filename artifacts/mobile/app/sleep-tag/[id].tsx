@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import { usePremium } from "@/context/PremiumContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { SLEEP_TAG_CARDS } from "@/data/tags";
 import { getSessionsBySleepTag } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -31,6 +32,7 @@ export default function SleepTagDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -115,7 +117,11 @@ export default function SleepTagDetailScreen() {
                   return (
                   <Pressable
                     key={session.id}
-                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
+                    onPress={() => {
+                      if (locked) { router.push("/membresia" as never); return; }
+                      if (session.skipMiniPlayer) { playSession(session); return; }
+                      router.push(`/session/${session.id}` as never);
+                    }}
                     style={({ pressed }) => [
                       styles.card,
                       { width: CARD_W, opacity: pressed ? 0.82 : 1 },

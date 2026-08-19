@@ -78,6 +78,7 @@ export default function GuiadorScreen() {
       return;
     }
     playSession(session);
+    if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };
 

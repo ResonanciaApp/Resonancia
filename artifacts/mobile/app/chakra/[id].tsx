@@ -25,7 +25,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { chakraMatchesTag, getChakraById } from "@/data/chakras";
-import { SESSIONS, type Session } from "@/data/sessions";
+import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
@@ -45,7 +45,12 @@ export default function ChakraScreen({ id: idProp }: { id?: string } = {}) {
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const overlay = useCategoryOverlayOptional();
-  const openSession = (sid: string) => (overlay ? overlay.openCategory(`/session/${sid}`) : router.push(`/session/${sid}` as never));
+  const openSession = (sid: string) => {
+    const s = getSessionById(sid);
+    if (s?.skipMiniPlayer) { playSession(s); return; }
+    if (overlay) overlay.openCategory(`/session/${sid}`);
+    else router.push(`/session/${sid}` as never);
+  };
 
   const chakra = getChakraById(id);
   const { theme: sceneTheme } = useSceneTheme();

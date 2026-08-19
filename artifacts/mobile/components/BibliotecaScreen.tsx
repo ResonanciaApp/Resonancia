@@ -424,7 +424,8 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const insets    = useSafeAreaInsets();
 
-  const { favorites } = usePlayer();
+  const { favorites, playSession } = usePlayer();
+  const { isPremium: libIsPremium } = usePremium();
   const { presets, loadedPresetId, openSheet } = useMixer();
   const loadMix = useLoadMix();
   const { playlists: userPlaylists } = useFoldersPlaylists();
@@ -468,7 +469,10 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
 
   const handleSelect = (result: LibResult) => {
     onClose();
-    if (result.kind === "session") { if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never); }
+    if (result.kind === "session") {
+      if (result.data.skipMiniPlayer && !(result.data.isPremium && !libIsPremium)) { playSession(result.data); return; }
+      if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never);
+    }
     else if (result.kind === "playlist") openPlaylistPanel(result.data.id);
     else {
       if (loadedPresetId !== result.data.id) loadMix(result.data);
