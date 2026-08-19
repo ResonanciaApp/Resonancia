@@ -202,6 +202,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
+    // El drawer del Mezclador vive en zIndex 500; la barra debe quedar por
+    // encima cuando el primer sonido se activa dentro del drawer.
+    zIndex: 600,
+    elevation: 1,
   },
   container: {
     flexDirection: "row",
