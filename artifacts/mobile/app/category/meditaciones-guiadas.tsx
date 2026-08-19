@@ -369,7 +369,7 @@ export default function MeditacionesGuiadasScreen() {
               title="Escuchadas recientemente"
               sessions={recentInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
+              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -383,7 +383,7 @@ export default function MeditacionesGuiadasScreen() {
               title="Favoritos"
               sessions={favoritesInCategory}
               isPremium={isPremium}
-              onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
+              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); openCategory(`/session/${s.id}`); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
@@ -404,7 +404,7 @@ export default function MeditacionesGuiadasScreen() {
                   title={tab.label}
                   sessions={preview}
                   isPremium={isPremium}
-                  onPress={(s) => { playSession(s); openCategory(`/session/${s.id}`); }}
+                  onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
