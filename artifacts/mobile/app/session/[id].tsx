@@ -184,7 +184,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
     ? ["#6757C8", "#6757C8"]
     : ["#F9F9F9", "#F9F9F9"];
-  const playBtnTextColor = isIndigoPlayBtn ? "#0F1835" : "#0d0c26";
+  const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
   const shareBtnBorder = isIndigoPlayBtn ? "#6757C8" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
