@@ -27,6 +27,10 @@ el primer sonido, incluso dentro del drawer; una mezcla manual no necesariamente
 un preset cargado. Dentro del drawer debe usarse el diseño compacto propio del Mezclador
 en modo mezcla forzado, no la barra persistente de presets que se parece a una sesión.
 
+## Validación
+Este comportamiento fue confirmado funcionando en la app: al abrir el Mezclador desde una
+sesión, la sesión se detiene y el miniplayer compacto correcto aparece al activar sonidos.
+
 ## Archivos tocados
 - `artifacts/mobile/context/audioBridge.ts` — añadido `chatStopper`, `registerChatStopper()`, `stopChatPlayback()`
 - `artifacts/mobile/app/chat/[userId].tsx` — AudioAttachment.toggle llama `stopSessionPlayback/stopMixPlayback/stopSoundPlayback/stopChatPlayback` antes de play, luego registra el stopper; startRecording idem antes de grabar
