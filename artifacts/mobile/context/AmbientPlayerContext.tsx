@@ -45,19 +45,10 @@ export const AMBIENT_SCENES: AmbientScene[] = [
 
 type AmbientCtx = {
   currentScene: AmbientScene;
-  isPlaying: boolean;
-  isMuted: boolean;
-  volume: number;
-  setVolume: (v: number) => void;
   setScene: (id: SceneId) => Promise<void>;
-  togglePlayback: () => Promise<void>;
-  stopAmbient: () => Promise<void>;
-  startAmbient: () => Promise<void>;
   isSheetOpen: boolean;
   openSheet: () => void;
   closeSheet: () => void;
-  sleepTimerRemaining: number | null;
-  setSleepTimer: (minutes: number | null) => void;
 };
 
 const AmbientContext = createContext<AmbientCtx | null>(null);
@@ -75,11 +66,6 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     await AsyncStorage.setItem(STORAGE_KEY, id);
   }, []);
 
-  // El sonido ambiente de Escenas fue retirado (ya no se usa).
-  // Las funciones de audio son no-ops para no romper los componentes
-  // que aún referencian el contexto (AmbientWidget, EscenasSheet).
-  const noop = useCallback(async () => {}, []);
-
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
   const closeSheet = useCallback(() => setIsSheetOpen(false), []);
 
@@ -87,19 +73,10 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     <AmbientContext.Provider
       value={{
         currentScene,
-        isPlaying: false,
-        isMuted: false,
-        volume: 0,
-        setVolume: noop,
         setScene,
-        togglePlayback: noop,
-        stopAmbient: noop,
-        startAmbient: noop,
         isSheetOpen,
         openSheet,
         closeSheet,
-        sleepTimerRemaining: null,
-        setSleepTimer: noop,
       }}
     >
       {children}

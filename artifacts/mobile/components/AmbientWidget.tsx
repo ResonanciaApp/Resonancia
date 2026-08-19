@@ -1,14 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { GoldGradient } from "@/components/GoldGradient";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Animated,
   Easing,
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 
@@ -17,36 +15,25 @@ import {
   useAmbientPlayer,
   type SceneId,
 } from "@/context/AmbientPlayerContext";
-import { usePlayer } from "@/context/PlayerContext";
 
 const ND = Platform.OS !== "web";
 
 export function AmbientWidget() {
-  const { currentScene, isPlaying, isMuted, setScene, togglePlayback, stopAmbient } =
-    useAmbientPlayer();
-  const { isPlaying: sessionIsPlaying } = usePlayer();
+  const { currentScene, setScene } = useAmbientPlayer();
   const [expanded, setExpanded] = useState(false);
   const expandAnim = useRef(new Animated.Value(0)).current;
 
-  // Stop ambient when a session starts
-  useEffect(() => {
-    if (sessionIsPlaying) {
-      stopAmbient();
-      setExpanded(false);
-    }
-  }, [sessionIsPlaying, stopAmbient]);
-
   // Animate expand/collapse
-  useEffect(() => {
+  const handleToggle = () => {
+    const next = !expanded;
+    setExpanded(next);
     Animated.timing(expandAnim, {
-      toValue: expanded ? 1 : 0,
+      toValue: next ? 1 : 0,
       duration: 220,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: ND,
     }).start();
-  }, [expanded, expandAnim]);
-
-  const isActive = isPlaying && !isMuted;
+  };
 
   const pickerOpacity = expandAnim;
   const pickerTranslateX = expandAnim.interpolate({
@@ -59,24 +46,20 @@ export function AmbientWidget() {
       {/* ── Widget row ── */}
       <View style={styles.row}>
         {/* Scene thumbnail — tap to expand */}
-        <Pressable
-          onPress={() => setExpanded((v) => !v)}
-          style={styles.thumbnail}
-        >
+        <Pressable onPress={handleToggle} style={styles.thumbnail}>
           <Image
             source={currentScene.image}
             style={styles.thumbnailImg}
             contentFit="cover"
           />
-          {isActive && <GoldGradient style={styles.activeDot} />}
         </Pressable>
 
-        {/* Volume toggle */}
-        <Pressable onPress={togglePlayback} hitSlop={10} style={styles.volBtn}>
+        {/* Expand toggle */}
+        <Pressable onPress={handleToggle} hitSlop={10} style={styles.volBtn}>
           <Feather
-            name={isActive ? "volume-2" : "volume-x"}
+            name={expanded ? "chevron-right" : "chevron-left"}
             size={14}
-            color={isActive ? "#F9F9F9" : "#5A2020"}
+            color="#F9F9F9"
           />
         </Pressable>
       </View>
@@ -98,10 +81,8 @@ export function AmbientWidget() {
               <Pressable
                 key={scene.id}
                 onPress={() => {
-                  setExpanded(false);   // close picker instantly
-                  setScene(scene.id as SceneId).then(() => {
-                    if (!isPlaying) togglePlayback();
-                  }).catch(() => {});
+                  setExpanded(false);
+                  setScene(scene.id as SceneId).catch(() => {});
                 }}
                 style={styles.sceneBtn}
               >
@@ -148,34 +129,12 @@ const styles = StyleSheet.create({
     width: THUMB,
     height: THUMB,
     borderRadius: 8,
-    overflow: "visible",
+    overflow: "hidden",
   },
   thumbnailImg: {
     width: THUMB,
     height: THUMB,
     borderRadius: 8,
-  },
-  thumbnailOverlay: {
-    position: "absolute",
-    bottom: 2,
-    right: 2,
-    width: 16,
-    height: 16,
-    borderRadius: 5,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  activeDot: {
-    position: "absolute",
-    top: -2,
-    right: -2,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    borderWidth: 1.5,
-    borderColor: "#1B060F",
-    overflow: "hidden",
   },
   volBtn: {
     width: 24,
@@ -183,12 +142,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // Picker — positioned to the LEFT of the widget
   picker: {
     position: "absolute",
     top: 0,
-    right: 66, // widget row width + gap
+    right: 66,
     flexDirection: "row",
     gap: 6,
     backgroundColor: "#1E1108",
@@ -198,38 +155,26 @@ const styles = StyleSheet.create({
     padding: 8,
     shadowColor: "#000",
     shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.45,
-    shadowRadius: 12,
-    elevation: 10,
-    zIndex: 100,
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 8,
   },
   sceneBtn: {
-    alignItems: "center",
-    gap: 4,
+    padding: 2,
   },
   sceneThumb: {
     width: SCENE_THUMB,
     height: SCENE_THUMB,
     borderRadius: 10,
     overflow: "hidden",
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: "transparent",
   },
   sceneThumbSelected: {
-    borderColor: "#F9F9F9",
+    borderColor: "rgba(212,175,55,0.7)",
   },
   sceneImg: {
-    width: SCENE_THUMB,
-    height: SCENE_THUMB,
-  },
-  sceneLabel: {
-    fontFamily: "Manrope",
-    color: "#587060",
-    fontSize: 9,
-    fontWeight: "500",
-    letterSpacing: 0.2,
-  },
-  sceneLabelSelected: {
-    color: "#F9F9F9",
+    width: "100%",
+    height: "100%",
   },
 });

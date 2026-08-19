@@ -34,7 +34,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { VolumeSlider } from "@/components/VolumeSlider";
 import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
@@ -61,15 +60,6 @@ const ANIM_CARD_SIZE = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) +
 const ANIM_CARD_H = Math.round(ANIM_CARD_SIZE * 1.32) - 17;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
-
-const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
-  { label: "Sin límite", value: null },
-  { label: "15 minutos", value: 15 },
-  { label: "30 minutos", value: 30 },
-  { label: "45 minutos", value: 45 },
-  { label: "60 minutos", value: 60 },
-  { label: "90 minutos", value: 90 },
-];
 
 /** Convierte una creación de Geometrix al shape mínimo que necesita SceneAnimationCard. */
 function creationToSceneItem(c: GeometrixCreation): SceneItem {
@@ -197,32 +187,16 @@ export function EscenasSheet() {
   const { setSelectedScene, setBgScene } = useSelectedScene();
   const {
     currentScene,
-    isPlaying,
-    isMuted,
-    volume,
-    setVolume,
     setScene,
-    startAmbient,
     isSheetOpen,
     closeSheet,
-    sleepTimerRemaining,
-    setSleepTimer,
   } = useAmbientPlayer();
-
-  const [timerOpen, setTimerOpen] = useState(false);
   const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
   // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
   const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
-  const timerMinutes =
-    sleepTimerRemaining == null
-      ? null
-      : (TIMER_OPTIONS.find(
-          (o) => o.value != null && Math.abs(o.value * 60 - sleepTimerRemaining) <= 90,
-        )?.value ?? null);
-
   // ── Sheet entrance / exit animations ─────────────────────────────────────
   const sheetEnterY = useRef(new Animated.Value(SCREEN_H)).current;
 
@@ -264,7 +238,6 @@ export function EscenasSheet() {
       reloadCreations();
     } else {
       // La animación de cierre ya llevó sheetEnterY a SCREEN_H; solo limpiar estado
-      setTimerOpen(false);
       setPreviewScene(null);
       previewSlideY.setValue(SCREEN_H);
     }
@@ -333,9 +306,7 @@ export function EscenasSheet() {
     // Posicionar el preview fuera de pantalla antes de montarlo
     previewSlideY.setValue(SCREEN_H);
     setPreviewScene(scene);
-    // Arrancar audio inmediatamente
     setScene(scene.id);
-    startAmbient();
   };
 
   const closePreviewAnimated = (onDone?: () => void) => {
@@ -367,8 +338,6 @@ export function EscenasSheet() {
       setActiveSceneWithFade(id);
     });
   };
-
-  const soundOn = isPlaying && !isMuted;
 
   return (
     <Modal

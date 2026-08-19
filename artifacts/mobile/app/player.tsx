@@ -89,9 +89,6 @@ export default function PlayerScreen() {
     hasVoiceTrack,
     voiceVolume,
     setVoiceVolume,
-    hasAmbientTrack,
-    ambientVolume,
-    setAmbientVolume,
     activePlaylistIds,
     queueImplicit,
     queueRandom,
@@ -125,9 +122,6 @@ export default function PlayerScreen() {
   const voiceTrackWidth = useRef(0);
   const voiceTrackPageX = useRef(0);
   const voiceTrackRef = useRef<View>(null);
-  const ambientTrackWidth = useRef(0);
-  const ambientTrackPageX = useRef(0);
-  const ambientTrackRef = useRef<View>(null);
   const progressBarRef = useRef<View>(null);
   const progressBarPageX = useRef(0);
   const isSeekingRef = useRef(false);
@@ -272,18 +266,6 @@ export default function PlayerScreen() {
     setVoiceVolume(vol);
   }, [setVoiceVolume]);
 
-  const handleAmbientGrant = useCallback((e: GestureResponderEvent) => {
-    ambientTrackRef.current?.measure((_x, _y, _w, _h, px) => {
-      ambientTrackPageX.current = px;
-      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambientTrackWidth.current));
-      setAmbientVolume(vol);
-    });
-  }, [setAmbientVolume]);
-
-  const handleAmbientMove = useCallback((e: GestureResponderEvent) => {
-    const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambientTrackPageX.current) / ambientTrackWidth.current));
-    setAmbientVolume(vol);
-  }, [setAmbientVolume]);
 
   const { isPremium } = usePremium();
 
@@ -326,16 +308,14 @@ export default function PlayerScreen() {
     ambSheetTrackRef.current?.measure((_x, _y, _w, _h, px) => {
       ambSheetTrackPageX.current = px;
       const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambSheetTrackWidth.current));
-      if (hasAmbientTrack) setAmbientVolume(vol);
-      else if (hasVoiceTrack) setVoiceVolume(vol);
+      if (hasVoiceTrack) setVoiceVolume(vol);
     });
-  }, [hasAmbientTrack, hasVoiceTrack, setAmbientVolume, setVoiceVolume]);
+  }, [hasVoiceTrack, setVoiceVolume]);
 
   const handleSheetAmbMove = useCallback((e: GestureResponderEvent) => {
     const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambSheetTrackPageX.current) / ambSheetTrackWidth.current));
-    if (hasAmbientTrack) setAmbientVolume(vol);
-    else if (hasVoiceTrack) setVoiceVolume(vol);
-  }, [hasAmbientTrack, hasVoiceTrack, setAmbientVolume, setVoiceVolume]);
+    if (hasVoiceTrack) setVoiceVolume(vol);
+  }, [hasVoiceTrack, setVoiceVolume]);
 
   const handleSheetMainVolGrant = useCallback((e: GestureResponderEvent) => {
     mainVolSheetTrackRef.current?.measure((_x, _y, _w, _h, px) => {
@@ -914,21 +894,19 @@ export default function PlayerScreen() {
             <View style={styles.optDivider} />
 
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-              {/* Track principal / voz / ambiente */}
-              {(hasVoiceTrack || hasAmbientTrack) && (
+              {/* Track de voz guiada */}
+              {hasVoiceTrack && (
                 <View style={styles.optSliderItem}>
                   <View style={styles.optRow}>
                     <Feather
-                      name={hasVoiceTrack && !hasAmbientTrack ? "mic" : "volume-2"}
+                      name="mic"
                       size={18}
                       color="#FBFBFB"
                       style={styles.optIcon}
                     />
-                    <Text style={styles.optRowText}>
-                      {hasVoiceTrack && !hasAmbientTrack ? "Voz guiada" : "Ambiente"}
-                    </Text>
+                    <Text style={styles.optRowText}>Voz guiada</Text>
                     <Text style={styles.optRowBadge}>
-                      {Math.round((hasAmbientTrack ? ambientVolume : voiceVolume) * 100)}%
+                      {Math.round(voiceVolume * 100)}%
                     </Text>
                   </View>
                   <View
@@ -943,11 +921,11 @@ export default function PlayerScreen() {
                     <View style={styles.sliderTrack}>
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderFill, { width: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#F9F9F9" }]}
+                        style={[styles.sliderFill, { width: `${voiceVolume * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderThumb, { left: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#F9F9F9" }]}
+                        style={[styles.sliderThumb, { left: `${voiceVolume * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                     </View>
                   </View>

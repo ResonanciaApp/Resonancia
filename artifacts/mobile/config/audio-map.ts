@@ -26,16 +26,6 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
 };
 
 /**
- * AMBIENT_MAP — capa de sonido ambiente superpuesta al audio base.
- * El usuario puede ajustar el volumen de esta capa independientemente.
- * Ejemplo: pájaros sobre el riachuelo.
- */
-export const AMBIENT_MAP: Record<string, ReturnType<typeof require> | undefined> = {
-  "27": require("@/assets/audio/pajaros_ambiente.mp3"),
-  "30": require("@/assets/audio/voz.mp3"),
-};
-
-/**
  * LOOP_SESSIONS — IDs de sesiones que deben reproducirse en loop indefinido.
  * El usuario elige la duración total antes de reproducir.
  * Solo las sesiones "Sonidos Naturaleza" de Música y Sonidos son loops.

@@ -17,14 +17,6 @@ import {
   type DirectMessage,
   type UserProfile,
 } from "@workspace/api-client-react";
-import {
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync as audioSetMode,
-  useAudioRecorder,
-  createAudioPlayer,
-  type AudioPlayer,
-} from "expo-audio";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
@@ -55,13 +47,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { uploadLocalFile } from "@/lib/upload";
-import {
-  registerChatStopper,
-  stopChatPlayback,
-  stopSessionPlayback,
-  stopMixPlayback,
-  stopSoundPlayback,
-} from "@/context/audioBridge";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 function initialsFor(name: string): string {
@@ -104,7 +89,7 @@ type GiphyGif = {
 
 type PendingAttachment = {
   tempId: string;
-  kind: "image" | "audio";
+  kind: "image";
   localUri: string;
   width?: number;
   height?: number;
@@ -238,11 +223,6 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [pending, setPending] = useState<PendingAttachment[]>([]);
-  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recElapsedMs, setRecElapsedMs] = useState(0);
-  const recStartRef = useRef<number>(0);
-  const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTypingPingRef = useRef(0);
 
   const onChangeDraft = (text: string) => {
@@ -338,105 +318,6 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
       Alert.alert("Error", err instanceof Error ? err.message : "No se pudo enviar la foto.");
     }
   };
-
-  const startRecording = async () => {
-    try {
-      const perm = await AudioModule.requestRecordingPermissionsAsync();
-      if (!perm.granted) {
-        setShowAttachMenu(false);
-        Alert.alert("Permiso", "Necesitamos acceso al micrófono para grabar.");
-        return;
-      }
-      // La grabación requiere la sesión de audio exclusiva; detener todo lo demás.
-      stopSessionPlayback();
-      stopMixPlayback();
-      stopSoundPlayback();
-      stopChatPlayback();
-      await audioSetMode({ allowsRecording: true, playsInSilentMode: true });
-      await audioRecorder.prepareToRecordAsync();
-      audioRecorder.record();
-      setShowAttachMenu(false);
-      recStartRef.current = Date.now();
-      setRecElapsedMs(0);
-      setIsRecording(true);
-      recTimerRef.current = setInterval(() => {
-        setRecElapsedMs(Date.now() - recStartRef.current);
-      }, 200);
-    } catch (err) {
-      Alert.alert("Error", err instanceof Error ? err.message : "No se pudo iniciar la grabación.");
-    }
-  };
-
-  const cancelRecording = async () => {
-    if (recTimerRef.current) clearInterval(recTimerRef.current);
-    recTimerRef.current = null;
-    setRecElapsedMs(0);
-    if (!isRecording) return;
-    try { await audioRecorder.stop(); } catch {}
-    setIsRecording(false);
-    await audioSetMode({ allowsRecording: false, playsInSilentMode: true }).catch(() => {});
-  };
-
-  const sendRecording = () => {
-    if (!isRecording) return;
-    if (recTimerRef.current) clearInterval(recTimerRef.current);
-    recTimerRef.current = null;
-    const durationMs = Date.now() - recStartRef.current;
-    setIsRecording(false);
-    setRecElapsedMs(0);
-
-    if (durationMs < 600) {
-      Alert.alert("Muy corto", "Grabá al menos 1 segundo.");
-      audioRecorder.stop().catch(() => {});
-      return;
-    }
-
-    const contentType = "audio/mp4";
-    const ext = "m4a";
-    const tempId = `tmp-aud-${Date.now()}`;
-
-    // Detener la grabación y subir en background.
-    (async () => {
-      try {
-        await audioRecorder.stop();
-        const uri = audioRecorder.uri;
-        if (!uri) {
-          Alert.alert("Error", "No se pudo obtener el audio.");
-          return;
-        }
-        await audioSetMode({ allowsRecording: false, playsInSilentMode: true }).catch(() => {});
-
-        // Optimistic bubble una vez que tenemos la URI
-        setPending((p) => [...p, { tempId, kind: "audio", localUri: uri, durationMs }]);
-
-        const objectPath = await uploadLocalFile(uri, contentType, `voice-${Date.now()}.${ext}`, 1);
-        setPending((p) =>
-          p.map((x) => (x.tempId === tempId ? { ...x, serverObjectPath: objectPath } : x)),
-        );
-        await sendMsg.mutateAsync({
-          userId: otherId,
-          data: {
-            attachmentUrl: objectPath,
-            attachmentType: "audio",
-            attachmentMeta: { mime: contentType, durationMs },
-          },
-        });
-      } catch (err) {
-        console.log("[chat] audio send failed", err);
-        setPending((p) =>
-          p.map((x) => (x.tempId === tempId ? { ...x, failed: true } : x)),
-        );
-      }
-    })();
-  };
-
-  useEffect(() => {
-    return () => {
-      if (recTimerRef.current) clearInterval(recTimerRef.current);
-      if (isRecording) { audioRecorder.stop().catch(() => {}); }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const messages = useMemo(() => {
     const list = messagesQ.data ?? [];
@@ -595,72 +476,42 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
             },
           ]}
         >
-          {isRecording ? (
-            <>
-              <Pressable
-                onPress={cancelRecording}
-                hitSlop={10}
-                style={[styles.iconBtn, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}
-              >
-                <Feather name="x" size={16} color="#E07A7A" />
-              </Pressable>
-              <View
-                style={[
-                  styles.recBar,
-                  { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
-                ]}
-              >
-                <View style={styles.recDot} />
-                <Text style={[styles.recTime, { color: "#F9F9F9" }]}>
-                  Grabando · {formatDuration(recElapsedMs)}
-                </Text>
-              </View>
-              <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#F9F9F9", "#F9F9F9"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#1B060F" />
-                </LinearGradient>
-              </Pressable>
-            </>
-          ) : (
-            <>
-              <Pressable
-                onPress={() => setShowAttachMenu(true)}
-                hitSlop={10}
-                style={[
-                  styles.iconBtn,
-                  { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
-                ]}
-              >
-                <Feather name="plus" size={18} color={colors.accent} />
-              </Pressable>
-              <TextInput
-                value={draft}
-                onChangeText={onChangeDraft}
-                placeholder="Escribí un mensaje…"
-                placeholderTextColor={"#F4F4F4"}
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: "rgba(255,255,255,0.075)",
-                    borderColor: "rgba(255,255,255,0.1)",
-                    color: "#F9F9F9",
-                  },
-                ]}
-                multiline
-                maxLength={2000}
-                onSubmitEditing={send}
-              />
-              <Pressable
-                onPress={send}
-                disabled={draft.trim().length === 0 || sendMsg.isPending}
-                style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
-              >
-                <LinearGradient colors={["#F9F9F9", "#F9F9F9"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#1B060F" />
-                </LinearGradient>
-              </Pressable>
-            </>
-          )}
+          <Pressable
+              onPress={() => setShowAttachMenu(true)}
+              hitSlop={10}
+              style={[
+                styles.iconBtn,
+                { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
+              ]}
+            >
+              <Feather name="plus" size={18} color={colors.accent} />
+            </Pressable>
+            <TextInput
+              value={draft}
+              onChangeText={onChangeDraft}
+              placeholder="Escribí un mensaje…"
+              placeholderTextColor={"#F4F4F4"}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: "rgba(255,255,255,0.075)",
+                  borderColor: "rgba(255,255,255,0.1)",
+                  color: "#F9F9F9",
+                },
+              ]}
+              multiline
+              maxLength={2000}
+              onSubmitEditing={send}
+            />
+            <Pressable
+              onPress={send}
+              disabled={draft.trim().length === 0 || sendMsg.isPending}
+              style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
+            >
+              <LinearGradient colors={["#F9F9F9", "#F9F9F9"]} style={styles.sendGrad}>
+                <Feather name="send" size={16} color="#1B060F" />
+              </LinearGradient>
+            </Pressable>
         </View>
       </KeyboardAvoidingView>
 
@@ -678,7 +529,6 @@ export default function ChatScreen({ userIdOverride }: { userIdOverride?: number
           setShowAttachMenu(false);
           setShowGifPicker(true);
         }}
-        onRecordVoice={startRecording}
         onShareSession={() => {
           setShowAttachMenu(false);
           setShowShareModal(true);
@@ -732,8 +582,6 @@ function MessageBubble({
   const tailRadius = 4;
   const compactRadius = 14;
   const isImage = message.attachmentType === "image" && !!message.attachmentUrl;
-  const isAudio = message.attachmentType === "audio" && !!message.attachmentUrl;
-
   return (
     <View style={{ alignItems: isMine ? "flex-end" : "flex-start", marginBottom }}>
       {showTime && (
@@ -746,12 +594,6 @@ function MessageBubble({
           objectPath={message.attachmentUrl!}
           width={message.attachmentMeta?.width}
           height={message.attachmentMeta?.height}
-        />
-      ) : isAudio ? (
-        <AudioAttachment
-          objectPath={message.attachmentUrl!}
-          durationMs={message.attachmentMeta?.durationMs ?? 0}
-          isMine={isMine}
         />
       ) : session ? (
         <Pressable
@@ -981,25 +823,7 @@ function PendingBubble({ item }: { item: PendingAttachment }) {
               contentFit="cover"
             />
           </View>
-        ) : (
-          <View
-            style={[
-              styles.audioBubble,
-              { backgroundColor: undefined, overflow: "hidden", borderWidth: 0 },
-            ]}
-          >
-            <GoldGradientFill />
-            <View style={styles.audioPlayBtn}>
-              <Feather name="mic" size={18} color="#080F0A" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <View style={[styles.audioTrack, { backgroundColor: "#080F0A33" }]} />
-              <Text style={[styles.audioTime, { color: "#080F0A" }]}>
-                {formatDuration(item.durationMs ?? 0)}
-              </Text>
-            </View>
-          </View>
-        )}
+        ) : null}
         {/* Upload overlay */}
         <View
           style={{
@@ -1079,221 +903,18 @@ function ImageAttachment({
   );
 }
 
-function AudioAttachment({
-  objectPath,
-  durationMs,
-  isMine,
-}: {
-  objectPath: string;
-  durationMs: number;
-  isMine: boolean;
-}) {
-  const colors = useColors();
-  const { theme: sceneTheme } = useSceneTheme();
-  const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
-  const soundRef = useRef<AudioPlayer | null>(null);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [positionMs, setPositionMs] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const totalMs = durationMs > 0 ? durationMs : 0;
-
-  // Limpiar player al desmontar y desregistrar del audioBridge
-  useEffect(() => {
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-      try { soundRef.current?.pause(); soundRef.current?.remove(); } catch {}
-      soundRef.current = null;
-      registerChatStopper(null);
-    };
-  }, []);
-
-  const webAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (Platform.OS !== "web") return;
-    const AudioCtor = (globalThis as unknown as { Audio: new (src?: string) => HTMLAudioElement }).Audio;
-    const audio = new AudioCtor();
-    audio.src = url;
-    audio.preload = "auto";
-    const onPlay = () => { setIsPlaying(true); setLoading(false); };
-    const onPause = () => setIsPlaying(false);
-    const onTime = () => setPositionMs(Math.round(audio.currentTime * 1000));
-    const onEnded = () => {
-      setIsPlaying(false);
-      setPositionMs(0);
-      audio.currentTime = 0;
-    };
-    const onError = () => {
-      console.log("[audio] error", audio.error?.code, audio.error?.message, "src:", audio.src);
-      setLoading(false);
-      setIsPlaying(false);
-      Alert.alert(
-        "Audio no compatible",
-        "Este formato de audio no se puede reproducir en el navegador. Probá desde la app móvil.",
-      );
-    };
-    audio.addEventListener("play", onPlay);
-    audio.addEventListener("pause", onPause);
-    audio.addEventListener("timeupdate", onTime);
-    audio.addEventListener("ended", onEnded);
-    audio.addEventListener("error", onError);
-    webAudioRef.current = audio;
-    return () => {
-      audio.pause();
-      audio.removeEventListener("play", onPlay);
-      audio.removeEventListener("pause", onPause);
-      audio.removeEventListener("timeupdate", onTime);
-      audio.removeEventListener("ended", onEnded);
-      audio.removeEventListener("error", onError);
-      webAudioRef.current = null;
-    };
-  }, [url]);
-
-  const toggle = async () => {
-    try {
-      if (Platform.OS === "web") {
-        const a = webAudioRef.current;
-        if (!a) return;
-        if (a.paused) {
-          // Detener todo lo demás antes de reproducir
-          stopSessionPlayback();
-          stopMixPlayback();
-          stopSoundPlayback();
-          stopChatPlayback();
-          setLoading(true);
-          try {
-            await a.play();
-          } finally {
-            setLoading(false);
-          }
-          // Registrar stopper para que sesión/mezcla puedan cortarnos
-          registerChatStopper(() => {
-            try { webAudioRef.current?.pause(); } catch {}
-            setIsPlaying(false);
-          });
-        } else {
-          a.pause();
-          registerChatStopper(null);
-        }
-        return;
-      }
-      // Crear player si no existe aún
-      if (!soundRef.current) {
-        // Detener todo lo demás antes de reproducir
-        stopSessionPlayback();
-        stopMixPlayback();
-        stopSoundPlayback();
-        stopChatPlayback();
-        setLoading(true);
-        const player = createAudioPlayer({ uri: url });
-        player.addListener("playbackStatusUpdate", (status) => {
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setPositionMs(0);
-            registerChatStopper(null);
-            try { player.seekTo(0); } catch {}
-          }
-        });
-        if (pollRef.current) clearInterval(pollRef.current);
-        pollRef.current = setInterval(() => {
-          if (!soundRef.current) { clearInterval(pollRef.current!); return; }
-          try { setPositionMs(Math.round((soundRef.current.currentTime ?? 0) * 1000)); } catch {}
-        }, 200);
-        soundRef.current = player;
-        player.play();
-        setLoading(false);
-        setIsPlaying(true);
-        // Registrar stopper para que sesión/mezcla puedan cortarnos
-        registerChatStopper(() => {
-          try { soundRef.current?.pause(); } catch {}
-          setIsPlaying(false);
-          registerChatStopper(null);
-        });
-        return;
-      }
-      if (isPlaying) {
-        soundRef.current.pause();
-        setIsPlaying(false);
-        registerChatStopper(null);
-      } else {
-        // Detener todo lo demás antes de retomar
-        stopSessionPlayback();
-        stopMixPlayback();
-        stopSoundPlayback();
-        stopChatPlayback();
-        soundRef.current.play();
-        setIsPlaying(true);
-        registerChatStopper(() => {
-          try { soundRef.current?.pause(); } catch {}
-          setIsPlaying(false);
-          registerChatStopper(null);
-        });
-      }
-    } catch (err) {
-      console.log("[audio] toggle error", err);
-      setLoading(false);
-      Alert.alert("Error", "No se pudo reproducir el audio.");
-    }
-  };
-
-  const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
-  const fg = isMine ? "#080F0A" : "#F9F9F9";
-  const trackBg = isMine ? "#080F0A33" : "rgba(255,255,255,0.1)";
-  const trackFill = isMine ? "#080F0A" : colors.primary;
-
-  return (
-    <View
-      style={[
-        styles.audioBubble,
-        {
-          backgroundColor: isMine ? undefined : "rgba(255,255,255,0.075)",
-          overflow: isMine ? "hidden" : undefined,
-          borderColor: isMine ? "transparent" : "rgba(255,255,255,0.1)",
-          borderWidth: isMine ? 0 : 1,
-        },
-      ]}
-    >
-      {isMine && <GoldGradientFill />}
-      <Pressable onPress={toggle} hitSlop={6} style={styles.audioPlayBtn}>
-        {loading ? (
-          <ActivityIndicator size="small" color={fg} />
-        ) : (
-          <Feather name={isPlaying ? "pause" : "play"} size={18} color={fg} />
-        )}
-      </Pressable>
-      <View style={{ flex: 1 }}>
-        <View style={[styles.audioTrack, { backgroundColor: trackBg }]}>
-          <View
-            style={{
-              width: `${progressPct * 100}%`,
-              height: "100%",
-              backgroundColor: trackFill,
-              borderRadius: 2,
-            }}
-          />
-        </View>
-        <Text style={[styles.audioTime, { color: fg }]}>
-          {formatDuration(totalMs > 0 ? totalMs - positionMs : positionMs)}
-        </Text>
-      </View>
-    </View>
-  );
-}
 
 function AttachMenuModal({
   visible,
   onClose,
   onPickImage,
   onPickGif,
-  onRecordVoice,
   onShareSession,
 }: {
   visible: boolean;
   onClose: () => void;
   onPickImage: () => void;
   onPickGif: () => void;
-  onRecordVoice: () => void;
   onShareSession: () => void;
 }) {
   const colors = useColors();
@@ -1328,13 +949,6 @@ function AttachMenuModal({
             sublabel="Animaciones desde Giphy"
             tint="#B57AD4"
             onPress={onPickGif}
-          />
-          <AttachOption
-            icon="mic"
-            label="Grabar mensaje de voz"
-            sublabel="Mantén grabando hasta 5 min"
-            tint="#FFFFFF"
-            onPress={onRecordVoice}
           />
           <AttachOption
             icon="play-circle"
@@ -1543,38 +1157,6 @@ function GifPickerModal({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  recBar: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    height: 40,
-  },
-  recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#E07A7A" },
-  recTime: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  audioBubble: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    minWidth: 180,
-    maxWidth: 240,
-    borderRadius: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 2,
-  },
-  audioPlayBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  audioTrack: { width: "100%", height: 4, borderRadius: 2, overflow: "hidden" },
-  audioTime: { fontFamily: "Manrope", fontSize: 11, marginTop: 4 },
   attachBackdrop: { flex: 1, backgroundColor: "#0008", justifyContent: "flex-end" },
   attachSheet: {
     borderTopLeftRadius: 22,

@@ -6,7 +6,7 @@ import {
 } from "expo-audio";
 import { AppState, type AppStateStatus, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AMBIENT_MAP, AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
+import { AUDIO_MAP, LOOP_SESSIONS, VOICE_MAP } from "@/config/audio-map";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
 import React, {
   createContext,
@@ -122,12 +122,6 @@ type PlayerContextType = {
   voiceVolume: number;
   /** Set voice track volume 0–1 */
   setVoiceVolume: (volume: number) => void;
-  /** Whether the current session has an ambient sound layer (e.g. birds) */
-  hasAmbientTrack: boolean;
-  /** Ambient layer volume 0–1 */
-  ambientVolume: number;
-  /** Set ambient layer volume 0–1 */
-  setAmbientVolume: (volume: number) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -199,8 +193,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const [mainVolume, setMainVolumeState] = useState(1.0);
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
-  const [ambientVolume, setAmbientVolumeState] = useState(0.7);
-
   // ── Cola de playlist (prev / next / shuffle) ─────────────────────────────
   const [activePlaylistIds, setActivePlaylistIds] = useState<string[] | null>(null);
   const [queueImplicit, setQueueImplicit] = useState(false);
@@ -242,7 +234,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // ── expo-audio players (main + simultaneous voice/ambient layers) ─────────────
   const mainPlayerRef = useRef<AudioPlayer | null>(null);
   const voicePlayerRef = useRef<AudioPlayer | null>(null);
-  const ambientPlayerRef = useRef<AudioPlayer | null>(null);
   const statusSubRef = useRef<{ remove: () => void } | null>(null);
 
   const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -273,7 +264,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const loopModeRef = useRef(false);
   /** Whether voice/ambient layers are active for the current session */
   const voiceActiveRef = useRef(false);
-  const ambientActiveRef = useRef(false);
   /** Pending resume seek fraction, applied once the main track reports its duration */
   const pendingSeekRef = useRef<number | null>(null);
   /** Last known playing state of the main player — to mirror lock-screen play/pause onto layers */
@@ -304,9 +294,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Keep latest volumes in refs for use inside async setup
   const voiceVolumeRef = useRef(voiceVolume);
   voiceVolumeRef.current = voiceVolume;
-  const ambientVolumeRef = useRef(ambientVolume);
-  ambientVolumeRef.current = ambientVolume;
-
   useEffect(() => {
     let cancelled = false;
     async function hydrate() {
@@ -644,7 +631,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               if (!lastPlayingRef.current) return; // ya pausado por otra vía
               lastPlayingRef.current = false;
               voicePlayerRef.current?.pause();
-              ambientPlayerRef.current?.pause();
               pauseLoopEngine();
               if (!switchingRef.current) setIsPlaying(false);
             }, 700);
@@ -664,11 +650,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         lastPlayingRef.current = status.playing;
         if (status.playing) {
           if (voiceActiveRef.current) voicePlayerRef.current?.play();
-          if (ambientActiveRef.current) ambientPlayerRef.current?.play();
           if (loopCrossfadeRef.current) resumeLoopEngineRef.current();
         } else {
           voicePlayerRef.current?.pause();
-          ambientPlayerRef.current?.pause();
           if (loopCrossfadeRef.current) pauseLoopEngine();
         }
         // While switching sessions we manage isPlaying manually — ignore stale toggles
@@ -720,9 +704,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(false);
         lastPlayingRef.current = false;
         voiceActiveRef.current = false;
-        ambientActiveRef.current = false;
         voicePlayerRef.current?.pause();
-        ambientPlayerRef.current?.pause();
         setProgress(1);
         const sId = currentSessionRef.current?.id;
         if (sId) saveSessionProgress(sId, 1, { force: true });
@@ -755,13 +737,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return voicePlayerRef.current;
   }, []);
 
-  const ensureAmbientPlayer = useCallback((): AudioPlayer => {
-    if (!ambientPlayerRef.current) {
-      ambientPlayerRef.current = createAudioPlayer(null);
-    }
-    return ambientPlayerRef.current;
-  }, []);
-
   /** Stop the gapless engine loop voice (if any) and clear the loop flags */
   const teardownLoopCrossfade = () => {
     clearLoopPauseDebounce();
@@ -777,9 +752,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Pause the optional layers and mark them inactive */
   const teardownLayers = useCallback(() => {
     voicePlayerRef.current?.pause();
-    ambientPlayerRef.current?.pause();
     voiceActiveRef.current = false;
-    ambientActiveRef.current = false;
     teardownLoopCrossfade();
   }, []);
 
@@ -793,7 +766,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       mainPlayerRef.current?.clearLockScreenControls();
     } catch (_) {}
     voicePlayerRef.current?.pause();
-    ambientPlayerRef.current?.pause();
   }, []);
 
   useEffect(() => {
@@ -802,7 +774,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       statusSubRef.current?.remove();
       try { mainPlayerRef.current?.remove(); } catch (_) {}
       try { voicePlayerRef.current?.remove(); } catch (_) {}
-      try { ambientPlayerRef.current?.remove(); } catch (_) {}
       clearSim();
       teardownLoopCrossfade();
       clearSleepInterval();
@@ -1298,7 +1269,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             voiceActiveRef.current = false;
             voicePlayerRef.current?.pause();
           }
-          ambientActiveRef.current = false;
 
           lockScreenPendingRef.current = { session, withSeek: true };
           lastPlayingRef.current = true;
@@ -1349,7 +1319,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             voice.volume = voiceVolumeRef.current;
             voice.play();
             voiceActiveRef.current = true;
-            ambientActiveRef.current = false;
           } catch (err) {
             console.warn("[RESONANCE] Voice-only load failed:", err);
             if (gen !== playGenRef.current) return;
@@ -1443,7 +1412,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           if (gen !== playGenRef.current) return;
 
           const main = ensureMainPlayer();
-          const ambientFile = AMBIENT_MAP[session.id];
 
           if (isLoopSession) {
             // ── Loop gapless por el motor nativo (bpmAudioEngine) ──
@@ -1486,17 +1454,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               }
             })();
 
-            if (ambientFile) {
-              const ambient = ensureAmbientPlayer();
-              ambient.loop = true;
-              ambient.replace(ambientFile);
-              ambient.volume = ambientVolumeRef.current;
-              ambient.play();
-              ambientActiveRef.current = true;
-            } else {
-              ambientActiveRef.current = false;
-              ambientPlayerRef.current?.pause();
-            }
             voiceActiveRef.current = false;
 
             lockScreenPendingRef.current = {
@@ -1523,7 +1480,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   clearSim();
                   teardownPlayback();
                   teardownLoopCrossfade();
-                  ambientActiveRef.current = false;
                   loopModeRef.current = false;
                   hasRealAudioRef.current = false;
                   lastPlayingRef.current = false;
@@ -1546,17 +1502,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             main.volume = mainVolumeRef.current;
             main.play();
 
-            if (ambientFile) {
-              const ambient = ensureAmbientPlayer();
-              ambient.loop = true;
-              ambient.replace(ambientFile);
-              ambient.volume = ambientVolumeRef.current;
-              ambient.play();
-              ambientActiveRef.current = true;
-            } else {
-              ambientActiveRef.current = false;
-              ambientPlayerRef.current?.pause();
-            }
             voiceActiveRef.current = false;
 
             lockScreenPendingRef.current = {
@@ -1581,7 +1526,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 if (next >= totalSeconds) {
                   clearSim();
                   teardownPlayback();
-                  ambientActiveRef.current = false;
                   loopModeRef.current = false;
                   hasRealAudioRef.current = false;
                   lastPlayingRef.current = false;
@@ -1631,7 +1575,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       startStatTracking,
       markPlayStarted,
       ensureMainPlayer,
-      ensureAmbientPlayer,
       teardownLayers,
       teardownPlayback,
       saveSessionProgress,
@@ -1646,7 +1589,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (main.playing) {
         main.pause();
         if (voiceActiveRef.current) voicePlayerRef.current?.pause();
-        if (ambientActiveRef.current) ambientPlayerRef.current?.pause();
         if (loopCrossfadeRef.current) pauseLoopEngine();
         lastPlayingRef.current = false;
         setIsPlaying(false);
@@ -1657,7 +1599,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       } else {
         main.play();
         if (voiceActiveRef.current) voicePlayerRef.current?.play();
-        if (ambientActiveRef.current) ambientPlayerRef.current?.play();
         if (loopCrossfadeRef.current) resumeLoopEngineRef.current();
         lastPlayingRef.current = true;
         setIsPlaying(true);
@@ -1812,14 +1753,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setAmbientVolume = useCallback((volume: number) => {
-    const clamped = Math.max(0, Math.min(1, volume));
-    setAmbientVolumeState(clamped);
-    if (ambientPlayerRef.current) {
-      try { ambientPlayerRef.current.volume = clamped; } catch (_) {}
-    }
-  }, []);
-
   const { isPremium } = usePremium();
 
   useEffect(() => {
@@ -1892,9 +1825,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         hasVoiceTrack: !!(VOICE_MAP[currentSession?.id ?? ""] || currentSession?.voiceUri),
         voiceVolume,
         setVoiceVolume,
-        hasAmbientTrack: !!AMBIENT_MAP[currentSession?.id ?? ""],
-        ambientVolume,
-        setAmbientVolume,
       }}
     >
       {children}

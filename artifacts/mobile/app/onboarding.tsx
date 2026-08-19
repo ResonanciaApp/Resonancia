@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -165,11 +164,6 @@ function OptionCard({
 // ── Main component ────────────────────────────────────────────────────────────
 export default function Onboarding() {
   const insets = useSafeAreaInsets();
-  const { stopAmbient } = useAmbientPlayer();
-
-  // Ensure ambient widget sound never plays during onboarding
-  useEffect(() => { stopAmbient(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // step: -1 = welcome, 0-4 = questions, 5 = closing
   const [step, setStep] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});

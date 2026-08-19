@@ -1,6 +1,6 @@
 ---
 name: BPM gapless loop engine
-description: Los loops BPM del Mezclador usan expo-audio con reloj maestro (reloj nativo react-native-audio-api fue revertido por el usuario). Historial de enfoques fallidos e instrucciones para evitar regresiones.
+description: Los loops BPM del Mezclador usan bpmAudioEngine (react-native-audio-api, activo). NOTA: descripción previa incorrecta; el motor nativo NO fue revertido.
 ---
 
 # Loops BPM en el Mezclador — estado actual: expo-audio con reloj maestro
