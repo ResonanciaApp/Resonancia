@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   composeTap: {
     alignSelf: "center",
     borderRadius: 15,
-    backgroundColor: "#283673",
+    backgroundColor: "#5146A8",
     paddingHorizontal: 28,
     paddingVertical: 9,
     marginBottom: 16,
