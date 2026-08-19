@@ -185,9 +185,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     ? ["#5146A8", "#5146A8"]
     : ["#F9F9F9", "#F9F9F9"];
   const listenNowBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["rgba(190,163,230,0.18)", "rgba(190,163,230,0.18)"]
+    ? ["#F9F9F9", "#F9F9F9"]
     : playBtnColors;
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
+  const listenNowBtnTextColor = isIndigoPlayBtn ? "#020217" : playBtnTextColor;
   const shareBtnTextColor = "#F9F9F9";
   const shareBtnBorder = isIndigoPlayBtn ? "#F9F9F9" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
@@ -576,10 +577,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill={playBtnTextColor}
+                      fill={listenNowBtnTextColor}
                     />
                   </Svg>
-                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>
+                  <Text style={[styles.playBtnText, { color: listenNowBtnTextColor }]}>
                     {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
                   </Text>
                 </View>
