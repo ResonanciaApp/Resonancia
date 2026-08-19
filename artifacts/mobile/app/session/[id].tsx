@@ -189,7 +189,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     : playBtnColors;
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
-  const shareBtnBorder = isIndigoPlayBtn ? "#6757C8" : "#F9F9F9";
+  const shareBtnBorder = isIndigoPlayBtn ? "rgba(249,249,249,0.10)" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -556,22 +556,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 onPress={handlePlay}
                 style={({ pressed }) => [
                   styles.playBtn,
-                  {
-                    flex: 1,
-                    opacity: pressed ? 0.88 : 1,
-                    ...(isIndigoPlayBtn
-                      ? {
-                          borderWidth: 2,
-                          borderColor: "#F9F9F9",
-                        }
-                      : {}),
-                  },
+                  { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
                 ]}
               >
-                {/* gradiente en View propio con overflow hidden para no recortar el borde */}
-                <View style={[StyleSheet.absoluteFill, { borderRadius: styles.playBtn.borderRadius, overflow: "hidden" }]}>
-                  <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                </View>
+                <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
