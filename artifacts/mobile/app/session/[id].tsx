@@ -185,7 +185,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     ? ["#5146A8", "#5146A8"]
     : ["#F9F9F9", "#F9F9F9"];
   const listenNowBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["rgba(190,163,230,0.05)", "rgba(190,163,230,0.05)"]
+    ? ["rgba(190,163,230,0.18)", "rgba(190,163,230,0.18)"]
     : playBtnColors;
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const shareBtnTextColor = "#F9F9F9";
