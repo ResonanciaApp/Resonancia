@@ -22,12 +22,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   COUNTRY_FLAGS,
-  getResonadorById,
   type ExternalProject,
   type FormacionItem,
   type ResonadorSubtipo,
 } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
+import { useMyResonadorProfile, resolveResonadorUrl } from "@/hooks/useResonadores";
+import { uploadLocalFile } from "@/lib/upload";
 
 const H_PAD = 20;
 const GOLD = "#F9F9F9";
@@ -53,6 +54,15 @@ const PLATFORM_LABELS: Record<ExternalProject["platform"], string> = {
 export const RESONADOR_OVERRIDE_KEY = (id: string) =>
   `@resonancia_resonador_overrides_${id}`;
 
+/**
+ * Una foto de galería puede ser:
+ *  - URI local (file://…) → se sube al guardar
+ *  - objectPath (/objects/…) o URL (https://…) → ya está en Storage, no se sube de nuevo
+ */
+function isLocalUri(uri: string): boolean {
+  return uri.startsWith("file://") || uri.startsWith("content://");
+}
+
 type EditForm = {
   name: string;
   subtipo: ResonadorSubtipo;
@@ -66,9 +76,30 @@ type EditForm = {
   donationUrl: string;
   projects: ExternalProject[];
   formacion: FormacionItem[];
-  photoUri?: string;
+  // Foto de perfil: puede ser uri local, objectPath, URL, o null
+  photoUri: string | null;
+  // Fotos de galería: mix de URIs locales y objectPaths ya almacenados
   photos: string[];
 };
+
+function buildEmptyForm(): EditForm {
+  return {
+    name: "",
+    subtipo: "Músico",
+    city: "",
+    country: "Chile",
+    bio: "",
+    servicesDescription: "",
+    quote: "",
+    instagram: "",
+    linktree: "",
+    donationUrl: "",
+    projects: [],
+    formacion: [],
+    photoUri: null,
+    photos: [],
+  };
+}
 
 export default function ResonadorEditarScreen() {
   const colors = useColors();
@@ -78,35 +109,33 @@ export default function ResonadorEditarScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const resonador = getResonadorById(id);
+  const { profile, isLoading, updateMyProfile } = useMyResonadorProfile();
   const [saving, setSaving] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
-  const [form, setForm] = useState<EditForm>(() => ({
-    name: resonador?.name ?? "",
-    subtipo: resonador?.subtipo ?? "Músico",
-    city: resonador?.city ?? "",
-    country: resonador?.country ?? "Chile",
-    bio: resonador?.bio ?? "",
-    servicesDescription: resonador?.servicesDescription ?? "",
-    quote: resonador?.quote ?? "",
-    instagram: resonador?.instagram ?? "",
-    linktree: resonador?.linktree ?? "",
-    donationUrl: resonador?.donationUrl ?? "",
-    projects: resonador?.projects ? [...resonador.projects] : [],
-    formacion: resonador?.formacion ? [...resonador.formacion] : [],
-    photos: resonador?.photos ? [...resonador.photos] : [],
-  }));
+  const [form, setForm] = useState<EditForm>(buildEmptyForm);
 
+  // Hidrata el form desde el perfil de la API cuando llega
   useEffect(() => {
-    if (!id) return;
-    AsyncStorage.getItem(RESONADOR_OVERRIDE_KEY(id))
-      .then((raw) => {
-        if (!raw) return;
-        const saved: Partial<EditForm> = JSON.parse(raw);
-        setForm((prev) => ({ ...prev, ...saved }));
-      })
-      .catch(() => {});
-  }, [id]);
+    if (!profile || hydrated) return;
+    setForm({
+      name: profile.name ?? "",
+      subtipo: (profile.subtipo as ResonadorSubtipo) ?? "Músico",
+      city: profile.city ?? "",
+      country: profile.country ?? "Chile",
+      bio: profile.bio ?? "",
+      servicesDescription: profile.servicesDescription ?? "",
+      quote: profile.quote ?? "",
+      instagram: profile.instagram ?? "",
+      linktree: profile.linktree ?? "",
+      donationUrl: profile.donationUrl ?? "",
+      projects: profile.projects ? [...profile.projects] : [],
+      formacion: profile.formacion ? [...profile.formacion] : [],
+      photoUri: profile.photoUrl ?? null,
+      photos: profile.photos ? [...profile.photos] : [],
+    });
+    setHydrated(true);
+  }, [profile, hydrated]);
 
   const set = <K extends keyof EditForm>(key: K, val: EditForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: val }));
@@ -156,18 +185,80 @@ export default function ResonadorEditarScreen() {
   async function handleSave() {
     setSaving(true);
     try {
-      await AsyncStorage.setItem(RESONADOR_OVERRIDE_KEY(id), JSON.stringify(form));
+      // 1. Subir foto de perfil si es una URI local nueva
+      let photoUrl: string | null = form.photoUri;
+      if (form.photoUri && isLocalUri(form.photoUri)) {
+        try {
+          const objectPath = await uploadLocalFile(
+            form.photoUri,
+            "image/jpeg",
+            `resonador-${id}-photo-${Date.now()}.jpg`,
+            0,
+          );
+          photoUrl = objectPath;
+        } catch (uploadErr) {
+          Alert.alert("Error", "No se pudo subir la foto de perfil. Los demás cambios se guardarán.");
+          photoUrl = profile?.photoUrl ?? null;
+        }
+      }
+
+      // 2. Subir fotos de galería que sean URIs locales
+      const resolvedPhotos: string[] = await Promise.all(
+        form.photos.map(async (uri) => {
+          if (!isLocalUri(uri)) return uri; // ya es objectPath o URL
+          try {
+            return await uploadLocalFile(
+              uri,
+              "image/jpeg",
+              `resonador-${id}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`,
+              0,
+            );
+          } catch {
+            return uri; // mantener URI local como fallback (no se mostrará bien)
+          }
+        }),
+      );
+
+      // 3. Guardar en la API
+      await updateMyProfile({
+        name: form.name.trim() || undefined,
+        subtipo: form.subtipo,
+        city: form.city.trim(),
+        country: form.country.trim(),
+        bio: form.bio.trim(),
+        servicesDescription: form.servicesDescription.trim() || null,
+        quote: form.quote.trim() || null,
+        instagram: form.instagram.trim() || null,
+        linktree: form.linktree.trim() || null,
+        donationUrl: form.donationUrl.trim() || null,
+        projects: form.projects,
+        formacion: form.formacion,
+        photoUrl,
+        photos: resolvedPhotos,
+      } as Parameters<typeof updateMyProfile>[0]);
+
+      // 4. Limpiar overrides de AsyncStorage (ya no son necesarios)
+      if (id) {
+        await AsyncStorage.removeItem(RESONADOR_OVERRIDE_KEY(id)).catch(() => {});
+      }
+
       router.back();
-    } catch {
-      Alert.alert("Error", "No se pudo guardar. Inténtalo de nuevo.");
+    } catch (err) {
+      Alert.alert(
+        "Error al guardar",
+        err instanceof Error ? err.message : "Inténtalo de nuevo.",
+      );
     } finally {
       setSaving(false);
     }
   }
 
-  const photoSource = form.photoUri
-    ? { uri: form.photoUri }
-    : resonador?.photo;
+  // Fuente de imagen para la foto de perfil
+  const photoSource = form.photoUri && !isLocalUri(form.photoUri)
+    ? { uri: resolveResonadorUrl(form.photoUri) ?? form.photoUri }
+    : form.photoUri
+      ? { uri: form.photoUri }
+      : null;
 
   const addProject = () =>
     set("projects", [...form.projects, { platform: "web" as const, label: "", url: "" }]);
@@ -183,7 +274,23 @@ export default function ResonadorEditarScreen() {
   const updateFormacion = (i: number, patch: Partial<FormacionItem>) =>
     set("formacion", form.formacion.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
 
-  if (!resonador) {
+  // ── Loading / no profile states ────────────────────────────────────────────
+
+  if (isLoading) {
+    return (
+      <View style={styles.root}>
+        <StatusBar hidden />
+        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+        <View style={styles.centered}>
+          <Text style={[styles.centeredText, { color: colors.mutedForeground }]}>
+            Cargando perfil…
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (!profile) {
     return (
       <View style={styles.root}>
         <StatusBar hidden />
@@ -195,7 +302,7 @@ export default function ResonadorEditarScreen() {
         </View>
         <View style={styles.centered}>
           <Text style={[styles.centeredText, { color: colors.mutedForeground }]}>
-            Perfil no encontrado
+            No tenés un perfil de resonador vinculado a tu cuenta.
           </Text>
         </View>
       </View>
@@ -214,7 +321,7 @@ export default function ResonadorEditarScreen() {
         </Pressable>
         <Text style={styles.headerTitle}>Editar perfil</Text>
         <Pressable
-          onPress={handleSave}
+          onPress={() => void handleSave()}
           disabled={saving}
           style={({ pressed }) => [styles.saveBtn, { opacity: saving || pressed ? 0.7 : 1 }]}
         >
@@ -232,8 +339,8 @@ export default function ResonadorEditarScreen() {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: bottomPad + 48, gap: 10 }}
         >
-          {/* ── Foto de portada ── */}
-          <Pressable onPress={pickPhoto} style={styles.photoSection}>
+          {/* ── Foto de perfil ── */}
+          <Pressable onPress={() => void pickPhoto()} style={styles.photoSection}>
             {photoSource ? (
               <Image
                 source={photoSource}
@@ -517,24 +624,29 @@ export default function ResonadorEditarScreen() {
           {/* ── Galería de fotos ── */}
           <SectionCard title="Galería de fotos" hint="Hasta 6 fotos para tu perfil">
             <View style={styles.gridWrap}>
-              {form.photos.map((uri, i) => (
-                <View key={i} style={styles.gridCell}>
-                  <Image
-                    source={{ uri }}
-                    style={{ width: "100%", height: "100%" }}
-                    contentFit="cover"
-                  />
-                  <Pressable
-                    onPress={() => removeGridPhoto(i)}
-                    style={styles.gridRemoveBtn}
-                    hitSlop={6}
-                  >
-                    <Feather name="x" size={12} color="#fff" />
-                  </Pressable>
-                </View>
-              ))}
+              {form.photos.map((uri, i) => {
+                const displayUri = isLocalUri(uri)
+                  ? uri
+                  : (resolveResonadorUrl(uri) ?? uri);
+                return (
+                  <View key={i} style={styles.gridCell}>
+                    <Image
+                      source={{ uri: displayUri }}
+                      style={{ width: "100%", height: "100%" }}
+                      contentFit="cover"
+                    />
+                    <Pressable
+                      onPress={() => removeGridPhoto(i)}
+                      style={styles.gridRemoveBtn}
+                      hitSlop={6}
+                    >
+                      <Feather name="x" size={12} color="#fff" />
+                    </Pressable>
+                  </View>
+                );
+              })}
               {form.photos.length < 6 && (
-                <Pressable onPress={pickGridPhoto} style={styles.gridAddCell}>
+                <Pressable onPress={() => void pickGridPhoto()} style={styles.gridAddCell}>
                   <Feather name="plus" size={22} color={GOLD} />
                   <Text style={styles.gridAddText}>Agregar</Text>
                 </Pressable>
@@ -544,7 +656,7 @@ export default function ResonadorEditarScreen() {
 
           {/* ── Guardar (bottom) ── */}
           <Pressable
-            onPress={handleSave}
+            onPress={() => void handleSave()}
             disabled={saving}
             style={({ pressed }) => [
               styles.saveBottomBtn,
@@ -594,8 +706,8 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  centered: { flex: 1, alignItems: "center", justifyContent: "center" },
-  centeredText: { fontFamily: "Manrope", fontSize: 16 },
+  centered: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  centeredText: { fontFamily: "Manrope", fontSize: 15, textAlign: "center", lineHeight: 22 },
 
   headerRow: {
     flexDirection: "row",

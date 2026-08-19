@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import {
   Plus,
@@ -8,8 +8,12 @@ import {
   XCircle,
   Database,
   BadgeCheck,
+  Upload,
+  X,
+  ImageIcon,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRequestUploadUrl } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +56,10 @@ interface ApiResonador {
   instagram: string | null;
   linktree: string | null;
   donationUrl: string | null;
+  quote: string | null;
+  photoUrl: string | null;
+  coverPhotoUrl: string | null;
+  photos: string[];
   status: string;
   sortOrder: number;
 }
@@ -77,7 +85,17 @@ const EMPTY_FORM: Partial<ApiResonador> & { id: string } = {
   status: "published",
   sortOrder: 0,
   bookingModality: "",
+  photoUrl: null,
+  coverPhotoUrl: null,
+  photos: [],
 };
+
+function resolveImageUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  if (raw.startsWith("http")) return raw;
+  if (raw.startsWith("/objects/")) return `/api/storage${raw}`;
+  return raw;
+}
 
 async function fetchResonadores(): Promise<ApiResonador[]> {
   const res = await fetch("/api/admin/resonadores", { credentials: "include" });
@@ -142,11 +160,179 @@ function csvToArray(s: string): string[] {
     .filter(Boolean);
 }
 
+// ── Image upload widget ───────────────────────────────────────────────────────
+
+interface ImageUploadCellProps {
+  currentUrl: string | null;
+  pendingFile: File | null;
+  onFilePicked: (file: File | null) => void;
+  label: string;
+  aspectClass?: string;
+}
+
+function ImageUploadCell({
+  currentUrl,
+  pendingFile,
+  onFilePicked,
+  label,
+  aspectClass = "aspect-square",
+}: ImageUploadCellProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const previewUrl = pendingFile
+    ? URL.createObjectURL(pendingFile)
+    : resolveImageUrl(currentUrl);
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <div
+        className={`relative border rounded-lg overflow-hidden bg-muted cursor-pointer group ${aspectClass}`}
+        onClick={() => inputRef.current?.click()}
+      >
+        {previewUrl ? (
+          <img
+            src={previewUrl}
+            alt={label}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-muted-foreground">
+            <ImageIcon className="w-6 h-6" />
+            <span className="text-xs">Sin foto</span>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <Upload className="w-5 h-5 text-white" />
+        </div>
+        {(pendingFile || currentUrl) && (
+          <button
+            type="button"
+            className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5 text-white hover:bg-destructive transition-colors z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              onFilePicked(null);
+            }}
+          >
+            <X className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0] ?? null;
+          onFilePicked(file);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
+// ── Photos gallery widget ─────────────────────────────────────────────────────
+
+interface PhotosGalleryProps {
+  existingUrls: string[];
+  pendingFiles: File[];
+  onAddFile: (file: File) => void;
+  onRemoveExisting: (index: number) => void;
+  onRemovePending: (index: number) => void;
+}
+
+function PhotosGallery({
+  existingUrls,
+  pendingFiles,
+  onAddFile,
+  onRemoveExisting,
+  onRemovePending,
+}: PhotosGalleryProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const total = existingUrls.length + pendingFiles.length;
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs text-muted-foreground">Galería (hasta 6 fotos)</Label>
+      <div className="flex flex-wrap gap-2">
+        {existingUrls.map((url, i) => {
+          const resolved = resolveImageUrl(url);
+          return (
+            <div key={`ex-${i}`} className="relative w-20 h-20 rounded-md overflow-hidden border bg-muted group">
+              {resolved && (
+                <img src={resolved} alt="" className="w-full h-full object-cover" />
+              )}
+              <button
+                type="button"
+                className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => onRemoveExisting(i)}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          );
+        })}
+        {pendingFiles.map((file, i) => (
+          <div key={`pend-${i}`} className="relative w-20 h-20 rounded-md overflow-hidden border-2 border-blue-400 bg-muted group">
+            <img
+              src={URL.createObjectURL(file)}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 inset-x-0 bg-blue-500/80 text-white text-center text-[9px] py-0.5">Nueva</div>
+            <button
+              type="button"
+              className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => onRemovePending(i)}
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        ))}
+        {total < 6 && (
+          <button
+            type="button"
+            className="w-20 h-20 rounded-md border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:border-muted-foreground transition-colors"
+            onClick={() => inputRef.current?.click()}
+          >
+            <Plus className="w-5 h-5" />
+            <span className="text-[10px]">Agregar</span>
+          </button>
+        )}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onAddFile(file);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function ResonadoresPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ApiResonador | null>(null);
   const [form, setForm] = useState<typeof EMPTY_FORM>({ ...EMPTY_FORM });
+  const [uploading, setUploading] = useState(false);
+
+  // Pending files for images (not yet uploaded)
+  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
+  const [pendingCover, setPendingCover] = useState<File | null>(null);
+  // existingPhotos: current photo URLs in DB; pendingGallery: newly selected files
+  const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+  const [pendingGallery, setPendingGallery] = useState<File[]>([]);
+
+  const { mutateAsync: requestUrl } = useRequestUploadUrl();
 
   const { data: resonadores = [], isLoading } = useQuery({
     queryKey: ["admin-resonadores"],
@@ -180,39 +366,98 @@ export default function ResonadoresPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  // ── Upload helper ──────────────────────────────────────────────────────────
+
+  async function uploadFile(file: File): Promise<string> {
+    const { uploadURL, objectPath } = await requestUrl({
+      data: { name: file.name, size: file.size, contentType: file.type },
+    });
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", uploadURL);
+      xhr.setRequestHeader("Content-Type", file.type);
+      xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`HTTP ${xhr.status}`));
+      xhr.onerror = () => reject(new Error("Error de red"));
+      xhr.send(file);
+    });
+    return objectPath;
+  }
+
+  // ── Dialog open helpers ────────────────────────────────────────────────────
+
   function openCreate() {
     setEditing(null);
     setForm({ ...EMPTY_FORM });
+    setPendingPhoto(null);
+    setPendingCover(null);
+    setExistingPhotos([]);
+    setPendingGallery([]);
     setOpen(true);
   }
 
   function openEdit(r: ApiResonador) {
     setEditing(r);
-    setForm({
-      ...r,
-      specialty: r.specialty,
-      genres: r.genres,
-    });
+    setForm({ ...r, specialty: r.specialty, genres: r.genres });
+    setPendingPhoto(null);
+    setPendingCover(null);
+    setExistingPhotos(r.photos ?? []);
+    setPendingGallery([]);
     setOpen(true);
   }
 
-  function handleSubmit() {
-    const payload = {
-      ...form,
-      specialty: Array.isArray(form.specialty)
-        ? form.specialty
-        : csvToArray(String(form.specialty ?? "")),
-      genres: Array.isArray(form.genres)
-        ? form.genres
-        : csvToArray(String(form.genres ?? "")),
-      bookingModality: form.bookingModality || null,
-      sortOrder: Number(form.sortOrder ?? 0),
-    };
-    if (editing) {
-      const { id: _id, ...rest } = payload;
-      updateMut.mutate({ id: editing.id, body: rest });
-    } else {
-      createMut.mutate(payload);
+  // ── Submit ─────────────────────────────────────────────────────────────────
+
+  async function handleSubmit() {
+    setUploading(true);
+    try {
+      // Upload new photos if any
+      let photoUrl = form.photoUrl ?? null;
+      let coverPhotoUrl = form.coverPhotoUrl ?? null;
+
+      if (pendingPhoto) {
+        photoUrl = await uploadFile(pendingPhoto);
+      } else if (pendingPhoto === null && form.photoUrl === null) {
+        // User explicitly removed the photo
+        photoUrl = null;
+      }
+
+      if (pendingCover) {
+        coverPhotoUrl = await uploadFile(pendingCover);
+      } else if (pendingCover === null && form.coverPhotoUrl === null) {
+        coverPhotoUrl = null;
+      }
+
+      // Upload new gallery photos
+      const newGalleryPaths = await Promise.all(
+        pendingGallery.map((f) => uploadFile(f)),
+      );
+      const photos = [...existingPhotos, ...newGalleryPaths];
+
+      const payload = {
+        ...form,
+        photoUrl,
+        coverPhotoUrl,
+        photos,
+        specialty: Array.isArray(form.specialty)
+          ? form.specialty
+          : csvToArray(String(form.specialty ?? "")),
+        genres: Array.isArray(form.genres)
+          ? form.genres
+          : csvToArray(String(form.genres ?? "")),
+        bookingModality: form.bookingModality || null,
+        sortOrder: Number(form.sortOrder ?? 0),
+      };
+
+      if (editing) {
+        const { id: _id, ...rest } = payload;
+        updateMut.mutate({ id: editing.id, body: rest });
+      } else {
+        createMut.mutate(payload);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al subir imágenes");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -226,6 +471,8 @@ export default function ResonadoresPage() {
 
   const set = (k: keyof typeof EMPTY_FORM, v: unknown) =>
     setForm((prev) => ({ ...prev, [k]: v }));
+
+  const isBusy = uploading || createMut.isPending || updateMut.isPending;
 
   return (
     <div className="p-6 space-y-6">
@@ -245,7 +492,7 @@ export default function ResonadoresPage() {
               disabled={seedMut.isPending}
             >
               <Database className="w-4 h-4 mr-2" />
-              Seed inicial (10)
+              Seed inicial (9)
             </Button>
           )}
           <Button onClick={openCreate}>
@@ -268,6 +515,21 @@ export default function ResonadoresPage() {
         <div className="border rounded-lg divide-y">
           {resonadores.map((r) => (
             <div key={r.id} className="flex items-center gap-4 p-4">
+              {/* Avatar */}
+              <div className="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-muted border">
+                {resolveImageUrl(r.photoUrl) ? (
+                  <img
+                    src={resolveImageUrl(r.photoUrl)!}
+                    alt={r.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+
               {/* Status indicator */}
               <div className="shrink-0">
                 {r.status === "published" ? (
@@ -348,6 +610,39 @@ export default function ResonadoresPage() {
                 />
               </div>
             )}
+
+            {/* ── Fotos ── */}
+            <div className="border rounded-md p-3 space-y-3">
+              <p className="text-sm font-medium">Fotos</p>
+              <div className="grid grid-cols-2 gap-3">
+                <ImageUploadCell
+                  label="Foto de perfil"
+                  currentUrl={pendingPhoto ? null : form.photoUrl ?? null}
+                  pendingFile={pendingPhoto}
+                  onFilePicked={(f) => {
+                    setPendingPhoto(f);
+                    if (f === null) set("photoUrl", null);
+                  }}
+                />
+                <ImageUploadCell
+                  label="Foto de portada (hero)"
+                  currentUrl={pendingCover ? null : form.coverPhotoUrl ?? null}
+                  pendingFile={pendingCover}
+                  onFilePicked={(f) => {
+                    setPendingCover(f);
+                    if (f === null) set("coverPhotoUrl", null);
+                  }}
+                  aspectClass="aspect-video"
+                />
+              </div>
+              <PhotosGallery
+                existingUrls={existingPhotos}
+                pendingFiles={pendingGallery}
+                onAddFile={(f) => setPendingGallery((prev) => [...prev, f])}
+                onRemoveExisting={(i) => setExistingPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                onRemovePending={(i) => setPendingGallery((prev) => prev.filter((_, idx) => idx !== i))}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-1.5">
@@ -527,10 +822,10 @@ export default function ResonadoresPage() {
                 Cancelar
               </Button>
               <Button
-                onClick={handleSubmit}
-                disabled={createMut.isPending || updateMut.isPending}
+                onClick={() => void handleSubmit()}
+                disabled={isBusy}
               >
-                {editing ? "Guardar cambios" : "Crear resonador"}
+                {isBusy ? "Guardando…" : editing ? "Guardar cambios" : "Crear resonador"}
               </Button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import { asc, eq } from "drizzle-orm";
+import { getAuth } from "@clerk/express";
 import {
   db,
   resonadoresTable,
@@ -83,6 +84,75 @@ router.get("/resonadores/:id", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "error fetching resonador");
     res.status(500).json({ error: "Error al obtener el resonador" });
+  }
+});
+
+// ── Endpoints del resonador autenticado ──────────────────────────────────────
+
+const MY_PROFILE_WHITELIST = [
+  "bio", "city", "country", "servicesDescription",
+  "bookingUrl", "bookingPrice", "bookingModality", "bookingTagline",
+  "instagram", "linktree", "email", "phone", "quote", "donationUrl",
+  "photoUrl", "coverPhotoUrl", "photos", "projects", "formacion",
+  "subtipo", "specialty", "genres", "name",
+] as const;
+
+// GET /me/resonador-profile
+router.get("/me/resonador-profile", requireAuth, async (req, res) => {
+  const clerkId = getAuth(req).userId!;
+  try {
+    const [row] = await db
+      .select()
+      .from(resonadoresTable)
+      .where(eq(resonadoresTable.clerkId, clerkId))
+      .limit(1);
+    if (!row) {
+      res.status(404).json({ error: "No tenés un perfil de resonador vinculado" });
+      return;
+    }
+    res.json(serialize(row));
+  } catch (err) {
+    req.log.error({ err }, "error fetching own resonador profile");
+    res.status(500).json({ error: "Error al obtener el perfil" });
+  }
+});
+
+// PATCH /me/resonador-profile
+router.patch("/me/resonador-profile", requireAuth, async (req, res) => {
+  const clerkId = getAuth(req).userId!;
+  const whitelisted: Record<string, unknown> = {};
+  for (const key of MY_PROFILE_WHITELIST) {
+    if (key in req.body) whitelisted[key] = req.body[key];
+  }
+  const parsed = updateResonadorSchema.safeParse(whitelisted);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  if (Object.keys(parsed.data).length === 0) {
+    res.status(400).json({ error: "No hay campos para actualizar" });
+    return;
+  }
+  try {
+    const [existing] = await db
+      .select({ id: resonadoresTable.id })
+      .from(resonadoresTable)
+      .where(eq(resonadoresTable.clerkId, clerkId))
+      .limit(1);
+    if (!existing) {
+      res.status(404).json({ error: "No tenés un perfil de resonador vinculado" });
+      return;
+    }
+    const [updated] = await db
+      .update(resonadoresTable)
+      .set({ ...parsed.data, updatedAt: new Date() })
+      .where(eq(resonadoresTable.id, existing.id))
+      .returning();
+    req.log.info({ id: existing.id }, "resonador self-updated profile");
+    res.json(serialize(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating own resonador profile");
+    res.status(500).json({ error: "Error al actualizar el perfil" });
   }
 });
 

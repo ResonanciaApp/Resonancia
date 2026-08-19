@@ -9,7 +9,8 @@
  * bundleada (más rápida). Si viene solo de la BD (nuevo resonador sin bundle)
  * usa { uri: photoUrl }. Si no hay ninguna, usa una imagen por defecto.
  */
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth as useClerkAuth } from "@clerk/expo";
 import {
   RESONADORES,
   type Resonador,
@@ -53,7 +54,7 @@ interface ApiResonador {
   photos: string[];
 }
 
-function resolveUrl(path: string | null): string | null {
+export function resolveResonadorUrl(path: string | null): string | null {
   if (!path) return null;
   if (/^https?:\/\//i.test(path)) return path;
   const servingPath = path.startsWith("/objects/")
@@ -69,8 +70,8 @@ const STATIC_MAP = new Map<string, Resonador>(RESONADORES.map((r) => [r.id, r]))
 
 function apiToResonador(r: ApiResonador): Resonador {
   const staticEntry = STATIC_MAP.get(r.id);
-  const photoUrl = resolveUrl(r.photoUrl);
-  const coverUrl = resolveUrl(r.coverPhotoUrl);
+  const photoUrl = resolveResonadorUrl(r.photoUrl);
+  const coverUrl = resolveResonadorUrl(r.coverPhotoUrl);
 
   return {
     id: r.id,
@@ -118,6 +119,17 @@ async function fetchResonadores(): Promise<Resonador[]> {
   return data.resonadores.map(apiToResonador);
 }
 
+async function fetchMyResonadorProfile(token: string): Promise<ApiResonador> {
+  const res = await fetch(`${API_BASE}/api/me/resonador-profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { error?: string };
+    throw Object.assign(new Error(err.error ?? `HTTP ${res.status}`), { status: res.status });
+  }
+  return res.json() as Promise<ApiResonador>;
+}
+
 // ── Hook principal ────────────────────────────────────────────────────────────
 
 export function useResonadores(): {
@@ -154,5 +166,66 @@ export function useResonadorById(id: string | undefined): {
   return {
     resonador: id ? resonadores.find((r) => r.id === id) : undefined,
     isLoading,
+  };
+}
+
+// ── Hook del perfil propio del resonador ──────────────────────────────────────
+
+export function useMyResonadorProfile(): {
+  profile: ApiResonador | null;
+  isLoading: boolean;
+  isOwner: boolean;
+  updateMyProfile: (fields: Partial<ApiResonador>) => Promise<ApiResonador>;
+} {
+  const { getToken, isSignedIn } = useClerkAuth();
+  const qc = useQueryClient();
+
+  const { data: profile = null, isLoading } = useQuery({
+    queryKey: ["my-resonador-profile"],
+    queryFn: async () => {
+      const token = await getToken();
+      if (!token) throw new Error("No autenticado");
+      return fetchMyResonadorProfile(token);
+    },
+    enabled: !!isSignedIn,
+    staleTime: 5 * 60_000,
+    retry: (failureCount, error) => {
+      // 404 = no tiene perfil, no reintentar
+      const e = error as { status?: number };
+      if (e?.status === 404) return false;
+      return failureCount < 2;
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (fields: Partial<ApiResonador>) => {
+      const token = await getToken();
+      if (!token) throw new Error("No autenticado");
+      const res = await fetch(`${API_BASE}/api/me/resonador-profile`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(fields),
+      });
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(err.error ?? `HTTP ${res.status}`);
+      }
+      return res.json() as Promise<ApiResonador>;
+    },
+    onSuccess: (updated) => {
+      qc.setQueryData(["my-resonador-profile"], updated);
+      // Invalidar el catálogo para que refleje los cambios
+      void qc.invalidateQueries({ queryKey: ["resonadores"] });
+    },
+  });
+
+  return {
+    profile,
+    isLoading,
+    isOwner: !!profile,
+    updateMyProfile: mutation.mutateAsync,
   };
 }

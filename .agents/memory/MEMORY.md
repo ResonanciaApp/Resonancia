@@ -143,3 +143,4 @@
 - [Motor de hitos (logros)](milestones-engine.md) — evaluación espera hydrated+cloudSettled; sync unión append-only; contadores de por vida para mezclas/Geometrix; orval SIEMPRE 8.9.1
 - [Session-level isLoop](session-isloop.md) — loop = session.isLoop || LOOP_SESSIONS.has(id); snapshot solo asigna isLoop si remoto es true (no clobbear bundles a false)
 - [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto
+- [Resonador self-edit endpoints](resonador-self-edit.md) — GET/PATCH /me/resonador-profile busca por clerkId; whitelist explícita de campos editables; mobile usa useClerkAuth().getToken
