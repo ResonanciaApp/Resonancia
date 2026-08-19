@@ -574,7 +574,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                   <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Svg width={18} height={18} viewBox="0 0 48 48">
+                  <Svg width={21} height={21} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
                       fill={listenNowBtnTextColor}
