@@ -1532,7 +1532,7 @@ export default function HomeScreen2() {
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
             <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#283673" }}>Ver todos</Text>
             </Pressable>
           </View>
           <ScrollView
