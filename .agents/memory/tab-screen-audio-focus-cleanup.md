@@ -27,5 +27,7 @@ accidentally resume playback; stopping would discard the user's selected sounds,
 preset, and miniplayer state.
 
 **How to apply:** keep the focus effect independent from panel open/close state (whose
-changes also rerun effect cleanups). The pause operation only changes playback state and
-keeps players and mix metadata intact, so playback resumes solely after an explicit Play.
+changes also rerun effect cleanups), but also observe the mixer drawer's actual
+`open → closed` transition: it stays mounted, so closing it does not blur the route.
+The pause operation only changes playback state and keeps players and mix metadata intact,
+so playback resumes solely after an explicit Play.

@@ -465,6 +465,7 @@ export default function MezcladorScreen() {
   const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId, pauseMix } = useMixer();
   const { lastSavedAt } = useSaveEvent();
   const { theme } = useSceneTheme();
+  const mixerWasOpenRef = useRef(false);
 
   const heartGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -586,10 +587,16 @@ export default function MezcladorScreen() {
   // Al abrir el panel del Mezclador → esconder menú; al cerrar → restaurarlo
   useEffect(() => {
     if (!isMixerOpen) {
+      // El Mezclador es un drawer siempre montado: al cerrarlo no pierde foco
+      // necesariamente. Detectamos la transición abierto → cerrado para pausar
+      // SU mezcla sin tocar el MiniPlayer de sesiones ni borrar su estado.
+      if (mixerWasOpenRef.current) pauseMix();
+      mixerWasOpenRef.current = false;
       showMenu();
       setTabBarColors(null);
       return;
     }
+    mixerWasOpenRef.current = true;
     requestHide();
     setMainTab(null);
     refreshSounds();
@@ -597,7 +604,7 @@ export default function MezcladorScreen() {
       showMenu();
       setTabBarColors(null);
     };
-  }, [isMixerOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isMixerOpen, pauseMix, refreshSounds, requestHide, setTabBarColors, showMenu]);
 
   // Al cambiar de tab (las tabs quedan montadas), restaurar siempre el tab bar;
   // y si se vuelve con el mixer abierto, ocultarlo de nuevo.
