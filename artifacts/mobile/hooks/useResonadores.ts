@@ -110,7 +110,7 @@ function apiToResonador(r: ApiResonador): Resonador {
     projects: r.projects,
     formacion: r.formacion,
     quote: r.quote ?? undefined,
-    photos: r.photos,
+    photos: (r.photos ?? []).map((p) => resolveResonadorUrl(p) ?? p),
   };
 }
 
