@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>RESONANCIA — Dossier técnico de arquitectura</title>
+<style>
+@page { size:A4; margin:15mm 15mm 17mm; }
+:root{--navy:#060A0F;--navy2:#111D31;--gold:#BE9650;--gold2:#E4C58B;--paper:#FBFAF7;--ink:#17202D;--muted:#596675;--line:#E1DED7;--blue:#2E638E;--green:#28765B;--greenbg:#E5F3EC;--amber:#A86C18;--amberbg:#FFF1D8;--red:#AA4241;--redbg:#F8E2E1;--greybg:#F3F4F4}
+*{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:9.7pt;line-height:1.45}
+.page{page-break-after:always;min-height:257mm;position:relative;padding-bottom:8mm}.page:last-child{page-break-after:auto}
+.cover{min-height:267mm;margin:-15mm;padding:24mm 20mm 18mm;color:#fff;background:radial-gradient(circle at 83% 15%,rgba(190,150,80,.27),transparent 25%),radial-gradient(circle at 8% 87%,rgba(61,103,148,.24),transparent 30%),linear-gradient(145deg,#060A0F,#0E1829 62%,#0A111C);display:flex;flex-direction:column;justify-content:space-between}
+.brand{font-weight:700;font-size:9pt;letter-spacing:.27em;color:var(--gold2)}.cover h1{font-family:Georgia,serif;font-weight:400;font-size:35pt;line-height:1.07;margin:0 0 9mm}.cover h1 em{font-style:normal;color:var(--gold2)}.cover p{font-size:12.2pt;line-height:1.45;color:#D8DFE8;max-width:130mm;margin:0}.coverbox{padding:7mm;border:1px solid rgba(228,197,139,.42);background:rgba(255,255,255,.05);max-width:160mm}.coverbox b{color:var(--gold2)}.coverbox p{font-size:9.5pt;margin-top:2mm}.coverfoot{font-size:8pt;color:#AEB9C7;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.18);padding-top:5mm}
+.eyebrow{margin:0 0 3mm;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-size:7.8pt;font-weight:700}h2{font-family:Georgia,serif;color:var(--navy);font-size:21pt;line-height:1.14;font-weight:400;margin:0 0 4mm}h3{font-size:11.2pt;color:var(--navy);margin:5mm 0 2mm}h4{font-size:9.5pt;margin:0 0 1.5mm;color:var(--navy)}.lede{font-size:11.4pt;color:#465363;margin:0 0 6mm;max-width:170mm}.rule{height:1px;background:var(--line);margin:5mm 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:4mm}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm}.four{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}.card{background:#fff;border:1px solid var(--line);padding:4mm}.card p{margin:0}.soft{background:var(--greybg)}.metric{border:1px solid var(--line);background:#fff;padding:3.5mm;min-height:25mm}.metric .v{font-family:Georgia,serif;color:var(--navy);font-size:20pt;line-height:1}.metric .l{font-size:8pt;color:var(--muted);margin-top:2mm}.note{background:#F4ECDF;border-left:4px solid var(--gold);padding:4mm 5mm;margin:4mm 0}.note p{margin:0}.callout{background:#fff;border:1px solid var(--line);padding:4mm 5mm;margin:3mm 0}.warning{border-left:4px solid var(--amber)}.risk{border-left:4px solid var(--red)}.good{border-left:4px solid var(--green)}
+ul{margin:2mm 0;padding-left:5mm}li{margin:1.1mm 0}.small{font-size:8pt;color:var(--muted)}.pill{display:inline-block;border-radius:99px;padding:1mm 2mm;text-transform:uppercase;font-size:7pt;letter-spacing:.06em;font-weight:700}.g{background:var(--greenbg);color:var(--green)}.a{background:var(--amberbg);color:var(--amber)}.r{background:var(--redbg);color:var(--red)}.b{background:#E7EFF6;color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:8.4pt;margin-top:3mm}th{text-align:left;color:var(--muted);font-size:7.2pt;text-transform:uppercase;letter-spacing:.06em;padding:2.5mm;border-bottom:1px solid var(--line)}td{vertical-align:top;padding:2.5mm;border-bottom:1px solid var(--line)}.footer{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;font-size:7.4pt;color:#798493}.footer b{color:var(--gold);letter-spacing:.08em}
+.diagram{border:1px solid var(--line);background:#fff;padding:4mm;margin:3mm 0}.dtitle{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3mm}.layer{display:flex;gap:3mm;align-items:stretch;margin:2.5mm 0}.node{flex:1;border:1px solid #CCD4DE;background:#F8FAFC;padding:3mm;min-height:21mm}.node.dark{background:var(--navy2);border-color:var(--navy2);color:#fff}.node.gold{background:#F5E9D5;border-color:#D5B274}.node.blue{background:#E8F0F7;border-color:#A9C4D9}.node.green{background:#E8F3ED;border-color:#A6CEBB}.arrow{text-align:center;color:var(--gold);font-size:15pt;line-height:1;margin:1mm 0}.compact .node{min-height:16mm;font-size:8pt}.stack{border-left:2px solid var(--gold);padding-left:4mm;margin:3mm 0}.index{columns:2;column-gap:9mm}.index div{break-inside:avoid;margin-bottom:2.2mm}.mono{font-family:"Courier New",monospace;font-size:7.7pt;color:#33445A}.quote{font-family:Georgia,serif;color:var(--navy);font-size:14.5pt;line-height:1.35;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);padding:5mm 0;margin:6mm 0}.num{display:inline-flex;width:6mm;height:6mm;align-items:center;justify-content:center;border-radius:50%;background:var(--navy);color:#fff;font-size:7pt;font-weight:bold;margin-right:2mm}
+</style>
+</head>
+<body>
+<section class="page cover">
+ <div><div class="brand">CASA DEL CUENCO</div><div style="height:25mm"></div><h1>RESONANCIA<br><em>Dossier técnico</em><br>de arquitectura</h1><p>Cómo está diseñada la plataforma: aplicación móvil, datos, audio, seguridad, operación y distribución.</p></div>
+ <div class="coverbox"><b>Propósito del documento</b><p>Entregar una lectura técnica completa y verificable para dirección, proveedores y equipos de ingeniería. El documento distingue entre capacidades implementadas, configuración disponible, evidencia validada y trabajo pendiente.</p></div>
+ <div class="coverfoot"><span>Agosto 2026</span><span>Documento técnico confidencial · Casa del Cuenco</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">01 · Lectura ejecutiva</p><h2>Una plataforma móvil nativa con backend propio y medios desacoplados</h2>
+ <p class="lede">RESONANCIA se construye como un monorepo TypeScript. La experiencia principal es una app Expo/React Native; el negocio vive en una API Express; PostgreSQL conserva relaciones y estado; los archivos pesados se sirven desde almacenamiento de objetos y CDN.</p>
+ <div class="note"><p><b>Principio rector.</b> Datos de usuario, catálogo y relaciones sociales viven en PostgreSQL. Audio, imágenes, adjuntos y video no se almacenan como blobs en la base: se resuelven desde assets empaquetados, Object Storage o Bunny CDN según el caso.</p></div>
+ <div class="four">
+  <div class="metric"><div class="v">Mobile</div><div class="l">Expo SDK 54 · React Native 0.81 · Expo Router</div></div>
+  <div class="metric"><div class="v">API</div><div class="l">Node.js · Express 5 · Zod · Pino</div></div>
+  <div class="metric"><div class="v">Datos</div><div class="l">PostgreSQL · Drizzle ORM · pool explícito</div></div>
+  <div class="metric"><div class="v">Identidad</div><div class="l">Clerk para cuentas, sesión y roles</div></div>
+ </div>
+ <h3>Cómo leer este dossier</h3>
+ <table><tr><th>Etiqueta</th><th>Significado</th></tr>
+ <tr><td><span class="pill g">Implementado</span></td><td>Existe en código y forma parte de la arquitectura actual.</td></tr>
+ <tr><td><span class="pill b">Configurado</span></td><td>La aplicación tiene soporte o configuración, pero puede requerir credenciales o servicios externos para activarse.</td></tr>
+ <tr><td><span class="pill a">Por certificar</span></td><td>Requiere prueba final en producción, hardware real o tienda antes de considerarse operativo comercialmente.</td></tr>
+ <tr><td><span class="pill r">Riesgo conocido</span></td><td>Limitación documentada o área que exige hardening previo a exposición pública.</td></tr></table>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>2</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">02 · Arquitectura de alto nivel</p><h2>Capas y responsabilidades</h2>
+ <div class="diagram"><div class="dtitle">Vista simplificada del sistema</div>
+  <div class="layer"><div class="node dark"><b>Usuario</b><br><span class="small" style="color:#CDD7E4">iOS / Android</span></div><div class="node dark"><b>Administración</b><br><span class="small" style="color:#CDD7E4">Web / navegador</span></div></div>
+  <div class="arrow">↓</div>
+  <div class="layer"><div class="node blue"><b>RESONANCIA Mobile</b><br>Expo Router · Contextos · React Query · AsyncStorage</div><div class="node blue"><b>Panel Admin</b><br>React/Vite · Clerk · cliente API</div></div>
+  <div class="arrow">↓ HTTPS + token Clerk / cookie administrativa ↓</div>
+  <div class="layer"><div class="node gold"><b>API Server</b><br>Express · autenticación · reglas de negocio · validación · métricas</div><div class="node gold"><b>Contrato compartido</b><br>OpenAPI · clientes React · esquemas Zod generados</div></div>
+  <div class="arrow">↓</div>
+  <div class="layer"><div class="node green"><b>PostgreSQL</b><br>Usuarios, biblioteca, actividad, catálogo, social, admin</div><div class="node green"><b>Object Storage / CDN</b><br>Imágenes · audio remoto · adjuntos · rangos HTTP</div><div class="node green"><b>Servicios externos</b><br>Clerk · RevenueCat · Expo Push · Bunny · Daily · Cal.com</div></div>
+ </div>
+ <div class="two"><div class="card"><h4>Monorepo</h4><p>Los paquetes comparten tipos, contrato API, validación y esquema. Esto reduce divergencia entre frontend, administración y servidor.</p></div><div class="card"><h4>Separación de medios</h4><p>Las transacciones no dependen de transferir archivos pesados. La API emite URLs firmadas y resuelve permisos; el cliente reproduce o carga directamente.</p></div></div>
+ <h3>Artefactos principales</h3>
+ <table><tr><th>Componente</th><th>Responsabilidad</th><th>Audiencia</th></tr><tr><td>Mobile</td><td>Experiencia de meditación, sonido, comunidad y biblioteca local-first.</td><td>Usuarios finales</td></tr><tr><td>API Server</td><td>Autorización, sincronización, catálogo, social, uploads y reglas del negocio.</td><td>Mobile / Admin</td></tr><tr><td>Admin</td><td>Gestión de catálogo, usuarios, moderación, creadores, videos y contenidos.</td><td>Equipo interno</td></tr><tr><td>Libs compartidas</td><td>OpenAPI, cliente API, esquemas Zod, acceso DB y modelo Premium.</td><td>Todos los artefactos</td></tr></table>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>3</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">03 · Aplicación móvil</p><h2>Cliente nativo: navegación, estado y experiencia offline</h2>
+ <p class="lede">La app utiliza Expo SDK 54, React Native 0.81, React 19 y TypeScript. Está configurada con New Architecture y Expo Router con rutas tipadas.</p>
+ <div class="two">
+  <div class="card"><h4>Navegación</h4><p>El sistema de archivos define rutas. Las tabs agrupan la navegación persistente y un Stack global controla detalle de sesión, reproductor, chat, membresía, favoritos, overlays y modales a pantalla completa.</p></div>
+  <div class="card"><h4>Composición raíz</h4><p>El layout raíz integra Clerk, React Query, providers de catálogo/audio/perfil/premium/notificaciones y componentes globales como drawer, miniplayer, overlays y mixer.</p></div>
+  <div class="card"><h4>Datos remotos</h4><p>React Query administra consultas e invalidación. La configuración central usa datos recientes durante 60 segundos, reintentos acotados y reduce refetch cuando la aplicación está en background.</p></div>
+  <div class="card"><h4>Datos locales</h4><p>AsyncStorage preserva actividad, progreso, favoritos, ajustes, biblioteca y estado de varios módulos. Esto permite utilizar buena parte de la experiencia sin red.</p></div>
+ </div>
+ <h3>Modelo de estado</h3>
+ <div class="diagram"><div class="dtitle">Contextos especializados, no un store monolítico</div>
+ <div class="layer compact"><div class="node"><b>Player</b><br>sesiones, cola, progreso, historial</div><div class="node"><b>Mixer / Sounds</b><br>loops, presets, capas, BPM</div><div class="node"><b>Catálogo / Video</b><br>contenido remoto, fallback local</div><div class="node"><b>Perfil / Racha</b><br>usuario, actividad, metas</div></div>
+ <div class="layer compact"><div class="node"><b>Favoritos / Carpetas</b></div><div class="node"><b>Diario / Geometrix</b></div><div class="node"><b>Escenas / Tema</b></div><div class="node"><b>Premium / Push</b></div></div></div>
+ <div class="callout warning"><p><b>Decisión de diseño:</b> contextos por dominio mantienen cada módulo aislado y facilitan persistencia local. A cambio, el equipo debe vigilar carreras de AsyncStorage, migraciones de claves y reglas de sincronización que atraviesan más de un contexto.</p></div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>4</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">04 · Actividad y sincronización</p><h2>Modelo local-first con recuperación desde nube</h2>
+ <div class="diagram"><div class="dtitle">Flujo de actividad del usuario</div>
+ <div class="layer"><div class="node blue"><b>Acción local</b><br>Reproducir, favorito, progreso, mezcla o hito</div><div class="node blue"><b>AsyncStorage</b><br>Respuesta inmediata y uso offline</div><div class="node gold"><b>Sincronizador</b><br>Se activa al haber sesión Clerk y conectividad</div><div class="node green"><b>API + PostgreSQL</b><br>Persistencia de cuenta y recuperación</div></div></div>
+ <h3>Reglas de merge actuales</h3>
+ <table><tr><th>Tipo de información</th><th>Regla</th><th>Motivo</th></tr>
+ <tr><td>Eventos de reproducción y milestones</td><td>Unión append-only con claves de deduplicación.</td><td>Un mismo evento puede enviarse más de una vez sin duplicarse.</td></tr>
+ <tr><td>Favoritos y progreso en primera sincronización</td><td>Unión de local y servidor.</td><td>Recupera biblioteca tras reinstalar o estrenar dispositivo sin perder lo local.</td></tr>
+ <tr><td>Favoritos y progreso después de recuperar</td><td>El estado local reemplaza el snapshot remoto.</td><td>Permite que un “desfavorito” de un dispositivo persista en nube.</td></tr></table>
+ <div class="callout risk"><p><b>Riesgo conocido — sincronización entre dispositivos.</b> El modelo actual no incorpora tombstones ni resolución de conflictos por ítem. Si dos dispositivos modifican una colección en distinto orden, una eliminación puede reaparecer. Es una limitación explícitamente documentada y debe resolverse antes de promocionar una experiencia multidispositivo como plenamente consistente.</p></div>
+ <h3>Racha y estadísticas</h3><p>La racha se calcula de manera canónica, considera zona horaria y combina respaldo local con una lectura autoritativa de servidor. Los minutos escuchados se acumulan según tiempo real de reproducción, no según posición del archivo, para que buscar o repetir audio no infle las estadísticas.</p>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>5</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">05 · Audio y reproducción</p><h2>Dos motores coordinados para experiencia de bienestar y mezclas BPM</h2>
+ <p class="lede">El audio es un subsistema central. La solución combina un player principal persistente y un motor especializado para loops sin cortes, con una capa de coordinación para evitar que distintas experiencias compitan por el mismo dispositivo.</p>
+ <div class="diagram"><div class="dtitle">Arquitectura de audio</div>
+ <div class="layer compact"><div class="node dark"><b>AudioBridge</b><br>propiedad exclusiva de audio activo</div><div class="node dark"><b>AppState / sistema</b><br>interrupciones y background</div></div>
+ <div class="arrow">↓</div>
+ <div class="layer"><div class="node blue"><b>expo-audio</b><br>sesión principal, voz/ambiente, lock screen, progreso, temporizador</div><div class="node blue"><b>react-native-audio-api</b><br>loops BPM gapless, buffers, crossfades y programación precisa</div></div>
+ <div class="arrow">↓</div>
+ <div class="layer compact"><div class="node green"><b>Sesiones</b></div><div class="node green"><b>Mezclador</b></div><div class="node green"><b>Descanso</b></div><div class="node green"><b>Audio de chat</b></div></div></div>
+ <div class="two">
+  <div class="card"><h4>Player de sesiones <span class="pill g">Implementado</span></h4><p>Un player persistente reutiliza el listener de estado, protege cambios rápidos de sesión con tokens de generación y evita que eventos nativos atrasados actualicen una pista ya reemplazada.</p></div>
+  <div class="card"><h4>Background y lock screen <span class="pill g">Implementado</span></h4><p>La sesión de audio se configura para reproducir en segundo plano; metadata y controles se reflejan en lock screen. El temporizador usa una hora final absoluta y se valida al volver al foreground.</p></div>
+  <div class="card"><h4>Mezclador BPM <span class="pill g">Implementado</span></h4><p>Las capas rítmicas usan el motor de audio de bajo nivel para programar bucles musicalmente y limitar clipping en la mezcla. Es una excepción intencional al player general.</p></div>
+  <div class="card"><h4>Contenido <span class="pill a">Por certificar</span></h4><p>Conviven assets empaquetados, audios remotos y contenido administrable. El catálogo de salida debe auditarse para garantizar que cada elemento visible posea audio final licenciado y reproducible.</p></div>
+ </div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>6</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">06 · API y contratos</p><h2>Backend Express con contrato compartido, validación y roles</h2>
+ <p class="lede">La API se ejecuta sobre Express 5. Agrupa sus rutas bajo <span class="mono">/api</span>, valida entradas con Zod y comparte un contrato OpenAPI con clientes y esquemas generados usados por los artefactos frontend.</p>
+ <div class="two"><div class="card"><h4>Capas de request</h4><p>Logging estructurado → métricas → CORS → parseo JSON → Clerk → autenticación/roles → handler de dominio → acceso Drizzle/PostgreSQL.</p></div><div class="card"><h4>Contrato</h4><p>El paquete de especificación OpenAPI es la referencia inter-artefactos. A partir de él se consumen clientes React y esquemas Zod, evitando tipar manualmente cada request en mobile o admin.</p></div></div>
+ <h3>Dominios principales de la API</h3>
+ <table><tr><th>Dominio</th><th>Responsabilidades</th><th>Acceso habitual</th></tr>
+ <tr><td>Usuarios y biblioteca</td><td>Perfil, preferencias, favoritos, progreso, historial, milestones, racha.</td><td>Autenticado</td></tr>
+ <tr><td>Comunidad</td><td>Amistades, follows, mensajes directos, notificaciones, mezclas, likes, comentarios y reportes.</td><td>Mixto</td></tr>
+ <tr><td>Catálogo</td><td>Sesiones, categorías, audio, playlists, sonidos, tags, videos, escenas y exploración.</td><td>Lectura pública / escritura administrativa</td></tr>
+ <tr><td>Creadores y resonadores</td><td>Postulaciones, perfiles, calendario, contenidos y edición propia autorizada.</td><td>Rol específico / admin</td></tr>
+ <tr><td>Medios</td><td>Solicitud de carga, metadata, serving de objetos y streaming con HTTP Range.</td><td>Mixto según objeto</td></tr>
+ <tr><td>Operación</td><td>Health, readiness y métricas de capacidad para administración.</td><td>Público limitado / admin</td></tr></table>
+ <div class="callout good"><p><b>Autorización en servidor.</b> El cliente controla presentación, pero la autorización efectiva se verifica en API. Un middleware obtiene la identidad Clerk, crea o sincroniza el registro local cuando corresponde y los roles privilegiados se determinan con una lista administrativa del servidor.</p></div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>7</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">07 · Datos y PostgreSQL</p><h2>Modelo relacional para actividad, catálogo y comunidad</h2>
+ <p class="lede">PostgreSQL es el sistema de registro para datos de cuenta y relaciones. Drizzle ORM ofrece tipos, esquemas de inserción y composición de queries desde el monorepo.</p>
+ <div class="diagram"><div class="dtitle">Familias de datos</div>
+ <div class="layer compact"><div class="node green"><b>Identidad</b><br>usuarios, roles, perfiles, dispositivos</div><div class="node green"><b>Actividad</b><br>plays, favoritos, progreso, biblioteca, racha</div><div class="node green"><b>Social</b><br>follows, amigos, mensajes, likes, comentarios</div></div>
+ <div class="layer compact"><div class="node green"><b>Catálogo</b><br>sesiones, audio, categorías, playlists, videos</div><div class="node green"><b>Creadores</b><br>resonadores, aplicaciones, guías, vivos</div><div class="node green"><b>Creatividad</b><br>mezclas, Geometrix, escenas, diario compartible</div></div></div>
+ <h3>Prácticas aplicadas</h3><div class="two"><div class="card"><h4>Integridad</h4><p>Claves primarias, foráneas y reglas de borrado mantienen relaciones entre usuarios, contenido y actividad. Las tablas sociales incorporan índices y restricciones para consultas frecuentes e idempotencia.</p></div><div class="card"><h4>Pool de conexiones</h4><p>El pool <span class="mono">pg</span> se configura explícitamente por instancia con límites, idle timeout, timeout de conexión, keepalive y nombre de aplicación para observabilidad.</p></div></div>
+ <div class="callout warning"><p><b>Consideración de escala.</b> El máximo de pool es por instancia, no global. Al aumentar réplicas, el equipo debe dimensionar el total de conexiones contra el límite real de PostgreSQL y observarlo con métricas centralizadas.</p></div>
+ <h3>Catálogo DB + fallback local</h3><p>El catálogo remoto se hidrata sobre los datos de la aplicación sin reemplazar assets bundled que aún son requeridos. Esto permite administrar sesiones nuevas desde el panel sin depender de una actualización completa de la app, mientras se conserva resiliencia cuando el catálogo remoto no está disponible.</p>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>8</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">08 · Medios y almacenamiento</p><h2>Subidas directas y serving optimizado para archivos pesados</h2>
+ <div class="diagram"><div class="dtitle">Flujo de carga de un archivo</div><div class="layer"><div class="node blue"><b>Cliente autenticado</b><br>elige imagen, audio o adjunto</div><div class="node gold"><b>API solicita URL</b><br>valida tipo y tamaño</div><div class="node green"><b>Object Storage</b><br>PUT firmado de vida corta</div><div class="node green"><b>Metadata DB</b><br>objeto asociado a entidad</div></div></div>
+ <div class="two"><div class="card"><h4>Object Storage</h4><p>La API emite URLs firmadas de carga, registra metadata y sirve objetos mediante rutas de storage. Los límites de tamaño y MIME protegen el ingreso básico de medios.</p></div><div class="card"><h4>Streaming</h4><p>Las respuestas de audio/video pueden usar HTTP Range, lo que permite empezar la reproducción sin descargar íntegramente archivos grandes.</p></div><div class="card"><h4>Bunny Stream</h4><p>Video se administra con Bunny para HLS y thumbnails. El cliente puede resolver contenido remoto con fallback cuando el catálogo no está disponible.</p></div><div class="card"><h4>Contenido bundled</h4><p>Assets esenciales continúan dentro de la app. Es útil para startup/resiliencia, pero incrementa tamaño de bundle y exige una estrategia controlada de migración a nube.</p></div></div>
+ <div class="callout risk"><p><b>Hardening recomendado.</b> Antes de exponer contenido sensible, se debe revisar endpoint por endpoint la aplicación de ACL, ownership y reglas de serving. También conviene conciliar objetos cargados sin metadata si una operación se interrumpe entre storage y base de datos.</p></div>
+ <h3>Política de formatos</h3><p>La decisión de distribución favorece AAC/M4A para audio, con WAV reservado para masters. Los loops base pueden empaquetarse y el resto del catálogo puede resolverse por streaming progresivo; esta división equilibra calidad, tamaño y compatibilidad nativa.</p>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>9</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">09 · Identidad y seguridad</p><h2>Clerk como proveedor de identidad, roles resueltos en backend</h2>
+ <div class="diagram"><div class="dtitle">Flujo de autenticación</div><div class="layer"><div class="node blue"><b>App / Admin</b><br>login social o sesión existente</div><div class="node gold"><b>Clerk</b><br>identidad, sesión, tokens</div><div class="node gold"><b>API</b><br>verifica token y obtiene userId</div><div class="node green"><b>Usuario local</b><br>perfil, rol, relaciones y permisos</div></div></div>
+ <div class="two"><div class="card"><h4>Modo invitado</h4><p>El catálogo y parte de la experiencia pueden utilizarse sin cuenta. Los datos de invitado se conservan localmente y se sincronizan cuando hay sesión Clerk.</p></div><div class="card"><h4>Cuentas autenticadas</h4><p>Clerk entrega la identidad y la API crea/sincroniza el registro interno. El token se inyecta en el cliente API para llamadas de cuenta y comunidad.</p></div><div class="card"><h4>Roles</h4><p>Los roles relevantes incluyen usuario, creador y administrador. La verificación real ocurre en middleware del servidor; la interfaz sólo mejora la experiencia y no sustituye permisos.</p></div><div class="card"><h4>Administración</h4><p>El panel usa la sesión Clerk en mismo origen. El server protege rutas administrativas con <span class="mono">requireAuth + requireRole("admin")</span>.</p></div></div>
+ <h3>Controles y áreas de revisión</h3>
+ <table><tr><th>Área</th><th>Estado</th><th>Acción recomendada</th></tr><tr><td>Validación</td><td><span class="pill g">Implementado</span></td><td>Zod valida inputs en rutas y Drizzle genera esquemas de inserción.</td></tr><tr><td>Roles privilegiados</td><td><span class="pill g">Implementado</span></td><td>Conservar la resolución server-side y auditar endpoints nuevos.</td></tr><tr><td>CORS</td><td><span class="pill r">Revisión</span></td><td>Usar allowlist estricta de orígenes por entorno antes de lanzamiento público.</td></tr><tr><td>Abuso / rate limit</td><td><span class="pill r">Revisión</span></td><td>Definir límites para endpoints públicos, mensajes, uploads y búsqueda.</td></tr><tr><td>Eliminación/exportación</td><td><span class="pill r">Pendiente</span></td><td>Implementar cumplimiento de cuenta y datos en app y servidor.</td></tr></table>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>10</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">10 · Panel administrativo</p><h2>Operación de catálogo y comunidad desde una aplicación web separada</h2>
+ <p class="lede">El panel es una SPA React/Vite desplegada bajo su propia ruta. Reutiliza el contrato de API y Clerk para operar sobre el mismo catálogo y datos que consume la app móvil.</p>
+ <div class="two"><div class="card"><h4>Acceso</h4><p>El panel utiliza Clerk con cookies mismo origen. La experiencia puede ocultar secciones por rol, pero el servidor es la fuente efectiva de autorización.</p></div><div class="card"><h4>Consultas</h4><p>React Query y el cliente API compartido consumen recursos administrativos tipados. Las mutaciones actualizan el catálogo que hidrata el cliente móvil.</p></div></div>
+ <h3>Módulos operativos</h3>
+ <div class="three"><div class="card"><h4>Catálogo</h4><p>Sesiones, categorías, playlists, tags, sonidos, audio, videos, Descanso y orden de Explorar.</p></div><div class="card"><h4>Comunidad</h4><p>Usuarios, roles, moderación, postulaciones, mezclas, reportes y perfiles de resonadores.</p></div><div class="card"><h4>Experiencias</h4><p>Geometrix, escenas, sesiones en vivo, guías, calendario y piezas visuales.</p></div></div>
+ <div class="callout"><p><b>Flujo editorial.</b> El catálogo soporta estados de aprobación/publicación. El panel permite que el contenido de creador pase por moderación antes de ser visible para el cliente público.</p></div>
+ <h3>Principio de seguridad</h3><p>Las vistas administrativas no son una frontera de seguridad por sí mismas. Cada acción sensible requiere autorización del servidor, y un usuario que intente llamar la API fuera de la interfaz debe recibir 401/403 cuando no cumpla el rol requerido.</p>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>11</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">11 · Integraciones externas</p><h2>Servicios especializados conectados por responsabilidad</h2>
+ <table><tr><th>Servicio</th><th>Uso</th><th>Estado técnico</th><th>Dependencia de lanzamiento</th></tr>
+ <tr><td>Clerk</td><td>Identidad, social login, tokens, sesiones y perfiles.</td><td><span class="pill g">Implementado</span></td><td>Claves, redirects y configuración productiva.</td></tr>
+ <tr><td>RevenueCat</td><td>Entitlement Premium, offerings, compra y restore.</td><td><span class="pill b">Integrado</span></td><td><span class="pill a">Certificar</span> productos y sandbox por tienda.</td></tr>
+ <tr><td>Expo Push</td><td>Tokens, notificaciones y deep links hacia DM/amigos.</td><td><span class="pill b">Integrado</span></td><td><span class="pill a">Certificar</span> APNs/FCM y receipts.</td></tr>
+ <tr><td>Bunny</td><td>Video HLS, streaming y thumbnails.</td><td><span class="pill b">Configurado</span></td><td>Host CDN y contenido productivo.</td></tr>
+ <tr><td>Daily.co</td><td>Sesiones en vivo y WebRTC.</td><td><span class="pill b">Preparado</span></td><td>SDK nativo, salas y operación de live.</td></tr>
+ <tr><td>Cal.com</td><td>Agenda y reservas asociadas a resonadores.</td><td><span class="pill b">Preparado</span></td><td>Integración productiva y política operativa.</td></tr></table>
+ <div class="callout warning"><p><b>Regla para negocio.</b> “Integrado en código” no equivale a “certificado comercialmente”. Pagos, push, video y live requieren configuración, credenciales, contenido y pruebas externas que no se pueden demostrar sólo leyendo el repositorio.</p></div>
+ <h3>Integraciones sin secretos en el código</h3><p>Las claves se resuelven mediante variables de entorno o secretos del entorno de ejecución. El documento técnico no contiene valores, tokens, URLs firmadas ni identificadores sensibles.</p>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>12</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">12 · Calidad y capacidad</p><h2>Pruebas de carga reproducibles para la API</h2>
+ <p class="lede">El backend incluye health/readiness, métricas de capacidad y runners de carga. Se probaron tanto rutas públicas como un escenario autenticado con datos temporales y limpieza verificable.</p>
+ <div class="four"><div class="metric"><div class="v">100</div><div class="l">workers concurrentes autenticados</div></div><div class="metric"><div class="v">50</div><div class="l">req/s objetivo durante 120 segundos</div></div><div class="metric"><div class="v">49,20</div><div class="l">req/s obtenidos en baseline autenticado</div></div><div class="metric"><div class="v">0</div><div class="l">errores en 6.001 solicitudes</div></div></div>
+ <h3>Qué mide el escenario autenticado</h3><div class="two"><div class="card"><h4>Actividad</h4><p>Perfil, favoritos, progreso, biblioteca, historial, racha y eventos de reproducción.</p></div><div class="card"><h4>Social</h4><p>Conversaciones, mensajes privados y marcado de mensajes leídos entre identidades descartables.</p></div><div class="card"><h4>Seguridad del fixture</h4><p>Las identidades son temporales de Clerk Development. El runner bloquea producción, usa host local y limpia incluso ante fallo o señal de terminación.</p></div><div class="card"><h4>Base medida</h4><p>El baseline se ejecutó sobre Development y no equivale a certificar una base productiva con volumen real de catálogo y usuarios.</p></div></div>
+ <h3>Observabilidad disponible</h3><p>El API expone health del proceso, readiness que verifica PostgreSQL y métricas de capacidad protegidas para administración. Logging estructurado registra método, ruta sin query y estado de respuesta.</p>
+ <div class="callout risk"><p><b>Próximo nivel operativo.</b> Las métricas son locales al proceso. Antes de lanzamiento público se recomienda añadir crash reporting móvil, agregación centralizada, alertas de error/latencia/pool, límites de abuso y un runbook de incidente/rollback.</p></div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>13</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">13 · Build y distribución</p><h2>Configuración nativa preparada para iOS y Android</h2>
+ <div class="two"><div class="card"><h4>Expo / EAS</h4><p>El proyecto dispone de perfiles Development, Preview y Production. Production usa versionado remoto, incremento automático y genera Android App Bundle; iOS está configurado para distribución en dispositivo.</p></div><div class="card"><h4>Identificadores</h4><p>iOS y Android están definidos bajo <span class="mono">com.resonancia.app</span>. La versión de runtime es 1.0.0 y las actualizaciones OTA se encuentran deshabilitadas.</p></div><div class="card"><h4>Permisos iOS</h4><p>Background audio, micrófono, fotos, cámara y notificaciones. El target de despliegue iOS es 17.0 por compatibilidad con dependencias nativas actuales.</p></div><div class="card"><h4>Permisos Android</h4><p>Foreground playback, grabación, biblioteca de medios y notificaciones, además de la configuración nativa de los plugins usados por audio y video.</p></div></div>
+ <h3>Qué se ha demostrado</h3><table><tr><th>Evidencia</th><th>Conclusión</th></tr><tr><td>Builds internos exitosos de iOS y Android</td><td>La combinación nativa principal compila para ambas plataformas.</td></tr><tr><td>Perfiles de producción en configuración</td><td>Existe el camino técnico para firmar una release.</td></tr><tr><td>No hay evidencia en repositorio de TestFlight / Play Production</td><td>La distribución comercial y la certificación física deben tratarse como pendientes.</td></tr></table>
+ <div class="callout warning"><p><b>Implicación de OTA deshabilitado.</b> Los cambios no se distribuyen automáticamente por actualización over-the-air. Toda corrección urgente que toque el build o que no pueda entregarse por la ruta configurada requerirá un nuevo ciclo de release de tienda.</p></div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>14</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">14 · Riesgos y hardening</p><h2>Mapa de prioridades técnicas</h2>
+ <table><tr><th>Prioridad</th><th>Área</th><th>Riesgo / limitación</th><th>Respuesta recomendada</th></tr>
+ <tr><td><span class="pill r">P0</span></td><td>Datos de cuenta</td><td>No hay flujo comprobado de eliminación/exportación integral.</td><td>Implementar eliminación, exportación, retención y formularios de privacidad.</td></tr>
+ <tr><td><span class="pill r">P0</span></td><td>Contenido</td><td>Audios sintéticos/placeholders y cobertura remota incompleta.</td><td>Auditar cada elemento visible, reemplazar o esconder contenido no final.</td></tr>
+ <tr><td><span class="pill r">P0</span></td><td>Producción</td><td>Deployment/catálogo productivo no necesariamente alineado con Development.</td><td>Publicar, revisar esquema y ejecutar smoke tests contra producción.</td></tr>
+ <tr><td><span class="pill a">P1</span></td><td>Sync</td><td>Borrados concurrentes pueden reaparecer entre dispositivos.</td><td>Tombstones o LWW por ítem + pruebas de conflicto.</td></tr>
+ <tr><td><span class="pill a">P1</span></td><td>Seguridad web</td><td>CORS permisivo y ausencia visible de rate limiting central.</td><td>Allowlist por entorno, límites de abuso y auditoría de ACL de objetos.</td></tr>
+ <tr><td><span class="pill a">P1</span></td><td>Operación</td><td>Métricas por proceso sin alertas externas/crash reporting visible.</td><td>Monitoreo central, alertas, panel operativo y runbook.</td></tr>
+ <tr><td><span class="pill a">P1</span></td><td>Store services</td><td>Premium y Push requieren certificación externa.</td><td>Sandbox, TestFlight / Internal Testing y matriz de dispositivos.</td></tr></table>
+ <h3>Lo que no se recomienda hacer antes de release</h3><div class="note"><p>No es necesario migrar de PostgreSQL, separar microservicios, añadir caché preventiva ni reescribir el motor de audio. El riesgo actual se concentra en cierre operativo y certificación, no en la estructura base del producto.</p></div>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>15</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">15 · Operación y mantenimiento</p><h2>Responsabilidades técnicas recurrentes</h2>
+ <div class="three"><div class="card"><h4>Contenido</h4><p>Publicar sesiones, validar audio/imagen, moderar creadores, revisar visibilidad, etiquetas y derechos de medios.</p></div><div class="card"><h4>Plataforma</h4><p>Aplicar cambios de schema soportados, observar pool, publicar API, mantener dependencias Expo y verificar builds nativos.</p></div><div class="card"><h4>Experiencia</h4><p>Revisar errores móviles, ejercicios de sync, feedback de audio/background y métricas de comportamiento.</p></div></div>
+ <h3>Checklist de cambio seguro</h3><div class="stack"><b>1. Contrato y datos.</b> Actualizar primero la especificación y las validaciones cuando un endpoint o entidad cambie.</div><div class="stack"><b>2. Cliente y administración.</b> Regenerar/validar clientes y revisar consumidores mobile/admin afectados.</div><div class="stack"><b>3. Storage y medios.</b> Confirmar URL pública/privada, metadata y compatibilidad de reproducción nativa.</div><div class="stack"><b>4. Validación.</b> Typecheck, tests de API, smoke del flujo afectado y matriz nativa cuando implique audio, permisos o SDK externo.</div><div class="stack"><b>5. Producción.</b> Publicar por el flujo soportado, validar readiness y observar métricas/errores posteriores.</div>
+ <h3>Decisiones que deben mantenerse consistentes</h3><ul><li>La racha usa una fuente canónica y zona horaria; no duplicar algoritmos en pantallas.</li><li>El audio de background tiene un propietario coordinado; no introducir players paralelos sin pasar por el bridge.</li><li>Las rutas que requieren roles se protegen en servidor, incluso si la interfaz las oculta.</li><li>Las URLs de storage en React Native son absolutas y derivan de la base API configurada.</li><li>Los medios pesados permanecen fuera de PostgreSQL.</li></ul>
+ <div class="footer"><span><b>RESONANCIA</b> · Dossier técnico de arquitectura</span><span>16</span></div>
+</section>
+
+<section class="page">
+ <p class="eyebrow">16 · Glosario</p><h2>Conceptos para lectura no técnica</h2>
+ <div class="index">
+  <div><b>API</b> — interfaz que permite a la app y al panel consultar o modificar datos de forma controlada.</div>
+  <div><b>AsyncStorage</b> — almacenamiento persistente local de React Native para uso offline.</div>
+  <div><b>Background audio</b> — reproducción que continúa cuando la app no está visible o el teléfono está bloqueado.</div>
+  <div><b>CDN</b> — red de distribución que entrega archivos pesados desde ubicaciones optimizadas.</div>
+  <div><b>Clerk</b> — proveedor externo de identidad, sesión y autenticación social.</div>
+  <div><b>Drizzle ORM</b> — capa tipada que conecta TypeScript con PostgreSQL.</div>
+  <div><b>Entitlement</b> — permiso comercial otorgado a un usuario, por ejemplo Premium.</div>
+  <div><b>HTTP Range</b> — mecanismo para reproducir sólo una parte de un archivo, útil para streaming.</div>
+  <div><b>Idempotencia</b> — propiedad de una operación que puede repetirse sin crear efectos duplicados.</div>
+  <div><b>Lock screen</b> — controles y metadata de reproducción del sistema operativo.</div>
+  <div><b>OpenAPI</b> — contrato formal que describe endpoints, modelos, parámetros y respuestas de una API.</div>
+  <div><b>Pool de conexiones</b> — conjunto reutilizable de conexiones de una API a PostgreSQL.</div>
+  <div><b>React Query</b> — librería para cachear y sincronizar consultas remotas en React.</div>
+  <div><b>Readiness</b> — chequeo que indica si el servicio está listo para recibir tráfico, incluyendo dependencias como DB.</div>
+  <div><b>Tombstone</b> — marca de eliminación que evita que un dato borrado vuelva a aparecer tras sincronizar.</div>
+  <div><b>URL firmada</b> — URL temporal autorizada para cargar o descargar un objeto sin exponer credenciales.</div>
+ </div>
+ <div class="quote">RESONANCIA está diseñada para evolucionar por módulos: el cliente mantiene respuesta inmediata y offline; el backend preserva identidad y coherencia; y los medios se escalan fuera de la base de datos.</div>
+ <h3>Conclusión técnica</h3><p>La base de RESONANCIA es adecuada para la etapa actual. El siguiente salto de madurez se logra cerrando contenido real, sincronización multidispositivo, privacidad, producción, observabilidad y certificación externa; no reemplazando los pilares tecnológicos existentes.</p>
+ <div class="footer"><span><b>CASA DEL CUENCO</b> · Documento técnico confidencial</span><span>17</span></div>
+</section>
+</body></html>

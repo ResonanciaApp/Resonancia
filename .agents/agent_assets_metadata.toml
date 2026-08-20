@@ -2510,3 +2510,10 @@ uri = "file://.agents/outputs/informe-estado-lanzamiento-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Informe de estado y lanzamiento"
 description = "Informe ejecutivo de 8 páginas para Casa del Cuenco: estado del producto, evidencia técnica, semáforo, bloqueadores críticos y hoja de ruta hacia App Store y Google Play."
+
+[[outputs]]
+id = "0wJ3N-ZT_D2s2hrqRY6a0"
+uri = "file://.agents/outputs/dossier-tecnico-arquitectura-resonancia.pdf"
+type = "pdf"
+title = "RESONANCIA — Dossier técnico de arquitectura"
+description = "Informe técnico integral de 17 páginas para Casa del Cuenco: arquitectura mobile, audio, API, PostgreSQL, seguridad, sincronización, administración, integraciones, distribución, capacidad, riesgos y glosario."
