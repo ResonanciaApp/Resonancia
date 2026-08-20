@@ -29,6 +29,10 @@ import {
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
+import {
+  canPublishObjectReference,
+  canUserReferenceObject,
+} from "../lib/objectAccess";
 
 const router: IRouter = Router();
 
@@ -440,6 +444,17 @@ router.post(
         res.status(400).json({ error: "El audio supera el tamaño máximo (200 MB)" });
         return;
       }
+      if (
+        !(await canUserReferenceObject({
+          objectPath: a.objectPath,
+          userId: me.id,
+          clerkUserId: me.clerkUserId,
+          role: me.role,
+        }))
+      ) {
+        res.status(403).json({ error: "No podés enviar un audio que no te pertenece" });
+        return;
+      }
     }
     if (body.imageObjectPath) {
       if (!body.imageObjectPath.startsWith("/objects/")) {
@@ -452,6 +467,17 @@ router.post(
       }
       if (body.imageSizeBytes != null && body.imageSizeBytes > MAX_IMAGE_BYTES) {
         res.status(400).json({ error: "La portada supera el tamaño máximo (15 MB)" });
+        return;
+      }
+      if (
+        !(await canUserReferenceObject({
+          objectPath: body.imageObjectPath,
+          userId: me.id,
+          clerkUserId: me.clerkUserId,
+          role: me.role,
+        }))
+      ) {
+        res.status(403).json({ error: "No podés usar una portada que no te pertenece" });
         return;
       }
     }
@@ -665,6 +691,28 @@ router.post(
     const id = String(req.params.id);
     const me = req.currentUser!;
     try {
+      const pending = await loadSubmission(id);
+      if (!pending) {
+        res.status(404).json({ error: "Envío no encontrado" });
+        return;
+      }
+      const references = [
+        pending.session.imageUrl,
+        ...pending.audioFiles.map((audio) => audio.url),
+      ].filter((value): value is string => typeof value === "string");
+      for (const objectPath of references) {
+        if (
+          !(await canPublishObjectReference({
+            objectPath,
+            expectedOwnerId: pending.session.createdBy,
+          }))
+        ) {
+          res.status(409).json({
+            error: "El envío contiene archivos sin propiedad verificable",
+          });
+          return;
+        }
+      }
       const [updated] = await db
         .update(catalogSessionsTable)
         .set({

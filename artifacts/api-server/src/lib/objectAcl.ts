@@ -91,7 +91,20 @@ export async function getObjectAclPolicy(
   if (!aclPolicy) {
     return null;
   }
-  return JSON.parse(aclPolicy as string);
+  try {
+    const parsed = JSON.parse(aclPolicy as string) as Partial<ObjectAclPolicy>;
+    if (
+      typeof parsed.owner !== "string" ||
+      parsed.owner.length === 0 ||
+      (parsed.visibility !== "public" && parsed.visibility !== "private") ||
+      (parsed.aclRules !== undefined && !Array.isArray(parsed.aclRules))
+    ) {
+      return null;
+    }
+    return parsed as ObjectAclPolicy;
+  } catch {
+    return null;
+  }
 }
 
 export async function canAccessObject({

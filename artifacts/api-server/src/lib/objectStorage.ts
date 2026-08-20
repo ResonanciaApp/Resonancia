@@ -10,6 +10,7 @@ import {
 } from "./objectAcl";
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
+export const OBJECT_UPLOAD_URL_TTL_SEC = 900;
 
 export const objectStorageClient = new Storage({
   credentials: {
@@ -124,7 +125,7 @@ export class ObjectStorageService {
       bucketName,
       objectName,
       method: "PUT",
-      ttlSec: 900,
+      ttlSec: OBJECT_UPLOAD_URL_TTL_SEC,
     });
   }
 
@@ -152,6 +153,21 @@ export class ObjectStorageService {
       throw new ObjectNotFoundError();
     }
     return objectFile;
+  }
+
+  /**
+   * Permanently delete a private object entity.
+   * Missing files are treated as already deleted so account deletion can be
+   * safely retried after a partial or interrupted request.
+   */
+  async deleteObjectEntity(objectPath: string): Promise<void> {
+    try {
+      const objectFile = await this.getObjectEntityFile(objectPath);
+      await objectFile.delete({ ignoreNotFound: true });
+    } catch (error) {
+      if (error instanceof ObjectNotFoundError) return;
+      throw error;
+    }
   }
 
   normalizeObjectEntityPath(rawPath: string): string {

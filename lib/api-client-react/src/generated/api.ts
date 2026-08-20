@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AccountDataExport,
   AdminCategoryInput,
   AdminCategoryUpdate,
   AdminDescansoSoundItem,
@@ -52,6 +53,8 @@ import type {
   CreateTagOptionBody,
   CreateVideoBody,
   CreatorSubmissionInput,
+  DeleteAccountBody,
+  DeleteAccountResponse,
   DeleteSubmission200,
   DirectMessage,
   ErrorEnvelope,
@@ -1500,6 +1503,154 @@ export const useUpdateMe = <TError = ErrorType<ErrorResponse>,
       > => {
       return useMutation(getUpdateMeMutationOptions(options));
     }
+
+export const getDeleteMyAccountUrl = () => {
+
+
+
+
+  return `/api/me`
+}
+
+/**
+ * @summary Permanently delete the current account and its personal data
+ */
+export const deleteMyAccount = async (deleteAccountBody: DeleteAccountBody, options?: RequestInit): Promise<DeleteAccountResponse> => {
+
+  return customFetch<DeleteAccountResponse>(getDeleteMyAccountUrl(),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      deleteAccountBody,)
+  }
+);}
+
+
+
+
+export const getDeleteMyAccountMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyAccount>>, TError,{data: BodyType<DeleteAccountBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteMyAccount>>, TError,{data: BodyType<DeleteAccountBody>}, TContext> => {
+
+const mutationKey = ['deleteMyAccount'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteMyAccount>>, {data: BodyType<DeleteAccountBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  deleteMyAccount(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteMyAccountMutationResult = NonNullable<Awaited<ReturnType<typeof deleteMyAccount>>>
+    export type DeleteMyAccountMutationBody = BodyType<DeleteAccountBody>
+    export type DeleteMyAccountMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Permanently delete the current account and its personal data
+ */
+export const useDeleteMyAccount = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyAccount>>, TError,{data: BodyType<DeleteAccountBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteMyAccount>>,
+        TError,
+        {data: BodyType<DeleteAccountBody>},
+        TContext
+      > => {
+      return useMutation(getDeleteMyAccountMutationOptions(options));
+    }
+
+export const getExportMyAccountDataUrl = () => {
+
+
+
+
+  return `/api/me/export`
+}
+
+/**
+ * @summary Export the current user's account and personal data as JSON
+ */
+export const exportMyAccountData = async ( options?: RequestInit): Promise<AccountDataExport> => {
+
+  return customFetch<AccountDataExport>(getExportMyAccountDataUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getExportMyAccountDataQueryKey = () => {
+    return [
+    `/api/me/export`
+    ] as const;
+    }
+
+
+export const getExportMyAccountDataQueryOptions = <TData = Awaited<ReturnType<typeof exportMyAccountData>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof exportMyAccountData>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportMyAccountDataQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportMyAccountData>>> = ({ signal }) => exportMyAccountData({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportMyAccountData>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ExportMyAccountDataQueryResult = NonNullable<Awaited<ReturnType<typeof exportMyAccountData>>>
+export type ExportMyAccountDataQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Export the current user's account and personal data as JSON
+ */
+
+export function useExportMyAccountData<TData = Awaited<ReturnType<typeof exportMyAccountData>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof exportMyAccountData>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getExportMyAccountDataQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getSearchUsersUrl = (params: SearchUsersParams,) => {
   const normalizedParams = new URLSearchParams();

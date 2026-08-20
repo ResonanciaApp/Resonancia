@@ -10,6 +10,7 @@ import {
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
+import { canUserReferenceObject } from "../lib/objectAccess";
 
 const router: IRouter = Router();
 
@@ -132,6 +133,25 @@ router.patch("/me/resonador-profile", requireAuth, async (req, res) => {
   if (Object.keys(parsed.data).length === 0) {
     res.status(400).json({ error: "No hay campos para actualizar" });
     return;
+  }
+  const me = req.currentUser!;
+  const mediaReferences = [
+    parsed.data.photoUrl,
+    parsed.data.coverPhotoUrl,
+    ...(parsed.data.photos ?? []),
+  ].filter((value): value is string => typeof value === "string");
+  for (const objectPath of mediaReferences) {
+    if (
+      !(await canUserReferenceObject({
+        objectPath,
+        userId: me.id,
+        clerkUserId: me.clerkUserId,
+        role: me.role,
+      }))
+    ) {
+      res.status(403).json({ error: "No podés publicar un archivo que no te pertenece" });
+      return;
+    }
   }
   try {
     const [existing] = await db

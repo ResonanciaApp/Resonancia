@@ -1,13 +1,15 @@
 import { Router, type IRouter } from "express";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { and, asc, eq, gt, isNotNull } from "drizzle-orm";
+import { and, asc, eq, gt, isNotNull, or, sql } from "drizzle-orm";
 import {
+  accountDeletionsTable,
   db,
   liveSessionsTable,
   guideConfigsTable,
   usersTable,
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
+import { accountIdentityHash } from "../lib/accountDeletion";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -216,29 +218,53 @@ router.post("/live/webhook/cal", async (req, res) => {
   }
 
   try {
-    if (triggerEvent === "BOOKING_CREATED" || triggerEvent === "BOOKING_RESCHEDULED") {
-      await db
-        .insert(liveSessionsTable)
-        .values({
-          clerkUserId,
-          guideId,
-          calEventUid: uid,
-          calEventTitle: title ?? null,
-          scheduledAt: startTime ? new Date(startTime) : new Date(),
-          scheduledEnd: endTime ? new Date(endTime) : null,
-          status: "confirmed",
-          dailyRoomUrl,
-          attendeeName,
-          attendeeEmail,
-          guideDisplayName,
-          calLink: guideCalLink,
-          notes: notes ?? null,
-        })
-        .onConflictDoUpdate({
-          target: liveSessionsTable.calEventUid,
-          set: {
+    let keptAnonymized = false;
+    await db.transaction(async (tx) => {
+      const identityHash = clerkUserId ? accountIdentityHash(clerkUserId) : null;
+      const lockKey = identityHash ?? `cal-booking:${uid}`;
+      await tx.execute(sql`
+        SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))
+      `);
+
+      // Revalidate only after taking the same lock used by account deletion.
+      // This closes the check-then-upsert race that could restore attendee PII.
+      const deletionPredicates = [
+        sql`${uid} = ANY(${accountDeletionsTable.liveSessionUids})`,
+      ];
+      if (identityHash) {
+        deletionPredicates.push(eq(accountDeletionsTable.identityHash, identityHash));
+      }
+      const [deletedAccountBooking] = await tx
+        .select({ identityHash: accountDeletionsTable.identityHash })
+        .from(accountDeletionsTable)
+        .where(or(...deletionPredicates))
+        .limit(1);
+
+      if (deletedAccountBooking) {
+        keptAnonymized = true;
+        await tx
+          .update(liveSessionsTable)
+          .set({
+            clerkUserId: null,
+            attendeeName: null,
+            attendeeEmail: null,
+            notes: null,
+            ...(triggerEvent === "BOOKING_CANCELLED"
+              ? { status: "cancelled" as const }
+              : {}),
+            updatedAt: new Date(),
+          })
+          .where(eq(liveSessionsTable.calEventUid, uid));
+        return;
+      }
+
+      if (triggerEvent === "BOOKING_CREATED" || triggerEvent === "BOOKING_RESCHEDULED") {
+        await tx
+          .insert(liveSessionsTable)
+          .values({
             clerkUserId,
             guideId,
+            calEventUid: uid,
             calEventTitle: title ?? null,
             scheduledAt: startTime ? new Date(startTime) : new Date(),
             scheduledEnd: endTime ? new Date(endTime) : null,
@@ -249,15 +275,38 @@ router.post("/live/webhook/cal", async (req, res) => {
             guideDisplayName,
             calLink: guideCalLink,
             notes: notes ?? null,
-            updatedAt: new Date(),
-          },
-        });
+          })
+          .onConflictDoUpdate({
+            target: liveSessionsTable.calEventUid,
+            set: {
+              clerkUserId,
+              guideId,
+              calEventTitle: title ?? null,
+              scheduledAt: startTime ? new Date(startTime) : new Date(),
+              scheduledEnd: endTime ? new Date(endTime) : null,
+              status: "confirmed",
+              dailyRoomUrl,
+              attendeeName,
+              attendeeEmail,
+              guideDisplayName,
+              calLink: guideCalLink,
+              notes: notes ?? null,
+              updatedAt: new Date(),
+            },
+          });
+      } else if (triggerEvent === "BOOKING_CANCELLED") {
+        await tx
+          .update(liveSessionsTable)
+          .set({ status: "cancelled", updatedAt: new Date() })
+          .where(eq(liveSessionsTable.calEventUid, uid));
+      }
+    });
+
+    if (keptAnonymized) {
+      req.log.info({ uid, triggerEvent }, "cal webhook kept deleted booking anonymized");
+    } else if (triggerEvent === "BOOKING_CREATED" || triggerEvent === "BOOKING_RESCHEDULED") {
       req.log.info({ uid, guideId, clerkUserId, triggerEvent }, "cal booking upserted");
     } else if (triggerEvent === "BOOKING_CANCELLED") {
-      await db
-        .update(liveSessionsTable)
-        .set({ status: "cancelled", updatedAt: new Date() })
-        .where(eq(liveSessionsTable.calEventUid, uid));
       req.log.info({ uid }, "cal booking cancelled");
     } else {
       req.log.info({ triggerEvent, uid }, "cal webhook ignored (unhandled event)");

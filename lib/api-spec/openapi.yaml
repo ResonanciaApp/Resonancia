@@ -502,6 +502,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteMyAccount
+      tags: [users]
+      summary: Permanently delete the current account and its personal data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteAccountBody"
+      responses:
+        "200":
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteAccountResponse"
+        "400":
+          description: Confirmation text is invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Deletion could not be completed and may be retried
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /me/export:
+    get:
+      operationId: exportMyAccountData
+      tags: [users]
+      summary: Export the current user's account and personal data as JSON
+      responses:
+        "200":
+          description: Portable account data export
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDataExport"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /users/search:
     get:
       operationId: searchUsers
@@ -1046,6 +1099,18 @@ paths:
               schema:
                 type: string
                 format: binary
+        "401":
+          description: Authentication is required for a private object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Authenticated user is not allowed to read this private object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
         "404":
           description: Not found
           content:
@@ -3646,6 +3711,38 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    AccountDataExport:
+      type: object
+      properties:
+        formatVersion:
+          type: integer
+          const: 1
+        exportedAt:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+      required: [formatVersion, exportedAt, data]
+    DeleteAccountBody:
+      type: object
+      properties:
+        confirmation:
+          type: string
+          const: ELIMINAR
+      required: [confirmation]
+    DeleteAccountResponse:
+      type: object
+      properties:
+        deleted:
+          type: boolean
+        deletedAt:
+          type: string
+          format: date-time
+        cleanupPending:
+          type: boolean
+          description: True while a final Object Storage sweep waits for prior signed upload URLs to expire
+      required: [deleted, deletedAt, cleanupPending]
     PlaybackEvent:
       type: object
       properties:

@@ -417,6 +417,30 @@ export const UpdateMeResponse = zod.object({
 
 
 /**
+ * @summary Permanently delete the current account and its personal data
+ */
+export const DeleteMyAccountBody = zod.object({
+  "confirmation": zod.literal("ELIMINAR")
+})
+
+export const DeleteMyAccountResponse = zod.object({
+  "deleted": zod.boolean(),
+  "deletedAt": zod.coerce.date(),
+  "cleanupPending": zod.boolean().describe('True while a final Object Storage sweep waits for prior signed upload URLs to expire')
+})
+
+
+/**
+ * @summary Export the current user's account and personal data as JSON
+ */
+export const ExportMyAccountDataResponse = zod.object({
+  "formatVersion": zod.number(),
+  "exportedAt": zod.coerce.date(),
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
  * @summary Search users by username or display name
  */
 

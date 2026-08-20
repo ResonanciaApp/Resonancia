@@ -11,6 +11,7 @@ import {
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { capacityMetricsMiddleware } from "./lib/capacityMetrics";
+import { accountDeletionGuard } from "./middlewares/accountDeletionGuard";
 
 const app: Express = express();
 
@@ -56,6 +57,7 @@ app.use(
   })),
 );
 
+app.use(accountDeletionGuard);
 app.use("/api", router);
 
 app.get("/privacidad", (_req, res) => {

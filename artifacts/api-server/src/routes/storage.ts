@@ -1,5 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { Readable } from "stream";
+import { getAuth } from "@clerk/express";
 import {
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
@@ -8,6 +9,7 @@ import { db, uploadsTable } from "@workspace/db";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { ObjectPermission } from "../lib/objectAcl";
 import { requireAuth } from "../middlewares/requireAuth";
+import { resolveObjectReadAccess } from "../lib/objectAccess";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -67,7 +69,9 @@ router.post("/storage/uploads/request-url", requireAuth, async (req: Request, re
     const uploadURL = await objectStorageService.getObjectEntityUploadURL();
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
 
-    // Registro contable de la subida (no bloquea la subida si el registro falla).
+    // La URL nunca se entrega si no podemos asociarla al propietario. Sin este
+    // registro el borrado de cuenta no tendría forma fiable de localizar el
+    // objeto más tarde.
     try {
       await db.insert(uploadsTable).values({
         userId: req.currentUser!.id,
@@ -78,6 +82,10 @@ router.post("/storage/uploads/request-url", requireAuth, async (req: Request, re
       });
     } catch (recordErr) {
       req.log.error({ err: recordErr }, "Failed to record upload metadata");
+      await objectStorageService.deleteObjectEntity(objectPath).catch((cleanupErr) => {
+        req.log.warn({ err: cleanupErr }, "Failed to clean unregistered upload path");
+      });
+      throw recordErr;
     }
 
     res.json(
@@ -140,6 +148,29 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
     const objectPath = `/objects/${wildcardPath}`;
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
+    const clerkUserId = getAuth(req)?.userId ?? undefined;
+    const databaseAccess = await resolveObjectReadAccess({
+      objectPath,
+      clerkUserId,
+    });
+    let aclAccess = false;
+    if (databaseAccess === "denied") {
+      try {
+        aclAccess = await objectStorageService.canAccessObjectEntity({
+          userId: clerkUserId,
+          objectFile,
+          requestedPermission: ObjectPermission.READ,
+        });
+      } catch (error) {
+        req.log.warn({ err: error, objectPath }, "Invalid object ACL denied");
+      }
+    }
+    if (databaseAccess === "denied" && !aclAccess) {
+      res.status(clerkUserId ? 403 : 401).json({
+        error: clerkUserId ? "No autorizado para acceder a este archivo" : "No autenticado",
+      });
+      return;
+    }
 
     const [metadata] = await objectFile.getMetadata();
     const totalSize =
@@ -152,7 +183,9 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
 
     res.setHeader("Content-Type", contentType);
     res.setHeader("Accept-Ranges", "bytes");
-    res.setHeader("Cache-Control", "private, max-age=3600");
+    const isPublic = databaseAccess === "public" || (!clerkUserId && aclAccess);
+    res.setHeader("Cache-Control", `${isPublic ? "public" : "private"}, max-age=3600`);
+    res.setHeader("Vary", "Authorization");
 
     const rangeHeader = req.headers.range;
     if (rangeHeader && totalSize > 0) {

@@ -5,6 +5,26 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type AccountDataExportData = { [key: string]: unknown };
+
+export interface AccountDataExport {
+  formatVersion: 1;
+  exportedAt: string;
+  data: AccountDataExportData;
+}
+
+export const DeleteAccountBodyValue = {
+  confirmation: 'ELIMINAR',
+} as const;
+export type DeleteAccountBody = typeof DeleteAccountBodyValue;
+
+export interface DeleteAccountResponse {
+  deleted: boolean;
+  deletedAt: string;
+  /** True while a final Object Storage sweep waits for prior signed upload URLs to expire */
+  cleanupPending: boolean;
+}
+
 export interface PlaybackEvent {
   /**
      * @minLength 1

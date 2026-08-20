@@ -2,8 +2,10 @@ import { Feather } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
+import * as Sharing from "expo-sharing";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
@@ -35,6 +37,7 @@ import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
+import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
@@ -106,6 +109,17 @@ async function cancelDailyReminder() {
   } catch {}
 }
 
+async function removeLocalAccountData() {
+  const keys = await AsyncStorage.getAllKeys();
+  const accountKeys = keys.filter(
+    (key) => key.startsWith("@resonance") || key.startsWith("@resonancia"),
+  );
+  if (accountKeys.length > 0) {
+    await AsyncStorage.multiRemove(accountKeys);
+  }
+  await cancelDailyReminder();
+}
+
 export default function ConfiguracionesScreen() {
   const colors = useColors();
   const { forceAnimate, refetchCount } = useNotifications();
@@ -114,7 +128,7 @@ export default function ConfiguracionesScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { getToken } = useClerkAuth();
-  const { logout, isCreator, isAdmin } = useAuth();
+  const { logout, isCreator, isAdmin, isSignedIn } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { expansorId, setExpansorId } = useUserProfile();
   const { updateDefaultSleepTimer } = usePlayer();
@@ -122,6 +136,7 @@ export default function ConfiguracionesScreen() {
 
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
+  const [accountAction, setAccountAction] = useState<"export" | "delete" | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -216,16 +231,107 @@ export default function ConfiguracionesScreen() {
           style: "destructive",
           onPress: async () => {
             try {
-              const keys = await AsyncStorage.getAllKeys();
-              const resonanceKeys = keys.filter((k) => k.startsWith("@resonance"));
-              await AsyncStorage.multiRemove(resonanceKeys);
-              await cancelDailyReminder();
+              await removeLocalAccountData();
               Alert.alert("Listo", "Tus datos fueron borrados. La app se reiniciará.", [
                 { text: "OK", onPress: () => router.replace("/onboarding") },
               ]);
             } catch {
               Alert.alert("Error", "No se pudo borrar todo. Inténtalo de nuevo.");
             }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleExportAccount = async () => {
+    if (accountAction) return;
+    setAccountAction("export");
+    try {
+      const exported = await exportMyAccountData();
+      const json = JSON.stringify(exported, null, 2);
+      const date = exported.exportedAt.slice(0, 10);
+      const filename = `resonancia-datos-${date}.json`;
+
+      if (Platform.OS === "web") {
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      } else {
+        if (!FileSystem.cacheDirectory) {
+          throw new Error("No hay directorio temporal disponible");
+        }
+        const uri = `${FileSystem.cacheDirectory}${filename}`;
+        await FileSystem.writeAsStringAsync(uri, json);
+        if (!(await Sharing.isAvailableAsync())) {
+          throw new Error("El menú para compartir no está disponible");
+        }
+        await Sharing.shareAsync(uri, {
+          dialogTitle: "Exportar mis datos de RESONANCIA",
+          mimeType: "application/json",
+          UTI: "public.json",
+        });
+      }
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.warn("[Account] export failed", error);
+      Alert.alert(
+        "No se pudo exportar",
+        "No pudimos preparar tus datos. Comprueba tu conexión e inténtalo de nuevo.",
+      );
+    } finally {
+      setAccountAction(null);
+    }
+  };
+
+  const performAccountDeletion = async () => {
+    if (accountAction) return;
+    setAccountAction("delete");
+    try {
+      await deleteMyAccount({ confirmation: "ELIMINAR" });
+      await removeLocalAccountData();
+      await logout();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace("/onboarding");
+    } catch (error) {
+      console.warn("[Account] deletion failed", error);
+      Alert.alert(
+        "No se pudo eliminar la cuenta",
+        "No cierres sesión. Inténtalo de nuevo para completar la eliminación de forma segura.",
+      );
+    } finally {
+      setAccountAction(null);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    if (accountAction) return;
+    Alert.alert(
+      "Eliminar mi cuenta",
+      "Se borrarán tu cuenta, perfil, actividad, biblioteca, mensajes, datos sociales y archivos subidos. Las reservas se conservarán sin datos personales. Esta acción no se puede deshacer.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Continuar",
+          style: "destructive",
+          onPress: () => {
+            Alert.alert(
+              "Confirmación final",
+              "¿Confirmas que quieres eliminar definitivamente tu cuenta de RESONANCIA?",
+              [
+                { text: "Cancelar", style: "cancel" },
+                {
+                  text: "ELIMINAR",
+                  style: "destructive",
+                  onPress: performAccountDeletion,
+                },
+              ],
+            );
           },
         },
       ],
@@ -450,6 +556,29 @@ export default function ConfiguracionesScreen() {
             border
             disabled
           />
+          {isSignedIn && (
+            <ActionRow
+              icon="download"
+              label="Exportar mis datos"
+              value={accountAction === "export" ? "Preparando…" : undefined}
+              onPress={handleExportAccount}
+              colors={colors}
+              border
+              disabled={accountAction !== null}
+            />
+          )}
+          {isSignedIn && (
+            <ActionRow
+              icon="user-x"
+              label="Eliminar mi cuenta"
+              value={accountAction === "delete" ? "Eliminando…" : undefined}
+              onPress={handleDeleteAccount}
+              colors={colors}
+              border
+              danger
+              disabled={accountAction !== null}
+            />
+          )}
         </View>
 
         {/* ── Creadores ── */}
@@ -535,7 +664,7 @@ export default function ConfiguracionesScreen() {
           <ActionRow icon="file-text" label="Términos y privacidad" onPress={handleTerms} colors={colors} border />
           <ActionRow
             icon="trash-2"
-            label="Borrar todos mis datos"
+            label="Borrar datos de este teléfono"
             onPress={handleClearData}
             colors={colors}
             border

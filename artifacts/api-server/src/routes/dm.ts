@@ -20,6 +20,7 @@ import {
   GetTypingStatusParams,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
+import { canUserReferenceObject } from "../lib/objectAccess";
 
 const router: IRouter = Router();
 
@@ -301,6 +302,18 @@ router.post("/dm/with/:userId", requireAuth, async (req, res) => {
     (body.data.attachmentType === "image" || body.data.attachmentType === "audio");
   if (!hasBody && !hasSession && !hasAttachment) {
     res.status(400).json({ error: "Mensaje vacío" });
+    return;
+  }
+  if (
+    hasAttachment &&
+    !(await canUserReferenceObject({
+      objectPath: body.data.attachmentUrl!,
+      userId: me.id,
+      clerkUserId: me.clerkUserId,
+      role: me.role,
+    }))
+  ) {
+    res.status(403).json({ error: "No podés adjuntar un archivo que no te pertenece" });
     return;
   }
   if (!(await areFriends(me.id, otherId))) {

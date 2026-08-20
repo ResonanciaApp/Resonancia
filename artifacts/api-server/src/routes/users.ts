@@ -1,6 +1,9 @@
 import { Router, type IRouter } from "express";
 import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import { clerkClient, getAuth } from "@clerk/express";
 import {
+  accountDeletionsTable,
+  applicationsTable,
   db,
   usersTable,
   friendshipsTable,
@@ -8,13 +11,30 @@ import {
   playbackHistoryTable,
   expansorProfilesTable,
   userLibraryTable,
+  uploadsTable,
+  messagesTable,
+  liveSessionsTable,
+  resonadoresTable,
   type User,
 } from "@workspace/db";
-import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody, UpdateMyExpansorProfileBody } from "@workspace/api-zod";
+import {
+  DeleteMyAccountBody,
+  UpdateMeBody,
+  SearchUsersQueryParams,
+  SetUserRoleBody,
+  UpdateMyExpansorProfileBody,
+} from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
+import {
+  OBJECT_UPLOAD_URL_TTL_SEC,
+  ObjectStorageService,
+} from "../lib/objectStorage";
+import { accountIdentityHash } from "../lib/accountDeletion";
+import { canUserReferenceObject } from "../lib/objectAccess";
 
 const router: IRouter = Router();
+const objectStorageService = new ObjectStorageService();
 
 function toProfile(u: User) {
   return {
@@ -39,6 +59,19 @@ router.patch("/me", requireAuth, async (req, res) => {
     return;
   }
   const me = req.currentUser!;
+  if (
+    parsed.data.avatarUrl !== undefined &&
+    parsed.data.avatarUrl !== null &&
+    !(await canUserReferenceObject({
+      objectPath: parsed.data.avatarUrl,
+      userId: me.id,
+      clerkUserId: me.clerkUserId,
+      role: me.role,
+    }))
+  ) {
+    res.status(403).json({ error: "No podés usar un archivo que no te pertenece" });
+    return;
+  }
   const updates: Partial<typeof usersTable.$inferInsert> = {};
   if (parsed.data.username !== undefined) updates.username = parsed.data.username;
   if (parsed.data.displayName !== undefined) updates.displayName = parsed.data.displayName;
@@ -65,6 +98,407 @@ router.patch("/me", requireAuth, async (req, res) => {
     }
     req.log.error(err);
     res.status(500).json({ error: "Error al actualizar el perfil" });
+  }
+});
+
+router.get("/me/export", requireAuth, async (req, res) => {
+  const me = req.currentUser!;
+
+  try {
+    const result = await db.execute(sql`
+      SELECT jsonb_build_object(
+        'account', to_jsonb(u),
+        'activity', jsonb_build_object(
+          'playbackHistory', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM playback_history t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'favorites', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM favorites t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'sessionProgress', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.updated_at)
+            FROM session_progress t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'milestones', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.unlocked_at)
+            FROM user_milestones t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'communityEvents', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM community_activity_events t WHERE t.user_id = u.id
+          ), '[]'::jsonb)
+        ),
+        'library', COALESCE((
+          SELECT to_jsonb(t) FROM user_library t WHERE t.user_id = u.id LIMIT 1
+        ), '{}'::jsonb),
+        'social', jsonb_build_object(
+          'friendships', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM friendships t
+            WHERE t.requester_id = u.id OR t.addressee_id = u.id
+          ), '[]'::jsonb),
+          'follows', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM follows t
+            WHERE t.follower_id = u.id OR t.following_id = u.id
+          ), '[]'::jsonb),
+          'directMessages', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM direct_messages t
+            WHERE t.sender_id = u.id OR t.recipient_id = u.id
+          ), '[]'::jsonb),
+          'wallMessages', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM messages t WHERE t.author_clerk_id = u.clerk_user_id
+          ), '[]'::jsonb),
+          'messageLikes', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t))
+            FROM message_likes t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'sharedMixes', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM shared_mixes t WHERE t.author_id = u.id
+          ), '[]'::jsonb),
+          'sharedMixComments', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM shared_mix_comments t WHERE t.author_id = u.id
+          ), '[]'::jsonb),
+          'sharedMixLikes', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t))
+            FROM shared_mix_likes t WHERE t.user_id = u.id
+          ), '[]'::jsonb),
+          'sharedMixReports', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM shared_mix_reports t WHERE t.reporter_id = u.id
+          ), '[]'::jsonb),
+          'sharedGlyphs', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+            FROM shared_glyphs t WHERE t.author_id = u.id
+          ), '[]'::jsonb),
+          'sharedGlyphLikes', COALESCE((
+            SELECT jsonb_agg(to_jsonb(t))
+            FROM shared_glyph_likes t WHERE t.user_id = u.id
+          ), '[]'::jsonb)
+        ),
+        'notifications', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+          FROM notifications t
+          WHERE t.user_id = u.id OR t.actor_user_id = u.id
+        ), '[]'::jsonb),
+        'pushTokens', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+          FROM push_tokens t WHERE t.user_id = u.id
+        ), '[]'::jsonb),
+        'uploads', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+          FROM uploads t WHERE t.user_id = u.id
+        ), '[]'::jsonb),
+        'creatorProfiles', jsonb_build_object(
+          'expansor', COALESCE((
+            SELECT to_jsonb(t) FROM expansor_profiles t WHERE t.user_id = u.id LIMIT 1
+          ), '{}'::jsonb),
+          'resonador', COALESCE((
+            SELECT to_jsonb(t) FROM resonadores t WHERE t.clerk_id = u.clerk_user_id LIMIT 1
+          ), '{}'::jsonb)
+        ),
+        'liveSessions', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.scheduled_at)
+          FROM live_sessions t WHERE t.clerk_user_id = u.clerk_user_id
+        ), '[]'::jsonb),
+        'applications', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)
+          FROM applications t WHERE t.user_id = u.clerk_user_id
+        ), '[]'::jsonb)
+      ) AS data
+      FROM users u
+      WHERE u.id = ${me.id}
+      LIMIT 1
+    `);
+
+    const row = result.rows[0] as { data?: Record<string, unknown> } | undefined;
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Disposition", 'attachment; filename="resonancia-datos.json"');
+    res.json({
+      formatVersion: 1,
+      exportedAt: new Date().toISOString(),
+      data: row?.data ?? {},
+    });
+  } catch (err) {
+    req.log.error({ err }, "Failed to export account data");
+    res.status(500).json({ error: "No se pudieron exportar tus datos" });
+  }
+});
+
+async function deleteClerkUserWithRetry(clerkUserId: string): Promise<void> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await clerkClient.users.deleteUser(clerkUserId);
+      return;
+    } catch (error) {
+      const status = (error as { status?: number })?.status;
+      if (status === 404) return;
+      lastError = error;
+      if (attempt < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 150 * (attempt + 1)));
+      }
+    }
+  }
+  throw lastError;
+}
+
+function ownedObjectPath(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const marker = "/objects/";
+  const markerIndex = value.indexOf(marker);
+  if (markerIndex === -1) return null;
+  return value.slice(markerIndex).split(/[?#]/, 1)[0] ?? null;
+}
+
+async function loadAccountDeletion(identityHash: string) {
+  const [deletion] = await db
+    .select()
+    .from(accountDeletionsTable)
+    .where(eq(accountDeletionsTable.identityHash, identityHash))
+    .limit(1);
+  return deletion;
+}
+
+router.delete("/me", async (req, res) => {
+  const parsed = DeleteMyAccountBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Escribe "ELIMINAR" para confirmar' });
+    return;
+  }
+
+  const clerkUserId = getAuth(req)?.userId;
+  if (!clerkUserId) {
+    res.status(401).json({ error: "No autenticado" });
+    return;
+  }
+  const identityHash = accountIdentityHash(clerkUserId);
+
+  try {
+    const [existingUser] = await db
+      .select({ id: usersTable.id })
+      .from(usersTable)
+      .where(eq(usersTable.clerkUserId, clerkUserId))
+      .limit(1);
+    let deletion = await loadAccountDeletion(identityHash);
+    if (!existingUser && !deletion) {
+      res.status(404).json({ error: "Cuenta no encontrada" });
+      return;
+    }
+
+    if (!deletion) {
+      await db
+        .insert(accountDeletionsTable)
+        .values({ identityHash, status: "pending" })
+        .onConflictDoNothing();
+      deletion = await loadAccountDeletion(identityHash);
+    }
+    if (!deletion) {
+      throw new Error("Could not create account deletion tombstone");
+    }
+
+    if (deletion.status === "pending") {
+      await db.transaction(async (tx) => {
+        const [lockedDeletion] = await tx
+          .select()
+          .from(accountDeletionsTable)
+          .where(eq(accountDeletionsTable.identityHash, identityHash))
+          .for("update")
+          .limit(1);
+        if (!lockedDeletion || lockedDeletion.status !== "pending") {
+          return;
+        }
+
+        // Cal.com webhooks use the same key and must revalidate the tombstone
+        // only after acquiring it, preventing PII from racing past deletion.
+        await tx.execute(sql`
+          SELECT pg_advisory_xact_lock(hashtextextended(${identityHash}, 0))
+        `);
+
+        // Lock the root row before taking the final snapshot. FK-backed writes
+        // cannot race past this point and all of them cascade in the same tx.
+        const locked = await tx.execute(sql`
+          SELECT id FROM users
+          WHERE clerk_user_id = ${clerkUserId}
+          FOR UPDATE
+        `);
+        const lockedUserIdRaw = (locked.rows[0] as { id?: number } | undefined)?.id;
+        const userId = lockedUserIdRaw === undefined ? null : Number(lockedUserIdRaw);
+
+        const objectPaths = new Set(lockedDeletion.objectPaths);
+        const liveSessionUids = new Set(lockedDeletion.liveSessionUids);
+        let storageCleanupAfter =
+          lockedDeletion.storageCleanupAfter?.getTime() ?? 0;
+        const addPath = (value: unknown) => {
+          const path = ownedObjectPath(value);
+          if (path) objectPaths.add(path);
+        };
+
+        if (userId !== null) {
+          const uploadRows = await tx
+            .select({
+              objectPath: uploadsTable.objectPath,
+              createdAt: uploadsTable.createdAt,
+            })
+            .from(uploadsTable)
+            .where(eq(uploadsTable.userId, userId));
+          for (const row of uploadRows) {
+            addPath(row.objectPath);
+            storageCleanupAfter = Math.max(
+              storageCleanupAfter,
+              row.createdAt.getTime() + OBJECT_UPLOAD_URL_TTL_SEC * 1_000 + 30_000,
+            );
+          }
+
+          const [expansor] = await tx
+            .select({ photos: expansorProfilesTable.photos })
+            .from(expansorProfilesTable)
+            .where(eq(expansorProfilesTable.userId, userId))
+            .limit(1);
+          expansor?.photos.forEach(addPath);
+        }
+
+        const applicationRows = await tx
+          .select({ audioPath: applicationsTable.audioPath })
+          .from(applicationsTable)
+          .where(eq(applicationsTable.userId, clerkUserId));
+        applicationRows.forEach((row) => addPath(row.audioPath));
+
+        const bookingRows = await tx
+          .select({ calEventUid: liveSessionsTable.calEventUid })
+          .from(liveSessionsTable)
+          .where(eq(liveSessionsTable.clerkUserId, clerkUserId));
+        for (const row of bookingRows) {
+          liveSessionUids.add(row.calEventUid);
+          await tx.execute(sql`
+            SELECT pg_advisory_xact_lock(
+              hashtextextended(${"cal-booking:" + row.calEventUid}, 0)
+            )
+          `);
+        }
+
+        const resonadorRows = await tx
+          .select({
+            photoUrl: resonadoresTable.photoUrl,
+            coverPhotoUrl: resonadoresTable.coverPhotoUrl,
+            photos: resonadoresTable.photos,
+          })
+          .from(resonadoresTable)
+          .where(eq(resonadoresTable.clerkId, clerkUserId));
+        for (const profile of resonadorRows) {
+          addPath(profile.photoUrl);
+          addPath(profile.coverPhotoUrl);
+          profile.photos.forEach(addPath);
+        }
+
+        await tx.delete(messagesTable).where(eq(messagesTable.authorClerkId, clerkUserId));
+        await tx.delete(applicationsTable).where(eq(applicationsTable.userId, clerkUserId));
+        await tx
+          .update(liveSessionsTable)
+          .set({
+            clerkUserId: null,
+            attendeeName: null,
+            attendeeEmail: null,
+            notes: null,
+          })
+          .where(eq(liveSessionsTable.clerkUserId, clerkUserId));
+        await tx.delete(resonadoresTable).where(eq(resonadoresTable.clerkId, clerkUserId));
+
+        if (userId !== null) {
+          // Private/social data cascades. Editorial attribution uses SET NULL,
+          // preserving catalog content without retaining the user identity.
+          await tx.delete(usersTable).where(eq(usersTable.id, userId));
+        }
+
+        await tx
+          .update(accountDeletionsTable)
+          .set({
+            status: "database_deleted",
+            objectPaths: [...objectPaths],
+            liveSessionUids: [...liveSessionUids],
+            storageCleanupAfter:
+              storageCleanupAfter > 0 ? new Date(storageCleanupAfter) : null,
+            updatedAt: new Date(),
+          })
+          .where(eq(accountDeletionsTable.identityHash, identityHash));
+      });
+      deletion = await loadAccountDeletion(identityHash);
+    }
+
+    if (!deletion) {
+      throw new Error("Account deletion tombstone disappeared");
+    }
+
+    if (deletion.status === "database_deleted") {
+      const objectResults = await Promise.allSettled(
+        deletion.objectPaths.map((path) => objectStorageService.deleteObjectEntity(path)),
+      );
+      const failedObjects = objectResults.filter((result) => result.status === "rejected");
+      if (failedObjects.length > 0) {
+        req.log.error(
+          { failures: failedObjects.length, identityHash },
+          "Account deletion paused because object cleanup failed",
+        );
+        res.status(503).json({
+          error: "No se pudieron borrar todos tus archivos. Inténtalo de nuevo.",
+        });
+        return;
+      }
+      await db
+        .update(accountDeletionsTable)
+        .set({ status: "storage_deleted", updatedAt: new Date() })
+        .where(eq(accountDeletionsTable.identityHash, identityHash));
+      deletion = await loadAccountDeletion(identityHash);
+    }
+
+    if (deletion?.status === "storage_deleted") {
+      try {
+        await deleteClerkUserWithRetry(clerkUserId);
+      } catch (err) {
+        req.log.error({ err, identityHash }, "Clerk deletion failed; retry is available");
+        res.status(503).json({
+          error: "Tus datos se borraron, pero falta cerrar la cuenta. Inténtalo de nuevo.",
+        });
+        return;
+      }
+      const cleanupPending =
+        deletion.storageCleanupAfter !== null &&
+        deletion.storageCleanupAfter.getTime() > Date.now();
+      await db
+        .update(accountDeletionsTable)
+        .set({
+          status: cleanupPending ? "awaiting_storage_expiry" : "completed",
+          completedAt: cleanupPending ? null : new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(accountDeletionsTable.identityHash, identityHash));
+      deletion = await loadAccountDeletion(identityHash);
+    }
+
+    if (deletion?.status === "pending") {
+      res.status(503).json({
+        error: "La eliminación sigue en curso. Inténtalo de nuevo.",
+      });
+      return;
+    }
+
+    res.setHeader("Cache-Control", "no-store");
+    res.json({
+      deleted: true,
+      deletedAt: new Date().toISOString(),
+      cleanupPending: deletion?.status === "awaiting_storage_expiry",
+    });
+  } catch (err) {
+    req.log.error({ err }, "Failed to delete account");
+    res.status(503).json({
+      error: "No se pudo completar la eliminación. No cierres sesión e inténtalo de nuevo.",
+    });
   }
 });
 

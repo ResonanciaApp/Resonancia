@@ -870,6 +870,32 @@ function ImageAttachment({
   height?: number;
 }) {
   const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
+  const { getToken } = useClerkAuth();
+  const needsAuth =
+    objectPath.startsWith("/objects/") ||
+    /\/(?:api\/)?storage\/objects\//.test(objectPath);
+  const [authToken, setAuthToken] = useState<string | null>(
+    needsAuth ? null : "",
+  );
+  useEffect(() => {
+    let cancelled = false;
+    if (!needsAuth) {
+      setAuthToken("");
+      return () => {
+        cancelled = true;
+      };
+    }
+    void getToken()
+      .then((token) => {
+        if (!cancelled) setAuthToken(token);
+      })
+      .catch(() => {
+        if (!cancelled) setAuthToken(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, needsAuth, objectPath]);
   const maxW = 220;
   const maxH = 280;
   let w = maxW;
@@ -892,10 +918,31 @@ function ImageAttachment({
       }
     }
   }
+  if (needsAuth && !authToken) {
+    return (
+      <View
+        style={{
+          width: w,
+          height: h,
+          borderRadius: 14,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(255,255,255,0.06)",
+        }}
+      >
+        <ActivityIndicator size="small" color="#BE9650" />
+      </View>
+    );
+  }
   return (
     <View style={{ borderRadius: 14, overflow: "hidden" }}>
       <Image
-        source={{ uri: url }}
+        source={{
+          uri: url,
+          ...(authToken
+            ? { headers: { Authorization: `Bearer ${authToken}` } }
+            : {}),
+        }}
         style={{ width: w, height: h }}
         contentFit="cover"
       />

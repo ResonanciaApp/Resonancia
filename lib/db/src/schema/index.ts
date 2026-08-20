@@ -54,4 +54,5 @@ export * from "./community-activity-events";
 export * from "./user-milestones";
 export * from "./user-library";
 export * from "./resonadores";
+export * from "./account-deletions";
 

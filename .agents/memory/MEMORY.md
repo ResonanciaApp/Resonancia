@@ -147,3 +147,5 @@
 - [Resonador self-edit endpoints](resonador-self-edit.md) — GET/PATCH /me/resonador-profile busca por clerkId; whitelist explícita de campos editables; mobile usa useClerkAuth().getToken
 - [Resonador gallery URL resolution](resonador-gallery-urls.md) — photos[] en ApiResonador son objectPaths crudos; deben pasar por resolveResonadorUrl igual que photoUrl/coverPhotoUrl; DB foto tiene prioridad sobre asset bundleado
 - [Authenticated capacity fixture safety](authenticated-capacity-fixture-safety.md) — pruebas de carga con escrituras usan identidades efímeras de Development, preparación secuencial y limpieza verificable; nunca apuntarlas a producción
+- [Account deletion vs signed uploads](account-deletion-signed-uploads.md) — borrar un objeto una vez no basta si sobreviven PUT firmados; tombstone + segundo barrido tras el TTL antes de completar
+- [Private object reference grants](private-object-reference-grants.md) — una ruta privada referenciada no concede acceso por sí sola; exigir propiedad del upload o rol editorial antes de compartir/publicar
