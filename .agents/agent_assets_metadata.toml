@@ -2503,3 +2503,10 @@ uri = "file://docs/Informe-Respuesta-Auditoria-RESONANCIA.pdf"
 type = "pdf"
 title = "Informe-Respuesta-Auditoria-RESONANCIA.pdf"
 description = "13/15 resueltos · 0 parciales · 2 pendientes (submission)"
+
+[[outputs]]
+id = "qJk-xUiym_b3sIn07Cgce"
+uri = "file://.agents/outputs/informe-estado-lanzamiento-resonancia.pdf"
+type = "pdf"
+title = "RESONANCIA — Informe de estado y lanzamiento"
+description = "Informe ejecutivo de 8 páginas para Casa del Cuenco: estado del producto, evidencia técnica, semáforo, bloqueadores críticos y hoja de ruta hacia App Store y Google Play."

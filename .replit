@@ -21,7 +21,7 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
-packages = ["eas-cli", "nano", "chromium"]
+packages = ["chromium", "eas-cli", "freetype", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "libjpeg_turbo", "mupdf", "nano", "openjpeg", "swig", "xcbuild"]
 
 [userenv]
 

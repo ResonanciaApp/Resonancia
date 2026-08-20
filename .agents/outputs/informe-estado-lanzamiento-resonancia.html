@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RESONANCIA — Informe de estado y preparación de lanzamiento</title>
+  <style>
+    @page { size: A4; margin: 15mm 15mm 16mm; }
+    :root {
+      --navy: #060A0F;
+      --ink: #17202D;
+      --muted: #5A6574;
+      --gold: #BE9650;
+      --gold-pale: #F4EBD9;
+      --paper: #FBFAF7;
+      --line: #E4E1DA;
+      --green: #2D7B62;
+      --green-bg: #E5F3EC;
+      --amber: #A86C18;
+      --amber-bg: #FFF1D8;
+      --red: #A7403F;
+      --red-bg: #F9E2E1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.2pt;
+      line-height: 1.48;
+    }
+    .page { page-break-after: always; min-height: 257mm; position: relative; padding-bottom: 8mm; }
+    .page:last-child { page-break-after: auto; }
+    .cover {
+      min-height: 267mm;
+      color: #fff;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(190,150,80,.24), transparent 24%),
+        radial-gradient(circle at 6% 85%, rgba(190,150,80,.13), transparent 28%),
+        linear-gradient(145deg, #060A0F 0%, #0D1625 58%, #121B29 100%);
+      padding: 26mm 20mm 19mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin: -15mm;
+    }
+    .brand { font-size: 10pt; letter-spacing: .26em; color: var(--gold); font-weight: 700; }
+    .cover h1 { font-family: Georgia, serif; font-size: 35pt; line-height: 1.06; font-weight: 400; margin: 0 0 12mm; }
+    .cover h1 span { color: #E8D0A0; }
+    .cover p { max-width: 125mm; color: #D7DDE6; font-size: 13pt; margin: 0; }
+    .cover-card { width: 100%; border: 1px solid rgba(232,208,160,.35); background: rgba(255,255,255,.055); padding: 8mm; }
+    .cover-card strong { color: #E8D0A0; font-size: 11pt; }
+    .cover-card p { font-size: 10pt; margin-top: 3mm; }
+    .cover-footer { color: #AAB5C5; font-size: 8.5pt; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,.18); padding-top: 5mm; }
+    h2 { font-family: Georgia, serif; font-size: 21pt; font-weight: 400; line-height: 1.15; margin: 0 0 4mm; color: var(--navy); }
+    h3 { font-size: 11.5pt; margin: 6mm 0 2.5mm; color: var(--navy); }
+    .eyebrow { color: var(--gold); letter-spacing: .15em; text-transform: uppercase; font-size: 8pt; font-weight: 700; margin: 0 0 3mm; }
+    .lede { font-size: 12pt; color: #3F4A58; margin: 0 0 7mm; max-width: 165mm; }
+    .rule { height: 1px; background: var(--line); margin: 6mm 0; }
+    .verdict { border-left: 4px solid var(--gold); background: var(--gold-pale); padding: 5mm 6mm; margin: 6mm 0; }
+    .verdict strong { font-size: 12pt; color: var(--navy); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+    .metric { border: 1px solid var(--line); background: #fff; padding: 4.5mm; min-height: 29mm; }
+    .metric .value { font-family: Georgia, serif; font-size: 23pt; color: var(--navy); line-height: 1; }
+    .metric .label { color: var(--muted); margin-top: 2mm; font-size: 8.7pt; }
+    .status-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 4mm; }
+    .status-table th { text-align: left; font-size: 8pt; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 3mm 2.5mm; border-bottom: 1px solid var(--line); }
+    .status-table td { padding: 3.2mm 2.5mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .pill { display: inline-block; font-size: 7.5pt; font-weight: 700; letter-spacing: .06em; padding: 1.2mm 2.2mm; border-radius: 99px; text-transform: uppercase; }
+    .green { background: var(--green-bg); color: var(--green); }
+    .amber { background: var(--amber-bg); color: var(--amber); }
+    .red { background: var(--red-bg); color: var(--red); }
+    .callout { padding: 4mm 5mm; margin-top: 4mm; border: 1px solid var(--line); background: #fff; }
+    .callout p { margin: 0; }
+    .critical { border-left: 4px solid var(--red); }
+    .critical h3 { margin-top: 0; }
+    ul { padding-left: 5.5mm; margin: 2.5mm 0; }
+    li { margin: 1.4mm 0; }
+    .number { display: inline-flex; justify-content: center; align-items: center; width: 7mm; height: 7mm; border-radius: 50%; background: var(--navy); color: #fff; font-size: 8pt; font-weight: 700; margin-right: 2.5mm; }
+    .phase { border-top: 2px solid var(--gold); padding: 4mm 0 0; }
+    .phase h3 { margin: 0 0 2mm; }
+    .small { color: var(--muted); font-size: 8.4pt; }
+    .footer { position: absolute; bottom: 0; width: 100%; display: flex; justify-content: space-between; color: #798391; font-size: 7.5pt; }
+    .footer b { color: var(--gold); letter-spacing: .08em; }
+    .quote { font-family: Georgia, serif; color: var(--navy); font-size: 15pt; line-height: 1.35; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); padding: 6mm 0; margin: 7mm 0; }
+    .not-blocking { background: #F5F7F8; padding: 5mm; }
+  </style>
+</head>
+<body>
+  <section class="page cover">
+    <div>
+      <div class="brand">CASA DEL CUENCO</div>
+      <div style="height:28mm"></div>
+      <h1>RESONANCIA<br><span>Estado de producto</span><br>y preparación de lanzamiento</h1>
+      <p>Informe ejecutivo de arquitectura, confiabilidad, operaciones y requisitos críticos previos a App Store y Google Play.</p>
+    </div>
+    <div class="cover-card">
+      <strong>Veredicto ejecutivo</strong>
+      <p>RESONANCIA es una beta avanzada con arquitectura apta para escalar en su etapa inicial. No requiere reconstrucción tecnológica; requiere un ciclo focalizado de hardening, contenido final y certificación de release.</p>
+    </div>
+    <div class="cover-footer"><span>Agosto 2026</span><span>Documento confidencial · Preparado para revisión empresarial</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">01 · Conclusión</p>
+    <h2>Estado actual: beta avanzada / candidata a release</h2>
+    <p class="lede">El producto ya integra app nativa, API, panel administrativo, autenticación, catálogo, comunidad, reproducción avanzada, sincronización y una base de datos con capacidad medida. La principal brecha no es de arquitectura: es de cierre de lanzamiento.</p>
+    <div class="verdict">
+      <strong>Recomendación: NO-GO para enviar hoy a tiendas.</strong><br>
+      GO condicionado tras completar los bloqueadores de contenido, producción, privacidad, monetización y certificación física detallados en este informe.
+    </div>
+    <div class="three">
+      <div class="metric"><div class="value">100</div><div class="label">workers autenticados probados bajo carga</div></div>
+      <div class="metric"><div class="value">0</div><div class="label">errores en la corrida autenticada de lanzamiento</div></div>
+      <div class="metric"><div class="value">18,19 ms</div><div class="label">latencia p95 agregada bajo carga autenticada</div></div>
+    </div>
+    <h3>Qué ya está consolidado</h3>
+    <div class="two">
+      <div class="callout"><b>Producto y experiencia</b><p>Una experiencia mobile amplia y visualmente madura: sesiones, mezclador, Descanso, comunidad, Geometrix, diario, perfiles y paneles de contenido.</p></div>
+      <div class="callout"><b>Arquitectura</b><p>Separación correcta entre app nativa, API, PostgreSQL, Object Storage/CDN, video, administración y autenticación.</p></div>
+      <div class="callout"><b>Audio</b><p>Player persistente, cambios de sesión protegidos, background audio, lock screen, temporizador y motor gapless especializado para BPM.</p></div>
+      <div class="callout"><b>Datos y seguridad funcional</b><p>Clerk, roles administradores, catálogo gestionado, controles de acceso y sincronización offline-first con recuperación de nube.</p></div>
+    </div>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>2</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">02 · Semáforo de lanzamiento</p>
+    <h2>El producto funciona; la operación aún debe cerrarse</h2>
+    <table class="status-table">
+      <thead><tr><th>Área</th><th>Estado</th><th>Lectura ejecutiva</th></tr></thead>
+      <tbody>
+        <tr><td>Producto y UX</td><td><span class="pill green">Verde</span></td><td>Producto amplio, coherente y con identidad visual consolidada.</td></tr>
+        <tr><td>Arquitectura y base de datos</td><td><span class="pill green">Verde</span></td><td>Separación de responsabilidades correcta y capacidad suficiente para el lanzamiento inicial.</td></tr>
+        <tr><td>Motor de audio / players</td><td><span class="pill amber">Ámbar</span></td><td>Arquitectura avanzada; falta cobertura de contenido y certificación en hardware real.</td></tr>
+        <tr><td>Streak, actividad y nube</td><td><span class="pill amber">Ámbar</span></td><td>La lógica central es sólida; falta resolver conflictos de borrado entre varios dispositivos.</td></tr>
+        <tr><td>Catálogo y administración</td><td><span class="pill amber">Ámbar</span></td><td>El sistema es real; producción está atrasada frente a Development.</td></tr>
+        <tr><td>Premium / suscripciones</td><td><span class="pill red">Rojo*</span></td><td>Integrado en código, pero no certificado con productos y compras sandbox reales.</td></tr>
+        <tr><td>Privacidad y cuenta</td><td><span class="pill red">Rojo</span></td><td>Hay política y términos; falta eliminación/exportación de datos de usuario.</td></tr>
+        <tr><td>Builds y distribución</td><td><span class="pill amber">Ámbar</span></td><td>Builds internos iOS/Android exitosos; sin evidencia de release production o submission.</td></tr>
+        <tr><td>Contenido audible final</td><td><span class="pill red">Rojo</span></td><td>Persisten audios sintéticos, placeholders y cobertura incompleta demostrable.</td></tr>
+        <tr><td>Observabilidad y respuesta operativa</td><td><span class="pill amber">Ámbar</span></td><td>Existen métricas y health checks; faltan alertas externas y runbook de incidentes.</td></tr>
+      </tbody>
+    </table>
+    <p class="small">* Rojo si Premium forma parte del lanzamiento 1.0. Si se lanza inicialmente gratis, debe ocultarse toda promesa o flujo de compra no operativo.</p>
+    <div class="quote">La inversión principal en producto y arquitectura ya está hecha. El trabajo restante es de hardening y certificación, no de reconstrucción.</div>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>3</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">03 · Evidencia técnica</p>
+    <h2>Base de datos y capacidad: preparada para el lanzamiento inicial</h2>
+    <p class="lede">La arquitectura usa PostgreSQL para relaciones y metadatos, y mantiene los medios pesados fuera de la base de datos. Esto evita que audio, imágenes y video degraden el rendimiento transaccional.</p>
+    <div class="two">
+      <div class="metric"><div class="value">6.001</div><div class="label">solicitudes en perfil autenticado de lanzamiento</div></div>
+      <div class="metric"><div class="value">49,20</div><div class="label">solicitudes por segundo; mínimo requerido: 47,5</div></div>
+      <div class="metric"><div class="value">0%</div><div class="label">tasa de error en la prueba autenticada</div></div>
+      <div class="metric"><div class="value">0</div><div class="label">conexiones esperando al finalizar la verificación</div></div>
+    </div>
+    <h3>La prueba incluyó operaciones sensibles</h3>
+    <ul>
+      <li>Favoritos, progreso, biblioteca, historial y racha.</li>
+      <li>Lectura y envío de mensajes privados.</li>
+      <li>Lectura de conversaciones y marcación de mensajes como leídos.</li>
+      <li>Usuarios temporales exclusivos de Development, con limpieza verificada en Clerk y PostgreSQL.</li>
+    </ul>
+    <div class="callout">
+      <b>Conclusión de escala.</b>
+      <p>Para una proyección inicial de miles de usuarios registrados, no hay evidencia que justifique cambiar de base de datos, introducir microservicios, añadir caché preventiva ni agregar índices sin un cuello de botella medido.</p>
+    </div>
+    <h3>Qué sí debe hacerse en producción</h3>
+    <p>El deployment público actual está activo, pero no corresponde completamente al código actual: el endpoint de readiness no está disponible y el catálogo productivo tiene menos sesiones que Development. Debe publicarse una versión actualizada, revisar el diff de esquema y reconciliar catálogo y almacenamiento antes de la release candidata.</p>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>4</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">04 · Bloqueadores P0</p>
+    <h2>Contenido y producción deben cerrarse antes de distribución pública</h2>
+    <div class="callout critical">
+      <h3><span class="number">1</span>Auditar y completar el contenido de audio real</h3>
+      <p>Existen sesiones y sonidos visibles sin una cobertura audible final demostrada. Parte de Descanso usa audios sintéticos explícitamente marcados como prueba; parte del mezclador queda como “Próximamente”; y el player puede simular avance cuando no encuentra audio real.</p>
+      <ul><li>Inventario de todo contenido visible.</li><li>Audio principal, voz, loop, duración, volumen y derechos revisados.</li><li>Ocultar cualquier elemento incompleto del catálogo de lanzamiento.</li><li>Probar desde una instalación limpia contra producción.</li></ul>
+    </div>
+    <div class="callout critical">
+      <h3><span class="number">2</span>Actualizar y reconciliar producción</h3>
+      <p>La versión publicada debe ponerse al día antes de pruebas externas. La reconciliación debe ser deliberada: código, esquema, catálogo, Storage, roles y variables productivas deben validarse juntos, sin migrar datos de prueba.</p>
+      <ul><li>Publicar API actual y verificar health/readiness.</li><li>Revisar el diff Development → Production mediante el flujo soportado.</li><li>Validar login, catálogo, favoritos, mensajes, uploads y Premium en entorno publicado.</li></ul>
+    </div>
+    <div class="callout critical">
+      <h3><span class="number">3</span>Decidir y certificar Premium</h3>
+      <p>Si Premium entra en 1.0, se requieren productos reales, offerings, entitlement, compras sandbox, restauración y manejo de expiraciones en iOS y Android. Si se posterga, se debe lanzar una experiencia Free sin paywalls o precios no operativos.</p>
+    </div>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>5</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">05 · Bloqueadores P0</p>
+    <h2>Cumplimiento de tiendas y certificación real</h2>
+    <div class="callout critical">
+      <h3><span class="number">4</span>Eliminar y exportar datos de cuenta</h3>
+      <p>La app ya permite crear cuentas y cuenta con política de privacidad, pero no existe un proceso verificable de eliminación/exportación que cubra Clerk, PostgreSQL, Object Storage y tokens push.</p>
+      <ul><li>Acción de “Eliminar mi cuenta” dentro de la app, con confirmación apropiada.</li><li>Eliminación/anominización idempotente, retención documentada y soporte auditable.</li><li>Flujo de exportación o solicitud de datos coherente con la política.</li><li>Apple App Privacy y Google Data Safety completados con datos reales.</li></ul>
+    </div>
+    <div class="callout critical">
+      <h3><span class="number">5</span>Certificar una release candidata en hardware</h3>
+      <p>Hay builds internos terminados de iOS y Android, lo que prueba capacidad de compilación nativa. Aún faltan builds production firmados, TestFlight/Google Play Internal Testing y una matriz formal de dispositivos.</p>
+      <ul><li>Instalación limpia, actualización y recuperación de sesión.</li><li>Apple/Google sign-in, audio, cambios de sesión, Bluetooth, llamadas e interrupciones.</li><li>Background, lock screen, temporizador, chat, grabación, offline y reinstalación.</li><li>Push, compra/restauración de Premium y flujos de revisión de tiendas.</li></ul>
+    </div>
+    <div class="callout">
+      <b>Aspecto favorable.</b>
+      <p>La configuración ya declara identificadores iOS/Android, permisos relevantes, modo background audio, Apple Sign-In y un perfil EAS de producción. El gap es de certificación y entrega, no de ausencia de base técnica.</p>
+    </div>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>6</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">06 · Confiabilidad operativa</p>
+    <h2>Riesgos que deben controlarse antes del lanzamiento público</h2>
+    <div class="two">
+      <div class="callout critical">
+        <h3>Sincronización multidispositivo</h3>
+        <p>La sincronización offline-first funciona para un dispositivo, reinstalación y recuperación. Sin embargo, un favorito o progreso eliminado en un equipo puede reaparecer si otro equipo sincroniza una copia antigua después.</p>
+        <p><b>Acción:</b> agregar resolución de conflictos por elemento —tombstones o timestamps— y pruebas automatizadas de dos dispositivos.</p>
+      </div>
+      <div class="callout critical">
+        <h3>Alertas, crash reporting y abuso</h3>
+        <p>Existen métricas, health checks y pruebas de carga, pero no hay evidencia de alertas externas, crash reporting móvil, runbook operativo o límites claros de abuso para mensajes y uploads.</p>
+        <p><b>Acción:</b> instrumentar alertas, monitoreo de errores/latencia, respuesta a incidentes y rate limits razonables.</p>
+      </div>
+      <div class="callout">
+        <h3>Push notifications</h3>
+        <p>La app registra tokens, navega al tocar notificaciones y el servidor envía por Expo. Falta certificar APNs/FCM, receipts, fallos y recepción real en foreground, background y app cerrada.</p>
+      </div>
+      <div class="callout">
+        <h3>Pruebas mobile</h3>
+        <p>La cobertura automatizada visible se concentra en API. Debe sumarse una estrategia mínima de regresión para sincronización y una checklist manual bloqueante para audio, compras y background.</p>
+      </div>
+    </div>
+    <h3>No son bloqueadores de salida</h3>
+    <div class="not-blocking">
+      Animaciones, refinamientos visuales, variaciones de Escenas, nuevos filtros, glassmorphism, cambios menores de iconos y mejoras cosméticas pueden continuar después del lanzamiento. Tampoco se recomienda cambiar de base de datos ni reescribir el motor de audio antes de release.
+    </div>
+    <div class="footer"><span><b>RESONANCIA</b> · Estado de lanzamiento</span><span>7</span></div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">07 · Hoja de ruta</p>
+    <h2>Plan de lanzamiento recomendado</h2>
+    <div class="three">
+      <div class="phase">
+        <h3>Fase 1<br>Hardening</h3>
+        <ul><li>Completar contenido real.</li><li>Actualizar producción.</li><li>Resolver sync multidispositivo.</li><li>Implementar eliminación/exportación.</li><li>Definir Premium 1.0.</li></ul>
+      </div>
+      <div class="phase">
+        <h3>Fase 2<br>Release candidate</h3>
+        <ul><li>Variables y credenciales productivas.</li><li>Builds firmados iOS/Android.</li><li>TestFlight y Play Internal.</li><li>Matriz de QA física.</li><li>Corregir P0/P1 solamente.</li></ul>
+      </div>
+      <div class="phase">
+        <h3>Fase 3<br>Submission</h3>
+        <ul><li>Alertas y crash reporting.</li><li>Certificar Push.</li><li>Completar metadata legal.</li><li>Listing y assets de tiendas.</li><li>Rollout gradual.</li></ul>
+      </div>
+    </div>
+    <div class="quote">Una vez cerrados estos frentes, RESONANCIA estará en condiciones razonables de ingresar a TestFlight, Google Play Internal Testing y posteriormente a revisión pública.</div>
+    <h3>Conclusión para terceros</h3>
+    <p>RESONANCIA cuenta con una base de producto y tecnología adecuada para su escala inicial. Los riesgos pendientes están concentrados y son abordables: no requieren una nueva fase de construcción desde cero, sino una fase disciplinada de contenido final, cumplimiento, producción y certificación.</p>
+    <div class="footer"><span><b>CASA DEL CUENCO</b> · Documento confidencial</span><span>8</span></div>
+  </section>
+</body>
+</html>
