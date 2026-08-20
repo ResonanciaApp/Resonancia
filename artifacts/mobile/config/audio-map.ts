@@ -1,3 +1,5 @@
+import type { BundledAudioSessionId } from "./bundled-audio-manifest";
+
 /**
  * MAPA DE AUDIO — RESONANCE
  * ─────────────────────────────────────────────────────────────────
@@ -14,7 +16,7 @@
  * ─────────────────────────────────────────────────────────────────
  */
 
-export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> = {
+const BUNDLED_AUDIO_MAP: Record<BundledAudioSessionId, ReturnType<typeof require>> = {
   "1": require("@/assets/audio/62 CM.mp3"),
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "21": require("@/assets/audio/rio_orilla_mar.wav"),
@@ -24,6 +26,9 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
   "29": require("@/assets/audio/prueba1.mp3"),
   "30": require("@/assets/audio/prueba1.mp3"),
 };
+
+export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
+  BUNDLED_AUDIO_MAP;
 
 /**
  * LOOP_SESSIONS — IDs de sesiones que deben reproducirse en loop indefinido.

@@ -156,6 +156,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [playerDescription, setPlayerDescription] = useState(initial?.playerDescription ?? "");
   const [duration, setDuration] = useState(initial?.duration ? String(initial.duration) : "");
   const [isPremium, setIsPremium] = useState(initial?.isPremium ?? false);
+  const [isPlaceholder, setIsPlaceholder] = useState(initial?.isPlaceholder ?? false);
   const [skipDetail, setSkipDetail] = useState(initial?.skipDetail ?? false);
   const [skipMiniPlayer, setSkipMiniPlayer] = useState(initial?.skipMiniPlayer ?? false);
   const [isLoop, setIsLoop] = useState(initial?.isLoop ?? false);
@@ -177,6 +178,12 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const handleSkipMiniPlayer = (v: boolean) => {
     setSkipMiniPlayer(v);
     if (v) setSkipDetail(false);
+  };
+  const handlePlaceholder = (v: boolean) => {
+    setIsPlaceholder(v);
+    // Un placeholder debe abrir una superficie con contexto y aviso, nunca
+    // intentar arrancar silenciosamente en el miniplayer.
+    if (v) setSkipMiniPlayer(false);
   };
 
   // Tags por categoría
@@ -320,7 +327,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     if (!description.trim()) return "La descripción es requerida";
     const d = Number(duration);
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
-    if (!isEdit) {
+    if (!isEdit && !isPlaceholder) {
       if (!audio1.file) return "Agregá al menos un archivo de audio";
       if (!audio1.name.trim()) return "Poné un nombre al audio 1";
       if (showAudio2 && audio2.file && !audio2.name.trim()) return "Poné un nombre al audio 2";
@@ -336,7 +343,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     setSubmitting(true);
     setUploadProgress({ label: "Preparando subida…", pct: 0 });
     try {
-      const a1 = await uploadFile(audio1.file!, "Subiendo audio principal");
+      const a1 = audio1.file
+        ? await uploadFile(audio1.file, "Subiendo audio principal")
+        : null;
       let a2: UploadedFile | null = null;
       if (showAudio2 && audio2.file) {
         a2 = await uploadFile(audio2.file, "Subiendo audio secundario");
@@ -350,8 +359,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
       setUploadProgress({ label: "Guardando sesión…", pct: 100 });
 
-      const audioFiles: CreateBody["audioFiles"] = [
-        {
+      const audioFiles: CreateBody["audioFiles"] = [];
+      if (a1) {
+        audioFiles.push({
           objectPath: a1.objectPath,
           name: audio1.name.trim(),
           contentType: a1.contentType,
@@ -359,8 +369,8 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           role: audio1.role as "main"|"voice"|"ambient"|"base"|"sound",
           durationSeconds: audio1.durationSeconds ? Number(audio1.durationSeconds) : undefined,
           isLoop: audio1.isLoop,
-        },
-      ];
+        });
+      }
       if (a2) {
         audioFiles.push({
           objectPath: a2.objectPath,
@@ -381,6 +391,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         categoryLabel: categoryLabelFor(categoryId),
         duration: Number(duration),
         isPremium,
+        isPlaceholder,
         skipDetail,
         skipMiniPlayer,
         isLoop,
@@ -456,6 +467,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         benefits,
         instruments,
         isPremium,
+        isPlaceholder,
         skipDetail,
         skipMiniPlayer,
         isLoop,
@@ -752,6 +764,20 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               <span className="ml-2 text-xs text-muted-foreground">(muestra estrellita dorada en la app)</span>
             </Label>
           </div>
+          <div className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3">
+            <div className="flex items-center gap-3">
+              <Switch id="isPlaceholder" checked={isPlaceholder} onCheckedChange={handlePlaceholder} />
+              <Label htmlFor="isPlaceholder" className="cursor-pointer">
+                Mostrar como “próximamente”
+                <span className="ml-2 text-xs text-muted-foreground">(visible en la app, con Play deshabilitado)</span>
+              </Label>
+            </div>
+            {isPlaceholder && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Esta es una excepción editorial explícita. Desactívala solo cuando el audio final esté cargado y listo.
+              </p>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             <Switch id="isLoop" checked={isLoop} onCheckedChange={setIsLoop} />
             <Label htmlFor="isLoop" className="cursor-pointer">
@@ -899,7 +925,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           onToggle={() => toggleSection("audios")}
         >
           {(() => {
-            const audio1Label = isMusica ? "Audio principal *" : "Audio base *";
+            const audio1Label = isPlaceholder
+              ? (isMusica ? "Audio principal (opcional mientras sea próximamente)" : "Audio base (opcional mientras sea próximamente)")
+              : (isMusica ? "Audio principal *" : "Audio base *");
             const audio2Label = isMusica ? "Audio ambiente (opcional)" : "Voz guía (opcional)";
             return (
               <div className="space-y-6">

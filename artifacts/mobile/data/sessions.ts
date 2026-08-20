@@ -57,6 +57,8 @@ export type Session = {
   isFeaturedCategory?: boolean;
   isNew?: boolean;
   isPremium?: boolean;
+  /** Visible en catálogo, pero sin audio final. El reproductor muestra el aviso y deshabilita Play. */
+  isPlaceholder?: boolean;
   skipDetail?: boolean;
   /** Al tocar la card: reproduce al instante y solo aparece el miniplayer (sin abrir pantallas). */
   skipMiniPlayer?: boolean;
@@ -1232,6 +1234,7 @@ export type CatalogSessionSnapshot = {
   isFeaturedCategory?: boolean;
   isNew: boolean;
   isPremium: boolean;
+  isPlaceholder?: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   /** Loop infinito a nivel sesión (motor gapless, duración infinita). */
@@ -1390,12 +1393,14 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.isFeaturedCategory = r.isFeaturedCategory ?? false;
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
+    local.isPlaceholder = r.isPlaceholder ?? false;
     // La BD no distingue "nunca tocado" de "explícitamente false" (columna
     // boolean default false). Solo aplicar cuando viene true: un false NO debe
     // clobbear los skipDetail:true bundleados ni el default por categoría de
     // SessionCard (skipDetail !== false), que un false explícito rompería.
     if (r.skipDetail) local.skipDetail = true;
-    if (r.skipMiniPlayer) local.skipMiniPlayer = true;
+    if (r.isPlaceholder) local.skipMiniPlayer = false;
+    else if (r.skipMiniPlayer) local.skipMiniPlayer = true;
     // Complemento del Set hardcodeado LOOP_SESSIONS: solo fijar si viene true
     // (no clobbear a false las sesiones bundleadas que loopean por el Set).
     if (r.isLoop) local.isLoop = true;
@@ -1463,11 +1468,12 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       isFeaturedCategory: r.isFeaturedCategory ?? false,
       isNew: r.isNew,
       isPremium: r.isPremium,
+      isPlaceholder: r.isPlaceholder ?? false,
       // false de la BD → undefined: así aplican los defaults por categoría
       // (p.ej. SessionCard manda sonidos-ancestrales directo al player salvo
       // skipDetail === false explícito, que la BD no puede expresar).
       skipDetail: r.skipDetail ? true : undefined,
-      skipMiniPlayer: r.skipMiniPlayer ? true : undefined,
+      skipMiniPlayer: r.isPlaceholder ? false : (r.skipMiniPlayer ? true : undefined),
       isLoop: r.isLoop ? true : undefined,
       frequency: r.frequency ?? undefined,
       soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,

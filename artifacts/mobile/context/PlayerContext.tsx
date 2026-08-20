@@ -1161,6 +1161,36 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Nueva generación: invalida todo callback pendiente de la sesión
       // anterior (auto-avance diferido, continuaciones tras await, intervals).
       const gen = ++playGenRef.current;
+      // Los placeholders son visibles y pueden abrir el reproductor, pero jamás
+      // deben caer en el fallback de simulación/voz mientras falta el audio final.
+      if (session.isPlaceholder) {
+        stopMixPlayback();
+        stopSoundPlayback();
+        stopChatPlayback();
+        flushActiveStat();
+        clearSim();
+        teardownLayers();
+        try {
+          mainPlayerRef.current?.pause();
+        } catch {
+          // El player puede no haberse inicializado aún.
+        }
+        setInfiniteLoop(false);
+        setActivePlaylistIds(null);
+        setQueueImplicit(false);
+        queueImplicitRef.current = false;
+        setCurrentSession(session);
+        setProgress(0);
+        setElapsed(0);
+        setActualDurationSeconds(session.duration * 60);
+        setIsLoading(false);
+        setIsPlaying(false);
+        hasRealAudioRef.current = false;
+        lastPlayingRef.current = false;
+        pendingSeekRef.current = null;
+        lockScreenPendingRef.current = null;
+        return;
+      }
       // Si NO venimos de un avance interno, limpiar la cola de playlist y
       // registrar la cola implícita (estilo Calm): para sesiones que no son
       // meditaciones, prev/next navegan por las sesiones de su categoría.
@@ -1588,6 +1618,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   playSessionWithDurationRef.current = playSessionWithDuration;
 
   const pauseResume = useCallback(async () => {
+    if (currentSession?.isPlaceholder) return;
     if (hasRealAudioRef.current && mainPlayerRef.current?.isLoaded) {
       const main = mainPlayerRef.current;
       if (main.playing) {
@@ -1823,7 +1854,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setSleepTimer,
         updateDefaultSleepTimer,
         clearHistory,
-        hasRealAudio: !!(currentSession && (AUDIO_MAP[currentSession.id] || currentSession.audioUri)),
+        hasRealAudio: !!(
+          currentSession &&
+          !currentSession.isPlaceholder &&
+          (AUDIO_MAP[currentSession.id] || currentSession.audioUri)
+        ),
         mainVolume,
         setMainVolume,
         hasVoiceTrack: !!(VOICE_MAP[currentSession?.id ?? ""] || currentSession?.voiceUri),

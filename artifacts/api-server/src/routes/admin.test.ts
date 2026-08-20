@@ -20,6 +20,7 @@ import {
   db,
   usersTable,
   catalogCategoriesTable,
+  catalogAudioFilesTable,
   catalogSessionsTable,
   type User,
   type UserRole,
@@ -288,6 +289,12 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
       status: "published",
       createdBy: creatorUser.id,
     });
+    await db.insert(catalogAudioFilesTable).values({
+      sessionId,
+      role: "main",
+      url: "/objects/test-audio.mp3",
+      name: "audio-bundleado.mp3",
+    });
   });
 
   afterAll(async () => {
@@ -348,6 +355,27 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     authAs(userUser);
     const res = await request(app).post(`/api/catalog/submissions/${sessionId}/unhide`);
     expect(res.status).toBe(403);
+  });
+
+  it("PATCH mantiene el miniplayer desactivado para una sesión provisional", async () => {
+    authAs(adminUser);
+    await db
+      .update(catalogSessionsTable)
+      .set({ isPlaceholder: true, skipMiniPlayer: false })
+      .where(eq(catalogSessionsTable.id, sessionId));
+
+    const res = await request(app)
+      .patch(`/api/catalog/submissions/${sessionId}`)
+      .send({ skipMiniPlayer: true });
+    expect(res.status).toBe(200);
+    expect(res.body.skipMiniPlayer).toBe(false);
+
+    const [stored] = await db
+      .select({ skipMiniPlayer: catalogSessionsTable.skipMiniPlayer })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, sessionId))
+      .limit(1);
+    expect(stored.skipMiniPlayer).toBe(false);
   });
 });
 

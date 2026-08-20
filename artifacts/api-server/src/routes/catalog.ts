@@ -33,6 +33,7 @@ import {
   canPublishObjectReference,
   canUserReferenceObject,
 } from "../lib/objectAccess";
+import { getCatalogReadiness } from "../lib/catalogReadiness";
 
 const router: IRouter = Router();
 
@@ -90,6 +91,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     isFeaturedCategory: s.isFeaturedCategory,
     isNew: s.isNew,
     isPremium: s.isPremium,
+    isPlaceholder: s.isPlaceholder,
     skipDetail: s.skipDetail,
     skipMiniPlayer: s.skipMiniPlayer,
     isLoop: s.isLoop,
@@ -320,6 +322,7 @@ router.put(
           and(
             eq(catalogSessionsTable.id, sessionId),
             eq(catalogSessionsTable.status, "published"),
+            eq(catalogSessionsTable.isPlaceholder, false),
           ),
         )
         .limit(1);
@@ -501,8 +504,9 @@ router.post(
           imageUrl: body.imageObjectPath ?? null,
           isPremium: body.isPremium ?? false,
           skipDetail: body.skipDetail ?? false,
-          skipMiniPlayer: body.skipMiniPlayer ?? false,
+          skipMiniPlayer: body.isPlaceholder ? false : (body.skipMiniPlayer ?? false),
           isLoop: body.isLoop ?? false,
+          isPlaceholder: body.isPlaceholder ?? false,
           frequency: body.frequency ?? null,
           soundTag: body.soundTag ?? null,
           meditationTag: body.meditationTag ?? null,
@@ -525,19 +529,21 @@ router.post(
           createdBy: me.id,
         });
 
-        await tx.insert(catalogAudioFilesTable).values(
-          body.audioFiles.map((a) => ({
-            sessionId: id,
-            role: a.role ?? ("main" as const),
-            url: a.objectPath,
-            name: a.name,
-            contentType: a.contentType,
-            sizeBytes: a.sizeBytes,
-            durationSeconds: a.durationSeconds ?? null,
-            isLoop: a.isLoop ?? false,
-            uploadedBy: me.id,
-          })),
-        );
+        if (body.audioFiles.length) {
+          await tx.insert(catalogAudioFilesTable).values(
+            body.audioFiles.map((a) => ({
+              sessionId: id,
+              role: a.role ?? ("main" as const),
+              url: a.objectPath,
+              name: a.name,
+              contentType: a.contentType,
+              sizeBytes: a.sizeBytes,
+              durationSeconds: a.durationSeconds ?? null,
+              isLoop: a.isLoop ?? false,
+              uploadedBy: me.id,
+            })),
+          );
+        }
       });
 
       const loaded = await loadSubmission(id);
@@ -696,6 +702,14 @@ router.post(
         res.status(404).json({ error: "Envío no encontrado" });
         return;
       }
+      const readiness = getCatalogReadiness(pending.session, pending.audioFiles);
+      if (!readiness.ready) {
+        res.status(409).json({
+          code: "CATALOG_CONTENT_NOT_READY",
+          error: readiness.reason,
+        });
+        return;
+      }
       const references = [
         pending.session.imageUrl,
         ...pending.audioFiles.map((audio) => audio.url),
@@ -820,8 +834,10 @@ router.patch(
     if (data.benefits !== undefined) updates.benefits = data.benefits;
     if (data.instruments !== undefined) updates.instruments = data.instruments;
     if (data.isPremium !== undefined) updates.isPremium = data.isPremium;
+    if (data.isPlaceholder !== undefined) updates.isPlaceholder = data.isPlaceholder;
     if (data.skipDetail !== undefined) updates.skipDetail = data.skipDetail;
     if (data.skipMiniPlayer !== undefined) updates.skipMiniPlayer = data.skipMiniPlayer;
+    if (data.isPlaceholder === true) updates.skipMiniPlayer = false;
     if (data.isFeatured !== undefined) updates.isFeatured = data.isFeatured;
     if (data.isFeaturedCategory !== undefined) updates.isFeaturedCategory = data.isFeaturedCategory;
     if (data.isNew !== undefined) updates.isNew = data.isNew;
@@ -870,13 +886,49 @@ router.patch(
     }
 
     try {
-      const [updated] = await db
-        .update(catalogSessionsTable)
-        .set(updates)
-        .where(eq(catalogSessionsTable.id, id))
-        .returning();
-      if (!updated) {
+      const outcome = await db.transaction(async (tx) => {
+        const [current] = await tx
+          .select()
+          .from(catalogSessionsTable)
+          .where(eq(catalogSessionsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!current) return { kind: "not-found" as const };
+
+        const audioFiles = await tx
+          .select()
+          .from(catalogAudioFilesTable)
+          .where(eq(catalogAudioFilesTable.sessionId, id));
+        const candidate = { ...current, ...updates };
+        if (candidate.isPlaceholder) {
+          // También protege placeholders existentes cuando el PATCH no incluyó
+          // isPlaceholder pero sí intentó modificar el comportamiento del card.
+          candidate.skipMiniPlayer = false;
+          updates.skipMiniPlayer = false;
+        }
+        if (candidate.status === "published") {
+          const readiness = getCatalogReadiness(candidate, audioFiles);
+          if (!readiness.ready) {
+            return { kind: "not-ready" as const, reason: readiness.reason };
+          }
+        }
+
+        const [updated] = await tx
+          .update(catalogSessionsTable)
+          .set(updates)
+          .where(eq(catalogSessionsTable.id, id))
+          .returning();
+        return { kind: "updated" as const, updated };
+      });
+      if (outcome.kind === "not-found") {
         res.status(404).json({ error: "Envío no encontrado" });
+        return;
+      }
+      if (outcome.kind === "not-ready") {
+        res.status(409).json({
+          code: "CATALOG_CONTENT_NOT_READY",
+          error: outcome.reason,
+        });
         return;
       }
       const loaded = await loadSubmission(id);
@@ -948,6 +1000,18 @@ router.post(
         res
           .status(409)
           .json({ error: "Solo se puede volver a publicar una pieza ocultada" });
+        return;
+      }
+      const pending = await loadSubmission(id);
+      const readiness = getCatalogReadiness(
+        pending!.session,
+        pending!.audioFiles,
+      );
+      if (!readiness.ready) {
+        res.status(409).json({
+          code: "CATALOG_CONTENT_NOT_READY",
+          error: readiness.reason,
+        });
         return;
       }
       await db
@@ -1106,16 +1170,40 @@ router.post(
     }
     const me = req.currentUser!;
     try {
-      const [session] = await db
-        .select({ id: catalogSessionsTable.id })
-        .from(catalogSessionsTable)
-        .where(eq(catalogSessionsTable.id, id))
-        .limit(1);
-      if (!session) {
-        res.status(404).json({ error: "Sesión no encontrada" });
-        return;
-      }
-      await db.transaction(async (tx) => {
+      const outcome = await db.transaction(async (tx) => {
+        const [session] = await tx
+          .select()
+          .from(catalogSessionsTable)
+          .where(eq(catalogSessionsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!session) return { kind: "not-found" as const };
+
+        const existing = await tx
+          .select()
+          .from(catalogAudioFilesTable)
+          .where(eq(catalogAudioFilesTable.sessionId, id));
+        if (
+          body.replaceAudioId != null &&
+          !existing.some((audio) => audio.id === body.replaceAudioId)
+        ) {
+          return { kind: "audio-not-found" as const };
+        }
+        const proposed = [
+          ...existing.filter((audio) => audio.id !== body.replaceAudioId),
+          {
+            role: body.role ?? ("main" as const),
+            url: body.objectPath,
+            assetKey: null,
+          },
+        ];
+        if (session.status === "published") {
+          const readiness = getCatalogReadiness(session, proposed);
+          if (!readiness.ready) {
+            return { kind: "not-ready" as const, reason: readiness.reason };
+          }
+        }
+
         if (body.replaceAudioId != null) {
           await tx
             .delete(catalogAudioFilesTable)
@@ -1141,7 +1229,23 @@ router.post(
           .update(catalogSessionsTable)
           .set({ updatedAt: new Date() })
           .where(eq(catalogSessionsTable.id, id));
+        return { kind: "updated" as const };
       });
+      if (outcome.kind === "not-found") {
+        res.status(404).json({ error: "Sesión no encontrada" });
+        return;
+      }
+      if (outcome.kind === "audio-not-found") {
+        res.status(404).json({ error: "Audio a reemplazar no encontrado" });
+        return;
+      }
+      if (outcome.kind === "not-ready") {
+        res.status(409).json({
+          code: "CATALOG_CONTENT_NOT_READY",
+          error: outcome.reason,
+        });
+        return;
+      }
       const loaded = await loadSubmission(id);
       req.log.info({ sessionId: id, replaced: body.replaceAudioId ?? null }, "admin session audio added");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));
@@ -1165,30 +1269,57 @@ router.delete(
       return;
     }
     try {
-      const existing = await db
-        .select({ id: catalogAudioFilesTable.id })
-        .from(catalogAudioFilesTable)
-        .where(eq(catalogAudioFilesTable.sessionId, id));
-      if (!existing.some((a) => a.id === audioId)) {
+      const outcome = await db.transaction(async (tx) => {
+        const [session] = await tx
+          .select()
+          .from(catalogSessionsTable)
+          .where(eq(catalogSessionsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!session) return { kind: "session-not-found" as const };
+        const existing = await tx
+          .select()
+          .from(catalogAudioFilesTable)
+          .where(eq(catalogAudioFilesTable.sessionId, id));
+        if (!existing.some((audio) => audio.id === audioId)) {
+          return { kind: "audio-not-found" as const };
+        }
+        const proposed = existing.filter((audio) => audio.id !== audioId);
+        if (session.status === "published") {
+          const readiness = getCatalogReadiness(session, proposed);
+          if (!readiness.ready) {
+            return { kind: "not-ready" as const, reason: readiness.reason };
+          }
+        }
+        await tx
+          .delete(catalogAudioFilesTable)
+          .where(
+            and(
+              eq(catalogAudioFilesTable.id, audioId),
+              eq(catalogAudioFilesTable.sessionId, id),
+            ),
+          );
+        await tx
+          .update(catalogSessionsTable)
+          .set({ updatedAt: new Date() })
+          .where(eq(catalogSessionsTable.id, id));
+        return { kind: "updated" as const };
+      });
+      if (outcome.kind === "session-not-found") {
+        res.status(404).json({ error: "Sesión no encontrada" });
+        return;
+      }
+      if (outcome.kind === "audio-not-found") {
         res.status(404).json({ error: "Audio no encontrado" });
         return;
       }
-      if (existing.length <= 1) {
-        res.status(409).json({ error: "La sesión debe conservar al menos un audio" });
+      if (outcome.kind === "not-ready") {
+        res.status(409).json({
+          code: "CATALOG_CONTENT_NOT_READY",
+          error: outcome.reason,
+        });
         return;
       }
-      await db
-        .delete(catalogAudioFilesTable)
-        .where(
-          and(
-            eq(catalogAudioFilesTable.id, audioId),
-            eq(catalogAudioFilesTable.sessionId, id),
-          ),
-        );
-      await db
-        .update(catalogSessionsTable)
-        .set({ updatedAt: new Date() })
-        .where(eq(catalogSessionsTable.id, id));
       const loaded = await loadSubmission(id);
       req.log.info({ sessionId: id, audioId }, "admin session audio deleted");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));

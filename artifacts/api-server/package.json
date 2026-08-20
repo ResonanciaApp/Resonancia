@@ -9,6 +9,7 @@
     "start": "node --enable-source-maps ./dist/index.mjs",
     "capacity:load": "node ./scripts/capacity-load.mjs",
     "capacity:auth": "tsx ./scripts/capacity-authenticated.ts",
+    "catalog:preflight": "tsx ./scripts/catalog-readiness.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },

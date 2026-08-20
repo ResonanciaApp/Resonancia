@@ -174,10 +174,11 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
+  const isPlaceholder = session.isPlaceholder === true;
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const sessionGradient: string[] = sceneTheme.id === "tibet"
     ? ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"]
-    : sceneTheme.gradient;
+    : [...sceneTheme.gradient];
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
   const isIndigoPlayBtn = sceneTheme.id === "indigo";
@@ -508,7 +509,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           )}
 
           {/* ── Botones Escuchar / Compartir ─────────────────────────── */}
-          {hasProgress ? (
+          {hasProgress && !isPlaceholder ? (
             <>
               <View style={[styles.splitBtnRow, { marginTop: 10, marginBottom: 12 }]}>
                 {/* Reiniciar */}
@@ -581,10 +582,16 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                     />
                   </Svg>
                   <Text style={[styles.playBtnText, { color: listenNowBtnTextColor }]}>
-                    {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
+                    {isPlaceholder ? "Contenido próximamente" : (isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora")}
                   </Text>
                 </View>
               </Pressable>
+
+              {isPlaceholder && (
+                <Text style={{ position: "absolute", left: 0, right: 0, bottom: -22, textAlign: "center", color: "#FBFBFB", fontSize: 12 }}>
+                  Abrí el reproductor para ver la disponibilidad.
+                </Text>
+              )}
 
               <Pressable
                 onPress={handleShare}

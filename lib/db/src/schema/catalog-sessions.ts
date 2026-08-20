@@ -46,6 +46,12 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   isPinnedFeatured: boolean("is_pinned_featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   isPremium: boolean("is_premium").notNull().default(false),
+  /**
+   * Pieza editorial provisional: puede aparecer en el catálogo, pero aún no
+   * tiene audio final y el cliente debe mantener Play deshabilitado.
+   * Nunca se infiere desde la ausencia de un archivo de audio.
+   */
+  isPlaceholder: boolean("is_placeholder").notNull().default(false),
   /** Si es true, el tap en la card lanza el reproductor directo (sin pantalla de descripción). */
   skipDetail: boolean("skip_detail").notNull().default(false),
   /** Si es true, el tap en la card empieza a reproducir directo en el miniplayer (sin abrir descripción ni reproductor). */

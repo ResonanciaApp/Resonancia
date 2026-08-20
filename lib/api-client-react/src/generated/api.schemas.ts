@@ -793,6 +793,7 @@ export interface CatalogSession {
   isFeaturedCategory: boolean;
   isNew: boolean;
   isPremium: boolean;
+  isPlaceholder: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isLoop?: boolean;
@@ -1016,6 +1017,8 @@ export interface CreatorSubmissionInput {
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isLoop?: boolean;
+  /** Permite mostrar la sesión como “próximamente” sin audio final. Play permanece deshabilitado. */
+  isPlaceholder?: boolean;
   /** Solo un admin puede crear directamente como borrador (draft) */
   status?: CreatorSubmissionInputStatus;
   imageObjectPath?: string | null;
@@ -1040,7 +1043,7 @@ export interface CreatorSubmissionInput {
   /** @maxLength 300 */
   playerDescription?: string | null;
   /**
-     * @minItems 1
+     * @minItems 0
      * @maxItems 5
      */
   audioFiles: CreatorSubmissionAudioInput[];
@@ -1161,6 +1164,7 @@ export interface Submission {
   isFeaturedCategory: boolean;
   isNew: boolean;
   isPremium: boolean;
+  isPlaceholder: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isLoop?: boolean;
@@ -1259,6 +1263,7 @@ export interface ReviewEditBody {
   isFeatured?: boolean;
   isFeaturedCategory?: boolean;
   isNew?: boolean;
+  isPlaceholder?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;
   ancestralTag?: string | null;
   meditationTag?: string | null;

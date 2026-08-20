@@ -463,6 +463,10 @@ export default function PlayerScreen() {
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = infiniteLoop ? Infinity : totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
+  const isPlaybackUnavailable = currentSession.isPlaceholder || !hasRealAudio;
+  const playbackUnavailableLabel = currentSession.isPlaceholder
+    ? "Contenido próximamente"
+    : "Audio no disponible";
 
   const bounce = (sv: RNAnimated.Value) => {
     sv.setValue(1);
@@ -673,6 +677,19 @@ export default function PlayerScreen() {
             </Pressable>
           </View>
 
+          {isPlaybackUnavailable && (
+            <View style={{ alignItems: "center", marginBottom: 16 }}>
+              <Text style={{ color: "#F9F9F9", fontSize: 15, fontWeight: "700" }}>
+                {playbackUnavailableLabel}
+              </Text>
+              <Text style={{ color: "rgba(255,255,255,0.72)", fontSize: 13, marginTop: 4, textAlign: "center" }}>
+                {currentSession.isPlaceholder
+                  ? "Esta sesión estará disponible cuando Casa del Cuenco publique el audio final."
+                  : "No es posible reproducir esta sesión en este momento."}
+              </Text>
+            </View>
+          )}
+
           {/* ── Fila de controles ─────────────────────────────────────────── */}
           <View style={styles.controlsRow}>
             {isInPlaylist ? (
@@ -710,8 +727,8 @@ export default function PlayerScreen() {
                 {/* Play / Pause */}
                 <Pressable
                   onPress={handlePlayPause}
-                  disabled={isLoading}
-                  style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
+                  disabled={isLoading || isPlaybackUnavailable}
+                  style={[styles.playBtn, { opacity: isLoading || isPlaybackUnavailable ? 0.45 : 1 }]}
                   hitSlop={4}
                 >
                   {isLoading ? (
@@ -771,8 +788,8 @@ export default function PlayerScreen() {
                 {/* Play / Pause */}
                 <Pressable
                   onPress={handlePlayPause}
-                  disabled={isLoading}
-                  style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
+                  disabled={isLoading || isPlaybackUnavailable}
+                  style={[styles.playBtn, { opacity: isLoading || isPlaybackUnavailable ? 0.45 : 1 }]}
                   hitSlop={4}
                 >
                   {isLoading ? (

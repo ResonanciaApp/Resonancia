@@ -1175,6 +1175,7 @@ export const PushMyMilestonesResponse = zod.object({
 /**
  * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
  */
+export const getCatalogResponseSessionsItemIsPlaceholderDefault = false;
 export const getCatalogResponseSessionsItemSkipDetailDefault = false;
 export const getCatalogResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getCatalogResponseSessionsItemIsLoopDefault = false;
@@ -1211,6 +1212,7 @@ export const GetCatalogResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getCatalogResponseSessionsItemIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getCatalogResponseSessionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getCatalogResponseSessionsItemSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getCatalogResponseSessionsItemIsLoopDefault),
@@ -1272,6 +1274,7 @@ export const GetCatalogResponse = zod.object({
 /**
  * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
  */
+export const getPinnedFeaturedResponseSessionOneIsPlaceholderDefault = false;
 export const getPinnedFeaturedResponseSessionOneSkipDetailDefault = false;
 export const getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault = false;
 export const getPinnedFeaturedResponseSessionOneIsLoopDefault = false;
@@ -1295,6 +1298,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getPinnedFeaturedResponseSessionOneIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getPinnedFeaturedResponseSessionOneIsLoopDefault),
@@ -1429,6 +1433,7 @@ export const GetPopularSessionsQueryParams = zod.object({
   "limit": zod.coerce.number().min(1).max(getPopularSessionsQueryLimitMax).optional()
 })
 
+export const getPopularSessionsResponseSessionsItemIsPlaceholderDefault = false;
 export const getPopularSessionsResponseSessionsItemSkipDetailDefault = false;
 export const getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getPopularSessionsResponseSessionsItemIsLoopDefault = false;
@@ -1452,6 +1457,7 @@ export const GetPopularSessionsResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getPopularSessionsResponseSessionsItemIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getPopularSessionsResponseSessionsItemIsLoopDefault),
@@ -1520,6 +1526,7 @@ export const createSubmissionBodyInstrumentsMax = 12;
 export const createSubmissionBodySkipDetailDefault = false;
 export const createSubmissionBodySkipMiniPlayerDefault = false;
 export const createSubmissionBodyIsLoopDefault = false;
+export const createSubmissionBodyIsPlaceholderDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
 export const createSubmissionBodyPlayerDescriptionMax = 300;
@@ -1532,6 +1539,7 @@ export const createSubmissionBodyAudioFilesItemContentTypeMax = 120;
 
 export const createSubmissionBodyAudioFilesItemDurationSecondsMin = 0;
 
+export const createSubmissionBodyAudioFilesMin = 0;
 export const createSubmissionBodyAudioFilesMax = 5;
 
 
@@ -1549,6 +1557,7 @@ export const CreateSubmissionBody = zod.object({
   "skipDetail": zod.boolean().default(createSubmissionBodySkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(createSubmissionBodySkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(createSubmissionBodyIsLoopDefault),
+  "isPlaceholder": zod.boolean().default(createSubmissionBodyIsPlaceholderDefault).describe('Permite mostrar la sesión como “próximamente” sin audio final. Play permanece deshabilitado.'),
   "status": zod.enum(['draft', 'pending']).optional().describe('Solo un admin puede crear directamente como borrador (draft)'),
   "imageObjectPath": zod.string().nullish(),
   "imageContentType": zod.string().nullish(),
@@ -1576,7 +1585,7 @@ export const CreateSubmissionBody = zod.object({
   "sizeBytes": zod.number().min(1),
   "durationSeconds": zod.number().min(createSubmissionBodyAudioFilesItemDurationSecondsMin).nullish(),
   "isLoop": zod.boolean().optional()
-})).min(1).max(createSubmissionBodyAudioFilesMax)
+})).min(createSubmissionBodyAudioFilesMin).max(createSubmissionBodyAudioFilesMax)
 })
 
 
@@ -1591,6 +1600,7 @@ export const GetPendingSubmissionsQueryParams = zod.object({
   "otherTag": zod.coerce.string().optional().describe('Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag')
 })
 
+export const getPendingSubmissionsResponseSubmissionsItemIsPlaceholderDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemIsLoopDefault = false;
@@ -1614,6 +1624,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemIsLoopDefault),
@@ -1685,6 +1696,7 @@ export const GetSubmissionFilterOptionsResponse = zod.object({
 /**
  * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
  */
+export const getMySubmissionsResponseSubmissionsItemIsPlaceholderDefault = false;
 export const getMySubmissionsResponseSubmissionsItemSkipDetailDefault = false;
 export const getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 export const getMySubmissionsResponseSubmissionsItemIsLoopDefault = false;
@@ -1708,6 +1720,7 @@ export const GetMySubmissionsResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getMySubmissionsResponseSubmissionsItemIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getMySubmissionsResponseSubmissionsItemIsLoopDefault),
@@ -1770,6 +1783,7 @@ export const ApproveSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const approveSubmissionResponseIsPlaceholderDefault = false;
 export const approveSubmissionResponseSkipDetailDefault = false;
 export const approveSubmissionResponseSkipMiniPlayerDefault = false;
 export const approveSubmissionResponseIsLoopDefault = false;
@@ -1792,6 +1806,7 @@ export const ApproveSubmissionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(approveSubmissionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(approveSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(approveSubmissionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(approveSubmissionResponseIsLoopDefault),
@@ -1861,6 +1876,7 @@ export const RejectSubmissionBody = zod.object({
   "reason": zod.string().min(1).max(rejectSubmissionBodyReasonMax)
 })
 
+export const rejectSubmissionResponseIsPlaceholderDefault = false;
 export const rejectSubmissionResponseSkipDetailDefault = false;
 export const rejectSubmissionResponseSkipMiniPlayerDefault = false;
 export const rejectSubmissionResponseIsLoopDefault = false;
@@ -1883,6 +1899,7 @@ export const RejectSubmissionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(rejectSubmissionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(rejectSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(rejectSubmissionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(rejectSubmissionResponseIsLoopDefault),
@@ -1987,6 +2004,7 @@ export const EditSubmissionBody = zod.object({
   "isFeatured": zod.boolean().optional(),
   "isFeaturedCategory": zod.boolean().optional(),
   "isNew": zod.boolean().optional(),
+  "isPlaceholder": zod.boolean().optional(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "ancestralTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -2015,6 +2033,7 @@ export const EditSubmissionBody = zod.object({
   "imageSizeBytes": zod.number().min(1).nullish()
 })
 
+export const editSubmissionResponseIsPlaceholderDefault = false;
 export const editSubmissionResponseSkipDetailDefault = false;
 export const editSubmissionResponseSkipMiniPlayerDefault = false;
 export const editSubmissionResponseIsLoopDefault = false;
@@ -2037,6 +2056,7 @@ export const EditSubmissionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(editSubmissionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(editSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(editSubmissionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(editSubmissionResponseIsLoopDefault),
@@ -2110,6 +2130,7 @@ export const HideSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const hideSubmissionResponseIsPlaceholderDefault = false;
 export const hideSubmissionResponseSkipDetailDefault = false;
 export const hideSubmissionResponseSkipMiniPlayerDefault = false;
 export const hideSubmissionResponseIsLoopDefault = false;
@@ -2132,6 +2153,7 @@ export const HideSubmissionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(hideSubmissionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(hideSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(hideSubmissionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(hideSubmissionResponseIsLoopDefault),
@@ -2193,6 +2215,7 @@ export const UnhideSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const unhideSubmissionResponseIsPlaceholderDefault = false;
 export const unhideSubmissionResponseSkipDetailDefault = false;
 export const unhideSubmissionResponseSkipMiniPlayerDefault = false;
 export const unhideSubmissionResponseIsLoopDefault = false;
@@ -2215,6 +2238,7 @@ export const UnhideSubmissionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(unhideSubmissionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(unhideSubmissionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(unhideSubmissionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(unhideSubmissionResponseIsLoopDefault),
@@ -2284,6 +2308,7 @@ export const GetAdminSessionsQueryParams = zod.object({
   "pageSize": zod.coerce.number().min(1).max(getAdminSessionsQueryPageSizeMax).optional()
 })
 
+export const getAdminSessionsResponseSessionsItemIsPlaceholderDefault = false;
 export const getAdminSessionsResponseSessionsItemSkipDetailDefault = false;
 export const getAdminSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getAdminSessionsResponseSessionsItemIsLoopDefault = false;
@@ -2307,6 +2332,7 @@ export const GetAdminSessionsResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getAdminSessionsResponseSessionsItemIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getAdminSessionsResponseSessionsItemSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getAdminSessionsResponseSessionsItemSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getAdminSessionsResponseSessionsItemIsLoopDefault),
@@ -2372,6 +2398,7 @@ export const GetAdminSessionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const getAdminSessionResponseIsPlaceholderDefault = false;
 export const getAdminSessionResponseSkipDetailDefault = false;
 export const getAdminSessionResponseSkipMiniPlayerDefault = false;
 export const getAdminSessionResponseIsLoopDefault = false;
@@ -2394,6 +2421,7 @@ export const GetAdminSessionResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getAdminSessionResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(getAdminSessionResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(getAdminSessionResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(getAdminSessionResponseIsLoopDefault),
@@ -2474,6 +2502,7 @@ export const AddAdminSessionAudioBody = zod.object({
   "replaceAudioId": zod.number().nullish().describe('Si viene, elimina ese audio y lo sustituye por el nuevo')
 })
 
+export const addAdminSessionAudioResponseIsPlaceholderDefault = false;
 export const addAdminSessionAudioResponseSkipDetailDefault = false;
 export const addAdminSessionAudioResponseSkipMiniPlayerDefault = false;
 export const addAdminSessionAudioResponseIsLoopDefault = false;
@@ -2496,6 +2525,7 @@ export const AddAdminSessionAudioResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(addAdminSessionAudioResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(addAdminSessionAudioResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(addAdminSessionAudioResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(addAdminSessionAudioResponseIsLoopDefault),
@@ -2558,6 +2588,7 @@ export const DeleteAdminSessionAudioParams = zod.object({
   "audioId": zod.coerce.number()
 })
 
+export const deleteAdminSessionAudioResponseIsPlaceholderDefault = false;
 export const deleteAdminSessionAudioResponseSkipDetailDefault = false;
 export const deleteAdminSessionAudioResponseSkipMiniPlayerDefault = false;
 export const deleteAdminSessionAudioResponseIsLoopDefault = false;
@@ -2580,6 +2611,7 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "isFeaturedCategory": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(deleteAdminSessionAudioResponseIsPlaceholderDefault),
   "skipDetail": zod.boolean().default(deleteAdminSessionAudioResponseSkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(deleteAdminSessionAudioResponseSkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(deleteAdminSessionAudioResponseIsLoopDefault),
