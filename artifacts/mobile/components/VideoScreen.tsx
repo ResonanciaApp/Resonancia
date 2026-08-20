@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450", letterSpacing: 0.3 },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3 },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontFamily: "Manrope", fontSize: 11 },

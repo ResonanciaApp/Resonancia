@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   filterLabelIdle: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "450" as TextStyle["fontWeight"],
+    fontWeight: "400",
     letterSpacing: 0.3,
     color: "#F4F4F4",
   },

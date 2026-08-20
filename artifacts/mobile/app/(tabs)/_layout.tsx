@@ -75,7 +75,7 @@ const TAB_CONFIG: Record<
 > = {
   inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
-  musica:     { label: "Mezclador",  mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
+  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
@@ -116,7 +116,7 @@ function TabItem({
     ) : mciName ? (
       <MaterialCommunityIcons name={mciName as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     ) : isIOS ? (
-      <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} renderingMode="monochrome" />
+      <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} />
     ) : (
       <Feather name={conf.featherIcon as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     );

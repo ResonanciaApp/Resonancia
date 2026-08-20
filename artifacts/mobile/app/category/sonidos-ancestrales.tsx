@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
   chipBorderSel: {},
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450", letterSpacing: 0.3, color: TEXT, textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   /* ── Content ── */

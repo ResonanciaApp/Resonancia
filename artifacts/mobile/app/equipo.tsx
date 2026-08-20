@@ -215,8 +215,7 @@ const ResonadorCard = memo(function ResonadorCard({
   const photoSize = cardW - 16;
 
   function handlePress() {
-    if (item.kind === "expansor") router.push(`/expansor-perfil/${d.id}` as never);
-    else router.push(`/resonador-perfil/${d.id}` as never);
+    router.push(`/resonador-perfil/${d.id}` as never);
   }
 
   return (
@@ -233,7 +232,6 @@ const ResonadorCard = memo(function ResonadorCard({
               height: photoSize,
               borderRadius: photoSize / 2,
             },
-            item.kind === "expansor" && { borderWidth: 0 },
           ]}
         >
           <Image
@@ -249,9 +247,7 @@ const ResonadorCard = memo(function ResonadorCard({
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
         <Text style={styles.cardTag} numberOfLines={1}>
-          {item.kind === "resonador"
-            ? item.data.subtipo
-            : item.data.region ?? ""}
+          {item.data.subtipo}
         </Text>
       </View>
     </Pressable>

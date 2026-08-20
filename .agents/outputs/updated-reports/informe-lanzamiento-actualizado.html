@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>RESONANCIA — Informe de estado y preparación de lanzamiento (actualizado)</title>
+<style>
+  @page { size:A4; margin:0; } *{box-sizing:border-box}
+  body{margin:0;color:#172235;font:9.6pt/1.45 Arial,Helvetica,sans-serif;background:#fff}
+  .page{width:595pt;height:842pt;padding:55pt 54pt 44pt;position:relative;overflow:hidden;page-break-after:always}
+  .cover{background:linear-gradient(155deg,#030a16 0%,#081a2e 60%,#11182a 100%);color:#fff;padding:72pt 57pt}
+  .cover:after{content:"";position:absolute;width:310pt;height:310pt;border:1px solid rgba(190,150,80,.32);border-radius:50%;right:-128pt;top:-88pt}
+  .cover .eyebrow{color:#d5b778}.cover h1{color:#fff;margin-top:32pt;font-size:32pt}.cover .sub{font:15pt/1.35 Georgia,serif;color:#e6e9ec;width:340pt}
+  .eyebrow{font-size:7pt;letter-spacing:2.7px;text-transform:uppercase;color:#8a7040;font-weight:bold}
+  h1{font:700 25pt/1.08 Georgia,serif;letter-spacing:-.5pt;margin:10pt 0;color:#081426}
+  h2{font:700 18.5pt/1.12 Georgia,serif;margin:6pt 0 19pt;color:#081426}
+  h3{font-size:7.2pt;letter-spacing:1.7px;text-transform:uppercase;color:#8a7040;margin:15pt 0 6pt}
+  p{margin:0 0 8pt}.rule{width:48pt;height:2pt;background:#bd9650;margin:13pt 0 18pt}
+  .verdict{margin-top:53pt;width:370pt;border:1px solid rgba(255,255,255,.25);padding:16pt;background:rgba(255,255,255,.04)}
+  .verdict b{color:#e5c77e;display:block;text-transform:uppercase;letter-spacing:1.2px;font-size:7pt;margin-bottom:5pt}
+  .label{display:inline-block;padding:3pt 6pt;border-radius:2pt;font-size:6.6pt;letter-spacing:.7px;font-weight:bold;text-transform:uppercase}
+  .green{background:#e4f0e8;color:#21623c}.amber{background:#f8ecd2;color:#8c6314}.red{background:#f5e2e2;color:#983c3b}
+  .callout{background:#f4f0e8;border-left:3px solid #bd9650;padding:12pt 14pt;margin:11pt 0 18pt}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10pt;margin:18pt 0}.metric{border-top:2px solid #bd9650;padding-top:6pt}.metric strong{font:700 18pt Georgia,serif;color:#091528;display:block}.metric span{font-size:6.8pt;text-transform:uppercase;letter-spacing:.7px;color:#66717d}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:11pt}.card{border:1px solid #dde1e4;padding:11pt;min-height:92pt}.card h3{margin-top:0;color:#172235;font-size:8.2pt;letter-spacing:0;text-transform:none}
+  table{width:100%;border-collapse:collapse;table-layout:fixed}th{text-align:left;color:#69737d;text-transform:uppercase;letter-spacing:.8px;font-size:6.4pt;padding:0 6pt 6pt 0;border-bottom:1.5px solid #bec5ca}td{vertical-align:top;padding:8pt 7pt 8pt 0;border-bottom:1px solid #e0e4e6}th:nth-child(1),td:nth-child(1){width:27%}th:nth-child(2),td:nth-child(2){width:13%}td:nth-child(3){width:60%}
+  .num{display:inline-block;font:700 23pt/1 Georgia,serif;color:#bd9650;margin-right:9pt;vertical-align:top}.block{display:grid;grid-template-columns:32pt 1fr;gap:8pt;margin:0 0 17pt}.block h3{margin:0 0 4pt;font-size:9pt;letter-spacing:0;text-transform:none;color:#172235}.two{display:grid;grid-template-columns:1fr 1fr;gap:22pt}.two section{border-top:1px solid #d7dcdf;padding-top:8pt}
+  ul,ol{margin:5pt 0 0 15pt;padding:0}li{margin:0 0 5pt}.foot{position:absolute;bottom:22pt;left:54pt;right:54pt;border-top:1px solid #dfe3e5;padding-top:7pt;display:flex;justify-content:space-between;color:#78818a;font-size:6.7pt}
+</style>
+</head>
+<body>
+<section class="page cover">
+  <div class="eyebrow">Casa del Cuenco · Resonancia</div>
+  <h1>Estado de producto<br>y preparación de<br>lanzamiento</h1>
+  <div class="rule"></div>
+  <p class="sub">Informe ejecutivo actualizado con la evidencia técnica de las tareas 219–222.</p>
+  <div class="verdict"><b>Veredicto ejecutivo actualizado</b>NO-GO para tiendas hoy. La base técnica está lista para una release candidata, pero aún deben cerrarse producción, certificación física, Premium/privacidad y el inventario editorial final.</div>
+  <div style="position:absolute;bottom:54pt;color:#cdd4dc;font-size:8pt">20 de agosto de 2026<br>Documento confidencial · Preparado para revisión empresarial</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">01 · Conclusión</div><h2>Beta avanzada; una brecha crítica<br>pasa de ambigua a controlada</h2>
+  <p style="font:13pt/1.4 Georgia,serif">RESONANCIA ya cuenta con producto nativo, API, administración, autenticación, catálogo, comunidad, reproducción avanzada y sincronización. El ciclo más reciente no cambió el veredicto de envío, pero sí eliminó dos riesgos de hardening que impedían certificar con confianza el catálogo y el cliente móvil.</p>
+  <div class="callout"><b>Actualización clave.</b> Los placeholders ya no son audios finales incompletos: son un estado editorial explícito, visible y no reproducible. El catálogo bloquea cualquier publicación final que no tenga audio principal o base válido; la app móvil vuelve a tener typecheck completamente verde.</div>
+  <div class="metrics"><div class="metric"><strong>59</strong><span>Pruebas API aprobadas</span></div><div class="metric"><strong>0</strong><span>Errores en typecheck mobile</span></div><div class="metric"><strong>63</strong><span>Sesiones publicadas en Development</span></div><div class="metric"><strong>54</strong><span>Placeholders explícitos permitidos</span></div></div>
+  <div class="cards"><div class="card"><h3>Contenido y UX</h3>Sesiones provisionales abren el player y explican “Contenido próximamente”, sin play, simulación de avance ni voz aislada.</div><div class="card"><h3>Arquitectura editorial</h3>Preflight de catálogo, validación transaccional y lista permitida de audio bundleado antes de aprobar o republicar.</div><div class="card"><h3>Calidad móvil</h3>Se restauró la barrera estática después de corregir inferencia de estilos, SDK 54, hooks generados y contratos de UI.</div><div class="card"><h3>Lo que no cambió</h3>La certificación en hardware, producción, cumplimiento y monetización siguen siendo tareas de release.</div></div>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">02 · Semáforo de lanzamiento</div><h2>El producto funciona; la operación<br>todavía debe cerrarse</h2>
+  <table><thead><tr><th>Área</th><th>Estado</th><th>Lectura ejecutiva actualizada</th></tr></thead><tbody>
+    <tr><td>Producto y UX</td><td><span class="label green">Verde</span></td><td>Experiencia amplia, coherente y visualmente madura.</td></tr>
+    <tr><td>Arquitectura y base de datos</td><td><span class="label green">Verde</span></td><td>Responsabilidades separadas y capacidad medida para el lanzamiento inicial.</td></tr>
+    <tr><td>Motor de audio / players</td><td><span class="label amber">Ámbar</span></td><td>Rutas BPM y timer de sueño consolidadas; falta certificar en hardware y finalizar la consolidación del player de sesiones.</td></tr>
+    <tr><td>Catálogo y administración</td><td><span class="label green">Verde</span></td><td>El estado editorial y la disponibilidad de audio se validan antes de publicar; queda ejecutar el mismo control contra Production.</td></tr>
+    <tr><td>Contenido audible final</td><td><span class="label amber">Ámbar</span></td><td>El riesgo de reproducir contenido final inválido queda bloqueado. Aún hay 54 placeholders permitidos que deben curarse o mantenerse claramente provisionales según la decisión editorial.</td></tr>
+    <tr><td>Pruebas mobile</td><td><span class="label amber">Ámbar</span></td><td>Typecheck limpio y bundling saludable; faltan regresiones automatizadas de flujo y certificación física.</td></tr>
+    <tr><td>Premium / suscripciones</td><td><span class="label red">Rojo*</span></td><td>Sin productos, offerings, entitlement y compras sandbox reales no debe formar parte de 1.0.</td></tr>
+    <tr><td>Privacidad y cuenta</td><td><span class="label red">Rojo</span></td><td>Falta eliminación/exportación verificable de datos de cuenta.</td></tr>
+    <tr><td>Builds y distribución</td><td><span class="label amber">Ámbar</span></td><td>Development builds sanos; faltan release firmada, TestFlight / Play Internal y submission.</td></tr>
+  </tbody></table>
+  <p style="font-size:7.5pt;color:#69737d;margin-top:15pt">*Rojo si Premium forma parte de la primera versión pública. Si se posterga, se debe publicar una experiencia Free sin precio ni flujo de compra no operativo.</p>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>3</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">03 · Evidencia técnica</div><h2>La calidad se vuelve medible<br>antes de llegar a tiendas</h2>
+  <div class="two"><section><h3>Capacidad y arquitectura</h3><p>Se conserva la evidencia de capacidad autenticada ya documentada: 100 workers, 6.001 solicitudes, 49,20 solicitudes por segundo y 0% de error en la corrida de Development. No hay evidencia que exija cambiar de base de datos o introducir microservicios antes de release.</p><h3>Publicación de catálogo</h3><p>El servidor valida metadata y audio agregado dentro de transacciones con bloqueo. Las mutaciones de audio y contenido publicado no pueden dejar una sesión final en un estado no reproducible.</p></section><section><h3>Preflight editorial</h3><p>La herramienta <b>catalog:preflight</b> separa placeholders autorizados de referencias rotas o finales sin audio. En Development: 9 sesiones finales con audio válido, 54 placeholders explícitos y 0 placeholders que lancen mini-player.</p><h3>Barrera de cliente</h3><p>La tarea 222 cerró la deuda del typecheck móvil: pesos de fuente incompatibles, tipos de gradiente, iconos, filesystem de Expo, hooks de consulta y datos externos quedan tipados con contratos válidos.</p></section></div>
+  <div class="callout"><b>Interpretación.</b> Esta evidencia reduce el riesgo de una release que “parece” reproducible pero dependa de fallback o contenido ambiguo. No reemplaza una prueba desde instalación limpia contra infraestructura productiva.</div>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>4</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">04 · Bloqueadores P0</div><h2>El contenido ya está protegido;<br>producción debe reconciliarse</h2>
+  <div class="block"><span class="num">1</span><div><h3>Ejecutar el cierre editorial de audio</h3><p>La protección técnica está terminada. El paso pendiente es de catálogo: definir qué 54 sesiones continuarán como “Próximamente”, completar audio y derechos de las que deban ser finales y ejecutar el preflight en el inventario que se publicará.</p><ul><li>Revisar audio principal/base, duración, volumen y derechos.</li><li>Confirmar que ninguna referencia final rota llegue a Production.</li><li>Probar el aviso de disponibilidad y el player desde instalación limpia.</li></ul></div></div>
+  <div class="block"><span class="num">2</span><div><h3>Actualizar y reconciliar Production</h3><p>Development incorpora controles que Production debe recibir deliberadamente: código, esquema, catálogo, Storage, roles y variables deben revisarse juntos, sin transportar datos de prueba.</p><ul><li>Publicar API actual y comprobar health/readiness.</li><li>Ejecutar preflight y reconciliar catálogo y almacenamiento productivos.</li><li>Validar login, biblioteca, mensajes, uploads y Premium contra el entorno publicado.</li></ul></div></div>
+  <div class="block"><span class="num">3</span><div><h3>Decidir y certificar Premium</h3><p>Si Premium entra en 1.0, requiere productos reales, offerings, entitlement, compras sandbox, restauración y expiraciones en iOS y Android. Si se posterga, retirar toda promesa o flujo no operativo.</p></div></div>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>5</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">05 · Bloqueadores P0</div><h2>Cumplimiento de tiendas<br>y certificación real</h2>
+  <div class="block"><span class="num">4</span><div><h3>Eliminar y exportar datos de cuenta</h3><p>Se necesita un proceso verificable que cubra Clerk, PostgreSQL, Object Storage y tokens push, con confirmación, retención documentada y soporte auditable.</p><ul><li>Acción de eliminar cuenta y anonimización idempotente.</li><li>Exportación o solicitud de datos coherente con la política.</li><li>Apple App Privacy y Google Data Safety con información real.</li></ul></div></div>
+  <div class="block"><span class="num">5</span><div><h3>Certificar una release candidata en hardware</h3><p>Los builds internos prueban capacidad de compilación. Siguen faltando builds production firmados, TestFlight/Play Internal y una matriz de dispositivos documentada.</p><ul><li>Instalación limpia, upgrade y recuperación de sesión.</li><li>Audio, cambios de sesión, Bluetooth, llamadas e interrupciones.</li><li>Background, lock screen, temporizador, chat, offline y reinstalación.</li><li>Push y compra/restauración si Premium participa.</li></ul></div></div>
+  <div class="callout"><b>Aspecto favorable.</b> Permisos, modo audio en segundo plano, Apple Sign-In y perfil EAS ya existen. El gap es de certificación y entrega, no de ausencia de base técnica.</div>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>6</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">06 · Confiabilidad operativa</div><h2>Qué debe probarse, aunque<br>el typecheck ya esté en verde</h2>
+  <div class="two"><section><h3>Sincronización multidispositivo</h3><p>Favoritos o progreso eliminados pueden reaparecer si un segundo dispositivo conserva una copia antigua. Hace falta resolución por elemento —tombstones o timestamps— y pruebas de dos dispositivos.</p><h3>Push notifications</h3><p>Falta certificar APNs/FCM, receipts, fallos y recepción en foreground, background y app cerrada.</p></section><section><h3>Alertas, crash reporting y abuso</h3><p>Hay métricas y health checks, pero faltan alertas externas, crash reporting móvil, runbook y límites claros para mensajes y uploads.</p><h3>Pruebas mobile</h3><p>La tarea 222 recupera una barrera estática real. El siguiente nivel es una estrategia de regresión que cubra audio, placeholders, sync, compras y background; typecheck no sustituye esas pruebas.</p></section></div>
+  <div class="callout"><b>No son bloqueadores por sí solos.</b> Refinamientos visuales, nuevas Escenas, filtros, glassmorphism o iconografía pueden seguir después del lanzamiento. No se recomienda reescribir el motor de audio ni cambiar de base de datos antes de release.</div>
+  <div class="foot"><span>RESONANCIA · Estado de lanzamiento — actualización 20 ago 2026</span><span>7</span></div>
+</section>
+
+<section class="page">
+  <div class="eyebrow">07 · Hoja de ruta</div><h2>Plan recomendado a partir<br>del cierre técnico reciente</h2>
+  <div class="cards"><div class="card"><h3>Fase 1 · Hardening de contenido y producción</h3>Ejecutar preflight sobre Production, reconciliar catálogo/Storage/esquema, completar el inventario de audio final y resolver sync multidispositivo.</div><div class="card"><h3>Fase 2 · Release candidate</h3>Variables y credenciales productivas; builds firmados; TestFlight y Play Internal; matriz de QA física; resolver solo P0/P1.</div><div class="card"><h3>Fase 3 · Submission</h3>Alertas y crash reporting; certificación Push; metadata legal; listing y assets de tiendas; rollout gradual.</div><div class="card"><h3>Hito completado</h3>El catálogo no publica finales sin audio válido y el cliente móvil vuelve a compilar con typecheck limpio. Este hito debe mantenerse como gate de CI/release.</div></div>
+  <div class="callout"><b>Conclusión para terceros.</b> RESONANCIA tiene una base de producto y tecnología adecuada para su escala inicial. Los riesgos pendientes están concentrados y abordables; no requieren una nueva fase de construcción desde cero, sino disciplina editorial, producción, cumplimiento y certificación.</div>
+  <div class="foot"><span>CASA DEL CUENCO · Documento confidencial</span><span>8</span></div>
+</section>
+</body></html>

@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetSharedMixes } from "@workspace/api-client-react";
+import { getGetSharedMixesQueryOptions, useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { MIX_CATEGORIES } from "@/data/mix-categories";
@@ -57,7 +57,14 @@ export default function CreatorProfileScreen() {
 
   const { data, isLoading } = useGetSharedMixes(
     Number.isFinite(authorId) ? { author: authorId } : undefined,
-    { query: { refetchOnMount: "always" } },
+    {
+      query: {
+        queryKey: getGetSharedMixesQueryOptions(
+          Number.isFinite(authorId) ? { author: authorId } : undefined,
+        ).queryKey,
+        refetchOnMount: "always",
+      },
+    },
   );
   const mixes = data?.mixes ?? [];
   const author = mixes[0]?.author;

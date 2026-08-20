@@ -11,7 +11,7 @@
 
 import { useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useGetMyStreak } from "@workspace/api-client-react";
+import { getGetMyStreakQueryOptions, useGetMyStreak } from "@workspace/api-client-react";
 import { usePlayer } from "@/context/PlayerContext";
 import {
   computeCurrentStreak,
@@ -36,7 +36,13 @@ export function useStreak(): StreakData {
 
   const serverQuery = useGetMyStreak(
     { tz },
-    { query: { enabled: !!isSignedIn, staleTime: 5 * 60_000 } },
+    {
+      query: {
+        queryKey: getGetMyStreakQueryOptions({ tz }).queryKey,
+        enabled: !!isSignedIn,
+        staleTime: 5 * 60_000,
+      },
+    },
   );
 
   const { statEvents } = usePlayer();

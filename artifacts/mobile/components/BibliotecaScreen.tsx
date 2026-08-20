@@ -482,7 +482,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <LinearGradient colors={gradient as string[]} style={[blStyles.root, { paddingBottom: kbHeight }]}>
+      <LinearGradient colors={gradient as [string, string, ...string[]]} style={[blStyles.root, { paddingBottom: kbHeight }]}>
         {/* Barra */}
         <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
           <View style={blStyles.bar}>
@@ -880,7 +880,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={[StyleSheet.absoluteFill, styles.sheetBackdrop]} onPress={onClose} />
-      <LinearGradient colors={gradient as string[]} style={styles.sheet}>
+      <LinearGradient colors={gradient as [string, string, ...string[]]} style={styles.sheet}>
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
@@ -2098,7 +2098,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   controlRow: {

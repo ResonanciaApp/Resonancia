@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   pillTabLabel: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "450",
+    fontWeight: "400",
     letterSpacing: 0.3,
     color: "#F4F4F4",
   },

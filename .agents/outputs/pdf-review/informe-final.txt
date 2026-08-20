@@ -1,0 +1,342 @@
+CASA DEL CUENCO
+
+
+
+
+RESONANCIA
+Estado de producto
+y preparación de
+lanzamiento
+Informe ejecutivo de arquitectura, confiabilidad,
+operaciones y requisitos críticos previos a App Store y
+Google Play.
+
+
+
+
+    Veredicto ejecutivo
+
+    RESONANCIA es una beta avanzada con arquitectura apta para
+    escalar en su etapa inicial. No requiere reconstrucción tecnológica;
+    requiere un ciclo focalizado de hardening, contenido final y
+    certificación de release.
+
+
+
+
+Agosto 2026                                        Documento confidencial · Preparado para revisión empresarial
+0 1 · C O N C LU S I Ó N
+
+
+Estado actual: beta avanzada / candidata a release
+El producto ya integra app nativa, API, panel administrativo, autenticación,
+catálogo, comunidad, reproducción avanzada, sincronización y una base de
+datos con capacidad medida. La principal brecha no es de arquitectura: es
+de cierre de lanzamiento.
+
+
+
+     Recomendación: NO-GO para enviar hoy a tiendas.
+     GO condicionado tras completar los bloqueadores de contenido, producción, privacidad,
+     monetización y certificación física detallados en este informe.
+
+
+
+
+   100                                 0                                       18,19 ms
+   workers autenticados probados       errores en la corrida autenticada       latencia p95 agregada bajo carga
+   bajo carga                          de lanzamiento                          autenticada
+
+
+
+
+Qué ya está consolidado
+
+
+
+   Producto y experiencia                                    Arquitectura
+   Una experiencia mobile amplia y visualmente               Separación correcta entre app nativa, API,
+   madura: sesiones, mezclador, Descanso,                    PostgreSQL, Object Storage/CDN, video,
+   comunidad, Geometrix, diario, perfiles y                  administración y autenticación.
+   paneles de contenido.
+
+
+
+
+   Audio                                                     Datos y seguridad funcional
+   Player persistente, cambios de sesión                     Clerk, roles administradores, catálogo
+   protegidos, background audio, lock screen,                gestionado, controles de acceso y
+   temporizador y motor gapless especializado                sincronización offline-first con recuperación de
+   para BPM.                                                 nube.
+
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                                2
+02 · SEMÁFORO DE LANZAMIENTO
+
+
+El producto funciona; la operación aún debe
+cerrarse
+ ÁREA                                ESTADO        LECTURA EJECUTIVA
+
+
+ Producto y UX                         VERDE       Producto amplio, coherente y con identidad visual consolidada.
+
+
+
+ Arquitectura y base de datos          VERDE       Separación de responsabilidades correcta y capacidad suficiente para
+                                                   el lanzamiento inicial.
+
+
+ Motor de audio / players              ÁMBAR       Arquitectura avanzada; falta cobertura de contenido y certificación en
+                                                   hardware real.
+
+
+ Streak, actividad y nube              ÁMBAR       La lógica central es sólida; falta resolver conflictos de borrado entre
+                                                   varios dispositivos.
+
+
+ Catálogo y administración             ÁMBAR       El sistema es real; producción está atrasada frente a Development.
+
+
+
+ Premium / suscripciones               ROJO*       Integrado en código, pero no certificado con productos y compras
+                                                   sandbox reales.
+
+
+ Privacidad y cuenta                   ROJO        Hay política y términos; falta eliminación/exportación de datos de
+                                                   usuario.
+
+
+ Builds y distribución                 ÁMBAR       Builds internos iOS/Android exitosos; sin evidencia de release
+                                                   production o submission.
+
+
+ Contenido audible final               ROJO        Persisten audios sintéticos, placeholders y cobertura incompleta
+                                                   demostrable.
+
+
+ Observabilidad y respuesta            ÁMBAR       Existen métricas y health checks; faltan alertas externas y runbook de
+ operativa                                         incidentes.
+
+
+* Rojo si Premium forma parte del lanzamiento 1.0. Si se lanza inicialmente gratis, debe ocultarse toda promesa o flujo de compra
+no operativo.
+
+
+
+
+La inversión principal en producto y arquitectura ya está hecha. El
+trabajo restante es de hardening y certificación, no de reconstrucción.
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                                              3
+03 · EVIDENCIA TÉCNICA
+
+
+Base de datos y capacidad: preparada para el
+lanzamiento inicial
+La arquitectura usa PostgreSQL para relaciones y metadatos, y mantiene los
+medios pesados fuera de la base de datos. Esto evita que audio, imágenes y
+video degraden el rendimiento transaccional.
+
+
+
+  6.001                                                   49,20
+  solicitudes en perfil autenticado de lanzamiento        solicitudes por segundo; mínimo requerido: 47,5
+
+
+
+
+  0%                                                      0
+  tasa de error en la prueba autenticada                  conexiones esperando al finalizar la verificación
+
+
+
+
+La prueba incluyó operaciones sensibles
+
+   Favoritos, progreso, biblioteca, historial y racha.
+   Lectura y envío de mensajes privados.
+   Lectura de conversaciones y marcación de mensajes como leídos.
+   Usuarios temporales exclusivos de Development, con limpieza verificada en Clerk y PostgreSQL.
+
+
+   Conclusión de escala.
+   Para una proyección inicial de miles de usuarios registrados, no hay evidencia que justifique cambiar
+   de base de datos, introducir microservicios, añadir caché preventiva ni agregar índices sin un cuello
+   de botella medido.
+
+
+
+Qué sí debe hacerse en producción
+
+El deployment público actual está activo, pero no corresponde completamente al código actual: el endpoint
+de readiness no está disponible y el catálogo productivo tiene menos sesiones que Development. Debe
+publicarse una versión actualizada, revisar el diff de esquema y reconciliar catálogo y almacenamiento
+antes de la release candidata.
+
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                            4
+0 4 · B LO Q U E A D O R E S P 0
+
+
+Contenido y producción deben cerrarse antes de
+distribución pública
+     1     Auditar y completar el contenido de audio real
+
+    Existen sesiones y sonidos visibles sin una cobertura audible final demostrada. Parte de Descanso
+    usa audios sintéticos explícitamente marcados como prueba; parte del mezclador queda como
+    “Próximamente”; y el player puede simular avance cuando no encuentra audio real.
+
+         Inventario de todo contenido visible.
+         Audio principal, voz, loop, duración, volumen y derechos revisados.
+         Ocultar cualquier elemento incompleto del catálogo de lanzamiento.
+         Probar desde una instalación limpia contra producción.
+
+
+
+
+     2     Actualizar y reconciliar producción
+
+    La versión publicada debe ponerse al día antes de pruebas externas. La reconciliación debe ser
+    deliberada: código, esquema, catálogo, Storage, roles y variables productivas deben validarse juntos,
+    sin migrar datos de prueba.
+
+         Publicar API actual y verificar health/readiness.
+         Revisar el diff Development → Production mediante el flujo soportado.
+         Validar login, catálogo, favoritos, mensajes, uploads y Premium en entorno publicado.
+
+
+
+
+     3     Decidir y certificar Premium
+
+    Si Premium entra en 1.0, se requieren productos reales, offerings, entitlement, compras sandbox,
+    restauración y manejo de expiraciones en iOS y Android. Si se posterga, se debe lanzar una
+    experiencia Free sin paywalls o precios no operativos.
+
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                          5
+0 5 · B LO Q U E A D O R E S P 0
+
+
+Cumplimiento de tiendas y certificación real
+     4     Eliminar y exportar datos de cuenta
+
+    La app ya permite crear cuentas y cuenta con política de privacidad, pero no existe un proceso
+    verificable de eliminación/exportación que cubra Clerk, PostgreSQL, Object Storage y tokens push.
+
+         Acción de “Eliminar mi cuenta” dentro de la app, con confirmación apropiada.
+         Eliminación/anominización idempotente, retención documentada y soporte auditable.
+         Flujo de exportación o solicitud de datos coherente con la política.
+         Apple App Privacy y Google Data Safety completados con datos reales.
+
+
+
+
+     5     Certificar una release candidata en hardware
+
+    Hay builds internos terminados de iOS y Android, lo que prueba capacidad de compilación nativa.
+    Aún faltan builds production firmados, TestFlight/Google Play Internal Testing y una matriz formal de
+    dispositivos.
+
+         Instalación limpia, actualización y recuperación de sesión.
+         Apple/Google sign-in, audio, cambios de sesión, Bluetooth, llamadas e interrupciones.
+         Background, lock screen, temporizador, chat, grabación, offline y reinstalación.
+         Push, compra/restauración de Premium y flujos de revisión de tiendas.
+
+
+
+
+   Aspecto favorable.
+   La configuración ya declara identificadores iOS/Android, permisos relevantes, modo background
+   audio, Apple Sign-In y un perfil EAS de producción. El gap es de certificación y entrega, no de
+   ausencia de base técnica.
+
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                          6
+0 6 · C O N F I A B I L I D A D O P E R AT I VA
+
+
+Riesgos que deben controlarse antes del
+lanzamiento público
+
+    Sincronización multidispositivo                      Alertas, crash reporting y abuso
+
+    La sincronización offline-first funciona para un     Existen métricas, health checks y pruebas de
+    dispositivo, reinstalación y recuperación. Sin       carga, pero no hay evidencia de alertas
+    embargo, un favorito o progreso eliminado en         externas, crash reporting móvil, runbook
+    un equipo puede reaparecer si otro equipo            operativo o límites claros de abuso para
+    sincroniza una copia antigua después.                mensajes y uploads.
+    Acción: agregar resolución de conflictos por         Acción: instrumentar alertas, monitoreo de
+    elemento —tombstones o timestamps— y                 errores/latencia, respuesta a incidentes y rate
+    pruebas automatizadas de dos dispositivos.           limits razonables.
+
+
+
+
+   Push notifications                                    Pruebas mobile
+
+   La app registra tokens, navega al tocar               La cobertura automatizada visible se
+   notificaciones y el servidor envía por Expo.          concentra en API. Debe sumarse una
+   Falta certificar APNs/FCM, receipts, fallos y         estrategia mínima de regresión para
+   recepción real en foreground, background y            sincronización y una checklist manual
+   app cerrada.                                          bloqueante para audio, compras y
+                                                         background.
+
+
+
+No son bloqueadores de salida
+
+
+   Animaciones, refinamientos visuales, variaciones de Escenas, nuevos filtros, glassmorphism, cambios
+   menores de iconos y mejoras cosméticas pueden continuar después del lanzamiento. Tampoco se
+   recomienda cambiar de base de datos ni reescribir el motor de audio antes de release.
+
+
+
+
+RESONANCIA · Estado de lanzamiento                                                                         7
+0 7 · H O J A D E R U TA
+
+
+Plan de lanzamiento recomendado
+
+Fase 1                                     Fase 2                           Fase 3
+Hardening                                  Release candidate                Submission
+
+   Completar contenido real.                 Variables y credenciales         Alertas y crash reporting.
+   Actualizar producción.                    productivas.                     Certificar Push.
+   Resolver sync multidispositivo.           Builds firmados iOS/Android.     Completar metadata legal.
+   Implementar                               TestFlight y Play Internal.      Listing y assets de tiendas.
+   eliminación/exportación.                  Matriz de QA física.             Rollout gradual.
+   Definir Premium 1.0.                      Corregir P0/P1 solamente.
+
+
+
+
+Una vez cerrados estos frentes, RESONANCIA estará en condiciones
+razonables de ingresar a TestFlight, Google Play Internal Testing y
+posteriormente a revisión pública.
+
+
+Conclusión para terceros
+
+RESONANCIA cuenta con una base de producto y tecnología adecuada para su escala inicial. Los riesgos
+pendientes están concentrados y son abordables: no requieren una nueva fase de construcción desde cero,
+sino una fase disciplinada de contenido final, cumplimiento, producción y certificación.
+
+
+
+
+CASA DEL CUENCO · Documento confidencial                                                                     8
+

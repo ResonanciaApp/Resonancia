@@ -1,0 +1,250 @@
+S O U N D S A N C T U A RY · R E S O N A N C I A
+
+
+Respuesta a la Auditoría Técnica
+Contraste entre los hallazgos del informe de Sparkpath Digital (Milestone 1) y el trabajo realizado
+
+
+PREPARADO POR                             EN RESPUESTA A                                      FECHA
+casadelcuenco · RESONANCIA                Technical Audit Report — Sparkpath Digital          18 de agosto de 2026
+
+
+
+
+RESUMEN EJECUTIVO
+
+
+De los 15 hallazgos del informe de auditoría, los 3 críticos están resueltos, junto
+con la mayoría de los de severidad alta. Cada resolución fue verificada directamente
+contra el código actual, no contra intención de trabajo. Quedan tres frentes acotados
+y ya identificados como próximos pasos.
+
+
+
+          3/3                              10                              2                          3
+         CRÍTICOS                       HALLAZGOS                  PA RC I A L M E N T E          PENDIENTES
+        R E S U E LT O S                R E S U E LT O S             R E S U E LT O S
+
+
+
+
+1 · SUBSISTEMA DE AUDIO
+
+
+ HALLAZGO DE LA AUDITORÍA                    SEVERIDAD     E S TA D O       QUÉ SE HIZO
+
+
+ Motor gapless existente                       CR ÍTI CO   RESUELTO         El fallback de reloj JS fue eliminado
+ conviviendo con un fallback                                                por completo. bpmAudioEngine es hoy
+ de timers JS propenso a                                                    la única ruta para loops BPM: la
+ deriva                                                                     inicialización se garantiza (con
+                                                                            deduplicación) antes del primer tap,
+                                                                            eliminando la carrera de arranque en
+                                                                            frío. Se borró todo el código del
+                                                                            scheduler paralelo.
+
+
+ Crossfade artesanal                           CR ÍTI CO   PARCIAL          El mezclador quedó consolidado sobre
+ duplicado en mezclador y                                                   el motor gapless (loop sin costura, sin
+ reproductor de sesiones                                                    timers de deriva). El reproductor de
+                                                                            sesiones aún conserva su crossfade de
+                                                                            dos capas propio; su migración al
+                                                               motor es el siguiente paso de
+                                                               consolidación de audio.
+
+
+ Cambio de sesión como                 A LTO      PARCIAL      Las guardas fueron reforzadas y
+ carrera suprimida por                                         sistematizadas (pausa de la pista
+ guardas, no resuelta                                          anterior, bloqueo de eventos
+                                                               cruzados); no se observan fugas de
+                                                               posición entre sesiones en uso real. El
+                                                               rediseño determinista completo queda
+                                                               ligado a la migración del reproductor
+                                                               al motor.
+
+
+ El timer de sueño puede no            A LTO      RESUELTO     Aplicación unificada y a prueba de
+ detener el audio con la                                       segundo plano en ambos
+ pantalla bloqueada                                            reproductores (mezclador y sesiones):
+                                                               marca de tiempo absoluta +
+                                                               verificación dentro del listener nativo
+                                                               de reproducción (que sigue corriendo
+                                                               con pantalla bloqueada) +
+                                                               recuperación al volver la app al
+                                                               frente. El intervalo JS quedó solo
+                                                               como actualización visual.
+
+
+
+
+2 · D AT O S Y S I N C R O N I Z A C I Ó N
+
+
+ HALLAZGO DE LA AUDITORÍA             SEVERIDAD   E S TA D O   QUÉ SE HIZO
+
+
+ Tablas sociales sub-indexadas         A LTO      RESUELTO     Se añadieron 15 índices a las tablas
+ para sus patrones reales de                                   sociales: feed (visibilidad + fecha),
+ consulta                                                      ranking por likes, autor, comentarios
+                                                               por mezcla y por autor, likes por
+                                                               usuario y mensajes por fecha, más el
+                                                               par simétrico para consultas
+                                                               bidireccionales de amistades
+                                                               (solicitante y destinatario con estado)
+                                                               y mensajes directos (par inverso del
+                                                               hilo de conversación). Aplicados en
+                                                               base de datos.
+
+
+ El contador desnormalizado            M ED IO    RESUELTO     Like/unlike corre en una transacción
+ de likes puede divergir de la                                 con bloqueo de fila (FOR UPDATE) y
+ verdad                                                        el contador se recalcula desde las
+                                                               filas reales dentro de esa misma
+                                                               transacción — no puede divergir.
+                                                               Restricción de unicidad garantiza un
+                                                               like por usuario.
+Contenido creado por el          M ED IO     RESUELTO     Todo el contenido creado por el
+usuario vive solo en                                      usuario se respalda ahora en el
+almacenamiento local                                      servidor: carpetas, playlists y carpetas
+                                                          de favoritos (snapshot con GET/PUT
+                                                          dedicados y sincronización automática
+                                                          con debounce), y se sumaron los
+                                                          presets del mezclador y las
+                                                          creaciones de Geometrix al mismo
+                                                          snapshot, con actualización parcial
+                                                          por campo (cada módulo sincroniza lo
+                                                          suyo sin pisar al resto) y recuperación
+                                                          por unión en la primera sincronización
+                                                          de cada dispositivo.
+
+
+Integraciones de terceros        M ED IO     RESUELTO     El webhook de reservas (Cal.com)
+requieren un pase de                                      verifica firma HMAC-SHA256 sobre el
+seguridad                                                 cuerpo crudo con comparación de
+                                                          tiempo constante, rechaza peticiones
+                                                          sin firma válida, y es idempotente por
+                                                          identificador de evento (upsert). La
+                                                          moderación pasó de un flag oculto a
+                                                          un panel dedicado con roles (admin /
+                                                          moderador) y flujo de ocultar/eliminar.
+
+
+
+
+3 · SISTEMA DE RACHAS
+
+
+HALLAZGO DE LA AUDITORÍA        SEVERIDAD    E S TA D O   QUÉ SE HIZO
+
+
+La racha mostrada a todos        CR ÍTI CO   RESUELTO     Los overrides de depuración fueron
+los usuarios era un valor de                              eliminados. Cada usuario ve su racha
+prueba fijo                                               real, calculada desde su actividad.
+
+
+La animación de fuego            A LTO       RESUELTO     Implementada: el fuego reposa
+descrita no existía en Inicio                             atenuado y se enciende con animación
+                                                          al cumplir la meta diaria, con
+                                                          compuerta de una vez por día, más un
+                                                          flujo de celebración de día de racha e
+                                                          hitos. La regla que enciende el fuego
+                                                          es la misma que cuenta la racha
+                                                          (fuente única), evitando la divergencia
+                                                          que advertía la auditoría.
+
+
+La lógica de racha vivía         A LTO       RESUELTO     Cálculo extraído a un módulo
+dentro de una pantalla                                    compartido único que consumen todas
+monolítica; otras superficies                             las superficies vía un hook unificado, y
+                                                          elevado además al servidor: existe un
+podían calcular versiones                              endpoint autoritativo de racha (con
+propias                                                zona horaria del usuario) con fallback
+                                                       local. Ninguna pantalla calcula su
+                                                       propia versión.
+
+
+
+
+4 · GEOMETRIX, BUILD Y ARQUITECTURA GENERAL
+
+
+HALLAZGO DE LA AUDITORÍA      SEVERIDAD   E S TA D O    QUÉ SE HIZO
+
+
+Lag de Geometrix:              A LTO      RESUELTO      Exactamente la línea que
+animaciones corriendo fuera                             recomendaba la auditoría: todas las
+de pantalla                                             animaciones se pausan/cancelan al
+                                                        perder foco la pestaña, el carrusel
+                                                        solo monta la categoría activa (evita
+                                                        decenas de tiles animados), los
+                                                        gestos de alta frecuencia corren
+                                                        íntegros en el hilo de UI, y el
+                                                        componente pesado quedó
+                                                        memoizado. El lag global reportado
+                                                        desapareció sin necesidad de migrar
+                                                        a Skia.
+
+
+Pantallas de apariencia        A LTO      PENDIENTE     La pantalla de actividades
+terminada respaldadas por                               presenciales sigue alimentada por un
+datos placeholder                                       arreglo fijo. Antes del envío a tiendas
+                                                        se conectará a datos reales o se
+                                                        retirará del release, según lo
+                                                        recomendado.
+
+
+Pipeline de build correcto     M ED IO    PENDIENTE     Los perfiles de build siguen sanos y
+pero envío a tiendas sin                                se generan builds de desarrollo con
+configurar                                              normalidad. Credenciales de envío
+                                                        (iOS/Android) siguen pendientes de
+                                                        configurar; corresponde a la fase de
+                                                        submission.
+
+
+Patrones de mantenibilidad:    M ED IO    PARCIAL       Eliminados los archivos .bak y las
+archivos muertos, fuente                                versiones abandonadas de pantallas;
+ausente, pantallas                                      la fuente referenciada (Manrope)
+monolíticas                                             quedó instalada y aplicada
+                                                        globalmente. La descomposición de
+                                                        las pantallas más grandes continúa
+                                                        de forma incremental (la extracción
+                                                        de racha y del carrusel de Geometrix
+                                                        son ejemplos ya hechos).
+REFUERZOS ADICIONALES (FUERA DEL INFORME ORIGINAL)
+
+
+Trabajo de endurecimiento realizado en el mismo período, alineado con el espíritu de la
+auditoría:
+
+   1. Likes de mensajes de comunidad: autenticación obligatoria + idempotencia por usuario
+      (un like por usuario por mensaje, con bloqueo de fila).
+
+   2. Paginación en catálogo, seguidores, seguidos y amigos, con límites defensivos.
+
+   3. Caché de likes coherente en la app: el corazón y el contador se ven iguales en detalle,
+      carruseles y listas filtradas.
+
+   4. Panel de administración: 47 rutas auditadas (todas con autenticación y rol), validación de
+      entradas ampliada con esquemas en las rutas de videos, etiquetas, secciones y moderación
+      de mezclas.
+
+   5. Verificación de tipos del servidor en verde: corregido el error que mantenía roja la
+      barrera de typecheck, restaurando la red de seguridad para cambios futuros.
+
+
+
+P R Ó X I M O S PA S O S P R O P U E S T O S
+
+
+   1. Consolidación final de audio — migrar el crossfade del reproductor de sesiones al motor
+      gapless (cierra los dos hallazgos parciales de audio a la vez).
+
+   2. Actividades presenciales — conectar a datos reales o retirar del release inicial.
+
+   3. Configuración de submission — credenciales de App Store / Play Store para el envío.
+
+
+
+
+RESONANCIA · Respuesta a la Auditoría Técnica — Milestone 1                               Agosto 2026
+

@@ -67,29 +67,30 @@ const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// ── Inyectar Manrope como font por defecto en TODOS los estilos de la app ──
-// Expo Router carga las pantallas de forma lazy → este patch queda activo
-// antes de que cualquier screen llame a StyleSheet.create.
-// Nota: NO pisa la fuente de los íconos (@expo/vector-icons pone su
-// fontFamily DESPUÉS del estilo del usuario); el tofu de agosto 2026 era por
-// assets descargados vía http (ver lib/fix-http-assets.ts).
-{
-  const _orig = StyleSheet.create.bind(StyleSheet);
-  // @ts-ignore
-  StyleSheet.create = function (styles: Parameters<typeof _orig>[0]) {
-    const out: Record<string, unknown> = {};
-    for (const key in styles as Record<string, unknown>) {
-      const s = (styles as Record<string, unknown>)[key];
-      if (s && typeof s === "object" && !Array.isArray(s)) {
-        const so = s as Record<string, unknown>;
-        out[key] = so["fontFamily"] ? so : { fontFamily: "Manrope", ...so };
-      } else {
-        out[key] = s;
-      }
-    }
-    return _orig(out as Parameters<typeof _orig>[0]);
-  };
+// ── Manrope por defecto sin alterar StyleSheet.create ───────────────────────
+// Alterar StyleSheet.create elimina la inferencia específica de cada estilo
+// (TextStyle/ViewStyle/ImageStyle) y rompe tanto el typecheck como los íconos.
+// El estilo base va primero para que cualquier fuente explícita lo sobrescriba.
+type FontPatchedComponent = {
+  render?: (props: { style?: unknown; [key: string]: unknown }, ref: unknown) => unknown;
+  __manropePatched?: boolean;
+};
+
+function applyDefaultFont(component: unknown) {
+  const target = component as FontPatchedComponent;
+  if (!target.render || target.__manropePatched) return;
+
+  const originalRender = target.render;
+  target.render = (props, ref) =>
+    originalRender(
+      { ...props, style: [{ fontFamily: "Manrope" }, props.style] },
+      ref,
+    );
+  target.__manropePatched = true;
 }
+
+applyDefaultFont(Text);
+applyDefaultFont(TextInput);
 
 // Defaults globales (auditoría): datos frescos por 60 s antes de refetch,
 // reintentos acotados, y sondeos pausados cuando la app está en background

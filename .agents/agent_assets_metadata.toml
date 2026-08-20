@@ -2517,3 +2517,17 @@ uri = "file://.agents/outputs/dossier-tecnico-arquitectura-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Dossier técnico de arquitectura"
 description = "Informe técnico integral de 17 páginas para Casa del Cuenco: arquitectura mobile, audio, API, PostgreSQL, seguridad, sincronización, administración, integraciones, distribución, capacidad, riesgos y glosario."
+
+[[outputs]]
+id = "ot0jTUsKzXIzDdJQe144G"
+uri = "file://.agents/outputs/updated-reports/Respuesta_a_la_Auditoria_Tecnica_Actualizada.pdf"
+type = "pdf"
+title = "Respuesta a la Auditoría Técnica — actualizada"
+description = "Informe de 5 páginas actualizado con el cierre editorial de audio, preflight y barrera de calidad móvil."
+
+[[outputs]]
+id = "DPBq51wXE-KzoA7gp1WG3"
+uri = "file://.agents/outputs/updated-reports/Informe_de_Lanzamiento_Actualizado.pdf"
+type = "pdf"
+title = "Estado de lanzamiento — actualizado"
+description = "Informe ejecutivo de 8 páginas con semáforo y hoja de ruta revisados tras las tareas 219–222."

@@ -81,7 +81,7 @@ export default function AncestralInfoScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 + bottomPad }}>
         {/* ── Banner ── */}
         <View style={styles.banner}>
-          <Image source={item.image} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+          <Image source={item.image as number} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient
             colors={["transparent", "rgba(22,1,8,0.50)", "#16040A"]}
             locations={[0.40, 0.75, 1]}

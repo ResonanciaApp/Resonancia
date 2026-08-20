@@ -141,7 +141,7 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
 
   const onAuthorPress = () => {
     if (!mix) return;
-    router.push(`/mezcla-creador/${mix.author.userId}` as never);
+    router.push(`/mezcla-creador/${mix.author.id}` as never);
   };
 
   const handleShare = useCallback(async () => {
@@ -405,8 +405,8 @@ export default function CommunityMixScreen({ id: idProp }: { id?: string } = {})
           ) : (
             comments.map((c) => (
               <View key={c.id} style={styles.commentRow}>
-                <View style={[styles.avatar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.avatarTxt, { color: colors.accent }]}>
+                <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }}>
+                  <Text style={{ fontFamily: "Manrope", fontSize: 12, fontWeight: "700", color: colors.accent }}>
                     {c.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·"}
                   </Text>
                 </View>

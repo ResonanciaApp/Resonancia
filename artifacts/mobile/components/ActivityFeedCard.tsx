@@ -32,10 +32,10 @@ function plainActionText(event: CommunityFeedEvent): string {
 
 function sessionThumbnail(
   sessionId?: string,
-): ReturnType<typeof require> | null {
+): number | null {
   if (!sessionId) return null;
   const session = SESSIONS.find((s) => s.id === sessionId);
-  return session?.image ?? null;
+  return (session?.image as number | undefined) ?? null;
 }
 
 // ── Live dot ───────────────────────────────────────────────────────────────
@@ -63,12 +63,14 @@ interface Props {
   event: CommunityFeedEvent;
 }
 
-function ActionText({ event }: { event: CommunityFeedEvent }) {
+function ActionText({ event }: { event: CommunityFeedEvent }): React.JSX.Element {
   const { eventType, payload } = event;
 
   if (eventType === "session_play") {
-    const sessionName = payload.sessionName ?? "una sesión";
-    const artistName = payload.artistName;
+    const sessionName =
+      typeof payload.sessionName === "string" ? payload.sessionName : "una sesión";
+    const artistName =
+      typeof payload.artistName === "string" ? payload.artistName : null;
     return (
       <Text style={styles.action} numberOfLines={2}>
         <Text style={styles.actionMuted}>{"está escuchando la sesión "}</Text>
@@ -94,11 +96,15 @@ export function ActivityFeedCard({ event }: Props) {
   const overlay = useCategoryOverlayOptional();
   const { playSession } = usePlayer();
   const { isPremium } = usePremium();
-  const { user, isLive } = event;
+  const { user } = event;
+  const isLive = event.isLive === true;
   const thumb = sessionThumbnail(event.payload.sessionId);
-  const nameLine = user.location
-    ? `${user.displayName} en ${user.location}`
-    : user.displayName;
+  const displayName =
+    typeof user.displayName === "string" && user.displayName.trim()
+      ? user.displayName
+      : "Alguien";
+  const location = typeof user.location === "string" ? user.location : null;
+  const nameLine = location ? `${displayName} en ${location}` : displayName;
 
   return (
     <View style={styles.card}>

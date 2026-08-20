@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "rgba(255,255,255,0.4)",
   },
-  tabText: { fontFamily: "Manrope", color: "#F4F4F4", fontSize: 11, fontWeight: "380" },
+  tabText: { fontFamily: "Manrope", color: "#F4F4F4", fontSize: 11, fontWeight: "400" },
   tabTextActive: { color: "#2D0D3A", fontWeight: "500" },
 
   // Session rows

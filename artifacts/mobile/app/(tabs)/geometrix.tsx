@@ -6691,7 +6691,7 @@ const styles = StyleSheet.create({
   catChipText: {
     fontFamily: "Manrope",
     fontSize: 11,
-    fontWeight: "450",
+    fontWeight: "400",
     color: "#F4F4F4",
     letterSpacing: 0.3,
   },

@@ -48,7 +48,7 @@ type SceneThemeCtx = {
    * Colores del overlay de transición (colores NUEVOS durante el fade-in).
    * null = no hay transición en curso.
    */
-  overlayColors: readonly [string, string] | null;
+  overlayColors: readonly [string, string, ...string[]] | null;
   /** Opacidad animada del overlay (0 → 1 durante la transición). */
   overlayOpacity: Animated.Value;
   /**
@@ -82,7 +82,7 @@ export function SceneThemeProvider({
 }) {
   const [activeSceneId, setActiveSceneId] = useState<SceneId>(initialSceneId ?? DEFAULT_THEME_ID);
   // Colores del NUEVO tema que se está revelando (overlay fade-in)
-  const [overlayColors, setOverlayColors] = useState<readonly [string, string] | null>(null);
+  const [overlayColors, setOverlayColors] = useState<readonly [string, string, ...string[]] | null>(null);
   // Stable ref — never re-created, mutated in place by Animated
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   // ID pendiente de aplicar (se aplica al terminar el fade, no antes)
@@ -188,7 +188,7 @@ export function SceneThemeTransitionOverlay() {
       pointerEvents="none"
     >
       <LinearGradient
-        colors={[...overlayColors] as [string, string]}
+        colors={[...overlayColors] as [string, string, ...string[]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}

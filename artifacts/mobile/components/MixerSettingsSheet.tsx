@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: "Manrope",
     fontSize: 14,
-    fontWeight: "450" as any,
+    fontWeight: "400",
     letterSpacing: 0.3,
   },
   clearBtn: {

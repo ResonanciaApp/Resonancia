@@ -170,6 +170,7 @@ function BlinkingCursor({ color }: { color: string }) {
 function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; label: string; icon?: number; iconSel?: number; onPress: () => void }) {
   const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
   const { activeSceneId: chipSceneId } = useSceneTheme();
+  const colors = useColors();
   useEffect(() => {
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
@@ -390,6 +391,7 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [immersive, setImmersive] = useState(false);
+  const { requestHide, showMenu } = useTabBarVisibility();
   const immersiveRef = useRef(false);
   const immersiveAnim = useRef(new Animated.Value(0)).current;
   const contentOpacity = immersiveAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
@@ -454,8 +456,6 @@ export default function HomeScreen2() {
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
   const { setSelectedScene, bgScene, setBgScene } = useSelectedScene();
-  const { requestHide, showMenu } = useTabBarVisibility();
-
   // Escena activa en el header (persistida entre sesiones)
   const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
   const [headerSceneId, setHeaderSceneId] = useState<number | null>(null);

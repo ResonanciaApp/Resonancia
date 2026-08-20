@@ -26,11 +26,11 @@ const MUTED = "rgba(250,240,238,0.55)";
 const BG: [string, string] = ["#340D1A", "#190913"];
 const H_PAD = 18;
 
-const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");
-const EXPANSOR_IMG  = require("@/assets/images/banner-expansor.png");
+const RESONADOR_IMG = require("@/assets/images/banner-resonador.png") as number;
+const EXPANSOR_IMG  = require("@/assets/images/banner-expansor.png") as number;
 
 type RoleData = {
-  banner: ReturnType<typeof require>;
+  banner: number;
   titulo: string;
   bajada: string;
   beneficios: { icon: keyof typeof Feather.glyphMap; texto: string }[];

@@ -4,7 +4,7 @@
  * expo-image-manipulator para evitar "Cannot find native module".
  */
 import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { useEffect, useRef, useState } from "react";
 import pako from "pako";
 
@@ -18,11 +18,11 @@ function paethPredictor(a: number, b: number, c: number): number {
 }
 
 function reconstructRow(
-  filtered: Uint8Array,
-  prev: Uint8Array,
+  filtered: Uint8Array<ArrayBufferLike>,
+  prev: Uint8Array<ArrayBufferLike>,
   filter: number,
   bpp: number
-): Uint8Array {
+): Uint8Array<ArrayBufferLike> {
   const n = filtered.length;
   const out = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
@@ -98,7 +98,7 @@ function parsePNGAvgColor(b64: string): [number, number, number] | null {
     // Reconstruct rows, sampling every STEP-th row/column
     const rowBytes = imgWidth * channels;
     let rSum = 0, gSum = 0, bSum = 0, count = 0;
-    let prevRow = new Uint8Array(rowBytes);
+    let prevRow: Uint8Array<ArrayBufferLike> = new Uint8Array(rowBytes);
 
     for (let row = 0; row < imgHeight; row++) {
       const start = row * (1 + rowBytes);

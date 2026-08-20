@@ -1078,7 +1078,7 @@ const styles = StyleSheet.create({
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 11,
-    fontWeight: "450",
+    fontWeight: "400",
     letterSpacing: 0.3,
     color: "#F4F4F4",
   },
