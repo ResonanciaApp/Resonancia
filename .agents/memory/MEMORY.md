@@ -146,3 +146,4 @@
 - [Celebración día de racha](streak-day-celebration.md) — disparo por lastLocalStat (nunca diff de statEvents: hidratación/nube dan falsos positivos); hold de hitos mientras el flujo está abierto
 - [Resonador self-edit endpoints](resonador-self-edit.md) — GET/PATCH /me/resonador-profile busca por clerkId; whitelist explícita de campos editables; mobile usa useClerkAuth().getToken
 - [Resonador gallery URL resolution](resonador-gallery-urls.md) — photos[] en ApiResonador son objectPaths crudos; deben pasar por resolveResonadorUrl igual que photoUrl/coverPhotoUrl; DB foto tiene prioridad sobre asset bundleado
+- [Authenticated capacity fixture safety](authenticated-capacity-fixture-safety.md) — pruebas de carga con escrituras usan identidades efímeras de Development, preparación secuencial y limpieza verificable; nunca apuntarlas a producción

@@ -67,6 +67,34 @@ Con autenticación, la mezcla incluye favoritos, progreso, biblioteca, actividad
 conversaciones. Sin autenticación cubre catálogo, popularidad, mezclas, comunidad,
 mensajes públicos y readiness.
 
+### Perfil autenticado aislado
+
+Este comando crea dos usuarios temporales únicamente en Clerk Development, siembra
+datos representativos, ejecuta la carga autenticada y elimina ambos usuarios de
+Clerk y PostgreSQL en un bloque `finally`:
+
+```bash
+CAPACITY_PROFILE=smoke \
+CAPACITY_REPORT_PATH="/tmp/resonancia-capacity-auth-smoke.json" \
+pnpm --filter @workspace/api-server capacity:auth
+```
+
+Para la validación completa:
+
+```bash
+CAPACITY_PROFILE=launch \
+CAPACITY_REPORT_PATH="/tmp/resonancia-capacity-auth-launch.json" \
+pnpm --filter @workspace/api-server capacity:auth
+```
+
+El fixture incluye por usuario hasta 60 favoritos/progresos, 40 carpetas y
+playlists, 300 eventos de reproducción y una conversación inicial de 200 mensajes.
+El perfil mide lecturas y escrituras de favoritos, progreso, biblioteca y mensajes
+privados. Se niega a ejecutarse con claves Clerk de Production, `NODE_ENV=production`
+o contra un host que no sea local. También exige
+`CAPACITY_DATABASE_ENV=development`, configurada únicamente en el entorno
+Development del proyecto.
+
 Todos los límites pueden sobrescribirse:
 
 - `CAPACITY_CONCURRENCY`
@@ -159,13 +187,45 @@ temporales.
 ### Alcance de esta conclusión
 
 El baseline cumple holgadamente la meta pública definida, pero la base de desarrollo
-es pequeña (aprox. 13 MB) y no representa todavía el volumen de lanzamiento. No se
-ejecutó carga autenticada porque no había una cuenta descartable de staging; el
-runner la deja preparada, pero no usa cuentas reales automáticamente. Por lo tanto:
+es pequeña (aprox. 13 MB) y no representa todavía el volumen de lanzamiento. Por lo
+tanto:
 
 - no hay evidencia para añadir caché, cursores o más índices ahora;
 - el resultado confirma el arnés, la estabilidad del API público y el margen del
   entorno actual;
-- antes de una promesa comercial de capacidad se debe repetir `launch` con datos
-  representativos y una cuenta de staging para favoritos, sincronización y mensajes
-  privados.
+- antes de una promesa comercial de capacidad se debe repetir `launch` cuando el
+  volumen real de tablas se acerque a la proyección de lanzamiento.
+
+## Baseline autenticado — 19 de agosto de 2026
+
+El perfil `launch` autenticado se ejecutó con 100 workers sobre una identidad
+descartable y un segundo usuario aislado como contraparte de mensajes. Compartir una
+identidad entre workers concentra las escrituras sobre las mismas filas y crea más
+contención que 100 usuarios independientes, por lo que es una prueba conservadora de
+sincronización por usuario.
+
+| Medición | Resultado |
+| --- | ---: |
+| Workers autenticados | 100 |
+| Objetivo / throughput real | 50 / 49,20 req/s (mínimo aceptado: 47,5) |
+| Duración real | 121,97 s |
+| Solicitudes | 6.001 |
+| Errores | 0 |
+| p50 / p95 / p99 | 4,58 / 18,19 / 53,00 ms |
+| Máximo | 238,00 ms |
+
+El fixture incluyó hasta 60 favoritos/progresos por usuario, 40 carpetas y playlists,
+300 reproducciones y una conversación inicial de 200 mensajes. Durante la carga se
+ejecutaron 400 sincronizaciones de favoritos, progreso y biblioteca, 400 envíos de
+mensajes, 400 marcaciones de lectura y 800 lecturas de conversación.
+
+Los p95 de las escrituras en la corrida final fueron:
+
+- favoritos: 19,89 ms;
+- biblioteca: 19,81 ms;
+- progreso: 19,23 ms;
+- envío de mensaje privado: 16,16 ms;
+- marcar conversación como leída: 7,53 ms.
+
+La limpieza posterior verificó cero usuarios y cero mensajes residuales en
+PostgreSQL, además de cero usuarios del fixture en Clerk Development.

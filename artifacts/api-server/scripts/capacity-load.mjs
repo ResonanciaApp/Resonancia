@@ -125,24 +125,51 @@ if (process.env.CAPACITY_AUTH_COOKIE) {
   authHeaders.Cookie = process.env.CAPACITY_AUTH_COOKIE;
 }
 const hasAuth = Object.keys(authHeaders).length > 0;
+const scenarioSet = process.env.CAPACITY_SCENARIO_SET ?? "mixed";
+if (!["public", "authenticated", "mixed"].includes(scenarioSet)) {
+  throw new Error("CAPACITY_SCENARIO_SET must be public, authenticated, or mixed");
+}
+if (scenarioSet === "authenticated" && !hasAuth) {
+  throw new Error("CAPACITY_SCENARIO_SET=authenticated requires an auth header or cookie");
+}
 
-const scenarios = [
-  { name: "catalog", method: "GET", path: "/api/catalog", weight: 3 },
-  { name: "popular", method: "GET", path: "/api/catalog/popular?limit=10", weight: 2 },
-  { name: "mixes", method: "GET", path: "/api/mixes?page=1", weight: 2 },
-  { name: "community", method: "GET", path: "/api/community/feed", weight: 2 },
-  { name: "messages", method: "GET", path: "/api/messages?page=1", weight: 1 },
-  { name: "ready", method: "GET", path: "/api/readyz", weight: 1 },
-];
-
-if (hasAuth) {
+const scenarios = [];
+if (scenarioSet !== "authenticated") {
   scenarios.push(
+    { name: "catalog", method: "GET", path: "/api/catalog", weight: 3 },
+    { name: "popular", method: "GET", path: "/api/catalog/popular?limit=10", weight: 2 },
+    { name: "mixes", method: "GET", path: "/api/mixes?page=1", weight: 2 },
+    { name: "community", method: "GET", path: "/api/community/feed", weight: 2 },
+    { name: "messages", method: "GET", path: "/api/messages?page=1", weight: 1 },
+    { name: "ready", method: "GET", path: "/api/readyz", weight: 1 },
+  );
+}
+
+if (hasAuth && scenarioSet !== "public") {
+  scenarios.push(
+    { name: "profile-read", method: "GET", path: "/api/me", weight: 1 },
     { name: "favorites-read", method: "GET", path: "/api/me/favorites", weight: 1 },
     { name: "progress-read", method: "GET", path: "/api/me/progress", weight: 1 },
     { name: "library-read", method: "GET", path: "/api/me/library", weight: 1 },
     { name: "plays-read", method: "GET", path: "/api/me/plays", weight: 1 },
+    { name: "streak-read", method: "GET", path: "/api/me/streak?tz=America%2FSantiago", weight: 1 },
+    { name: "friends-read", method: "GET", path: "/api/friends?page=1&pageSize=50", weight: 1 },
     { name: "dm-conversations", method: "GET", path: "/api/dm/conversations", weight: 1 },
   );
+  if (process.env.CAPACITY_DM_PARTNER_USER_ID) {
+    const partnerId = integerEnv(
+      "CAPACITY_DM_PARTNER_USER_ID",
+      0,
+      1,
+      2_147_483_647,
+    );
+    scenarios.push({
+      name: "dm-thread-read",
+      method: "GET",
+      path: `/api/dm/with/${partnerId}?limit=50`,
+      weight: 2,
+    });
+  }
 }
 
 async function requestJson(path) {
@@ -154,6 +181,13 @@ async function requestJson(path) {
     throw new Error(`Setup request ${path} failed with HTTP ${response.status}`);
   }
   return response.json();
+}
+
+if (
+  scenarioSet === "public" &&
+  process.env.CAPACITY_ENABLE_IDEMPOTENT_WRITES === "YES"
+) {
+  throw new Error("Idempotent writes cannot be enabled with CAPACITY_SCENARIO_SET=public.");
 }
 
 if (process.env.CAPACITY_ENABLE_IDEMPOTENT_WRITES === "YES") {
@@ -190,6 +224,30 @@ if (process.env.CAPACITY_ENABLE_IDEMPOTENT_WRITES === "YES") {
       weight: 1,
     },
   );
+  if (process.env.CAPACITY_DM_PARTNER_USER_ID) {
+    const partnerId = integerEnv(
+      "CAPACITY_DM_PARTNER_USER_ID",
+      0,
+      1,
+      2_147_483_647,
+    );
+    scenarios.push(
+      {
+        name: "dm-send",
+        method: "POST",
+        path: `/api/dm/with/${partnerId}`,
+        body: { body: "Mensaje de prueba de capacidad" },
+        weight: 1,
+      },
+      {
+        name: "dm-mark-read",
+        method: "POST",
+        path: `/api/dm/with/${partnerId}/read`,
+        body: {},
+        weight: 1,
+      },
+    );
+  }
 }
 
 const pool = weightedPool(scenarios);
@@ -211,6 +269,7 @@ console.log(
       durationSeconds,
       minimumThroughputRps,
       throughputTolerance,
+      scenarioSet,
       authenticatedScenarios: hasAuth,
       idempotentWrites: process.env.CAPACITY_ENABLE_IDEMPOTENT_WRITES === "YES",
       scenarios: scenarios.map(({ name, method, path, weight }) => ({
@@ -312,6 +371,7 @@ const report = {
   },
   actualDurationSeconds: Math.round(actualDurationSeconds * 100) / 100,
   authenticatedScenarios: hasAuth,
+  scenarioSet,
   idempotentWrites: process.env.CAPACITY_ENABLE_IDEMPOTENT_WRITES === "YES",
   passed,
   aggregate,

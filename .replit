@@ -34,3 +34,4 @@ EXPO_PUBLIC_BUNNY_CDN_HOSTNAME = "vz-881ead65-839.b-cdn.net"
 
 [userenv.development]
 EXPO_PUBLIC_DEV_ADMIN = "true"
+CAPACITY_DATABASE_ENV = "development"
