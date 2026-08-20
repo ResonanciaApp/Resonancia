@@ -37,6 +37,7 @@ function buildApp(): Express {
     (req as { log: unknown }).log = {
       error: () => {},
       info: () => {},
+      warn: () => {},
     };
     next();
   });

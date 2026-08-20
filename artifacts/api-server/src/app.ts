@@ -10,6 +10,7 @@ import {
 } from "./middlewares/clerkProxyMiddleware";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { capacityMetricsMiddleware } from "./lib/capacityMetrics";
 
 const app: Express = express();
 
@@ -32,6 +33,7 @@ app.use(
     },
   }),
 );
+app.use(capacityMetricsMiddleware());
 
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 
