@@ -468,7 +468,13 @@ function TabLayoutInner() {
   const { hidden }         = useTabBarVisibility();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
-  const { isGeometrixOpen, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
+  const {
+    isGeometrixOpen,
+    hasOpenedGeometrix,
+    closeGeometrix,
+    markGeometrixPanelMounted,
+    panelAnim: geoPanelAnim,
+  } = useGeometrixPanel();
 
   const geoTranslateX = geoPanelAnim.interpolate({
     inputRange:  [0, 1],
@@ -582,6 +588,7 @@ function TabLayoutInner() {
       {hasOpenedGeometrix && (
         <>
           <Animated.View
+            onLayout={markGeometrixPanelMounted}
             pointerEvents={isGeometrixOpen ? "box-none" : "none"}
             style={[styles.mixerPanel, { transform: [{ translateX: geoTranslateX }] }]}
           >
