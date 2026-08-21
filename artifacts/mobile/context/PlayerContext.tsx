@@ -247,16 +247,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // ── Loop gapless (Música y Sonidos / Sonidos Naturaleza) ────────────────────
   // El audio de las sesiones en loop suena por el motor nativo gapless
   // (bpmAudioEngine / react-native-audio-api): AudioBufferSourceNode con loop
-  // por buffer.duration → empalme exacto, sin crossfade JS. El main player de
-  // expo-audio queda como ancla MUDA (volume 0, loop nativo) para conservar
-  // Now Playing / pantalla de bloqueo, sleep timer en background y el mirror
-  // de play/pause del sistema — expo-audio sigue siendo el dueño único de la
-  // AVAudioSession.
+  // exacto por buffer.duration. El main player de expo-audio queda como ancla
+  // MUDA (volume 0, loop nativo) para conservar Now Playing / pantalla de
+  // bloqueo, sleep timer en background y el mirror de play/pause del sistema
+  // — expo-audio sigue siendo el dueño único de la AVAudioSession.
   /** True when the current session plays as a gapless engine loop */
   const loopCrossfadeRef = useRef(false);
   /** Voz activa del motor para la sesión en loop (null = motor no disponible) */
   const loopEngineRef = useRef<{ key: string; asset: number } | null>(null);
-  /** True cuando el motor NO está disponible y el main suena audible (fallback) */
+  /** True cuando el motor NO está disponible y el main suena audible (fallback
+   *  de asset remoto: bpmAudioEngine solo acepta assets bundleados). */
   const loopFallbackRef = useRef(false);
 
   /** True when the current session is backed by a real audio file (vs simulation) */
@@ -269,18 +269,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const pendingSeekRef = useRef<number | null>(null);
   /** Last known playing state of the main player — to mirror lock-screen play/pause onto layers */
   const lastPlayingRef = useRef(false);
-  /** True while switching sessions — suppresses stale status events from the
-   *  prior track en el status listener del main player (posición/toggles del
-   *  primer tick). Complementa a playGenRef: la generación invalida callbacks
-   *  asíncronos huérfanos; este flag filtra los eventos del pipeline nativo,
-   *  que no puede capturar una generación. Toda liberación de este flag en un
-   *  camino asíncrono debe estar gateada por la generación vigente. */
+  /** True while switching sessions — suppresses UI side-effects (isPlaying
+   *  toggle, lock-screen activation) during the brief window before the new
+   *  track is confirmed ready. The per-session listener closure (makeSessionListener)
+   *  is the primary guard against stale native events; this flag is the
+   *  secondary guard for state updates mid-transition. Toda liberación de este
+   *  flag en un camino asíncrono debe estar gateada por la generación vigente. */
   const switchingRef = useRef(false);
-  /** Generation stamped onto the main player at replace() time. Status events
-   *  from the native pipeline don't carry a generation; we compare this ref
-   *  against playGenRef at the top of handleMainStatus to discard events from
-   *  a prior track before they touch any state — eliminates the stale-event
-   *  race window that switchingRef alone couldn't fully close. */
+  /** Generation stamped before each replace() — kept as a secondary belt-and-
+   *  suspenders alongside the closure-captured gen in makeSessionListener. */
   const mainPlayerGenRef = useRef(0);
 
   // Keep latest isPlaying in a ref so timer callbacks see the current value
@@ -585,10 +582,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Descarta eventos del track anterior: mainPlayerGenRef almacena la
-      // generación que llamó a main.replace(); si no coincide con la vigente
-      // el evento viene del track viejo y se ignora antes de tocar estado.
-      if (mainPlayerGenRef.current !== playGenRef.current) return;
+      // El guard primario (gen capturada en closure por makeSessionListener)
+      // ya descartó eventos de tracks anteriores antes de llegar aquí.
+      // switchingRef filtra side-effects de UI durante la transición.
 
       // Mientras switchingRef está activo el track nuevo aún no tiene duración
       // real: no activar lock-screen ni limpiar loading hasta que se libere.
@@ -692,8 +688,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // (El "first-tick skip" ya no es necesario: mainPlayerGenRef descarta
-      //  cualquier evento de un track anterior antes de llegar aquí.)
+      // (El "first-tick skip" ya no es necesario: el closure de makeSessionListener
+      //  descarta cualquier evento de una sesión anterior antes de llegar aquí.)
 
       if (dur > 0) {
         setActualDurationSeconds(Math.floor(dur));
@@ -724,14 +720,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const handleMainStatusRef = useRef(handleMainStatus);
   handleMainStatusRef.current = handleMainStatus;
 
-  /** Lazily create the persistent main player + attach its status listener */
+  /** Crea un listener de reproducción con la generación de sesión capturada en
+   *  closure. Al re-registrarlo antes de cada replace(), el listener anterior
+   *  (gen vieja) queda obsoleto: sus eventos tardíos son descartados en la
+   *  primera línea, eliminando la ventana de carrera entre tracks. */
+  const makeSessionListener = useCallback(
+    (gen: number) => (status: AudioStatus) => {
+      if (gen !== playGenRef.current) return;
+      handleMainStatusRef.current(status);
+    },
+    [],
+  );
+
+  /** Lazily create the persistent main player.
+   *  El listener de playbackStatusUpdate se registra por sesión
+   *  (makeSessionListener) justo antes de cada replace(). */
   const ensureMainPlayer = useCallback((): AudioPlayer => {
     if (!mainPlayerRef.current) {
-      const player = createAudioPlayer(null, { updateInterval: 500 });
-      statusSubRef.current = player.addListener("playbackStatusUpdate", (s) =>
-        handleMainStatusRef.current(s),
-      );
-      mainPlayerRef.current = player;
+      mainPlayerRef.current = createAudioPlayer(null, { updateInterval: 500 });
     }
     return mainPlayerRef.current;
   }, []);
@@ -1329,7 +1335,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           const main = ensureMainPlayer();
           main.loop = false;
           pendingSeekRef.current = resumeFraction > 0 ? resumeFraction : null;
-          mainPlayerGenRef.current = gen; // sella la generación antes del replace
+          // Registrar listener con gen de esta sesión capturada en closure.
+          // El listener anterior (gen vieja) queda obsoleto: sus eventos tardíos
+          // se descartan en la primera línea aunque lleguen tras el arrange().
+          statusSubRef.current?.remove();
+          statusSubRef.current = main.addListener("playbackStatusUpdate", makeSessionListener(gen));
+          mainPlayerGenRef.current = gen; // belt-and-suspenders
           // Si onPressIn ya llamó prewarmSession() con esta misma sesión, el
           // replace() corrió antes y el buffer lleva ventaja: ir directo a play().
           const alreadyPrewarmed = prewarmSessionIdRef.current === session.id;
@@ -1427,7 +1438,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }
       }
     },
-    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers],
+    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers, makeSessionListener],
   );
 
   // Mantener la ref de playSession actualizada (usada por advancePlaylist).
@@ -1507,7 +1518,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           if (isLoopSession) {
             // ── Loop gapless por el motor nativo (bpmAudioEngine) ──
             // El audio audible sale del motor (AudioBufferSourceNode con loop
-            // por buffer.duration → empalme exacto, sin hueco ni crossfade JS).
+            // exacto por buffer.duration → empalme sin hueco).
             // El main player de expo-audio suena MUDO (volume 0, loop nativo):
             // es el ancla de Now Playing / pantalla de bloqueo, del sleep timer
             // en background y del mirror de play/pause del sistema.
@@ -1516,7 +1527,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             loopFallbackRef.current = false;
 
             main.loop = true;
-            mainPlayerGenRef.current = gen; // sella la generación antes del replace
+            statusSubRef.current?.remove();
+            statusSubRef.current = main.addListener("playbackStatusUpdate", makeSessionListener(gen));
+            mainPlayerGenRef.current = gen; // belt-and-suspenders
             main.replace(audioFile);
             main.volume = 0; // ancla muda: el audio audible sale del motor
             main.play();
@@ -1534,9 +1547,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   void bpmAudioEngine.playLoopAsset(engineKey, audioFile, mainVolumeRef.current);
                 }
               } else {
-                // Motor no disponible (web / Expo Go / dev client viejo):
-                // degradar al loop nativo audible del main (empalme perceptible
-                // pero funcional). Sin fallback de crossfade JS — eliminado.
+                // Motor no disponible (web / Expo Go / dev client viejo) o
+                // asset remoto (DB-only session): degradar al loop nativo
+                // audible del main (empalme perceptible pero funcional).
                 loopFallbackRef.current = true;
                 try {
                   if (mainPlayerRef.current?.isLoaded) {
@@ -1588,9 +1601,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               });
             }, 1000);
           } else {
-            // ── Sesión de duración fija sin loop (sin crossfade) ──
+            // ── Sesión de duración fija sin loop ──
             main.loop = false;
-            mainPlayerGenRef.current = gen; // sella la generación antes del replace
+            statusSubRef.current?.remove();
+            statusSubRef.current = main.addListener("playbackStatusUpdate", makeSessionListener(gen));
+            mainPlayerGenRef.current = gen; // belt-and-suspenders
             main.replace(audioFile);
             main.volume = mainVolumeRef.current;
             main.play();
@@ -1671,6 +1686,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       teardownLayers,
       teardownPlayback,
       saveSessionProgress,
+      makeSessionListener,
     ],
   );
   // Mantener la referencia estable que usa playSession para delegar loops.

@@ -2536,12 +2536,12 @@ description = "Informe ejecutivo de 8 páginas con semáforo y hoja de ruta revi
 id = "tj5WanqPw9RJIBMfgfI9t"
 uri = "file://attached_assets/Respuesta_Auditoria_21ago2026.pdf"
 type = "pdf"
-title = "Respuesta a la Auditoría Técnica — 21 ago 2026 (v2)"
-description = "Crossfade artesanal: PARCIAL → RESUELTO. Contadores: 11 hallazgos resueltos, 1 parcialmente resuelto."
+title = "Respuesta Auditoría — 21 ago 2026"
+description = "Cambio de sesión: PARCIAL → RESUELTO. Contadores: 12 resueltos, 1 parcial, 3 pendientes."
 
 [[outputs]]
 id = "yCYx_CP6St7kzxnZL-O0H"
 uri = "file://attached_assets/Informe_Estado_21ago2026.pdf"
 type = "pdf"
-title = "Informe ejecutivo — Estado de lanzamiento — 21 ago 2026"
-description = "Actualizado con fecha 21 ago 2026 y mejora de latencia de audio en sección 'Qué ya está consolidado'. Semáforo sin cambio de colores."
+title = "Informe de Estado — 21 ago 2026"
+description = "Informe técnico actualizado post-tarea #195."
