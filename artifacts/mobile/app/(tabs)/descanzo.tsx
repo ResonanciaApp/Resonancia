@@ -341,24 +341,30 @@ export default function DescansoScreen() {
     favorites,
   } = usePlayer();
 
-  /** Lógica de tres estados para tocar una sesión de Dormir:
+  /** Lógica de tres estados para tocar una sesión de Dormir
+   *  (idéntica a SessionCard.tsx handlePress):
    *  1. skipMiniPlayer → arrancar audio (miniplayer se muestra solo), sin navegar
-   *  2. skipDetail → arrancar audio + abrir reproductor completo
+   *  2. skipDetail === true  O  categoría en SKIP_DETAIL_CATS → arrancar audio + reproductor completo
    *  3. Sin flags → abrir pantalla de detalle SIN arrancar audio
    */
+  const DESCANSO_SKIP_DETAIL_CATS = ["sonidos-ancestrales", "musica-sonidos"];
   const handleSessionTap = useCallback(
     (s: Parameters<typeof playSession>[0]) => {
       if (s.skipMiniPlayer) {
         if (currentSession?.id !== s.id) playSession(s);
         return;
       }
-      if (s.skipDetail) {
+      const goToPlayer =
+        s.skipDetail !== false &&
+        (s.skipDetail === true || DESCANSO_SKIP_DETAIL_CATS.includes(s.categoryId ?? ""));
+      if (goToPlayer) {
         if (currentSession?.id !== s.id) playSession(s);
         router.push("/player" as never);
         return;
       }
       router.push(`/descanzo-session/${s.id}` as never);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentSession, playSession],
   );
 
