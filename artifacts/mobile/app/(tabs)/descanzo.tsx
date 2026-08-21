@@ -335,7 +335,7 @@ export default function DescansoScreen() {
         router.push("/player" as never);
         return;
       }
-      router.push(`/descanzo-session/${s.id}` as never);
+      router.push(`/session/${s.id}` as never);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentSession, playSession],
