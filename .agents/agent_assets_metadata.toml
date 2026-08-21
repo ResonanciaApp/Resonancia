@@ -2545,3 +2545,10 @@ uri = "file://attached_assets/Informe_Estado_21ago2026.pdf"
 type = "pdf"
 title = "Informe de Estado — 21 ago 2026"
 description = "Informe técnico actualizado post-tarea #195."
+
+[[outputs]]
+id = "MoffRkpRkK9yHd0ppKakR"
+uri = "file://attached_assets/Informe_Maestro_Transicion_y_Certificacion_RESONANCIA_21ago2026.pdf"
+type = "pdf"
+title = "RESONANCIA — Informe maestro de transición y certificación"
+description = "Paquete de entrega para que una empresa ejecute el cierre, las pruebas y la certificación de release."
