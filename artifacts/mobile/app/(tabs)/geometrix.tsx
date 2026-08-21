@@ -2334,6 +2334,8 @@ export default function GeometrixScreen() {
   const [savedName, setSavedName] = useState<string | null>(null);
   const [updatedName, setUpdatedName] = useState<string | null>(null);
   const [showEmptyAlert, setShowEmptyAlert] = useState(false);
+  // Confirmación explícita antes de descartar el lienzo y salir de Geometrix.
+  const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   // Geometría con su menú contextual abierto (tap en miniatura).
   const [menuGeoId, setMenuGeoId] = useState<string | null>(null);
   // "Aislar": muestra solo esta geometría en el lienzo (sin quitar las demás).
@@ -2855,6 +2857,53 @@ export default function GeometrixScreen() {
       bgPattern: m.bgPattern,
     }));
   }, []);
+
+  // No modifica las creaciones guardadas: sólo destruye la sesión efímera que
+  // está renderizando el lienzo antes de cerrar el panel o abandonar la ruta.
+  const discardCanvasAndClose = useCallback(() => {
+    setCloseConfirmOpen(false);
+    stopIntro();
+    stopTheme();
+    resetHistory();
+    clearCanvas();
+    setMaster({
+      opacity: 1,
+      motion: true,
+      glow: 0,
+      bgColor: null,
+      bgGradientId: null,
+      bgBrightness: 0.5,
+      bgPattern: null,
+    });
+    setGuides([]);
+    setSelectedId(null);
+    setSettingsOpen(false);
+    setSettingsGeoId(null);
+    setGeneralOpen(false);
+    setGuidesOpen(false);
+    setThemeSearchOpen(false);
+    setThemeQuery("");
+    setMenuGeoId(null);
+    setPillOpen(false);
+    setLoupeVisible(false);
+    setImmersive(false);
+    setFullscreenEdit(false);
+    setShowLanding(true);
+
+    if (isGeometrixOpen) {
+      closeGeometrix();
+    } else {
+      router.back();
+    }
+  }, [
+    clearCanvas,
+    closeGeometrix,
+    isGeometrixOpen,
+    resetHistory,
+    router,
+    stopIntro,
+    stopTheme,
+  ]);
 
   const updateSetting = useCallback(
     <K extends keyof GeoSettings>(id: string, key: K, value: GeoSettings[K]) => {
@@ -4126,22 +4175,23 @@ export default function GeometrixScreen() {
           </View>
         </Modal>
 
-        {/* Tab de categorías + botón salir */}
+        {/* Tab de categorías + cierre destructivo del lienzo */}
         <View style={styles.catRow}>
-          {/* Título centrado, a la altura del chevron (igual que Mezclador) */}
+          {/* Título centrado, a la altura del botón de cierre. */}
           <View pointerEvents="none" style={styles.lienzoTitleWrap}>
             <Text style={[styles.lienzoTitle, { transform: [{ translateY: 15 }] }]}>Lienzo</Text>
           </View>
           <View style={styles.exitBtn}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
-              <BackPill
-                onPress={() => setShowLanding(true)}
-                size={28}
-                bgColor="rgba(255,255,255,0.10)"
-                iconOffsetX={-1}
-                style={{ transform: [{ translateX: -1 }] }}
-              />
-            </View>
+            <Pressable
+              style={styles.canvasCloseBtn}
+              onPress={() => setCloseConfirmOpen(true)}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar y descartar el lienzo"
+              accessibilityHint="Pide confirmación antes de perder los cambios no guardados"
+            >
+              <Feather name="x" size={22} color={colors.foreground} />
+            </Pressable>
           </View>
           <ScrollView
             horizontal
@@ -4845,6 +4895,58 @@ export default function GeometrixScreen() {
           )}
         </Animated.View>
       )}
+
+      {/* Confirmación destructiva antes de cerrar y descartar el lienzo. */}
+      <Modal
+        visible={closeConfirmOpen}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setCloseConfirmOpen(false)}
+      >
+        <Pressable
+          style={styles.savedBackdrop}
+          onPress={() => setCloseConfirmOpen(false)}
+          accessibilityRole="button"
+          accessibilityLabel="Cancelar cierre del lienzo"
+        >
+          <Pressable style={styles.savedCard} onPress={() => {}}>
+            <LinearGradient
+              colors={HOME_GRADIENT}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <View style={styles.closeConfirmIcon}>
+              <Feather name="x" size={25} color={colors.primary} />
+            </View>
+            <Text style={styles.savedTitle}>¿Estás seguro que quieres cerrar?</Text>
+            <Text style={styles.savedSubtitle}>
+              Guarda el lienzo si no quieres perder tu Geometrix.
+            </Text>
+            <View style={styles.savedActions}>
+              <Pressable
+                style={styles.savedBtnGhost}
+                onPress={() => setCloseConfirmOpen(false)}
+                accessibilityRole="button"
+                accessibilityLabel="Cancelar y seguir editando"
+              >
+                <Text style={styles.savedBtnGhostText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={styles.savedBtnPrimary}
+                onPress={discardCanvasAndClose}
+                accessibilityRole="button"
+                accessibilityLabel="Confirmar cierre y descartar lienzo"
+              >
+                <GoldGradientFill />
+                <Text style={styles.savedBtnPrimaryText}>Sí, seguro</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* Popup temático de "Guardada" (reemplaza el Alert nativo). */}
       <Modal
@@ -6854,6 +6956,16 @@ const styles = StyleSheet.create({
     zIndex: 10,
     transform: [{ translateY: -36 }],
   },
+  canvasCloseBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.12)",
+  },
   catScroll: {
     flex: 1,
   },
@@ -7045,6 +7157,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   savedIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.4)",
+    marginBottom: 2,
+  },
+  closeConfirmIcon: {
     width: 52,
     height: 52,
     borderRadius: 26,
