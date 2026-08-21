@@ -1209,14 +1209,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 : getSessionsByCategory(session.categoryId)
               ).map((s) => s.id)
             : [];
-        if (contextIds.length > 1 && contextIds.includes(session.id)) {
+        if (contextIds.length > 1) {
           setActivePlaylistIds(contextIds);
           setQueueImplicit(true);
           queueImplicitRef.current = true;
           setQueueRandom(true);
           queueRandomRef.current = true;
           playOrderRef.current = contextIds;
-          playIndexRef.current = contextIds.indexOf(session.id);
+          // indexOf devuelve -1 si la sesión no está en el pool visible
+          // (p.ej. descansoTag fuera de DESCANSO_VISIBLE_TAGS) → usar índice 0
+          playIndexRef.current = Math.max(0, contextIds.indexOf(session.id));
         } else {
           setActivePlaylistIds(null);
           setQueueImplicit(false);
