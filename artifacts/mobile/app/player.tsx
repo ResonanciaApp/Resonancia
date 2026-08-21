@@ -556,7 +556,7 @@ export default function PlayerScreen() {
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
             )}
-            <Feather name="chevron-down" size={22} color="#FBFBFB" />
+            <Feather name="x" size={22} color="#FBFBFB" />
           </Pressable>
 
           <Pressable
