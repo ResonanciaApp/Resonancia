@@ -2548,29 +2548,6 @@ export default function GeometrixScreen() {
     setThemeSession(null);
   }, []);
 
-  // El panel se conserva montado para que su reapertura no haga flash. Cuando
-  // queda oculto, sin embargo, el player nativo ya no aporta nada y debe
-  // liberarse: pausarlo solamente lo dejaría residente toda la sesión.
-  const releaseThemePlayer = useCallback(() => {
-    const p = themePlayerRef.current;
-    if (p) {
-      try {
-        p.pause();
-      } catch {
-        /* ignore */
-      }
-      // `pause()` y `remove()` son operaciones nativas independientes: si la
-      // primera falla, la segunda debe intentarse igualmente para no perder la
-      // única referencia a un player todavía residente.
-      try {
-        p.remove();
-      } catch {
-        /* ignore */
-      }
-      themePlayerRef.current = null;
-    }
-  }, []);
-
   const playTheme = useCallback(
     (session: Session) => {
       const audioFile =
@@ -2632,25 +2609,24 @@ export default function GeometrixScreen() {
   // así que el cleanup de desmontaje no corre al cambiar de tab).
   useFocusEffect(
     useCallback(() => {
-      return () => releaseThemePlayer();
-    }, [releaseThemePlayer]),
+      return () => stopTheme();
+    }, [stopTheme]),
   );
 
   // Liberar el reproductor de tema al desmontar la pantalla.
   useEffect(() => {
     return () => {
-      releaseThemePlayer();
+      const p = themePlayerRef.current;
+      if (p) {
+        try {
+          p.remove();
+        } catch {
+          /* ignore */
+        }
+        themePlayerRef.current = null;
+      }
     };
-  }, [releaseThemePlayer]);
-
-  // Los cleanups de foco/overlay se limitan a recursos nativos porque también
-  // pueden ejecutarse durante un desmontaje. Cuando la pantalla sigue montada,
-  // `tabFocused=false` hace el reset de UI en un efecto normal y seguro.
-  useEffect(() => {
-    if (!tabFocused && themeSession !== null) {
-      setThemeSession(null);
-    }
-  }, [tabFocused, themeSession]);
+  }, []);
 
   // Audio de intro ("logo reveal" de cubo-3): gestionado por un singleton de
   // módulo (lib/geometrixIntro). Se precarga al arrancar la app y suena UNA sola
@@ -2725,7 +2701,6 @@ export default function GeometrixScreen() {
     }
     return () => {
       stopIntro();
-      releaseThemePlayer();
       setSettingsOpen(false);
       setSettingsGeoId(null);
       setGeneralOpen(false);
@@ -2741,7 +2716,7 @@ export default function GeometrixScreen() {
       setActivatingIds(emptyActivating);
       setMaster({ opacity: 1, motion: true, glow: 0, bgColor: null, bgGradientId: null, bgBrightness: 0.5, bgPattern: null });
     };
-  }, [isGeometrixOpen, playIntro, releaseThemePlayer, stopIntro]);
+  }, [isGeometrixOpen, playIntro, stopIntro]);
 
 
   // Quita una geometría del set de "activándose" (estado + ref espejo).

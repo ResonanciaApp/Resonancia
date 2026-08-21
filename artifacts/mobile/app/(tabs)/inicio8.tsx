@@ -394,53 +394,19 @@ export default function HomeScreen2() {
   const { requestHide, showMenu } = useTabBarVisibility();
   const immersiveRef = useRef(false);
   const immersiveAnim = useRef(new Animated.Value(0)).current;
-  const [inlineSceneMounted, setInlineSceneMounted] = useState(true);
-  const [immersiveSceneMounted, setImmersiveSceneMounted] = useState(false);
-  const immersiveTransitionRef = useRef(0);
   const contentOpacity = immersiveAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
   const toggleImmersive = useCallback(() => {
     const next = !immersiveRef.current;
-    const transition = immersiveTransitionRef.current + 1;
-    immersiveTransitionRef.current = transition;
     immersiveRef.current = next;
     setImmersive(next);
-    immersiveAnim.stopAnimation();
-    if (next) {
-      // La vista inmersiva se monta sólo al entrar; fuera de este modo no debe
-      // conservar un segundo árbol SVG invisible.
-      setImmersiveSceneMounted(true);
-      requestHide();
-    } else {
-      // Montar la escena inline antes de revelar nuevamente el contenido para
-      // que no haya un frame vacío al salir del modo inmersivo.
-      setInlineSceneMounted(true);
-      showMenu();
-    }
+    if (next) { requestHide(); } else { showMenu(); }
     Animated.timing(immersiveAnim, {
       toValue: next ? 1 : 0,
       duration: 700,
       easing: RNEasing.out(RNEasing.cubic),
       useNativeDriver: true,
-    }).start(({ finished }) => {
-      // Tras el fundido de entrada la escena normal ya está completamente
-      // oculta: desmontarla elimina su árbol SVG y evita dos renderizadores
-      // concurrentes. La generación impide que un callback de transición vieja
-      // desmonte la escena después de un toque rápido de salida.
-      if (finished && next && immersiveRef.current && transition === immersiveTransitionRef.current) {
-        setInlineSceneMounted(false);
-      }
-      if (finished && !next && !immersiveRef.current && transition === immersiveTransitionRef.current) {
-        setImmersiveSceneMounted(false);
-      }
-    });
+    }).start();
   }, [immersiveAnim, requestHide, showMenu]);
-
-  useEffect(() => {
-    return () => {
-      immersiveTransitionRef.current += 1;
-      immersiveAnim.stopAnimation();
-    };
-  }, [immersiveAnim]);
 
   // ── Zoom del modo inmersivo (pinch) ───────────────────────────────────────
   const pinchScale = useSharedValue(1);
@@ -1162,16 +1128,14 @@ export default function HomeScreen2() {
               }}
               pointerEvents={animRevealed ? "box-none" : "none"}
             >
-              {inlineSceneMounted && (
-                <SceneAnimationInline
-                  scene={headerScene}
-                  height={293}
-                  onPress={() => setAnimSheetOpen(true)}
-                  paused={!tabFocused || immersive}
-                  bgOverride={shuffleBgColor}
-                  noInternalFade
-                />
-              )}
+              <SceneAnimationInline
+                scene={headerScene}
+                height={293}
+                onPress={() => setAnimSheetOpen(true)}
+                paused={!tabFocused}
+                bgOverride={shuffleBgColor}
+                noInternalFade
+              />
 
               {/* Frase overlay — centrada sobre la animación */}
               {phraseVisible && (
@@ -1677,7 +1641,7 @@ export default function HomeScreen2() {
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
       {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
-      {headerScene && immersiveSceneMounted && (
+      {headerScene && (
         <Animated.View
           style={[StyleSheet.absoluteFill, { opacity: immersiveAnim, justifyContent: "center" }]}
           pointerEvents={immersive ? "box-none" : "none"}
