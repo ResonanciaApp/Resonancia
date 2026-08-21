@@ -27,13 +27,9 @@ import { MiniPlayer } from "@/components/MiniPlayer";
 import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
-import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
-import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
-import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import {
   TabBarVisibilityProvider,
   useTabBarVisibility,
@@ -465,9 +461,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 }
 
 function TabLayoutInner() {
-  const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
   const { activeSounds }   = useMixer();
-  const { playlists }      = useFoldersPlaylists();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
@@ -521,24 +515,6 @@ function TabLayoutInner() {
     const next = DESCANSO_SOUNDS[(dormirSoundIdx + 1) % DESCANSO_SOUNDS.length];
     descansoPlayer.toggle(next.id, next.audioUri ?? null);
   }, [dormirSoundIdx, descansoPlayer]);
-
-  // ¿La sesión actual pertenece a alguna playlist?
-  const activePlaylist = currentSession
-    ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
-    : null;
-
-  // Cuando una sesión de playlist se activa → mostrar SessionMiniPlayer igual que skipMiniPlayer
-  const prevPlaylistSessionIdRef = useRef<string | null>(null);
-  useEffect(() => {
-    if (activePlaylist && currentSession) {
-      if (currentSession.id !== prevPlaylistSessionIdRef.current) {
-        prevPlaylistSessionIdRef.current = currentSession.id;
-        sessionMiniPlayerEvents.triggerShow("bottom");
-      }
-    } else {
-      prevPlaylistSessionIdRef.current = null;
-    }
-  }, [activePlaylist?.id, currentSession?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
@@ -659,12 +635,6 @@ function TabLayoutInner() {
         </>
       )}
 
-      {/* ── SessionMiniPlayer (barra flotante de sesiones; tap → /player) ──── */}
-      <SessionMiniPlayer
-        bottomOffset={miniPlayerBottom}
-        topOffset={topPad}
-        suppressed={isMixerOpen}
-      />
 
     </View>
   );

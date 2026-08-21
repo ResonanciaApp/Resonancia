@@ -4,7 +4,6 @@ import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -546,11 +545,7 @@ export default function PlayerScreen() {
         <View style={[styles.topRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
           <Pressable
             onPress={() => {
-              if (anim === "fade" || currentSession?.skipMiniPlayer || currentSession?.descansoTag) {
-                sessionMiniPlayerEvents.triggerShow();
-              } else {
-                stop();
-              }
+              stop();
               router.back();
             }}
             style={styles.topCircleBtn}
