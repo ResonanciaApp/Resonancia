@@ -759,7 +759,7 @@ export default function PlayerScreen() {
                   style={styles.ctrlBtn}
                   hitSlop={10}
                 >
-                  <Svg width={25} height={25} viewBox="0 0 24 24">
+                  <Svg width={27} height={27} viewBox="0 0 24 24">
                     <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
                   </Svg>
                 </Pressable>
@@ -822,7 +822,7 @@ export default function PlayerScreen() {
                   style={styles.ctrlBtn}
                   hitSlop={10}
                 >
-                  <Svg width={25} height={25} viewBox="0 0 24 24">
+                  <Svg width={27} height={27} viewBox="0 0 24 24">
                     <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
                   </Svg>
                 </Pressable>
