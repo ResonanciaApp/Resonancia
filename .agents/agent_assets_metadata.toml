@@ -2531,3 +2531,17 @@ uri = "file://.agents/outputs/updated-reports/Informe_de_Lanzamiento_Actualizado
 type = "pdf"
 title = "Estado de lanzamiento — actualizado"
 description = "Informe ejecutivo de 8 páginas con semáforo y hoja de ruta revisados tras las tareas 219–222."
+
+[[outputs]]
+id = "tj5WanqPw9RJIBMfgfI9t"
+uri = "file://attached_assets/Respuesta_Auditoria_21ago2026.pdf"
+type = "pdf"
+title = "Respuesta a la Auditoría Técnica — 21 ago 2026"
+description = "Actualizado con trabajo del 18–21 agosto: patrones de mantenibilidad ampliados, 4 nuevos refuerzos adicionales (prewarm, limpieza de código muerto, prev/next, UX del reproductor)."
+
+[[outputs]]
+id = "yCYx_CP6St7kzxnZL-O0H"
+uri = "file://attached_assets/Informe_Estado_21ago2026.pdf"
+type = "pdf"
+title = "Informe ejecutivo — Estado de lanzamiento — 21 ago 2026"
+description = "Actualizado con fecha 21 ago 2026 y mejora de latencia de audio en sección 'Qué ya está consolidado'. Semáforo sin cambio de colores."
