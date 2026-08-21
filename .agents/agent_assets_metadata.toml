@@ -2552,3 +2552,10 @@ uri = "file://attached_assets/Informe_Maestro_Transicion_y_Certificacion_RESONAN
 type = "pdf"
 title = "RESONANCIA — Informe maestro de transición y certificación"
 description = "Paquete de entrega para que una empresa ejecute el cierre, las pruebas y la certificación de release."
+
+[[outputs]]
+id = "lf4ZGfo6ZdYGOTGejtV6Z"
+uri = "file://attached_assets/Informe_Diagnostico_Tecnico_Geometrix_RESONANCIA_21ago2026.pdf"
+type = "pdf"
+title = "Diagnóstico técnico del motor animado Geometrix"
+description = "Informe profesional de 12 páginas con arquitectura, hallazgos confirmados y probables, matriz de diagnóstico, protocolo de perfilado y plan de remediación P0/P1/P2."

@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RESONANCIA — Diagnóstico técnico del motor animado Geometrix</title>
+    <style>
+      :root {
+        --navy: #060a0f;
+        --navy2: #0e1625;
+        --ink: #152033;
+        --muted: #647084;
+        --gold: #be9650;
+        --goldpale: #f2e5c7;
+        --line: #d9dee6;
+        --paper: #ffffff;
+        --cream: #faf8f3;
+        --green: #1f7650;
+        --amber: #a36c1d;
+        --red: #a63e3e;
+      }
+      * { box-sizing: border-box; }
+      @page { size: A4; margin: 0; }
+      body {
+        margin: 0; color: var(--ink); background: #d8dce2;
+        font-family: Arial, Helvetica, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      .page {
+        position: relative; width: 210mm; min-height: 297mm; margin: 0 auto 10px; padding: 18mm 18mm 17mm;
+        background: var(--paper); overflow: hidden; page-break-after: always;
+      }
+      .page:last-child { page-break-after: auto; }
+      .cover {
+        color: white; background:
+          radial-gradient(circle at 82% 18%, rgba(190,150,80,.22), transparent 25%),
+          radial-gradient(circle at 18% 83%, rgba(62,103,148,.23), transparent 28%),
+          linear-gradient(140deg, #060a0f 0%, #0c1627 60%, #15100c 100%);
+      }
+      .cover-grid {
+        position: absolute; inset: 0; opacity: .17;
+        background-image: linear-gradient(rgba(190,150,80,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(190,150,80,.22) 1px, transparent 1px);
+        background-size: 34px 34px; transform: perspective(500px) rotateX(55deg) scale(1.4); transform-origin: bottom;
+      }
+      .cover-content { position: relative; z-index: 2; display: flex; min-height: 262mm; flex-direction: column; }
+      .brand { color: var(--gold); font-size: 10px; letter-spacing: 3.5px; font-weight: 700; text-transform: uppercase; margin: 0 0 28mm; }
+      .cover h1 { font-family: Georgia, "Times New Roman", serif; font-size: 42px; line-height: 1.08; font-weight: 400; max-width: 142mm; margin: 0; }
+      .cover h1 span { color: var(--goldpale); }
+      .cover .subtitle { margin: 9mm 0 0; max-width: 125mm; color: #c6cfdd; font-size: 16px; line-height: 1.55; }
+      .cover-mark { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20mm; border-top: 1px solid rgba(255,255,255,.25); padding-top: 8mm; font-size: 10px; letter-spacing: .5px; color: #aeb9c9; }
+      .cover-mark b { display: block; margin-top: 2mm; color: white; font-size: 12px; letter-spacing: .2px; }
+      .eyebrow { margin: 0 0 6px; color: var(--gold); font-size: 9px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase; }
+      h2 { font-size: 22px; line-height: 1.15; font-family: Georgia, "Times New Roman", serif; font-weight: 400; margin: 0 0 7mm; color: var(--navy); }
+      h3 { margin: 7mm 0 3mm; color: var(--navy); font-size: 12px; letter-spacing: .4px; }
+      p, li { font-size: 10.3pt; line-height: 1.58; }
+      p { margin: 0 0 3.6mm; }
+      strong { color: #091222; }
+      .lede { color: #28384d; font-size: 12.2pt; line-height: 1.55; max-width: 165mm; }
+      .rule { height: 2px; width: 28mm; background: var(--gold); margin: 0 0 7mm; }
+      .page-number { position: absolute; right: 18mm; bottom: 8mm; color: #7a8493; font-size: 8px; letter-spacing: 1.2px; }
+      .page-label { position: absolute; left: 18mm; bottom: 8mm; color: #7a8493; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
+      .callout { margin: 5mm 0; padding: 5mm 6mm; border-left: 3px solid var(--gold); background: #f9f6ef; font-size: 10.3pt; line-height: 1.52; }
+      .warning { border-left-color: var(--amber); background: #fff9eb; }
+      .danger { border-left-color: var(--red); background: #fff3f2; }
+      .ok { border-left-color: var(--green); background: #eff8f3; }
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 6mm 0; }
+      .stat { border: 1px solid var(--line); border-top: 3px solid var(--gold); padding: 5mm; min-height: 29mm; }
+      .stat .num { color: var(--navy); font-family: Georgia, "Times New Roman", serif; font-size: 25px; line-height: 1; }
+      .stat .label { margin-top: 3mm; color: var(--muted); font-size: 8px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; line-height: 1.3; }
+      table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 8.6pt; }
+      th { padding: 2.7mm; border-bottom: 2px solid var(--navy); color: var(--muted); text-align: left; font-size: 7.3pt; letter-spacing: 1px; text-transform: uppercase; }
+      td { padding: 3mm 2.7mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+      td p { font-size: inherit; margin: 0; line-height: 1.35; }
+      .badge { display: inline-block; padding: 1.4mm 2mm; border-radius: 10px; font-size: 6.7pt; letter-spacing: .7px; font-weight: 700; white-space: nowrap; text-transform: uppercase; }
+      .confirmed { color: #175e41; background: #dff1e7; }
+      .likely { color: #82540d; background: #f8e8c6; }
+      .unproven { color: #8d3434; background: #f8dddd; }
+      .high { color: #862e2e; background: #f7dddd; }
+      .medium { color: #81510c; background: #f9e9c8; }
+      .low { color: #3f566d; background: #e7edf3; }
+      .code { color: #344154; font-family: "Courier New", monospace; font-size: 7.8pt; line-height: 1.35; }
+      .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; margin: 6mm 0; }
+      .flow-box { position: relative; min-height: 27mm; padding: 4mm 3mm; background: var(--navy2); color: white; font-size: 8.6pt; line-height: 1.35; }
+      .flow-box:after { content: "→"; position: absolute; right: -4mm; top: 8mm; z-index: 2; color: var(--gold); font-size: 18px; }
+      .flow-box:last-child:after { display: none; }
+      .flow-box b { display: block; margin-bottom: 2mm; color: var(--goldpale); font-size: 8pt; text-transform: uppercase; letter-spacing: .7px; }
+      .architecture { display: grid; grid-template-columns: 1.12fr .88fr; gap: 5mm; margin-top: 5mm; }
+      .node { margin-bottom: 3mm; border: 1px solid var(--line); padding: 3.5mm; background: #fff; }
+      .node b { display: block; color: var(--navy); font-size: 9pt; margin-bottom: 1.4mm; }
+      .node span { color: #526174; font-size: 8.3pt; line-height: 1.35; }
+      .node.gold { border-left: 3px solid var(--gold); }
+      .node.red { border-left: 3px solid var(--red); }
+      .node.green { border-left: 3px solid var(--green); }
+      .cost-visual { display: flex; align-items: center; gap: 2mm; margin: 4mm 0 5mm; }
+      .cost-block { height: 23mm; flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2mm; font-size: 8pt; font-weight: bold; color: white; background: #17233a; }
+      .cost-block.gold { background: #9b763d; }
+      .cost-block.red { background: #8d4444; }
+      .cost-arrow { color: var(--gold); font-size: 17px; }
+      ul, ol { margin: 2.5mm 0 4mm 5mm; padding-left: 4.7mm; }
+      li { margin-bottom: 2mm; }
+      .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+      .mini { font-size: 8.6pt; line-height: 1.44; }
+      .mini li { font-size: 8.6pt; }
+      .source-list { margin-top: 4mm; border-top: 1px solid var(--line); padding-top: 3mm; color: #4e5c70; font-size: 7.8pt; line-height: 1.42; }
+      .matrix td:first-child { font-weight: 700; color: var(--navy); }
+      .phase { display: grid; grid-template-columns: 26mm 1fr; gap: 5mm; padding: 4mm 0; border-bottom: 1px solid var(--line); }
+      .phase-tag { height: fit-content; padding: 2.5mm; background: var(--navy); color: white; text-align: center; font-size: 8px; font-weight: bold; letter-spacing: 1px; }
+      .phase h3 { margin: 0 0 1.5mm; font-size: 10pt; }
+      .phase p { margin: 0; font-size: 9.2pt; }
+      .check { color: var(--green); font-weight: bold; }
+      .x { color: var(--red); font-weight: bold; }
+      @media print { body { background: white; } .page { margin: 0; } }
+    </style>
+  </head>
+  <body>
+    <section class="page cover">
+      <div class="cover-grid"></div>
+      <div class="cover-content">
+        <p class="brand">Casa del Cuenco · RESONANCIA</p>
+        <h1>Diagnóstico técnico del <span>motor animado</span> Geometrix</h1>
+        <p class="subtitle">Auditoría de ciclo de vida, composición SVG, Reanimated y riesgos de degradación progresiva entre Geometrix e Inicio.</p>
+        <div class="cover-mark">
+          <div>PREPARADO POR<b>casadelcuenco</b></div>
+          <div>FECHA DE CORTE<b>21 de agosto de 2026</b></div>
+          <div>ALCANCE<b>Revisión de código + protocolo de perfilado</b></div>
+          <div>CLASIFICACIÓN<b>Diagnóstico técnico interno</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">01 · Dictamen ejecutivo</p>
+      <h2>El patrón observado es compatible con presión sostenida de composición, no con una única fuga simple de timers.</h2>
+      <div class="rule"></div>
+      <p class="lede">La revisión estática verificó mecanismos de pausa y limpieza en los bucles principales. Por ello, no es correcto afirmar que todo Geometrix quede animando indefinidamente al cerrar. Sin embargo, el diseño actual sí conserva árboles pesados, objetos nativos y varias rutas de composición que elevan de forma marcada el costo de GPU y UI thread cuando se combinan capas, efectos y escenas.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">6×</div><div class="label">copias SVG de un glifo por capa con bloom, glow y expansión</div></div>
+        <div class="stat"><div class="num">2×</div><div class="label">árboles inline de Inicio durante modo inmersivo</div></div>
+        <div class="stat"><div class="num">24×</div><div class="label">segmentos posibles de kaleidoscopio por copia SVG</div></div>
+      </div>
+      <div class="callout danger"><strong>Conclusión operativa.</strong> La causa raíz exacta de la caída progresiva de FPS no puede certificarse sin un trace nativo en el dispositivo afectado. Sí hay evidencia suficiente para priorizar dos frentes: <strong>(1) contención del ciclo de vida</strong> de overlays y recursos persistentes, y <strong>(2) un presupuesto explícito de renderizado</strong> para capas y efectos.</div>
+      <h3>Respuesta a la hipótesis inicial</h3>
+      <p><strong>“¿Se están acumulando animaciones de fondo?”</strong> Hay indicios de trabajo que puede permanecer residente o reactivarse por carreras de apertura/cierre, pero la evidencia no demuestra una fuga general de <span class="code">setInterval</span> o <span class="code">requestAnimationFrame</span> en el flujo principal. El riesgo de GPU proviene principalmente de la multiplicación de superficies y primitivas SVG, de árboles ocultos que siguen montados y de la coexistencia de renderizadores.</p>
+      <div class="page-label">RESONANCIA · Diagnóstico Geometrix</div><div class="page-number">02</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">02 · Límites de evidencia</p>
+      <h2>Qué se verificó, qué se infiere y qué debe medirse.</h2>
+      <div class="rule"></div>
+      <table class="matrix">
+        <thead><tr><th>Clasificación</th><th>Significado en este documento</th><th>Uso permitido</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge confirmed">Confirmado</span></td><td>Se observó directamente en la implementación actual, con ruta y condición de ejecución identificables.</td><td>Puede priorizar una corrección técnica.</td></tr>
+          <tr><td><span class="badge likely">Probable</span></td><td>La estructura de render/ciclo de vida puede producir el síntoma; el costo final depende de dispositivo, GPU y renderer nativo.</td><td>Debe validarse mediante comparación controlada.</td></tr>
+          <tr><td><span class="badge unproven">No demostrado</span></td><td>No hay trace ni contador que pruebe causalidad bajo la secuencia reportada.</td><td>No se debe presentar como causa raíz.</td></tr>
+        </tbody>
+      </table>
+      <h3>Limitación esencial</h3>
+      <div class="callout warning">Esta auditoría se realizó sobre el repositorio y los flujos de ejecución disponibles en desarrollo. No sustituye los datos de <strong>React Native Performance Monitor, Xcode Instruments, Android Studio Profiler, perfiles de GPU/overdraw ni traces de Reanimated</strong> del teléfono donde aparece la degradación. Las cifras 6×, 12× y 24× describen multiplicadores estructurales de dibujo, no FPS medidos.</div>
+      <h3>Señales que sí descartan una explicación incompleta</h3>
+      <ul>
+        <li>El heartbeat de Geometrix limpia su intervalo al perder foco.</li>
+        <li>La carga incremental de miniaturas cancela RAF, <span class="code">InteractionManager</span> y timeout de precarga.</li>
+        <li>Ripple y expansión se desmontan cuando <span class="code">motion</span> pasa a falso; sus <span class="code">withRepeat</span> tienen cancelación.</li>
+        <li>La escena de Inicio recibe <span class="code">paused={!tabFocused}</span> y cancela sus loops al abandonar la pestaña.</li>
+      </ul>
+      <p>Estos controles son positivos, pero no resuelven por sí solos el costo de los árboles ya montados, de las copias SVG visibles u ocultas, de los objetos de audio retenidos ni de estados intermedios de una transición.</p>
+      <div class="source-list"><strong>Base de evidencia:</strong> <span class="code">geometrix.tsx</span>, <span class="code">GeometrixPanelContext.tsx</span>, <span class="code">app/(tabs)/_layout.tsx</span>, <span class="code">inicio8.tsx</span>, <span class="code">SceneAnimationInline.tsx</span>, <span class="code">GeometrixPatternBg.tsx</span> y <span class="code">SacredGlyph.tsx</span>.</div>
+      <div class="page-label">RESONANCIA · Método</div><div class="page-number">03</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">03 · Arquitectura observada</p>
+      <h2>El motor reúne tres dominios: composición, interacción y presentación de escenas.</h2>
+      <div class="architecture">
+        <div>
+          <div class="node gold"><b>GeometrixScreen</b><span>Canvas principal, estado de capas, presets, undo, gestos, audio de tema y paneles de edición. El foco depende de la ruta o de la apertura como overlay.</span></div>
+          <div class="node"><b>CanvasLayer → GeometryLayer</b><span>Una instancia por capa activa. Combina posición en UI thread, transformaciones vivas, opacidad, glifo base y efectos visuales.</span></div>
+          <div class="node"><b>SacredGlyph</b><span>Renderer SVG de cada geometría. Con kaleidoscopio genera referencias SVG repetidas por segmento.</span></div>
+          <div class="node"><b>GeometrixPatternBg</b><span>Fondo teselado SVG independiente, utilizado por canvas y flujos de presentación/edición.</span></div>
+        </div>
+        <div>
+          <div class="node red"><b>GeometrixPanelProvider</b><span>Gestiona apertura/cierre del panel deslizante con dos RAF iniciales y una animación de traslación.</span></div>
+          <div class="node"><b>Tabs layout</b><span>Tras la primera apertura, conserva el árbol de Geometrix montado y lo desplaza fuera de pantalla al cerrar.</span></div>
+          <div class="node green"><b>SceneAnimationInline</b><span>Reproduce una receta de Geometrix en Inicio; incorpora una versión normal y otra inmersiva.</span></div>
+          <div class="node"><b>Reanimated / Animated / Expo Audio</b><span>Coexisten animaciones en UI thread, transiciones nativas y jugadores de audio persistentes.</span></div>
+        </div>
+      </div>
+      <h3>Flujo que reproduce el síntoma</h3>
+      <div class="flow">
+        <div class="flow-box"><b>1 · Abrir</b>Inicio abre el panel; el layout monta Geometrix después del primer uso.</div>
+        <div class="flow-box"><b>2 · Componer</b>Capas y efectos inician trabajo de SVG, Reanimated y, opcionalmente, audio.</div>
+        <div class="flow-box"><b>3 · Cerrar</b>El panel se traslada, pero el árbol no se desmonta.</div>
+        <div class="flow-box"><b>4 · Activar Inicio</b>La cabecera añade una nueva escena SVG animada al presupuesto del proceso.</div>
+      </div>
+      <div class="callout"><strong>Implicación.</strong> No hace falta una fuga de JavaScript para percibir lentitud progresiva: la presión puede crecer por recursos nativos retenidos, texturas/capas de composición, memoria gráfica, invalidaciones de vista y una combinación de dibujos caros visible en los dos lugares que usan geometría animada.</div>
+      <div class="page-label">RESONANCIA · Arquitectura</div><div class="page-number">04</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">04 · Hallazgos de ciclo de vida</p>
+      <h2>Hay defectos concretos de contención, aunque no una fuga general confirmada.</h2>
+      <table class="matrix">
+        <thead><tr><th>Hallazgo</th><th>Estado</th><th>Severidad</th><th>Evidencia y efecto</th></tr></thead>
+        <tbody>
+          <tr><td>RAF de primera apertura sin cancelación</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge medium">Media</span></td><td><p><span class="code">openGeometrix</span> encadena dos RAF antes de <span class="code">animate(true)</span>. El cierre o desmontaje no guarda/cancela sus IDs. Una apertura-cierre muy rápida puede dejar trabajo diferido ejecutándose fuera del ciclo esperado.</p></td></tr>
+          <tr><td>Panel pesado permanece montado tras primer uso</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge high">Alta</span></td><td><p><span class="code">hasOpenedGeometrix</span> mantiene la pantalla en el layout; cerrar sólo cambia estado/posición. Se conserva memoria, listeners y vistas nativas aunque se mitigue movimiento.</p></td></tr>
+          <tr><td>Jugador de audio de tema se pausa, no se libera</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge low">Baja</span></td><td><p>El cleanup de foco llama <span class="code">stopTheme</span>; <span class="code">remove()</span> ocurre sólo al desmontar. Como el árbol persiste, el objeto nativo puede vivir toda la sesión.</p></td></tr>
+          <tr><td>Intro singleton retenido y habilitado para background</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge medium">Media</span></td><td><p>El reproductor de intro se crea como singleton, se pausa pero no se libera y habilita reproducción en background. Es más relevante para batería/recursos que para el FPS visual por sí solo.</p></td></tr>
+          <tr><td>Fuga general de timers en flujo principal</td><td><span class="badge unproven">No demostrada</span></td><td><span class="badge low">Baja</span></td><td><p>Heartbeat, batches de thumbnails, precarga y frame callback analizados tienen cleanup. No atribuir el síntoma a “intervalos sin limpiar” sin trace.</p></td></tr>
+        </tbody>
+      </table>
+      <h3>Lectura técnica</h3>
+      <p>El defecto del RAF es real y debe corregirse por determinismo. El montaje persistente no es necesariamente un bug —puede evitar un flash de reapertura—, pero exige un contrato más riguroso: <strong>todo efecto animado, objeto de audio y vista costosa debe congelarse o liberarse de manera centralizada al cerrar.</strong></p>
+      <div class="page-label">RESONANCIA · Ciclo de vida</div><div class="page-number">05</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">05 · Presupuesto de renderizado por capa</p>
+      <h2>La multiplicación visual es suficiente para explicar presión GPU aun sin fugas.</h2>
+      <p class="lede">Una capa no es un único glifo. El renderer puede apilar varias copias SVG y superficies de efecto con el mismo tamaño aproximado.</p>
+      <div class="cost-visual">
+        <div class="cost-block">1×<br>glifo base</div><div class="cost-arrow">+</div>
+        <div class="cost-block gold">2×<br>bloom</div><div class="cost-arrow">+</div>
+        <div class="cost-block gold">2×<br>glow</div><div class="cost-arrow">+</div>
+        <div class="cost-block red">1×<br>expansión</div>
+      </div>
+      <table>
+        <thead><tr><th>Elemento por capa</th><th>Copias / nodos</th><th>Observación</th></tr></thead>
+        <tbody>
+          <tr><td>Glifo base</td><td>1</td><td>Siempre existe por capa activa.</td></tr>
+          <tr><td>Bloom</td><td>+2 glifos</td><td>Dos copias anchas/translúcidas.</td></tr>
+          <tr><td>Glow</td><td>+2 glifos</td><td>Dos copias adicionales con opacidad y trazo ampliado.</td></tr>
+          <tr><td>Expansión</td><td>+1 glifo animado</td><td>Escala y desvanece en repetición mientras motion está activo.</td></tr>
+          <tr><td>Halo / ripple</td><td>+1 / +2 superficies SVG</td><td>Halo radial; dos anillos concéntricos con animación.</td></tr>
+          <tr><td>Partículas</td><td>20 nodos potenciales</td><td>La implementación existe, pero no se halló una invocación actual en el renderer principal; no se contabiliza como costo activo confirmado.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout danger"><strong>Máximo estructural confirmado:</strong> base + bloom + glow + expansión = <strong>6 copias de glifo</strong> por capa, antes de halo y ripple. Con kaleidoscopio de 6 segmentos, el renderer debe resolver aproximadamente 36 equivalentes internos por capa; la configuración acepta hasta 24 segmentos. La cifra real de fragmentos depende del glifo y del renderer SVG, pero el multiplicador de estructura es verificable.</div>
+      <p>Al sumar cuatro capas intensivas con kaleidoscopio, cada frame puede contener cientos de referencias SVG, varias sombras/transparencias y superficies solapadas. Esto castiga fill-rate, blending y memoria gráfica; en móviles de gama media puede afectar la respuesta de toda vista que use el mismo renderer.</p>
+      <div class="page-label">RESONANCIA · Composición</div><div class="page-number">06</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">06 · Inicio e inmersivo</p>
+      <h2>La cabecera de Inicio puede duplicar la misma receta de escena.</h2>
+      <div class="two-col">
+        <div>
+          <h3>Instancia normal</h3>
+          <p class="mini">La escena inline se monta en la cabecera. Su pausa depende del foco de tab, no de si la experiencia inmersiva está activa.</p>
+          <h3>Instancia inmersiva</h3>
+          <p class="mini">Cuando existe una escena, se monta una segunda instancia absoluta. Ésta se pausa mientras no está inmersiva, pero continúa reteniendo su árbol SVG estático.</p>
+        </div>
+        <div>
+          <h3>Consecuencia</h3>
+          <p class="mini">Durante inmersivo o transiciones, ambos árboles pueden coexistir. La normal no recibe <span class="code">paused={!tabFocused || !immersive}</span>, por lo que puede seguir ejecutando sus efectos mientras la segunda escena se muestra.</p>
+          <h3>Impacto</h3>
+          <p class="mini">La duplicación eleva nodos, composición SVG y, en el peor caso, trabajo Reanimated. Con efectos activos se pasa de hasta 6 a aproximadamente 12 copias de glifo por capa entre ambas instancias.</p>
+        </div>
+      </div>
+      <h3>Patrón de fondo teselado</h3>
+      <p><span class="code">GeometrixPatternBg</span> usa un SVG con <span class="code">Pattern</span> y un <span class="code">Rect 9999×9999</span>. Sólo se describe un patrón, pero el render nativo debe teselar la región visible. Con tile de 40 px en una ventana 400×800 se rozan 200 celdas; a 20 px se aproxima a 800. Espaciados pequeños permiten solapamiento y elevan overdraw.</p>
+      <div class="callout warning"><strong>Hallazgo probable de alto impacto.</strong> El patrón puede existir simultáneamente en canvas normal, modal inmersivo y modo de edición. La coexistencia está verificada por JSX; la cantidad exacta compuesta en cada plataforma requiere perfil nativo, pues un modal puede o no evitar el dibujo del árbol subyacente según renderer.</div>
+      <h3>Por qué el síntoma aparece en Inicio y Geometrix</h3>
+      <p>Ambas pantallas son las que activan el pipeline completo de geometría SVG, transparencias, gradientes y valores animados. El resto de la app no dispara ese presupuesto gráfico, por lo que permanecer fluido no contradice una degradación localizada en estas vistas.</p>
+      <div class="page-label">RESONANCIA · Escenas</div><div class="page-number">07</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">07 · Matriz de diagnóstico</p>
+      <h2>Hallazgos priorizados por evidencia e impacto.</h2>
+      <table class="matrix">
+        <thead><tr><th>ID</th><th>Hipótesis / hallazgo</th><th>Estado</th><th>Impacto</th><th>Acción de validación</th></tr></thead>
+        <tbody>
+          <tr><td>G-01</td><td>El doble RAF puede ejecutar una apertura tardía después de cerrar.</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge medium">Media</span></td><td>Stress test: abrir/cerrar en &lt;2 frames; contar callbacks y estado final.</td></tr>
+          <tr><td>G-02</td><td>El panel oculto conserva un árbol pesado y recursos nativos durante la sesión.</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge high">Alta</span></td><td>Comparar oculto trasladado vs. congelado/desmontado: memoria, UI FPS y GPU.</td></tr>
+          <tr><td>G-03</td><td>Copias SVG + kaleidoscopio superan la capacidad de composición en escenas complejas.</td><td><span class="badge likely">Probable</span></td><td><span class="badge high">Alta</span></td><td>Escalera 1/2/4/8 capas; activar efectos por familia y medir frame time.</td></tr>
+          <tr><td>G-04</td><td>La cabecera normal y la inmersiva duplican render/animación.</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge high">Alta</span></td><td>Perfilar inmersivo con normal desmontada vs. opacidad 0.</td></tr>
+          <tr><td>G-05</td><td>El patrón teselado dispara fill-rate/overdraw en tamaños pequeños.</td><td><span class="badge likely">Probable</span></td><td><span class="badge high">Alta</span></td><td>A/B sin patrón, tiles 20/40/80 y overdraw/GPU frame time.</td></tr>
+          <tr><td>G-06</td><td>Theme/intro retenidos sostienen consumo en background.</td><td><span class="badge confirmed">Confirmado</span></td><td><span class="badge low">Baja</span></td><td>Medir uso de memoria/audio tras cerrar y volver a foreground.</td></tr>
+          <tr><td>G-07</td><td>Existe fuga general de intervalos o RAF sin cleanup.</td><td><span class="badge unproven">No demostrada</span></td><td><span class="badge low">Baja</span></td><td>Instrumentar contador de handles; no priorizar antes de G-01 a G-05.</td></tr>
+        </tbody>
+      </table>
+      <div class="page-label">RESONANCIA · Priorización</div><div class="page-number">08</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">08 · Protocolo de perfilado</p>
+      <h2>La causa raíz se confirma con una batería corta, repetible y comparable.</h2>
+      <h3>Entorno mínimo</h3>
+      <ul>
+        <li>Un dispositivo físico donde se observe el síntoma, modelo/OS/build anotados.</li>
+        <li>Build de desarrollo con herramientas nativas activables; evitar medir sólo el navegador Expo web.</li>
+        <li>React Native Performance Monitor, Xcode Instruments (Core Animation/Time Profiler) o Android Studio Profiler/GPU rendering profile, según plataforma.</li>
+        <li>Estado reproducible: misma receta, número de capas, efecto, brillo, batería y modo térmico cuando sea posible.</li>
+      </ul>
+      <h3>Secuencia de prueba</h3>
+      <table>
+        <thead><tr><th>Fase</th><th>Acción</th><th>Medidas que registrar</th></tr></thead>
+        <tbody>
+          <tr><td>A · Línea base</td><td>Lanzamiento frío → Inicio sin escena activa, 3 min.</td><td>FPS UI/JS, memoria inicial, frame time p95, CPU/GPU si disponible.</td></tr>
+          <tr><td>B · Escalera</td><td>Geometrix con 1, 2, 4 y 8 capas; repetir con efectos apagados, glow/bloom, expansión/ripple y kaleidoscopio.</td><td>Frame time p50/p95, dropped frames, memoria y temperatura perceptible.</td></tr>
+          <tr><td>C · Persistencia</td><td>Usar 5 min, cerrar panel, esperar 60 s en Inicio; activar escena de header.</td><td>Comparar contra A; revisar audio, vistas, memoria y recuperación de FPS.</td></tr>
+          <tr><td>D · Ciclo</td><td>Repetir 10 veces abrir → componer → cerrar → Inicio; incluir 10 aperturas/cierres rápidos.</td><td>Tendencia de memoria/FPS y estado final consistente del overlay.</td></tr>
+          <tr><td>E · Aislamiento</td><td>En build diagnóstico, apagar una familia por vez: patrón, kaleidoscopio, glow/bloom, duplicado inmersivo, árbol oculto.</td><td>Diferencia porcentual contra la misma receta base.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>Criterio de causalidad.</strong> Una hipótesis pasa a “confirmada como causa dominante” sólo si eliminarla o reducirla recupera de manera repetible el frame time/FPS bajo la misma secuencia, no porque coincida visualmente con el síntoma.</div>
+      <div class="page-label">RESONANCIA · Perfilado</div><div class="page-number">09</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">09 · Plan de remediación</p>
+      <h2>Primero determinismo; después, presupuesto gráfico y observabilidad.</h2>
+      <div class="phase">
+        <div class="phase-tag">P0 · CONTENER</div>
+        <div><h3>Centralizar el apagado al cerrar overlay</h3><p>Guardar y cancelar RAF diferidos; asociar una generación de apertura para ignorar callbacks antiguos; detener todas las animaciones de transición y garantizar un único cleanup para ruta y overlay. Pausar/liberar audio de tema según el contrato deseado y liberar el intro cuando ya no sea necesario.</p></div>
+      </div>
+      <div class="phase">
+        <div class="phase-tag">P0 · CONGELAR</div>
+        <div><h3>Definir la semántica del árbol oculto</h3><p>Cuando Geometrix esté cerrado, elegir explícitamente entre desmontar, congelar o preservar sólo un snapshot barato. Si se conserva montado por UX, todos los efectos, callbacks de frame, audio y vistas de alto costo deben tener un gate único de visibilidad.</p></div>
+      </div>
+      <div class="phase">
+        <div class="phase-tag">P1 · REDUCIR</div>
+        <div><h3>Presupuesto por capa y degradación progresiva</h3><p>Fijar máximos por dispositivo/escena: capas activas, segmentos de kaleidoscopio, glow/bloom simultáneos, ripple/expansión y tamaño mínimo de tile. Convertir efectos redundantes en una sola capa de glow cuando la fidelidad visual lo permita.</p></div>
+      </div>
+      <div class="phase">
+        <div class="phase-tag">P1 · EVITAR 2×</div>
+        <div><h3>Una sola escena activa en Inicio</h3><p>Desmontar o pausar estrictamente la instancia normal al entrar en inmersivo; no depender sólo de opacity/pointer events. Validar que canvas, modal inmersivo y edición no compongan el mismo patrón y capas simultáneamente.</p></div>
+      </div>
+      <div class="phase">
+        <div class="phase-tag">P2 · OBSERVAR</div>
+        <div><h3>Instrumentación y regresión</h3><p>Crear contador de escenas/capas activas, callbacks pendientes, audio players y presupuesto visual. Añadir una prueba de stress de 10 ciclos y criterios de frame time en los dispositivos de referencia.</p></div>
+      </div>
+      <div class="page-label">RESONANCIA · Remediación</div><div class="page-number">10</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">10 · Criterios de aceptación</p>
+      <h2>La corrección debe demostrar recuperación, no sólo reorganización de código.</h2>
+      <table class="matrix">
+        <thead><tr><th>Objetivo</th><th>Prueba de aceptación</th><th>Resultado esperado</th></tr></thead>
+        <tbody>
+          <tr><td>Sin carrera de apertura</td><td>100 secuencias abrir/cerrar rápidas en desarrollo instrumentado.</td><td><span class="check">Un solo estado final coherente</span>; ningún callback abre el panel tras un cierre.</td></tr>
+          <tr><td>Sin trabajo oculto innecesario</td><td>Cerrar Geometrix y observar contadores/trace durante 60 s.</td><td><span class="check">0 loops visuales activos</span> fuera de la escena visible; audio conforme al producto.</td></tr>
+          <tr><td>Recuperación Inicio</td><td>Después de 5 min de Geometrix intenso, volver y activar header.</td><td><span class="check">Frame time/FPS vuelve cerca de línea base</span>, sin caída progresiva por ciclo.</td></tr>
+          <tr><td>Presupuesto visual</td><td>Receta máxima aprobada en dispositivos de referencia.</td><td><span class="check">Sin dropped frames sostenidos</span>; degradación de efectos controlada si se supera presupuesto.</td></tr>
+          <tr><td>Modo inmersivo</td><td>A/B con escena normal desmontada o detenida.</td><td><span class="check">No hay doble animación/dibujo</span> y la transición permanece fluida.</td></tr>
+        </tbody>
+      </table>
+      <h3>Recomendación de orden</h3>
+      <ol>
+        <li>Corregir G-01 y establecer un controlador único de visibilidad/cierre.</li>
+        <li>Probar G-02 y G-04 con toggles temporales y capturar mediciones físicas.</li>
+        <li>Reducir G-03/G-05 según el dato: primero duplicación y patrón, luego segmentos y efectos.</li>
+        <li>Retener una receta visual de referencia para que la optimización no altere el lenguaje de Geometrix.</li>
+      </ol>
+      <div class="callout ok"><strong>Fortaleza actual.</strong> El proyecto ya dispone de gates de foco, cancelaciones locales y memoización en partes del renderer. La remediación no requiere reescribir Geometrix desde cero: debe convertir esas defensas locales en una política única de ciclo de vida y presupuesto de renderizado.</div>
+      <div class="page-label">RESONANCIA · Cierre técnico</div><div class="page-number">11</div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">11 · Anexo de trazabilidad</p>
+      <h2>Rutas revisadas y hechos directamente observados.</h2>
+      <table class="matrix">
+        <thead><tr><th>Ruta</th><th>Elementos relevantes</th><th>Uso en el diagnóstico</th></tr></thead>
+        <tbody>
+          <tr><td class="code">context/GeometrixPanelContext.tsx</td><td>Panel animation; doble RAF de apertura; estado de primera apertura.</td><td>G-01 y contrato de cierre.</td></tr>
+          <tr><td class="code">app/(tabs)/_layout.tsx</td><td>Render persistente del panel tras <span class="code">hasOpenedGeometrix</span>.</td><td>G-02, árbol oculto.</td></tr>
+          <tr><td class="code">app/(tabs)/geometrix.tsx</td><td>GeometryLayer, CanvasLayer, efectos, focus cleanup, heartbeat, audio de tema, pattern en canvas/modal/editor.</td><td>G-02, G-03, G-05, G-06, G-07.</td></tr>
+          <tr><td class="code">components/SceneAnimationInline.tsx</td><td>Gate <span class="code">motion</span>, ripple/expansión, replicación de glifos por bloom/glow.</td><td>Contraevidencia de fuga general y costo estructural.</td></tr>
+          <tr><td class="code">app/(tabs)/inicio8.tsx</td><td>Instancia normal e inmersiva de escena; gates de foco.</td><td>G-04 y vínculo Inicio/Geometrix.</td></tr>
+          <tr><td class="code">components/GeometrixPatternBg.tsx</td><td>Pattern SVG, tamaño de tile, rect de gran superficie.</td><td>G-05 y overdraw probable.</td></tr>
+          <tr><td class="code">components/SacredGlyph.tsx</td><td>Referencias SVG del kaleidoscopio, rango de segmentos.</td><td>Multiplicador interno por copia.</td></tr>
+          <tr><td class="code">lib/geometrixIntro.ts</td><td>Singleton de intro y configuración de audio background.</td><td>G-06.</td></tr>
+        </tbody>
+      </table>
+      <h3>Dictamen final</h3>
+      <p class="lede">El motor no presenta una evidencia estática de colapso por un único timer abandonado. Presenta, en cambio, una arquitectura visualmente rica cuyo costo se multiplica rápidamente y cuyo ciclo de vida debe endurecerse. La ruta correcta es medir, contener y presupuestar; no eliminar efectos a ciegas.</p>
+      <div class="callout"><strong>Siguiente decisión técnica:</strong> ejecutar el protocolo en el teléfono afectado y abrir una fase de corrección enfocada en ciclo de vida del overlay, eliminación de doble renderer y límites de composición. Con esas mediciones se podrá convertir los hallazgos probables en causas confirmadas y validar la mejora antes de release.</div>
+      <div class="page-label">RESONANCIA · Anexo</div><div class="page-number">12</div>
+    </section>
+  </body>
+</html>
