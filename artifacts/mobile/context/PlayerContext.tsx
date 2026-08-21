@@ -17,7 +17,7 @@ import React, {
   useState,
 } from "react";
 
-import { type Session, SESSIONS, getSessionById, getSessionsByCategory } from "@/data/sessions";
+import { type Session, SESSIONS, getSessionById, getSessionsByCategory, getDescansoVisibleSessions } from "@/data/sessions";
 
 /** Categorías cuya cola implícita auto-avanza al azar al terminar una sesión
  *  (Música y Sesiones — Tarea #191). */
@@ -1044,7 +1044,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (queueImplicitRef.current) {
         const cur = currentSessionRef.current;
         if (cur) {
-          const ids = getSessionsByCategory(cur.categoryId).map((s) => s.id);
+          const ids = (cur.categoryId === "descanso"
+            ? getDescansoVisibleSessions()
+            : getSessionsByCategory(cur.categoryId)
+          ).map((s) => s.id);
           if (ids.length > 1) {
             playOrderRef.current = ids;
             playIndexRef.current = Math.max(0, ids.indexOf(cur.id));
@@ -1072,7 +1075,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const advancePlaylistRandom = useCallback(() => {
     const cur = currentSessionRef.current;
     if (!cur) return;
-    const full = getSessionsByCategory(cur.categoryId).map((s) => s.id);
+    const full = (cur.categoryId === "descanso"
+      ? getDescansoVisibleSessions()
+      : getSessionsByCategory(cur.categoryId)
+    ).map((s) => s.id);
     const others = full.filter((id) => id !== cur.id);
     if (!others.length) return;
     const nextId = others[Math.floor(Math.random() * others.length)];
@@ -1198,7 +1204,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setShuffleMode(false);
         const contextIds =
           session.categoryId !== "meditaciones-guiadas"
-            ? getSessionsByCategory(session.categoryId).map((s) => s.id)
+            ? (session.categoryId === "descanso"
+                ? getDescansoVisibleSessions()
+                : getSessionsByCategory(session.categoryId)
+              ).map((s) => s.id)
             : [];
         if (contextIds.length > 1 && contextIds.includes(session.id)) {
           setActivePlaylistIds(contextIds);

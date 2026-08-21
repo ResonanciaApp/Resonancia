@@ -22,7 +22,7 @@ import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
-import { getSessionsByDescansoTag, getSessionById } from "@/data/sessions";
+import { getSessionsByDescansoTag, getSessionById, DESCANSO_VISIBLE_TAGS, getDescansoVisibleSessions } from "@/data/sessions";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -366,12 +366,14 @@ export default function DescansoScreen() {
   );
   const asmrForTodos = useMemo(() => getSessionsByDescansoTag("ASMR"), []);
 
+  // allDescansoIds usa getDescansoVisibleSessions() como fuente de verdad compartida
+  // con el reproductor: solo las sesiones con tags en DESCANSO_VISIBLE_TAGS.
   const allDescansoIds = useMemo(() => {
     const ids = new Set<string>();
-    historiasForTodos.forEach((s) => ids.add(s.id));
-    asmrForTodos.forEach((s) => ids.add(s.id));
+    getDescansoVisibleSessions().forEach((s) => ids.add(s.id));
     return ids;
-  }, [historiasForTodos, asmrForTodos]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const recentInDescanso = useMemo(() => {
     const seen = new Set<string>();
@@ -413,10 +415,8 @@ export default function DescansoScreen() {
     Animated.timing(slideX, { toValue: 0, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
   }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const allDormiSessions = useMemo(
-    () => [...historiasForTodos, ...asmrForTodos],
-    [historiasForTodos, asmrForTodos],
-  );
+  // Mismo conjunto que la cola implícita del reproductor (DESCANSO_VISIBLE_TAGS).
+  const allDormiSessions = useMemo(() => getDescansoVisibleSessions(), []);
 
   return (
     <LinearGradient

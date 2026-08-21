@@ -1199,6 +1199,33 @@ export function getSessionsByDescansoTag(tag: DescansoTag): Session[] {
   return SESSIONS.filter((s) => s.descansoTag === tag);
 }
 
+/** Tags visibles en la pantalla Dormir (fuente de verdad compartida con el reproductor).
+ *  Solo las sesiones con estos tags aparecen en los tabs de Dormir; las demás
+ *  (Relajaciones, Sueño profundo, Ruidos, Meditaciones) nunca se muestran y no
+ *  deben entrar en la cola implícita de navegación prev/next. */
+export const DESCANSO_VISIBLE_TAGS: DescansoTag[] = [
+  "Historias para dormir",
+  "Historias infantiles",
+  "ASMR",
+];
+
+/** Devuelve todas las sesiones visibles en la pantalla Dormir, deduplicadas
+ *  y en el mismo orden en que aparecerían al recorrer los tabs de izquierda a
+ *  derecha. Úsala para construir la cola implícita del reproductor. */
+export function getDescansoVisibleSessions(): Session[] {
+  const seen = new Set<string>();
+  const result: Session[] = [];
+  for (const tag of DESCANSO_VISIBLE_TAGS) {
+    for (const s of getSessionsByDescansoTag(tag)) {
+      if (!seen.has(s.id)) {
+        seen.add(s.id);
+        result.push(s);
+      }
+    }
+  }
+  return result;
+}
+
 export function getFeaturedSessions(): Session[] {
   return SESSIONS.filter((s) => s.isFeatured);
 }
