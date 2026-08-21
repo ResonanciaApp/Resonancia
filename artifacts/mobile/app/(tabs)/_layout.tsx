@@ -24,7 +24,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
-import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { useMixer } from "@/context/MixerContext";
@@ -597,10 +596,6 @@ function TabLayoutInner() {
         </>
       )}
 
-      {/* ── MezclaMiniPlayer (presets y mezclas creadas en el Mezclador) ── */}
-      {!isMixerOpen && (
-        <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
-      )}
 
       {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
       {selectedSound && (
