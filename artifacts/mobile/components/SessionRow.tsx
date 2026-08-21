@@ -27,7 +27,7 @@ type Props = {
 export function SessionRow({ session, rating, style, imageSize = 80, metaText, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
-  const { playSession } = usePlayer();
+  const { playSession, prewarmSession } = usePlayer();
   const overlay = useCategoryOverlayOptional();
   const locked = !!session.isPremium && !isPremium;
   const voiceLabel = getVoiceLabel(session);
@@ -49,6 +49,11 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, o
     <View style={[styles.sessionRow, style]}>
       <Pressable
         onPress={onPress ?? defaultPress}
+        onPressIn={() => {
+          if (!onPress && !locked && (session.skipDetail || session.skipMiniPlayer)) {
+            prewarmSession(session);
+          }
+        }}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
       >
         <View style={[styles.sessionImgWrap, { width: imageSize, height: imageSize }]}>

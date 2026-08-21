@@ -94,6 +94,8 @@ type PlayerContextType = {
   isFavorite: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   playSession: (session: Session) => void;
+  /** Precargar audio de una sesión en onPressIn para reducir latencia al abrir el reproductor */
+  prewarmSession: (session: Session) => void;
   /** Play a looping session for a specific number of minutes */
   playSessionWithDuration: (session: Session, minutes: number) => void;
   /** true cuando la sesión actual es un loop infinito (suena hasta pausar/temporizador) */
@@ -283,6 +285,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // Keep latest isPlaying in a ref so timer callbacks see the current value
   const isPlayingRef = useRef(false);
+  /** true una vez que setAudioModeAsync corrió exitosamente (eager o lazy) */
+  const audioModeReadyRef = useRef(false);
+  /** id de la sesión cuyo replace() se disparó en onPressIn, sin play todavía */
+  const prewarmSessionIdRef = useRef<string | null>(null);
   isPlayingRef.current = isPlaying;
 
   /** Session currently accruing real listen time (flushed to statEvents on end) */
@@ -737,6 +743,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return voicePlayerRef.current;
   }, []);
 
+  /** Precargar el audio de una sesión al tocar (onPressIn) para que el
+   *  buffering de red empiece antes de que el reproductor abra pantalla.
+   *  playSession() detecta el prewarm y omite el replace() redundante. */
+  const prewarmSession = useCallback(
+    (session: Session) => {
+      if (!audioModeReadyRef.current) return; // audio session aún no configurada
+      if (isPlayingRef.current) return;       // no interrumpir reproducción activa
+      const audioFile =
+        (session.audioUri ? { uri: session.audioUri } : undefined) ??
+        AUDIO_MAP[session.id];
+      if (!audioFile) return;
+      prewarmSessionIdRef.current = session.id;
+      const main = ensureMainPlayer();
+      try { main.replace(audioFile); } catch (_) {}
+    },
+    [ensureMainPlayer],
+  );
+
   /** Stop the gapless engine loop voice (if any) and clear the loop flags */
   const teardownLoopCrossfade = () => {
     clearLoopPauseDebounce();
@@ -779,6 +803,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       clearSleepInterval();
     };
   }, []);
+
+  // Eager audio-mode + player init: se ejecuta una vez al montar el contexto.
+  // Así el primer playSession() puede omitir el await setAudioModeAsync (200-500 ms)
+  // e ir directo a replace() + play(), reduciendo la latencia de arranque.
+  useEffect(() => {
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
+    })
+      .then(() => { audioModeReadyRef.current = true; })
+      .catch(() => {});
+    ensureMainPlayer();
+  }, [ensureMainPlayer]);
 
   // ── Sleep timer tick ────────────────────────────────────────────────────────
   // Arranca/para el interval de UI según isPlaying y si el timer está activo.
@@ -1272,15 +1310,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(true);
         hasRealAudioRef.current = true;
         try {
-          await setAudioModeAsync({
-            playsInSilentMode: true,
-            shouldPlayInBackground: true,
-            // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
-            // convierta la app en la "app de Now Playing" y muestre los controles
-            // en pantalla bloqueada / Centro de Control. Con el default
-            // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
-            interruptionMode: "doNotMix",
-          });
+          if (!audioModeReadyRef.current) {
+            await setAudioModeAsync({
+              playsInSilentMode: true,
+              shouldPlayInBackground: true,
+              // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
+              // convierta la app en la "app de Now Playing" y muestre los controles
+              // en pantalla bloqueada / Centro de Control. Con el default
+              // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
+              interruptionMode: "doNotMix",
+            });
+            audioModeReadyRef.current = true;
+          }
           // Otra sesión arrancó mientras esperábamos: abortar sin tocar nada
           // (si siguiéramos, pisaríamos el audio de la sesión nueva).
           if (gen !== playGenRef.current) return;
@@ -1289,7 +1330,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           main.loop = false;
           pendingSeekRef.current = resumeFraction > 0 ? resumeFraction : null;
           mainPlayerGenRef.current = gen; // sella la generación antes del replace
-          main.replace(audioFile);
+          // Si onPressIn ya llamó prewarmSession() con esta misma sesión, el
+          // replace() corrió antes y el buffer lleva ventaja: ir directo a play().
+          const alreadyPrewarmed = prewarmSessionIdRef.current === session.id;
+          prewarmSessionIdRef.current = null;
+          if (!alreadyPrewarmed) main.replace(audioFile);
           main.volume = mainVolumeRef.current;
           main.play();
 
@@ -1347,11 +1392,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         lockScreenPendingRef.current = null;
         if (voiceOnlyFile) {
           try {
-            await setAudioModeAsync({
-              playsInSilentMode: true,
-              shouldPlayInBackground: true,
-              interruptionMode: "doNotMix",
-            });
+            if (!audioModeReadyRef.current) {
+              await setAudioModeAsync({
+                playsInSilentMode: true,
+                shouldPlayInBackground: true,
+                interruptionMode: "doNotMix",
+              });
+              audioModeReadyRef.current = true;
+            }
             if (gen !== playGenRef.current) return; // otra sesión arrancó mientras esperábamos
             const voice = ensureVoicePlayer();
             voice.loop = false;
@@ -1439,15 +1487,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         hasRealAudioRef.current = true;
         loopModeRef.current = true;
         try {
-          await setAudioModeAsync({
-            playsInSilentMode: true,
-            shouldPlayInBackground: true,
-            // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
-            // convierta la app en la "app de Now Playing" y muestre los controles
-            // en pantalla bloqueada / Centro de Control. Con el default
-            // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
-            interruptionMode: "doNotMix",
-          });
+          if (!audioModeReadyRef.current) {
+            await setAudioModeAsync({
+              playsInSilentMode: true,
+              shouldPlayInBackground: true,
+              // doNotMix = foco de audio exclusivo. Imprescindible para que iOS
+              // convierta la app en la "app de Now Playing" y muestre los controles
+              // en pantalla bloqueada / Centro de Control. Con el default
+              // (mixWithOthers) iOS no muestra nada ("Sin Reproducción").
+              interruptionMode: "doNotMix",
+            });
+            audioModeReadyRef.current = true;
+          }
           // Otra sesión arrancó mientras esperábamos: abortar sin tocar nada.
           if (gen !== playGenRef.current) return;
 
@@ -1853,6 +1904,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         playlistPrev,
         toggleShuffle,
         playSession,
+        prewarmSession,
         playSessionWithDuration,
         infiniteLoop,
         pauseResume,
