@@ -1302,7 +1302,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             voicePlayerRef.current?.pause();
           }
 
-          lockScreenPendingRef.current = { session, withSeek: true };
+          // Con cola implícita (estilo Calm) el reproductor muestra prev/next,
+          // no ±15s: no tiene sentido mostrar flechas de seek en la pantalla
+          // de bloqueo. Las meditaciones (sin cola implícita) sí conservan seek.
+          lockScreenPendingRef.current = { session, withSeek: !queueImplicitRef.current };
           lastPlayingRef.current = true;
           setIsPlaying(true);
           markPlayStarted();
