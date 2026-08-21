@@ -123,7 +123,9 @@ export type DescansoTag =
   | "Meditaciones"
   | "Historias para dormir"
   | "Historias infantiles"
-  | "ASMR";
+  | "ASMR"
+  | "Sonidos Binaurales"
+  | "Sonidos Ambientales";
 
 export interface DescansoTagCard {
   id: string;
@@ -182,5 +184,19 @@ export const DESCANSO_TAG_CARDS: DescansoTagCard[] = [
     description: "Sonidos íntimos y susurrados que activan la respuesta sensorial del cuerpo, disolviendo la tensión hasta el sueño.",
     icon: "headphones",
     accent: "#C8B4E0",
+  },
+  {
+    id: "sonidos-binaurales",
+    label: "Sonidos Binaurales",
+    description: "Frecuencias que sincronizan tu cerebro para el descanso más profundo. Usa auriculares para la experiencia completa.",
+    icon: "radio",
+    accent: "#8AAAD4",
+  },
+  {
+    id: "sonidos-ambientales",
+    label: "Sonidos Ambientales",
+    description: "Paisajes sonoros naturales y ambientes envolventes que preparan el sistema nervioso para un descanso profundo.",
+    icon: "wind",
+    accent: "#7AB8A8",
   },
 ];

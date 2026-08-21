@@ -1207,6 +1207,8 @@ export const DESCANSO_VISIBLE_TAGS: DescansoTag[] = [
   "Historias para dormir",
   "Historias infantiles",
   "ASMR",
+  "Sonidos Binaurales",
+  "Sonidos Ambientales",
 ];
 
 /** Devuelve todas las sesiones visibles en la pantalla Dormir, deduplicadas
