@@ -146,7 +146,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   };
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
+  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, clearSessionProgress } = usePlayer();
   const { isPremium } = usePremium();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
@@ -336,8 +336,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     return pool.slice(0, 7);
   }, [session.id]);
 
-  const savedProgress = getSessionProgress(session.id);
-  const hasProgress = savedProgress > 0.005;
 
   const { data: playsData } = useGetSessionPlayCount(session.id, {
     query: { queryKey: getGetSessionPlayCountQueryKey(session.id), staleTime: 60_000 },
@@ -345,21 +343,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    playSession(session);
-    if (session.skipMiniPlayer) return;
-    router.push("/player" as never);
-  };
-
-  const handlePlayFromStart = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     clearSessionProgress(session.id);
-    playSession(session);
-    if (session.skipMiniPlayer) return;
-    router.push("/player" as never);
-  };
-
-  const handleContinue = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     playSession(session);
     if (session.skipMiniPlayer) return;
     router.push("/player" as never);
@@ -509,50 +493,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           )}
 
           {/* ── Botones Escuchar / Compartir ─────────────────────────── */}
-          {hasProgress && !isPlaceholder ? (
-            <>
-              <View style={[styles.splitBtnRow, { marginTop: 10, marginBottom: 12 }]}>
-                {/* Reiniciar */}
-                <Pressable
-                  onPress={handlePlayFromStart}
-                  style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
-                >
-                  <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Feather name="rotate-ccw" size={16} color={playBtnTextColor} />
-                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>Reiniciar</Text>
-                </Pressable>
-
-                <View style={styles.splitDivider} />
-
-                {/* Continuar */}
-                <Pressable
-                  onPress={handleContinue}
-                  style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
-                >
-                  <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Svg width={16} height={16} viewBox="0 0 48 48">
-                    <Path
-                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill={playBtnTextColor}
-                    />
-                  </Svg>
-                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>Continuar</Text>
-                </Pressable>
-              </View>
-
-              {/* Compartir — debajo del split */}
-              <Pressable
-                onPress={handleShare}
-                style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
-              >
-                <View style={[styles.shareBtnInner, { borderColor: shareBtnBorder }]}>
-                  <Text style={[styles.shareBtnText, { color: shareBtnTextColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={shareBtnTextColor} />
-                </View>
-              </Pressable>
-            </>
-          ) : (
-            /* Escuchar ahora + Compartir lado a lado */
             <View style={{ flexDirection: "row", gap: 10, marginTop: 16, marginBottom: 26 }}>
               <Pressable
                 onPress={handlePlay}
@@ -603,7 +543,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 </View>
               </Pressable>
             </View>
-          )}
 
           {/* Duration label + rating */}
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5, marginBottom: 5 }}>
@@ -1297,30 +1236,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#F9F9F9",
     letterSpacing: 0.5,
-  },
-  splitBtnRow: {
-    flexDirection: "row",
-    borderRadius: 30,
-    overflow: "hidden",
-    shadowColor: "#F9F9F9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  splitBtn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 9,
-    gap: 8,
-    overflow: "hidden",
-  },
-  splitDivider: {
-    width: 1,
-    backgroundColor: "rgba(0,0,0,0.25)",
-    zIndex: 2,
   },
   playsRow: {
     flexDirection: "row",
