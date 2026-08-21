@@ -88,13 +88,7 @@ function resolveImageUrl(raw: string | null | undefined): string | null {
   return raw;
 }
 
-interface UploadedFile {
-  file: File;
-  objectPath: string;
-  contentType: string;
-  sizeBytes: number;
-  name: string;
-}
+import { uploadFile as uploadFileShared, type UploadedFile } from "@/lib/uploadFile";
 
 interface AudioSlot {
   file: File | null;
@@ -287,33 +281,8 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   };
 
   // ── Upload de un archivo con progreso ──
-  const uploadFile = async (
-    file: File,
-    progressLabel?: string,
-  ): Promise<UploadedFile> => {
-    const { uploadURL, objectPath } = await requestUrl({
-      data: { name: file.name, size: file.size, contentType: file.type },
-    });
-
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", uploadURL);
-      xhr.setRequestHeader("Content-Type", file.type);
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable && progressLabel) {
-          setUploadProgress({ label: progressLabel, pct: Math.round((e.loaded / e.total) * 100) });
-        }
-      };
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) resolve();
-        else reject(new Error(`Error al subir archivo: ${xhr.status}`));
-      };
-      xhr.onerror = () => reject(new Error("Error de red al subir archivo"));
-      xhr.send(file);
-    });
-
-    return { file, objectPath, contentType: file.type, sizeBytes: file.size, name: file.name };
-  };
+  const uploadFile = (file: File, progressLabel?: string): Promise<UploadedFile> =>
+    uploadFileShared(file, requestUrl, setUploadProgress, progressLabel);
 
   const isMusica = categoryId === "musica-sonidos";
 

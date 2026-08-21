@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   useGetPendingSubmissions,
   useGetSubmissionFilterOptions,
@@ -10,13 +10,18 @@ import {
   useDeleteSubmission,
   useGetPinnedFeatured,
   useSetPinnedFeatured,
+  useRequestUploadUrl,
+  useAddAdminSessionAudio,
+  useDeleteAdminSessionAudio,
   getGetPendingSubmissionsQueryKey,
 } from "@workspace/api-client-react";
 import type {
   Submission,
+  CatalogAudioFile,
   GetPendingSubmissionsStatus,
   GetPendingSubmissionsParams,
 } from "@workspace/api-client-react";
+import { uploadFile as uploadFileShared } from "@/lib/uploadFile";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -65,7 +70,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Loader2 } from "lucide-react";
 import {
   TagOptionSelector,
   SingleTagOptionSelector,
@@ -318,6 +323,8 @@ function EditDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const qc = useQueryClient();
+
+  // ── Campos de texto / switches (sin cambios) ──
   const [title, setTitle] = useState(submission.title);
   const [subtitle, setSubtitle] = useState(submission.subtitle);
   const [duration, setDuration] = useState(String(submission.duration ?? ""));
@@ -336,6 +343,28 @@ function EditDialog({
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(submission.temaTag ?? []);
   const [playerDescription, setPlayerDescription] = useState(submission.playerDescription ?? "");
+
+  // ── Portada ──
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [newImageObjectPath, setNewImageObjectPath] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+
+  // ── Audio ──
+  const [localAudioFiles, setLocalAudioFiles] = useState<CatalogAudioFile[]>(submission.audioFiles);
+  const [busyAudioId, setBusyAudioId] = useState<number | null>(null);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  // replaceRefs: map audioId → hidden <input type="file">
+  const replaceRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  // ── Hooks API ──
+  const { mutateAsync: requestUrl } = useRequestUploadUrl();
+  const { mutateAsync: addAudio } = useAddAdminSessionAudio();
+  const { mutateAsync: deleteAudio } = useDeleteAdminSessionAudio();
+
+  const doUpload = (file: File, label?: string) =>
+    uploadFileShared(file, requestUrl, null, label);
 
   const mutation = useEditSubmission({
     mutation: {
@@ -371,6 +400,68 @@ function EditDialog({
     setTemaTag((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+
+  // ── Portada handlers ──
+  const handleImageSelect = async (file: File) => {
+    setImageError(null);
+    setImageUploading(true);
+    try {
+      const result = await doUpload(file, "Subiendo imagen…");
+      setNewImageFile(file);
+      setNewImageObjectPath(result.objectPath);
+    } catch (e) {
+      setImageError(e instanceof Error ? e.message : "Error al subir imagen");
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  // ── Audio handlers ──
+  const handleAudioReplace = async (audioId: number, file: File) => {
+    setAudioError(null);
+    setBusyAudioId(audioId);
+    try {
+      const up = await doUpload(file, "Subiendo audio…");
+      const result = await addAudio({
+        id: submission.id,
+        data: {
+          objectPath: up.objectPath,
+          name: file.name.replace(/\.[^.]+$/, ""),
+          contentType: up.contentType,
+          sizeBytes: up.sizeBytes,
+          replaceAudioId: audioId,
+        },
+      });
+      setLocalAudioFiles(result.audioFiles);
+      toast.success("Audio reemplazado.");
+      qc.invalidateQueries();
+    } catch (e) {
+      setAudioError(e instanceof Error ? e.message : "Error al reemplazar el audio");
+    } finally {
+      setBusyAudioId(null);
+    }
+  };
+
+  const handleAudioDelete = async (audioId: number) => {
+    setAudioError(null);
+    setBusyAudioId(audioId);
+    try {
+      const result = await deleteAudio({ id: submission.id, audioId });
+      setLocalAudioFiles(result.audioFiles);
+      toast.success("Audio eliminado.");
+      qc.invalidateQueries();
+    } catch (e) {
+      setAudioError(e instanceof Error ? e.message : "Error al eliminar el audio");
+    } finally {
+      setBusyAudioId(null);
+    }
+  };
+
+  // ── Render ──
+  const currentImageUrl = resolveImageUrl(submission.imageUrl);
+  const previewImageSrc = newImageFile
+    ? URL.createObjectURL(newImageFile)
+    : currentImageUrl;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -425,6 +516,118 @@ function EditDialog({
                   placeholder="Texto que se muestra en el reproductor (opcional)…"
                 />
               </div>
+            </div>
+
+            {/* Portada */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Portada</p>
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleImageSelect(f);
+                  e.target.value = "";
+                }}
+              />
+              {previewImageSrc && (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary border border-border">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                    <img
+                      src={previewImageSrc}
+                      alt="portada"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {newImageFile ? newImageFile.name : "Imagen actual"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {newImageFile ? "Nueva imagen lista — se guardará al pulsar Guardar" : "Subí una nueva para reemplazarla"}
+                    </p>
+                  </div>
+                </div>
+              )}
+              {imageError && (
+                <p className="text-xs text-destructive">{imageError}</p>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={imageUploading || mutation.isPending}
+                onClick={() => imageInputRef.current?.click()}
+              >
+                {imageUploading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {imageUploading ? "Subiendo…" : "Cambiar imagen"}
+              </Button>
+            </div>
+
+            {/* Audio */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Audio</p>
+              {audioError && (
+                <p className="text-xs text-destructive">{audioError}</p>
+              )}
+              {localAudioFiles.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Sin archivos de audio.</p>
+              ) : (
+                <div className="space-y-2">
+                  {localAudioFiles.map((audio, idx) => (
+                    <div
+                      key={audio.id}
+                      className="flex items-center gap-2 p-3 rounded-lg bg-secondary border border-border"
+                    >
+                      {/* hidden file input for this slot */}
+                      <input
+                        ref={(el) => { replaceRefs.current[audio.id] = el; }}
+                        type="file"
+                        accept="audio/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleAudioReplace(audio.id, f);
+                          e.target.value = "";
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{audio.name}</p>
+                        <Badge variant="outline" className="text-xs mt-0.5">{audio.role}</Badge>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={busyAudioId !== null}
+                          onClick={() => replaceRefs.current[audio.id]?.click()}
+                        >
+                          {busyAudioId === audio.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Reemplazar"
+                          )}
+                        </Button>
+                        {idx > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            disabled={busyAudioId !== null}
+                            onClick={() => handleAudioDelete(audio.id)}
+                          >
+                            Eliminar
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Opciones */}
@@ -549,7 +752,7 @@ function EditDialog({
             Cancelar
           </Button>
           <Button
-            disabled={title.trim().length === 0 || subtitle.trim().length === 0 || mutation.isPending}
+            disabled={title.trim().length === 0 || subtitle.trim().length === 0 || mutation.isPending || imageUploading}
             onClick={() => {
               const dur = parseInt(duration, 10);
               mutation.mutate({
@@ -573,6 +776,13 @@ function EditDialog({
                   themeTag,
                   temaTag,
                   playerDescription: playerDescription.trim() ? playerDescription.trim() : null,
+                  ...(newImageObjectPath && newImageFile
+                    ? {
+                        imageObjectPath: newImageObjectPath,
+                        imageContentType: newImageFile.type,
+                        imageSizeBytes: newImageFile.size,
+                      }
+                    : {}),
                 },
               });
             }}
