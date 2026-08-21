@@ -1270,7 +1270,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       void addToHistory(session);
       startStatTracking(session);
 
-      const audioFile = AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
+      // Preferir el audio subido a la BD (audioUri) sobre el bundle cuando el
+      // admin lo haya reemplazado; caer al AUDIO_MAP solo si no hay URI de BD.
+      const audioFile = (session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
 
       if (audioFile) {
         setIsLoading(true);
@@ -1431,11 +1433,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       void addToHistory(session);
       startStatTracking(sessionOverride);
 
-      // Igual que el path normal: si no hay asset bundleado, usar el audio
-      // subido al servidor (audioUri). Los loops con URI remota degradan al
-      // loop nativo audible del main (el motor requiere asset bundleado).
+      // Preferir el audio subido a la BD sobre el bundle (igual que el path normal).
+      // Los loops con URI remota degradan al loop nativo del main si el motor
+      // requiere asset bundleado.
       const audioFile =
-        AUDIO_MAP[session.id] ?? (session.audioUri ? { uri: session.audioUri } : undefined);
+        (session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
       const isLoopSession = session.isLoop === true || LOOP_SESSIONS.has(session.id);
 
       if (audioFile) {

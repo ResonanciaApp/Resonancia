@@ -1459,12 +1459,17 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
           instagram: g.instagram ?? undefined,
         }))
       : undefined;
-    // Si ya tenía audioUri del ciclo previo, no pisar.
-    if (!local.audioUri && r.audioFiles?.length) {
+    // Siempre aplicar el audio del servidor: si el admin reemplazó el audio,
+    // el nuevo audioUri debe prevalecer sobre el bundle en el PlayerContext.
+    if (r.audioFiles?.length) {
       const main = r.audioFiles.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles[0];
       local.audioUri = resolveObjectPath(main.url);
       const voice = r.audioFiles.find((a) => a.role === "voice");
-      if (voice) local.voiceUri = resolveObjectPath(voice.url);
+      local.voiceUri = voice ? resolveObjectPath(voice.url) : undefined;
+    }
+    // Si el admin subió una foto personalizada (no un key de asset bundleado), aplicarla.
+    if (r.imageUrl && !(r.imageUrl in BUNDLED_SESSION_IMAGES)) {
+      local.image = { uri: resolveObjectPath(r.imageUrl) as string };
     }
   }
 
