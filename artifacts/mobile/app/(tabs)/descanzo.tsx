@@ -1,6 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -341,6 +341,27 @@ export default function DescansoScreen() {
     favorites,
   } = usePlayer();
 
+  /** Lógica de tres estados para tocar una sesión de Dormir:
+   *  1. skipMiniPlayer → arrancar audio (miniplayer se muestra solo), sin navegar
+   *  2. skipDetail → arrancar audio + abrir reproductor completo
+   *  3. Sin flags → abrir pantalla de detalle SIN arrancar audio
+   */
+  const handleSessionTap = useCallback(
+    (s: Parameters<typeof playSession>[0]) => {
+      if (s.skipMiniPlayer) {
+        if (currentSession?.id !== s.id) playSession(s);
+        return;
+      }
+      if (s.skipDetail) {
+        if (currentSession?.id !== s.id) playSession(s);
+        router.push("/player" as never);
+        return;
+      }
+      router.push(`/descanzo-session/${s.id}` as never);
+    },
+    [currentSession, playSession],
+  );
+
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
 
@@ -500,7 +521,7 @@ export default function DescansoScreen() {
                   title="Escuchadas recientemente"
                   sessions={recentInDescanso}
                   isPremium={isPremium}
-                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => handleSessionTap(s)}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -514,7 +535,7 @@ export default function DescansoScreen() {
                   title="Favoritos"
                   sessions={favoritesInDescanso}
                   isPremium={isPremium}
-                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => handleSessionTap(s)}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -528,7 +549,7 @@ export default function DescansoScreen() {
                   title="Historias"
                   sessions={historiasForTodos.slice(0, 5)}
                   isPremium={isPremium}
-                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => handleSessionTap(s)}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -543,7 +564,7 @@ export default function DescansoScreen() {
                   title="ASMR"
                   sessions={asmrForTodos.slice(0, 5)}
                   isPremium={isPremium}
-                  onPress={(s) => { if (s.skipMiniPlayer) { if (currentSession?.id !== s.id) playSession(s); return; } if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  onPress={(s) => handleSessionTap(s)}
                   style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
@@ -670,13 +691,7 @@ export default function DescansoScreen() {
                 style={{ marginRight: 0 }}
                 showDuration={false}
                 showAuthorAvatar={false}
-                overridePress={() => {
-                  if (currentSession?.id !== session.id) {
-                    playSession(session);
-                  }
-                  if (session.skipMiniPlayer) return;
-                  router.push("/player" as never);
-                }}
+                overridePress={() => handleSessionTap(session)}
                 playing={currentSession?.id === session.id}
               />
             ))}
@@ -784,9 +799,7 @@ export default function DescansoScreen() {
                   onPress={() => {
                     if (locked) { router.push("/membresia" as never); return; }
                     closeAll();
-                    if (currentSession?.id !== s.id) playSession(s);
-                    if (s.skipMiniPlayer) return;
-                    router.push("/player" as never);
+                    handleSessionTap(s);
                   }}
                   style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.85 : 1 }]}
                 >
