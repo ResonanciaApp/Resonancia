@@ -145,6 +145,9 @@ function AnimatedLayer({
   baseSize,
   strokeModeMap,
   liveScaleSV,
+  reducedEffects,
+  allowDecorativeEffects,
+  allowMotionEffects,
 }: {
   instanceId: string;
   settings: GeoSettings;
@@ -154,6 +157,12 @@ function AnimatedLayer({
   baseSize: number;
   strokeModeMap: Map<string, "thin" | "natural">;
   liveScaleSV?: SharedValue<number>;
+  /** Preserva el glifo y su movimiento, pero evita copias SVG redundantes. */
+  reducedEffects?: boolean;
+  /** Reserva bloom/glow/halo para las capas visualmente superiores. */
+  allowDecorativeEffects?: boolean;
+  /** Reserva ripple/expansión para una sola capa en la vista compacta. */
+  allowMotionEffects?: boolean;
 }) {
   const {
     rotate, rotateLeft, rotateSpeed,
@@ -188,6 +197,12 @@ function AnimatedLayer({
   const safeBreath = Number.isFinite(breatheAmount) ? clamp01(breatheAmount) : 0;
   const safeKaleid = kaleidoscope ?? false;
   const safeKaleidSegs = kaleidSegments ?? 6;
+  const bloomAmount = allowDecorativeEffects
+    ? (reducedEffects ? Math.min(safeBloom, 0.6) : safeBloom)
+    : 0;
+  const glowAmount = allowDecorativeEffects
+    ? (reducedEffects ? Math.min(safeGeoGlow, 0.6) : safeGeoGlow)
+    : 0;
 
   // ── Animaciones ────────────────────────────────────────────────────────
   const safeSpeed = Number.isFinite(rotateSpeed) ? clamp01(rotateSpeed) : 0.5;
@@ -239,37 +254,41 @@ function AnimatedLayer({
 
   return (
     <RAnimated.View style={[s.layer, aStyle]} pointerEvents="none">
-      {safeHalo > 0 && (
+      {safeHalo > 0 && allowDecorativeEffects && (
         <HaloGlow size={effectiveSize * 1.25} color={dispColor} amount={safeHalo} />
       )}
-      {safeRipple > 0 && motion && (
+      {safeRipple > 0 && motion && allowMotionEffects && (
         <RippleRings size={effectiveSize} color={dispColor} amount={safeRipple} />
       )}
-      {safeBloom > 0 && (
+      {bloomAmount > 0 && (
         <>
-          <View style={[s.layer, { opacity: 0.14 * safeBloom }]} pointerEvents="none">
+          <View style={[s.layer, { opacity: 0.22 * bloomAmount }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={bloomColor} size={effectiveSize}
               strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
-          <View style={[s.layer, { opacity: 0.22 * safeBloom }]} pointerEvents="none">
-            <SacredGlyph id={geoId} color={bloomColor} size={effectiveSize}
-              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
-          </View>
+          {!reducedEffects && (
+            <View style={[s.layer, { opacity: 0.14 * bloomAmount }]} pointerEvents="none">
+              <SacredGlyph id={geoId} color={bloomColor} size={effectiveSize}
+                strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+            </View>
+          )}
         </>
       )}
-      {safeGeoGlow > 0 && (
+      {glowAmount > 0 && (
         <>
-          <View style={[s.layer, { opacity: 0.16 * safeGeoGlow }]} pointerEvents="none">
+          <View style={[s.layer, { opacity: 0.26 * glowAmount }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
               strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
-          <View style={[s.layer, { opacity: 0.26 * safeGeoGlow }]} pointerEvents="none">
-            <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
-              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
-          </View>
+          {!reducedEffects && (
+            <View style={[s.layer, { opacity: 0.16 * glowAmount }]} pointerEvents="none">
+              <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
+                strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+            </View>
+          )}
         </>
       )}
-      {safeExpansion > 0 && motion && (
+      {safeExpansion > 0 && motion && allowMotionEffects && (
         <ExpansionEcho geoId={geoId} color={dispColor} grad={dispGrad}
           size={effectiveSize} strokeScale={thinFactor}
           kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs}
@@ -318,9 +337,24 @@ interface Props {
    * Usar siempre que el padre envuelva el componente en un Animated.View con opacity.
    */
   noInternalFade?: boolean;
+  /**
+   * La vista compacta de Inicio limita las capas y las copias SVG de efectos.
+   * No altera recetas ni afecta el lienzo/editor de Geometrix.
+   */
+  quality?: "full" | "home";
 }
 
-export function SceneAnimationInline({ scene, height, onPress, style, paused, liveScaleSV, bgOverride, noInternalFade }: Props) {
+export function SceneAnimationInline({
+  scene,
+  height,
+  onPress,
+  style,
+  paused,
+  liveScaleSV,
+  bgOverride,
+  noInternalFade,
+  quality = "full",
+}: Props) {
   // Si noInternalFade=true el padre controla la opacidad → arrancar en 1 siempre.
   const fadeAnim = useRef(new Animated.Value(noInternalFade ? 1 : scene ? 0 : 1)).current;
   const prevSceneId = useRef<number | null>(null);
@@ -357,6 +391,9 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused, li
   const masterOpacity = master.opacity ?? 1;
   // paused=true (tab sin foco) fuerza motion=false → cancela todos los withRepeat
   const motion = !paused && (master.motion !== false);
+  // Inicio conserva todas las geometrías de la receta, pero concentra las
+  // copias SVG decorativas en las capas superiores para no saturar SVG/UI.
+  const isHomeQuality = quality === "home";
 
   // baseSize: el tamaño de referencia desde el que se aplica el committedMag
   // de cada geometría. Se toma height * 1.15 igual que antes, pero ahora
@@ -392,6 +429,9 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused, li
               baseSize={baseSize}
               strokeModeMap={strokeModeMap}
               liveScaleSV={liveScaleSV}
+              reducedEffects={isHomeQuality}
+              allowDecorativeEffects={!isHomeQuality || i >= active.length - 2}
+              allowMotionEffects={!isHomeQuality || i === active.length - 1}
             />
           );
         })}

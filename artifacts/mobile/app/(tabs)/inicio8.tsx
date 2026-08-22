@@ -391,6 +391,7 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [immersive, setImmersive] = useState(false);
+  const [immersiveRendered, setImmersiveRendered] = useState(false);
   const { requestHide, showMenu } = useTabBarVisibility();
   const immersiveRef = useRef(false);
   const immersiveAnim = useRef(new Animated.Value(0)).current;
@@ -398,6 +399,8 @@ export default function HomeScreen2() {
   const toggleImmersive = useCallback(() => {
     const next = !immersiveRef.current;
     immersiveRef.current = next;
+    immersiveAnim.stopAnimation();
+    if (next) setImmersiveRendered(true);
     setImmersive(next);
     if (next) { requestHide(); } else { showMenu(); }
     Animated.timing(immersiveAnim, {
@@ -405,7 +408,9 @@ export default function HomeScreen2() {
       duration: 700,
       easing: RNEasing.out(RNEasing.cubic),
       useNativeDriver: true,
-    }).start();
+    }).start(({ finished }) => {
+      if (finished && !next) setImmersiveRendered(false);
+    });
   }, [immersiveAnim, requestHide, showMenu]);
 
   // ── Zoom del modo inmersivo (pinch) ───────────────────────────────────────
@@ -1128,14 +1133,17 @@ export default function HomeScreen2() {
               }}
               pointerEvents={animRevealed ? "box-none" : "none"}
             >
-              <SceneAnimationInline
-                scene={headerScene}
-                height={293}
-                onPress={() => setAnimSheetOpen(true)}
-                paused={!tabFocused}
-                bgOverride={shuffleBgColor}
-                noInternalFade
-              />
+              {headerScene && animRevealed && tabFocused && !immersive && (
+                <SceneAnimationInline
+                  key={headerScene.id}
+                  scene={headerScene}
+                  height={293}
+                  onPress={() => setAnimSheetOpen(true)}
+                  bgOverride={shuffleBgColor}
+                  noInternalFade
+                  quality="home"
+                />
+              )}
 
               {/* Frase overlay — centrada sobre la animación */}
               {phraseVisible && (
@@ -1641,7 +1649,7 @@ export default function HomeScreen2() {
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
       {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
-      {headerScene && (
+      {headerScene && immersiveRendered && tabFocused && (
         <Animated.View
           style={[StyleSheet.absoluteFill, { opacity: immersiveAnim, justifyContent: "center" }]}
           pointerEvents={immersive ? "box-none" : "none"}
@@ -1649,12 +1657,14 @@ export default function HomeScreen2() {
           <GestureDetector gesture={immersiveGesture}>
             <View style={[StyleSheet.absoluteFill, { justifyContent: "center" }]}>
               <SceneAnimationInline
+                key={headerScene.id}
                 scene={headerScene}
                 height={300}
                 onPress={toggleImmersive}
                 style={undefined}
                 paused={!tabFocused || !immersive}
                 liveScaleSV={pinchScale}
+                quality="home"
               />
             </View>
           </GestureDetector>
