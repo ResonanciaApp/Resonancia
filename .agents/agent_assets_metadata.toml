@@ -2559,3 +2559,17 @@ uri = "file://attached_assets/Informe_Diagnostico_Tecnico_Geometrix_RESONANCIA_2
 type = "pdf"
 title = "Diagnóstico técnico del motor animado Geometrix"
 description = "Informe profesional de 12 páginas con arquitectura, hallazgos confirmados y probables, matriz de diagnóstico, protocolo de perfilado y plan de remediación P0/P1/P2."
+
+[[outputs]]
+id = "3MQcGuv7wqHQVg1WATaNx"
+uri = "file://docs/informe-ejecutivo-arquitectura-resonancia.pdf"
+type = "pdf"
+title = "Informe ejecutivo de arquitectura — RESONANCIA"
+description = "PDF ejecutivo de 21 páginas: stack, arquitectura móvil, API, base de datos, audio, animación, Geometrix, seguridad operativa y guía de incorporación."
+
+[[outputs]]
+id = "qHs7NarRhJXGE2JgRdDx0"
+uri = "file://docs/informe-ejecutivo-arquitectura-resonancia.md"
+type = "text"
+title = "Fuente editable del informe"
+description = "Versión Markdown mantenible del informe técnico para futuras actualizaciones."

@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RESONANCIA — Informe ejecutivo de arquitectura</title>
+<style>
+@page { size: A4; margin: 18mm 16mm 20mm; }
+@page:first { margin: 0; }
+* { box-sizing: border-box; }
+html { background: #fff; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #17202B;
+  background: #fff;
+  font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif;
+  font-size: 9.2pt;
+  line-height: 1.46;
+}
+.cover {
+  width: 210mm;
+  height: 297mm;
+  min-height: 297mm;
+  margin: 0;
+  padding: 34mm 23mm 22mm;
+  color: #F6F0E5;
+  background:
+    radial-gradient(circle at 78% 22%, rgba(190,150,80,.25), transparent 24%),
+    radial-gradient(circle at 20% 80%, rgba(89,44,99,.28), transparent 30%),
+    linear-gradient(145deg, #060A0F 0%, #101827 58%, #1B1025 100%);
+  page-break-after: always;
+}
+.cover::after {
+  content: "";
+  display: block;
+  width: 54mm;
+  height: 1px;
+  margin-top: 28mm;
+  background: linear-gradient(90deg, #BE9650, transparent);
+}
+.cover-mark {
+  width: 27mm;
+  height: 27mm;
+  border: 1px solid rgba(190,150,80,.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 48mm;
+  color: #D8B66D;
+  font-family: Georgia, serif;
+  font-size: 25pt;
+}
+.cover h1 {
+  max-width: 150mm;
+  margin: 0 0 7mm;
+  color: #D8B66D;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 35pt;
+  line-height: 1.02;
+  letter-spacing: .4pt;
+}
+.cover .subtitle {
+  max-width: 145mm;
+  margin: 0 0 32mm;
+  color: #F6F0E5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18pt;
+  line-height: 1.22;
+}
+.cover p {
+  margin: 2.2mm 0;
+  color: rgba(246,240,229,.82);
+  font-size: 10.5pt;
+}
+.cover strong { color: #D8B66D; }
+h2 {
+  margin: 9mm 0 6mm;
+  padding: 0 0 3mm;
+  color: #0A1320;
+  border-bottom: 1px solid #BE9650;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22pt;
+  line-height: 1.1;
+  page-break-before: auto;
+  break-before: auto;
+  break-after: avoid;
+}
+h3 {
+  margin: 7mm 0 2.5mm;
+  color: #7D5E25;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13pt;
+  line-height: 1.2;
+  break-after: avoid;
+}
+h4 {
+  margin: 5mm 0 2mm;
+  color: #25354B;
+  font-size: 10.5pt;
+  break-after: avoid;
+}
+p { margin: 0 0 3.4mm; orphans: 3; widows: 3; }
+strong { color: #111A27; }
+code {
+  padding: .25mm 1mm;
+  color: #6E4D13;
+  background: #F7F0E2;
+  border-radius: 2px;
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 8.2pt;
+}
+pre {
+  margin: 4mm 0 5mm;
+  padding: 4mm;
+  overflow: hidden;
+  color: #E8DEC9;
+  background: #0B111B;
+  border-left: 2.2mm solid #BE9650;
+  border-radius: 2mm;
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 6.9pt;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  break-inside: avoid;
+}
+blockquote {
+  margin: 5mm 0;
+  padding: 4mm 5mm;
+  color: #3C2E16;
+  background: #FBF6EC;
+  border-left: 1.5mm solid #BE9650;
+  break-inside: avoid;
+}
+ul, ol { margin: 1.5mm 0 4mm 5.5mm; padding-left: 4mm; }
+li { margin: 1.5mm 0; padding-left: 1mm; }
+li::marker { color: #A47A30; }
+table {
+  width: 100%;
+  margin: 4mm 0 6mm;
+  border-collapse: collapse;
+  font-size: 7.6pt;
+  line-height: 1.35;
+  break-inside: avoid;
+}
+thead { display: table-header-group; }
+th {
+  padding: 2.4mm 2.2mm;
+  color: #F8F2E6;
+  background: #121B29;
+  text-align: left;
+  font-size: 7.3pt;
+  letter-spacing: .15pt;
+}
+td {
+  padding: 2.2mm;
+  border-bottom: .25mm solid #E3D8C4;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: #FBF8F2; }
+hr { margin: 8mm 0; border: 0; border-top: .3mm solid #D9C7A5; }
+</style>
+</head>
+<body><section class="cover"><div class="cover-mark">◎</div><h1>RESONANCIA</h1>
+<p class="subtitle">Informe ejecutivo de arquitectura y cimientos técnicos</p>
+<p><strong>Casa del Cuenco</strong></p>
+<p><strong>Fecha de corte:</strong> 22 de agosto de 2026</p>
+<p><strong>Versión del informe:</strong> 1.0</p>
+<p><strong>Propósito:</strong> facilitar la incorporación de programadores y la toma de decisiones técnicas.</p>
+</section>
+<h2>1. Resumen ejecutivo</h2>
+<p>RESONANCIA es una plataforma digital de bienestar sonoro compuesta por una aplicación móvil nativa, una API central, una base de datos relacional, un panel administrativo web y varias bibliotecas compartidas. El producto está construido principalmente en <strong>TypeScript</strong> y se organiza como un <strong>monorepo pnpm</strong>, lo que permite compartir contratos, tipos y lógica entre los distintos componentes.</p>
+<p>La aplicación móvil utiliza <strong>React Native sobre Expo</strong>, con proyectos nativos iOS y Android, navegación por archivos y módulos nativos para audio, animación, video, compras, notificaciones y sesiones en vivo. El backend utiliza <strong>Node.js, Express y PostgreSQL</strong>, con <strong>Drizzle ORM</strong> para el acceso a datos. La definición de la API vive en un contrato <strong>OpenAPI</strong>, desde el cual se generan clientes React Query y validadores Zod.</p>
+<p>El audio no depende de un único reproductor. La arquitectura separa:</p>
+<ul>
+<li>reproducción de sesiones y control del sistema;</li>
+<li>mezcla de ambientes y capas;</li>
+<li>bucles sincronizados y sin separación audible;</li>
+<li>audio de descanso;</li>
+<li>audio de chat;</li>
+<li>coordinación para que los subsistemas no compitan.</li>
+</ul>
+<p>La animación también está especializada. <strong>React Native Reanimated</strong>, Worklets, Gesture Handler y SVG forman la base de las escenas animadas y de <strong>Geometrix</strong>, el editor visual de composiciones geométricas.</p>
+<h3>Conclusión ejecutiva</h3>
+<p>La plataforma tiene cimientos técnicos sólidos para un producto móvil con audio avanzado, contenido administrable y experiencias visuales complejas. Sus principales fortalezas son la separación entre cliente, API y datos; el contrato OpenAPI compartido; la especialización del motor de audio; y la existencia de control de acceso real en servidor.</p>
+<p>Los principales puntos de atención son la cantidad de contextos globales de la app móvil, el tamaño de algunos coordinadores centrales, la dependencia de módulos nativos que exigen recompilar el cliente y el uso de sincronización de esquema con Drizzle Push en lugar de un historial de migraciones versionadas.</p>
+<blockquote>Este documento describe la arquitectura observada en el repositorio. No sustituye una auditoría de seguridad, rendimiento o cumplimiento.</blockquote>
+<hr>
+<h2>2. Vista general del sistema</h2>
+<pre>┌──────────────────────────────┐
+│     APP MÓVIL RESONANCIA     │
+│ Expo · React Native · iOS/   │
+│ Android · navegación · audio │
+│ animación · modo offline     │
+└──────────────┬───────────────┘
+               │ HTTPS / JSON
+               │ Contrato OpenAPI
+┌──────────────▼───────────────┐       ┌──────────────────────────────┐
+│          API CENTRAL         │◄─────►│       PANEL ADMIN WEB        │
+│ Node.js · Express · Zod      │       │ React · Vite · React Query  │
+│ Clerk · roles · reglas       │       │ catálogo · usuarios · roles │
+└──────────┬──────────┬────────┘       └──────────────────────────────┘
+           │          │
+           │          └─────────────────────────────────────────┐
+           │                                                    │
+┌──────────▼───────────┐                          ┌──────────────▼───────────────┐
+│  POSTGRESQL/DRIZZLE  │                          │ ARCHIVOS, AUDIO Y VIDEO     │
+│ usuarios · catálogo  │                          │ Object Storage · URLs       │
+│ social · actividad   │                          │ firmadas · streaming/range  │
+└──────────────────────┘                          └──────────────────────────────┘</pre>
+<h3>Componentes desplegables</h3>
+<table><thead><tr><th>Componente</th><th>Responsabilidad principal</th><th>Tecnología</th></tr></thead><tbody><tr><td>Aplicación móvil</td><td>Experiencia de usuario, reproducción, mezcla, animación, modo offline</td><td>Expo, React Native, TypeScript</td></tr><tr><td>API Server</td><td>Reglas de negocio, identidad, autorización, catálogo, comunidad y almacenamiento</td><td>Node.js, Express, Zod</td></tr><tr><td>Base de datos</td><td>Persistencia transaccional y relaciones de producto</td><td>PostgreSQL, Drizzle ORM</td></tr><tr><td>Panel administrativo</td><td>Operación del catálogo, usuarios, roles, moderación y contenido</td><td>React, Vite, React Query</td></tr><tr><td>Contratos compartidos</td><td>Especificación de endpoints, tipos, hooks y validación</td><td>OpenAPI, Orval, Zod</td></tr><tr><td>Servicios externos</td><td>Identidad, compras, objetos, sesiones en vivo y distribución multimedia</td><td>Clerk, RevenueCat, Object Storage, Daily, CDN</td></tr></tbody></table>
+<hr>
+<h2>3. Lenguajes, frameworks y herramientas</h2>
+<h3>Lenguajes principales</h3>
+<table><thead><tr><th>Lenguaje/formato</th><th>Uso</th></tr></thead><tbody><tr><td>TypeScript 5.9</td><td>App móvil, backend, panel administrativo y bibliotecas compartidas</td></tr><tr><td>JavaScript/ESM</td><td>Scripts de compilación y operación</td></tr><tr><td>SQL, expresado con Drizzle</td><td>Modelo y consultas PostgreSQL</td></tr><tr><td>YAML</td><td>Contrato OpenAPI y configuración</td></tr><tr><td>JSON</td><td>Configuración Expo, EAS y metadatos</td></tr><tr><td>Swift/Objective-C y Kotlin/Java</td><td>Dependencias y proyectos nativos administrados por Expo/React Native</td></tr><tr><td>Markdown</td><td>Documentación técnica y decisiones</td></tr></tbody></table>
+<h3>Stack móvil verificado</h3>
+<ul>
+<li>Expo SDK 54.</li>
+<li>React 19.1.</li>
+<li>React Native 0.81.5.</li>
+<li>Expo Router 6 con rutas tipadas.</li>
+<li>React Native Reanimated 4 y Worklets.</li>
+<li>React Native Gesture Handler.</li>
+<li>React Native SVG.</li>
+<li>TanStack React Query.</li>
+<li>AsyncStorage y SecureStore.</li>
+<li>Clerk Expo.</li>
+<li>Expo Audio y React Native Audio API.</li>
+<li>Expo Video, notificaciones, archivos, imágenes y compartir.</li>
+<li>RevenueCat para compras móviles.</li>
+<li>Daily React Native para sesiones en vivo.</li>
+</ul>
+<h3>Stack de servicios verificado</h3>
+<ul>
+<li>Node.js y módulos ES.</li>
+<li>Express 5.</li>
+<li>PostgreSQL.</li>
+<li>Drizzle ORM y Drizzle Kit.</li>
+<li>Zod y drizzle-zod.</li>
+<li>OpenAPI 3.1.</li>
+<li>Orval para generación de clientes y esquemas.</li>
+<li>Pino para registros del servidor.</li>
+<li>esbuild para el bundle del backend.</li>
+<li>Vitest y Supertest para pruebas de rutas.</li>
+</ul>
+<hr>
+<h2>4. Organización del monorepo</h2>
+<p>El proyecto usa <strong>pnpm workspaces</strong>. Esta decisión permite mantener varios productos ejecutables y bibliotecas compartidas en un solo repositorio, con una única resolución de dependencias y comprobación de tipos coordinada.</p>
+<pre>/
+├── artifacts/
+│   ├── mobile/                    App Expo/React Native
+│   ├── api-server/                API Node/Express
+│   ├── resonancia-admin/          Panel administrativo web
+│   └── ...                        Presentaciones y artefactos editoriales
+├── lib/
+│   ├── api-spec/                  OpenAPI y configuración de Orval
+│   ├── api-client-react/          Cliente React Query generado
+│   ├── api-zod/                   Esquemas Zod generados
+│   ├── db/                        Conexión, tablas y seeds PostgreSQL
+│   └── premium/                   Contexto compartido de premium
+├── scripts/                       Automatizaciones del repositorio
+├── package.json                   Comandos globales
+├── pnpm-workspace.yaml            Paquetes y catálogo de versiones
+└── tsconfig.base.json             Base TypeScript compartida</pre>
+<h3>Principio de dependencia</h3>
+<pre>OpenAPI ──genera──► cliente React Query ──usa──► móvil/admin
+    │
+    └────genera──► esquemas Zod ─────────usa──► API
+
+DB schema ───────► Drizzle ORM ──────────usa──► API
+API ─────────────► PostgreSQL / Storage / servicios externos</pre>
+<p>La especificación OpenAPI es una pieza central. Un cambio de contrato debe propagarse mediante codegen antes de considerarse completo.</p>
+<hr>
+<h2>5. Arquitectura de la aplicación móvil</h2>
+<h3>5.1 Navegación</h3>
+<p>La navegación usa <strong>Expo Router</strong> y su modelo basado en archivos. La carpeta <code>app/</code> contiene rutas normales, rutas dinámicas, grupos de autenticación y pestañas, además de modales de pantalla completa.</p>
+<p>En la fecha de corte se contabilizan <strong>123 archivos de pantalla/ruta</strong>, sin contar layouts ni la pantalla de ruta no encontrada. Esto no significa 123 secciones visibles en el menú: muchas son detalles dinámicos, flujos, overlays y pantallas de soporte.</p>
+<p>Los layouts principales organizan:</p>
+<ul>
+<li>autenticación;</li>
+<li>pestañas principales;</li>
+<li>stack raíz;</li>
+<li>modales y reproductores a pantalla completa;</li>
+<li>transiciones laterales, verticales y de desvanecimiento.</li>
+</ul>
+<h3>5.2 Composición de providers</h3>
+<p>El layout raíz compone servicios transversales antes de renderizar las pantallas. Entre ellos:</p>
+<ul>
+<li>autenticación y perfil;</li>
+<li>React Query;</li>
+<li>catálogo y sonidos;</li>
+<li>premium;</li>
+<li>reproductores;</li>
+<li>mezclador;</li>
+<li>notificaciones;</li>
+<li>hitos y rachas;</li>
+<li>bibliotecas, playlists y carpetas;</li>
+<li>videos;</li>
+<li>diario;</li>
+<li>tema visual y escenas;</li>
+<li>overlays globales.</li>
+</ul>
+<p>El patrón dominante de estado es <strong>React Context + hooks especializados</strong>. React Query se utiliza para estado remoto y caché de API; los contextos coordinan estado de experiencia, audio y persistencia local.</p>
+<h3>5.3 Capas internas</h3>
+<table><thead><tr><th>Capa</th><th>Contenido típico</th></tr></thead><tbody><tr><td>Rutas</td><td>Pantallas y navegación basada en archivos</td></tr><tr><td>Componentes</td><td>Tarjetas, reproductores, modales, fondos y controles</td></tr><tr><td>Contextos</td><td>Estado global, coordinación y efectos de ciclo de vida</td></tr><tr><td>Hooks</td><td>Consultas, sincronización, reproducción y comportamiento reutilizable</td></tr><tr><td>Datos/configuración</td><td>Catálogo incluido en la app, mapas de audio y metadatos</td></tr><tr><td>Librerías</td><td>Sincronización cloud, audio especializado, API y utilidades</td></tr><tr><td>Assets</td><td>Imágenes, fuentes y audio incluido en el bundle</td></tr></tbody></table>
+<h3>5.4 Modelo offline-first</h3>
+<p>La app puede operar sin cuenta y conserva estado local con AsyncStorage. Cuando existe identidad Clerk, sincroniza actividad seleccionada con el backend.</p>
+<p>El modelo distingue:</p>
+<ul>
+<li><strong>eventos append-only</strong>, unidos y deduplicados;</li>
+<li><strong>favoritos y progreso</strong>, unidos en la primera sincronización y luego tratados con autoridad local;</li>
+<li><strong>biblioteca ampliada</strong>, que incluye presets y creaciones;</li>
+<li>historial que puede mantenerse local según el dominio.</li>
+</ul>
+<p>Esta arquitectura favorece continuidad de uso sin conexión, pero obliga a definir cuidadosamente las reglas de borrado y resolución de conflictos entre dispositivos.</p>
+<hr>
+<h2>6. API y reglas de negocio</h2>
+<h3>6.1 Runtime</h3>
+<p>La API es un servicio TypeScript/Node compilado con esbuild y ejecutado como módulo ES. Express monta todos los dominios bajo <code>/api</code>.</p>
+<p>Dominios verificados:</p>
+<ul>
+<li>salud del servicio;</li>
+<li>usuarios y perfiles;</li>
+<li>amistades, follows y mensajería;</li>
+<li>notificaciones y push;</li>
+<li>catálogo, sonidos, videos y playlists;</li>
+<li>actividad, favoritos, progreso e hitos;</li>
+<li>mezclas y Geometrix compartidos;</li>
+<li>almacenamiento y cargas;</li>
+<li>postulaciones y perfiles profesionales;</li>
+<li>sesiones en vivo y calendario;</li>
+<li>administración y moderación.</li>
+</ul>
+<h3>6.2 Pipeline de solicitud</h3>
+<pre>Solicitud HTTP
+   │
+   ▼
+Express + CORS + cookies + Clerk
+   │
+   ▼
+Validación de identidad y estado de cuenta
+   │
+   ▼
+Autorización por rol o propiedad
+   │
+   ▼
+Validación Zod del contrato
+   │
+   ▼
+Regla de negocio
+   │
+   ├──► PostgreSQL/Drizzle
+   ├──► Object Storage
+   └──► proveedor externo
+   │
+   ▼
+Respuesta JSON tipada</pre>
+<h3>6.3 Contrato API</h3>
+<p><code>lib/api-spec/openapi.yaml</code> es la definición canónica. Orval genera dos productos:</p>
+<ol>
+<li><strong>Cliente React Query</strong> para el móvil y el panel.</li>
+<li><strong>Esquemas Zod</strong> para validación en el servidor.</li>
+</ol>
+<p>Beneficios:</p>
+<ul>
+<li>menos tipos duplicados y consultas consistentes;</li>
+<li>validación alineada con la documentación;</li>
+<li>divergencias detectables mediante typecheck y codegen.</li>
+</ul>
+<p>Cuando cambia el contrato, la especificación y sus artefactos generados deben actualizarse juntos.</p>
+<hr>
+<h2>7. Base de datos</h2>
+<h3>7.1 Tecnología</h3>
+<p>La persistencia central utiliza <strong>PostgreSQL</strong> con el driver <code>pg</code> y Drizzle ORM. La conexión requiere <code>DATABASE_URL</code> y se administra mediante un pool configurable.</p>
+<h3>7.2 Dominios de datos</h3>
+<p>El esquema está dividido en módulos. Agrupados por función:</p>
+<table><thead><tr><th>Dominio</th><th>Entidades representativas</th></tr></thead><tbody><tr><td>Identidad</td><td>usuarios, roles, perfiles resonadores/expansores</td></tr><tr><td>Catálogo</td><td>categorías, sesiones, audio, videos, sonidos, playlists, etiquetas</td></tr><tr><td>Actividad</td><td>favoritos, progreso, historial, hitos, biblioteca</td></tr><tr><td>Comunidad</td><td>mezclas, glifos, likes, comentarios, reportes, actividad</td></tr><tr><td>Social</td><td>amistades, follows, mensajes directos y likes</td></tr><tr><td>Operación</td><td>notificaciones, tokens push, cargas, eliminaciones de cuenta</td></tr><tr><td>Experiencias</td><td>escenas, ajustes Geometrix, descanso, sesiones en vivo y calendario</td></tr><tr><td>Admisión</td><td>postulaciones y configuraciones de guías</td></tr></tbody></table>
+<h3>7.3 Evolución del esquema</h3>
+<p>El paquete de base de datos expone comandos <code>drizzle-kit push</code> y <code>push-force</code>. No se identificó un directorio de migraciones SQL versionadas en el estado revisado.</p>
+<p><strong>Implicación ejecutiva:</strong> el modelo actual es ágil para desarrollo, pero conviene incorporar migraciones versionadas, revisión y procedimiento de despliegue antes de aumentar el número de entornos o colaboradores.</p>
+<h3>7.4 Consistencia y concurrencia</h3>
+<p>En dominios sociales se utilizan operaciones transaccionales y bloqueos de fila para contadores derivados como likes. Los eventos de actividad emplean identificadores de cliente para deduplicación. Las relaciones y autorizaciones no se delegan al cliente: se validan en la API.</p>
+<hr>
+<h2>8. Identidad, roles y control de acceso</h2>
+<h3>8.1 Proveedor de identidad</h3>
+<p>Clerk administra la identidad. En móvil, la cuenta es compatible con una experiencia local: el usuario puede iniciar con estado local y vincular sincronización cuando inicia sesión.</p>
+<p>El backend instala middleware Clerk y transforma la identidad externa en un usuario interno de PostgreSQL.</p>
+<h3>8.2 Roles</h3>
+<p>El modelo contempla roles como:</p>
+<ul>
+<li>usuario;</li>
+<li>creador;</li>
+<li>administrador;</li>
+<li>moderador;</li>
+<li>expansor;</li>
+<li>resonador.</li>
+</ul>
+<p>La autorización real vive en el servidor. El panel puede ocultar o mostrar acciones por experiencia de usuario, pero los endpoints protegidos exigen autenticación y rol.</p>
+<h3>8.3 Autorización de objetos</h3>
+<p>Las rutas de almacenamiento privado combinan:</p>
+<ul>
+<li>identidad;</li>
+<li>propiedad o concesión explícita;</li>
+<li>estado del recurso;</li>
+<li>rol editorial cuando corresponde.</li>
+</ul>
+<p>Una referencia a una ruta privada no concede acceso por sí sola.</p>
+<hr>
+<h2>9. Almacenamiento y distribución multimedia</h2>
+<h3>9.1 Objetos</h3>
+<p>La API se integra con almacenamiento de objetos mediante credenciales administradas por la plataforma. Se separan rutas públicas y privadas.</p>
+<p>El flujo de carga general es:</p>
+<pre>Cliente autenticado
+   │ solicita permiso + metadatos
+   ▼
+API valida MIME/tamaño/rol
+   │ registra la intención
+   ▼
+URL PUT firmada y temporal
+   │
+   ▼
+Cliente sube directamente al storage
+   │
+   ▼
+API guarda/referencia el objectPath</pre>
+<p>El almacenamiento directo evita que archivos grandes atraviesen el proceso Node completo.</p>
+<h3>9.2 Audio y video</h3>
+<ul>
+<li>Parte del audio esencial puede estar incluida en el bundle.</li>
+<li>El catálogo remoto utiliza URLs u object paths resueltos por la app.</li>
+<li>Los videos usan streaming y solicitudes por rango para permitir seek.</li>
+<li>La distribución por CDN puede configurarse para catálogos de video.</li>
+<li>Las imágenes usan caché de memoria y disco en la app.</li>
+</ul>
+<h3>9.3 Formato de audio</h3>
+<p>La decisión de distribución documentada es <strong>AAC/M4A</strong> para producto, con bitrate distinto según música, voz o loops. WAV permanece como formato de master o fuente, no como formato preferido de distribución.</p>
+<hr>
+<h2>10. Arquitectura de audio</h2>
+<p>El audio es uno de los cimientos más especializados de RESONANCIA. La app no usa un solo player global para todo, sino un conjunto de motores coordinados.</p>
+<h3>10.1 Mapa de motores</h3>
+<pre>                         ┌──────────────────────────┐
+                         │      AUDIO BRIDGE        │
+                         │ arbitraje: sólo un dueño │
+                         └────────────┬─────────────┘
+                                      │
+        ┌─────────────────────────────┼─────────────────────────────┐
+        │                             │                             │
+┌───────▼────────┐          ┌─────────▼─────────┐         ┌────────▼────────┐
+│ PLAYER CONTEXT │          │  MIXER CONTEXT    │         │ DESCANSO / CHAT │
+│ sesiones/voz   │          │ capas y presets   │         │ players aislados│
+└───────┬────────┘          └─────────┬─────────┘         └─────────────────┘
+        │                             │
+        ├── expo-audio                ├── expo-audio
+        │   pistas/Now Playing        │   capas no BPM y ancla
+        │                             │
+        └── motor gapless             └── react-native-audio-api
+            sesiones loop                BPM, fase, loops exactos</pre>
+<h3>10.2 Expo Audio</h3>
+<p><code>expo-audio</code> es el dueño de la sesión de audio del sistema. Se utiliza para:</p>
+<ul>
+<li>reproducción principal;</li>
+<li>voz y capas complementarias;</li>
+<li>metadatos de pantalla bloqueada;</li>
+<li>controles remotos;</li>
+<li>reproducción en modo silencio;</li>
+<li>continuidad en segundo plano;</li>
+<li>ancla del sistema cuando otro motor produce el audio audible.</li>
+</ul>
+<p>Los players principales son persistentes para evitar recreación innecesaria al cambiar de sesión.</p>
+<h3>10.3 Motor nativo gapless/BPM</h3>
+<p><code>react-native-audio-api</code> aporta un grafo de audio nativo similar a Web Audio. Se utiliza cuando se necesita:</p>
+<ul>
+<li>loop sin separación audible;</li>
+<li>sincronización por BPM;</li>
+<li>capas bloqueadas en fase;</li>
+<li><code>loopEnd</code> musical calculado;</li>
+<li>ganancia maestra;</li>
+<li>pausa/reanudación conservando fase;</li>
+<li>reproducción de loops de sesión.</li>
+</ul>
+<p>El motor calcula límites de loop usando tempo, compases y duración de buffer. Para no competir por la sesión iOS, desactiva su administración de sesión y deja esa responsabilidad a Expo Audio.</p>
+<h3>10.4 Mezclador</h3>
+<p>El mezclador administra:</p>
+<ul>
+<li>sonidos activos;</li>
+<li>volumen por capa y volumen maestro;</li>
+<li>presets;</li>
+<li>filtros y estados persistidos;</li>
+<li>sonidos locales y remotos;</li>
+<li>binaurales;</li>
+<li>offsets de fase;</li>
+<li>metadata de pantalla bloqueada;</li>
+<li>temporizador de sueño;</li>
+<li>pausa y reanudación conjunta.</li>
+</ul>
+<p>Los sonidos BPM pasan por el motor nativo. Los sonidos no BPM pueden usar Expo Audio, según su naturaleza.</p>
+<h3>10.5 AudioBridge</h3>
+<p><code>audioBridge</code> es un registro central de funciones de detención. Antes de comenzar una experiencia, cada subsistema detiene a sus competidores.</p>
+<p>Esto evita situaciones como:</p>
+<ul>
+<li>una sesión y una mezcla sonando simultáneamente;</li>
+<li>chat reproduciéndose sobre una meditación;</li>
+<li>audio de descanso persistiendo al cambiar de experiencia.</li>
+</ul>
+<h3>10.6 Segundo plano, bloqueo y temporizadores</h3>
+<p>La configuración nativa habilita audio en background. Los temporizadores no dependen únicamente de intervalos JavaScript, porque el sistema puede congelarlos con la pantalla bloqueada.</p>
+<p>La arquitectura combina:</p>
+<ul>
+<li>timestamp absoluto de expiración;</li>
+<li>listener de estado nativo;</li>
+<li>recuperación mediante AppState;</li>
+<li>intervalo JavaScript sólo para refrescar la interfaz;</li>
+<li>ancla Expo Audio para controles del sistema.</li>
+</ul>
+<h3>10.7 Riesgos operativos del audio</h3>
+<ul>
+<li>Los módulos de audio nativo requieren recompilar el dev client.</li>
+<li>Expo Audio debe seguir siendo el único propietario de AVAudioSession en iOS.</li>
+<li>Los cambios de rutas BPM, offsets o loops deben mantenerse coordinados.</li>
+<li>El motor requiere pruebas en dispositivos físicos; el preview web no representa el comportamiento nativo.</li>
+</ul>
+<hr>
+<h2>11. Arquitectura de animación y Geometrix</h2>
+<h3>11.1 Tecnologías</h3>
+<p>La capa visual avanzada se construye con:</p>
+<ul>
+<li>React Native Reanimated 4;</li>
+<li>Worklets ejecutados en el hilo de UI;</li>
+<li>Gesture Handler;</li>
+<li>React Native SVG;</li>
+<li>gradientes, blur y efectos nativos de Expo;</li>
+<li>ViewShot para capturas;</li>
+<li>persistencia de recetas en lugar de imágenes rasterizadas.</li>
+</ul>
+<h3>11.2 Geometrix</h3>
+<p>Geometrix es un editor de composiciones. Una creación es una <strong>receta de datos</strong>:</p>
+<ul>
+<li>capas activas;</li>
+<li>orden;</li>
+<li>geometría base;</li>
+<li>transformaciones;</li>
+<li>color y opacidad;</li>
+<li>animaciones;</li>
+<li>ajustes maestros;</li>
+<li>visibilidad y estado del lienzo.</li>
+</ul>
+<p>La receta puede renderizarse de nuevo en distintos contextos, guardarse localmente, sincronizarse y compartirse.</p>
+<h3>11.3 Separación editor/renderizador</h3>
+<p>La arquitectura diferencia:</p>
+<ul>
+<li>el editor completo, con gestos, carrusel, historial y herramientas;</li>
+<li>el renderizador de escenas, usado en Inicio y previews;</li>
+<li>las tarjetas y modales de selección;</li>
+<li>el modelo persistido.</li>
+</ul>
+<p>Esta separación permite usar una creación como ambientación sin montar todo el editor.</p>
+<h3>11.4 Pipeline visual</h3>
+<pre>Receta Geometrix
+   │
+   ▼
+Normalización de capas y ajustes
+   │
+   ├──► SVG base
+   ├──► color / gradiente / trazo
+   ├──► transformaciones
+   └──► efectos: respiración, rotación, halo, ripple, bloom
+   │
+   ▼
+Shared Values + Worklets
+   │
+   ▼
+Composición final en UI thread</pre>
+<h3>11.5 Principios de rendimiento</h3>
+<ul>
+<li>No enviar estado React por cada frame de un gesto.</li>
+<li>Mantener animaciones de alta frecuencia en UI thread.</li>
+<li>Pausar o desmontar escenas fuera de foco.</li>
+<li>Cancelar loops al desmontar o cambiar de escena.</li>
+<li>Reducir copias decorativas en superficies de uso prolongado.</li>
+<li>Mantener el DOM/árbol estable en drag-reorder y animar transforms.</li>
+<li>Usar SVG vectorial a tamaño real para zoom nítido.</li>
+</ul>
+<p>El renderizador dispone de una calidad optimizada para Inicio que conserva las geometrías base y reduce duplicaciones decorativas. El editor mantiene la calidad completa.</p>
+<hr>
+<h2>12. Panel administrativo</h2>
+<p>El panel administrativo es una aplicación web independiente montada bajo <code>/admin/</code>.</p>
+<h3>Stack</h3>
+<ul>
+<li>React y TypeScript.</li>
+<li>Vite.</li>
+<li>React Query.</li>
+<li>Wouter para routing.</li>
+<li>componentes de interfaz reutilizables.</li>
+<li>Clerk con sesión same-origin.</li>
+<li>cliente generado desde OpenAPI.</li>
+</ul>
+<h3>Responsabilidades</h3>
+<ul>
+<li>dashboard operativo;</li>
+<li>usuarios y roles;</li>
+<li>catálogo y categorías;</li>
+<li>carga y edición de audio, imágenes y video;</li>
+<li>playlists y escenas;</li>
+<li>moderación de contenido compartido;</li>
+<li>postulaciones y perfiles profesionales;</li>
+<li>sesiones en vivo y configuraciones.</li>
+</ul>
+<p>La interfaz es una herramienta operativa; la autorización efectiva permanece en la API.</p>
+<hr>
+<h2>13. Integraciones externas</h2>
+<table><thead><tr><th>Integración</th><th>Uso arquitectónico</th></tr></thead><tbody><tr><td>Clerk</td><td>identidad, sesión y vínculo con usuario interno</td></tr><tr><td>RevenueCat</td><td>estado premium y compras in-app</td></tr><tr><td>Object Storage</td><td>imágenes, audio, adjuntos y videos</td></tr><tr><td>Daily</td><td>infraestructura de sesiones en vivo/WebRTC</td></tr><tr><td>Expo/EAS</td><td>desarrollo, dev client y builds móviles</td></tr><tr><td>Servicios push</td><td>registro de tokens y envío de notificaciones</td></tr><tr><td>CDN de video</td><td>distribución de catálogo audiovisual cuando está configurada</td></tr></tbody></table>
+<p>Las claves y credenciales se administran como secretos del entorno y no deben incorporarse al código, documentación o builds.</p>
+<hr>
+<h2>14. Compilación, ejecución y operación</h2>
+<h3>Comandos principales</h3>
+<table><thead><tr><th>Objetivo</th><th>Comando</th></tr></thead><tbody><tr><td>API en desarrollo</td><td><code>pnpm --filter @workspace/api-server run dev</code></td></tr><tr><td>Admin en desarrollo</td><td><code>pnpm --filter @workspace/resonancia-admin run dev</code></td></tr><tr><td>App móvil</td><td>workflow Expo del artifact móvil</td></tr><tr><td>Typecheck general</td><td><code>pnpm run typecheck</code></td></tr><tr><td>Build general</td><td><code>pnpm run build</code></td></tr><tr><td>Regenerar API</td><td><code>pnpm --filter @workspace/api-spec run codegen</code></td></tr><tr><td>Actualizar esquema dev</td><td><code>pnpm --filter @workspace/db run push</code></td></tr></tbody></table>
+<h3>Build móvil</h3>
+<p>El proyecto contiene configuración Expo/EAS y proyectos nativos. La New Architecture de React Native está habilitada.</p>
+<p>Cambios en estos componentes requieren un nuevo dev client o build:</p>
+<ul>
+<li>audio nativo;</li>
+<li>WebRTC/Daily;</li>
+<li>compras;</li>
+<li>plugins Expo;</li>
+<li>permisos;</li>
+<li>configuración iOS/Android.</li>
+</ul>
+<p>Un cambio puramente TypeScript/JS puede probarse con Metro, siempre que no altere módulos nativos.</p>
+<h3>Observabilidad y validación</h3>
+<ul>
+<li>TypeScript para comprobación estática.</li>
+<li>Vitest/Supertest en rutas de backend.</li>
+<li>Pino para logs estructurados.</li>
+<li>pruebas de capacidad y preflight editorial en scripts dedicados.</li>
+<li>comprobación real de audio y background en dispositivos.</li>
+</ul>
+<hr>
+<h2>15. Flujos críticos de extremo a extremo</h2>
+<h3>15.1 Abrir y reproducir una sesión</h3>
+<pre>Pantalla de catálogo
+  → resuelve metadata local/remota
+  → verifica acceso premium
+  → detiene motores competidores
+  → configura sesión de audio
+  → selecciona Expo Audio o motor loop
+  → publica Now Playing
+  → registra progreso/actividad
+  → sincroniza cuando hay cuenta y red</pre>
+<h3>15.2 Editar catálogo desde administración</h3>
+<pre>Administrador autenticado
+  → panel usa cliente generado
+  → API valida sesión y rol
+  → Zod valida payload
+  → Drizzle escribe PostgreSQL
+  → archivos van por URL firmada
+  → catálogo publicado aparece en GET /catalog
+  → móvil hidrata datos remotos sobre el modelo local</pre>
+<h3>15.3 Crear y compartir Geometrix</h3>
+<pre>Editor compone receta
+  → guarda localmente
+  → biblioteca cloud sincroniza si corresponde
+  → compartir publica JSON de receta
+  → comunidad renderiza preview en cliente
+  → likes/comentarios pasan por API y DB</pre>
+<hr>
+<h2>16. Evaluación de madurez arquitectónica</h2>
+<table><thead><tr><th>Área</th><th>Estado</th><th>Lectura ejecutiva</th></tr></thead><tbody><tr><td>Separación cliente/API/datos</td><td>Sólido</td><td>Límites claros y servicios independientes</td></tr><tr><td>Contratos API</td><td>Sólido</td><td>OpenAPI + codegen reduce divergencias</td></tr><tr><td>Identidad y roles</td><td>Sólido</td><td>Enforcement en servidor y roles persistidos</td></tr><tr><td>Audio especializado</td><td>Avanzado</td><td>Motores diferenciados y coordinación explícita</td></tr><tr><td>Animación/Geometrix</td><td>Avanzado</td><td>UI thread, SVG y recetas persistibles</td></tr><tr><td>Operación de catálogo</td><td>Sólido</td><td>Admin conectado a la misma API y DB</td></tr><tr><td>Offline/sincronización</td><td>En evolución</td><td>Buen modelo base; conflictos/borrados requieren disciplina</td></tr><tr><td>Evolución DB</td><td>A reforzar</td><td>Falta historial de migraciones versionadas</td></tr><tr><td>Modularidad móvil</td><td>A reforzar</td><td>Muchos providers y coordinadores centrales grandes</td></tr><tr><td>Observabilidad</td><td>En evolución</td><td>Logs y pruebas disponibles; falta una visión integral de producto</td></tr></tbody></table>
+<h3>Prioridades técnicas recomendadas</h3>
+<ol>
+<li>Adoptar migraciones de base de datos versionadas y un procedimiento de despliegue.</li>
+<li>Mantener OpenAPI como punto único y obligatorio para todo cambio de contrato.</li>
+<li>Dividir gradualmente los contextos móviles de mayor tamaño por responsabilidad.</li>
+<li>Ampliar pruebas automatizadas de sincronización y del motor de audio.</li>
+<li>Medir rendimiento en dispositivos físicos con escenarios prolongados.</li>
+<li>Formalizar métricas, alertas y trazabilidad entre cliente y API.</li>
+</ol>
+<hr>
+<h2>17. Guía de incorporación para programadores</h2>
+<h3>Primer día</h3>
+<ol>
+<li>Leer <code>replit.md</code> y este informe.</li>
+<li>Revisar <code>pnpm-workspace.yaml</code> y el <code>package.json</code> raíz.</li>
+<li>Identificar el componente asignado: móvil, API, admin o biblioteca.</li>
+<li>Ejecutar typecheck antes de cambiar código.</li>
+</ol>
+<h3>Para trabajar en móvil</h3>
+<ol>
+<li>Comenzar por <code>artifacts/mobile/app/_layout.tsx</code>.</li>
+<li>Seguir la ruta específica desde <code>app/</code>.</li>
+<li>Identificar qué contexto posee el estado.</li>
+<li>Verificar si el cambio usa módulo nativo.</li>
+<li>Probar pérdida de foco, background y cleanup cuando exista audio/animación.</li>
+</ol>
+<h3>Para trabajar en API</h3>
+<ol>
+<li>Localizar el router en <code>artifacts/api-server/src/routes/</code>.</li>
+<li>Verificar contrato en OpenAPI.</li>
+<li>Revisar middleware de identidad/rol.</li>
+<li>Revisar esquema Drizzle del dominio.</li>
+<li>Regenerar cliente y Zod cuando cambie el contrato.</li>
+<li>Añadir pruebas de ruta.</li>
+</ol>
+<h3>Para trabajar en datos</h3>
+<ol>
+<li>No modificar tablas sin revisar consumidores de API y móvil.</li>
+<li>Probar relaciones, índices y concurrencia.</li>
+<li>Coordinar cambios de esquema con el procedimiento del entorno.</li>
+<li>Evitar cambios destructivos sin migración y respaldo.</li>
+</ol>
+<h3>Para trabajar en audio o Geometrix</h3>
+<ol>
+<li>Leer los comentarios de arquitectura del motor correspondiente.</li>
+<li>Respetar el propietario de la sesión de audio.</li>
+<li>No introducir actualizaciones React por frame.</li>
+<li>Cancelar listeners, timers, animations y nodos al cerrar.</li>
+<li>Probar en dispositivo físico y con pantalla bloqueada cuando aplique.</li>
+</ol>
+<hr>
+<h2>18. Mapa de archivos esenciales</h2>
+<table><thead><tr><th>Área</th><th>Punto de entrada</th></tr></thead><tbody><tr><td>Layout móvil</td><td><code>artifacts/mobile/app/_layout.tsx</code></td></tr><tr><td>Tabs</td><td><code>artifacts/mobile/app/(tabs)/_layout.tsx</code></td></tr><tr><td>Reproductor</td><td><code>artifacts/mobile/context/PlayerContext.tsx</code></td></tr><tr><td>Mezclador</td><td><code>artifacts/mobile/context/MixerContext.tsx</code></td></tr><tr><td>Arbitraje de audio</td><td><code>artifacts/mobile/context/audioBridge.ts</code></td></tr><tr><td>Motor gapless</td><td><code>artifacts/mobile/lib/bpmAudioEngine.ts</code></td></tr><tr><td>Render de escenas</td><td><code>artifacts/mobile/components/SceneAnimationInline.tsx</code></td></tr><tr><td>Editor Geometrix</td><td><code>artifacts/mobile/app/(tabs)/geometrix.tsx</code></td></tr><tr><td>Sincronización</td><td><code>artifacts/mobile/lib/cloudSync.ts</code></td></tr><tr><td>API</td><td><code>artifacts/api-server/src/app.ts</code></td></tr><tr><td>Routers</td><td><code>artifacts/api-server/src/routes/index.ts</code></td></tr><tr><td>Autorización</td><td><code>artifacts/api-server/src/middlewares/</code></td></tr><tr><td>OpenAPI</td><td><code>lib/api-spec/openapi.yaml</code></td></tr><tr><td>Codegen</td><td><code>lib/api-spec/orval.config.ts</code></td></tr><tr><td>Base de datos</td><td><code>lib/db/src/index.ts</code></td></tr><tr><td>Esquemas DB</td><td><code>lib/db/src/schema/</code></td></tr><tr><td>Panel admin</td><td><code>artifacts/resonancia-admin/src/App.tsx</code></td></tr></tbody></table>
+<hr>
+<h2>19. Cierre</h2>
+<p>RESONANCIA no es únicamente una aplicación de contenido. Es una plataforma con motores multimedia, edición visual, comunidad, operación editorial, identidad, sincronización y servicios compartidos.</p>
+<p>Para preservar sus cimientos, cualquier evolución debería mantener cuatro reglas:</p>
+<ol>
+<li><strong>El contrato de API es explícito y generado.</strong></li>
+<li><strong>La autorización se decide en el servidor.</strong></li>
+<li><strong>El audio y la animación deben respetar el ciclo de vida nativo.</strong></li>
+<li><strong>Los datos persistentes necesitan cambios versionados y reversibles.</strong></li>
+</ol>
+<p>Con estas reglas, la arquitectura actual puede seguir creciendo sin perder claridad, estabilidad ni capacidad de incorporación de nuevos programadores.</p>
+<hr>
+<h2>Fuentes técnicas revisadas</h2>
+<ul>
+<li>Configuración del workspace y comandos raíz.</li>
+<li>Manifiestos de la app móvil, API, DB y panel administrativo.</li>
+<li>Layout raíz y contextos de reproducción/mezcla.</li>
+<li>Motor de audio gapless/BPM y puente de arbitraje.</li>
+<li>Renderizador de escenas y editor Geometrix.</li>
+<li>Contrato OpenAPI y configuración de Orval.</li>
+<li>Esquemas Drizzle y routers Express.</li>
+<li>Configuración Expo, EAS, iOS y Android.</li>
+<li>Documentación operativa del repositorio.</li>
+</ul>
+<p><strong>Fin del informe</strong></p></body>
+</html>
