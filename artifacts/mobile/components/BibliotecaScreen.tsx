@@ -1913,7 +1913,11 @@ export function BibliotecaScreen({
         onClose={() => setNombreVisible(false)}
         bgColor={sceneTheme.gradient[0]}
       />
-      <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} bgColor="#2d4081" />
+      <NombreCarpetaModal
+        visible={nombreCarpetaVisible}
+        onClose={() => setNombreCarpetaVisible(false)}
+        bgColor={sceneTheme.gradient[0]}
+      />
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
       <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
       <PlaylistActionsSheet
