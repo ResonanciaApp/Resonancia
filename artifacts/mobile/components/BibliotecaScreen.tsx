@@ -1908,7 +1908,11 @@ export function BibliotecaScreen({
         onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
         gradient={sceneTheme.gradient}
       />
-      <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} bgColor="#2d4081" />
+      <NombrePlaylistModal
+        visible={nombreVisible}
+        onClose={() => setNombreVisible(false)}
+        bgColor={sceneTheme.gradient[0]}
+      />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} bgColor="#2d4081" />
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
       <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
