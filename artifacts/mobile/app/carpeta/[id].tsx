@@ -285,6 +285,7 @@ export default function CarpetaDetailScreen() {
         onClose={() => setAddSheetVisible(false)}
         onPlaylist={() => { setAddSheetVisible(false); setTimeout(() => setNombrePlaylistVisible(true), 250); }}
         onCarpeta={() => { setAddSheetVisible(false); setTimeout(() => setNombreCarpetaVisible(true), 250); }}
+        bgColor={sceneTheme.gradient[0]}
       />
 
       {/* Naming modals */}
@@ -294,6 +295,7 @@ export default function CarpetaDetailScreen() {
         defaultName={`Mi Playlist n.° ${allPlaylists.length + 1}`}
         onClose={() => setNombrePlaylistVisible(false)}
         onCreate={handleCreatePlaylist}
+        bgColor={sceneTheme.gradient[0]}
       />
       <NamingModal
         visible={nombreCarpetaVisible}
@@ -301,6 +303,7 @@ export default function CarpetaDetailScreen() {
         defaultName={`Mi carpeta n.° ${folders.length + 1}`}
         onClose={() => setNombreCarpetaVisible(false)}
         onCreate={handleCreateSubFolder}
+        bgColor={sceneTheme.gradient[0]}
       />
     </LinearGradient>
   );
@@ -308,10 +311,11 @@ export default function CarpetaDetailScreen() {
 
 // ─── Add sheet ────────────────────────────────────────────────────────────────
 function AddSheet({
-  visible, onClose, onPlaylist, onCarpeta,
-}: { visible: boolean; onClose: () => void; onPlaylist: () => void; onCarpeta: () => void }) {
+  visible, onClose, onPlaylist, onCarpeta, bgColor,
+}: {
+  visible: boolean; onClose: () => void; onPlaylist: () => void; onCarpeta: () => void; bgColor: string;
+}) {
   const insets = useSafeAreaInsets();
-  const { activeSceneId } = useSceneTheme();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const ITEMS = [
     { icon: "music" as const,  title: "Playlist",  sub: "Crea una playlist con canciones o episodios", onPress: onPlaylist },
@@ -320,7 +324,7 @@ function AddSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { paddingBottom: bottomPad, backgroundColor: "#2d4081" }]}>
+      <View style={[styles.sheet, { paddingBottom: bottomPad, backgroundColor: bgColor }]}>
         <View style={styles.sheetHandle} />
         {ITEMS.map((it) => (
           <Pressable
@@ -344,10 +348,10 @@ function AddSheet({
 
 // ─── Naming modal ─────────────────────────────────────────────────────────────
 function NamingModal({
-  visible, title, defaultName, onClose, onCreate,
+  visible, title, defaultName, onClose, onCreate, bgColor,
 }: {
   visible: boolean; title: string; defaultName: string;
-  onClose: () => void; onCreate: (name: string) => void;
+  onClose: () => void; onCreate: (name: string) => void; bgColor: string;
 }) {
   const [name, setName] = useState("");
   const inputRef = React.useRef<TextInput>(null);
@@ -370,7 +374,7 @@ function NamingModal({
     >
       <View style={styles.nameOverlay}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-        <View style={[styles.nameCard, { backgroundColor: "#2d4081" }]}>
+        <View style={[styles.nameCard, { backgroundColor: bgColor }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
