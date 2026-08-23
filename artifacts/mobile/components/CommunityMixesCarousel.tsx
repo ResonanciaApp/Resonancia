@@ -468,8 +468,6 @@ const styles = StyleSheet.create({
     height: 68,
     borderRadius: 12,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.3)",
   },
   avatarImg: {
     width: STACK_THUMB,
