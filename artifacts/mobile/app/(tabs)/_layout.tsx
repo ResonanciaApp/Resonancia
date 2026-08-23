@@ -62,6 +62,7 @@ const TAB_CONFIG: Record<
     mciIcon?: string;
     mciIconFill?: string;
     image?: number;
+    emoji?: string;
     iconSize?: number;
     iconOffset?: number;
     labelOffset?: number;
@@ -74,6 +75,7 @@ const TAB_CONFIG: Record<
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
+  emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
   encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",         featherIcon: "users", iconSize: 34 },
   profile:    { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
 };
@@ -106,7 +108,9 @@ function TabItem({
     const color  = active ? activeCol : inactiveCol;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     const mciName = active ? conf.mciIconFill : conf.mciIcon;
-    return conf.image ? (
+    return conf.emoji ? (
+      <Text style={{ fontSize: 22, lineHeight: 26, transform: tOffset }}>{conf.emoji}</Text>
+    ) : conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
     ) : mciName ? (
       <MaterialCommunityIcons name={mciName as never} size={iconSize} color={color} style={{ transform: tOffset }} />
@@ -545,6 +549,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="category/[id]"                 options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
+        <Tabs.Screen name="emocion"        options={{ title: "Emoción" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
