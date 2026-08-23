@@ -50,7 +50,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["musica", "profile", "video"]);
+const HIDDEN_ROUTES = new Set(["musica", "profile", "video", "descanzo"]);
 
 const TAB_CONFIG: Record<
   string,
