@@ -674,6 +674,16 @@ export default function HomeScreen2() {
     return shuffled.slice(0, 10);
   }, [history, catalogVersion]);
 
+  // Recientes — últimas sesiones incorporadas al catálogo, no confundir con
+  // “Escuchadas recientemente”, que depende del historial personal.
+  const recentSessions = React.useMemo<Session[]>(
+    () =>
+      [...SESSIONS]
+        .sort((a, b) => Number.parseInt(b.id, 10) - Number.parseInt(a.id, 10))
+        .slice(0, 7),
+    [catalogVersion],
+  );
+
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
   const listenedRecently = React.useMemo<Session[]>(() => {
@@ -1413,6 +1423,18 @@ export default function HomeScreen2() {
             </ScrollView>
           </View>
         )}
+
+        {/* ── RECIENTES ── */}
+        <SessionCarousel
+          title="Recientes"
+          sessions={recentSessions}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+          titleSize={20}
+        />
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
