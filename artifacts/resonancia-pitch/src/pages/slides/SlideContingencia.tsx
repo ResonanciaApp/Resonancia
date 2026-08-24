@@ -1,4 +1,13 @@
+import {
+  BASE_CASE,
+  FIXED_MONTHLY_COST_M,
+  INVESTMENT,
+  formatMillions,
+} from "../../data/financialModel";
+
 export default function SlideContingencia() {
+  const contingencyLineM = Math.abs(BASE_CASE.conservativeValleyM) - INVESTMENT.launchMarketingReserveM;
+
   const cols = [
     {
       t: "CAJA REAL · MES 1",
@@ -7,7 +16,7 @@ export default function SlideContingencia() {
         <>
           El 65% de las altas elige el plan anual y lo paga <span style={{ color: "#FFFFFF", fontWeight: 700 }}>completo por adelantado</span>:
           ~195 anuales × $23.500 netos ≈ <span style={{ color: "#FFFFFF", fontWeight: 700 }}>$4,6M</span> + ~$0,4M de mensuales
-          = <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$5,0M de ingreso real</span> contra $4,3M de costos.
+          = <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$5,0M de ingreso real</span> contra {formatMillions(FIXED_MONTHLY_COST_M, 2)} de costos.
           El mes 1 prácticamente se paga solo, con la campaña de lanzamiento ($2,5M de la ronda: $1M + $1M + $0,5M en M1–M3) ya financiada.
         </>
       ),
@@ -20,7 +29,7 @@ export default function SlideContingencia() {
           Que el mix anual tarde: en una app nueva es común probar primero el plan mensual.
           Si el anual queda <span style={{ color: "#FFFFFF", fontWeight: 700 }}>bajo el 50%</span> de las altas,
           la caja real se acerca a la vista conservadora de las hojas 1–2
-          (valle de hasta <span style={{ color: "#FFFFFF", fontWeight: 700 }}>≈ −$8,8M</span> entre M4 y M5).
+          (valle de hasta <span style={{ color: "#FFFFFF", fontWeight: 700 }}>≈ {formatMillions(BASE_CASE.conservativeValleyM)}</span> en M5).
         </>
       ),
     },
@@ -29,9 +38,9 @@ export default function SlideContingencia() {
       tint: "#D6A45C",
       d: (
         <>
-          Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$6,3M</span> ($8,8M de valle − $2,5M de campaña ya financiados).
+          Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~{formatMillions(contingencyLineM)}</span> ({formatMillions(Math.abs(BASE_CASE.conservativeValleyM))} de valle − {formatMillions(INVESTMENT.launchMarketingReserveM)} de campaña ya financiados).
           Solo se gira si el mix anual no alcanza el 50% en los primeros 3 meses.
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> No es parte de la ronda ni diluye</span>: es un puente que la propia operación devuelve hacia M10–M11.
+          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> No es parte de la ronda ni diluye</span>: es un puente que la propia operación devuelve hacia M11.
         </>
       ),
     },

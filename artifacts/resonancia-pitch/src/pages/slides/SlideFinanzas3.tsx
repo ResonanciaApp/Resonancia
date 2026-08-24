@@ -1,3 +1,5 @@
+import { FIXED_MONTHLY_COST_M, formatMillions } from "../../data/financialModel";
+
 function CostRow({ label, sub, value }: { label: string; sub?: string; value: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "0.5vw", padding: "0.28vh 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
@@ -19,15 +21,18 @@ export default function SlideFinanzas3() {
     { rango: "Mes 3",     valor: "$0,5M",      desc: "Cierre de la campaña de lanzamiento (de la ronda)" },
     { rango: "Mes 4–6",   valor: "$0",         desc: "Orgánico + comunidad (escalonado: sin pauta paga)" },
     { rango: "Mes 7–8",   valor: "$1M",        desc: "Pauta + influencers nicho wellness" },
-    { rango: "Mes 9–12",  valor: "$1,5M – $2M",desc: "Escala fuerte: la operación ya es rentable" },
+    { rango: "Mes 9–10",  valor: "$1,8M",      desc: "Escala fuerte con caja mensual positiva" },
+    { rango: "Mes 11–12", valor: "$2M",        desc: "Retargeting + expansión del alcance" },
     { rango: "Mes 13–24", valor: "$2M – $2,5M",desc: "Retargeting + campañas LATAM" },
   ];
 
   const phases = [
-    { fase: "M1–M3",    fijo: "$4,56M", cont: "$0,4M", mkt: "$0,8M*", total: "$5,79M" },
-    { fase: "M4–M6",    fijo: "$4,56M", cont: "$1,2M", mkt: "$0",    total: "$5,76M" },
-    { fase: "M7–M12",   fijo: "$4,56M", cont: "$1,5M", mkt: "$1,0M–$2,0M", total: "$7,06M–$8,06M" },
-    { fase: "M13–M24",  fijo: "$4,56M", cont: "$1,5M", mkt: "$2,0M–$2,5M", total: "$8,06M–$8,56M" },
+    { fase: "M1–M2",   fijo: "$4,56M", cont: "$0",    mkt: "$1,0M*", total: "$5,56M*" },
+    { fase: "M3",      fijo: "$4,56M", cont: "$1,2M", mkt: "$0,5M*", total: "$6,26M*" },
+    { fase: "M4–M6",   fijo: "$4,56M", cont: "$1,2M", mkt: "$0",     total: "$5,76M" },
+    { fase: "M7–M8",   fijo: "$4,56M", cont: "$1,5M", mkt: "$1,0M",  total: "$7,06M" },
+    { fase: "M9–M10",  fijo: "$4,56M", cont: "$1,5M", mkt: "$1,8M",  total: "$7,86M" },
+    { fase: "M11–M12", fijo: "$4,56M", cont: "$1,5M", mkt: "$2,0M",  total: "$8,06M" },
   ];
 
   return (
@@ -64,7 +69,7 @@ export default function SlideFinanzas3() {
           <CostRow label="Otros" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.5vh 0 0", borderTop: "1px solid rgba(255,255,255,0.28)", marginTop: "0.2vh" }}>
             <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#F4F4F4" }}>Total fijos</div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>$4.560.000</div>
+            <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>{formatMillions(FIXED_MONTHLY_COST_M, 2)}</div>
           </div>
 
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "0.7vh 0 0.35vh" }}>CONTENIDO / MES</div>
@@ -74,8 +79,8 @@ export default function SlideFinanzas3() {
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
             <div>
-              <div style={{ fontSize: "0.92vw", fontWeight: 700, color: "#F4F4F4" }}>~25 sesiones / mes · $60.000 prom.</div>
-              <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>Sin costo en M1–M2 · Activo producido</div>
+              <div style={{ fontSize: "0.92vw", fontWeight: 700, color: "#F4F4F4" }}>20 sesiones/mes M3–M6 · 25 desde M7</div>
+              <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>$60.000 prom. · Sin costo en M1–M2</div>
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#FFFFFF" }}>$1.200.000</div>
@@ -100,8 +105,8 @@ export default function SlideFinanzas3() {
             ))}
           </div>
 
-          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.35vh" }}>COSTO TOTAL MENSUAL POR FASE</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.6vw", alignContent: "start" }}>
+          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.35vh" }}>COSTO TOTAL MENSUAL POR FASE · INCLUYE MARKETING</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.6vw", alignContent: "start" }}>
             {phases.map((p) => (
               <div key={p.fase} style={{
                 backgroundColor: "rgba(0,0,0,0.14)", border: "1px solid rgba(255,255,255,0.08)",
@@ -122,7 +127,7 @@ export default function SlideFinanzas3() {
             ))}
           </div>
           <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)", marginTop: "0.4vh", lineHeight: 1.3 }}>
-            * Marketing pre-lanzamiento a M3 financiado con la ronda ($3,5M: $1M pre-lanzamiento + $1M mes 1 + $1M mes 2 + $0,5M mes 3). Ramp escalonado: el gasto fuerte de marketing parte en M9, cuando cada mes ya cierra en positivo.
+            * Marketing M1–M3 financiado con la ronda y excluido del P&amp;L operativo de las hojas 1–2. Presupuesto total de lanzamiento: $3,5M ($1M pre-lanzamiento + $1M M1 + $1M M2 + $0,5M M3). Desde M7 el marketing sí forma parte del costo operativo.
           </div>
         </div>
       </div>

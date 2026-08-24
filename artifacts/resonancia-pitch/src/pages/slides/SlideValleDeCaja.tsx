@@ -1,16 +1,15 @@
 export default function SlideValleDeCaja() {
-  // Escenario base · Los $29,66M se despliegan ANTES del lanzamiento
-  // Pre-lanzamiento (4 meses): equipo trabaja y cobra $1,54M/mes (=$6,16M runway) + $22,9M upfront producción/equipo/mkt/legal/arriendo
-  // Desde el día 1 (lanzamiento), la operación se financia únicamente con ingresos de suscripciones
+  // Mismo presupuesto de Slide11Inversion: $29,938M.
+  // $27,438M se despliegan hasta el lanzamiento y $2,5M quedan reservados para marketing M1–M3.
+  // El equipo pre-lanzamiento es reducido; la operación completa post-lanzamiento cuesta $4,56M/mes.
   const preLaunch = [
-    { mes: "M–4", label: "Pre-lanz.", val: "–$1,54M", h: 75, note: "Equipo" },
-    { mes: "M–3", label: "Pre-lanz.", val: "–$1,54M", h: 75, note: "Equipo" },
-    { mes: "M–2", label: "Pre-lanz.", val: "–$1,54M", h: 75, note: "Equipo" },
-    { mes: "M–1", label: "Pre-lanz.", val: "–$1,54M", h: 75, note: "Equipo" },
+    { mes: "M–3", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
+    { mes: "M–2", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
+    { mes: "M–1", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
   ];
   const postLaunch = [
-    { mes: "M1",  label: "Lanzamiento",  val: "+$0,23M", positive: true, note: "~800 subs" },
-    { mes: "M2",  label: "Post-lanz.",    val: "+$1,97M", positive: true, note: "~1.200 subs" },
+    { mes: "M1",  label: "Lanzamiento",  val: "+$0,44M", positive: true, note: "Caja real" },
+    { mes: "M2",  label: "Post-lanz.",    val: "+$2,04M", positive: true, note: "Caja real" },
   ];
 
   return (
@@ -27,7 +26,7 @@ export default function SlideValleDeCaja() {
           Todo antes del <span style={{ color: "#FFFFFF" }}>lanzamiento.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          Los $29,7M CLP se despliegan íntegros en los 4 meses previos al lanzamiento · desde el día 1 la operación se autofinancia
+          $27,438M CLP se despliegan hasta el lanzamiento · $2,5M quedan reservados para la campaña M1–M3
         </div>
       </div>
 
@@ -37,7 +36,7 @@ export default function SlideValleDeCaja() {
         {/* Left: timeline */}
         <div style={{ flex: 1.25, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
-            LÍNEA DE TIEMPO · 4 MESES PRE-LANZAMIENTO
+            LÍNEA DE TIEMPO · 3 MESES PRE-LANZAMIENTO
           </div>
 
           {/* Chart area */}
@@ -97,9 +96,9 @@ export default function SlideValleDeCaja() {
               border: "1px solid rgba(224,112,112,0.35)",
               borderRadius: "0.7vw",
             }}>
-              <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4F4F4", marginBottom: "0.3vh" }}>RRHH pre-lanzamiento</div>
-              <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>4 meses × $1,54M/mes</div>
-              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>$6,16M CLP</div>
+              <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4F4F4", marginBottom: "0.3vh" }}>Equipo reducido pre-lanzamiento</div>
+              <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>3 meses × $1,596M/mes</div>
+              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>$4,788M CLP</div>
             </div>
             <div style={{
               flex: 1,
@@ -108,9 +107,9 @@ export default function SlideValleDeCaja() {
               border: "1px solid rgba(255,255,255,0.25)",
               borderRadius: "0.7vw",
             }}>
-              <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4F4F4", marginBottom: "0.3vh" }}>Upfront (prod. + equipo + mkt)</div>
-              <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>paralelo al período de runway</div>
-              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>$22,9M CLP</div>
+              <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4F4F4", marginBottom: "0.3vh" }}>Otros usos hasta lanzamiento</div>
+              <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>contenido, externos, equipo y otros</div>
+              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>$22,65M CLP</div>
             </div>
           </div>
         </div>
@@ -134,23 +133,23 @@ export default function SlideValleDeCaja() {
           }}>
             <div>
               <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em" }}>TOTAL INVERSIÓN</div>
-              <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.05 }}>$29.656.000</div>
-              <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)" }}>desembolsados antes del día 1</div>
+              <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.05 }}>$29.938.000</div>
+              <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)" }}>$27,438M pre-lanzamiento + $2,5M reservados</div>
             </div>
 
             <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)" }} />
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>Producción, equipo, mkt, legal, arriendo</div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4F4F4" }}>$22,9M</div>
+              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>Contenido, externos, equipo y otros</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4F4F4" }}>$22,65M</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>RRHH 4 meses pre-lanzamiento</div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4F4F4" }}>$6,16M</div>
+              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>Equipo reducido · 3 meses pre-lanzamiento</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4F4F4" }}>$4,788M</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>Colchón / imprevistos</div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#6EC49A" }}>$0,6M</div>
+              <div style={{ fontSize: "1.2vw", color: "#F4F4F4" }}>Reserva marketing lanzamiento M1–M3</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#6EC49A" }}>$2,5M</div>
             </div>
 
             <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)" }} />
@@ -163,7 +162,7 @@ export default function SlideValleDeCaja() {
             }}>
               <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#6EC49A", marginBottom: "0.4vh" }}>Desde el lanzamiento (M1)</div>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.45 }}>
-                El producto sale listo y el equipo lleva 4 meses trabajando. La operación se financia con ingresos de suscripciones desde el día 1 — sin necesidad de más capital.
+                El producto sale listo tras 3 meses con un equipo reducido. Desde M1 entra la estructura completa de $4,56M/mes; los prepagos anuales sostienen la caja y la campaña ya está reservada.
               </div>
             </div>
           </div>
@@ -172,9 +171,8 @@ export default function SlideValleDeCaja() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.2vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
-        RRHH: Gerente $400K + Ventas/Logística $350K + Contenido $200K + Admin $400K (+ cargas) = $1.539.000/mes ·
-        Upfront: Contenido $7,2M + Prog. extra $5,5M + Replit $0,85M + Masterización $0,9M + Equipamiento $2,8M + Marketing $3M + Legal $0,25M + Arriendo $2,4M = $22,9M ·
-        Desde M1 los costos operativos se cubren con ingresos; no se requiere capital adicional.
+        Presupuesto igual a la lámina de inversión: contenido $4,95M + marketing $3,5M ($1M pre-lanzamiento y $2,5M reservados) + runway $4,788M + externos $9M + equipamiento $4,3M + otros $3,4M = $29,938M ·
+        Equipo reducido pre-lanzamiento ≠ estructura post-lanzamiento de $4,56M/mes.
       </div>
     </div>
   );

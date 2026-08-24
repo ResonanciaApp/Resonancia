@@ -1,50 +1,32 @@
+import {
+  BASE_CASE,
+  FINANCIAL_MONTHS,
+  YEAR_ONE_SCENARIOS,
+  formatMillions,
+} from "../../data/financialModel";
+
 export default function SlideFinanzas2() {
-  // 300 subs nuevos/mes → 3.600 a M12 · blend 35/65 sin lifetime
-  // M1: ARPU rec $2.506 · M2+: ARPU rec $3.238
-  // Cursos M7+: neto $15.294/venta
-  const ARPU_LAUNCH = 2506;
-  const ARPU_NORMAL = 3238;
-  const NETO_CURSO = 15294;
-
-  const meses = [
-    { label: "M1",  subs: 300,  launch: true,  costos: 4.31, cursos: 0   },
-    { label: "M2",  subs: 600,  launch: false, costos: 4.31, cursos: 0   },
-    { label: "M3",  subs: 900,  launch: false, costos: 4.81, cursos: 0   },
-    { label: "M4",  subs: 1200, launch: false, costos: 4.81, cursos: 0   },
-    { label: "M5",  subs: 1500, launch: false, costos: 4.81, cursos: 0   },
-    { label: "M6",  subs: 1800, launch: false, costos: 4.81, cursos: 0   },
-    { label: "M7",  subs: 2100, launch: false, costos: 7.21, cursos: 60  },
-    { label: "M8",  subs: 2400, launch: false, costos: 7.21, cursos: 80  },
-    { label: "M9",  subs: 2700, launch: false, costos: 8.16, cursos: 100 },
-    { label: "M10", subs: 3000, launch: false, costos: 8.16, cursos: 110 },
-    { label: "M11", subs: 3300, launch: false, costos: 8.41, cursos: 120 },
-    { label: "M12", subs: 3600, launch: false, costos: 8.41, cursos: 130 },
-  ];
-
-  let cumulative = 0;
-  const data = meses.map((m) => {
-    const arpu      = m.launch ? ARPU_LAUNCH : ARPU_NORMAL;
-    const ingresoRec = (m.subs * arpu) / 1_000_000;
-    const ingresoUp  = (m.cursos * NETO_CURSO) / 1_000_000;
-    const ingreso    = ingresoRec + ingresoUp;
-    const neto       = ingreso - m.costos;
-    cumulative      += neto;
-    return { ...m, ingreso, ingresoUp, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
-  });
+  const data = FINANCIAL_MONTHS.map((month) => ({
+    label: month.shortLabel,
+    subs: month.subscribers,
+    launch: month.phase === "lanzamiento",
+    cursos: month.courseUnits,
+    cumulative: month.cumulativeResultM,
+  }));
 
   const maxSubs  = 3600;
   const allCum   = data.map((d) => d.cumulative);
   const minCum   = Math.min(...allCum);
   const maxCum   = Math.max(...allCum);
   const cumRange = maxCum - minCum;
-  const ZERO_PCT = (-minCum / cumRange) * 100;
+  const PLOT_HEIGHT_PCT = 82;
+  const ZERO_PCT = (maxCum / cumRange) * PLOT_HEIGHT_PCT;
 
-  const scenarios = [
-    { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$85M",  neto: "+$9M",   highlight: true  },
-    { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$106M", neto: "+$30M",  highlight: false },
-    { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$141M", neto: "+$66M",  highlight: false },
-    { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600",    ingTotal: "~$55M",  neto: "−$20M",  highlight: false, negative: true },
-  ];
+  const scenarios = YEAR_ONE_SCENARIOS.map((scenario) => ({
+    ...scenario,
+    ingTotal: `≈${formatMillions(scenario.revenueM)}`,
+    neto: formatMillions(scenario.netM, 1, true),
+  }));
 
   return (
     <div
@@ -68,23 +50,27 @@ export default function SlideFinanzas2() {
         <div style={{ flex: 2, position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ position: "absolute", left: 0, right: 0, top: `${ZERO_PCT}%`, height: "1px", backgroundColor: "rgba(255,255,255,0.30)", zIndex: 1 }} />
           <div style={{ position: "absolute", left: 0, top: `${ZERO_PCT}%`, transform: "translateY(-50%)", fontSize: "0.85vw", color: "rgba(255,255,255,0.40)", zIndex: 2 }}>$0</div>
-          <div style={{ display: "flex", alignItems: "flex-end", height: "100%", gap: "0.4vw", paddingLeft: "2vw", position: "relative" }}>
+          <div style={{ display: "flex", height: "100%", gap: "0.4vw", paddingLeft: "2vw", position: "relative" }}>
             {data.map((d) => {
               const isNeg      = d.cumulative < 0;
-              const heightPct  = (Math.abs(d.cumulative) / cumRange) * 100;
+              const heightPct  = (Math.abs(d.cumulative) / cumRange) * PLOT_HEIGHT_PCT;
               const barColor   = isNeg ? "rgba(224,112,112,0.55)" : d.launch ? "rgba(214,164,92,0.65)" : "rgba(110,196,154,0.65)";
               const borderColor= isNeg ? "rgba(224,112,112,0.8)"  : d.launch ? "rgba(214,164,92,0.9)"  : "rgba(110,196,154,0.8)";
               return (
-                <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
-                  <div style={{ width: "100%", position: "relative", height: `${(Math.abs(d.cumulative) / cumRange) * 100}%` }}>
-                    <div style={{
-                      position: "absolute", bottom: isNeg ? "auto" : 0, top: isNeg ? 0 : "auto", left: 0, right: 0,
-                      height: `${heightPct}%`, minHeight: "2px",
-                      backgroundColor: barColor, border: `1px solid ${borderColor}`, borderRadius: "0.3vw 0.3vw 0 0",
-                    }} />
-                  </div>
-                  <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh", textAlign: "center" }}>{d.label}</div>
-                  <div style={{ fontSize: "0.78vw", fontWeight: 700, color: isNeg ? "rgba(224,112,112,0.9)" : d.launch ? "#D6A45C" : "#6EC49A", textAlign: "center" }}>
+                <div key={d.label} style={{ flex: 1, position: "relative", height: "100%" }}>
+                  <div style={{
+                    position: "absolute",
+                    top: `${isNeg ? ZERO_PCT : ZERO_PCT - heightPct}%`,
+                    left: 0,
+                    right: 0,
+                    height: `${heightPct}%`,
+                    minHeight: "2px",
+                    backgroundColor: barColor,
+                    border: `1px solid ${borderColor}`,
+                    borderRadius: isNeg ? "0 0 0.3vw 0.3vw" : "0.3vw 0.3vw 0 0",
+                  }} />
+                  <div style={{ position: "absolute", bottom: "1.7vh", left: 0, right: 0, fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", textAlign: "center" }}>{d.label}</div>
+                  <div style={{ position: "absolute", bottom: "0", left: 0, right: 0, fontSize: "0.78vw", fontWeight: 700, color: isNeg ? "rgba(224,112,112,0.9)" : d.launch ? "#D6A45C" : "#6EC49A", textAlign: "center" }}>
                     {d.cumulative > 0 ? "+" : ""}{d.cumulative.toFixed(1)}M
                   </div>
                 </div>
@@ -110,7 +96,7 @@ export default function SlideFinanzas2() {
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal}</div>
-                  <div style={{ fontSize: "1.05vw", fontWeight: 700, color: (s as any).negative ? "rgba(224,112,112,0.9)" : "#6EC49A" }}>{s.neto} neto</div>
+                  <div style={{ fontSize: "1.05vw", fontWeight: 700, color: s.negative ? "rgba(224,112,112,0.9)" : "#6EC49A" }}>{s.neto} neto</div>
                 </div>
               </div>
             ))}
@@ -139,7 +125,7 @@ export default function SlideFinanzas2() {
 
       <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
         Base: 300 nuevos subs/mes · Blend 35/65% (sin lifetime) · ARPU rec. $3.238 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
-        Marketing escalonado (gasto fuerte desde M9) · Valle máximo ≈ −$8,8M (M4–M5), dentro del tramo mayor de $10M · Break-even operacional M6 · Recuperación caja M11 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
+        Marketing operativo escalonado desde M7 · Valle conservador ≈ {formatMillions(BASE_CASE.conservativeValleyM)} en M5 · Primer mes en equilibrio M{BASE_CASE.firstPositiveMonth} · Recuperación de caja acumulada M{BASE_CASE.cumulativeRecoveryMonth} · El marketing de lanzamiento M1–M3 ($2,5M) está financiado por la ronda y fuera de esta curva · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
       </div>
     </div>
   );

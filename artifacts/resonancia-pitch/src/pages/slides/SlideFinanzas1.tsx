@@ -1,23 +1,26 @@
+import { FINANCIAL_MONTHS, FINANCIAL_TOTALS, formatMillions } from "../../data/financialModel";
+
 export default function SlideFinanzas1() {
   // 300 subs nuevos/mes → 3.600 a M12
   // Blend 35/65 sin lifetime
   // M1: ARPU rec $2.506 · M2+: ARPU rec $3.238
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
-  const rows = [
-    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$3,6M", neg: true  },
-    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$2,4M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  mkt: "—", resultado: "–$2,0M", neg: true  },
-    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$1,0M", neg: true  },
-    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$0,1M", neg: true  },
-    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "+$0,9M", neg: false },
-    { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$6,8M",  upsell: "+$0,9M", costos: "$6,2M",  mkt: "$1,0M", resultado: "+$0,5M", neg: false },
-    { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$7,8M",  upsell: "+$1,2M", costos: "$6,2M",  mkt: "$1,0M", resultado: "+$1,8M", neg: false },
-    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$6,4M",  mkt: "$1,8M", resultado: "+$2,1M", neg: false },
-    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$6,4M",  mkt: "$1,8M", resultado: "+$3,2M", neg: false },
-    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$6,4M",  mkt: "$2,0M", resultado: "+$4,1M", neg: false },
-    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$6,4M",  mkt: "$2,0M", resultado: "+$5,2M", neg: false },
-  ];
+  const rows = FINANCIAL_MONTHS.map((month) => ({
+    mes: month.label,
+    subs: month.subscribers.toLocaleString("es-CL"),
+    fase: month.phase,
+    ingTotal: formatMillions(month.recurringRevenueM),
+    upsell: month.courseRevenueM > 0 ? formatMillions(month.courseRevenueM, 1, true) : "—",
+    costos: formatMillions(month.nonMarketingCostM, 2),
+    mkt: month.roundFundedMarketingM > 0
+      ? "Ronda"
+      : month.operatingMarketingM > 0
+        ? formatMillions(month.operatingMarketingM)
+        : "$0",
+    resultado: formatMillions(month.netResultM, 1, true),
+    neg: month.netResultM < 0,
+  }));
 
   return (
     <div
@@ -99,18 +102,18 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>3.600 cierre</div>
           <div />
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$76M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$66M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>~$10M</div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$9M neto</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>{formatMillions(FINANCIAL_TOTALS.recurringRevenueM)}</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>{formatMillions(FINANCIAL_TOTALS.courseRevenueM)}</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>{formatMillions(FINANCIAL_TOTALS.nonMarketingCostM)}</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{formatMillions(FINANCIAL_TOTALS.operatingMarketingM)}</div>
+          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>{formatMillions(FINANCIAL_TOTALS.netResultM, 1, true)} neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Marketing escalonado: el gasto fuerte parte en M9, cuando la operación ya es rentable ·
-        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $66M + Marketing $10M = $76M · Neto +$9M · Marketing M1–M3 financiado con la ronda ($1M + $1M + $0,5M, no aparece en la tabla) ·
+        Primer mes en equilibrio M6 · Recuperación de caja acumulada M11 · $75,5M suscripciones + $9,2M cursos = $84,7M · Operación $68,5M + marketing operativo $9,6M = $78,1M · Neto +$6,6M · Marketing M1–M3 financiado con la ronda ($1M + $1M + $0,5M, marcado “Ronda” y excluido del resultado) ·
         Vista conservadora: el plan anual (65%) se reconoce mes a mes; en caja real ese ingreso entra por adelantado.
       </div>
     </div>

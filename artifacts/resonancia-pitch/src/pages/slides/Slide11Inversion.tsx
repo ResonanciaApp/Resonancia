@@ -7,7 +7,7 @@ export default function Slide11Inversion() {
       items: [
         { label: "Contenido",                  monto: "$4.950.000" },
         { label: "Marketing",                  monto: "$3.500.000" },
-        { label: "Runway Operativo (4 meses)", monto: "$4.788.000" },
+        { label: "Runway Operativo (3 meses)", monto: "$4.788.000" },
       ],
       total: "$13.238.000",
     },
@@ -118,7 +118,7 @@ export default function Slide11Inversion() {
             </span>
           </div>
           <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh" }}>
-            para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 4 meses pre-lanzamiento.
+            para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 3 meses pre-lanzamiento.
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -172,7 +172,7 @@ export default function Slide11Inversion() {
             <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$1.596.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            Runway operativo total = $4.788.000
+            Runway total = 3 meses × $1.596.000 = $4.788.000
           </div>
         </div>
 

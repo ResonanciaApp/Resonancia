@@ -1,3 +1,5 @@
+import { BASE_CASE, YEAR_ONE_SCENARIOS, formatMillions } from "../../data/financialModel";
+
 function ScenarioCard({
   label,
   highlight,
@@ -34,7 +36,7 @@ function ScenarioCard({
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{subs}</div>
       </div>
       <div>
-        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>RESULTADO NETO AÑO 1</div>
         <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>{revenue}</div>
       </div>
     </div>
@@ -42,6 +44,8 @@ function ScenarioCard({
 }
 
 export default function SlideProyeccion() {
+  const [base, optimistic, aggressive] = YEAR_ONE_SCENARIOS;
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
@@ -64,19 +68,19 @@ export default function SlideProyeccion() {
           highlight
           installs="36.000"
           subs="3.600"
-          revenue="+$9M CLP"
+          revenue={`${formatMillions(base.netM, 1, true)} CLP`}
         />
         <ScenarioCard
           label="Optimista"
           installs="45.000"
           subs="4.500"
-          revenue="+$30M CLP"
+          revenue={`${formatMillions(optimistic.netM, 0, true)} CLP`}
         />
         <ScenarioCard
           label="Agresivo"
           installs="60.000"
           subs="6.000"
-          revenue="+$66M CLP"
+          revenue={`${formatMillions(aggressive.netM, 0, true)} CLP`}
         />
       </div>
 
@@ -110,7 +114,7 @@ export default function SlideProyeccion() {
         </div>
         {/* Short disclaimer */}
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
-          Base: 300 suscriptores nuevos/mes · Break-even operacional M6 · Recuperación de caja acumulada M11. Escenarios ilustrativos, no garantizados.
+          Base: 300 suscriptores nuevos/mes · Primer mes en equilibrio M{BASE_CASE.firstPositiveMonth} · Recuperación de caja acumulada M{BASE_CASE.cumulativeRecoveryMonth}. Escenarios ilustrativos, no garantizados.
         </div>
       </div>
 

@@ -1,4 +1,9 @@
+import { FINANCIAL_TOTALS, formatMillions } from "../../data/financialModel";
+
 export default function SlideCAC() {
+  const totalMarketingM = 1 + FINANCIAL_TOTALS.roundFundedMarketingM + FINANCIAL_TOTALS.operatingMarketingM;
+  const blendedCac = totalMarketingM * 1_000_000 / 3_600;
+
   const drivers = [
     {
       t: "Comunidad propia",
@@ -35,8 +40,8 @@ export default function SlideCAC() {
       {/* KPI row */}
       <div style={{ display: "flex", gap: "1.6vw", marginTop: "4.5vh" }}>
         {[
-          { k: "CAC BLENDED AÑO 1", v: "≈ $3.600", s: "por suscriptor (rango $3.100–$4.000)" },
-          { k: "INVERSIÓN EN MARKETING AÑO 1", v: "≈ $13M", s: "pre-lanzamiento + ramp-up M1–M12" },
+          { k: "CAC BLENDED AÑO 1", v: `≈ $${(Math.round(blendedCac / 10) * 10).toLocaleString("es-CL")}`, s: "por suscriptor (rango $3.100–$4.000)" },
+          { k: "INVERSIÓN EN MARKETING AÑO 1", v: `≈ ${formatMillions(totalMarketingM)}`, s: "pre-lanzamiento + ramp-up M1–M12" },
           { k: "SUSCRIPTORES AÑO 1", v: "3.600", s: "300 nuevos subs/mes (caso base)" },
           { k: "PAYBACK DEL CAC", v: "1,1 meses", s: "CAC ÷ ARPU recurrente $3.238/mes" },
         ].map((c) => (
@@ -70,7 +75,7 @@ export default function SlideCAC() {
 
       {/* Footnote */}
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        CAC blended = marketing total año 1 (pre-lanzamiento $1M · M1–M3 $2,5M de la ronda · M4–M6 $0 orgánico · M7–M12 $6M–$9M) ÷ 3.600 suscriptores del caso base.
+        CAC blended = marketing total año 1 (pre-lanzamiento $1M · M1–M3 $2,5M de la ronda · M4–M6 $0 orgánico · M7–M12 $9,6M operativo) ÷ 3.600 suscriptores del caso base.
         Payback sobre ARPU recurrente blended $3.238 (neto de IVA y comisión de tienda). Cifras en CLP, consistentes con el anexo de flujo de caja.
       </div>
     </div>
