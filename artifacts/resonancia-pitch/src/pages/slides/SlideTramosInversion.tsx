@@ -1,12 +1,12 @@
 export default function SlideTramosInversion() {
-  // Tramos simples: equity fijo por monto de inversión
-  const VAL_M12 = 560; // millones CLP · 3.600 subs × $3.238 ARR rec. (blend 35/65%) × 12 × 4×
+  // Valorización ilustrativa a M12: 3.600 suscriptores × ARPU recurrente anualizado × 4× ARR.
+  const VAL_M12 = 560; // millones CLP
 
   const tramos = [
     { inv: 3,  equity: 2.0 },
     { inv: 6,  equity: 4.5 },
     { inv: 8,  equity: 6.5 },
-    { inv: 10, equity: 8.5 },
+    { inv: 13.4, equity: 12.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -27,7 +27,7 @@ export default function SlideTramosInversion() {
     "INVERSIÓN",
     "EQUITY",
     "VALUACIÓN IMPLÍCITA",
-    "STAKE VALE · M12 (BASE)",
+    "VALOR EST. PARTICIPACIÓN · M12",
     "RETORNO EST.",
   ];
 
@@ -45,7 +45,7 @@ export default function SlideTramosInversion() {
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
         <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.45)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
-          TRAMOS DE INVERSIÓN
+          RONDA OBJETIVO · $13,4M CLP
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Oportunidad de{" "}
@@ -54,7 +54,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido
+          Prima por escala · el tramo lead cubre el 100% de la ronda y recibe una valorización más favorable
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function SlideTramosInversion() {
           <div
             key={h}
             style={{
-              fontSize: "0.82vw",
+              fontSize: h === "VALOR EST. PARTICIPACIÓN · M12" ? "0.70vw" : "0.82vw",
               fontWeight: 700,
               letterSpacing: "0.1em",
               color: "#FFFFFF",
@@ -87,7 +87,7 @@ export default function SlideTramosInversion() {
       {/* Rows */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
-          const isHighlight = i === tramos.length - 1; // Tramo mayor ($10M)
+          const isHighlight = i === tramos.length - 1; // Tramo lead: cubre la ronda completa.
           const rowBg = ["rgba(0,0,0,0.12)", "rgba(0,0,0,0.15)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.20)"];
           return (
             <div
@@ -169,7 +169,7 @@ export default function SlideTramosInversion() {
       {/* Footer note */}
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
         <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
-          Stake M12 calculado sobre ARR recurrente (3.600 suscriptores × $3.238 ARPU rec. × 12 meses × 4× = $560M CLP · blend 35/65% · 300 nuevos subs/mes) · Retorno estimado ilustrativo.
+          Estimación a M12 sobre el caso base: 3.600 suscriptores, ARR recurrente anualizado cercano a $140M y valoración ilustrativa de 4× ARR (~$560M CLP). Retorno estimado, referencial y sujeto a acuerdo definitivo.
         </div>
       </div>
 
