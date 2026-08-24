@@ -26,6 +26,7 @@ export default function SlideFinanzas2() {
     ...scenario,
     ingTotal: `≈${formatMillions(scenario.revenueM)}`,
     neto: formatMillions(scenario.netM, 1, true),
+    negative: scenario.netM < 0,
   }));
 
   return (

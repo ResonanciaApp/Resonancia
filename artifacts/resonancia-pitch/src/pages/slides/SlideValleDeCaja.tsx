@@ -1,15 +1,15 @@
 export default function SlideValleDeCaja() {
   // Mismo presupuesto de Slide11Inversion: $29,938M.
   // $27,438M se despliegan hasta el lanzamiento y $2,5M quedan reservados para marketing M1–M3.
-  // El equipo pre-lanzamiento es reducido; la operación completa post-lanzamiento cuesta $4,56M/mes.
+  // El equipo pre-lanzamiento es reducido; la operación completa post-lanzamiento cuesta $2,58M/mes.
   const preLaunch = [
     { mes: "M–3", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
     { mes: "M–2", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
     { mes: "M–1", label: "Pre-lanz.", val: "–$1,60M", h: 75, note: "Equipo reducido" },
   ];
   const postLaunch = [
-    { mes: "M1",  label: "Lanzamiento",  val: "+$0,44M", positive: true, note: "Caja real" },
-    { mes: "M2",  label: "Post-lanz.",    val: "+$2,04M", positive: true, note: "Caja real" },
+    { mes: "M1",  label: "Lanzamiento",  val: "+$1,97M", positive: true, note: "Caja real" },
+    { mes: "M2",  label: "Post-lanz.",    val: "+$3,57M", positive: true, note: "Caja real" },
   ];
 
   return (
@@ -162,7 +162,7 @@ export default function SlideValleDeCaja() {
             }}>
               <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#6EC49A", marginBottom: "0.4vh" }}>Desde el lanzamiento (M1)</div>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.45 }}>
-                El producto sale listo tras 3 meses con un equipo reducido. Desde M1 entra la estructura completa de $4,56M/mes; los prepagos anuales sostienen la caja y la campaña ya está reservada.
+                El producto sale listo tras 3 meses con un equipo reducido. Desde M1 entra la estructura completa de $2,58M/mes; los prepagos anuales sostienen la caja y la campaña ya está reservada.
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function SlideValleDeCaja() {
       {/* Footnote */}
       <div style={{ fontSize: "1.2vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
         Presupuesto igual a la lámina de inversión: contenido $4,95M + marketing $3,5M ($1M pre-lanzamiento y $2,5M reservados) + runway $4,788M + externos $9M + equipamiento $4,3M + otros $3,4M = $29,938M ·
-        Equipo reducido pre-lanzamiento ≠ estructura post-lanzamiento de $4,56M/mes.
+        Equipo reducido pre-lanzamiento ≠ estructura post-lanzamiento de $2,58M/mes.
       </div>
     </div>
   );

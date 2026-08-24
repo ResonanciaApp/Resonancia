@@ -2,8 +2,8 @@ export const ARPU_LAUNCH = 2_506;
 export const ARPU_NORMAL = 3_238;
 export const NET_COURSE_REVENUE = 15_294;
 
-export const FIXED_MONTHLY_COST_M = 4.56;
-export const CONTENT_COSTS_M = [0, 0, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5] as const;
+export const FIXED_MONTHLY_COST_M = 2.58;
+export const CONTENT_COSTS_M = [0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45] as const;
 export const OPERATING_MARKETING_M = [0, 0, 0, 0, 0, 0, 1, 1, 1.8, 1.8, 2, 2] as const;
 export const ROUND_FUNDED_MARKETING_M = [1, 1, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0] as const;
 
@@ -63,7 +63,7 @@ export const YEAR_ONE_SCENARIOS = [
   },
   { label: "Optimista", subs12: "4.500", cursos6m: "~750", revenueM: 106, netM: 106 - FINANCIAL_TOTALS.totalOperatingCostM, highlight: false, negative: false },
   { label: "Agresivo", subs12: "6.000", cursos6m: "~1.000", revenueM: 141, netM: 141 - FINANCIAL_TOTALS.totalOperatingCostM, highlight: false, negative: false },
-  { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600", revenueM: 55, netM: 55 - FINANCIAL_TOTALS.totalOperatingCostM, highlight: false, negative: true },
+  { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600", revenueM: 55, netM: 55 - FINANCIAL_TOTALS.totalOperatingCostM, highlight: false, negative: false },
 ] as const;
 
 export const BASE_CASE = {

@@ -19,7 +19,7 @@ export default function SlideConclusionFinanciera() {
     },
     {
       t: "M1+ · OPERACIÓN AUTOFINANCIADA",
-      d: "El 65% paga el plan anual por adelantado: en caja real el mes 1 ingresa ~$5M contra $4,56M de costos. El primer mes en equilibrio operacional es M6 y desde M7 entran los cursos.",
+      d: `El 65% paga el plan anual por adelantado: en caja real el mes 1 ingresa ~$5M contra ${formatMillions(FINANCIAL_MONTHS[0].nonMarketingCostM, 2)} de costos. El primer mes en equilibrio operacional es M${BASE_CASE.firstPositiveMonth} y desde M7 entran los cursos.`,
       tint: "#D6A45C",
     },
     {
@@ -78,7 +78,7 @@ export default function SlideConclusionFinanciera() {
         <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", border: "1px solid rgba(255,255,255,0.13)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>ESCENARIO CHURN 15%</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
-            El año acumula <span style={{ color: "#FFFFFF", fontWeight: 700 }}>{formatMillions(churnScenario.netM)}</span>. En M12 la operación queda <span style={{ color: "#D6A45C", fontWeight: 700 }}>cerca del equilibrio mensual</span> (~$7,6M de ingreso vs $8,06M de costo); mejorar retención en los primeros meses es el principal control del modelo.
+            El año cierra con <span style={{ color: "#FFFFFF", fontWeight: 700 }}>{formatMillions(churnScenario.netM, 1, true)}</span>. En M12 la operación mantiene <span style={{ color: "#6EC49A", fontWeight: 700 }}>margen mensual positivo</span> (~$7,6M de ingreso vs $5,03M de costo); mejorar retención en los primeros meses sigue siendo el principal control del modelo.
           </div>
         </div>
       </div>

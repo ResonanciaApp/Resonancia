@@ -113,7 +113,7 @@ export default function SlideFinanzas1() {
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Marketing escalonado: el gasto fuerte parte en M9, cuando la operación ya es rentable ·
-        Primer mes en equilibrio M6 · Recuperación de caja acumulada M11 · $75,5M suscripciones + $9,2M cursos = $84,7M · Operación $68,5M + marketing operativo $9,6M = $78,1M · Neto +$6,6M · Marketing M1–M3 financiado con la ronda ($1M + $1M + $0,5M, marcado “Ronda” y excluido del resultado) ·
+        Primer mes en equilibrio M4 · Recuperación de caja acumulada M6 · $75,5M suscripciones + $9,2M cursos = $84,7M · Operación $36,4M + marketing operativo $9,6M = $46,0M · Neto +$38,8M · Marketing M1–M3 financiado con la ronda ($1M + $1M + $0,5M, marcado “Ronda” y excluido del resultado) ·
         Vista conservadora: el plan anual (65%) se reconoce mes a mes; en caja real ese ingreso entra por adelantado.
       </div>
     </div>

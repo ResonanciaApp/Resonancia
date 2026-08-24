@@ -27,12 +27,12 @@ export default function SlideFinanzas3() {
   ];
 
   const phases = [
-    { fase: "M1–M2",   fijo: "$4,56M", cont: "$0",    mkt: "$1,0M*", total: "$5,56M*" },
-    { fase: "M3",      fijo: "$4,56M", cont: "$1,2M", mkt: "$0,5M*", total: "$6,26M*" },
-    { fase: "M4–M6",   fijo: "$4,56M", cont: "$1,2M", mkt: "$0",     total: "$5,76M" },
-    { fase: "M7–M8",   fijo: "$4,56M", cont: "$1,5M", mkt: "$1,0M",  total: "$7,06M" },
-    { fase: "M9–M10",  fijo: "$4,56M", cont: "$1,5M", mkt: "$1,8M",  total: "$7,86M" },
-    { fase: "M11–M12", fijo: "$4,56M", cont: "$1,5M", mkt: "$2,0M",  total: "$8,06M" },
+    { fase: "M1–M2",   fijo: "$2,58M", cont: "$0,45M", mkt: "$1,0M*", total: "$4,03M*" },
+    { fase: "M3",      fijo: "$2,58M", cont: "$0,45M", mkt: "$0,5M*", total: "$3,53M*" },
+    { fase: "M4–M6",   fijo: "$2,58M", cont: "$0,45M", mkt: "$0",     total: "$3,03M" },
+    { fase: "M7–M8",   fijo: "$2,58M", cont: "$0,45M", mkt: "$1,0M",  total: "$4,03M" },
+    { fase: "M9–M10",  fijo: "$2,58M", cont: "$0,45M", mkt: "$1,8M",  total: "$4,83M" },
+    { fase: "M11–M12", fijo: "$2,58M", cont: "$0,45M", mkt: "$2,0M",  total: "$5,03M" },
   ];
 
   return (
@@ -56,16 +56,15 @@ export default function SlideFinanzas3() {
         {/* Left: fixed costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "2.8vh 0 0.2vh" }}>COSTOS FIJOS / MES · RRHH</div>
-          <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.45)", marginBottom: "0.8vh" }}>Incluye el 15% de retención por boletas de honorarios</div>
-          <CostRow label="Gerente general" value="$840.000" />
-          <CostRow label="Ventas / Logística / Coordinación contenidos" value="$360.000" />
-          <CostRow label="Super admin / Atención al cliente" value="$720.000" />
-          <CostRow label="Desarrollo / Replit" value="$720.000" />
-          <CostRow label="Diseñador" value="$570.000" />
+          <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.45)", marginBottom: "0.8vh" }}>Estructura mensual post-lanzamiento</div>
+          <CostRow label="Gerente general" value="$380.000" />
+          <CostRow label="Super admin / Atención al cliente" value="$450.000" />
+          <CostRow label="Desarrollo / Replit" value="$300.000" />
+          <CostRow label="Diseñador" value="$300.000" />
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "2.4vh 0 0.8vh" }}>OPERACIONALES</div>
-          <CostRow label="Arriendo Casa" value="$500.000" />
+          <CostRow label="Arriendo Casa" value="$350.000" />
           <CostRow label="Hosting e infraestructura" value="$250.000" />
-          <CostRow label="Cuentas Básicas" value="$250.000" />
+          <CostRow label="Cuentas Básicas" value="$200.000" />
           <CostRow label="Otros" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.5vh 0 0", borderTop: "1px solid rgba(255,255,255,0.28)", marginTop: "0.2vh" }}>
             <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#F4F4F4" }}>Total fijos</div>
@@ -79,12 +78,12 @@ export default function SlideFinanzas3() {
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
             <div>
-              <div style={{ fontSize: "0.92vw", fontWeight: 700, color: "#F4F4F4" }}>20 sesiones/mes M3–M6 · 25 desde M7</div>
-              <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>$60.000 prom. · Sin costo en M1–M2</div>
+              <div style={{ fontSize: "0.92vw", fontWeight: 700, color: "#F4F4F4" }}>Inversión mensual de contenido</div>
+              <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>Presupuesto estable durante todo el año</div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#FFFFFF" }}>$1.200.000</div>
-              <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.40)" }}>M3–M6 · $1.500.000 desde M7</div>
+              <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#FFFFFF" }}>$450.000</div>
+              <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.40)" }}>por mes</div>
             </div>
           </div>
         </div>
