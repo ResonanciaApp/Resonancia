@@ -5,58 +5,51 @@ export default function Slide11Inversion() {
     {
       titulo: "GASTOS OPERACIONALES",
       items: [
-        { label: "Contenido",                  monto: "$4.950.000" },
-        { label: "Marketing",                  monto: "$3.500.000" },
-        { label: "Runway Operativo (3 meses)", monto: "$4.788.000" },
+        { label: "Contenido",                  monto: "$3.500.000" },
+        { label: "Marketing",                  monto: "$3.000.000" },
+        { label: "Runway Operativo (4 meses)", monto: "$1.950.000" },
       ],
-      total: "$13.238.000",
+      total: "$8.450.000",
     },
     {
       titulo: "EXTERNOS",
       items: [
-        { label: "Programación extra",     monto: "$5.000.000" },
-        { label: "Masterización",          monto: "$800.000"   },
-        { label: "Replit (programación)",  monto: "$1.200.000" },
-        { label: "Diseños y animación",    monto: "$2.000.000" },
+        { label: "Masterización",       monto: "$400.000" },
+        { label: "Diseños y animación", monto: "$800.000" },
       ],
-      total: "$9.000.000",
+      total: "$1.200.000",
     },
     {
       titulo: "EQUIPAMIENTO",
       items: [
-        { label: "Equipamiento (estudio + hardware)", monto: "$4.300.000" },
+        { label: "Equipamiento", monto: "$3.100.000" },
       ],
-      total: "$4.300.000",
+      total: "$3.100.000",
     },
     {
       titulo: "OTROS",
       items: [
-        { label: "Trámites legales", monto: "$1.300.000" },
-        { label: "Colchón",          monto: "$600.000"   },
-        { label: "50% Arriendo 3 meses", monto: "$1.500.000" },
+        { label: "Trámites legales", monto: "$350.000" },
+        { label: "Colchón",          monto: "$300.000" },
       ],
-      total: "$3.400.000",
+      total: "$650.000",
     },
   ];
 
   const rrhh = [
-    { label: "Gerente General",                          monto: "$600.000" },
-    { label: "Ventas / Logística / Coord. contenido",    monto: "$400.000" },
-    { label: "Super admin / Atención cliente",           monto: "$400.000" },
+    { label: "Super admin / Atención al cliente", monto: "$350.000" },
+    { label: "Gerente general",                   monto: "$300.000" },
   ];
 
   const equipos = [
-    { label: "Estudio grabación (Acústica/Termos/Alfombra)", monto: "$2.000.000" },
-    { label: "Gadgets grabación",                            monto: "$500.000"   },
-    { label: "Micrófonos",                                   monto: "$1.200.000" },
-    { label: "Lente gran angular",                           monto: "$600.000"   },
+    { label: "Estudio grabación (Acústica/Termos/Alfombra)", monto: "$2.300.000" },
+    { label: "Gadgets grabación",                            monto: "$800.000" },
   ];
 
   const contenido = [
-    { label: "Sesiones de Sonoterapia", valor: "$50.000", cantidad: 15, total: "$750.000"   },
-    { label: "Voces Guía",              valor: "$25.000", cantidad: 40, total: "$1.000.000" },
-    { label: "Música Ambient",          valor: "$80.000", cantidad: 30, total: "$2.400.000" },
-    { label: "Mundo Holístico",         valor: "$40.000", cantidad: 20, total: "$800.000"   },
+    { label: "Sesiones de Sonoterapia", valor: "$50.000", cantidad: 20, total: "$1.000.000" },
+    { label: "Voces Guía",              valor: "$30.000", cantidad: 30, total: "$900.000" },
+    { label: "Música Ambient",          valor: "$80.000", cantidad: 20, total: "$1.600.000" },
   ];
 
   const colHdr: CSSProperties = {
@@ -114,16 +107,16 @@ export default function Slide11Inversion() {
           <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             Buscamos{" "}
             <span style={goldGrad}>
-              $29.938.000 CLP
+              $13.400.000 CLP
             </span>
           </div>
           <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh" }}>
-            para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 3 meses pre-lanzamiento.
+            para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 4 meses pre-lanzamiento.
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
-          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$29.938.000</div>
+          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$13.400.000</div>
         </div>
       </div>
 
@@ -159,7 +152,7 @@ export default function Slide11Inversion() {
 
         {/* RH – Runway Operativo */}
         <div style={tableCard}>
-          <div style={colHdr}>RH · RUNWAY OPERATIVO</div>
+          <div style={colHdr}>RECURSOS HUMANOS</div>
           {rrhh.map((it) => (
             <div key={it.label} style={row}>
               <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
@@ -168,11 +161,11 @@ export default function Slide11Inversion() {
           ))}
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total mensual (c/ cargas)</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$1.596.000</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total mensual</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$650.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            Runway total = 3 meses × $1.596.000 = $4.788.000
+            Presupuesto de runway operativo: $1.950.000
           </div>
         </div>
 
@@ -188,7 +181,7 @@ export default function Slide11Inversion() {
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.300.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$3.100.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
             Inversión única · hardware para producción de audio
@@ -216,10 +209,10 @@ export default function Slide11Inversion() {
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.6vw", alignItems: "baseline", marginTop: "0.2vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total contenido</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.950.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$3.500.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            105 piezas de audio producidas para lanzamiento
+            70 piezas de audio producidas para lanzamiento
           </div>
         </div>
       </div>
