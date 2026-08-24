@@ -4,7 +4,7 @@ import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "reac
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
 import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
 import { useGeometrixPanel, GEOMETRIX_PANEL_W } from "@/context/GeometrixPanelContext";
 import MezcladorScreen from "./musica";
@@ -644,9 +644,9 @@ function TabLayoutInner() {
  *  wrapper con parallax (evita el fantasma del blur en Android). */
 function TabBarPropsBridge({ props, onProps }: { props: any; onProps: (p: any) => void }) {
   const lastStateRef = useRef<unknown>(null);
-  useEffect(() => {
-    // Solo re-publicar cuando el estado de navegación cambia de verdad:
-    // publicar en cada render causa un loop infinito de setState.
+  useLayoutEffect(() => {
+    // La barra vive fuera del árbol transformado de Tabs. Publicar este snapshot
+    // antes de pintar evita un frame con la pestaña anterior al cambiar de menú.
     if (lastStateRef.current !== props.state) {
       lastStateRef.current = props.state;
       onProps(props);
