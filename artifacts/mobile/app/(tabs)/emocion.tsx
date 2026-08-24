@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Platform,
@@ -12,21 +13,64 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { MoodPickerSheet } from "@/components/MoodPickerSheet";
+import { SessionRow } from "@/components/SessionRow";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { useCatalog } from "@/context/CatalogContext";
+import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { MOODS, type MoodId } from "@/data/moods";
+import { getMoodById, type Mood, type MoodId } from "@/data/moods";
+import { SESSIONS, type Session } from "@/data/sessions";
 
 const GOLD = "#F9F9F9";
 const MUTED = "rgba(244,244,244,0.62)";
 const SURFACE = "rgba(255,255,255,0.065)";
-const SURFACE_STRONG = "rgba(255,255,255,0.10)";
+const CARD_BG = "rgba(255,255,255,0.05)";
+const GRID_PAD = 20;
+const SECTION_GAP = 32;
 
 export default function EmocionScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const { version: catalogVersion } = useCatalog();
+  const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
+  const { openCategory } = useCategoryOverlay();
   const [draft, setDraft] = useState("");
-  const [selectedMood, setSelectedMood] = useState<MoodId | null>(null);
+  const [moodSheetVisible, setMoodSheetVisible] = useState(false);
+  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [recoOffset, setRecoOffset] = useState(0);
   const topPad = Platform.OS === "web" ? 66 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 126 : insets.bottom + 118;
+  const moodRecommended = React.useMemo<Session[]>(() => {
+    if (selectedMood) {
+      const cats = new Set(selectedMood.categoryIds);
+      const themes = new Set<string>(selectedMood.themeTags);
+      const pool = SESSIONS.filter((session) => cats.has(session.categoryId));
+      const boosted = pool.filter((session) => session.themeTag?.some((tag) => themes.has(tag)));
+      const rest = pool.filter((session) => !session.themeTag?.some((tag) => themes.has(tag)));
+      return [...boosted, ...rest].slice(0, 5);
+    }
+
+    const recommendedCategories = ["meditaciones-guiadas", "sonidos-ancestrales", "musica-sonidos"];
+    const pool = SESSIONS.filter((session) => recommendedCategories.includes(session.categoryId));
+    const seed = new Date().toDateString() + recoOffset;
+    let hash = 0;
+    for (let index = 0; index < seed.length; index++) {
+      hash = (hash * 31 + seed.charCodeAt(index)) & 0x7fffffff;
+    }
+    const shuffled = [...pool];
+    for (let index = shuffled.length - 1; index > 0; index--) {
+      const swapIndex = Math.abs(hash ^ (index * 2654435761)) % (index + 1);
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled.slice(0, 5);
+  }, [catalogVersion, recoOffset, selectedMood]);
+
+  function handleMoodSelect(moodId: MoodId) {
+    setSelectedMood(getMoodById(moodId) ?? null);
+  }
 
   return (
     <LinearGradient colors={theme.gradient} style={styles.root}>
@@ -103,42 +147,99 @@ export default function EmocionScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionTitleRow}>
-            <View style={styles.moodIcon}>
-              <Feather name="heart" size={16} color={GOLD} />
-            </View>
-            <Text style={styles.sectionTitle}>Expresa tu emoción</Text>
+        <View style={styles.homeMoodBlock}>
+          <View style={[styles.sectionDivider, { marginTop: -15 }]} />
+          <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
+            <Text style={styles.homeSectionTitle}>Personaliza tus recomendaciones</Text>
           </View>
-          <Text style={styles.sectionDescription}>Elige lo que más se acerque a este momento.</Text>
 
-          <View style={styles.moodsGrid}>
-            {MOODS.map((mood) => {
-              const selected = selectedMood === mood.id;
-              return (
+          {selectedMood ? (
+            <Pressable
+              onPress={() => setMoodSheetVisible(true)}
+              style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
+            >
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+              <Text style={styles.moodSientesLabel}>Sientes:</Text>
+              <View style={{ flex: 1 }} />
+              <LinearGradient
+                colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.moodPill}
+              >
+                <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
+                <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
                 <Pressable
-                  key={mood.id}
-                  onPress={() => setSelectedMood(mood.id)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Emoción: ${mood.label}`}
-                  accessibilityState={{ selected }}
-                  style={({ pressed }) => [
-                    styles.moodCard,
-                    selected && styles.moodCardSelected,
-                    { opacity: pressed ? 0.78 : 1 },
-                  ]}
+                  onPress={(event) => { event.stopPropagation?.(); setSelectedMood(null); }}
+                  hitSlop={10}
+                  style={{ marginLeft: 2 }}
                 >
-                  <Text style={styles.moodEmoji}>{mood.emoji}</Text>
-                  <Text style={[styles.moodLabel, selected && styles.moodLabelSelected]} numberOfLines={1}>
-                    {mood.label}
-                  </Text>
-                  {selected && <Feather name="check" size={13} color={GOLD} style={styles.moodCheck} />}
+                  <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
                 </Pressable>
-              );
-            })}
+              </LinearGradient>
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => setMoodSheetVisible(true)}
+              style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
+            >
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+              <Text style={styles.moodEmoji}>🙂</Text>
+              <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
+              <Feather name="chevron-right" size={16} color="#f9f9f9" />
+            </Pressable>
+          )}
+
+          <View style={{ paddingHorizontal: GRID_PAD }}>
+            <Text style={[styles.homeSectionTitle, { marginTop: 24 }]}>
+              {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+            </Text>
           </View>
+          <View style={styles.recoSection}>
+            {moodRecommended.map((session) => (
+              <View key={session.id} style={styles.recoCard}>
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+                <SessionRow
+                  session={session}
+                  imageSize={84}
+                  metaText={session.categoryLabel}
+                  onPress={() => {
+                    if (session.isPremium && !isPremium) {
+                      router.push("/membresia" as never);
+                      return;
+                    }
+                    if (session.skipMiniPlayer) {
+                      playSession(session);
+                      return;
+                    }
+                    if (session.skipDetail) {
+                      playSession(session);
+                      router.push("/player" as never);
+                      return;
+                    }
+                    openCategory(`/session/${session.id}`);
+                  }}
+                />
+              </View>
+            ))}
+          </View>
+
+          <Pressable
+            onPress={() => setRecoOffset((offset) => offset + 1)}
+            style={({ pressed }) => [
+              styles.refreshRecommendations,
+              { backgroundColor: pressed ? "rgba(255,255,255,0.12)" : CARD_BG },
+            ]}
+          >
+            <Text style={styles.refreshRecommendationsText}>Actualizar recomendaciones</Text>
+          </Pressable>
         </View>
       </ScrollView>
+      <MoodPickerSheet
+        visible={moodSheetVisible}
+        onClose={() => setMoodSheetVisible(false)}
+        onSelect={handleMoodSelect}
+      />
     </LinearGradient>
   );
 }
@@ -201,14 +302,6 @@ const styles = StyleSheet.create({
     gap: 9,
   },
   assistantIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(249,249,249,0.13)",
-  },
-  moodIcon: {
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -325,45 +418,103 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: GOLD,
   },
-  moodsGrid: {
+  homeMoodBlock: {
+    marginHorizontal: -19,
+    marginBottom: 34,
+  },
+  sectionDivider: {
+    marginHorizontal: GRID_PAD * 2,
+    marginBottom: SECTION_GAP,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  homeSectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    marginBottom: 21,
+    color: "#FBFBFB",
+  },
+  moodRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 17,
-  },
-  moodCard: {
-    width: "31.8%",
-    minHeight: 106,
-    paddingHorizontal: 7,
-    paddingVertical: 12,
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 18,
-    backgroundColor: SURFACE,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+    marginHorizontal: GRID_PAD,
+    marginBottom: 8,
+    borderRadius: 999,
+    overflow: "hidden",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
   },
-  moodCardSelected: {
-    backgroundColor: SURFACE_STRONG,
-    borderColor: "rgba(249,249,249,0.60)",
+  moodRowActive: {
+    paddingVertical: 11,
   },
   moodEmoji: {
     fontFamily: "Manrope",
-    fontSize: 29,
-    lineHeight: 35,
-    marginBottom: 7,
+    fontSize: 22,
   },
-  moodLabel: {
-    color: MUTED,
+  moodRowLabel: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    flex: 1,
+    fontSize: 16,
     fontWeight: "600",
-    textAlign: "center",
+    color: "#FBFBFB",
   },
-  moodLabelSelected: { color: GOLD },
-  moodCheck: {
-    position: "absolute",
-    top: 9,
-    right: 9,
+  moodSientesLabel: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#FBFBFB",
+  },
+  moodPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  moodPillEmoji: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+  },
+  moodPillLabel: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  recoSection: {
+    marginHorizontal: GRID_PAD,
+    marginBottom: SECTION_GAP,
+    flexDirection: "column",
+    gap: 16,
+  },
+  recoCard: {
+    borderRadius: 14,
+    overflow: "hidden",
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+  },
+  refreshRecommendations: {
+    marginTop: -40,
+    marginHorizontal: GRID_PAD,
+    marginBottom: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 12,
+    borderRadius: 100,
+    borderWidth: 1.5,
+    borderColor: "rgba(249,249,249,0.5)",
+  },
+  refreshRecommendationsText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    color: "#f9f9f9",
+    fontWeight: "500",
   },
 });
