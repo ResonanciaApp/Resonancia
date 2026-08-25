@@ -389,9 +389,10 @@ function Inicio2HeroSlider({
   const [slideTransition, setSlideTransition] = useState<{
     from: number;
     to: number;
-    direction: 1 | -1;
   } | null>(null);
-  const slideTransitionX = useRef(new Animated.Value(0)).current;
+  const slidePositions = useRef(
+    INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 0 : width)),
+  ).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
 
   const transitionToSlide = useCallback((nextIndex: number) => {
@@ -409,26 +410,43 @@ function Inicio2HeroSlider({
     pendingIndexRef.current = null;
     desiredIndexRef.current = nextIndex;
     const fromIndex = activeIndexRef.current;
-    const direction: 1 | -1 = nextIndex > fromIndex ? 1 : -1;
+    const forwardDistance =
+      (nextIndex - fromIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
+    const direction: 1 | -1 =
+      forwardDistance > 0 && forwardDistance <= INICIO2_SLIDES.length / 2 ? 1 : -1;
     activeIndexRef.current = nextIndex;
     slideDrift.stopAnimation();
     slideDrift.setValue(0);
-    slideTransitionX.stopAnimation();
-    slideTransitionX.setValue(0);
-    setSlideTransition({ from: fromIndex, to: nextIndex, direction });
+    slidePositions.forEach((position, index) => {
+      position.stopAnimation();
+      position.setValue(
+        index === fromIndex ? 0 : index === nextIndex ? direction * width : width,
+      );
+    });
+    setSlideTransition({ from: fromIndex, to: nextIndex });
     setActiveIndex(nextIndex);
 
-    Animated.timing(slideTransitionX, {
-      toValue: direction === 1 ? -width : width,
-      duration: 420,
-      easing: RNEasing.out(RNEasing.cubic),
-      useNativeDriver: ND,
-    }).start(({ finished }) => {
+    Animated.parallel([
+      Animated.timing(slidePositions[fromIndex], {
+        toValue: -direction * width,
+        duration: 420,
+        easing: RNEasing.out(RNEasing.cubic),
+        useNativeDriver: ND,
+      }),
+      Animated.timing(slidePositions[nextIndex], {
+        toValue: 0,
+        duration: 420,
+        easing: RNEasing.out(RNEasing.cubic),
+        useNativeDriver: ND,
+      }),
+    ]).start(({ finished }) => {
       if (!finished) return;
-      slideTransitionX.setValue(0);
+      slidePositions.forEach((position, index) => {
+        position.setValue(index === nextIndex ? 0 : width);
+      });
       setSlideTransition(null);
     });
-  }, [slideDrift, slideTransitionX]);
+  }, [slideDrift, slidePositions]);
 
   const setSlide = useCallback((nextIndex: number) => {
     const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
@@ -462,15 +480,17 @@ function Inicio2HeroSlider({
   }, []);
 
   useEffect(() => () => {
-    slideTransitionX.stopAnimation();
-  }, [slideTransitionX]);
+    slidePositions.forEach((position) => position.stopAnimation());
+  }, [slidePositions]);
 
   useEffect(() => {
     focusedRef.current = focused;
 
     if (!focused) {
-      slideTransitionX.stopAnimation();
-      slideTransitionX.setValue(0);
+      slidePositions.forEach((position, index) => {
+        position.stopAnimation();
+        position.setValue(index === activeIndexRef.current ? 0 : width);
+      });
       setSlideTransition(null);
       return;
     }
@@ -483,7 +503,7 @@ function Inicio2HeroSlider({
     ) {
       transitionToSlide(pendingIndex);
     }
-  }, [focused, slideTransitionX, transitionToSlide]);
+  }, [focused, slidePositions, transitionToSlide]);
 
   useEffect(() => {
     if (!focused) {
@@ -563,19 +583,14 @@ function Inicio2HeroSlider({
           style={[
             styles.inicio2HeroImageLayer,
             {
-              opacity: !slideTransition || index === slideTransition.from || index === slideTransition.to ? 1 : 0,
+              opacity: slideTransition
+                ? index === slideTransition.from || index === slideTransition.to ? 1 : 0
+                : index === activeIndex ? 1 : 0,
+              zIndex: slideTransition
+                ? index === slideTransition.to ? 2 : 1
+                : index === activeIndex ? 1 : 0,
               transform: [
-                {
-                  translateX:
-                    slideTransition?.from === index
-                      ? slideTransitionX
-                      : slideTransition?.to === index
-                        ? Animated.add(
-                            slideTransitionX,
-                            slideTransition.direction === 1 ? width : -width,
-                          )
-                        : 0,
-                },
+                { translateX: slidePositions[index] },
                 { translateY: parallaxY },
               ],
             },
