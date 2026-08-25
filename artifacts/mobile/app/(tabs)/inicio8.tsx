@@ -2159,6 +2159,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroActions: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
@@ -2187,6 +2188,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroCopy: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 28,
@@ -2245,6 +2247,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroControls: {
     position: "absolute",
+    zIndex: 10,
     left: 20,
     right: 20,
     bottom: 18,
