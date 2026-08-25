@@ -12,7 +12,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   View,
 } from "react-native";
@@ -92,7 +91,7 @@ export function DrawerMenu() {
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
   const { theme: activeTheme, activeSceneId, setActiveSceneWithFade } = useSceneTheme();
-  const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
+  const { escenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { openGeometrix } = useGeometrixPanel();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
@@ -287,6 +286,8 @@ export function DrawerMenu() {
               ))}
             </View>
 
+            <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
+
             {/* ── Selector de Escena (tema visual) ── */}
             <View style={styles.sceneSwatch}>
               <Text style={styles.sceneSwatchTitle}>Escena</Text>
@@ -311,31 +312,6 @@ export function DrawerMenu() {
                   );
                 })}
               </View>
-            </View>
-
-            <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
-
-            {/* ── Sección Escenas ── */}
-            <View style={styles.controlRow}>
-              <MaterialCommunityIcons name="feather" size={17} color="#F4F4F4" style={styles.controlIcon} />
-              <Text style={styles.controlLabel}>Activar intención diaria</Text>
-              <Switch
-                value={intencionDiariaEnabled}
-                onValueChange={setIntencionDiariaEnabled}
-                trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
-                thumbColor="#f9f9f9"
-              />
-            </View>
-
-            <View style={[styles.controlRow, { marginTop: 6 }]}>
-              <MaterialCommunityIcons name="star-four-points-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
-              <Text style={styles.controlLabel}>Activar escenas animadas</Text>
-              <Switch
-                value={escenasAnimadasEnabled}
-                onValueChange={setEscenasAnimadasEnabled}
-                trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
-                thumbColor="#f9f9f9"
-              />
             </View>
 
             <FadeToggleSection visible={escenasAnimadasEnabled}>
