@@ -111,10 +111,38 @@ const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 270;
 const INICIO2_HERO_HEIGHT = Math.min(425, Math.max(361, width * 0.92 + 35));
 const INICIO2_SLIDES = [
-  { id: "templo", image: require("@/assets/images/inicio2-mistico-1.jpg"), destination: null },
-  { id: "lago", image: require("@/assets/images/inicio2-mistico-2.jpg"), destination: null },
-  { id: "arco", image: require("@/assets/images/inicio2-mistico-3.jpg"), destination: null },
-  { id: "oceano", image: require("@/assets/images/inicio2-mistico-4.jpg"), destination: null },
+  {
+    id: "templo",
+    image: require("@/assets/images/inicio2-mistico-1.jpg"),
+    destination: null,
+    title: "Inspiraciones",
+    description: "Un mensaje directo a tu corazón",
+    actionLabel: "Descubrir",
+  },
+  {
+    id: "lago",
+    image: require("@/assets/images/inicio2-mistico-2.jpg"),
+    destination: null,
+    title: "Viaje al interior",
+    description: "Sesión destacada de la semana",
+    actionLabel: "Escuchar",
+  },
+  {
+    id: "arco",
+    image: require("@/assets/images/inicio2-mistico-3.jpg"),
+    destination: null,
+    title: "La ansiedad",
+    description: "Una reflexión de Nicolás",
+    actionLabel: "Meditar",
+  },
+  {
+    id: "oceano",
+    image: require("@/assets/images/inicio2-mistico-4.jpg"),
+    destination: null,
+    title: "Mezcla Destacada",
+    description: "Composición ganadora de primera semana de agosto.",
+    actionLabel: "Escuchar",
+  },
 ] as const;
 
 const VIDEO_REG_W = 200;
@@ -601,6 +629,25 @@ function Inicio2HeroSlider({
           </Animated.View>
         </Pressable>
       </Animated.View>
+
+      <View pointerEvents="box-none" style={styles.inicio2HeroCopy}>
+        <Text style={styles.inicio2HeroTitle}>{INICIO2_SLIDES[activeIndex].title}</Text>
+        <Text style={styles.inicio2HeroDescription}>{INICIO2_SLIDES[activeIndex].description}</Text>
+        <Pressable
+          onPress={() => {}}
+          style={({ pressed }) => [
+            styles.inicio2HeroActionButton,
+            { opacity: pressed ? 0.82 : 1 },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={INICIO2_SLIDES[activeIndex].actionLabel}
+          testID={`inicio2-slide-action-${activeIndex + 1}`}
+        >
+          <Text style={styles.inicio2HeroActionButtonText}>
+            {INICIO2_SLIDES[activeIndex].actionLabel}
+          </Text>
+        </Pressable>
+      </View>
 
       <Animated.View
         style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
@@ -2102,6 +2149,55 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+  },
+  inicio2HeroCopy: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 28,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  inicio2HeroTitle: {
+    fontFamily: "Manrope",
+    fontSize: 27,
+    fontWeight: "800",
+    lineHeight: 33,
+    color: "#FFFFFF",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.62)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+  },
+  inicio2HeroDescription: {
+    maxWidth: 300,
+    marginTop: 8,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "500",
+    lineHeight: 21,
+    color: "rgba(255,255,255,0.92)",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.62)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  inicio2HeroActionButton: {
+    marginTop: 20,
+    minWidth: 132,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 25,
+    paddingVertical: 11,
+    borderRadius: 999,
+    backgroundColor: "#FFFFFF",
+  },
+  inicio2HeroActionButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#060A0F",
+    textAlign: "center",
   },
   inicio2HeroStreak: {
     color: "#FFFFFF",
