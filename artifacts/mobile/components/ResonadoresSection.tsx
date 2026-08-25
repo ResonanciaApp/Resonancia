@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   },
   photoFrame: {
     width: 102,
-    height: 102,
-    borderRadius: 51,
+    height: 142,
+    borderRadius: 14,
     overflow: "hidden",
     borderWidth: 1.5,
     borderColor: "rgba(218,212,236,0.35)",
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: 102,
-    height: 102,
+    height: 142,
   },
   name: {
     fontFamily: "Manrope",
