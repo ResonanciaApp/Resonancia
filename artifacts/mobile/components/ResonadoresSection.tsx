@@ -44,6 +44,9 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
             <Text numberOfLines={2} style={styles.name}>
               {resonador.name}
             </Text>
+            <Text numberOfLines={1} style={styles.subtype}>
+              {resonador.subtipo}
+            </Text>
           </Pressable>
         ))}
       </ScrollView>
@@ -77,15 +80,15 @@ const styles = StyleSheet.create({
   },
   carouselContent: {
     paddingHorizontal: 20,
-    gap: 10,
+    gap: 15,
   },
   resonador: {
     alignItems: "center",
-    width: 120,
+    width: 128,
   },
   photoFrame: {
-    width: 102,
-    height: 142,
+    width: 128,
+    height: 178,
     borderRadius: 14,
     overflow: "hidden",
     borderWidth: 1.5,
@@ -93,8 +96,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   photo: {
-    width: 102,
-    height: 142,
+    width: 128,
+    height: 178,
   },
   name: {
     fontFamily: "Manrope",
@@ -103,5 +106,19 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
     textAlign: "center",
     lineHeight: 19,
+  },
+  subtype: {
+    marginTop: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+    backgroundColor: "rgba(249,249,249,0.10)",
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "600",
+    color: "rgba(249,249,249,0.68)",
+    textAlign: "center",
+    lineHeight: 14,
+    overflow: "hidden",
   },
 });
