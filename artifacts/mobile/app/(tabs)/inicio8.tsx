@@ -564,7 +564,7 @@ function Inicio2HeroSlider({
   const heroCopyY = Animated.add(parallaxY, 15);
   const pullScale = scrollY.interpolate({
     inputRange: [-INICIO2_HERO_HEIGHT, 0],
-    outputRange: [1.18, 1],
+    outputRange: [1.35, 1],
     extrapolate: "clamp",
   });
   const imageScale = Animated.multiply(zoom, pullScale);
