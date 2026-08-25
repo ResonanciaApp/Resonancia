@@ -629,6 +629,8 @@ const INICIO2_QUICK_ACCESS = [
   { id: "favoritos", label: "Favoritos", icon: "heart-outline" },
   { id: "mezclador", label: "Mezclador", icon: "tune-variant" },
   { id: "geometrix", label: "Geometrix", icon: "cube-outline" },
+  { id: "videos", label: "Videos", icon: "video-outline" },
+  { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy" },
   { id: "biblioteca", label: "Biblioteca", icon: "bookmark-outline" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline" },
 ] as const;
@@ -654,6 +656,12 @@ function Inicio2QuickAccessRow() {
         break;
       case "geometrix":
         openGeometrix();
+        break;
+      case "videos":
+        openCategory("/videos");
+        break;
+      case "respiracion":
+        openCategory("/respiracion");
         break;
       case "biblioteca":
         openLib();
@@ -684,9 +692,21 @@ function Inicio2QuickAccessRow() {
             style={({ pressed }) => [
               styles.inicio2QuickAccessPill,
               item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
-              (item.id === "mezclador" || item.id === "geometrix" || item.id === "biblioteca") &&
+              (item.id === "mezclador" ||
+                item.id === "geometrix" ||
+                item.id === "videos" ||
+                item.id === "respiracion" ||
+                item.id === "biblioteca") &&
                 styles.inicio2QuickAccessBothEdges,
               item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
+              item.id === "favoritos" && {
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
+              },
+              item.id === "diario" && {
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+              },
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
@@ -2174,12 +2194,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   inicio2QuickAccessFavoritesEdges: {
+    borderRadius: 10,
     borderTopLeftRadius: 999,
     borderBottomLeftRadius: 999,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
   },
   inicio2QuickAccessDiaryEdges: {
+    borderRadius: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     borderTopRightRadius: 999,
