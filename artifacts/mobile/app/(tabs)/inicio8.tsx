@@ -1138,7 +1138,7 @@ export default function HomeScreen2({
       const pool = SESSIONS.filter((s) => cats.has(s.categoryId));
       const boosted = pool.filter((s) => s.themeTag?.some((t) => themes.has(t)));
       const rest = pool.filter((s) => !s.themeTag?.some((t) => themes.has(t)));
-      return [...boosted, ...rest].slice(0, 5);
+      return [...boosted, ...rest].slice(0, 3);
     }
     const pool = SESSIONS.filter((s) => RECO_CATS.includes(s.categoryId));
     const seed = new Date().toDateString() + recoOffset;
@@ -1149,7 +1149,7 @@ export default function HomeScreen2({
       const j = Math.abs(hash ^ (i * 2654435761)) % (i + 1);
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return shuffled.slice(0, 5);
+    return shuffled.slice(0, 3);
   }, [selectedMood, catalogVersion, recoOffset]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
