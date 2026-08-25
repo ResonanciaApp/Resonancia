@@ -624,6 +624,78 @@ function Inicio2HeroSlider({
   );
 }
 
+const INICIO2_QUICK_ACCESS = [
+  { id: "favoritos", label: "Favoritos", icon: "heart-outline" },
+  { id: "mezclador", label: "Mezclador", icon: "tune-variant" },
+  { id: "geometrix", label: "Geometrix", icon: "cube-outline" },
+  { id: "biblioteca", label: "Biblioteca", icon: "bookmark-outline" },
+  { id: "diario", label: "Diario", icon: "book-open-page-variant-outline" },
+] as const;
+
+/**
+ * Accesos principales de Inicio 2. Vive dentro del ScrollView vertical, pero
+ * mantiene su propio ScrollView horizontal para no competir con el gesto del
+ * hero (que está montado en un hermano distinto).
+ */
+function Inicio2QuickAccessRow() {
+  const { openCategory } = useCategoryOverlay();
+  const { openMixer } = useMixerPanel();
+  const { openGeometrix } = useGeometrixPanel();
+  const { openLib, openOverlay } = useDrawer();
+
+  const handlePress = useCallback((id: (typeof INICIO2_QUICK_ACCESS)[number]["id"]) => {
+    switch (id) {
+      case "favoritos":
+        openCategory("/favoritos-todos");
+        break;
+      case "mezclador":
+        openMixer();
+        break;
+      case "geometrix":
+        openGeometrix();
+        break;
+      case "biblioteca":
+        openLib();
+        break;
+      case "diario":
+        openOverlay("/diario");
+        break;
+    }
+  }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
+
+  return (
+    <View style={styles.inicio2QuickAccess} testID="inicio2-quick-access">
+      <ScrollView
+        horizontal
+        nestedScrollEnabled
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.inicio2QuickAccessContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        {INICIO2_QUICK_ACCESS.map((item) => (
+          <Pressable
+            key={item.id}
+            onPress={() => handlePress(item.id)}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={`Abrir ${item.label}`}
+            testID={`inicio2-quick-access-${item.id}`}
+            style={({ pressed }) => [
+              styles.inicio2QuickAccessPill,
+              { opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <MaterialCommunityIcons name={item.icon} size={15} color="#F9F9F9" />
+            <Text style={styles.inicio2QuickAccessText} numberOfLines={1}>
+              {item.label}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 export type InicioVariant = "original" | "copy";
 
 export default function HomeScreen2({
@@ -1411,15 +1483,18 @@ export default function HomeScreen2({
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
         {isInicio2 ? (
-          <Inicio2HeroSlider
-            topInset={topPad}
-            focused={tabFocused}
-            scrollY={inicio2ScrollY}
-            currentStreak={currentStreakDisplay}
-            giftScale={giftScaleAnim}
-            onOpenDrawer={openDrawer}
-            onOpenProgress={() => setProgresoVisible(true)}
-          />
+          <>
+            <Inicio2HeroSlider
+              topInset={topPad}
+              focused={tabFocused}
+              scrollY={inicio2ScrollY}
+              currentStreak={currentStreakDisplay}
+              giftScale={giftScaleAnim}
+              onOpenDrawer={openDrawer}
+              onOpenProgress={() => setProgresoVisible(true)}
+            />
+            <Inicio2QuickAccessRow />
+          </>
         ) : showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
              El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
@@ -2155,6 +2230,35 @@ const styles = StyleSheet.create({
   inicio2HeroControlActive: {
     backgroundColor: "#F9F9F9",
     borderColor: "#F9F9F9",
+  },
+  inicio2QuickAccess: {
+    marginTop: 13,
+    marginBottom: 2,
+  },
+  inicio2QuickAccessContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: GRID_PAD,
+  },
+  inicio2QuickAccessPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 29,
+    paddingHorizontal: 11.5,
+    borderRadius: 999,
+    gap: 5,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  inicio2QuickAccessText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "400",
+    letterSpacing: 0.3,
+    color: "#F4F4F4",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
