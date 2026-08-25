@@ -558,7 +558,7 @@ function Inicio2HeroSlider({
             <LinearGradient
               colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
               locations={[0, 0.48, 1]}
-              style={StyleSheet.absoluteFill}
+              style={styles.inicio2HeroImage}
               pointerEvents="none"
             />
           </Animated.View>
