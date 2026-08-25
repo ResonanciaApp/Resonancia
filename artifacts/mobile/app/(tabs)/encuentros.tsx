@@ -5,6 +5,7 @@ import {
   Dimensions,
   FlatList,
   RefreshControl,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet"
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ActivityFeedCard } from "@/components/ActivityFeedCard";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
@@ -75,6 +77,8 @@ export default function EncuentrosScreen() {
   // carrusel no se re-monte cuando cambia activeIndex (perdía el scroll).
   const listHeaderElement = (
       <View>
+        <ResonadoresSection marginBottom={32} />
+
         {/* Título del carrusel */}
         <Text style={styles.carouselTitle}>Encuentros Resonadores</Text>
 

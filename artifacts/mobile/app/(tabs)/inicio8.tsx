@@ -81,7 +81,6 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { useResonadores } from "@/hooks/useResonadores";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -92,6 +91,7 @@ import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -757,7 +757,6 @@ export default function HomeScreen2({
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
-  const { resonadores } = useResonadores();
   const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -1928,42 +1927,7 @@ export default function HomeScreen2({
 
 
         {/* ── CARRUSEL RESONADORES ── */}
-        <View style={{ marginBottom: 32, marginTop: 57 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
-            <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
-            <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
-            </Pressable>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 20 }}
-            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
-          >
-            {resonadores.map((r) => (
-              <Pressable
-                key={r.id}
-                onPress={() => router.push(`/resonador/${r.id}` as never)}
-                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
-              >
-                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(218,212,236,0.35)", marginBottom: 12 }}>
-                  <ExpoImage
-                    source={r.photo}
-                    style={{ width: 102, height: 102 }}
-                    contentFit="cover"
-                  />
-                </View>
-                <Text
-                  numberOfLines={2}
-                  style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
-                >
-                  {r.name}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
+        {!isInicio2 && <ResonadoresSection marginTop={57} />}
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
