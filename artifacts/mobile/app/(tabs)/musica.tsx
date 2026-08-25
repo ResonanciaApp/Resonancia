@@ -54,7 +54,6 @@ import {
   emitBgPresetChange,
 } from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
-import { BackPill } from "@/components/BackPill";
 import Svg, { Defs, LinearGradient as SvgLG, Stop, Rect } from "react-native-svg";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -461,7 +460,7 @@ export default function MezcladorScreen() {
   const { isPremium }    = usePremium();
   const { sounds: allSounds, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
-  const { isMixerOpen, closeMixer } = useMixerPanel();
+  const { isMixerOpen } = useMixerPanel();
   const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId, pauseMix } = useMixer();
   const { lastSavedAt } = useSaveEvent();
   const { theme } = useSceneTheme();
@@ -772,25 +771,14 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior (layout imitando la página de Música) ── */}
         <View style={{ zIndex: 10, backgroundColor: "transparent" }}>
-            {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
+            {/* ── Hero: título y ajustes ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
-              <View style={{ position: "absolute", left: 20, top: topPad + 3, zIndex: 10 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
-                  <BackPill
-                    onPress={closeMixer}
-                    size={28}
-                    bgColor="rgba(255,255,255,0.10)"
-                    iconOffsetX={-1}
-                    style={{ transform: [{ translateX: -1 }] }}
-                  />
-                </View>
-              </View>
-              {/* Título centrado, a la altura del chevron */}
+              {/* Título centrado */}
               <View
                 pointerEvents="none"
                 style={{ position: "absolute", left: 0, right: 0, top: topPad + 3, height: 40, alignItems: "center", justifyContent: "center" }}
               >
-                <Text style={[styles.pageTitle, { fontSize: 19, letterSpacing: 0.3 }]}>Mezclador</Text>
+                <Text style={[styles.pageTitle, { fontSize: 27, letterSpacing: 0.3, transform: [{ translateY: 1 }] }]}>Mezclador de sonidos</Text>
               </View>
               <View style={{ position: "absolute", right: 20, top: topPad + 3, zIndex: 10 }}>
                 <Pressable
@@ -805,8 +793,8 @@ export default function MezcladorScreen() {
               </View>
             </View>
 
-            {/* ── Espaciador (título original menos 30 px: tabs suben) ── */}
-            <View style={{ height: 19 }} />
+            {/* ── Espaciador para separar título y tabs ── */}
+            <View style={{ height: 34 }} />
 
             {/* ── Tabs en píldora: dos filas con scroll horizontal ── */}
             <ScrollView
