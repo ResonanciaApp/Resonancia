@@ -679,10 +679,10 @@ export default function ExploreScreen() {
 
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
-          <Text style={styles.conversationSectionTitle}>Orientación personalizada</Text>
+          <Text style={styles.conversationSectionTitle}>Conversa con Astral AI</Text>
           <View style={styles.conversationBanner}>
             <View style={styles.conversationBotAvatar}>
-              <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
+              <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
             </View>
             <View style={styles.conversationBannerCopy}>
               <Text style={styles.conversationBannerText} numberOfLines={1}>
