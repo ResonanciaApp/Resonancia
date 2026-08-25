@@ -109,7 +109,7 @@ const GRID_PAD = 19;
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 270;
-const INICIO2_HERO_HEIGHT = Math.min(390, Math.max(326, width * 0.92));
+const INICIO2_HERO_HEIGHT = Math.min(425, Math.max(361, width * 0.92 + 35));
 const INICIO2_SLIDES = [
   { id: "templo", image: require("@/assets/images/inicio2-mistico-1.jpg"), destination: null },
   { id: "lago", image: require("@/assets/images/inicio2-mistico-2.jpg"), destination: null },
