@@ -2151,7 +2151,7 @@ const styles = StyleSheet.create({
     borderColor: "#F9F9F9",
   },
   inicio2QuickAccess: {
-    marginTop: 28,
+    marginTop: 38,
     marginBottom: 2,
   },
   inicio2QuickAccessContent: {
@@ -2163,7 +2163,7 @@ const styles = StyleSheet.create({
   inicio2QuickAccessPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 35,
+    height: 45,
     paddingHorizontal: 11.5,
     borderRadius: 0,
     gap: 5,
