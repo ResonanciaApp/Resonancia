@@ -683,12 +683,10 @@ function Inicio2QuickAccessRow() {
             testID={`inicio2-quick-access-${item.id}`}
             style={({ pressed }) => [
               styles.inicio2QuickAccessPill,
-              item.id === "favoritos" && styles.inicio2QuickAccessRightEdge,
-              item.id === "favoritos" && styles.inicio2QuickAccessLeftFullEdge,
+              item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
               (item.id === "mezclador" || item.id === "geometrix" || item.id === "biblioteca") &&
                 styles.inicio2QuickAccessBothEdges,
-              item.id === "diario" && styles.inicio2QuickAccessLeftEdge,
-              item.id === "diario" && styles.inicio2QuickAccessRightFullEdge,
+              item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
@@ -1749,7 +1747,7 @@ export default function HomeScreen2({
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 15 }]}>
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: isInicio2 ? 15 : 55 }]}>
             <Text style={styles.sectionTitle}>
               Para este momento
             </Text>
@@ -2172,24 +2170,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
-  inicio2QuickAccessRightEdge: {
+  inicio2QuickAccessBothEdges: {
+    borderRadius: 10,
+  },
+  inicio2QuickAccessFavoritesEdges: {
+    borderTopLeftRadius: 999,
+    borderBottomLeftRadius: 999,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
   },
-  inicio2QuickAccessBothEdges: {
-    borderRadius: 10,
+  inicio2QuickAccessDiaryEdges: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderTopRightRadius: 999,
+    borderBottomRightRadius: 999,
   },
   inicio2QuickAccessLeftEdge: {
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-  },
-  inicio2QuickAccessLeftFullEdge: {
-    borderTopLeftRadius: 999,
-    borderBottomLeftRadius: 999,
-  },
-  inicio2QuickAccessRightFullEdge: {
-    borderTopRightRadius: 999,
-    borderBottomRightRadius: 999,
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
