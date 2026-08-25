@@ -407,8 +407,11 @@ function Inicio2HeroSlider({
   const panResponder = useMemo(
     () =>
       PanResponder.create({
+        onMoveShouldSetPanResponderCapture: (_event, gesture) =>
+          Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
         onMoveShouldSetPanResponder: (_event, gesture) =>
           Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
+        onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_event, gesture) => {
           if (Math.abs(gesture.dx) < 42) return;
           setSlide(activeIndexRef.current + (gesture.dx < 0 ? 1 : -1));
@@ -1956,21 +1959,21 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     bottom: 18,
-    height: 25,
+    height: 10,
     flexDirection: "row",
     gap: 7,
   },
   inicio2HeroControl: {
     flex: 1,
-    height: 25,
+    height: 10,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.22)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
   },
   inicio2HeroControlActive: {
-    backgroundColor: "rgba(232,203,137,0.92)",
-    borderColor: "rgba(255,255,255,0.68)",
+    backgroundColor: "#F9F9F9",
+    borderColor: "#F9F9F9",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
