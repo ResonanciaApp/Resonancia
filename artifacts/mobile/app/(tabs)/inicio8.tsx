@@ -703,7 +703,6 @@ type InicioMoodRecommendationsProps = {
   isPremium: boolean;
   cardBg: string;
   showTitle?: boolean;
-  showDivider?: boolean;
   onOpenMoodPicker: () => void;
   onClearMood: () => void;
   onRefreshRecommendations: () => void;
@@ -1660,7 +1659,6 @@ export default function HomeScreen2({
             isPremium={isPremium}
             cardBg={cardBg}
             showTitle={false}
-            showDivider={false}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -2144,6 +2142,8 @@ const styles = StyleSheet.create({
     gap: 5,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
@@ -2904,7 +2904,6 @@ function InicioMoodRecommendations({
   isPremium,
   cardBg,
   showTitle = true,
-  showDivider = true,
   onOpenMoodPicker,
   onClearMood,
   onRefreshRecommendations,
@@ -2914,7 +2913,7 @@ function InicioMoodRecommendations({
   return (
     <>
       {/* ── ESTADO DE ÁNIMO ── */}
-      {showDivider && <View style={[styles.sectionDivider, { marginTop: -15 }]} />}
+      <View style={[styles.sectionDivider, { marginTop: -15 }]} />
       {showTitle && (
         <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
