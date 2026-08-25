@@ -76,6 +76,7 @@ const TAB_CONFIG: Record<
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
+  sonidos:    { label: "Sonidos",    sfIcon: "slider.horizontal.3",  sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
   encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",         featherIcon: "users", iconSize: 34 },
   profile:    { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
@@ -343,7 +344,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
             const isFocused = effectiveRouteIndex === index;
             const onPress   = () => {
-              if (route.name === "musica") {
+              if (route.name === "musica" || route.name === "sonidos") {
                 openMixer();
                 return;
               }
@@ -551,6 +552,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="category/[id]"                 options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
+        <Tabs.Screen name="sonidos"        options={{ title: "Sonidos" }} />
         <Tabs.Screen name="emocion"        options={{ title: "Emoción" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
