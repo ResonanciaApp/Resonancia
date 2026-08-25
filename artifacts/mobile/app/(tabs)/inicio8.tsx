@@ -337,6 +337,7 @@ function AnimatedNavTabRow({
 function Inicio2HeroSlider({
   topInset,
   focused,
+  scrollY,
   currentStreak,
   giftScale,
   onOpenDrawer,
@@ -344,6 +345,7 @@ function Inicio2HeroSlider({
 }: {
   topInset: number;
   focused: boolean;
+  scrollY: Animated.Value;
   currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
@@ -497,6 +499,17 @@ function Inicio2HeroSlider({
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
   const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
+  const parallaxY = scrollY.interpolate({
+    inputRange: [-260, 0, INICIO2_HERO_HEIGHT],
+    outputRange: [-221, 0, INICIO2_HERO_HEIGHT * 0.38],
+    extrapolate: "clamp",
+  });
+  const pullScale = scrollY.interpolate({
+    inputRange: [-260, 0],
+    outputRange: [1.18, 1],
+    extrapolate: "clamp",
+  });
+  const imageScale = Animated.multiply(zoom, pullScale);
 
   return (
     <View
@@ -513,7 +526,7 @@ function Inicio2HeroSlider({
             styles.inicio2HeroImageLayer,
             {
               opacity: slideOpacities[index],
-              transform: [{ scale: zoom }, { translateX: driftX }],
+              transform: [{ translateY: parallaxY }, { scale: imageScale }, { translateX: driftX }],
             },
           ]}
         >
@@ -533,7 +546,13 @@ function Inicio2HeroSlider({
         pointerEvents="none"
       />
 
-      <View pointerEvents="box-none" style={[styles.inicio2HeroActions, { paddingTop: topInset + 8 }]}>
+      <Animated.View
+        pointerEvents="box-none"
+        style={[
+          styles.inicio2HeroActions,
+          { paddingTop: topInset + 8, transform: [{ translateY: parallaxY }] },
+        ]}
+      >
         <Pressable
           onPress={onOpenDrawer}
           hitSlop={12}
@@ -562,9 +581,12 @@ function Inicio2HeroSlider({
             </View>
           </Animated.View>
         </Pressable>
-      </View>
+      </Animated.View>
 
-      <View style={styles.inicio2HeroControls} accessibilityRole="tablist">
+      <Animated.View
+        style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
+        accessibilityRole="tablist"
+      >
         {INICIO2_SLIDES.map((slide, index) => {
           const active = index === activeIndex;
           return (
@@ -579,7 +601,7 @@ function Inicio2HeroSlider({
             />
           );
         })}
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -1036,6 +1058,7 @@ export default function HomeScreen2({
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
+  const inicio2ScrollY = useRef(new Animated.Value(0)).current;
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -1154,6 +1177,17 @@ export default function HomeScreen2({
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
     },
     [updateStickyActive, backdropAnim],
+  );
+  const handleInicio2Scroll = useMemo(
+    () =>
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { y: inicio2ScrollY } } }],
+        {
+          useNativeDriver: ND,
+          listener: handleMainScroll,
+        },
+      ),
+    [handleMainScroll, inicio2ScrollY],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -1342,11 +1376,11 @@ export default function HomeScreen2({
       </View>
       )}
 
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        onScroll={handleMainScroll}
+        onScroll={isInicio2 ? handleInicio2Scroll : handleMainScroll}
         scrollEventThrottle={16}
         onLayout={(e) => {
           scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
@@ -1362,6 +1396,7 @@ export default function HomeScreen2({
           <Inicio2HeroSlider
             topInset={topPad}
             focused={tabFocused}
+            scrollY={inicio2ScrollY}
             currentStreak={currentStreakDisplay}
             giftScale={giftScaleAnim}
             onOpenDrawer={openDrawer}
@@ -1489,6 +1524,14 @@ export default function HomeScreen2({
           </Pressable>
         ) : null}
 
+        <View
+          style={[
+            isInicio2 && styles.inicio2ContentPanel,
+            isInicio2 && {
+              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
+            },
+          ]}
+        >
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
@@ -1920,7 +1963,8 @@ export default function HomeScreen2({
           <PremiumBanner />
         </View>
 
-      </ScrollView>
+        </View>
+      </Animated.ScrollView>
 
       </Animated.View>{/* fin contenido desvanecible */}
 
@@ -1999,8 +2043,12 @@ const styles = StyleSheet.create({
   inicio2Hero: {
     height: INICIO2_HERO_HEIGHT,
     width: "100%",
-    overflow: "hidden",
+    overflow: "visible",
     backgroundColor: "#060A0F",
+  },
+  inicio2ContentPanel: {
+    position: "relative",
+    zIndex: 1,
   },
   inicio2HeroImageLayer: {
     ...StyleSheet.absoluteFillObject,
