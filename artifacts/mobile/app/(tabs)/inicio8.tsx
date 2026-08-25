@@ -1678,7 +1678,7 @@ export default function HomeScreen2({
             cardBg={cardBg}
             showTitle={false}
             showDivider={false}
-            moodTopOffset={0}
+            moodTopOffset={-15}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
