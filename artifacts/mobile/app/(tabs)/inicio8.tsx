@@ -1851,7 +1851,7 @@ export default function HomeScreen2({
         </View>
 
         {/* ── VIDEOS DESTACADOS ── */}
-        {videos.length > 0 && (
+        {false && videos.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
