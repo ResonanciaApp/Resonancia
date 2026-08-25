@@ -2204,11 +2204,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   inicio2QuickAccessDiaryEdges: {
-    borderRadius: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-    borderTopRightRadius: 999,
-    borderBottomRightRadius: 999,
+    borderTopRightRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
+    borderBottomRightRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
   },
   inicio2QuickAccessLeftEdge: {
     borderTopLeftRadius: 10,
