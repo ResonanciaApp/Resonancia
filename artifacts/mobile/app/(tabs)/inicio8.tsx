@@ -684,9 +684,11 @@ function Inicio2QuickAccessRow() {
             style={({ pressed }) => [
               styles.inicio2QuickAccessPill,
               item.id === "favoritos" && styles.inicio2QuickAccessRightEdge,
+              item.id === "favoritos" && styles.inicio2QuickAccessLeftFullEdge,
               (item.id === "mezclador" || item.id === "geometrix" || item.id === "biblioteca") &&
                 styles.inicio2QuickAccessBothEdges,
               item.id === "diario" && styles.inicio2QuickAccessLeftEdge,
+              item.id === "diario" && styles.inicio2QuickAccessRightFullEdge,
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
@@ -2171,15 +2173,23 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2QuickAccessRightEdge: {
-    borderTopRightRadius: 3,
-    borderBottomRightRadius: 3,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
   },
   inicio2QuickAccessBothEdges: {
-    borderRadius: 3,
+    borderRadius: 10,
   },
   inicio2QuickAccessLeftEdge: {
-    borderTopLeftRadius: 3,
-    borderBottomLeftRadius: 3,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  inicio2QuickAccessLeftFullEdge: {
+    borderTopLeftRadius: 999,
+    borderBottomLeftRadius: 999,
+  },
+  inicio2QuickAccessRightFullEdge: {
+    borderTopRightRadius: 999,
+    borderBottomRightRadius: 999,
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
