@@ -396,7 +396,6 @@ export default function ExploreScreen() {
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const [conversationDraft, setConversationDraft] = useState("");
   const temaCardBg = activeSceneId === "indigo"
     ? "rgba(255,255,255,0.045)"
     : activeSceneId === "profundo"
@@ -640,64 +639,14 @@ export default function ExploreScreen() {
 
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
-          <View style={styles.conversationSectionHeading}>
-            <View style={styles.conversationTitleRow}>
-              <View style={styles.conversationAssistantIcon}>
-                <Feather name="star" size={16} color="#F9F9F9" />
-              </View>
-              <Text style={styles.conversationSectionTitle}>Conversamos contigo</Text>
+          <View style={styles.conversationBanner}>
+            <View style={styles.conversationBotAvatar}>
+              <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
             </View>
-            <View style={styles.conversationComingSoonPill}>
-              <Text style={styles.conversationComingSoonText}>PRÓXIMAMENTE</Text>
-            </View>
-          </View>
-          <Text style={styles.conversationDescription}>
-            Este será tu espacio para recibir sesiones sugeridas según lo que estés viviendo.
-          </Text>
-
-          <View style={styles.conversationChatCard}>
-            <View style={styles.conversationAssistantRow}>
-              <View style={styles.conversationAvatar}>
-                <Text style={styles.conversationAvatarMark}>R</Text>
-              </View>
-              <View style={[styles.conversationMessageBubble, styles.conversationAssistantBubble]}>
-                <Text style={styles.conversationMessageText}>
-                  Hola, estoy aquí para acompañarte. ¿Cómo ha estado tu día?
-                </Text>
-              </View>
-            </View>
-
-            <View style={[styles.conversationMessageBubble, styles.conversationUserBubble]}>
-              <Text style={styles.conversationMessageText}>
-                Me cuesta desconectarme al final del día.
-              </Text>
-            </View>
-
-            <View style={styles.conversationAssistantRow}>
-              <View style={styles.conversationAvatar}>
-                <Text style={styles.conversationAvatarMark}>R</Text>
-              </View>
-              <View style={[styles.conversationMessageBubble, styles.conversationAssistantBubble]}>
-                <Text style={styles.conversationMessageText}>
-                  Podré recomendarte una práctica suave para cerrar el día con más calma.
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.conversationComposer}>
-              <TextInput
-                value={conversationDraft}
-                onChangeText={setConversationDraft}
-                placeholder="Escribe cómo te sientes…"
-                placeholderTextColor="rgba(244,244,244,0.42)"
-                style={styles.conversationComposerInput}
-                multiline
-                maxLength={240}
-              />
-              <View style={styles.conversationSendButton}>
-                <Feather name="arrow-up" size={18} color="#121019" />
-              </View>
-            </View>
+            <Text style={styles.conversationBannerText} numberOfLines={1}>
+              Conversa con Astral, tu chat IA
+            </Text>
+            <Feather name="chevron-right" size={16} color="#F9F9F9" />
           </View>
         </View>
 
@@ -1012,137 +961,38 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   conversationSection: {
-    paddingHorizontal: H_PAD,
+    paddingHorizontal: 0,
     marginTop: 10,
     marginBottom: 34,
   },
-  conversationSectionHeading: {
+  conversationBanner: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  conversationTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 9,
-  },
-  conversationAssistantIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(249,249,249,0.13)",
-  },
-  conversationSectionTitle: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 19,
-    fontWeight: "700",
-  },
-  conversationComingSoonPill: {
+    marginHorizontal: H_PAD,
+    marginBottom: 8,
     borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 5,
-    backgroundColor: "rgba(249,249,249,0.12)",
-  },
-  conversationComingSoonText: {
-    color: "rgba(249,249,249,0.78)",
-    fontFamily: "Manrope",
-    fontSize: 8,
-    fontWeight: "800",
-    letterSpacing: 0.75,
-  },
-  conversationDescription: {
-    marginTop: 9,
-    color: "rgba(244,244,244,0.62)",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 19,
-  },
-  conversationChatCard: {
-    marginTop: 17,
-    borderRadius: 24,
-    padding: 15,
-    gap: 11,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.065)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
-  conversationAssistantRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 8,
-    paddingRight: 28,
-  },
-  conversationAvatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(249,249,249,0.18)",
-  },
-  conversationAvatarMark: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "800",
-  },
-  conversationMessageBubble: {
+  conversationBotAvatar: {
+    width: 32,
+    height: 32,
     borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  conversationAssistantBubble: {
-    flex: 1,
-    borderBottomLeftRadius: 4,
-    backgroundColor: "rgba(255,255,255,0.09)",
-  },
-  conversationUserBubble: {
-    alignSelf: "flex-end",
-    maxWidth: "82%",
-    borderBottomRightRadius: 4,
-    backgroundColor: "rgba(249,249,249,0.19)",
-  },
-  conversationMessageText: {
-    color: "rgba(255,255,255,0.90)",
-    fontFamily: "Manrope",
-    fontSize: 12.5,
-    lineHeight: 18,
-  },
-  conversationComposer: {
-    minHeight: 50,
-    marginTop: 4,
-    paddingLeft: 14,
-    paddingRight: 6,
-    paddingVertical: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.16)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-  },
-  conversationComposerInput: {
-    flex: 1,
-    maxHeight: 72,
-    paddingVertical: 7,
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  conversationSendButton: {
-    width: 36,
-    height: 36,
-    marginLeft: 8,
-    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F9F9F9",
+    backgroundColor: "rgba(190,150,80,0.24)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.42)",
+  },
+  conversationBannerText: {
+    flex: 1,
+    fontFamily: "Manrope",
+    color: "#F9F9F9",
+    fontSize: 16,
+    fontWeight: "600",
   },
 
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
