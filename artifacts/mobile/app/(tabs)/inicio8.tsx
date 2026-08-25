@@ -2232,7 +2232,7 @@ const styles = StyleSheet.create({
     borderColor: "#F9F9F9",
   },
   inicio2QuickAccess: {
-    marginTop: 13,
+    marginTop: 38,
     marginBottom: 2,
   },
   inicio2QuickAccessContent: {
