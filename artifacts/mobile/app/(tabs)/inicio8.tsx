@@ -15,6 +15,7 @@ import {
   FlatList,
   Keyboard,
   Modal,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -107,6 +108,13 @@ const GRID_PAD = 19;
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 270;
+const INICIO2_HERO_HEIGHT = Math.min(390, Math.max(326, width * 0.92));
+const INICIO2_SLIDES = [
+  { id: "templo", image: require("@/assets/images/inicio2-mistico-1.jpg"), destination: null },
+  { id: "lago", image: require("@/assets/images/inicio2-mistico-2.jpg"), destination: null },
+  { id: "arco", image: require("@/assets/images/inicio2-mistico-3.jpg"), destination: null },
+  { id: "oceano", image: require("@/assets/images/inicio2-mistico-4.jpg"), destination: null },
+] as const;
 
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
@@ -326,6 +334,155 @@ function AnimatedNavTabRow({
   );
 }
 
+function Inicio2HeroSlider({
+  topInset,
+  focused,
+  currentStreak,
+  giftScale,
+  onOpenDrawer,
+  onOpenProgress,
+}: {
+  topInset: number;
+  focused: boolean;
+  currentStreak: number;
+  giftScale: Animated.Value;
+  onOpenDrawer: () => void;
+  onOpenProgress: () => void;
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(0);
+  const slideFade = useRef(new Animated.Value(1)).current;
+  const slideDrift = useRef(new Animated.Value(0)).current;
+
+  const setSlide = useCallback((nextIndex: number) => {
+    const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
+    if (normalized === activeIndexRef.current) return;
+
+    activeIndexRef.current = normalized;
+    slideFade.stopAnimation();
+    slideDrift.stopAnimation();
+    slideFade.setValue(0);
+    slideDrift.setValue(0);
+    setActiveIndex(normalized);
+
+    Animated.timing(slideFade, {
+      toValue: 1,
+      duration: 700,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: ND,
+    }).start();
+  }, [slideFade, slideDrift]);
+
+  useEffect(() => {
+    if (!focused) {
+      slideDrift.stopAnimation();
+      slideDrift.setValue(0);
+      return;
+    }
+
+    slideDrift.setValue(0);
+    const breath = Animated.loop(
+      Animated.sequence([
+        Animated.timing(slideDrift, { toValue: 1, duration: 11_000, easing: RNEasing.inOut(RNEasing.sin), useNativeDriver: ND }),
+        Animated.timing(slideDrift, { toValue: 0, duration: 11_000, easing: RNEasing.inOut(RNEasing.sin), useNativeDriver: ND }),
+      ]),
+    );
+    breath.start();
+
+    return () => {
+      breath.stop();
+      slideDrift.stopAnimation();
+      slideDrift.setValue(0);
+    };
+  }, [activeIndex, focused, slideDrift]);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_event, gesture) =>
+          Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
+        onPanResponderRelease: (_event, gesture) => {
+          if (Math.abs(gesture.dx) < 42) return;
+          setSlide(activeIndexRef.current + (gesture.dx < 0 ? 1 : -1));
+        },
+      }),
+    [setSlide],
+  );
+
+  const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
+  const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
+
+  return (
+    <View
+      {...panResponder.panHandlers}
+      style={styles.inicio2Hero}
+      testID="inicio2-hero-slider"
+      accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
+    >
+      <Animated.Image
+        key={INICIO2_SLIDES[activeIndex].id}
+        source={INICIO2_SLIDES[activeIndex].image}
+        resizeMode="cover"
+        style={[styles.inicio2HeroImage, { opacity: slideFade, transform: [{ scale: zoom }, { translateX: driftX }] }]}
+      />
+      <LinearGradient
+        colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
+        locations={[0, 0.48, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+
+      <View pointerEvents="box-none" style={[styles.inicio2HeroActions, { paddingTop: topInset + 8 }]}>
+        <Pressable
+          onPress={onOpenDrawer}
+          hitSlop={12}
+          style={styles.inicio2HeroIconButton}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir menú"
+          testID="inicio2-open-drawer"
+        >
+          <Ionicons name="menu" size={27} color="#FFFFFF" />
+        </Pressable>
+
+        <Pressable
+          onPress={onOpenProgress}
+          onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
+          onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
+          hitSlop={12}
+          style={styles.inicio2HeroLotusButton}
+          accessibilityRole="button"
+          accessibilityLabel="Ver tu progreso"
+          testID="inicio2-open-progress"
+        >
+          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+            <View style={styles.inicio2HeroLotusContent}>
+              {currentStreak > 0 && <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>}
+              <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </View>
+
+      <View style={styles.inicio2HeroControls} accessibilityRole="tablist">
+        {INICIO2_SLIDES.map((slide, index) => {
+          const active = index === activeIndex;
+          return (
+            <Pressable
+              key={slide.id}
+              onPress={() => setSlide(index)}
+              style={[styles.inicio2HeroControl, active && styles.inicio2HeroControlActive]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              accessibilityLabel={`Ver diapositiva ${index + 1}`}
+              testID={`inicio2-slide-control-${index + 1}`}
+            />
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export type InicioVariant = "original" | "copy";
 
 export default function HomeScreen2({
@@ -333,6 +490,7 @@ export default function HomeScreen2({
 }: {
   variant?: InicioVariant;
 } = {}) {
+  const isInicio2 = variant === "copy";
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
@@ -1001,7 +1159,8 @@ export default function HomeScreen2({
 
       <StatusBar hidden />
 
-      {/* ── Header fijo: Menú + Racha (sticky, fuera del scroll) ── */}
+      {/* ── Header fijo: Menú + Racha (solo Inicio original) ── */}
+      {!isInicio2 && (
       <View
         style={{
           position: "absolute",
@@ -1080,10 +1239,11 @@ export default function HomeScreen2({
           </Animated.View>
         </Pressable>
       </View>
+      )}
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 38 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleMainScroll}
         scrollEventThrottle={16}
@@ -1096,8 +1256,17 @@ export default function HomeScreen2({
           updateStickyActive();
         }}
       >
-        {/* ── Escena animada o Intención diaria (según toggle en Escenas) ── */}
-        {showAnimatedScene ? (
+        {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
+        {isInicio2 ? (
+          <Inicio2HeroSlider
+            topInset={topPad}
+            focused={tabFocused}
+            currentStreak={currentStreakDisplay}
+            giftScale={giftScaleAnim}
+            onOpenDrawer={openDrawer}
+            onOpenProgress={() => setProgresoVisible(true)}
+          />
+        ) : showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
              El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
           <View style={{ height: 260, marginTop: -23, overflow: "visible" }} pointerEvents="box-none">
@@ -1726,6 +1895,73 @@ const ctrlBtnStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
+  inicio2Hero: {
+    height: INICIO2_HERO_HEIGHT,
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: "#060A0F",
+  },
+  inicio2HeroImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: "106%",
+    left: "-3%",
+    height: "106%",
+    top: "-3%",
+  },
+  inicio2HeroActions: {
+    ...StyleSheet.absoluteFillObject,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    paddingHorizontal: 18,
+  },
+  inicio2HeroIconButton: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio2HeroLotusButton: {
+    minWidth: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio2HeroLotusContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  inicio2HeroStreak: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+    textShadowColor: "rgba(0,0,0,0.72)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+  },
+  inicio2HeroControls: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 18,
+    height: 25,
+    flexDirection: "row",
+    gap: 7,
+  },
+  inicio2HeroControl: {
+    flex: 1,
+    height: 25,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.22)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+  },
+  inicio2HeroControlActive: {
+    backgroundColor: "rgba(232,203,137,0.92)",
+    borderColor: "rgba(255,255,255,0.68)",
+  },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
