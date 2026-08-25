@@ -1198,7 +1198,7 @@ export default function HomeScreen2({
               )}
             </Animated.View>
           </View>
-        ) : (
+        ) : variant === "original" ? (
           /* Establece tu intención aquí (modo intención diaria) */
           <Pressable
             onPress={handleIntentionPress}
@@ -1217,7 +1217,7 @@ export default function HomeScreen2({
               )}
             </View>
           </Pressable>
-        )}
+        ) : null}
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
