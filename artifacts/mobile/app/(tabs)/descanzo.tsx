@@ -454,15 +454,6 @@ export default function DescansoScreen() {
       >
         {/* ── Hero ── */}
         <View style={styles.hero}>
-          <Pressable
-            onPress={backOverride ?? (() => router.back())}
-            hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -2, transform: [{ translateY: -18 }] }}
-          >
-            <View style={{ transform: [{ translateX: -1 }] }}>
-              <Feather name="chevron-left" size={28} color="#FBFBFB" />
-            </View>
-          </Pressable>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
         </View>
 
@@ -628,15 +619,7 @@ export default function DescansoScreen() {
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 13, width: "100%" }}>
-          <Pressable
-            onPress={backOverride ?? (() => router.back())}
-            hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: 4, transform: [{ translateY: -18 }] }}
-          >
-            <View style={{ transform: [{ translateX: -1 }] }}>
-              <Feather name="chevron-left" size={28} color="#FBFBFB" />
-            </View>
-          </Pressable>
+          <View style={{ width: 38 }} />
           <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "center" }]}>Dormir</Text>
           <View style={{ width: 38 }} />
         </View>
@@ -1048,22 +1031,18 @@ const styles = StyleSheet.create({
   /* Hero */
   hero: {
     flexDirection: "column",
-    alignItems: "flex-start",
+    alignItems: "stretch",
     paddingHorizontal: 19,
-    paddingTop: 3,
-    paddingBottom: 8,
-    gap: 6,
-    marginTop: -4,
-  },
-  heroIcon: {
-    marginTop: 14,
-    marginBottom: 14,
+    paddingTop: 7,
+    paddingBottom: 10,
   },
   heroTitle: {
     fontFamily: "Manrope",
     fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
-    textAlign: "left",
+    textAlign: "center",
+    marginTop: 0,
+    transform: [{ translateY: 1 }],
   },
 });
