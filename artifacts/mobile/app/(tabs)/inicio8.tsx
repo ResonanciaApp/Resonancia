@@ -683,6 +683,10 @@ function Inicio2QuickAccessRow() {
             testID={`inicio2-quick-access-${item.id}`}
             style={({ pressed }) => [
               styles.inicio2QuickAccessPill,
+              item.id === "favoritos" && styles.inicio2QuickAccessRightEdge,
+              (item.id === "mezclador" || item.id === "geometrix" || item.id === "biblioteca") &&
+                styles.inicio2QuickAccessBothEdges,
+              item.id === "diario" && styles.inicio2QuickAccessLeftEdge,
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
@@ -2159,12 +2163,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 35,
     paddingHorizontal: 11.5,
-    borderRadius: 999,
+    borderRadius: 0,
     gap: 5,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
+  },
+  inicio2QuickAccessRightEdge: {
+    borderTopRightRadius: 3,
+    borderBottomRightRadius: 3,
+  },
+  inicio2QuickAccessBothEdges: {
+    borderRadius: 3,
+  },
+  inicio2QuickAccessLeftEdge: {
+    borderTopLeftRadius: 3,
+    borderBottomLeftRadius: 3,
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
