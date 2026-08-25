@@ -326,7 +326,13 @@ function AnimatedNavTabRow({
   );
 }
 
-export default function HomeScreen2() {
+export type InicioVariant = "original" | "copy";
+
+export default function HomeScreen2({
+  variant = "original",
+}: {
+  variant?: InicioVariant;
+} = {}) {
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
@@ -961,7 +967,10 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}>
+    <View
+      testID={`inicio-${variant}`}
+      style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}
+    >
       {/* ── Fondo degradado del tema (4 stops) ── */}
       <LinearGradient
         colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
