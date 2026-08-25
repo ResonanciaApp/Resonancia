@@ -151,3 +151,4 @@
 - [Private object reference grants](private-object-reference-grants.md) — una ruta privada referenciada no concede acceso por sí sola; exigir propiedad del upload o rol editorial antes de compartir/publicar
 - [Readiness editorial del catálogo](catalog-readiness-placeholders.md) — placeholders explícitos permanecen visibles; finales exigen audio reproducible y validación transaccional
 - [Slider local sin frames negros](slider-local-image-layers.md) — carruseles locales: capas RN Image persistentes + wrappers animados; no remontar expo-image con opacidad compartida
+- [Android mixed pill radii](android-mixed-pill-radii.md) — no combinar radio extremo 999 con esquinas pequeñas en una View bordeada: usar el radio real de la altura para conservar los 10 px

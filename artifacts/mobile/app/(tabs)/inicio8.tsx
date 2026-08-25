@@ -635,6 +635,9 @@ const INICIO2_QUICK_ACCESS = [
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline" },
 ] as const;
 
+const INICIO2_QUICK_ACCESS_PILL_HEIGHT = 45;
+const INICIO2_QUICK_ACCESS_OUTER_RADIUS = INICIO2_QUICK_ACCESS_PILL_HEIGHT / 2;
+
 /**
  * Accesos principales de Inicio 2. Vive dentro del ScrollView vertical, pero
  * mantiene su propio ScrollView horizontal para no competir con el gesto del
@@ -706,13 +709,6 @@ function Inicio2QuickAccessRow() {
                   styles.inicio2QuickAccessBothEdges,
                 item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
                 item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
-                item.id === "favoritos" && {
-                  borderRadius: 10,
-                  borderTopLeftRadius: 999,
-                  borderBottomLeftRadius: 999,
-                  borderTopRightRadius: 10,
-                  borderBottomRightRadius: 10,
-                },
               ]}
             />
             <MaterialCommunityIcons name={item.icon} size={18} color="#F9F9F9" />
@@ -2186,7 +2182,7 @@ const styles = StyleSheet.create({
   inicio2QuickAccessPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 45,
+    height: INICIO2_QUICK_ACCESS_PILL_HEIGHT,
     paddingHorizontal: 11.5,
     gap: 5,
   },
@@ -2202,9 +2198,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   inicio2QuickAccessFavoritesEdges: {
-    borderRadius: 10,
-    borderTopLeftRadius: 999,
-    borderBottomLeftRadius: 999,
+    borderTopLeftRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
+    borderBottomLeftRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
   },
