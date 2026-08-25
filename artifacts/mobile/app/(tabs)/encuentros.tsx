@@ -215,11 +215,11 @@ const styles = StyleSheet.create({
   },
   carouselTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "700",
     color: "#F4F4F4",
     paddingHorizontal: CARD_H_PADDING,
-    marginTop: 40,
+    marginTop: 25,
   },
   carouselContent: {
     paddingHorizontal: CARD_H_PADDING,

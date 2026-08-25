@@ -542,6 +542,7 @@ function Inicio2HeroSlider({
     outputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
+  const heroCopyY = Animated.add(parallaxY, 15);
   const pullScale = scrollY.interpolate({
     inputRange: [-INICIO2_HERO_HEIGHT, 0],
     outputRange: [1.18, 1],
@@ -630,7 +631,10 @@ function Inicio2HeroSlider({
         </Pressable>
       </Animated.View>
 
-      <View pointerEvents="box-none" style={styles.inicio2HeroCopy}>
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
+      >
         <Text style={styles.inicio2HeroTitle}>{INICIO2_SLIDES[activeIndex].title}</Text>
         <Text style={styles.inicio2HeroDescription}>{INICIO2_SLIDES[activeIndex].description}</Text>
         <Pressable
@@ -647,7 +651,7 @@ function Inicio2HeroSlider({
             {INICIO2_SLIDES[activeIndex].actionLabel}
           </Text>
         </Pressable>
-      </View>
+      </Animated.View>
 
       <Animated.View
         style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
@@ -2161,7 +2165,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingTop: 24,
     paddingBottom: 24,
-    transform: [{ translateY: 15 }],
   },
   inicio2HeroTitle: {
     fontFamily: "Manrope",
