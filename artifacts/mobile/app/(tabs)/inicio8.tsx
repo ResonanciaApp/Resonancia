@@ -76,6 +76,7 @@ import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
 import { WeekDayDots } from "@/components/WeekDayDots";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
@@ -696,6 +697,17 @@ function Inicio2QuickAccessRow() {
   );
 }
 
+type InicioMoodRecommendationsProps = {
+  selectedMood: Mood | null;
+  moodRecommended: Session[];
+  isPremium: boolean;
+  cardBg: string;
+  onOpenMoodPicker: () => void;
+  onClearMood: () => void;
+  onRefreshRecommendations: () => void;
+  onPlaySession: (session: Session) => void;
+  openCategory: (route: string) => void;
+};
 export type InicioVariant = "original" | "copy";
 
 export default function HomeScreen2({
@@ -729,7 +741,6 @@ export default function HomeScreen2({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const cardBg = "rgba(255,255,255,0.05)";
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
-  const catBlockBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.04)" : cardBg;
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
@@ -1134,7 +1145,6 @@ export default function HomeScreen2({
   const isFeaturedPlaying =
     !!currentSession && !!filteredFeatured &&
     currentSession.id === filteredFeatured.id && isPlaying;
-
 
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -1641,6 +1651,19 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && (
+          <InicioMoodRecommendations
+            selectedMood={selectedMood}
+            moodRecommended={moodRecommended}
+            isPremium={isPremium}
+            cardBg={cardBg}
+            onOpenMoodPicker={() => setMoodSheetVisible(true)}
+            onClearMood={() => setSelectedMood(null)}
+            onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
+            onPlaySession={playSession}
+            openCategory={openCategory}
+          />
+        )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
@@ -1673,58 +1696,9 @@ export default function HomeScreen2({
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: showAnimatedScene ? 28 : 22 }]}>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20, justifyContent: "center" }}>
-            {([
-              { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
-              { id: "sonidos-ancestrales",  label: "Sonoterapia", color: "#E7A36E", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
-              { id: "musica-sonidos",        label: "Música",     color: "#6FD7D8", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
-              { id: "__descanzo__",           label: "Dormir",     color: "#8ED9FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 22, height: 22 }} contentFit="contain" tintColor="#f9f9f9" /> },
-              { id: "__mezcla__",             label: "Mezclador",  color: "#E6BE67", icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },
-              { id: "__geometrix__",          label: "Geometrix",  color: "#C4C8D4", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cubo-4.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
-            ] as const).map((c, i) => {
-              const R = 27;
-              const corners = [
-                { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
-                { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
-                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
-                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
-                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
-                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
-              ];
-              return (
-              <Pressable
-                key={c.id}
-                onPress={() => {
-                  if (c.id === "__descanzo__") openCategory("/(tabs)/descanzo");
-                  else if (c.id === "__mezcla__") openMixer();
-                  else if (c.id === "__geometrix__") openGeometrix();
-                  else openCategory(`/category/${c.id}`);
-                }}
-                style={({ pressed }) => [{
-                  width: "48%",
-                  paddingVertical: 18,
-                  paddingHorizontal: 16,
-                  flexDirection: "row" as const,
-                  alignItems: "center" as const,
-                  gap: 12,
-                  overflow: "hidden" as const,
-                  opacity: pressed ? 0.75 : 1,
-                  borderWidth: 0,
-                  ...corners[i],
-                }]}
-              >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-                <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
-                  {c.icon(c.color)}
-                </View>
-                <Text style={{ fontSize: 15, fontWeight: "700", color: "#FBFBFB" }}>
-                  {c.label}
-                </Text>
-              </Pressable>
-            );})}
-          </View>
-        </View>
+        {!isInicio2 && (
+          <ContentCategoryGrid marginTop={showAnimatedScene ? 28 : 22} />
+        )}
 
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
@@ -1893,102 +1867,18 @@ export default function HomeScreen2({
         />
 
 
-
-
-
         {!isInicio2 && (
-          <>
-            {/* ── ESTADO DE ÁNIMO ── */}
-            <View style={[styles.sectionDivider, { marginTop: -15 }]} />
-            <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
-              <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
-            </View>
-
-            {selectedMood ? (
-              <Pressable
-                onPress={() => setMoodSheetVisible(true)}
-                style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
-              >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
-                <Text style={styles.moodSientesLabel}>Sientes:</Text>
-                <View style={{ flex: 1 }} />
-                <LinearGradient
-                  colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.moodPill}
-                >
-                  <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
-                  <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
-                  <Pressable
-                    onPress={(e) => { e.stopPropagation?.(); setSelectedMood(null); }}
-                    hitSlop={10}
-                    style={{ marginLeft: 2 }}
-                  >
-                    <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
-                  </Pressable>
-                </LinearGradient>
-              </Pressable>
-            ) : (
-              <Pressable
-                onPress={() => setMoodSheetVisible(true)}
-                style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
-              >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
-                <Text style={styles.moodEmoji}>🙂</Text>
-                <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
-                <Feather name="chevron-right" size={16} color="#f9f9f9" />
-              </Pressable>
-            )}
-
-            {/* ── RECOMENDADO PARA TI ── */}
-            <View style={{ paddingHorizontal: GRID_PAD }}>
-              <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
-                {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
-              </Text>
-            </View>
-            <View style={styles.recoSection}>
-              {moodRecommended.map((s) => (
-                <View key={s.id} style={styles.recoCard}>
-                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
-                  <SessionRow
-                    session={s}
-                    imageSize={84}
-                    metaText={s.categoryLabel}
-                    onPress={() => {
-                      if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                      if (s.skipMiniPlayer) { playSession(s); return; }
-                      if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-                      openCategory(`/session/${s.id}`);
-                    }}
-                  />
-                </View>
-              ))}
-            </View>
-
-            {/* Botón actualizar recomendaciones */}
-            <Pressable
-              onPress={() => setRecoOffset((n) => n + 1)}
-              style={({ pressed }) => ({
-                marginTop: -40,
-                marginHorizontal: GRID_PAD,
-                marginBottom: 0,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                paddingVertical: 12,
-                borderRadius: 100,
-                borderWidth: 1.5,
-                borderColor: "rgba(249,249,249,0.5)",
-                backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
-              })}
-            >
-              <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
-                Actualizar recomendaciones
-              </Text>
-            </Pressable>
-          </>
+          <InicioMoodRecommendations
+            selectedMood={selectedMood}
+            moodRecommended={moodRecommended}
+            isPremium={isPremium}
+            cardBg={cardBg}
+            onOpenMoodPicker={() => setMoodSheetVisible(true)}
+            onClearMood={() => setSelectedMood(null)}
+            onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
+            onPlaySession={playSession}
+            openCategory={openCategory}
+          />
         )}
 
 
@@ -3005,3 +2895,129 @@ const styles = StyleSheet.create({
     marginTop: -3,
   },
 });
+
+function InicioMoodRecommendations({
+  selectedMood,
+  moodRecommended,
+  isPremium,
+  cardBg,
+  onOpenMoodPicker,
+  onClearMood,
+  onRefreshRecommendations,
+  onPlaySession,
+  openCategory,
+}: InicioMoodRecommendationsProps) {
+  return (
+    <>
+      {/* ── ESTADO DE ÁNIMO ── */}
+      <View style={[styles.sectionDivider, { marginTop: -15 }]} />
+      <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
+        <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
+      </View>
+
+      {selectedMood ? (
+        <Pressable
+          onPress={onOpenMoodPicker}
+          style={({ pressed }) => [
+            styles.moodRow,
+            styles.moodRowActive,
+            { overflow: "hidden", opacity: pressed ? 0.78 : 1 },
+          ]}
+        >
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
+          <Text style={styles.moodSientesLabel}>Sientes:</Text>
+          <View style={{ flex: 1 }} />
+          <LinearGradient
+            colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.moodPill}
+          >
+            <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
+            <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
+            <Pressable
+              onPress={(event) => {
+                event.stopPropagation?.();
+                onClearMood();
+              }}
+              hitSlop={10}
+              style={{ marginLeft: 2 }}
+            >
+              <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
+            </Pressable>
+          </LinearGradient>
+        </Pressable>
+      ) : (
+        <Pressable
+          onPress={onOpenMoodPicker}
+          style={({ pressed }) => [
+            styles.moodRow,
+            { overflow: "hidden", opacity: pressed ? 0.78 : 1 },
+          ]}
+        >
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+          <Text style={styles.moodEmoji}>🙂</Text>
+          <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
+          <Feather name="chevron-right" size={16} color="#f9f9f9" />
+        </Pressable>
+      )}
+
+      {/* ── RECOMENDADO PARA TI ── */}
+      <View style={{ paddingHorizontal: GRID_PAD }}>
+        <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
+          {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+        </Text>
+      </View>
+      <View style={styles.recoSection}>
+        {moodRecommended.map((session) => (
+          <View key={session.id} style={styles.recoCard}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+            <SessionRow
+              session={session}
+              imageSize={84}
+              metaText={session.categoryLabel}
+              onPress={() => {
+                if (session.isPremium && !isPremium) {
+                  router.push("/membresia" as never);
+                  return;
+                }
+                if (session.skipMiniPlayer) {
+                  onPlaySession(session);
+                  return;
+                }
+                if (session.skipDetail) {
+                  onPlaySession(session);
+                  router.push("/player" as never);
+                  return;
+                }
+                openCategory(`/session/${session.id}`);
+              }}
+            />
+          </View>
+        ))}
+      </View>
+
+      <Pressable
+        onPress={onRefreshRecommendations}
+        style={({ pressed }) => ({
+          marginTop: -40,
+          marginHorizontal: GRID_PAD,
+          marginBottom: 0,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          paddingVertical: 12,
+          borderRadius: 100,
+          borderWidth: 1.5,
+          borderColor: "rgba(249,249,249,0.5)",
+          backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
+        })}
+      >
+        <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
+          Actualizar recomendaciones
+        </Text>
+      </Pressable>
+    </>
+  );
+}

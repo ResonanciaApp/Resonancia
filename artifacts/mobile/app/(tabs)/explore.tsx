@@ -42,6 +42,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
@@ -631,6 +632,9 @@ export default function ExploreScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {/* ── Accesos por contenido ── */}
+        <ContentCategoryGrid marginTop={0} />
+
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
           <View style={styles.conversationSectionHeading}>
