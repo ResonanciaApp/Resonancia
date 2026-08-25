@@ -19,9 +19,11 @@ const CARD_BG = "rgba(255,255,255,0.05)";
 export function ContentCategoryGrid({
   marginTop = 22,
   marginBottom = SECTION_GAP - 20,
+  hiddenIds = [],
 }: {
   marginTop?: number;
   marginBottom?: number;
+  hiddenIds?: readonly string[];
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
@@ -105,7 +107,9 @@ export function ContentCategoryGrid({
               />
             ),
           },
-        ] as const).map((category, index) => {
+        ] as const)
+          .filter((category) => !hiddenIds.includes(category.id))
+          .map((category, index) => {
           const radius = 27;
           const corners = [
             {
@@ -146,28 +150,28 @@ export function ContentCategoryGrid({
             },
           ] as const;
 
-          return (
-            <Pressable
-              key={category.id}
-              testID={`content-category-${category.id}`}
-              onPress={() => {
-                if (category.id === "__descanzo__") openCategory("/(tabs)/descanzo");
-                else if (category.id === "__mezcla__") openMixer();
-                else if (category.id === "__geometrix__") openGeometrix();
-                else openCategory(`/category/${category.id}`);
-              }}
-              style={({ pressed }) => [
-                styles.card,
-                corners[index],
-                { opacity: pressed ? 0.75 : 1 },
-              ]}
-            >
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-              <View style={styles.iconWrap}>{category.icon(category.color)}</View>
-              <Text style={styles.label}>{category.label}</Text>
-            </Pressable>
-          );
-        })}
+            return (
+              <Pressable
+                key={category.id}
+                testID={`content-category-${category.id}`}
+                onPress={() => {
+                  if (category.id === "__descanzo__") openCategory("/(tabs)/descanzo");
+                  else if (category.id === "__mezcla__") openMixer();
+                  else if (category.id === "__geometrix__") openGeometrix();
+                  else openCategory(`/category/${category.id}`);
+                }}
+                style={({ pressed }) => [
+                  styles.card,
+                  corners[index],
+                  { opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
+                <View style={styles.iconWrap}>{category.icon(category.color)}</View>
+                <Text style={styles.label}>{category.label}</Text>
+              </Pressable>
+            );
+          })}
       </View>
     </View>
   );

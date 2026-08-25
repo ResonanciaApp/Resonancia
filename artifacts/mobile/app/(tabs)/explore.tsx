@@ -633,7 +633,10 @@ export default function ExploreScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* ── Accesos por contenido ── */}
-        <ContentCategoryGrid marginTop={0} />
+        <ContentCategoryGrid
+          marginTop={0}
+          hiddenIds={["__mezcla__", "__geometrix__"]}
+        />
 
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
