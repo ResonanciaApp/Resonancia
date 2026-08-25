@@ -704,6 +704,7 @@ type InicioMoodRecommendationsProps = {
   cardBg: string;
   showTitle?: boolean;
   showDivider?: boolean;
+  moodTopOffset?: number;
   onOpenMoodPicker: () => void;
   onClearMood: () => void;
   onRefreshRecommendations: () => void;
@@ -1661,6 +1662,7 @@ export default function HomeScreen2({
             cardBg={cardBg}
             showTitle={false}
             showDivider={false}
+            moodTopOffset={20}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -2907,6 +2909,7 @@ function InicioMoodRecommendations({
   cardBg,
   showTitle = true,
   showDivider = true,
+  moodTopOffset = 0,
   onOpenMoodPicker,
   onClearMood,
   onRefreshRecommendations,
@@ -2929,7 +2932,7 @@ function InicioMoodRecommendations({
           style={({ pressed }) => [
             styles.moodRow,
             styles.moodRowActive,
-            { overflow: "hidden", opacity: pressed ? 0.78 : 1 },
+            { marginTop: moodTopOffset, overflow: "hidden", opacity: pressed ? 0.78 : 1 },
           ]}
         >
           <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
@@ -2960,7 +2963,7 @@ function InicioMoodRecommendations({
           onPress={onOpenMoodPicker}
           style={({ pressed }) => [
             styles.moodRow,
-            { overflow: "hidden", opacity: pressed ? 0.78 : 1 },
+            { marginTop: moodTopOffset, overflow: "hidden", opacity: pressed ? 0.78 : 1 },
           ]}
         >
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
