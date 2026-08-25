@@ -2142,8 +2142,6 @@ const styles = StyleSheet.create({
     gap: 5,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
