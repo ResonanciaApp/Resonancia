@@ -4,7 +4,6 @@ import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Asset } from "expo-asset";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -155,7 +154,6 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const ND = Platform.OS !== "web";
-const AnimatedExpoImage = Animated.createAnimatedComponent(ExpoImage);
 
 function BlinkingCursor({ color }: { color: string }) {
   const opacity = useRef(new Animated.Value(1)).current;
@@ -353,33 +351,109 @@ function Inicio2HeroSlider({
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
-  const slideFade = useRef(new Animated.Value(1)).current;
+  const desiredIndexRef = useRef(0);
+  const pendingIndexRef = useRef<number | null>(null);
+  const focusedRef = useRef(focused);
+  const loadedSlidesRef = useRef(INICIO2_SLIDES.map(() => false));
+  const slideOpacities = useRef(
+    INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 1 : 0)),
+  ).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    void Asset.loadAsync(INICIO2_SLIDES.map((slide) => slide.image)).catch((error) => {
-      console.warn("[Inicio2HeroSlider] No se pudieron precargar las imágenes:", error);
+  const transitionToSlide = useCallback((nextIndex: number) => {
+    if (!focusedRef.current) {
+      pendingIndexRef.current = nextIndex;
+      return;
+    }
+
+    if (nextIndex === activeIndexRef.current) {
+      pendingIndexRef.current = null;
+      desiredIndexRef.current = nextIndex;
+      return;
+    }
+
+    pendingIndexRef.current = null;
+    desiredIndexRef.current = nextIndex;
+    activeIndexRef.current = nextIndex;
+    slideDrift.stopAnimation();
+    slideDrift.setValue(0);
+    setActiveIndex(nextIndex);
+
+    slideOpacities.forEach((opacity) => opacity.stopAnimation());
+    Animated.parallel(
+      slideOpacities.map((opacity, index) =>
+        Animated.timing(opacity, {
+          toValue: index === nextIndex ? 1 : 0,
+          duration: 700,
+          easing: RNEasing.inOut(RNEasing.cubic),
+          useNativeDriver: ND,
+        }),
+      ),
+    ).start(({ finished }) => {
+      if (!finished) return;
+      const settledIndex = activeIndexRef.current;
+      slideOpacities.forEach((opacity, index) => {
+        opacity.setValue(index === settledIndex ? 1 : 0);
+      });
     });
-  }, []);
+  }, [slideDrift, slideOpacities]);
 
   const setSlide = useCallback((nextIndex: number) => {
     const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
-    if (normalized === activeIndexRef.current) return;
+    desiredIndexRef.current = normalized;
+    if (normalized === activeIndexRef.current) {
+      pendingIndexRef.current = null;
+      return;
+    }
 
-    activeIndexRef.current = normalized;
-    slideFade.stopAnimation();
-    slideDrift.stopAnimation();
-    slideFade.setValue(0);
-    slideDrift.setValue(0);
-    setActiveIndex(normalized);
+    if (!loadedSlidesRef.current[normalized] || !focusedRef.current) {
+      pendingIndexRef.current = normalized;
+      return;
+    }
 
-    Animated.timing(slideFade, {
-      toValue: 1,
-      duration: 700,
-      easing: RNEasing.out(RNEasing.cubic),
-      useNativeDriver: ND,
-    }).start();
-  }, [slideFade, slideDrift]);
+    transitionToSlide(normalized);
+  }, [transitionToSlide]);
+
+  const handleSlideLoad = useCallback((index: number) => {
+    loadedSlidesRef.current[index] = true;
+    if (pendingIndexRef.current === index && focusedRef.current) {
+      transitionToSlide(index);
+    }
+  }, [transitionToSlide]);
+
+  const handleSlideError = useCallback((index: number, error: unknown) => {
+    console.warn(`[Inicio2HeroSlider] No se pudo cargar el slide ${index + 1}:`, error);
+    if (pendingIndexRef.current === index) {
+      pendingIndexRef.current = null;
+      desiredIndexRef.current = activeIndexRef.current;
+    }
+  }, []);
+
+  useEffect(() => () => {
+    slideOpacities.forEach((opacity) => opacity.stopAnimation());
+  }, [slideOpacities]);
+
+  useEffect(() => {
+    focusedRef.current = focused;
+
+    if (!focused) {
+      const visibleIndex = activeIndexRef.current;
+      slideOpacities.forEach((opacity, index) => {
+        opacity.stopAnimation();
+        opacity.setValue(index === visibleIndex ? 1 : 0);
+      });
+      return;
+    }
+
+    const pendingIndex = pendingIndexRef.current;
+    if (
+      pendingIndex !== null
+      && pendingIndex !== activeIndexRef.current
+      && loadedSlidesRef.current[pendingIndex]
+    ) {
+      transitionToSlide(pendingIndex);
+    }
+  }, [focused, slideOpacities, transitionToSlide]);
 
   useEffect(() => {
     if (!focused) {
@@ -414,7 +488,8 @@ function Inicio2HeroSlider({
         onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_event, gesture) => {
           if (Math.abs(gesture.dx) < 42) return;
-          setSlide(activeIndexRef.current + (gesture.dx < 0 ? 1 : -1));
+          const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
+          setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
         },
       }),
     [setSlide],
@@ -430,14 +505,27 @@ function Inicio2HeroSlider({
       testID="inicio2-hero-slider"
       accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
     >
-      <AnimatedExpoImage
-        key={INICIO2_SLIDES[activeIndex].id}
-        source={INICIO2_SLIDES[activeIndex].image}
-        contentFit="cover"
-        cachePolicy="memory-disk"
-        transition={0}
-        style={[styles.inicio2HeroImage, { opacity: slideFade, transform: [{ scale: zoom }, { translateX: driftX }] }]}
-      />
+      {INICIO2_SLIDES.map((slide, index) => (
+        <Animated.View
+          key={slide.id}
+          pointerEvents="none"
+          style={[
+            styles.inicio2HeroImageLayer,
+            {
+              opacity: slideOpacities[index],
+              transform: [{ scale: zoom }, { translateX: driftX }],
+            },
+          ]}
+        >
+          <Image
+            source={slide.image}
+            resizeMode="cover"
+            onLoad={() => handleSlideLoad(index)}
+            onError={(error) => handleSlideError(index, error)}
+            style={styles.inicio2HeroImage}
+          />
+        </Animated.View>
+      ))}
       <LinearGradient
         colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
         locations={[0, 0.48, 1]}
@@ -1913,6 +2001,9 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     backgroundColor: "#060A0F",
+  },
+  inicio2HeroImageLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
   inicio2HeroImage: {
     ...StyleSheet.absoluteFillObject,
