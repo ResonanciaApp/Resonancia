@@ -700,6 +700,9 @@ function Inicio2QuickAccessRow() {
                 styles.inicio2QuickAccessBothEdges,
               item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
               item.id === "favoritos" && {
+                borderRadius: 10,
+                borderTopLeftRadius: 999,
+                borderBottomLeftRadius: 999,
                 borderTopRightRadius: 10,
                 borderBottomRightRadius: 10,
               },
