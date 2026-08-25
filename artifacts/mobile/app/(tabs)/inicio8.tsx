@@ -2136,12 +2136,16 @@ const styles = StyleSheet.create({
   inicio2HeroIconButton: {
     width: 44,
     height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.15)",
     alignItems: "center",
     justifyContent: "center",
   },
   inicio2HeroLotusButton: {
     minWidth: 44,
     height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.15)",
     alignItems: "center",
     justifyContent: "center",
   },
