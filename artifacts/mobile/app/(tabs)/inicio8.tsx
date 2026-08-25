@@ -1525,7 +1525,12 @@ export default function HomeScreen2({
         ) : null}
 
         <View
-          style={isInicio2 ? styles.inicio2ContentPanel : undefined}
+          style={[
+            isInicio2 && styles.inicio2ContentPanel,
+            isInicio2 && {
+              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
+            },
+          ]}
         >
         {isInicio2 && (
           <LinearGradient

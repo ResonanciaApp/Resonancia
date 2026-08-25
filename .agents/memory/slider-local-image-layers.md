@@ -15,4 +15,4 @@ Imagen, rayas de navegación, menú y loto comparten el desplazamiento parallax 
 
 **Why:** El usuario eligió explícitamente que menú y loto acompañen el parallax, en vez de desplazarse a la velocidad normal del contenido.
 
-**How to apply:** Mantener una traslación común para todo el chrome del hero, separar la escala elástica de la imagen y usar un LinearGradient vertical limitado al alto de la ventana para cubrir el overflow sin aplanar el fondo por la altura total del contenido.
+**How to apply:** Mantener una traslación común para todo el chrome del hero, separar la escala elástica de la imagen y usar un LinearGradient vertical limitado al alto de la ventana para cubrir el overflow; debajo debe continuar el último stop como fondo sólido para que el degradado no reinicie.
