@@ -686,7 +686,7 @@ function Inicio2QuickAccessRow() {
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
-            <MaterialCommunityIcons name={item.icon} size={15} color="#F9F9F9" />
+            <MaterialCommunityIcons name={item.icon} size={18} color="#F9F9F9" />
             <Text style={styles.inicio2QuickAccessText} numberOfLines={1}>
               {item.label}
             </Text>
@@ -702,6 +702,7 @@ type InicioMoodRecommendationsProps = {
   moodRecommended: Session[];
   isPremium: boolean;
   cardBg: string;
+  showTitle?: boolean;
   onOpenMoodPicker: () => void;
   onClearMood: () => void;
   onRefreshRecommendations: () => void;
@@ -1657,6 +1658,7 @@ export default function HomeScreen2({
             moodRecommended={moodRecommended}
             isPremium={isPremium}
             cardBg={cardBg}
+            showTitle={false}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -2134,7 +2136,7 @@ const styles = StyleSheet.create({
   inicio2QuickAccessPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 29,
+    height: 35,
     paddingHorizontal: 11.5,
     borderRadius: 999,
     gap: 5,
@@ -2145,7 +2147,7 @@ const styles = StyleSheet.create({
   },
   inicio2QuickAccessText: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: "400",
     letterSpacing: 0.3,
     color: "#F4F4F4",
@@ -2901,6 +2903,7 @@ function InicioMoodRecommendations({
   moodRecommended,
   isPremium,
   cardBg,
+  showTitle = true,
   onOpenMoodPicker,
   onClearMood,
   onRefreshRecommendations,
@@ -2911,9 +2914,11 @@ function InicioMoodRecommendations({
     <>
       {/* ── ESTADO DE ÁNIMO ── */}
       <View style={[styles.sectionDivider, { marginTop: -15 }]} />
-      <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
-        <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
-      </View>
+      {showTitle && (
+        <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
+          <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
+        </View>
+      )}
 
       {selectedMood ? (
         <Pressable
