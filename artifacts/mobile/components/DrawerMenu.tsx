@@ -47,10 +47,7 @@ type MenuItem = {
 
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
-  { label: "Biblioteca",    icon: "bookmark",  route: "__biblioteca_overlay" },
   { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
-  { label: "Mis Favoritos", icon: "heart",     route: "__cat:/favoritos-todos" },
-  { label: "Diario",        icon: "book-open", route: "__overlay:/diario" },
   { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
   { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
   { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },
