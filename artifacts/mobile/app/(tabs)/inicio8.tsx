@@ -2161,6 +2161,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingTop: 24,
     paddingBottom: 24,
+    transform: [{ translateY: 15 }],
   },
   inicio2HeroTitle: {
     fontFamily: "Manrope",
