@@ -679,6 +679,7 @@ export default function ExploreScreen() {
 
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
+          <Text style={styles.conversationSectionTitle}>Recomendación personalizada...</Text>
           <View style={styles.conversationBanner}>
             <View style={styles.conversationBotAvatar}>
               <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
@@ -964,6 +965,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     marginTop: 50,
     marginBottom: 34,
+  },
+  conversationSectionTitle: {
+    marginHorizontal: H_PAD,
+    marginBottom: 27,
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    color: "#FBFBFB",
   },
   conversationBanner: {
     flexDirection: "row",
