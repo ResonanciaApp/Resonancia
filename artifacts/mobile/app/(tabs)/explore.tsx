@@ -684,9 +684,14 @@ export default function ExploreScreen() {
             <View style={styles.conversationBotAvatar}>
               <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
             </View>
-            <Text style={styles.conversationBannerText} numberOfLines={1}>
-              Conversa con Astral, tu chat IA
-            </Text>
+            <View style={styles.conversationBannerCopy}>
+              <Text style={styles.conversationBannerText} numberOfLines={1}>
+                Conversa con Astral, tu chat IA
+              </Text>
+              <Text style={styles.conversationBannerDescription}>
+                ¿Tienes algo que compartir? Yo puedo ayudarte...
+              </Text>
+            </View>
             <Feather name="chevron-right" size={16} color="#F9F9F9" />
           </View>
         </View>
@@ -983,7 +988,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 29,
     gap: 10,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
@@ -997,12 +1002,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.42)",
   },
-  conversationBannerText: {
+  conversationBannerCopy: {
     flex: 1,
+    justifyContent: "center",
+    gap: 3,
+  },
+  conversationBannerText: {
     fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 16,
     fontWeight: "600",
+  },
+  conversationBannerDescription: {
+    fontFamily: "Manrope",
+    color: "rgba(244,244,244,0.62)",
+    fontSize: 12,
+    lineHeight: 17,
   },
 
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
