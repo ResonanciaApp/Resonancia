@@ -691,28 +691,30 @@ function Inicio2QuickAccessRow() {
             testID={`inicio2-quick-access-${item.id}`}
             style={({ pressed }) => [
               styles.inicio2QuickAccessPill,
-              item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
-              (item.id === "mezclador" ||
-                item.id === "geometrix" ||
-                item.id === "videos" ||
-                item.id === "respiracion" ||
-                item.id === "biblioteca") &&
-                styles.inicio2QuickAccessBothEdges,
-              item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
-              item.id === "favoritos" && {
-                borderRadius: 10,
-                borderTopLeftRadius: 999,
-                borderBottomLeftRadius: 999,
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-              },
-              item.id === "diario" && {
-                borderTopLeftRadius: 10,
-                borderBottomLeftRadius: 10,
-              },
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
+            <View
+              pointerEvents="none"
+              style={[
+                styles.inicio2QuickAccessSurface,
+                (item.id === "mezclador" ||
+                  item.id === "geometrix" ||
+                  item.id === "videos" ||
+                  item.id === "respiracion" ||
+                  item.id === "biblioteca") &&
+                  styles.inicio2QuickAccessBothEdges,
+                item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
+                item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
+                item.id === "favoritos" && {
+                  borderRadius: 10,
+                  borderTopLeftRadius: 999,
+                  borderBottomLeftRadius: 999,
+                  borderTopRightRadius: 10,
+                  borderBottomRightRadius: 10,
+                },
+              ]}
+            />
             <MaterialCommunityIcons name={item.icon} size={18} color="#F9F9F9" />
             <Text style={styles.inicio2QuickAccessText} numberOfLines={1}>
               {item.label}
@@ -2186,12 +2188,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 45,
     paddingHorizontal: 11.5,
-    borderRadius: 0,
     gap: 5,
-    overflow: "hidden",
+  },
+  inicio2QuickAccessSurface: {
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 0,
+    overflow: "hidden",
   },
   inicio2QuickAccessBothEdges: {
     borderRadius: 10,
