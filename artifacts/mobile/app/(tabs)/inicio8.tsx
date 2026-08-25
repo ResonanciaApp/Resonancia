@@ -1747,7 +1747,7 @@ export default function HomeScreen2({
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: isInicio2 ? 15 : 55 }]}>
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: isInicio2 ? 55 : 15 }]}>
             <Text style={styles.sectionTitle}>
               Para este momento
             </Text>
