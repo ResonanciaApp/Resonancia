@@ -679,7 +679,7 @@ export default function ExploreScreen() {
 
         {/* ── Conversamos contigo ── */}
         <View style={styles.conversationSection}>
-          <Text style={styles.conversationSectionTitle}>Conversa con Astral AI</Text>
+          <Text style={styles.conversationSectionTitle}>Orientación Personalizada</Text>
           <View style={styles.conversationBanner}>
             <View style={styles.conversationBotAvatar}>
               <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
@@ -968,7 +968,7 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   conversationSection: {
     paddingHorizontal: 0,
-    marginTop: 50,
+    marginTop: 44,
     marginBottom: 34,
   },
   conversationSectionTitle: {
@@ -990,7 +990,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 29,
     gap: 10,
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(38,3,84,0.15)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
