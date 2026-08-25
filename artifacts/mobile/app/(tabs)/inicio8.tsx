@@ -480,32 +480,41 @@ function Inicio2HeroSlider({
     };
   }, [activeIndex, focused, slideDrift]);
 
+  const isHorizontalSwipeIntent = useCallback((dx: number, dy: number) => {
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    return absDx > 18 && absDx > absDy * 1.5;
+  }, []);
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponderCapture: (_event, gesture) =>
-          Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
+          isHorizontalSwipeIntent(gesture.dx, gesture.dy),
         onMoveShouldSetPanResponder: (_event, gesture) =>
-          Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
-        onPanResponderTerminationRequest: () => false,
+          isHorizontalSwipeIntent(gesture.dx, gesture.dy),
+        onPanResponderTerminationRequest: () => true,
         onPanResponderRelease: (_event, gesture) => {
           if (Math.abs(gesture.dx) < 42) return;
           const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
           setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
         },
       }),
-    [setSlide],
+    [isHorizontalSwipeIntent, setSlide],
   );
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
   const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
+  // El hero se mueve con el scroll normal, pero a menor velocidad. En
+  // overscroll el desplazamiento compensa el movimiento del ScrollView para
+  // que la imagen siga anclada al borde superior mientras se estira.
   const parallaxY = scrollY.interpolate({
-    inputRange: [-260, 0, INICIO2_HERO_HEIGHT],
-    outputRange: [-221, 0, INICIO2_HERO_HEIGHT * 0.38],
+    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_HERO_HEIGHT],
+    outputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
   const pullScale = scrollY.interpolate({
-    inputRange: [-260, 0],
+    inputRange: [-INICIO2_HERO_HEIGHT, 0],
     outputRange: [1.18, 1],
     extrapolate: "clamp",
   });
@@ -526,25 +535,34 @@ function Inicio2HeroSlider({
             styles.inicio2HeroImageLayer,
             {
               opacity: slideOpacities[index],
-              transform: [{ translateY: parallaxY }, { scale: imageScale }, { translateX: driftX }],
+              transform: [{ translateY: parallaxY }],
             },
           ]}
         >
-          <Image
-            source={slide.image}
-            resizeMode="cover"
-            onLoad={() => handleSlideLoad(index)}
-            onError={(error) => handleSlideError(index, error)}
-            style={styles.inicio2HeroImage}
-          />
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              { transform: [{ scale: imageScale }, { translateX: driftX }] },
+            ]}
+          >
+            <Image
+              source={slide.image}
+              resizeMode="cover"
+              onLoad={() => handleSlideLoad(index)}
+              onError={(error) => handleSlideError(index, error)}
+              style={styles.inicio2HeroImage}
+            />
+            {/* El overlay pertenece a cada slide para que el crossfade, el
+                parallax y el estiramiento no puedan separarlo de la imagen. */}
+            <LinearGradient
+              colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
+              locations={[0, 0.48, 1]}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+          </Animated.View>
         </Animated.View>
       ))}
-      <LinearGradient
-        colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
-        locations={[0, 0.48, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
 
       <Animated.View
         pointerEvents="box-none"
@@ -1533,19 +1551,20 @@ export default function HomeScreen2({
           ]}
         >
         {isInicio2 && (
-          <LinearGradient
-            colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height,
-            }}
-            pointerEvents="none"
-          />
+          <View pointerEvents="none" style={styles.inicio2ContentGradientClip}>
+            <LinearGradient
+              colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={{
+                position: "absolute",
+                top: -INICIO2_HERO_HEIGHT,
+                left: 0,
+                right: 0,
+                height,
+              }}
+            />
+          </View>
         )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
@@ -2068,6 +2087,10 @@ const styles = StyleSheet.create({
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
+  },
+  inicio2ContentGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
   },
   inicio2HeroImageLayer: {
     ...StyleSheet.absoluteFillObject,
