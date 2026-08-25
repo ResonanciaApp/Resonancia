@@ -386,9 +386,12 @@ function Inicio2HeroSlider({
   const pendingIndexRef = useRef<number | null>(null);
   const focusedRef = useRef(focused);
   const loadedSlidesRef = useRef(INICIO2_SLIDES.map(() => false));
-  const slideOpacities = useRef(
-    INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 1 : 0)),
-  ).current;
+  const [slideTransition, setSlideTransition] = useState<{
+    from: number;
+    to: number;
+    direction: 1 | -1;
+  } | null>(null);
+  const slideTransitionX = useRef(new Animated.Value(0)).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
 
   const transitionToSlide = useCallback((nextIndex: number) => {
@@ -405,29 +408,27 @@ function Inicio2HeroSlider({
 
     pendingIndexRef.current = null;
     desiredIndexRef.current = nextIndex;
+    const fromIndex = activeIndexRef.current;
+    const direction: 1 | -1 = nextIndex > fromIndex ? 1 : -1;
     activeIndexRef.current = nextIndex;
     slideDrift.stopAnimation();
     slideDrift.setValue(0);
+    slideTransitionX.stopAnimation();
+    slideTransitionX.setValue(0);
+    setSlideTransition({ from: fromIndex, to: nextIndex, direction });
     setActiveIndex(nextIndex);
 
-    slideOpacities.forEach((opacity) => opacity.stopAnimation());
-    Animated.parallel(
-      slideOpacities.map((opacity, index) =>
-        Animated.timing(opacity, {
-          toValue: index === nextIndex ? 1 : 0,
-          duration: 700,
-          easing: RNEasing.inOut(RNEasing.cubic),
-          useNativeDriver: ND,
-        }),
-      ),
-    ).start(({ finished }) => {
+    Animated.timing(slideTransitionX, {
+      toValue: direction === 1 ? -width : width,
+      duration: 420,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: ND,
+    }).start(({ finished }) => {
       if (!finished) return;
-      const settledIndex = activeIndexRef.current;
-      slideOpacities.forEach((opacity, index) => {
-        opacity.setValue(index === settledIndex ? 1 : 0);
-      });
+      slideTransitionX.setValue(0);
+      setSlideTransition(null);
     });
-  }, [slideDrift, slideOpacities]);
+  }, [slideDrift, slideTransitionX]);
 
   const setSlide = useCallback((nextIndex: number) => {
     const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
@@ -461,18 +462,16 @@ function Inicio2HeroSlider({
   }, []);
 
   useEffect(() => () => {
-    slideOpacities.forEach((opacity) => opacity.stopAnimation());
-  }, [slideOpacities]);
+    slideTransitionX.stopAnimation();
+  }, [slideTransitionX]);
 
   useEffect(() => {
     focusedRef.current = focused;
 
     if (!focused) {
-      const visibleIndex = activeIndexRef.current;
-      slideOpacities.forEach((opacity, index) => {
-        opacity.stopAnimation();
-        opacity.setValue(index === visibleIndex ? 1 : 0);
-      });
+      slideTransitionX.stopAnimation();
+      slideTransitionX.setValue(0);
+      setSlideTransition(null);
       return;
     }
 
@@ -484,7 +483,7 @@ function Inicio2HeroSlider({
     ) {
       transitionToSlide(pendingIndex);
     }
-  }, [focused, slideOpacities, transitionToSlide]);
+  }, [focused, slideTransitionX, transitionToSlide]);
 
   useEffect(() => {
     if (!focused) {
@@ -564,8 +563,21 @@ function Inicio2HeroSlider({
           style={[
             styles.inicio2HeroImageLayer,
             {
-              opacity: slideOpacities[index],
-              transform: [{ translateY: parallaxY }],
+              opacity: !slideTransition || index === slideTransition.from || index === slideTransition.to ? 1 : 0,
+              transform: [
+                {
+                  translateX:
+                    slideTransition?.from === index
+                      ? slideTransitionX
+                      : slideTransition?.to === index
+                        ? Animated.add(
+                            slideTransitionX,
+                            slideTransition.direction === 1 ? width : -width,
+                          )
+                        : 0,
+                },
+                { translateY: parallaxY },
+              ],
             },
           ]}
         >
@@ -582,8 +594,8 @@ function Inicio2HeroSlider({
               onError={(error) => handleSlideError(index, error)}
               style={styles.inicio2HeroImage}
             />
-            {/* El overlay pertenece a cada slide para que el crossfade, el
-                parallax y el estiramiento no puedan separarlo de la imagen. */}
+            {/* El overlay pertenece a cada slide para que el desplazamiento,
+                parallax y estiramiento no puedan separarlo de la imagen. */}
             <LinearGradient
               colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0.70)"]}
               locations={[0, 0.48, 1]}
