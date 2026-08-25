@@ -2072,6 +2072,9 @@ const styles = StyleSheet.create({
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
   },
   inicio2ContentGradientClip: {
     ...StyleSheet.absoluteFillObject,
