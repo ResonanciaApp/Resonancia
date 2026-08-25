@@ -637,19 +637,6 @@ export default function ExploreScreen() {
           hiddenIds={["__mezcla__", "__geometrix__"]}
         />
 
-        {/* ── Conversamos contigo ── */}
-        <View style={styles.conversationSection}>
-          <View style={styles.conversationBanner}>
-            <View style={styles.conversationBotAvatar}>
-              <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
-            </View>
-            <Text style={styles.conversationBannerText} numberOfLines={1}>
-              Conversa con Astral, tu chat IA
-            </Text>
-            <Feather name="chevron-right" size={16} color="#F9F9F9" />
-          </View>
-        </View>
-
         {/* ── Para este momento ── */}
         {featuredHoy && (
           <View style={[styles.section, { marginBottom: 0, marginTop: 10 }]}>
@@ -689,6 +676,19 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
         )}
+
+        {/* ── Conversamos contigo ── */}
+        <View style={styles.conversationSection}>
+          <View style={styles.conversationBanner}>
+            <View style={styles.conversationBotAvatar}>
+              <MaterialCommunityIcons name="robot-outline" size={21} color="#F9F9F9" />
+            </View>
+            <Text style={styles.conversationBannerText} numberOfLines={1}>
+              Conversa con Astral, tu chat IA
+            </Text>
+            <Feather name="chevron-right" size={16} color="#F9F9F9" />
+          </View>
+        </View>
 
         {/* ── Explorar todo ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
@@ -962,7 +962,7 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   conversationSection: {
     paddingHorizontal: 0,
-    marginTop: 10,
+    marginTop: 50,
     marginBottom: 34,
   },
   conversationBanner: {
