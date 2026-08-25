@@ -4,6 +4,7 @@ import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Asset } from "expo-asset";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -154,6 +155,7 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const ND = Platform.OS !== "web";
+const AnimatedExpoImage = Animated.createAnimatedComponent(ExpoImage);
 
 function BlinkingCursor({ color }: { color: string }) {
   const opacity = useRef(new Animated.Value(1)).current;
@@ -354,6 +356,12 @@ function Inicio2HeroSlider({
   const slideFade = useRef(new Animated.Value(1)).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
 
+  useEffect(() => {
+    void Asset.loadAsync(INICIO2_SLIDES.map((slide) => slide.image)).catch((error) => {
+      console.warn("[Inicio2HeroSlider] No se pudieron precargar las imágenes:", error);
+    });
+  }, []);
+
   const setSlide = useCallback((nextIndex: number) => {
     const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
     if (normalized === activeIndexRef.current) return;
@@ -419,10 +427,12 @@ function Inicio2HeroSlider({
       testID="inicio2-hero-slider"
       accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
     >
-      <Animated.Image
+      <AnimatedExpoImage
         key={INICIO2_SLIDES[activeIndex].id}
         source={INICIO2_SLIDES[activeIndex].image}
-        resizeMode="cover"
+        contentFit="cover"
+        cachePolicy="memory-disk"
+        transition={0}
         style={[styles.inicio2HeroImage, { opacity: slideFade, transform: [{ scale: zoom }, { translateX: driftX }] }]}
       />
       <LinearGradient
