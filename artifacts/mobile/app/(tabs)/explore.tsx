@@ -684,9 +684,9 @@ export default function ExploreScreen() {
             <View style={styles.conversationBotAvatar}>
               <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
             </View>
-            <View style={styles.conversationBannerCopy}>
+            <View style={[styles.conversationBannerCopy, { transform: [{ translateX: 10 }] }]}>
               <Text style={styles.conversationBannerText} numberOfLines={1}>
-                Conversa con Astral, tu chat IA
+                Conversa con Astral AI
               </Text>
               <Text style={styles.conversationBannerDescription}>
                 ¿Tienes algo que compartir? Yo puedo ayudarte...
@@ -995,12 +995,12 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   conversationBotAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(190,150,80,0.24)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.42)",
   },
