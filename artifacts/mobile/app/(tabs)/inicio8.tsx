@@ -1802,96 +1802,100 @@ export default function HomeScreen2({
 
 
 
-        {/* ── ESTADO DE ÁNIMO ── */}
-        <View style={[styles.sectionDivider, { marginTop: -15 }]} />
-        <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
-          <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
-        </View>
-
-        {selectedMood ? (
-          <Pressable
-            onPress={() => setMoodSheetVisible(true)}
-            style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
-          >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
-            <Text style={styles.moodSientesLabel}>Sientes:</Text>
-            <View style={{ flex: 1 }} />
-            <LinearGradient
-              colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.moodPill}
-            >
-              <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
-              <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
-              <Pressable
-                onPress={(e) => { e.stopPropagation?.(); setSelectedMood(null); }}
-                hitSlop={10}
-                style={{ marginLeft: 2 }}
-              >
-                <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
-              </Pressable>
-            </LinearGradient>
-          </Pressable>
-        ) : (
-          <Pressable
-            onPress={() => setMoodSheetVisible(true)}
-            style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
-          >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
-            <Text style={styles.moodEmoji}>🙂</Text>
-            <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
-            <Feather name="chevron-right" size={16} color="#f9f9f9" />
-          </Pressable>
-        )}
-
-        {/* ── RECOMENDADO PARA TI ── */}
-        <View style={{ paddingHorizontal: GRID_PAD }}>
-          <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
-            {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
-          </Text>
-        </View>
-        <View style={styles.recoSection}>
-          {moodRecommended.map((s) => (
-            <View key={s.id} style={styles.recoCard}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
-              <SessionRow
-                session={s}
-                imageSize={84}
-                metaText={s.categoryLabel}
-                onPress={() => {
-                  if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                  if (s.skipMiniPlayer) { playSession(s); return; }
-                  if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-                  openCategory(`/session/${s.id}`);
-                }}
-              />
+        {!isInicio2 && (
+          <>
+            {/* ── ESTADO DE ÁNIMO ── */}
+            <View style={[styles.sectionDivider, { marginTop: -15 }]} />
+            <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
+              <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
             </View>
-          ))}
-        </View>
 
-        {/* Botón actualizar recomendaciones */}
-        <Pressable
-          onPress={() => setRecoOffset((n) => n + 1)}
-          style={({ pressed }) => ({
-            marginTop: -40,
-            marginHorizontal: GRID_PAD,
-            marginBottom: 0,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            paddingVertical: 12,
-            borderRadius: 100,
-            borderWidth: 1.5,
-            borderColor: "rgba(249,249,249,0.5)",
-            backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
-          })}
-        >
-          <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
-            Actualizar recomendaciones
-          </Text>
-        </Pressable>
+            {selectedMood ? (
+              <Pressable
+                onPress={() => setMoodSheetVisible(true)}
+                style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
+              >
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
+                <Text style={styles.moodSientesLabel}>Sientes:</Text>
+                <View style={{ flex: 1 }} />
+                <LinearGradient
+                  colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.moodPill}
+                >
+                  <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
+                  <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
+                  <Pressable
+                    onPress={(e) => { e.stopPropagation?.(); setSelectedMood(null); }}
+                    hitSlop={10}
+                    style={{ marginLeft: 2 }}
+                  >
+                    <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
+                  </Pressable>
+                </LinearGradient>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => setMoodSheetVisible(true)}
+                style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
+              >
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+                <Text style={styles.moodEmoji}>🙂</Text>
+                <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
+                <Feather name="chevron-right" size={16} color="#f9f9f9" />
+              </Pressable>
+            )}
+
+            {/* ── RECOMENDADO PARA TI ── */}
+            <View style={{ paddingHorizontal: GRID_PAD }}>
+              <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
+                {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+              </Text>
+            </View>
+            <View style={styles.recoSection}>
+              {moodRecommended.map((s) => (
+                <View key={s.id} style={styles.recoCard}>
+                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+                  <SessionRow
+                    session={s}
+                    imageSize={84}
+                    metaText={s.categoryLabel}
+                    onPress={() => {
+                      if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                      if (s.skipMiniPlayer) { playSession(s); return; }
+                      if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+                      openCategory(`/session/${s.id}`);
+                    }}
+                  />
+                </View>
+              ))}
+            </View>
+
+            {/* Botón actualizar recomendaciones */}
+            <Pressable
+              onPress={() => setRecoOffset((n) => n + 1)}
+              style={({ pressed }) => ({
+                marginTop: -40,
+                marginHorizontal: GRID_PAD,
+                marginBottom: 0,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                paddingVertical: 12,
+                borderRadius: 100,
+                borderWidth: 1.5,
+                borderColor: "rgba(249,249,249,0.5)",
+                backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
+              })}
+            >
+              <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
+                Actualizar recomendaciones
+              </Text>
+            </Pressable>
+          </>
+        )}
 
 
         {/* ── CARRUSEL RESONADORES ── */}
