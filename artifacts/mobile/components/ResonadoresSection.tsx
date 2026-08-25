@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   carousel: {
-    marginTop: 20,
+    marginTop: 8,
   },
   carouselContent: {
     paddingHorizontal: 20,
