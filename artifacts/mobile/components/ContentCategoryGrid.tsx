@@ -30,6 +30,7 @@ export function ContentCategoryGrid({
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
   const catBlockBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.04)" : CARD_BG;
+  const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
 
   return (
     <View
@@ -128,12 +129,12 @@ export function ContentCategoryGrid({
               borderTopLeftRadius: radius,
               borderTopRightRadius: 0,
               borderBottomLeftRadius: radius,
-              borderBottomRightRadius: 0,
+              borderBottomRightRadius: isDiscoverGrid ? radius : 0,
             },
             {
               borderTopLeftRadius: 0,
               borderTopRightRadius: radius,
-              borderBottomLeftRadius: 0,
+              borderBottomLeftRadius: isDiscoverGrid ? radius : 0,
               borderBottomRightRadius: radius,
             },
             {
