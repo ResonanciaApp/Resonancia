@@ -11,8 +11,8 @@ Para carruseles con assets locales, mantener cada imagen montada como `Image` na
 
 ## Contrato parallax de Inicio 2
 
-Imagen, rayas de navegación, menú y loto comparten el desplazamiento parallax lento; al tirar hacia abajo solo la imagen se escala. El contenido avanza a velocidad normal y termina cubriendo todo el hero.
+Imagen, rayas de navegación, menú y loto comparten el desplazamiento parallax lento; al tirar hacia abajo solo la imagen se escala. El contenido avanza a velocidad normal, conserva el degradado del tema y termina cubriendo todo el hero.
 
 **Why:** El usuario eligió explícitamente que menú y loto acompañen el parallax, en vez de desplazarse a la velocidad normal del contenido.
 
-**How to apply:** Mantener una traslación común para todo el chrome del hero, separar la escala elástica de la imagen y conservar una capa de contenido opaca que cubra el overflow progresivamente.
+**How to apply:** Mantener una traslación común para todo el chrome del hero, separar la escala elástica de la imagen y usar un LinearGradient dentro de la capa de contenido para cubrir el overflow sin aplanar el fondo.

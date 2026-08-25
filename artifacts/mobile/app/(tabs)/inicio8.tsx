@@ -1525,13 +1525,15 @@ export default function HomeScreen2({
         ) : null}
 
         <View
-          style={[
-            isInicio2 && styles.inicio2ContentPanel,
-            isInicio2 && {
-              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
-            },
-          ]}
+          style={isInicio2 ? styles.inicio2ContentPanel : undefined}
         >
+        {isInicio2 && (
+          <LinearGradient
+            colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+        )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
