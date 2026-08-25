@@ -692,7 +692,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Explorar todo ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 30 }]}>
           <Text style={styles.sectionTitle}>Explorar todo</Text>
           <View style={styles.temaGrid}>
             {TEMAS.map((t) => (
