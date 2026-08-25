@@ -703,6 +703,7 @@ type InicioMoodRecommendationsProps = {
   isPremium: boolean;
   cardBg: string;
   showTitle?: boolean;
+  showDivider?: boolean;
   onOpenMoodPicker: () => void;
   onClearMood: () => void;
   onRefreshRecommendations: () => void;
@@ -1659,6 +1660,7 @@ export default function HomeScreen2({
             isPremium={isPremium}
             cardBg={cardBg}
             showTitle={false}
+            showDivider={false}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -2902,6 +2904,7 @@ function InicioMoodRecommendations({
   isPremium,
   cardBg,
   showTitle = true,
+  showDivider = true,
   onOpenMoodPicker,
   onClearMood,
   onRefreshRecommendations,
@@ -2911,7 +2914,7 @@ function InicioMoodRecommendations({
   return (
     <>
       {/* ── ESTADO DE ÁNIMO ── */}
-      <View style={[styles.sectionDivider, { marginTop: -15 }]} />
+      {showDivider && <View style={[styles.sectionDivider, { marginTop: -15 }]} />}
       {showTitle && (
         <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
