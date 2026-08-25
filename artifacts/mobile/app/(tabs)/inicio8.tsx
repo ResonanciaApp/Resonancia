@@ -1504,7 +1504,6 @@ export default function HomeScreen2({
               onOpenDrawer={openDrawer}
               onOpenProgress={() => setProgresoVisible(true)}
             />
-            <Inicio2QuickAccessRow />
           </>
         ) : showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
@@ -1652,6 +1651,7 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && <Inicio2QuickAccessRow />}
         {isInicio2 && (
           <InicioMoodRecommendations
             selectedMood={selectedMood}
