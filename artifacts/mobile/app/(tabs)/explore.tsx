@@ -990,7 +990,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 29,
     gap: 10,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(0,0,0,0.15)",
   },
   conversationBotAvatar: {
     width: 32,
