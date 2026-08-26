@@ -86,7 +86,7 @@ export default function HerramientasScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: topPad + 2,
+            paddingTop: topPad + 8,
             paddingBottom: 160 + bottomPad,
           },
         ]}
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: GRID_GAP,
     justifyContent: "center",
+    marginTop: 9,
   },
   card: {
     alignItems: "center",
