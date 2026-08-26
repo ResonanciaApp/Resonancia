@@ -1,8 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-const H_PAD = 20;
-
 export function AstralGuidanceSection() {
   return (
     <View style={styles.section} testID="astral-guidance-section">
@@ -32,7 +30,7 @@ const styles = StyleSheet.create({
     marginBottom: 34,
   },
   title: {
-    marginHorizontal: H_PAD,
+    marginHorizontal: 0,
     marginBottom: 27,
     fontFamily: "Manrope",
     fontSize: 20,
@@ -43,7 +41,7 @@ const styles = StyleSheet.create({
   banner: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: H_PAD,
+    marginHorizontal: 0,
     marginBottom: 8,
     borderRadius: 27,
     overflow: "hidden",
