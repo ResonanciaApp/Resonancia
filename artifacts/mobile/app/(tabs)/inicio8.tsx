@@ -148,6 +148,7 @@ const INICIO2_SLIDES = [
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
+const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -559,8 +560,8 @@ function Inicio2HeroSlider({
   // overscroll el desplazamiento compensa el movimiento del ScrollView para
   // que la imagen siga anclada al borde superior mientras se estira.
   const parallaxY = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_HERO_HEIGHT],
-    outputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_HERO_HEIGHT * 0.38],
+    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+    outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
   const heroCopyY = Animated.add(parallaxY, 15);
@@ -665,7 +666,6 @@ function Inicio2HeroSlider({
         style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
       >
         <Text style={styles.inicio2HeroTitle}>{INICIO2_SLIDES[activeIndex].title}</Text>
-        <Text style={styles.inicio2HeroDescription}>{INICIO2_SLIDES[activeIndex].description}</Text>
         <Pressable
           onPress={() => {}}
           style={({ pressed }) => [
@@ -2235,19 +2235,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.62)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
-  },
-  inicio2HeroDescription: {
-    maxWidth: 300,
-    marginTop: 8,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "500",
-    lineHeight: 21,
-    color: "rgba(255,255,255,0.92)",
-    textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.62)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
   inicio2HeroActionButton: {
     marginTop: 20,
