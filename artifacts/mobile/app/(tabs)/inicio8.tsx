@@ -1712,7 +1712,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <ContentCategoryGrid
-            marginTop={0}
+            marginTop={15}
             hiddenIds={["__mezcla__", "__geometrix__"]}
           />
         )}
@@ -2710,13 +2710,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   continueSection: {
-    marginTop: 28,
+    marginTop: 13,
     marginBottom: 47,
     paddingHorizontal: GRID_PAD,
   },
   continueSectionTitle: {
     color: "#F9F9F9",
-    marginBottom: 24,
+    marginBottom: 21,
   },
   continueCard: {
     flexDirection: "row",
