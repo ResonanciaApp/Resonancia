@@ -91,7 +91,7 @@ export function DrawerMenu() {
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
-  const { theme: activeTheme, activeSceneId, setActiveSceneWithFade } = useSceneTheme();
+  const { activeSceneId, setActiveSceneWithFade } = useSceneTheme();
   const { escenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { openGeometrix } = useGeometrixPanel();
@@ -201,7 +201,7 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={styles.drawerInner}
-          colors={activeTheme.gradient}
+          colors={["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
