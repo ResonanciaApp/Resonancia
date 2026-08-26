@@ -1714,9 +1714,15 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <ContentCategoryGrid
-            marginTop={15}
-            hiddenIds={["__mezcla__", "__geometrix__"]}
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={filteredListened}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={20}
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -1994,16 +2000,18 @@ export default function HomeScreen2({
         )}
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
-        <SessionCarousel
-          title="Escuchadas recientemente"
-          sessions={filteredListened}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-          titleSize={20}
-        />
+        {!isInicio2 && (
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={filteredListened}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={20}
+          />
+        )}
 
         {/* ── FAVORITOS ── */}
         <SessionCarousel
