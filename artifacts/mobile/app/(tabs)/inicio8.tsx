@@ -1728,22 +1728,21 @@ export default function HomeScreen2({
             ]}
           >
             <Text style={styles.inicio2PurposeTitle}>Establece tu propósito</Text>
+            <Text style={[styles.intencionSuper, styles.inicio2PurposeKicker]}>
+              Hoy quiero…
+            </Text>
             <View style={styles.inicio2PurposeRow}>
+              <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
               <Text
                 style={
                   currentIntencion
-                    ? styles.inicio2PurposeText
-                    : styles.inicio2PurposePlaceholder
+                    ? [styles.intencionText, styles.inicio2PurposeText]
+                    : [styles.intencionPlaceholder, styles.inicio2PurposeText]
                 }
                 numberOfLines={2}
               >
                 {currentIntencion ?? "Proyecta tu propósito"}
               </Text>
-              <Feather
-                name="chevron-right"
-                size={18}
-                color="rgba(255,255,255,0.72)"
-              />
             </View>
           </Pressable>
         )}
@@ -2434,26 +2433,18 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginBottom: 8,
   },
+  inicio2PurposeKicker: {
+    textAlign: "left",
+    marginBottom: 8,
+  },
   inicio2PurposeRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     gap: 10,
   },
   inicio2PurposeText: {
     flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "500",
-    color: "rgba(255,255,255,0.9)",
-    textAlign: "left",
-  },
-  inicio2PurposePlaceholder: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "500",
-    color: "rgba(255,255,255,0.62)",
     textAlign: "left",
   },
 
