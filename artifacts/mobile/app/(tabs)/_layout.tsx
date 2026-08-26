@@ -50,7 +50,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "sonidos", "biblioteca", "profile", "video", "emocion"]);
+const HIDDEN_ROUTES = new Set(["musica", "sonidos", "biblioteca", "profile", "video", "emocion"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -69,8 +69,8 @@ const TAB_CONFIG: Record<
     activeColor?: string;
   }
 > = {
-  inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  "inicio-copia": { label: "Inicio", sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  "inicio-copia": { label: "Inicio 2", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
