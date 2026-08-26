@@ -1713,6 +1713,41 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <Pressable
+            onPress={handleIntentionPress}
+            accessibilityRole="button"
+            accessibilityLabel={
+              currentIntencion
+                ? `Editar propósito: ${currentIntencion}`
+                : "Establece tu propósito"
+            }
+            testID="inicio2-purpose-block"
+            style={({ pressed }) => [
+              styles.inicio2PurposeBlock,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <Text style={styles.inicio2PurposeTitle}>Establece tu propósito</Text>
+            <View style={styles.inicio2PurposeRow}>
+              <Text
+                style={
+                  currentIntencion
+                    ? styles.inicio2PurposeText
+                    : styles.inicio2PurposePlaceholder
+                }
+                numberOfLines={2}
+              >
+                {currentIntencion ?? "Proyecta tu propósito"}
+              </Text>
+              <Feather
+                name="chevron-right"
+                size={18}
+                color="rgba(255,255,255,0.72)"
+              />
+            </View>
+          </Pressable>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Escuchadas recientemente"
             sessions={filteredListened}
@@ -2378,6 +2413,48 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     paddingHorizontal: 14,
     paddingVertical: 5,
+  },
+
+  inicio2PurposeBlock: {
+    marginHorizontal: GRID_PAD,
+    marginTop: 8,
+    marginBottom: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(130,96,181,0.2)",
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
+  inicio2PurposeTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    textAlign: "left",
+    marginBottom: 8,
+  },
+  inicio2PurposeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  inicio2PurposeText: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.9)",
+    textAlign: "left",
+  },
+  inicio2PurposePlaceholder: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.62)",
+    textAlign: "left",
   },
 
   // Intención
