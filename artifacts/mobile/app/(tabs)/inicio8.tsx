@@ -826,7 +826,17 @@ export default function HomeScreen2({
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
+  const {
+    playSession,
+    currentSession,
+    isPlaying,
+    pauseResume,
+    history,
+    favorites,
+    statEvents,
+    sessionProgress,
+    getSessionProgress,
+  } = usePlayer();
   const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
   const todayKey = useDayRollover();
@@ -1192,6 +1202,48 @@ export default function HomeScreen2({
     }
     return result;
   }, [history]);
+
+  // Seguir escuchando — una sola sesión retomable, no un carrusel.
+  // Se prioriza la última sesión con progreso incompleto; si no existe,
+  // se conserva la sesión más reciente del historial como fallback.
+  const continueSession = React.useMemo<Session | null>(() => {
+    const seen = new Set<string>();
+    const ordered: Session[] = [];
+    for (const entry of history) {
+      if (seen.has(entry.sessionId)) continue;
+      seen.add(entry.sessionId);
+      const session = getSessionById(entry.sessionId);
+      if (session) ordered.push(session);
+    }
+
+    const resumable = ordered.find((session) => {
+      const saved = sessionProgress[session.id] ?? 0;
+      return saved > 0 && saved < 0.97;
+    });
+    return resumable ?? ordered[0] ?? null;
+  }, [history, sessionProgress, catalogVersion]);
+
+  const continueProgress = continueSession ? getSessionProgress(continueSession.id) : 0;
+  const continueAuthor = React.useMemo(() => {
+    if (!continueSession) return "";
+    const guideId = continueSession.guideIds?.[0] ?? continueSession.guideId;
+    const guide = guideId ? getGuide(guideId) : undefined;
+    const artist = continueSession.artistId ? getArtist(continueSession.artistId) : undefined;
+    return guide?.name ?? artist?.name ?? "Casa del Cuenco";
+  }, [continueSession]);
+
+  const continueLocked = !!continueSession?.isPremium && !isPremium;
+  const handleContinueListening = useCallback(() => {
+    if (!continueSession) return;
+    if (continueLocked) {
+      router.push("/membresia" as never);
+      return;
+    }
+    playSession(continueSession);
+    if (!continueSession.skipMiniPlayer) {
+      router.push("/player" as never);
+    }
+  }, [continueLocked, continueSession, playSession]);
 
   // Tus playlist — playlists del usuario, foto de la primera sesión
   const playlistItems = React.useMemo(() =>
@@ -1756,6 +1808,71 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && <Inicio2QuickAccessRow />}
+        {isInicio2 && continueSession && (
+          <View style={styles.continueSection} testID="inicio2-continue-listening">
+            <Text style={styles.sectionTitle}>Seguir escuchando</Text>
+            <Pressable
+              onPress={handleContinueListening}
+              accessibilityRole="button"
+              accessibilityLabel={
+                continueLocked
+                  ? `Desbloquear ${continueSession.title}`
+                  : `Continuar ${continueSession.title}`
+              }
+              testID="inicio2-continue-listening-button"
+              style={({ pressed }) => [
+                styles.continueCard,
+                { backgroundColor: cardBg, opacity: pressed ? 0.84 : 1 },
+              ]}
+            >
+              <ExpoImage
+                source={continueSession.image}
+                style={styles.continueImg}
+                contentFit="cover"
+                transition={180}
+              />
+              <View style={styles.continueMeta}>
+                <Text style={[styles.continueKicker, { color: colors.primary }]}>
+                  {continueProgress > 0
+                    ? `RETOMA · ${Math.round(continueProgress * 100)}% ESCUCHADO`
+                    : "RETOMA DONDE LO DEJASTE"}
+                </Text>
+                <Text style={[styles.continueTitle, { color: colors.foreground }]} numberOfLines={2}>
+                  {continueSession.title}
+                </Text>
+                <Text style={[styles.continueSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                  {continueAuthor}
+                </Text>
+                {continueProgress > 0 && (
+                  <View
+                    style={[
+                      styles.continueProgressTrack,
+                      { backgroundColor: `${colors.primary}33` },
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.continueProgressFill,
+                        {
+                          width: `${Math.min(100, Math.max(0, continueProgress * 100))}%`,
+                          backgroundColor: colors.primary,
+                        },
+                      ]}
+                    />
+                  </View>
+                )}
+              </View>
+              <View style={[styles.continuePlay, { backgroundColor: colors.primary }]}>
+                <Feather
+                  name={continueLocked ? "lock" : "play"}
+                  size={16}
+                  color={colors.background}
+                  style={continueLocked ? undefined : { marginLeft: 2 }}
+                />
+              </View>
+            </Pressable>
+          </View>
+        )}
         {isInicio2 && (
           <SessionCarousel
             title="Recién subidas"
@@ -1963,17 +2080,19 @@ export default function HomeScreen2({
           />
         )}
 
-        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
-        <SessionCarousel
-          title="Escuchadas recientemente"
-          sessions={filteredListened}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-          titleSize={20}
-        />
+        {/* ── ESCUCHADAS RECIENTEMENTE (solo Inicio original) ── */}
+        {!isInicio2 && (
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={filteredListened}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={20}
+          />
+        )}
 
         {/* ── FAVORITOS ── */}
         <SessionCarousel
@@ -2733,6 +2852,62 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
+  continueSection: {
+    marginTop: 28,
+    marginBottom: SECTION_GAP,
+    paddingHorizontal: GRID_PAD,
+  },
+  continueCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    padding: 10,
+    gap: 12,
+    marginTop: 8,
+  },
+  continueImg: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
+  },
+  continueMeta: { flex: 1 },
+  continueKicker: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    marginBottom: 4,
+  },
+  continueTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+    marginBottom: 3,
+  },
+  continueSub: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  continueProgressTrack: {
+    height: 3,
+    borderRadius: 2,
+    marginTop: 8,
+    overflow: "hidden",
+  },
+  continueProgressFill: {
+    height: 3,
+    borderRadius: 2,
+  },
+  continuePlay: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
