@@ -10,7 +10,7 @@ export function AstralGuidanceSection({
 }: AstralGuidanceSectionProps) {
   return (
     <View style={styles.section} testID="astral-guidance-section">
-      <Text style={styles.title}>Orientación Personalizada</Text>
+      <Text style={styles.title}>Orientación personalizada</Text>
       <View style={[styles.banner, { backgroundColor }]}>
         <View style={styles.botAvatar}>
           <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
