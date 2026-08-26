@@ -1714,6 +1714,11 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <View style={{ paddingHorizontal: GRID_PAD, marginTop: 20, marginBottom: 10 }}>
+            <WeekDayDots />
+          </View>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Escuchadas recientemente"
             sessions={filteredListened}
