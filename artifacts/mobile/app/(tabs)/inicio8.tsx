@@ -703,103 +703,6 @@ function Inicio2HeroSlider({
   );
 }
 
-const INICIO2_QUICK_ACCESS = [
-  { id: "favoritos", label: "Favoritos", icon: "heart-outline" },
-  { id: "mezclador", label: "Mezclador", icon: "tune-variant" },
-  { id: "geometrix", label: "Geometrix", icon: "cube-outline" },
-  { id: "videos", label: "Videos", icon: "video-outline" },
-  { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy" },
-  { id: "biblioteca", label: "Biblioteca", icon: "bookmark-outline" },
-  { id: "diario", label: "Diario", icon: "book-open-page-variant-outline" },
-] as const;
-
-const INICIO2_QUICK_ACCESS_PILL_HEIGHT = 45;
-const INICIO2_QUICK_ACCESS_OUTER_RADIUS = INICIO2_QUICK_ACCESS_PILL_HEIGHT / 2;
-
-/**
- * Accesos principales de Inicio 2. Vive dentro del ScrollView vertical, pero
- * mantiene su propio ScrollView horizontal para no competir con el gesto del
- * hero (que está montado en un hermano distinto).
- */
-function Inicio2QuickAccessRow() {
-  const { openCategory } = useCategoryOverlay();
-  const { openMixer } = useMixerPanel();
-  const { openGeometrix } = useGeometrixPanel();
-  const { openLib, openOverlay } = useDrawer();
-
-  const handlePress = useCallback((id: (typeof INICIO2_QUICK_ACCESS)[number]["id"]) => {
-    switch (id) {
-      case "favoritos":
-        openCategory("/favoritos-todos");
-        break;
-      case "mezclador":
-        openMixer();
-        break;
-      case "geometrix":
-        openGeometrix();
-        break;
-      case "videos":
-        openCategory("/videos");
-        break;
-      case "respiracion":
-        openCategory("/respiracion");
-        break;
-      case "biblioteca":
-        openLib();
-        break;
-      case "diario":
-        openOverlay("/diario");
-        break;
-    }
-  }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
-
-  return (
-    <View style={styles.inicio2QuickAccess} testID="inicio2-quick-access">
-      <ScrollView
-        horizontal
-        nestedScrollEnabled
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.inicio2QuickAccessContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        {INICIO2_QUICK_ACCESS.map((item) => (
-          <Pressable
-            key={item.id}
-            onPress={() => handlePress(item.id)}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={`Abrir ${item.label}`}
-            testID={`inicio2-quick-access-${item.id}`}
-            style={({ pressed }) => [
-              styles.inicio2QuickAccessPill,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-          >
-            <View
-              pointerEvents="none"
-              style={[
-                styles.inicio2QuickAccessSurface,
-                (item.id === "mezclador" ||
-                  item.id === "geometrix" ||
-                  item.id === "videos" ||
-                  item.id === "respiracion" ||
-                  item.id === "biblioteca") &&
-                  styles.inicio2QuickAccessBothEdges,
-                item.id === "favoritos" && styles.inicio2QuickAccessFavoritesEdges,
-                item.id === "diario" && styles.inicio2QuickAccessDiaryEdges,
-              ]}
-            />
-            <MaterialCommunityIcons name={item.icon} size={18} color="#F9F9F9" />
-            <Text style={styles.inicio2QuickAccessText} numberOfLines={1}>
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
-  );
-}
-
 type InicioMoodRecommendationsProps = {
   selectedMood: Mood | null;
   moodRecommended: Session[];
@@ -1807,10 +1710,11 @@ export default function HomeScreen2({
             />
           </View>
         )}
-        {isInicio2 && <Inicio2QuickAccessRow />}
         {isInicio2 && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
-            <Text style={styles.sectionTitle}>Seguir escuchando</Text>
+            <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
+              Seguir escuchando
+            </Text>
             <Pressable
               onPress={handleContinueListening}
               accessibilityRole="button"
@@ -2386,57 +2290,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F9F9",
     borderColor: "#F9F9F9",
   },
-  inicio2QuickAccess: {
-    marginTop: 38,
-    marginBottom: 2,
-  },
-  inicio2QuickAccessContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: GRID_PAD,
-  },
-  inicio2QuickAccessPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: INICIO2_QUICK_ACCESS_PILL_HEIGHT,
-    paddingHorizontal: 11.5,
-    gap: 5,
-  },
-  inicio2QuickAccessSurface: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 0,
-    overflow: "hidden",
-  },
-  inicio2QuickAccessBothEdges: {
-    borderRadius: 10,
-  },
-  inicio2QuickAccessFavoritesEdges: {
-    borderTopLeftRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
-    borderBottomLeftRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  inicio2QuickAccessDiaryEdges: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderTopRightRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
-    borderBottomRightRadius: INICIO2_QUICK_ACCESS_OUTER_RADIUS,
-  },
-  inicio2QuickAccessLeftEdge: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-  inicio2QuickAccessText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "400",
-    letterSpacing: 0.3,
-    color: "#F4F4F4",
-  },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
@@ -2854,26 +2707,30 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   continueSection: {
     marginTop: 28,
-    marginBottom: SECTION_GAP,
+    marginBottom: 47,
     paddingHorizontal: GRID_PAD,
+  },
+  continueSectionTitle: {
+    color: "#F9F9F9",
+    marginBottom: 24,
   },
   continueCard: {
     flexDirection: "row",
     alignItems: "center",
+    height: 122,
     borderRadius: 16,
     padding: 10,
     gap: 12,
-    marginTop: 8,
   },
   continueImg: {
-    width: 72,
-    height: 72,
-    borderRadius: 12,
+    width: 75.6,
+    height: 75.6,
+    borderRadius: 12.6,
   },
   continueMeta: { flex: 1 },
   continueKicker: {
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 8,
     fontWeight: "700",
     letterSpacing: 1.2,
     marginBottom: 4,
