@@ -690,6 +690,7 @@ function Inicio2HeroSlider({
             <Pressable
               key={slide.id}
               onPress={() => setSlide(index)}
+              hitSlop={8}
               style={[styles.inicio2HeroControl, active && styles.inicio2HeroControlActive]}
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
@@ -2278,21 +2279,20 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     bottom: 18,
-    height: 1,
+    height: 18,
     flexDirection: "row",
-    gap: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
   inicio2HeroControl: {
-    flex: 1,
-    height: 1,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.22)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255,255,255,0.42)",
   },
   inicio2HeroControlActive: {
     backgroundColor: "#F9F9F9",
-    borderColor: "#F9F9F9",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
