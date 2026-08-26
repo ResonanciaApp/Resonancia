@@ -677,25 +677,6 @@ export default function ExploreScreen() {
           </View>
         )}
 
-        {/* ── Conversamos contigo ── */}
-        <View style={styles.conversationSection}>
-          <Text style={styles.conversationSectionTitle}>Orientación Personalizada</Text>
-          <View style={styles.conversationBanner}>
-            <View style={styles.conversationBotAvatar}>
-              <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
-            </View>
-            <View style={[styles.conversationBannerCopy, { transform: [{ translateX: 10 }] }]}>
-              <Text style={styles.conversationBannerText} numberOfLines={1}>
-                Conversa con Astral AI
-              </Text>
-              <Text style={styles.conversationBannerDescription}>
-                ¿Tienes algo que compartir? Yo puedo ayudarte...
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={16} color="#F9F9F9" />
-          </View>
-        </View>
-
         {/* ── Explorar todo ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 45 }]}>
           <Text style={styles.sectionTitle}>Explorar todo</Text>
@@ -966,62 +947,6 @@ const styles = StyleSheet.create({
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
-  conversationSection: {
-    paddingHorizontal: 0,
-    marginTop: 44,
-    marginBottom: 34,
-  },
-  conversationSectionTitle: {
-    marginHorizontal: H_PAD,
-    marginBottom: 27,
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-    letterSpacing: 0.3,
-    color: "#FBFBFB",
-  },
-  conversationBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: H_PAD,
-    marginBottom: 8,
-    borderRadius: 27,
-    overflow: "hidden",
-    paddingHorizontal: 16,
-    paddingVertical: 29,
-    gap: 10,
-    backgroundColor: "rgba(38,3,84,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  conversationBotAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.42)",
-  },
-  conversationBannerCopy: {
-    flex: 1,
-    justifyContent: "center",
-    gap: 3,
-  },
-  conversationBannerText: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  conversationBannerDescription: {
-    fontFamily: "Manrope",
-    color: "rgba(244,244,244,0.62)",
-    fontSize: 12,
-    lineHeight: 17,
-  },
-
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
   // Playlists para ti
