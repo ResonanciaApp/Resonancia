@@ -531,7 +531,8 @@ function Inicio2HeroSlider({
   const isHorizontalSwipeIntent = useCallback((dx: number, dy: number) => {
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
-    return absDx > 18 && absDx > absDy * 1.5;
+    const isClearlyVertical = absDy > absDx * 1.35;
+    return absDx > 18 && !isClearlyVertical;
   }, []);
 
   const panResponder = useMemo(
@@ -541,9 +542,9 @@ function Inicio2HeroSlider({
           isHorizontalSwipeIntent(gesture.dx, gesture.dy),
         onMoveShouldSetPanResponder: (_event, gesture) =>
           isHorizontalSwipeIntent(gesture.dx, gesture.dy),
-        onPanResponderTerminationRequest: () => true,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_event, gesture) => {
-          if (Math.abs(gesture.dx) < 42) return;
+          if (Math.abs(gesture.dx) < 36) return;
           const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
           setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
         },
