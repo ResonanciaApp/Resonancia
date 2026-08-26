@@ -1710,6 +1710,12 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && (
+          <ContentCategoryGrid
+            marginTop={0}
+            hiddenIds={["__mezcla__", "__geometrix__"]}
+          />
+        )}
         {isInicio2 && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
