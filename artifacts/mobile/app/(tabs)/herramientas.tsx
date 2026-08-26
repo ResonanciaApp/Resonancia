@@ -44,7 +44,7 @@ export default function HerramientasScreen() {
   const { openGeometrix } = useGeometrixPanel();
   const { openLib, openOverlay } = useDrawer();
 
-  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
+  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
   const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
