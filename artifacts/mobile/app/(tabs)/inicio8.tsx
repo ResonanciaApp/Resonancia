@@ -75,7 +75,6 @@ import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
-import { WeekDayDots } from "@/components/WeekDayDots";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
@@ -1711,11 +1710,6 @@ export default function HomeScreen2({
                 height,
               }}
             />
-          </View>
-        )}
-        {isInicio2 && (
-          <View style={{ paddingHorizontal: GRID_PAD, marginTop: 20, marginBottom: 10 }}>
-            <WeekDayDots />
           </View>
         )}
         {isInicio2 && (
