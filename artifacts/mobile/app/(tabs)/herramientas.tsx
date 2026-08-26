@@ -108,7 +108,6 @@ export default function HerramientasScreen() {
                   width: cardWidth,
                   height: cardHeight,
                   backgroundColor: cardBackground,
-                  borderColor: colors.border,
                   opacity: pressed ? 0.75 : 1,
                 },
               ]}
@@ -170,7 +169,6 @@ const styles = StyleSheet.create({
   card: {
     alignItems: "center",
     borderRadius: 27,
-    borderWidth: StyleSheet.hairlineWidth,
     justifyContent: "center",
     paddingHorizontal: 8,
     paddingVertical: 14,
