@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginHorizontal: 0,
-    marginBottom: 27,
+    marginBottom: 22,
     fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
