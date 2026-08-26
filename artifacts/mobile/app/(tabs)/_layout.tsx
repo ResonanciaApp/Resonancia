@@ -72,6 +72,7 @@ const TAB_CONFIG: Record<
   inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   "inicio-copia": { label: "Inicio", sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  herramientas: { label: "Herramientas", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
@@ -551,6 +552,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="category/noches"               options={{ href: null }} />
         <Tabs.Screen name="category/[id]"                 options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
+        <Tabs.Screen name="herramientas"  options={{ title: "Herramientas" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="sonidos"        options={{ title: "Sonidos" }} />
         <Tabs.Screen name="emocion"        options={{ title: "Emoción" }} />
@@ -719,13 +721,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 9.5,
+    fontSize: 9,
     letterSpacing: 0.3,
     fontWeight: "500",
   },
   labelWrap: {
     width: "100%",
-    paddingHorizontal: 6,
+    paddingHorizontal: 2,
     alignItems: "center",
     marginTop: 2,
   },
