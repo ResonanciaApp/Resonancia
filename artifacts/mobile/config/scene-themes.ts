@@ -52,8 +52,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo: {
     id: "indigo",
     label: "Índigo",
-    gradient: ["#1F152F", "#1F152F", "#1F152F", "#1F152F"],
-    solid: "#1F152F",
+    gradient: ["#15192F", "#15192F", "#15192F", "#15192F"],
+    solid: "#15192F",
   },
 };
 
