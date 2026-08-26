@@ -151,6 +151,7 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
+const SHOW_CONTINUE_LISTENING = false;
 
 const HEADER_PHRASES = [
   "Tu paz es tu práctica.",
@@ -1718,7 +1719,7 @@ export default function HomeScreen2({
             hiddenIds={["__mezcla__", "__geometrix__"]}
           />
         )}
-        {isInicio2 && continueSession && (
+        {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
               Seguir escuchando
