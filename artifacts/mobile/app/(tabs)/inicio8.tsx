@@ -1984,19 +1984,17 @@ export default function HomeScreen2({
           />
         )}
 
-        {/* ── ESCUCHADAS RECIENTEMENTE (solo Inicio original) ── */}
-        {!isInicio2 && (
-          <SessionCarousel
-            title="Escuchadas recientemente"
-            sessions={filteredListened}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={RECENT_CARD_W}
-            titleSize={20}
-          />
-        )}
+        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
+        <SessionCarousel
+          title="Escuchadas recientemente"
+          sessions={filteredListened}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+          titleSize={20}
+        />
 
         {/* ── FAVORITOS ── */}
         <SessionCarousel

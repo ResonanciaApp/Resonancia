@@ -1,11 +1,17 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-export function AstralGuidanceSection() {
+type AstralGuidanceSectionProps = {
+  backgroundColor?: string;
+};
+
+export function AstralGuidanceSection({
+  backgroundColor = "rgba(38,3,84,0.15)",
+}: AstralGuidanceSectionProps) {
   return (
     <View style={styles.section} testID="astral-guidance-section">
       <Text style={styles.title}>Orientación Personalizada</Text>
-      <View style={styles.banner}>
+      <View style={[styles.banner, { backgroundColor }]}>
         <View style={styles.botAvatar}>
           <MaterialCommunityIcons name="robot-outline" size={26} color="#F9F9F9" />
         </View>
@@ -48,7 +54,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 29,
     gap: 10,
-    backgroundColor: "rgba(38,3,84,0.15)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },

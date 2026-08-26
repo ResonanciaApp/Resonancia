@@ -86,7 +86,7 @@ export default function HerramientasScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: topPad + 18,
+            paddingTop: topPad + 2,
             paddingBottom: 160 + bottomPad,
           },
         ]}
@@ -130,7 +130,13 @@ export default function HerramientasScreen() {
           ))}
         </View>
 
-        <AstralGuidanceSection />
+        <AstralGuidanceSection
+          backgroundColor={
+            activeSceneId === "tibet"
+              ? "rgba(0,0,0,0.15)"
+              : "rgba(38,3,84,0.15)"
+          }
+        />
       </ScrollView>
     </View>
   );
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: -0.3,
+    textAlign: "center",
   },
   grid: {
     flexDirection: "row",
