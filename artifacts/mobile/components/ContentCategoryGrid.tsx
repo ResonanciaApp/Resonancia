@@ -115,12 +115,12 @@ export function ContentCategoryGrid({
           const corners = [
             {
               borderTopLeftRadius: radius,
-              borderTopRightRadius: radius,
+              borderTopRightRadius: isDiscoverGrid ? 10 : radius,
               borderBottomLeftRadius: radius,
               borderBottomRightRadius: 10,
             },
             {
-              borderTopLeftRadius: radius,
+              borderTopLeftRadius: isDiscoverGrid ? 10 : radius,
               borderTopRightRadius: radius,
               borderBottomLeftRadius: 10,
               borderBottomRightRadius: radius,
@@ -129,12 +129,12 @@ export function ContentCategoryGrid({
               borderTopLeftRadius: radius,
               borderTopRightRadius: 10,
               borderBottomLeftRadius: radius,
-              borderBottomRightRadius: isDiscoverGrid ? radius : 0,
+              borderBottomRightRadius: isDiscoverGrid ? 10 : 0,
             },
             {
               borderTopLeftRadius: 10,
               borderTopRightRadius: radius,
-              borderBottomLeftRadius: isDiscoverGrid ? radius : 0,
+              borderBottomLeftRadius: isDiscoverGrid ? 10 : 0,
               borderBottomRightRadius: radius,
             },
             {
