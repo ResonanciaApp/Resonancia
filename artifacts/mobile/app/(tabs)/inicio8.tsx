@@ -1810,7 +1810,7 @@ export default function HomeScreen2({
             moodRecommended={moodRecommended}
             isPremium={isPremium}
             cardBg={cardBg}
-            showTitle={false}
+            showTitle
             showDivider={false}
             moodTopOffset={-15}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
