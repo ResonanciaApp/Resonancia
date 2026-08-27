@@ -24,6 +24,7 @@ import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 19;
 const GRID_GAP = 7;
+const GRID_COLUMNS = 3;
 
 const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
@@ -46,7 +47,10 @@ export default function HerramientasScreen() {
   const { openGeometrix } = useGeometrixPanel();
   const { openLib, openOverlay } = useDrawer();
 
-  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
+  const cardWidth = Math.max(
+    0,
+    Math.floor((width - GRID_PAD * 2 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS),
+  );
   const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
