@@ -2425,18 +2425,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
   },
   inicio2PurposeKicker: {
-    textAlign: "left",
+    textAlign: "center",
     marginBottom: 8,
   },
   inicio2PurposeRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 10,
+    justifyContent: "center",
   },
   inicio2PurposeText: {
-    flex: 1,
-    textAlign: "left",
+    flexShrink: 1,
+    textAlign: "center",
   },
 
   // Intención
