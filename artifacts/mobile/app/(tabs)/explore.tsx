@@ -46,7 +46,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 16;
 const TEMA_GAP = 10;
-const SECTION_GAP = 60;
+const SECTION_GAP = 35;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -495,7 +495,7 @@ export default function ExploreScreen() {
       >
         {/* ── Accesos por contenido ── */}
         <ContentCategoryGrid
-          marginTop={0}
+          marginTop={-15}
           marginBottom={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
           horizontal
@@ -535,7 +535,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.durSection, { marginTop: SECTION_GAP - 5, marginBottom: SECTION_GAP }]}>
+        <View style={[styles.durSection, { marginTop: 35, marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: H_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
@@ -567,7 +567,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Explorar todo ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 65 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
           <Text style={styles.sectionTitle}>Explorar todo</Text>
           <View style={styles.temaGrid}>
             {TEMAS.map((t) => (
@@ -600,7 +600,7 @@ export default function ExploreScreen() {
               style={{ marginTop: 0, marginBottom: SECTION_GAP }}
               cardWidth={299}
               cardHeight={187}
-              titleSize={20}
+              titleSize={19}
             />
           );
         })()}
@@ -608,8 +608,8 @@ export default function ExploreScreen() {
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
           {/* Título encima */}
-          <View style={{ paddingHorizontal: H_PAD, marginTop: 7, marginBottom: 21 }}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
+          <View style={{ paddingHorizontal: H_PAD, marginTop: 0, marginBottom: 21 }}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: "#FBFBFB" }}>
               Armoniza tus chakras
             </Text>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.58)", marginTop: 3, lineHeight: 19 }}>
@@ -714,7 +714,7 @@ export default function ExploreScreen() {
               onPress={(s) => handleSessionPress(s)}
               style={{ marginTop: 0, marginBottom: SECTION_GAP }}
               cardWidth={SQCARD_W}
-              titleSize={20}
+              titleSize={19}
             />
           );
         })}
@@ -830,7 +830,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
   // Playlists para ti
   ritualGrid: {
     flexDirection: "row",
