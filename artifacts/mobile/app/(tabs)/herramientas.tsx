@@ -101,7 +101,7 @@ export default function HerramientasScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>Herramientas</Text>
 
         <View style={styles.grid} testID="tools-grid">
           {TOOLS.map((tool) => (

@@ -38,6 +38,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
@@ -686,6 +687,11 @@ export default function ExploreScreen() {
               <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" colorAnim={chakraColorAnims[i]} />
             ))}
           </View>
+        </View>
+
+        {/* ── Top 5 mezclas ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <CommunityMixesCarousel />
         </View>
 
 

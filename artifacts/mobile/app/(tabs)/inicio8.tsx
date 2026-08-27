@@ -40,6 +40,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
+import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -2001,6 +2002,12 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {isInicio2 && (
+          <ResonadoresSection
+            marginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
+        )}
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         {!isInicio2 && (
@@ -2162,6 +2169,7 @@ export default function HomeScreen2({
         }}>
           <AlmaCommunitySection />
         </View>
+        {isInicio2 && <AhoraEnResonanciaSection />}
 
 
         {/* ── 10. BANNER PREMIUM ── */}
