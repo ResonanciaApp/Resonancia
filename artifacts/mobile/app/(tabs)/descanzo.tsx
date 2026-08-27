@@ -527,7 +527,6 @@ export default function DescansoScreen() {
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                 />
-                <View style={styles.sectionDivider} />
               </>
             )}
             {favoritesInDescanso.length > 0 && (
@@ -541,7 +540,6 @@ export default function DescansoScreen() {
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                 />
-                <View style={styles.sectionDivider} />
               </>
             )}
             {historiasForTodos.length > 0 && (
@@ -556,7 +554,6 @@ export default function DescansoScreen() {
                   titleSize={18}
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
                 />
-                <View style={styles.sectionDivider} />
               </>
             )}
             {asmrForTodos.length > 0 && (
@@ -571,9 +568,6 @@ export default function DescansoScreen() {
                   titleSize={18}
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
                 />
-                {(binauralForTodos.length > 0 || ambientalForTodos.length > 0) && (
-                  <View style={styles.sectionDivider} />
-                )}
               </>
             )}
             {binauralForTodos.length > 0 && (
@@ -588,7 +582,6 @@ export default function DescansoScreen() {
                   titleSize={18}
                   onViewAll={binauralForTodos.length > 5 ? () => setActiveTab("binaural") : undefined}
                 />
-                {ambientalForTodos.length > 0 && <View style={styles.sectionDivider} />}
               </>
             )}
             {ambientalForTodos.length > 0 && (
@@ -898,13 +891,6 @@ const styles = StyleSheet.create({
   soundCell: {
     width: (W - H_PAD * 2 - 20) / 3,
     alignItems: "center",
-  },
-  sectionDivider: {
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    marginHorizontal: H_PAD,
-    marginTop: 20,
-    marginBottom: 4,
   },
   todosSectionTitle: {
     fontFamily: "Manrope",

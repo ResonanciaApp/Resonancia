@@ -493,7 +493,6 @@ export default function SonidosAncestalesScreen() {
                 <CategoryCard key={`feat-${s.id}`} session={s} landscape onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
               ))}
             </ScrollView>
-            <View style={styles.featuredDivider} />
           </>
         )}
         {activeTab === null && recentInCategory.length > 0 && (
@@ -507,7 +506,6 @@ export default function SonidosAncestalesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
         {activeTab === null && favoritesInCategory.length > 0 && (
@@ -521,7 +519,6 @@ export default function SonidosAncestalesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
         {activeTab === null && (() => {
@@ -543,7 +540,6 @@ export default function SonidosAncestalesScreen() {
                   titleSize={18}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
-                {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
               </React.Fragment>
             );
           });
@@ -755,7 +751,6 @@ const styles = StyleSheet.create({
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
-  featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
