@@ -58,7 +58,7 @@ export default function HerramientasScreen() {
   const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const cardBackground = "rgba(42,40,64,0.5)";
+  const cardBackground = "rgba(42,40,64,0.75)";
   const cardBorderWidth = activeSceneId === "tibet" || activeSceneId === "indigo" ? 1 : 0;
 
   const handlePress = useCallback((id: ToolId) => {
