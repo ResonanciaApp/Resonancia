@@ -61,6 +61,7 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
+import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
   gradientColors,
   type GeoSettings,
@@ -100,8 +101,6 @@ function isoDow(d: Date): number {
 }
 
 
-
-const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 
 type StatsPeriod = "30d" | "daily" | "total";
 
@@ -218,7 +217,7 @@ function BgGlyph({
 
 export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: { dedicated?: boolean; onBack?: () => void; asTab?: boolean }) {
   const colors = useColors();
-  const { theme: activeTheme } = useSceneTheme();
+  const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
@@ -233,9 +232,15 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
+  const { currentStreak, maxStreak, weekFlags, todayIndex, totalActiveDays } = useStreak();
   const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>("30d");
   const [statsPeriodOpen, setStatsPeriodOpen] = useState(false);
+  const resourceBlockBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
+  const resourceBlockBorder = "rgba(255,255,255,0.1)";
 
   const personalStats = useMemo(() => {
     const today = new Date();
@@ -256,9 +261,11 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     const minutes = Math.round(periodEvents.reduce((sum, event) => sum + (event.minutes ?? 0), 0));
     return {
       minutes,
-      activeDays: computeTotalActiveDays(periodEvents),
+      activeDays: statsPeriod === "total"
+        ? totalActiveDays
+        : computeTotalActiveDays(periodEvents),
     };
-  }, [statEvents, statsPeriod]);
+  }, [statEvents, statsPeriod, totalActiveDays]);
 
   const statsPeriodLabel =
     statsPeriod === "30d" ? "Últimos 30 días" : statsPeriod === "daily" ? "Diario" : "Totales";
@@ -842,7 +849,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <View
               style={[
                 styles.streakSection,
-                { backgroundColor: "rgba(0,0,0,0.16)", borderColor: colors.border },
+                { backgroundColor: resourceBlockBackground, borderColor: resourceBlockBorder },
               ]}
             >
               <View style={styles.streakHeadingRow}>
@@ -855,47 +862,18 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                   </Text>
                 </View>
                 <View style={[styles.streakCountPill, { backgroundColor: "rgba(212,175,55,0.14)" }]}>
-                  <Feather name="zap" size={15} color={colors.primary} />
+                  <MaterialCommunityIcons name="spa" size={18} color={colors.primary} />
                   <Text style={[styles.streakCountText, { color: colors.foreground }]}>
                     {currentStreak}
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.streakDaysRow}>
-                {WEEK_INITIALS.map((label, i) => {
-                  const done = weekFlags[i] === true;
-                  const isToday = i === todayIndex;
-                  return (
-                    <View key={`${label}-${i}`} style={styles.streakDay}>
-                      <Text
-                        style={[
-                          styles.streakDayLabel,
-                          { color: isToday ? colors.foreground : colors.mutedForeground },
-                        ]}
-                      >
-                        {label}
-                      </Text>
-                      <View
-                        style={[
-                          styles.streakDayCircle,
-                          {
-                            backgroundColor: done ? colors.primary : "transparent",
-                            borderColor: done
-                              ? colors.primary
-                              : isToday
-                                ? colors.foreground
-                                : colors.border,
-                          },
-                        ]}
-                      >
-                        {done && <Feather name="check" size={14} color={colors.primaryForeground} />}
-                        {!done && isToday && <View style={[styles.todayDot, { backgroundColor: colors.foreground }]} />}
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
+              <SonicStreakDays
+                activeFlags={weekFlags}
+                todayIndex={todayIndex}
+                idPrefix="profile-streak"
+              />
 
               <Text style={[styles.streakBestText, { color: colors.mutedForeground }]}>
                 Mejor racha: {maxStreak} día{maxStreak === 1 ? "" : "s"}
@@ -905,7 +883,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <View
               style={[
                 styles.personalStatsCard,
-                { backgroundColor: "rgba(0,0,0,0.24)", borderColor: colors.border },
+                { backgroundColor: resourceBlockBackground, borderColor: resourceBlockBorder },
               ]}
             >
               <View style={styles.personalStatsHeader}>
@@ -1592,18 +1570,6 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  streakDaysRow: { flexDirection: "row", justifyContent: "space-between" },
-  streakDay: { alignItems: "center", gap: 7 },
-  streakDayLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
-  streakDayCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 1.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  todayDot: { width: 6, height: 6, borderRadius: 3 },
   streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
   personalStatsCard: {
     borderRadius: 18,

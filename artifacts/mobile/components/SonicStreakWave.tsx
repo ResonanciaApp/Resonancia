@@ -102,19 +102,74 @@ function brightenHex(hex: string, pct: number): string {
   return `rgb(${rr},${gg},${bb})`;
 }
 
+export function SonicStreakDays({
+  activeFlags,
+  todayIndex,
+  idPrefix = "swsg",
+}: {
+  activeFlags: boolean[];
+  todayIndex: number;
+  idPrefix?: string;
+}) {
+  const { theme } = useSceneTheme();
+  const isTibet = theme.id === "tibet";
+  const borderColor0 = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
+  const borderColor1 = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
+
+  return (
+    <View style={styles.row}>
+      {DAY_LABELS.map((label, i) => {
+        const met = activeFlags[i];
+        const isToday = i === todayIndex;
+        const gradientId = `${idPrefix}-${i}`;
+        return (
+          <View key={i} style={styles.dayCol}>
+            {met ? (
+              <View style={styles.circleGradientBorder}>
+                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                  <Defs>
+                    <SvgGradient id={gradientId} x1="0.5" y1="0" x2="0.5" y2="1">
+                      <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
+                      <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
+                    </SvgGradient>
+                  </Defs>
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
+                </Svg>
+                <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
+              </View>
+            ) : isToday ? (
+              <View style={styles.circleGradientBorder}>
+                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                  <Defs>
+                    <SvgGradient id={gradientId} x1="0.5" y1="0" x2="0.5" y2="1">
+                      <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
+                      <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
+                    </SvgGradient>
+                  </Defs>
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
+                </Svg>
+              </View>
+            ) : (
+              <View style={[styles.circle, styles.circleInactive]} />
+            )}
+            <Text style={[
+              styles.dayLabel,
+              isToday && styles.dayLabelToday,
+              !met && !isToday && styles.dayLabelInactive,
+            ]}>
+              {label}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 export function SonicStreakWave() {
   const { statEvents } = usePlayer();
   const todayKey = useDayRollover();
-  const { theme } = useSceneTheme();
-
-  const isTibet = theme.id === "tibet";
-  const waveHigh = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
-  const waveMid  = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
-  const waveLow  = isTibet ? brightenHex(theme.gradient[0], 36) : "#A9723E";
-
-  const borderColor0 = waveHigh;
-  const borderColor1 = waveMid;
 
   const { weekCount, activeFlags, todayIndex } = useMemo(() => {
     const { flags, weekCount: weekCnt, todayIndex: todayIdx } = computeWeekFlags(statEvents);
@@ -151,51 +206,7 @@ export function SonicStreakWave() {
       </View>
 
       {/* ── Bolitas de días ── */}
-      <View style={styles.row}>
-        {DAY_LABELS.map((label, i) => {
-          const met     = activeFlags[i];
-          const isToday = i === todayIndex;
-          return (
-            <View key={i} style={styles.dayCol}>
-              {met ? (
-                <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                    <Defs>
-                      <SvgGradient id={`swsg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
-                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
-                      </SvgGradient>
-                    </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#swsg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
-                  </Svg>
-                  <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
-                </View>
-              ) : isToday ? (
-                <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                    <Defs>
-                      <SvgGradient id="swsgToday" x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
-                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
-                      </SvgGradient>
-                    </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#swsgToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
-                  </Svg>
-                </View>
-              ) : (
-                <View style={[styles.circle, styles.circleInactive]} />
-              )}
-              <Text style={[
-                styles.dayLabel,
-                isToday && styles.dayLabelToday,
-                !met && !isToday && styles.dayLabelInactive,
-              ]}>
-                {label}
-              </Text>
-            </View>
-          );
-        })}
-      </View>
+      <SonicStreakDays activeFlags={activeFlags} todayIndex={todayIndex} />
 
       {/* ── Mensaje semanal ── */}
       <View style={styles.messageWrap}>
