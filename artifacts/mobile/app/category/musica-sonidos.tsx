@@ -372,7 +372,7 @@ export default function MusicaSonidosScreen() {
               sessions={recentInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-              style={{ marginTop: 24, marginBottom: 0 }}
+               style={{ marginTop: 53, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
@@ -385,7 +385,7 @@ export default function MusicaSonidosScreen() {
               sessions={favoritesInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-              style={{ marginTop: 24, marginBottom: 0 }}
+               style={{ marginTop: 53, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
@@ -405,7 +405,7 @@ export default function MusicaSonidosScreen() {
                   sessions={preview}
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                   style={{ marginTop: 53, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}

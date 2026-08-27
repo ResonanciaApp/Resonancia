@@ -523,7 +523,7 @@ export default function DescansoScreen() {
                   sessions={recentInDescanso}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                 />
@@ -536,7 +536,7 @@ export default function DescansoScreen() {
                   sessions={favoritesInDescanso}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                 />
@@ -549,7 +549,7 @@ export default function DescansoScreen() {
                   sessions={historiasForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
@@ -563,7 +563,7 @@ export default function DescansoScreen() {
                   sessions={asmrForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
@@ -577,7 +577,7 @@ export default function DescansoScreen() {
                   sessions={binauralForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={binauralForTodos.length > 5 ? () => setActiveTab("binaural") : undefined}
@@ -591,7 +591,7 @@ export default function DescansoScreen() {
                   sessions={ambientalForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={ambientalForTodos.length > 5 ? () => setActiveTab("ambiental") : undefined}

@@ -502,7 +502,7 @@ export default function SonidosAncestalesScreen() {
               sessions={recentInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-              style={{ marginTop: 24, marginBottom: 0 }}
+               style={{ marginTop: 53, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
@@ -515,7 +515,7 @@ export default function SonidosAncestalesScreen() {
               sessions={favoritesInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-              style={{ marginTop: 24, marginBottom: 0 }}
+               style={{ marginTop: 53, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
             />
@@ -535,7 +535,7 @@ export default function SonidosAncestalesScreen() {
                   sessions={preview}
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                   style={{ marginTop: 53, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
