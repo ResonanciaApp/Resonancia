@@ -16,25 +16,44 @@ export function BibliotecaOverlay() {
   const { libOpen, closeLib } = useDrawer();
   const [rendered, setRendered] = useState(false);
   const slideAnim = useRef(new Animated.Value(W)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (libOpen) {
       setRendered(true);
       slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: DURATION.DRAWER,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start();
+      fadeAnim.stopAnimation();
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }),
+      ]).start();
     } else if (rendered) {
       slideAnim.stopAnimation();
-      Animated.timing(slideAnim, {
-        toValue: W,
-        duration: DURATION.DRAWER,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
+      fadeAnim.stopAnimation();
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: W,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: DURATION.DRAWER,
+          easing: easeOutCubic,
+          useNativeDriver: true,
+        }),
+      ]).start(({ finished }) => {
         if (finished) setRendered(false);
       });
     }
@@ -44,7 +63,7 @@ export function BibliotecaOverlay() {
   if (!rendered) return null;
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ translateX: slideAnim }] }]}>
+    <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
       {/* ProfileScreenBase en modo "no-dedicated" = la pestaña Biblioteca original.
           Pasamos onBack para que la flecha ← cierre el overlay en vez de navegar. */}
       <ProfileScreenBase onBack={closeLib} />
