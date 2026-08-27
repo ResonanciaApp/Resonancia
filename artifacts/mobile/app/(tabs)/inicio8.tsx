@@ -710,6 +710,7 @@ type InicioMoodRecommendationsProps = {
   moodRecommended: Session[];
   isPremium: boolean;
   cardBg: string;
+  titleSize?: number;
   showTitle?: boolean;
   showDivider?: boolean;
   moodTopOffset?: number;
@@ -1765,7 +1766,7 @@ export default function HomeScreen2({
             style={{ marginTop: 25, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
-            titleSize={20}
+            titleSize={19}
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -1844,7 +1845,7 @@ export default function HomeScreen2({
             style={{ marginTop: -10, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
-            titleSize={20}
+            titleSize={19}
           />
         )}
         {isInicio2 && (
@@ -1856,6 +1857,7 @@ export default function HomeScreen2({
             showTitle
             showDivider={false}
             moodTopOffset={-15}
+            titleSize={19}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -1925,7 +1927,7 @@ export default function HomeScreen2({
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: isInicio2 ? 55 : 15 }]}>
-            <Text style={styles.sectionTitle}>
+            <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle]}>
               Para este momento
             </Text>
             <Pressable
@@ -1976,7 +1978,7 @@ export default function HomeScreen2({
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
+          <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
           <ScrollView
@@ -2065,7 +2067,7 @@ export default function HomeScreen2({
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
-          titleSize={20}
+          titleSize={isInicio2 ? 19 : 20}
           onViewAll={() => openCategory("/favoritos-todos")}
         />
 
@@ -2791,6 +2793,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
+  inicio2SectionTitle: { fontSize: 19 },
   continueSection: {
     marginTop: 13,
     marginBottom: 47,
@@ -3187,6 +3190,7 @@ function InicioMoodRecommendations({
   moodRecommended,
   isPremium,
   cardBg,
+  titleSize,
   showTitle = true,
   showDivider = true,
   moodTopOffset = 0,
@@ -3202,7 +3206,9 @@ function InicioMoodRecommendations({
       {showDivider && <View style={[styles.sectionDivider, { marginTop: -15 }]} />}
       {showTitle && (
         <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
-          <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
+          <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }]}>
+            Personaliza tus recomendaciones
+          </Text>
         </View>
       )}
 
@@ -3255,7 +3261,7 @@ function InicioMoodRecommendations({
 
       {/* ── RECOMENDADO PARA TI ── */}
       <View style={{ paddingHorizontal: GRID_PAD }}>
-        <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
+        <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }, { marginTop: 24 }]}>
           {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
         </Text>
       </View>
