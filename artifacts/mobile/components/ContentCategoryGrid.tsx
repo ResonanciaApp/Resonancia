@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   horizontalSection: {
-    paddingRight: 0,
-    marginRight: -GRID_PAD,
+    paddingHorizontal: 0,
+    marginHorizontal: -GRID_PAD,
   },
   grid: {
     flexDirection: "row",
@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   horizontalContent: {
+    paddingLeft: GRID_PAD,
     paddingRight: GRID_PAD,
   },
   horizontalGrid: {
