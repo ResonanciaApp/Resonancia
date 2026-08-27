@@ -40,7 +40,7 @@ export function ContentCategoryGrid({
   );
 
   const categoryCards = (
-      <View style={[styles.grid, horizontal && styles.horizontalGrid]}>
+      <>
         {([
           {
             id: "meditaciones-guiadas",
@@ -185,7 +185,7 @@ export function ContentCategoryGrid({
               </Pressable>
             );
           })}
-      </View>
+      </>
   );
 
   return (
@@ -202,7 +202,7 @@ export function ContentCategoryGrid({
           {categoryCards}
         </ScrollView>
       ) : (
-        categoryCards
+        <View style={styles.grid}>{categoryCards}</View>
       )}
     </View>
   );
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   horizontalSection: {
-    paddingHorizontal: GRID_PAD,
+    paddingHorizontal: 0,
     marginHorizontal: 0,
   },
   grid: {
@@ -225,13 +225,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   horizontalContent: {
-    paddingRight: GRID_PAD,
-  },
-  horizontalGrid: {
-    flexWrap: "nowrap",
-    justifyContent: "flex-start",
-    marginTop: 5,
+    flexDirection: "row",
+    paddingHorizontal: GRID_PAD,
+    paddingRight: GRID_PAD + 24,
     gap: 8,
+    marginTop: 5,
   },
   card: {
     width: "48%",
