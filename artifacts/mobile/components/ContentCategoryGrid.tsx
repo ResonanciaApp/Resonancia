@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
   horizontalLabel: {
+    fontSize: 14,
     textAlign: "center",
     flexShrink: 0,
   },
