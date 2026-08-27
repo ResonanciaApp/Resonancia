@@ -653,8 +653,8 @@ function Inicio2HeroSlider({
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
-              {currentStreak > 0 && <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>}
-              <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
           </Animated.View>
         </Pressable>
@@ -2235,10 +2235,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inicio2HeroLotusButton: {
-    minWidth: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    minWidth: 40,
+    height: 36,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
