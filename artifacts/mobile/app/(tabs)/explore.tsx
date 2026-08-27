@@ -503,7 +503,6 @@ export default function ExploreScreen() {
         {/* ── Para este momento ── */}
         {featuredHoy && (
           <View style={[styles.section, { marginBottom: 0, marginTop: 10 }]}>
-            <Text style={styles.sectionTitle}>Para este momento</Text>
             <Pressable
               onPress={() => {
                 if (featuredHoy.skipMiniPlayer) { handleSessionPress(featuredHoy); return; }
