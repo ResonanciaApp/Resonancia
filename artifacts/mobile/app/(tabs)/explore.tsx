@@ -27,7 +27,6 @@ import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
-import { TAG_CARDS } from "@/data/tags";
 import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { usePremium } from "@/context/PremiumContext";
@@ -312,48 +311,29 @@ export default function ExploreScreen() {
   }, []);
 
   const themeCarousels = React.useMemo(() => {
-    // Mientras carga, no mostrar carruseles para evitar el flash de
-    // todas las temáticas sin filtrar de visibilidad.
-    if (exploreSections === null) return [];
+    // Mientras carga o si la respuesta no trae configuración, no mostrar
+    // carruseles. Nunca activar todos los tags locales como fallback, porque
+    // eso ignora las visibilidades elegidas en Admin.
+    if (exploreSections === null || exploreSections.length === 0) return [];
 
     const sessionLabels: string[] = Array.from(
       new Set<string>(SESSIONS.flatMap((s) => s.themeTag ?? [])),
     ).filter((t) => !isChakraTag(t));
 
-    if (exploreSections.length > 0) {
-      const seen = new Set<string>();
-      return exploreSections
-        .filter((sec) => {
-          if (!sec.visible || !sessionLabels.includes(sec.label)) return false;
-          if (seen.has(sec.label)) return false;
-          seen.add(sec.label);
-          return true;
-        })
-        .map((sec) => ({
-          label: sec.label,
-          sessions: SESSIONS.filter((s) =>
-            (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
-          ),
-        }));
-    }
-
-    // API respondió con lista vacía: no hay configuración → mostrar todas
-    // las temáticas locales como fallback solo en este caso.
-    const knownOrder = TAG_CARDS.map((tc) => tc.label as string);
-    const allTags = [...sessionLabels].sort((a, b) => {
-      const ia = knownOrder.indexOf(a);
-      const ib = knownOrder.indexOf(b);
-      if (ia === -1 && ib === -1) return 0;
-      if (ia === -1) return 1;
-      if (ib === -1) return -1;
-      return ia - ib;
-    });
-    return allTags.map((tag) => ({
-      label: tag,
-      sessions: SESSIONS.filter((s) =>
-        (s.themeTag as readonly string[] | undefined)?.includes(tag),
-      ),
-    }));
+    const seen = new Set<string>();
+    return exploreSections
+      .filter((sec) => {
+        if (!sec.visible || !sessionLabels.includes(sec.label)) return false;
+        if (seen.has(sec.label)) return false;
+        seen.add(sec.label);
+        return true;
+      })
+      .map((sec) => ({
+        label: sec.label,
+        sessions: SESSIONS.filter((s) =>
+          (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
+        ),
+      }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const featuredHoy = React.useMemo(() => {
