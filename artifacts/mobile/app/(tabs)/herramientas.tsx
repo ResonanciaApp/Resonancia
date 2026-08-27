@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 24,
     fontFamily: "Manrope",
-    fontSize: 28,
+    fontSize: 31,
     fontWeight: "700",
     letterSpacing: -0.3,
     textAlign: "left",

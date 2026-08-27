@@ -313,13 +313,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "800",
     color: "#F4F4F4",
     letterSpacing: 0.2,
     textAlign: "left",
     marginTop: -9,
-    transform: [{ translateX: -1 }, { translateY: -1 }],
+    transform: [{ translateX: -1 }, { translateY: -3 }],
   },
   carouselTitle: {
     fontFamily: "Manrope",
