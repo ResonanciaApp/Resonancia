@@ -44,7 +44,7 @@ export function ContentCategoryGrid({
             icon: () => (
               <ExpoImage
                 source={require("@/assets/images/cat-meditaciones.png")}
-                style={{ width: 22, height: 22 }}
+                style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
                 contentFit="contain"
               />
             ),
@@ -56,7 +56,7 @@ export function ContentCategoryGrid({
             icon: () => (
               <ExpoImage
                 source={require("@/assets/images/cat-sesiones.png")}
-                style={{ width: 26, height: 26 }}
+                style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
                 contentFit="contain"
               />
             ),
@@ -68,7 +68,7 @@ export function ContentCategoryGrid({
             icon: () => (
               <ExpoImage
                 source={require("@/assets/images/cat-musica.png")}
-                style={{ width: 26, height: 26 }}
+                style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
                 contentFit="contain"
               />
             ),
@@ -80,7 +80,7 @@ export function ContentCategoryGrid({
             icon: () => (
               <ExpoImage
                 source={require("@/assets/images/cat-luna.png")}
-                style={{ width: 22, height: 22 }}
+                style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
                 contentFit="contain"
                 tintColor="#f9f9f9"
               />
@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
     flexWrap: "nowrap",
     justifyContent: "flex-start",
     marginTop: 5,
+    gap: 10,
   },
   card: {
     width: "48%",
@@ -243,6 +244,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
+    paddingVertical: 15.5,
     paddingHorizontal: 12,
   },
   horizontalSmallRadiusCard: {
