@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -20,10 +20,12 @@ export function ContentCategoryGrid({
   marginTop = 22,
   marginBottom = SECTION_GAP - 20,
   hiddenIds = [],
+  horizontal = false,
 }: {
   marginTop?: number;
   marginBottom?: number;
   hiddenIds?: readonly string[];
+  horizontal?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
@@ -32,12 +34,8 @@ export function ContentCategoryGrid({
   const catBlockBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.04)" : CARD_BG;
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
 
-  return (
-    <View
-      style={[styles.section, { marginBottom, marginTop }]}
-      testID="content-category-grid"
-    >
-      <View style={styles.grid}>
+  const categoryCards = (
+      <View style={[styles.grid, horizontal && styles.horizontalGrid]}>
         {([
           {
             id: "meditaciones-guiadas",
@@ -163,7 +161,7 @@ export function ContentCategoryGrid({
                 }}
                 style={({ pressed }) => [
                   styles.card,
-                  corners[index],
+                  horizontal ? styles.horizontalCard : corners[index],
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
@@ -174,6 +172,24 @@ export function ContentCategoryGrid({
             );
           })}
       </View>
+  );
+
+  return (
+    <View
+      style={[styles.section, { marginBottom, marginTop }]}
+      testID="content-category-grid"
+    >
+      {horizontal ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalContent}
+        >
+          {categoryCards}
+        </ScrollView>
+      ) : (
+        categoryCards
+      )}
     </View>
   );
 }
@@ -190,6 +206,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: "center",
   },
+  horizontalContent: {
+    paddingRight: GRID_PAD,
+  },
+  horizontalGrid: {
+    flexWrap: "nowrap",
+    justifyContent: "flex-start",
+  },
   card: {
     width: "48%",
     paddingVertical: 18,
@@ -199,6 +222,10 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     borderWidth: 0,
+  },
+  horizontalCard: {
+    width: 150,
+    borderRadius: 27,
   },
   iconWrap: {
     width: 26,

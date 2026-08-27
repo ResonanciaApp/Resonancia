@@ -497,6 +497,7 @@ export default function ExploreScreen() {
         <ContentCategoryGrid
           marginTop={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
+          horizontal
         />
 
         {/* ── Para este momento ── */}
