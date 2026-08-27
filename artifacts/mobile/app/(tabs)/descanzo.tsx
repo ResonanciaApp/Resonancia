@@ -484,7 +484,7 @@ export default function DescansoScreen() {
         </View>
 
         {/* ── Tabs de modo ── */}
-        <View onLayout={(e) => setTabsOffsetY(e.nativeEvent.layout.y)} style={{ marginTop: 15 }}>
+        <View onLayout={(e) => setTabsOffsetY(e.nativeEvent.layout.y)} style={{ marginTop: 11 }}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
