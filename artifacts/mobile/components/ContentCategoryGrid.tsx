@@ -11,6 +11,12 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
+const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
+  "meditaciones-guiadas": 164,
+  "sonidos-ancestrales": 150,
+  "musica-sonidos": 112,
+  "__descanzo__": 108,
+};
 
 /**
  * Accesos de exploración compartidos por Inicio y Descubrir.
@@ -161,13 +167,22 @@ export function ContentCategoryGrid({
                 }}
                 style={({ pressed }) => [
                   styles.card,
-                  horizontal ? styles.horizontalCard : corners[index],
+                  horizontal
+                    ? [
+                        styles.horizontalCard,
+                        { width: HORIZONTAL_CARD_WIDTHS[category.id] ?? 120 },
+                        (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
+                          styles.horizontalSmallRadiusCard,
+                        category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
+                        category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
+                      ]
+                    : corners[index],
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
                 <View style={styles.iconWrap}>{category.icon(category.color)}</View>
-                <Text style={styles.label}>{category.label}</Text>
+                <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
               </Pressable>
             );
           })}
@@ -224,8 +239,23 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   horizontalCard: {
-    width: 150,
     borderRadius: 27,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 9,
+    paddingHorizontal: 12,
+  },
+  horizontalSmallRadiusCard: {
+    borderRadius: 10,
+  },
+  horizontalRightSmallRadiusCard: {
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  horizontalLeftSmallRadiusCard: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   iconWrap: {
     width: 26,
@@ -236,5 +266,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#FBFBFB",
+  },
+  horizontalLabel: {
+    textAlign: "center",
+    flexShrink: 0,
   },
 });
