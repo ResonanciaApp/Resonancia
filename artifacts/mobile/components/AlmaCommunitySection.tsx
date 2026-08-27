@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { router } from "expo-router";
 import React from "react";
@@ -72,7 +73,13 @@ export function AlmaCommunitySection() {
           { opacity: pressed ? 0.75 : 1 },
         ]}
       >
-        <Text style={[styles.composeChipText, { color: "#0d0c26" }]}>Publicar</Text>
+        <LinearGradient
+          colors={["#774544", "#50316f"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <Text style={styles.composeChipText}>Publicar</Text>
       </Pressable>
 
       {/* Messages preview */}
@@ -158,12 +165,12 @@ const styles = StyleSheet.create({
   composeTap: {
     alignSelf: "center",
     borderRadius: 15,
-    backgroundColor: "#f9f9f9",
+    overflow: "hidden",
     paddingHorizontal: 28,
     paddingVertical: 9,
     marginBottom: 16,
   },
-  composeChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  composeChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
 
   emptyRow: {
     paddingVertical: 20,
