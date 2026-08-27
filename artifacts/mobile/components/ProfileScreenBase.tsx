@@ -675,7 +675,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       {dedicated && (
         <View
           pointerEvents="none"
-          style={[styles.profileHeroBackground, { height: topPad + 100 }]}
+          style={[styles.profileHeroBackground, { height: topPad + 130 }]}
         >
           <LinearGradient
             colors={["#774544", "#50316F"]}
@@ -691,12 +691,13 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <Defs>
               <SvgLinearGradient id="profileHeroFade" x1="0" y1="0" x2="0" y2="1">
                 <Stop offset="0" stopColor={activeTheme.solid} stopOpacity={0} />
-                <Stop offset="0.32" stopColor={activeTheme.solid} stopOpacity={0.22} />
+                <Stop offset="0.4" stopColor={activeTheme.solid} stopOpacity={0.12} />
+                <Stop offset="0.72" stopColor={activeTheme.solid} stopOpacity={0.58} />
                 <Stop offset="1" stopColor={activeTheme.solid} stopOpacity={1} />
               </SvgLinearGradient>
             </Defs>
             <Path
-              d="M 0 34 Q 50 20 100 34 L 100 100 L 0 100 Z"
+              d="M 0 42 C 22 42 28 12 50 12 C 72 12 78 42 100 42 L 100 100 L 0 100 Z"
               fill="url(#profileHeroFade)"
             />
           </Svg>
