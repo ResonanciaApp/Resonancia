@@ -682,23 +682,20 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       >
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={[styles.stickyHeaderRow, !dedicated && !asTab && { paddingTop: 25 }]}>
-          {!asTab && (dedicated ? (
-            <Pressable
-              onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
-              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
-              hitSlop={10}
-            >
-              <Feather name="chevron-left" size={28} color="#FBFBFB" />
-            </Pressable>
-          ) : (
+          {!asTab && !dedicated && (
             <BackPill
               onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
               size={28}
               bgColor="rgba(255,255,255,0.1)"
               style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
             />
-          ))}
-          <Text style={[styles.stickyTitle, !dedicated && !asTab && styles.stickyTitleBiblioteca, asTab && styles.stickyTitleTab]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
+          )}
+          <Text style={[
+            styles.stickyTitle,
+            dedicated && styles.stickyTitleDedicated,
+            !dedicated && !asTab && styles.stickyTitleBiblioteca,
+            asTab && styles.stickyTitleTab,
+          ]}>{dedicated ? "Perfil" : "Biblioteca"}</Text>
           {dedicated ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               <Pressable hitSlop={8} onPress={openEdit}>
@@ -750,47 +747,49 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
 
         {/* ── Profile Card ── */}
         <View style={styles.profileCard}>
-
-          {/* Avatar */}
-          <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
-            {photoUri ? (
-              <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
-            ) : (
-              <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: colors.primary }]}>
-                <Feather name="user" size={28} color={colors.primary} />
+          <View style={styles.profileIdentityRow}>
+            {/* Avatar */}
+            <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
+              ) : (
+                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: colors.primary }]}>
+                  <Feather name="user" size={28} color={colors.primary} />
+                </View>
+              )}
+              <View style={styles.avatarEditBadge}>
+                <GoldGradientFill />
+                <Feather name="camera" size={11} color="#fff" />
               </View>
-            )}
-            <View style={styles.avatarEditBadge}>
-              <GoldGradientFill />
-              <Feather name="camera" size={11} color="#fff" />
-            </View>
-          </Pressable>
+            </Pressable>
 
-          {/* Name + details */}
-          <Text style={[styles.userName, { color: colors.foreground }]}>
-            {username}{lastName ? ` ${lastName}` : ""}
-          </Text>
-
-          {location ? (
-            <View style={styles.locationRow}>
-              <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
-            </View>
-          ) : null}
-
-          {description ? (
-            <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{description}</Text>
-          ) : null}
-
-          {memberSince ? (
-            <View style={styles.locationRow}>
-              <Feather name="calendar" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
-                Miembro desde {memberSince}
+            {/* Name + details */}
+            <View style={styles.profileDetails}>
+              <Text style={[styles.userName, styles.userNameLeft, { color: colors.foreground }]}>
+                {username}{lastName ? ` ${lastName}` : ""}
               </Text>
-            </View>
-          ) : null}
 
+              {location ? (
+                <View style={styles.locationRow}>
+                  <Feather name="map-pin" size={12} color={colors.mutedForeground} />
+                  <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
+                </View>
+              ) : null}
+
+              {description ? (
+                <Text style={[styles.bioText, styles.bioTextLeft, { color: colors.mutedForeground }]}>{description}</Text>
+              ) : null}
+
+              {memberSince ? (
+                <View style={styles.locationRow}>
+                  <Feather name="calendar" size={12} color={colors.mutedForeground} />
+                  <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
+                    Miembro desde {memberSince}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          </View>
         </View>
 
         {/* ── Tu racha (oculta a pedido del usuario) ── */}
@@ -1365,6 +1364,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
+  stickyTitleDedicated: { fontSize: 31, textAlign: "left", marginLeft: 0, transform: [{ translateY: 3 }] },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "700", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libActionsPill: {
@@ -1433,12 +1433,14 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 24,
     padding: 24,
-    alignItems: "center",
+    alignItems: "stretch",
     overflow: "hidden",
     marginBottom: 32,
     gap: 6,
   },
-  avatarWrapper: { position: "relative", marginBottom: 8 },
+  profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
+  profileDetails: { flex: 1, alignItems: "flex-start", gap: 6 },
+  avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
     width: 80,
     height: 80,
@@ -1462,9 +1464,11 @@ const styles = StyleSheet.create({
     borderColor: "#1B060F",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userNameLeft: { textAlign: "left" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
+  bioTextLeft: { textAlign: "left", paddingHorizontal: 0 },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
