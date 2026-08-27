@@ -481,7 +481,11 @@ export default function MusicaSonidosScreen() {
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
-            style={[styles.headerSearchButton, { transform: [{ translateY: -4 }] }]}
+            style={[
+              styles.headerSearchButton,
+              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              { transform: [{ translateY: -4 }] },
+            ]}
             accessibilityRole="button"
             accessibilityLabel="Buscar en Música"
             testID="music-search-button"
@@ -537,7 +541,10 @@ export default function MusicaSonidosScreen() {
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
-            style={styles.headerSearchButton}
+            style={[
+              styles.headerSearchButton,
+              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+            ]}
             accessibilityRole="button"
             accessibilityLabel="Buscar en Música"
             testID="music-sticky-search-button"
