@@ -1950,53 +1950,9 @@ export default function HomeScreen2({
           </View>
         )}
 
-        {isInicio2 && (
-          <Pressable
-            onPress={handleIntentionPress}
-            accessibilityRole="button"
-            accessibilityLabel={
-              currentIntencion
-                ? `Editar propósito: ${currentIntencion}`
-                : "Establece tu propósito"
-            }
-            testID="inicio2-purpose-block"
-            style={({ pressed }) => [
-              styles.inicio2PurposeBlock,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <View style={styles.inicio2PurposeCopy}>
-              <Text style={[styles.intencionSuper, styles.inicio2PurposeKicker]}>
-                Hoy quiero…
-              </Text>
-              <View style={styles.inicio2PurposeRow}>
-                <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
-                <Text
-                  style={
-                    currentIntencion
-                      ? [styles.intencionText, styles.inicio2PurposeText]
-                      : [styles.intencionPlaceholder, styles.inicio2PurposeText]
-                  }
-                  numberOfLines={2}
-                >
-                  {currentIntencion ?? "Proyecta tu propósito"}
-                </Text>
-              </View>
-            </View>
-            <View
-              pointerEvents="none"
-              style={[
-                styles.inicio2PurposeIcon,
-                { backgroundColor: activeTheme.gradient[0] as string },
-              ]}
-            >
-              <Feather name="edit-3" size={18} color="#FFFFFF" />
-            </View>
-          </Pressable>
-        )}
-
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
+        {!isInicio2 && (
+          <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle, { marginBottom: isInicio2 ? 20 : 24, paddingHorizontal: GRID_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
@@ -2026,7 +1982,8 @@ export default function HomeScreen2({
               </Pressable>
             ))}
           </ScrollView>
-        </View>
+          </View>
+        )}
 
         {/* ── VIDEOS DESTACADOS ── */}
         {false && videos.length > 0 && (
