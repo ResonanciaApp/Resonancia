@@ -4205,7 +4205,7 @@ export default function GeometrixScreen() {
                 <Pressable
                   key={c.id}
                   onPress={() => setActiveCategory(c.id)}
-                  style={[styles.catChip, on ? styles.catChipOn : null]}
+                  style={[styles.catChip, sceneTheme.id === "indigo" ? styles.catChipIndigo : null, on ? styles.catChipOn : null]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`Filtrar geometrías: ${c.label}`}
@@ -6778,7 +6778,7 @@ const styles = StyleSheet.create({
   },
   catChip: {
     paddingHorizontal: 13,
-    height: 29,
+    height: 42,
     borderRadius: 999,
     overflow: "hidden",
     alignItems: "center",
@@ -6787,12 +6787,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  catChipIndigo: {
+    backgroundColor: "rgba(42,40,64,0.65)",
+  },
   catChipOn: {
     borderWidth: 0,
   },
   catChipText: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: "400",
     color: "#F4F4F4",
     letterSpacing: 0.3,
@@ -6943,7 +6946,7 @@ const styles = StyleSheet.create({
   },
   lienzoTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 30,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",
