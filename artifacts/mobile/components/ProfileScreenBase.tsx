@@ -721,7 +721,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       {dedicated && (
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 1, paddingHorizontal: 19 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
@@ -750,7 +750,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
               ) : (
-                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: colors.primary }]}>
+                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: "#774544" }]}>
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
@@ -1369,7 +1369,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     gap: 6,
   },
-  profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
+  profileIdentityRow: { flexDirection: "row", alignItems: "flex-start", width: "100%", gap: 16 },
   profileDetails: { flex: 1, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
@@ -1380,7 +1380,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarImage: { width: 80, height: 80, borderRadius: 40 },
+  avatarImage: { width: 80, height: 80, borderRadius: 40, borderWidth: 2, borderColor: "#774544" },
   avatarEditBadge: {
     position: "absolute",
     bottom: 0,
