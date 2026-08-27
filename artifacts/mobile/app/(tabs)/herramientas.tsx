@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     height: 54,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 12,
     borderRadius: 16,
     borderWidth: 1,
@@ -270,7 +271,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   accessLabel: {
-    flex: 1,
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
