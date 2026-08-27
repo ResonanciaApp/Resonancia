@@ -1364,6 +1364,7 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 24,
     padding: 24,
+    paddingLeft: 0,
     alignItems: "stretch",
     overflow: "hidden",
     marginBottom: 32,
