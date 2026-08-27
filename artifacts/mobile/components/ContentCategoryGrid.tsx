@@ -240,10 +240,10 @@ const styles = StyleSheet.create({
   },
   horizontalCard: {
     borderRadius: 27,
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 9,
+    gap: 12,
     paddingHorizontal: 12,
   },
   horizontalSmallRadiusCard: {
