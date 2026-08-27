@@ -6946,7 +6946,7 @@ const styles = StyleSheet.create({
   },
   lienzoTitle: {
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",
