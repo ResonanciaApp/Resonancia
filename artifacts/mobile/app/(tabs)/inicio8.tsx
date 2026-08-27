@@ -1808,6 +1808,20 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
+          <SessionCarousel
+            title="Mis favoritos"
+            sessions={favoriteSessions}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={19}
+            titleSpacing={20}
+            onViewAll={() => openCategory("/favoritos-todos")}
+          />
+        )}
+        {isInicio2 && (
           <InicioMoodRecommendations
             selectedMood={selectedMood}
             moodRecommended={moodRecommended}
@@ -2064,18 +2078,19 @@ export default function HomeScreen2({
         )}
 
         {/* ── FAVORITOS ── */}
-        <SessionCarousel
-          title="Mis favoritos"
-          sessions={favoriteSessions}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-          titleSize={isInicio2 ? 19 : 20}
-          titleSpacing={isInicio2 ? 20 : undefined}
-          onViewAll={() => openCategory("/favoritos-todos")}
-        />
+        {!isInicio2 && (
+          <SessionCarousel
+            title="Mis favoritos"
+            sessions={favoriteSessions}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={20}
+            onViewAll={() => openCategory("/favoritos-todos")}
+          />
+        )}
 
 
         {!isInicio2 && (
