@@ -643,32 +643,40 @@ function Inicio2HeroSlider({
           { paddingTop: topInset + 8, transform: [{ translateY: parallaxY }] },
         ]}
       >
-        <Pressable
-          onPress={onOpenDrawer}
-          hitSlop={10}
-          style={styles.inicio2HeroProfileButton}
-          accessibilityRole="button"
-          accessibilityLabel="Abrir menú de perfil"
-          testID="inicio2-open-drawer"
-        >
-          {displayPhoto ? (
-            <ExpoImage
-              source={{ uri: displayPhoto }}
-              style={styles.inicio2HeroAvatar}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.inicio2HeroAvatarFallback}>
-              <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
-            </View>
-          )}
-          <View style={styles.inicio2HeroGreeting}>
+        <View style={styles.inicio2HeroProfileButton}>
+          <Pressable
+            onPress={() => router.push("/mi-perfil" as never)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir mi perfil"
+            testID="inicio2-open-profile"
+          >
+            {displayPhoto ? (
+              <ExpoImage
+                source={{ uri: displayPhoto }}
+                style={styles.inicio2HeroAvatar}
+                contentFit="cover"
+              />
+            ) : (
+              <View style={styles.inicio2HeroAvatarFallback}>
+                <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={onOpenDrawer}
+            hitSlop={8}
+            style={styles.inicio2HeroGreeting}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú de perfil"
+            testID="inicio2-open-drawer"
+          >
             <Text style={styles.inicio2HeroGreetingName} numberOfLines={1}>
               Hola {displayName}
             </Text>
             <Text style={styles.inicio2HeroGreetingTime}>{greeting}</Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
 
         <Pressable
           onPress={onOpenProgress}
