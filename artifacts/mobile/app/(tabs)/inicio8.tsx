@@ -2373,6 +2373,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.62)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
+    transform: [{ translateY: 6 }],
   },
   inicio2HeroActionButton: {
     marginTop: 20,
@@ -2385,6 +2386,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.5)",
+    transform: [{ translateY: 15 }],
   },
   inicio2HeroActionButtonText: {
     fontFamily: "Manrope",
