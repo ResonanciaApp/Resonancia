@@ -497,6 +497,7 @@ export default function ExploreScreen() {
           marginBottom={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
           horizontal
+          cardBackgroundColor="rgba(255,255,255,0.05)"
         />
 
         {/* ── Para este momento ── */}

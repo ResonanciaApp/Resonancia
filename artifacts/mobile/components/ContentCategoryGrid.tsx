@@ -27,21 +27,25 @@ export function ContentCategoryGrid({
   marginBottom = SECTION_GAP - 20,
   hiddenIds = [],
   horizontal = false,
+  cardBackgroundColor,
 }: {
   marginTop?: number;
   marginBottom?: number;
   hiddenIds?: readonly string[];
   horizontal?: boolean;
+  cardBackgroundColor?: string;
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
-  const catBlockBg = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
-      ? "rgba(255,255,255,0.04)"
-      : CARD_BG;
+  const catBlockBg = cardBackgroundColor ?? (
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : activeSceneId === "indigo"
+        ? "rgba(255,255,255,0.04)"
+        : CARD_BG
+  );
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
 
   const categoryCards = (
