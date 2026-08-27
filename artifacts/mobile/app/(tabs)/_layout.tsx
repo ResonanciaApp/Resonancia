@@ -50,7 +50,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "sonidos", "biblioteca", "profile", "video", "emocion"]);
+const HIDDEN_ROUTES = new Set(["inicio8", "musica", "sonidos", "biblioteca", "video", "emocion", "encuentros"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -79,8 +79,7 @@ const TAB_CONFIG: Record<
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
   sonidos:    { label: "Sonidos",    sfIcon: "slider.horizontal.3",  sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
-  encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",         featherIcon: "users", iconSize: 34 },
-  profile:    { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
+  profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
 };
 
 
@@ -431,9 +430,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       </Animated.View>
 
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
-      {state.routes[state.index]?.name !== "musica" &&
-        state.routes[state.index]?.name !== "geometrix" &&
-        state.routes[state.index]?.name !== "encuentros" && (
+      {state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
         <Animated.View
           pointerEvents={hidden ? "auto" : "none"}
           style={{
@@ -561,7 +558,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
-        <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
+        <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
       </Tabs>
       </Animated.View>
 
