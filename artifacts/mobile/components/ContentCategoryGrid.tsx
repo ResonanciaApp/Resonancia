@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -11,6 +11,12 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
+const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
+  "meditaciones-guiadas": 164,
+  "sonidos-ancestrales": 158,
+  "musica-sonidos": 126,
+  "__descanzo__": 120,
+};
 
 /**
  * Accesos de exploración compartidos por Inicio y Descubrir.
@@ -31,13 +37,8 @@ export function ContentCategoryGrid({
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
-  const { width: windowWidth } = useWindowDimensions();
   const catBlockBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.04)" : CARD_BG;
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
-  const horizontalCardWidth = Math.max(
-    1,
-    Math.min(185, Math.floor((windowWidth - GRID_PAD * 2 - 8) / 2)),
-  );
 
   const categoryCards = (
       <>
@@ -169,7 +170,7 @@ export function ContentCategoryGrid({
                   horizontal
                     ? [
                         styles.horizontalCard,
-                        { width: horizontalCardWidth },
+                        { width: HORIZONTAL_CARD_WIDTHS[category.id] ?? 140 },
                         (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
                           styles.horizontalSmallRadiusCard,
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
-    paddingVertical: 15.5,
+    paddingVertical: 13.5,
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
