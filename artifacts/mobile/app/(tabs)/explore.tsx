@@ -83,7 +83,7 @@ const HERO_HEIGHT = 470;
 // Dos cards completas + 25 px de la tercera, considerando el padding y los
 // dos gaps internos del SessionCarousel.
 const FOCUS_CARD_W = Math.floor((width - 72) / 2);
-const FOCUS_CARD_H = Math.round(FOCUS_CARD_W * 16 / 9);
+const FOCUS_CARD_H = Math.round(FOCUS_CARD_W * 16 / 9) - 25;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
