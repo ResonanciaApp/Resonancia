@@ -395,7 +395,12 @@ function NamingModal({
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
-            <GoldGradientFill />
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -576,7 +581,7 @@ const styles = StyleSheet.create({
   },
   nameCreateBtnText: {
     fontFamily: "Manrope",
-    color: "#1B060F",
+    color: "#F9F9F9",
     fontSize: 15,
     fontWeight: "800",
     letterSpacing: 0.3,

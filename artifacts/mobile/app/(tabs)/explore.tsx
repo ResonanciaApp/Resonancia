@@ -877,6 +877,8 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     borderRadius: 999,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.7)",
   },
   heroPlayButtonText: {
     fontFamily: "Manrope",

@@ -78,13 +78,25 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
 const MIX_THUMB = 65;
 
+/** Abre un detalle desde Biblioteca y retira primero el overlay del drawer. */
+function useLibraryRouteOpener() {
+  const { libOpen, closeLib } = useDrawer();
+
+  return useCallback((route: string) => {
+    if (libOpen) closeLib();
+    router.push(route as never);
+  }, [libOpen, closeLib]);
+}
+
 /** Abre una playlist como panel bajo el tab bar (fallback: ruta raíz). */
 function usePlaylistPanelOpener() {
   const overlay = useCategoryOverlayOptional();
-  return (plId: string) => {
+  const openLibraryRoute = useLibraryRouteOpener();
+
+  return useCallback((plId: string) => {
     if (overlay) overlay.openCategory(`/playlist/${plId}`);
-    else router.push(`/playlist/${plId}` as never);
-  };
+    else openLibraryRoute(`/playlist/${plId}`);
+  }, [overlay, openLibraryRoute]);
 }
 
 function MixRow({
@@ -611,6 +623,7 @@ const blStyles = StyleSheet.create({
 
 // ── Modal de nombre de carpeta ────────────────────────────────────────────────
 function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; onClose: () => void; bgColor?: string }) {
+  const openLibraryRoute = useLibraryRouteOpener();
   const { folders, createFolder } = useFoldersPlaylists();
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
@@ -625,7 +638,7 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
     const trimmed = name.trim() || suggestedName;
     const folder = createFolder(trimmed);
     onClose();
-    router.push(`/carpeta/${folder.id}` as never);
+    openLibraryRoute(`/carpeta/${folder.id}`);
   };
 
   return (
@@ -658,7 +671,12 @@ function NombreCarpetaModal({ visible, onClose, bgColor }: { visible: boolean; o
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
-            <GoldGradientFill />
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -717,7 +735,12 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
-            <GoldGradientFill />
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -728,6 +751,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
 
 // ── Modal de nombre de carpeta de mezclas ─────────────────────────────────────
 function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const openLibraryRoute = useLibraryRouteOpener();
   const { mixFolders, createMixFolder } = useMixer();
   const { activeSceneId } = useSceneTheme();
   const [name, setName] = useState("");
@@ -743,7 +767,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
     const trimmed = name.trim() || suggestedName;
     const folder = createMixFolder(trimmed);
     onClose();
-    router.push(`/carpeta-mezcla/${folder.id}` as never);
+    openLibraryRoute(`/carpeta-mezcla/${folder.id}`);
   };
 
   return (
@@ -776,7 +800,12 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
-            <GoldGradientFill />
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -786,6 +815,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
 }
 
 function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const openLibraryRoute = useLibraryRouteOpener();
   const { favFolders, createFavFolder } = useFoldersPlaylists();
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
@@ -800,7 +830,7 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
     const trimmed = name.trim() || suggestedName;
     const folder = createFavFolder(trimmed);
     onClose();
-    router.push(`/carpeta-favorito/${folder.id}` as never);
+    openLibraryRoute(`/carpeta-favorito/${folder.id}`);
   };
 
   return (
@@ -833,7 +863,12 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
             style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
             onPress={handleCreate}
           >
-            <GoldGradientFill />
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
@@ -1047,6 +1082,7 @@ export function BibliotecaScreen({
   embedded = false,
   onHeaderActions,
 }: { embedded?: boolean; onHeaderActions?: (state: LibHeaderActions | null) => void } = {}) {
+  const openLibraryRoute = useLibraryRouteOpener();
   const openPlaylistPanel = usePlaylistPanelOpener();
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
@@ -1248,7 +1284,7 @@ export function BibliotecaScreen({
                     <FavFolderRow
                       key={folder.id}
                       folder={folder}
-                      onPress={() => router.push(`/carpeta-favorito/${folder.id}` as never)}
+                      onPress={() => openLibraryRoute(`/carpeta-favorito/${folder.id}`)}
                       onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
                     />
                   ))}
@@ -1256,7 +1292,7 @@ export function BibliotecaScreen({
                     <FolderRow
                       key={folder.id}
                       folder={folder}
-                      onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+                      onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
                       onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
                     />
                   ))}
@@ -1447,7 +1483,7 @@ export function BibliotecaScreen({
             <FolderRow
               key={folder.id}
               folder={folder}
-              onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+              onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
               onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
             />
           ))}
@@ -1564,7 +1600,7 @@ export function BibliotecaScreen({
               <FolderRow
                 key={folder.id}
                 folder={folder}
-                onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+                onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
                 onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
               />
             ))}
@@ -1572,7 +1608,7 @@ export function BibliotecaScreen({
               <MixFolderRow
                 key={folder.id}
                 folder={folder}
-                onPress={() => router.push(`/carpeta-mezcla/${folder.id}` as never)}
+                onPress={() => openLibraryRoute(`/carpeta-mezcla/${folder.id}`)}
                 onLongPress={() => openMixFolderMenu(folder)}
               />
             ))}
@@ -1766,7 +1802,7 @@ export function BibliotecaScreen({
               <FavFolderRow
                 key={folder.id}
                 folder={folder}
-                onPress={() => router.push(`/carpeta-favorito/${folder.id}` as never)}
+                onPress={() => openLibraryRoute(`/carpeta-favorito/${folder.id}`)}
                 onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
               />
             ))}
@@ -2353,7 +2389,7 @@ const styles = StyleSheet.create({
   },
   nameCreateBtnText: {
     fontFamily: "Manrope",
-    color: "#1B060F",
+    color: "#F9F9F9",
     fontSize: 16,
     fontWeight: "800",
     letterSpacing: 0.3,
