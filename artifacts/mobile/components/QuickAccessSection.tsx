@@ -18,9 +18,9 @@ const GRID_PAD = 19;
 const GRID_GAP = 7;
 
 const ACCESS_CARDS = [
-  { id: "premium", label: "Tu Premium", icon: "star-outline", route: "/membresia" },
-  { id: "sessions", label: "Mis sesiones", icon: "calendar-month-outline", route: "/mis-sesiones" },
-  { id: "favorites", label: "Mis favoritos", icon: "heart-outline", route: "/favoritos-todos" },
+  { id: "premium", label: "Premium", icon: "star-outline", route: "/membresia" },
+  { id: "sessions", label: "Sesiones", icon: "calendar-month-outline", route: "/mis-sesiones" },
+  { id: "favorites", label: "Favoritos", icon: "heart-outline", route: "/favoritos-todos" },
   { id: "history", label: "Historial", icon: "history", route: "/historial" },
   { id: "friends", label: "Amigos", icon: "account-multiple-outline", route: "/amigos" },
   { id: "groups", label: "Grupos", icon: "account-group-outline", route: "/grupos" },
