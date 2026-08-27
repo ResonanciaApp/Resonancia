@@ -1862,7 +1862,7 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+          <View style={{ marginTop: 15, marginBottom: INICIO2_SECTION_GAP }}>
             <InicioMoodRecommendations
               selectedMood={selectedMood}
               moodRecommended={moodRecommended}
