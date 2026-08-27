@@ -18,7 +18,7 @@ import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
-const SECTION_GAP = 60;
+const SECTION_GAP = 47;
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {

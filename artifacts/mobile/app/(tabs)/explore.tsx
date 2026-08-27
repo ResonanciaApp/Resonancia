@@ -44,7 +44,7 @@ import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatu
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 16;
-const SECTION_GAP = 35;
+const SECTION_GAP = 47;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
