@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
   horizontalGrid: {
     flexWrap: "nowrap",
     justifyContent: "flex-start",
+    marginTop: 5,
   },
   card: {
     width: "48%",
