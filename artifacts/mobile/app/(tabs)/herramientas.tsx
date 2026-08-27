@@ -136,7 +136,7 @@ export default function HerramientasScreen() {
             >
               <MaterialCommunityIcons
                 name={tool.icon}
-                size={33}
+                size={32}
                 color={tool.color}
               />
               <Text
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.1,
     marginTop: 11,

@@ -596,33 +596,12 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── Para la ansiedad (antes de chakras) ── */}
-        {(() => {
-          const tc = themeCarousels.find((c) => c.label === "Para la ansiedad");
-          if (!tc) return null;
-          return (
-            <SessionCarousel
-              title={tc.label}
-              sessions={tc.sessions}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionPress(s)}
-              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
-              cardWidth={299}
-              cardHeight={187}
-              titleSize={19}
-            />
-          );
-        })()}
-
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
           {/* Título encima */}
           <View style={{ paddingHorizontal: H_PAD, marginTop: 0, marginBottom: 21 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: "#FBFBFB" }}>
               Armoniza tus chakras
-            </Text>
-            <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.58)", marginTop: 3, lineHeight: 19 }}>
-              Selecciona un chakra para comenzar tu armonización.
             </Text>
           </View>
 
