@@ -77,8 +77,6 @@ const CHAKRA_LEFT_LABELS = [
 ] as const;
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
-const TAG_CARD_GAP = 6;
-const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
 const HERO_HEIGHT = 470;
 
 const DURATION_SLOTS = [
@@ -564,40 +562,19 @@ export default function ExploreScreen() {
           </ScrollView>
         </View>
 
-        {/* ── Otras temáticas ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Pressable
-            onPress={() => openCategory("/todas-las-tematicas")}
-            style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
-          </Pressable>
-          <View style={styles.tagGrid}>
-            {TAG_CARDS
-              .filter((tag) =>
-                tag.label !== "Para la ansiedad" &&
-                tag.label !== "Energiza tus mañanas" &&
-                tag.label !== "Foco y concentración")
-              .slice(0, 8)
-              .map((tag) => (
-                <Pressable
-                  key={tag.id}
-                  onPress={() => openCategory(`/tag/${tag.id}`)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
-                >
-                  <View style={styles.tagCard}>
-                    <Image
-                      source={tag.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                    />
-                  </View>
-                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
-                </Pressable>
-              ))}
-          </View>
-        </View>
+        {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
+        {themeCarousels.map((carousel) => (
+          <SessionCarousel
+            key={carousel.label}
+            title={carousel.label}
+            sessions={carousel.sessions}
+            isPremium={isPremium}
+            onPress={(s) => handleSessionPress(s)}
+            style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+            cardWidth={SQCARD_W}
+            titleSize={19}
+          />
+        ))}
 
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
@@ -696,24 +673,6 @@ export default function ExploreScreen() {
           <CommunityMixesCarousel />
         </View>
 
-
-        {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
-        {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
-          const tc = themeCarousels.find((c) => c.label === label);
-          if (!tc) return null;
-          return (
-            <SessionCarousel
-              key={tc.label}
-              title={tc.label}
-              sessions={tc.sessions}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionPress(s)}
-              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
-              cardWidth={SQCARD_W}
-              titleSize={19}
-            />
-          );
-        })}
 
         {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
         {false && (
@@ -1012,31 +971,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#c2c2c2",
     textAlign: "center",
-  },
-
-  // Otras temáticas — grilla 2×4
-  tagGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    rowGap: 25,
-    marginTop: 0,
-  },
-  tagCard: {
-    width: TAG_CARD_W - 4,
-    height: 115,
-    borderRadius: 15,
-    overflow: "hidden",
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  tagCardOverlay: {},
-  tagCardLabel: {
-    marginTop: 7,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#FBFBFB",
-    lineHeight: 17,
   },
 
 });
