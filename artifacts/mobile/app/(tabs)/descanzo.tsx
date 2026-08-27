@@ -1049,7 +1049,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F4F4F4",
   },
-  sleepPillTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  sleepPillTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
 
   /* Sticky header */
   stickyHeader: {
