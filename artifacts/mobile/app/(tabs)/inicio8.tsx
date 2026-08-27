@@ -3339,7 +3339,7 @@ function InicioMoodRecommendations({
             { marginTop: moodTopOffset, overflow: "hidden", opacity: pressed ? 0.78 : 1 },
           ]}
         >
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
           <Text style={styles.moodEmoji}>🙂</Text>
           <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
           <Feather name="chevron-right" size={16} color="#f9f9f9" />
@@ -3362,7 +3362,7 @@ function InicioMoodRecommendations({
       <View style={styles.recoSection}>
         {moodRecommended.slice(0, maxItems ?? 3).map((session) => (
           <View key={session.id} style={styles.recoCard}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
             <SessionRow
               session={session}
               imageSize={84}

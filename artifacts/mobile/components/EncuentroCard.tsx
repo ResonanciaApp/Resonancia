@@ -10,6 +10,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 type Props = {
   encuentro: Encuentro;
@@ -18,11 +19,12 @@ type Props = {
 };
 
 export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
+  const { activeSceneId } = useSceneTheme();
   const fechaTexto = formatearFecha(encuentro.fechaISO);
   const extraInscritos = Math.max(0, encuentro.inscritos - encuentro.participantes.length);
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" }]}>
       {/* Hero — imagen del tema */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
         {encuentro.heroImagen ? (
