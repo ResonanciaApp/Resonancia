@@ -748,6 +748,7 @@ type InicioMoodRecommendationsProps = {
   moodRecommended: Session[];
   isPremium: boolean;
   cardBg: string;
+  sectionHeading?: string;
   titleSize?: number;
   titleSpacing?: number;
   maxItems?: number;
@@ -3173,11 +3174,12 @@ const styles = StyleSheet.create({
   },
 });
 
-function InicioMoodRecommendations({
+export function InicioMoodRecommendations({
   selectedMood,
   moodRecommended,
   isPremium,
   cardBg,
+  sectionHeading,
   titleSize,
   titleSpacing,
   maxItems,
@@ -3203,7 +3205,7 @@ function InicioMoodRecommendations({
               titleSpacing !== undefined && { marginBottom: titleSpacing },
             ]}
           >
-            Personaliza tus recomendaciones
+            {sectionHeading ?? "Personaliza tus recomendaciones"}
           </Text>
         </View>
       )}
