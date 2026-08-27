@@ -93,8 +93,8 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
 
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
     </Pressable>
   );
 }
@@ -603,6 +603,7 @@ const styles = StyleSheet.create({
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  chipTextIndigoSel: { color: "#F9F9F9" },
 
   sectionLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },

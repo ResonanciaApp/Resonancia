@@ -4212,13 +4212,13 @@ export default function GeometrixScreen() {
                 >
                   {on && (
                     <LinearGradient
-                      colors={["#FFFFFF", "#F5F5F5"]}
+                      colors={sceneTheme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]}
                       start={{ x: 0, y: 0.5 }}
                       end={{ x: 1, y: 0.5 }}
                       style={StyleSheet.absoluteFill}
                     />
                   )}
-                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
+                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null, on && sceneTheme.id === "indigo" ? styles.catChipTextIndigoOn : null]} numberOfLines={1}>
                     {c.label}
                   </Text>
                 </Pressable>
@@ -6800,6 +6800,9 @@ const styles = StyleSheet.create({
   catChipTextOn: {
     color: "#0D0A1E",
     fontWeight: "600",
+  },
+  catChipTextIndigoOn: {
+    color: "#F9F9F9",
   },
   grid: { flexGrow: 0 },
   gridContent: { paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 20 },

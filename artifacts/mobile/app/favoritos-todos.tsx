@@ -52,8 +52,8 @@ function FavPill({
       onPress={onPress}
       style={({ pressed }) => [styles.pill, theme.id === "indigo" && styles.pillIndigo, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />}
-      <Text style={[styles.pillText, sel && styles.pillTextSel]} numberOfLines={1}>
+      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#F9F9F9", "#F9F9F9"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      <Text style={[styles.pillText, sel && styles.pillTextSel, sel && theme.id === "indigo" && styles.pillTextIndigoSel]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
+  pillTextIndigoSel: { color: "#F9F9F9" },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",

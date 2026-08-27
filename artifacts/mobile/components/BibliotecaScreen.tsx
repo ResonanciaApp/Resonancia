@@ -143,13 +143,13 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
     >
       {sel && (
         <LinearGradient
-          colors={["#FFFFFF", "#F5F5F5"]}
+          colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={StyleSheet.absoluteFill}
         />
       )}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]} numberOfLines={1}>
+      <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -2112,6 +2112,7 @@ const styles = StyleSheet.create({
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  chipTextIndigoSel: { color: "#F9F9F9" },
 
   controlRow: {
     flexDirection: "row",
