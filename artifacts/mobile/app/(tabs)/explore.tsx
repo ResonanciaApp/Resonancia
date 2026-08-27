@@ -83,7 +83,7 @@ const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const TAG_CARD_GAP = 6;
 const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
-const HERO_HEIGHT = 380;
+const HERO_HEIGHT = 420;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -526,7 +526,7 @@ export default function ExploreScreen() {
                     { opacity: pressed ? 0.78 : 1 },
                   ]}
                 >
-                  <MaterialCommunityIcons name="play" size={16} color="#060A0F" />
+                  <MaterialCommunityIcons name="play" size={22} color="#060A0F" />
                   <Text style={styles.heroPlayButtonText}>Reproducir</Text>
                 </Pressable>
               </View>
@@ -535,7 +535,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.durSection, { marginTop: SECTION_GAP - 45, marginBottom: SECTION_GAP }]}>
+        <View style={[styles.durSection, { marginTop: SECTION_GAP - 5, marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: H_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
@@ -567,7 +567,7 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Explorar todo ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 45 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 65 }]}>
           <Text style={styles.sectionTitle}>Explorar todo</Text>
           <View style={styles.temaGrid}>
             {TEMAS.map((t) => (
@@ -943,6 +943,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: "hidden",
     position: "relative",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   heroImage: { width: "100%", height: "100%" },
   heroPlayButton: {

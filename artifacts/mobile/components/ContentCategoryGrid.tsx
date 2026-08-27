@@ -249,6 +249,8 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 15.5,
     paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   horizontalSmallRadiusCard: {
     borderRadius: 10,
