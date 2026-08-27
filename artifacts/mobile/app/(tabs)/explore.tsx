@@ -516,13 +516,7 @@ export default function ExploreScreen() {
                     { opacity: pressed ? 0.78 : 1 },
                   ]}
                 >
-                  <LinearGradient
-                    colors={["#774544", "#50316f"]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <MaterialCommunityIcons name="play" size={26} color="#F9F9F9" />
+                  <MaterialCommunityIcons name="play" size={26} color="#0D0A1E" />
                   <Text style={styles.heroPlayButtonText}>Reproducir</Text>
                 </Pressable>
               </View>
@@ -868,15 +862,15 @@ const styles = StyleSheet.create({
     height: 41,
     paddingVertical: 0,
     borderRadius: 999,
-    overflow: "hidden",
+    backgroundColor: "#F9F9F9",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.7)",
+    borderColor: "rgba(13,10,30,0.2)",
   },
   heroPlayButtonText: {
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
-    color: "#F9F9F9",
+    color: "#0D0A1E",
   },
 
   sqAuthor: {
