@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   pageTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#F4F4F4",
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: 999,
     paddingHorizontal: 11.5,
-    height: 29,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3 },
+  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "400", letterSpacing: 0.3 },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontFamily: "Manrope", fontSize: 11 },

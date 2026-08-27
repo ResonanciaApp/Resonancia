@@ -2098,7 +2098,7 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    height: 29,
+    height: 42,
     paddingHorizontal: 11.5,
     borderRadius: 999,
     overflow: "hidden",
@@ -2110,7 +2110,7 @@ const styles = StyleSheet.create({
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
