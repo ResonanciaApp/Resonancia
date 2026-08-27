@@ -185,12 +185,13 @@ const CHIP_ANIM_DURATION = 550;
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
+  const { theme } = useSceneTheme();
   const fgColor = sel ? "#0D0A1E" : "#FBFBFB";
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pillTab, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
     >
       {/* Fondo seleccionado */}
       {sel && (
@@ -1100,6 +1101,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},

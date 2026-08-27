@@ -44,10 +44,12 @@ type SleepTabId = typeof SLEEP_TABS[number]["id"];
 function SleepPill({
   sel, label, onPress,
 }: { sel: boolean; label: string; onPress: () => void }) {
+  const { theme } = useSceneTheme();
+
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.sleepPill, theme.id === "tibet" && styles.sleepPillTibet, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
@@ -1031,6 +1033,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",

@@ -149,7 +149,7 @@ export function VideoScreen({ showBack = false }: Props) {
                 <Pressable
                   key={chip}
                   onPress={() => setActiveChip(chip)}
-                  style={[styles.chip, sel && styles.chipSel]}
+                  style={[styles.chip, activeTheme.id === "tibet" && styles.chipTibet, sel && styles.chipSel]}
                 >
                   {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
                   <Text style={[styles.chipText, { color: sel ? "#0D0A1E" : "#F4F4F4" }]}>
@@ -297,6 +297,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3 },
 

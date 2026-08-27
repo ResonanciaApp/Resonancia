@@ -235,11 +235,13 @@ export default function ExploreScreen() {
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const temaCardBg = activeSceneId === "indigo"
-    ? "rgba(255,255,255,0.045)"
-    : activeSceneId === "profundo"
-      ? "rgba(255,255,255,0.06)"
-      : "rgba(255,255,255,0.07)";
+  const temaCardBg = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(255,255,255,0.045)"
+      : activeSceneId === "profundo"
+        ? "rgba(255,255,255,0.06)"
+        : "rgba(255,255,255,0.07)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>

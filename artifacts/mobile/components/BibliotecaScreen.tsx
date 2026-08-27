@@ -134,10 +134,12 @@ function MixRow({
 
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+  const { theme } = useSceneTheme();
+
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && (
         <LinearGradient
@@ -2105,6 +2107,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
     justifyContent: "center",
   },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
