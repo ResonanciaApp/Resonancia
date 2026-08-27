@@ -182,13 +182,23 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
 }
 
 function PushWrapper({ children }: { children: React.ReactNode }) {
-  const { drawerAnim, isOpen } = useDrawer();
+  const { drawerAnim, isOpen, overlayParallax } = useDrawer();
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 0.6],
   });
+  // Los overlays que nacen desde el drawer viven fuera de NavStack. Mover solo
+  // su propia capa deja el fondo inmóvil, a diferencia del panel Mezclador.
+  // Este desplazamiento mantiene la pantalla de fondo sincronizada con la
+  // entrada/salida de Diario, Biblioteca, sesiones, favoritos, historial,
+  // Amigos y Grupos.
+  const backgroundParallaxX = overlayParallax.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -56],
+    extrapolate: "clamp",
+  });
   return (
-    <Animated.View style={{ flex: 1 }}>
+    <Animated.View style={{ flex: 1, transform: [{ translateX: backgroundParallaxX }] }}>
       {children}
       <Animated.View
         pointerEvents={isOpen ? "auto" : "none"}

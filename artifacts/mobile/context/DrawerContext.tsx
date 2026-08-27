@@ -79,17 +79,19 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeLib = useCallback(() => setLibOpen(false), []);
 
   const [overlayRoute, setOverlayRoute] = useState<string | null>(null);
-  // Parallax: el drawer (y lo que hay detrás) se corre un poco al abrir un overlay.
+  // Parallax: el drawer y la pantalla que queda detrás se corren un poco al
+  // abrir cualquiera de los overlays del drawer, incluida Biblioteca.
   const overlayParallax = useRef(new Animated.Value(0)).current;
+  const overlayOpen = Boolean(overlayRoute || libOpen);
   useEffect(() => {
     overlayParallax.stopAnimation();
     Animated.timing(overlayParallax, {
-      toValue: overlayRoute ? 1 : 0,
+      toValue: overlayOpen ? 1 : 0,
       duration: 320,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
-  }, [overlayRoute, overlayParallax]);
+  }, [overlayOpen, overlayParallax]);
   const openOverlay = useCallback((route: string) => setOverlayRoute(route), []);
   const closeOverlay = useCallback(() => setOverlayRoute(null), []);
   const [chatUserId, setChatUserId] = useState<number | null>(null);
