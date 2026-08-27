@@ -94,7 +94,7 @@ export function QuickAccessSection() {
 
 const styles = StyleSheet.create({
   section: {
-    marginTop: -20,
+    marginTop: 35,
     marginBottom: 35,
     paddingHorizontal: GRID_PAD,
   },

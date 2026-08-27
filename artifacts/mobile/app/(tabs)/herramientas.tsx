@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { AstralGuidanceSection } from "@/components/AstralGuidanceSection";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -133,6 +134,8 @@ export default function HerramientasScreen() {
             </Pressable>
           ))}
         </View>
+
+        <QuickAccessSection />
 
         <AstralGuidanceSection
           backgroundColor={
