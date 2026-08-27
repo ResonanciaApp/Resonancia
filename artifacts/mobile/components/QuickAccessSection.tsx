@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 35,
     marginBottom: 35,
-    paddingHorizontal: GRID_PAD,
   },
   title: {
     marginBottom: 16,
