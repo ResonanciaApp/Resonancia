@@ -80,6 +80,10 @@ const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 
 const TAG_CARD_GAP = 6;
 const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
 const HERO_HEIGHT = 470;
+// Dos cards completas + 25 px de la tercera, considerando el padding y los
+// dos gaps internos del SessionCarousel.
+const FOCUS_CARD_W = Math.floor((width - 72) / 2);
+const FOCUS_CARD_H = Math.round(FOCUS_CARD_W * 9 / 16);
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -701,6 +705,7 @@ export default function ExploreScreen() {
         {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
           const tc = themeCarousels.find((c) => c.label === label);
           if (!tc) return null;
+          const isFocusCarousel = label === "Foco y concentración";
           return (
             <SessionCarousel
               key={tc.label}
@@ -709,7 +714,8 @@ export default function ExploreScreen() {
               isPremium={isPremium}
               onPress={(s) => handleSessionPress(s)}
               style={{ marginTop: 0, marginBottom: SECTION_GAP }}
-              cardWidth={SQCARD_W}
+              cardWidth={isFocusCarousel ? FOCUS_CARD_W : SQCARD_W}
+              cardHeight={isFocusCarousel ? FOCUS_CARD_H : SQCARD_W}
               titleSize={19}
             />
           );
