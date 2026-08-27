@@ -1095,7 +1095,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerSearchButton: {
-    padding: 4,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   heroTitle: {
     fontFamily: "Manrope",

@@ -778,7 +778,14 @@ const styles = StyleSheet.create({
 
   fixedHeader:  { zIndex: 10 },
   titleRow:     { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
-  headerSearchButton: { padding: 4 },
+  headerSearchButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
