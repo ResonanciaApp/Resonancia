@@ -78,13 +78,20 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
 const MIX_THUMB = 65;
 
-/** Abre un detalle desde Biblioteca y retira primero el overlay del drawer. */
+/** Abre un detalle desde Biblioteca y conserva el origen para volver aquí. */
 function useLibraryRouteOpener() {
   const { libOpen, closeLib } = useDrawer();
 
   return useCallback((route: string) => {
-    if (libOpen) closeLib();
-    router.push(route as never);
+    if (!libOpen) {
+      router.push(route as never);
+      return;
+    }
+
+    const separator = route.includes("?") ? "&" : "?";
+    router.push(`${route}${separator}fromLibrary=1` as never);
+    // El detalle ya queda montado detrás; recién entonces retiramos Biblioteca.
+    requestAnimationFrame(closeLib);
   }, [libOpen, closeLib]);
 }
 

@@ -29,6 +29,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { baseOf, type GeometryId } from "@/data/geometries";
+import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 
 const BG_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
@@ -37,7 +38,8 @@ const MUTED = "#c2c2c2";
 const SHEET_BG = "#1B060F";
 
 export default function CarpetaDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
+  const goBack = useLibraryReturnBack(fromLibrary);
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme } = useSceneTheme();
   const BG = sceneTheme.gradient;
@@ -74,7 +76,7 @@ export default function CarpetaDetailScreen() {
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="folder" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Carpeta no encontrada</Text>
-          <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
+          <Pressable onPress={goBack} style={{ marginTop: 24 }}>
             <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
         </View>
@@ -103,7 +105,7 @@ export default function CarpetaDetailScreen() {
       `¿Eliminar "${folder.name}"? Las playlists no se borran.`,
       [
         { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => { deleteFolder(folder.id); router.back(); } },
+        { text: "Eliminar", style: "destructive", onPress: () => { deleteFolder(folder.id); goBack(); } },
       ]
     );
   };
@@ -134,7 +136,7 @@ export default function CarpetaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         {renaming ? (
           <TextInput
             style={styles.renameInput}

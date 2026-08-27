@@ -44,6 +44,7 @@ import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 
 const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
@@ -99,10 +100,11 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {}) {
-  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const { id: idParam, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
   const id = idProp ?? idParam;
   const backOverride = useBackOverride();
-  const goBack = backOverride ?? (() => router.back());
+  const libraryBack = useLibraryReturnBack(fromLibrary);
+  const goBack = backOverride ?? libraryBack;
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const BG_GRADIENT = sceneTheme.gradient;

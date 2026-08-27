@@ -22,6 +22,7 @@ import { type FavFolder, useFoldersPlaylists } from "@/context/FoldersPlaylistsC
 import { SESSIONS } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 
 const BG = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
@@ -30,7 +31,8 @@ const MUTED = "#c2c2c2";
 const SHEET_BG = "#1B060F";
 
 export default function CarpetaFavoritoDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
+  const goBack = useLibraryReturnBack(fromLibrary);
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const bgColors = theme.gradient as unknown as [string, string];
@@ -57,7 +59,7 @@ export default function CarpetaFavoritoDetailScreen() {
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="folder" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Carpeta no encontrada</Text>
-          <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
+          <Pressable onPress={goBack} style={{ marginTop: 24 }}>
             <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
         </View>
@@ -87,7 +89,7 @@ export default function CarpetaFavoritoDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}
