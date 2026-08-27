@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 19;
@@ -30,8 +31,12 @@ type AccessId = (typeof ACCESS_CARDS)[number]["id"];
 export function QuickAccessSection() {
   const { width } = useWindowDimensions();
   const colors = useColors();
+  const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
+  const cardBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : "rgba(255,255,255,0.05)";
 
   const handlePress = useCallback((id: AccessId) => {
     const access = ACCESS_CARDS.find((item) => item.id === id);
@@ -64,7 +69,10 @@ export function QuickAccessSection() {
                 onPress={() => handlePress(access.id)}
                 style={({ pressed }) => [
                   styles.card,
-                  { opacity: pressed ? 0.75 : 1 },
+                  {
+                    backgroundColor: cardBackground,
+                    opacity: pressed ? 0.75 : 1,
+                  },
                 ]}
               >
                 <MaterialCommunityIcons

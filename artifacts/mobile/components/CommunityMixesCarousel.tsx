@@ -208,13 +208,18 @@ export function MixRow({
   onHeartPress?: () => void;
 }) {
   const trending = mix.trending === true;
+  const { activeSceneId } = useSceneTheme();
   const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+      style={({ pressed }) => [
+        styles.row,
+        activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
+        { opacity: pressed ? 0.6 : 1 },
+      ]}
     >
       {/* Portada de la mezcla */}
       <MixCover image={mix.image} />

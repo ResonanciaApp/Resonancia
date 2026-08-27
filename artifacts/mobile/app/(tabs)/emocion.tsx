@@ -32,7 +32,7 @@ const SECTION_GAP = 32;
 
 export default function EmocionScreen() {
   const insets = useSafeAreaInsets();
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -43,6 +43,9 @@ export default function EmocionScreen() {
   const [recoOffset, setRecoOffset] = useState(0);
   const topPad = Platform.OS === "web" ? 66 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 126 : insets.bottom + 118;
+  const cardBg = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : CARD_BG;
   const moodRecommended = React.useMemo<Session[]>(() => {
     if (selectedMood) {
       const cats = new Set(selectedMood.categoryIds);
@@ -158,7 +161,7 @@ export default function EmocionScreen() {
               onPress={() => setMoodSheetVisible(true)}
               style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
             >
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
               <Text style={styles.moodSientesLabel}>Sientes:</Text>
               <View style={{ flex: 1 }} />
               <LinearGradient
@@ -183,7 +186,7 @@ export default function EmocionScreen() {
               onPress={() => setMoodSheetVisible(true)}
               style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
             >
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
               <Text style={styles.moodEmoji}>🙂</Text>
               <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
               <Feather name="chevron-right" size={16} color="#f9f9f9" />
@@ -198,7 +201,7 @@ export default function EmocionScreen() {
           <View style={styles.recoSection}>
             {moodRecommended.map((session) => (
               <View key={session.id} style={styles.recoCard}>
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: CARD_BG }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
                 <SessionRow
                   session={session}
                   imageSize={84}
@@ -228,7 +231,7 @@ export default function EmocionScreen() {
             onPress={() => setRecoOffset((offset) => offset + 1)}
             style={({ pressed }) => [
               styles.refreshRecommendations,
-              { backgroundColor: pressed ? "rgba(255,255,255,0.12)" : CARD_BG },
+              { backgroundColor: pressed ? "rgba(0,0,0,0.24)" : cardBg },
             ]}
           >
             <Text style={styles.refreshRecommendationsText}>Actualizar recomendaciones</Text>

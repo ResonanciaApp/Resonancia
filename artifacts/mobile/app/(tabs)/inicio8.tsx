@@ -801,7 +801,9 @@ export default function HomeScreen2({
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const cardBg = "rgba(255,255,255,0.05)";
+  const cardBg = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : "rgba(255,255,255,0.05)";
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez

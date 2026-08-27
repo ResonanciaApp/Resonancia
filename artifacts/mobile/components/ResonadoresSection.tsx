@@ -4,6 +4,7 @@ import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 
 import { useResonadores } from "@/hooks/useResonadores";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
@@ -13,7 +14,9 @@ type Props = {
 
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
+  const { activeSceneId } = useSceneTheme();
   const colors = useColors();
+  const cardBackground = activeSceneId === "tibet" ? "rgba(0,0,0,0.15)" : "transparent";
 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
@@ -36,7 +39,10 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           <Pressable
             key={resonador.id}
             onPress={() => router.push(`/resonador/${resonador.id}` as never)}
-            style={({ pressed }) => [styles.resonador, { opacity: pressed ? 0.75 : 1 }]}
+            style={({ pressed }) => [
+              styles.resonador,
+              { backgroundColor: cardBackground, opacity: pressed ? 0.75 : 1 },
+            ]}
           >
             <View style={styles.photoFrame}>
               <ExpoImage source={resonador.photo} style={styles.photo} contentFit="cover" />
