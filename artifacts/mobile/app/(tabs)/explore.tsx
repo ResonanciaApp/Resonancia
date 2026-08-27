@@ -83,7 +83,7 @@ const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const TAG_CARD_GAP = 6;
 const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
-const HERO_HEIGHT = 330;
+const HERO_HEIGHT = 380;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -513,29 +513,23 @@ export default function ExploreScreen() {
             >
               <View style={styles.heroImageContainer}>
                 <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Reproducir ${featuredHoy.title}`}
+                  onPress={() => {
+                    if (featuredHoy.skipMiniPlayer) { handleSessionPress(featuredHoy); return; }
+                    if (featuredHoy.skipDetail) { handleSessionPress(featuredHoy); return; }
+                    handleSessionPress(featuredHoy);
+                  }}
+                  style={({ pressed }) => [
+                    styles.heroPlayButton,
+                    { opacity: pressed ? 0.78 : 1 },
+                  ]}
+                >
+                  <MaterialCommunityIcons name="play" size={16} color="#060A0F" />
+                  <Text style={styles.heroPlayButtonText}>Reproducir</Text>
+                </Pressable>
               </View>
-              {(() => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const s = featuredHoy as any;
-                const guide  = s.guideId  ? getGuide(s.guideId)   : undefined;
-                const artist = s.artistId ? getArtist(s.artistId) : undefined;
-                const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                const heroPhoto      = guide?.photo ?? artist?.photo ?? null;
-                return (
-                  <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    {heroPhoto && (
-                      <Image source={heroPhoto} style={styles.heroAvatar} contentFit="cover" />
-                    )}
-                    <View style={{ flex: 1 }}>
-                      <Text style={[styles.heroAuthor, { marginBottom: 4 }]} numberOfLines={1}>
-                        {featuredHoy.categoryLabel}{featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
-                      </Text>
-                      <Text style={styles.heroTitle} numberOfLines={2}>{featuredHoy.title}</Text>
-                      <Text style={[styles.heroAuthor, { marginTop: -1 }]} numberOfLines={1}>{heroAuthorName}</Text>
-                    </View>
-                  </View>
-                );
-              })()}
             </Pressable>
           </View>
         )}
@@ -948,12 +942,27 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     borderRadius: 15,
     overflow: "hidden",
+    position: "relative",
   },
   heroImage: { width: "100%", height: "100%" },
-  heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
-  heroTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#FBFBFB", marginBottom: 4 },
-  heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#c2c2c2", marginTop: 2 },
-  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
+  heroPlayButton: {
+    position: "absolute",
+    bottom: 16,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 22,
+    backgroundColor: "#BE9650",
+  },
+  heroPlayButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#060A0F",
+  },
 
   sqAuthor: {
     fontFamily: "Manrope",
