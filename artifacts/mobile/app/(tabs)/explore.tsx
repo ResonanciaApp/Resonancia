@@ -505,7 +505,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.durSection, { marginTop: 35, marginBottom: SECTION_GAP }]}>
+        <View style={[styles.durSection, { marginTop: 55, marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: H_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
