@@ -26,7 +26,6 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { TEMAS } from "@/data/temas";
 import { PLAYLISTS } from "@/data/playlists";
 import { TAG_CARDS } from "@/data/tags";
 import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
@@ -45,7 +44,6 @@ import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatu
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 16;
-const TEMA_GAP = 10;
 const SECTION_GAP = 35;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -76,9 +74,6 @@ const CHAKRA_LEFT_LABELS = [
   "Fluir creativo",
   "Fuerza interior",
 ] as const;
-const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
-const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
-
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const TAG_CARD_GAP = 6;
@@ -566,26 +561,40 @@ export default function ExploreScreen() {
           </ScrollView>
         </View>
 
-        {/* ── Explorar todo ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-          <Text style={styles.sectionTitle}>Explorar todo</Text>
-          <View style={styles.temaGrid}>
-            {TEMAS.map((t) => (
-              <Pressable
-                key={t.id}
-                onPress={() => (t.route ? router.push(t.route as never) : openCategory(`/tema/${t.id}`))}
-                style={({ pressed }) => [
-                  styles.temaCell,
-                  { width: TEMA3_W, height: TEMA3_W, backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
-                <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]}>{t.label}</Text>
-              </Pressable>
-            ))}
+        {/* ── Otras temáticas ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+          <Pressable
+            onPress={() => openCategory("/todas-las-tematicas")}
+            style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
+          </Pressable>
+          <View style={styles.tagGrid}>
+            {TAG_CARDS
+              .filter((tag) =>
+                tag.label !== "Para la ansiedad" &&
+                tag.label !== "Energiza tus mañanas" &&
+                tag.label !== "Foco y concentración")
+              .slice(0, 8)
+              .map((tag) => (
+                <Pressable
+                  key={tag.id}
+                  onPress={() => openCategory(`/tag/${tag.id}`)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
+                >
+                  <View style={styles.tagCard}>
+                    <Image
+                      source={tag.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
+                  </View>
+                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
+                </Pressable>
+              ))}
           </View>
         </View>
-
 
         {/* ── Para la ansiedad (antes de chakras) ── */}
         {(() => {
@@ -718,41 +727,6 @@ export default function ExploreScreen() {
             />
           );
         })}
-
-        {/* ── Otras temáticas ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Pressable
-            onPress={() => openCategory("/todas-las-tematicas")}
-            style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
-          </Pressable>
-          <View style={styles.tagGrid}>
-            {TAG_CARDS
-              .filter((tag) =>
-                tag.label !== "Para la ansiedad" &&
-                tag.label !== "Energiza tus mañanas" &&
-                tag.label !== "Foco y concentración")
-              .slice(0, 8)
-              .map((tag) => (
-                <Pressable
-                  key={tag.id}
-                  onPress={() => openCategory(`/tag/${tag.id}`)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
-                >
-                  <View style={styles.tagCard}>
-                    <Image
-                      source={tag.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                    />
-                  </View>
-                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
-                </Pressable>
-              ))}
-          </View>
-        </View>
 
         {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
         {false && (
@@ -1044,34 +1018,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#c2c2c2",
     textAlign: "center",
-  },
-
-  // Explorar todo — grid 2 columnas, icono arriba + texto centrado
-  temaGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: TEMA_GAP,
-    marginTop: 2,
-  },
-  temaCell: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    borderRadius: 15,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
-  },
-  temaCellIcon: {
-    width: 28,
-    height: 28,
-  },
-  temaCellLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 17,
   },
 
   // Otras temáticas — grilla 2×4
