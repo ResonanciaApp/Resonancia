@@ -101,8 +101,9 @@ export default function HerramientasScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.title, { color: colors.foreground }]}>Herramientas</Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
 
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Herramientas</Text>
         <View style={styles.grid} testID="tools-grid">
           {TOOLS.map((tool) => (
             <Pressable
@@ -176,6 +177,13 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
     textAlign: "left",
     transform: [{ translateY: 1 }],
+  },
+  sectionTitle: {
+    marginBottom: 16,
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    letterSpacing: 0.3,
   },
   grid: {
     flexDirection: "row",
