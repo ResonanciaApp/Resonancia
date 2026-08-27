@@ -677,6 +677,38 @@ export default function ExploreScreen() {
           </View>
         )}
 
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.durSection, { marginTop: SECTION_GAP - 45, marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: H_PAD }]}>
+            ¿Cuánto tiempo tienes hoy?
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.durPillRow}
+          >
+            {DURATION_SLOTS.map((slot) => (
+              <Pressable
+                key={slot.label}
+                onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
+                style={({ pressed }) => [
+                  styles.durPill,
+                  { backgroundColor: temaCardBg, opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <Text
+                  style={styles.durPillText}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.7}
+                >
+                  {slot.label}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* ── Explorar todo ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP - 45 }]}>
           <Text style={styles.sectionTitle}>Explorar todo</Text>
@@ -1081,6 +1113,14 @@ const styles = StyleSheet.create({
   },
 
   // Pills de duración → /busqueda
+  durSection: {},
+  durPillRow: {
+    flexDirection: "row",
+    paddingHorizontal: H_PAD,
+    paddingRight: H_PAD + 24,
+    gap: 6,
+    paddingBottom: 2,
+  },
   durPill: {
     borderRadius: 20,
     paddingHorizontal: 10,
