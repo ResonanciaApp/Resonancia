@@ -455,9 +455,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     }).start();
   }, [sectionsHidden, sectionsAnim]);
 
-  // ── Muro de reflexiones (placeholders) ───────────────────────────────────
-  const [muroExpanded, setMuroExpanded] = useState<boolean[]>([false, false, false]);
-
   // ── Edit modal state ──────────────────────────────────────────────────────
   const [showInvitar, setShowInvitar] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
@@ -997,72 +994,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
 
         </Animated.View>
 
-        {/* ── Reflexiones ── */}
-        <View style={{ marginTop: 28 }}>
-          <Text style={[styles.muroSectionTitle, { color: colors.mutedForeground, marginBottom: 12 }]}>Reflexiones</Text>
-          {(() => {
-            const MURO_PLACEHOLDERS = [
-              {
-                sessionId: "1",
-                message: "Hoy comprendí que la respiración profunda no solo calma la mente, sino que me conecta con algo más grande que yo mismo. Fue una sesión completamente transformadora y espero poder repetirla pronto.",
-              },
-              {
-                sessionId: "5",
-                message: "Esta meditación me ayudó a soltar el control y confiar más en el proceso. Quedé muy tranquila y con muchas ganas de volver mañana.",
-              },
-              {
-                sessionId: "8",
-                message: "Aprendí que la gratitud no necesita de grandes cosas. En el silencio encontré todo lo que necesitaba en este momento. Cada respiración fue un regalo.",
-              },
-            ];
-            const MAX_LINES = 3;
-            return (
-              <View style={{ marginTop: 4 }}>
-                {MURO_PLACEHOLDERS.map((item, idx) => {
-                  const session = getSessionById(item.sessionId);
-                  const expanded = muroExpanded[idx] ?? false;
-                  return (
-                    <View key={idx} style={styles.muroCard}>
-                      <View style={styles.muroLeft}>
-                        {session?.image ? (
-                          <Image source={session.image as number} style={styles.muroThumb} contentFit="cover" />
-                        ) : (
-                          <View style={[styles.muroThumb, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
-                        )}
-                        <Text style={[styles.muroSessionTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
-                          {session?.title ?? "Sesión"}
-                        </Text>
-                      </View>
-                      <View style={styles.muroRight}>
-                        <View style={styles.muroMsgCard}>
-                          <Text
-                            style={[styles.muroMsgText, { color: colors.foreground }]}
-                            numberOfLines={expanded ? undefined : MAX_LINES}
-                          >
-                            {item.message}
-                          </Text>
-                          <Pressable
-                            onPress={() =>
-                              setMuroExpanded((prev) => {
-                                const next = [...prev];
-                                next[idx] = !next[idx];
-                                return next;
-                              })
-                            }
-                            hitSlop={8}
-                            style={{ marginTop: 8, alignSelf: "flex-end" }}
-                          >
-                            <Text style={styles.muroVerMas}>{expanded ? "Ver menos" : "Ver más"}</Text>
-                          </Pressable>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            );
-          })()}
-        </View>
       </ScrollView>
       )}
 
@@ -1781,62 +1712,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
     alignItems: "center",
     justifyContent: "center",
-  },
-
-  // ── Muro de reflexiones ───────────────────────────────────────────────────
-  muroSectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-    letterSpacing: 0.3,
-    marginBottom: 18,
-  },
-  muroCard: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 25,
-    alignItems: "flex-start",
-  },
-  muroLeft: {
-    width: 88,
-    alignItems: "center",
-    gap: 8,
-    flexShrink: 0,
-  },
-  muroThumb: {
-    width: 88,
-    height: 88,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  muroSessionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 15,
-  },
-  muroRight: {
-    flex: 1,
-  },
-  muroMsgCard: {
-    backgroundColor: "rgba(0,0,0,0.15)",
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-  },
-  muroMsgText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.1,
-  },
-  muroVerMas: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#F9F9F9",
   },
 
   // ── Racha Stats Card ──────────────────────────────────────────────────────
