@@ -1763,7 +1763,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
-            titleSpacing={20}
+            titleSpacing={16}
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -1843,7 +1843,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
-            titleSpacing={20}
+            titleSpacing={16}
           />
         )}
         {isInicio2 && <QuickAccessSection />}
@@ -1857,7 +1857,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
-            titleSpacing={20}
+            titleSpacing={16}
             onViewAll={() => openCategory("/favoritos-todos")}
           />
         )}
@@ -1872,7 +1872,7 @@ export default function HomeScreen2({
               showDivider={false}
               moodTopOffset={0}
               titleSize={19}
-              titleSpacing={20}
+              titleSpacing={16}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
               onClearMood={() => setSelectedMood(null)}
               onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -1885,7 +1885,9 @@ export default function HomeScreen2({
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
+              <Text style={[styles.sectionTitle, isInicio2 && { marginBottom: 16 }]}>
+                Tu próxima sesión
+              </Text>
               <Pressable
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
@@ -2863,7 +2865,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
-  inicio2SectionTitle: { fontSize: 19, marginBottom: 20 },
+  inicio2SectionTitle: { fontSize: 19, marginBottom: 16 },
   continueSection: {
     marginTop: 0,
     marginBottom: INICIO2_SECTION_GAP,
@@ -2871,7 +2873,7 @@ const styles = StyleSheet.create({
   },
   continueSectionTitle: {
     color: "#F9F9F9",
-    marginBottom: 21,
+    marginBottom: 16,
   },
   continueCard: {
     flexDirection: "row",
