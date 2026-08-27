@@ -33,6 +33,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Svg, {
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  Stop,
+} from "react-native-svg";
 
 import {
   useGetMe,
@@ -669,7 +675,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       {dedicated && (
         <View
           pointerEvents="none"
-          style={[styles.profileHeroBackground, { height: topPad + 120 }]}
+          style={[styles.profileHeroBackground, { height: topPad + 100 }]}
         >
           <LinearGradient
             colors={["#774544", "#50316F"]}
@@ -677,12 +683,23 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             end={{ x: 1, y: 0.85 }}
             style={StyleSheet.absoluteFill}
           />
-          <LinearGradient
-            colors={["rgba(6,10,15,0)", activeTheme.solid]}
-            start={{ x: 0, y: 0.35 }}
-            end={{ x: 0, y: 1 }}
+          <Svg
             style={StyleSheet.absoluteFill}
-          />
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <Defs>
+              <SvgLinearGradient id="profileHeroFade" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="0" stopColor={activeTheme.solid} stopOpacity={0} />
+                <Stop offset="0.32" stopColor={activeTheme.solid} stopOpacity={0.22} />
+                <Stop offset="1" stopColor={activeTheme.solid} stopOpacity={1} />
+              </SvgLinearGradient>
+            </Defs>
+            <Path
+              d="M 0 34 Q 50 20 100 34 L 100 100 L 0 100 Z"
+              fill="url(#profileHeroFade)"
+            />
+          </Svg>
         </View>
       )}
       <GeometrixOverlay active={profileGeoActive} />
