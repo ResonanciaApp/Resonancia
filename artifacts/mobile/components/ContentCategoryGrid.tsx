@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -31,8 +31,13 @@ export function ContentCategoryGrid({
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
+  const { width: windowWidth } = useWindowDimensions();
   const catBlockBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.04)" : CARD_BG;
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
+  const horizontalCardWidth = Math.max(
+    1,
+    Math.min(185, Math.floor((windowWidth - GRID_PAD * 2 - 8) / 2)),
+  );
 
   const categoryCards = (
       <View style={[styles.grid, horizontal && styles.horizontalGrid]}>
@@ -164,6 +169,7 @@ export function ContentCategoryGrid({
                   horizontal
                     ? [
                         styles.horizontalCard,
+                        { width: horizontalCardWidth },
                         (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
                           styles.horizontalSmallRadiusCard,
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
@@ -238,7 +244,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   horizontalCard: {
-    width: 185,
     borderRadius: 27,
     flexDirection: "row",
     alignItems: "center",
