@@ -478,7 +478,7 @@ export default function DescansoScreen() {
               accessibilityLabel="Buscar en Dormir"
               testID="sleep-search-button"
             >
-              <Feather name="search" size={22} color={colors.foreground} />
+              <Feather name="search" size={24} color={colors.foreground} />
             </Pressable>
           </View>
         </View>
@@ -654,7 +654,7 @@ export default function DescansoScreen() {
             accessibilityLabel="Buscar en Dormir"
             testID="sleep-sticky-search-button"
           >
-            <Feather name="search" size={20} color={colors.foreground} />
+            <Feather name="search" size={22} color={colors.foreground} />
           </Pressable>
         </View>
       </Animated.View>
@@ -1022,10 +1022,10 @@ const styles = StyleSheet.create({
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 29,
-    paddingHorizontal: 11.5,
-    borderRadius: 999,
-    gap: 5,
+    height: 46,
+    paddingHorizontal: 12,
+    borderRadius: 27,
+    gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
@@ -1034,9 +1034,8 @@ const styles = StyleSheet.create({
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "400",
-    letterSpacing: 0.3,
+    fontSize: 14,
+    fontWeight: "700",
     color: "#F4F4F4",
   },
   sleepPillTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
@@ -1095,9 +1094,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerSearchButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.12)",

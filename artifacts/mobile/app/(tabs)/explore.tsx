@@ -478,7 +478,7 @@ export default function ExploreScreen() {
             accessibilityLabel="Buscar en Descubrir"
             testID="discover-search-button"
           >
-            <Feather name="search" size={22} color="#F9F9F9" />
+            <Feather name="search" size={24} color="#F9F9F9" />
           </Pressable>
         </View>
       </View>
@@ -779,9 +779,9 @@ const styles = StyleSheet.create({
   fixedHeader:  { zIndex: 10 },
   titleRow:     { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
   headerSearchButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.12)",
