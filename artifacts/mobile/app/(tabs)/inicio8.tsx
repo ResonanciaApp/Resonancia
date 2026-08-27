@@ -751,6 +751,7 @@ type InicioMoodRecommendationsProps = {
   cardBg: string;
   titleSize?: number;
   titleSpacing?: number;
+  maxItems?: number;
   showTitle?: boolean;
   showDivider?: boolean;
   moodTopOffset?: number;
@@ -1873,6 +1874,7 @@ export default function HomeScreen2({
               moodTopOffset={0}
               titleSize={19}
               titleSpacing={16}
+              maxItems={5}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
               onClearMood={() => setSelectedMood(null)}
               onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -3264,6 +3266,7 @@ function InicioMoodRecommendations({
   cardBg,
   titleSize,
   titleSpacing,
+  maxItems,
   showTitle = true,
   showDivider = true,
   moodTopOffset = 0,
@@ -3352,7 +3355,7 @@ function InicioMoodRecommendations({
         </Text>
       </View>
       <View style={styles.recoSection}>
-        {moodRecommended.map((session) => (
+        {moodRecommended.slice(0, maxItems ?? 3).map((session) => (
           <View key={session.id} style={styles.recoCard}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
             <SessionRow
