@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -52,9 +52,12 @@ export default function IntencionScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const { tab: requestedTab } = useLocalSearchParams<{ tab?: Tab }>();
+  const initialTab: Tab =
+    requestedTab === "guardados" || requestedTab === "favoritos" ? requestedTab : "ideas";
 
   const [text, setText] = useState("");
-  const [tab, setTab] = useState<Tab>("ideas");
+  const [tab, setTab] = useState<Tab>(initialTab);
   const inputRef = useRef<TextInput>(null);
   const glowAnim = useRef(new Animated.Value(0.35)).current;
 

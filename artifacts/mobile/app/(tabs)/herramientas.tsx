@@ -34,6 +34,9 @@ const TOOLS = [
   { id: "respiracion", label: "Respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "biblioteca", label: "Biblioteca", icon: "bookmark-outline", color: "#D4B7FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
+  { id: "sesiones", label: "Sesiones", icon: "calendar-month-outline", color: "#F1C879" },
+  { id: "amigos", label: "Amigos", icon: "account-multiple-outline", color: "#A6D8C8" },
+  { id: "grupos", label: "Grupos", icon: "account-group-outline", color: "#B8C5F4" },
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];
@@ -82,6 +85,15 @@ export default function HerramientasScreen() {
       case "diario":
         openOverlay("/diario");
         break;
+      case "sesiones":
+        openOverlay("/mis-sesiones");
+        break;
+      case "amigos":
+        openOverlay("/amigos");
+        break;
+      case "grupos":
+        openOverlay("/grupos");
+        break;
     }
   }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
 
@@ -103,7 +115,6 @@ export default function HerramientasScreen() {
       >
         <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Herramientas</Text>
         <View style={styles.grid} testID="tools-grid">
           {TOOLS.map((tool) => (
             <Pressable
@@ -177,13 +188,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
     textAlign: "left",
     transform: [{ translateY: 1 }],
-  },
-  sectionTitle: {
-    marginBottom: 16,
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    letterSpacing: 0.3,
   },
   grid: {
     flexDirection: "row",
