@@ -37,12 +37,14 @@ export function ContentCategoryGrid({
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
+  const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
-      ? "rgba(255,255,255,0.04)"
-      : CARD_BG;
-  const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
+    : activeSceneId === "indigo" && isDiscoverGrid
+      ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "indigo"
+        ? "rgba(255,255,255,0.04)"
+        : CARD_BG;
 
   const categoryCards = (
       <>

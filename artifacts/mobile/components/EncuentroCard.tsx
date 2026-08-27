@@ -24,7 +24,13 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
   const extraInscritos = Math.max(0, encuentro.inscritos - encuentro.participantes.length);
 
   return (
-    <View style={[styles.card, activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" }]}>
+    <View
+      style={[
+        styles.card,
+        activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
+        activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+      ]}
+    >
       {/* Hero — imagen del tema */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
         {encuentro.heroImagen ? (

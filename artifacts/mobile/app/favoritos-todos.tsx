@@ -45,10 +45,12 @@ type FavTabId = typeof FAV_TABS[number]["id"];
 function FavPill({
   sel, label, onPress,
 }: { sel: boolean; label: string; onPress: () => void }) {
+  const { theme } = useSceneTheme();
+
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.pill, theme.id === "indigo" && styles.pillIndigo, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />}
       <Text style={[styles.pillText, sel && styles.pillTextSel]} numberOfLines={1}>
@@ -231,6 +233,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   pillSel: { borderWidth: 0 },
+  pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",
     fontSize: 13,

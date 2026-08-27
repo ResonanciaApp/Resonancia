@@ -236,7 +236,7 @@ export default function ExploreScreen() {
   const temaCardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
-      ? "rgba(255,255,255,0.045)"
+      ? "rgba(42,40,64,0.65)"
       : activeSceneId === "profundo"
         ? "rgba(255,255,255,0.06)"
         : "rgba(255,255,255,0.07)";
@@ -473,7 +473,10 @@ export default function ExploreScreen() {
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
-            style={styles.headerSearchButton}
+            style={[
+              styles.headerSearchButton,
+              activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+            ]}
             accessibilityRole="button"
             accessibilityLabel="Buscar en Descubrir"
             testID="discover-search-button"

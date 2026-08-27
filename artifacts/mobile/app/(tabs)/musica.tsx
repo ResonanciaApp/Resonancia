@@ -191,7 +191,7 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, theme.id === "indigo" && styles.pillTabIndigo, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
     >
       {/* Fondo seleccionado */}
       {sel && (
@@ -1102,6 +1102,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
+  pillTabIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},

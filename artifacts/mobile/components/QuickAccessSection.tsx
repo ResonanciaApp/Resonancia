@@ -32,7 +32,9 @@ export function QuickAccessSection() {
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : "rgba(255,255,255,0.05)";
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
 
   const handlePress = useCallback((id: AccessId) => {
     const access = ACCESS_CARDS.find((item) => item.id === id);

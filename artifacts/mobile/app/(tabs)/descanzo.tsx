@@ -49,7 +49,13 @@ function SleepPill({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.sleepPill, theme.id === "tibet" && styles.sleepPillTibet, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [
+        styles.sleepPill,
+        theme.id === "tibet" && styles.sleepPillTibet,
+        theme.id === "indigo" && styles.sleepPillIndigo,
+        sel && styles.sleepPillSel,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
     >
       {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
@@ -276,6 +282,7 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;
+  const indigoSurface = sceneTheme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId | null>(null);
   const [timerSheet,  setTimerSheet]  = useState(false);
@@ -475,7 +482,7 @@ export default function DescansoScreen() {
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
-              style={styles.headerSearchButton}
+              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Dormir"
               testID="sleep-search-button"
@@ -651,7 +658,7 @@ export default function DescansoScreen() {
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
-            style={styles.headerSearchButton}
+            style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
             accessibilityRole="button"
             accessibilityLabel="Buscar en Dormir"
             testID="sleep-sticky-search-button"
@@ -1034,6 +1041,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
+  sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",

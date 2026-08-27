@@ -218,6 +218,7 @@ export function MixRow({
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
+        activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >
