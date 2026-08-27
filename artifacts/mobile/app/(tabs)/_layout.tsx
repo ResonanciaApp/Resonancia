@@ -40,7 +40,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 
 const ACTIVE_COLOR   = "#F9F9F9";
-const INACTIVE_COLOR = "#F4F4F4";
+const INACTIVE_COLOR = "#A9A9C3";
 const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
@@ -104,7 +104,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
-  const inactiveCol = tibetMode ? "#F4F4F4" : INACTIVE_COLOR;
+  const inactiveCol = tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
