@@ -711,6 +711,7 @@ type InicioMoodRecommendationsProps = {
   isPremium: boolean;
   cardBg: string;
   titleSize?: number;
+  titleSpacing?: number;
   showTitle?: boolean;
   showDivider?: boolean;
   moodTopOffset?: number;
@@ -1767,6 +1768,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
+            titleSpacing={20}
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -1846,6 +1848,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
+            titleSpacing={20}
           />
         )}
         {isInicio2 && (
@@ -1856,8 +1859,9 @@ export default function HomeScreen2({
             cardBg={cardBg}
             showTitle
             showDivider={false}
-            moodTopOffset={-15}
+            moodTopOffset={0}
             titleSize={19}
+            titleSpacing={20}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
             onClearMood={() => setSelectedMood(null)}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -1978,7 +1982,7 @@ export default function HomeScreen2({
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
+          <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle, { marginBottom: isInicio2 ? 20 : 24, paddingHorizontal: GRID_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
           <ScrollView
@@ -2068,6 +2072,7 @@ export default function HomeScreen2({
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
           titleSize={isInicio2 ? 19 : 20}
+          titleSpacing={isInicio2 ? 20 : undefined}
           onViewAll={() => openCategory("/favoritos-todos")}
         />
 
@@ -2431,10 +2436,8 @@ const styles = StyleSheet.create({
     marginTop: 28,
     marginBottom: 0,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 26.5,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(130,96,181,0.2)",
     backgroundColor: "rgba(0,0,0,0.15)",
     flexDirection: "row",
     alignItems: "center",
@@ -2793,7 +2796,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
-  inicio2SectionTitle: { fontSize: 19 },
+  inicio2SectionTitle: { fontSize: 19, marginBottom: 20 },
   continueSection: {
     marginTop: 13,
     marginBottom: 47,
@@ -3191,6 +3194,7 @@ function InicioMoodRecommendations({
   isPremium,
   cardBg,
   titleSize,
+  titleSpacing,
   showTitle = true,
   showDivider = true,
   moodTopOffset = 0,
@@ -3206,7 +3210,13 @@ function InicioMoodRecommendations({
       {showDivider && <View style={[styles.sectionDivider, { marginTop: -15 }]} />}
       {showTitle && (
         <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
-          <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }]}>
+          <Text
+            style={[
+              styles.sectionTitle,
+              titleSize !== undefined && { fontSize: titleSize },
+              titleSpacing !== undefined && { marginBottom: titleSpacing },
+            ]}
+          >
             Personaliza tus recomendaciones
           </Text>
         </View>
@@ -3261,7 +3271,14 @@ function InicioMoodRecommendations({
 
       {/* ── RECOMENDADO PARA TI ── */}
       <View style={{ paddingHorizontal: GRID_PAD }}>
-        <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }, { marginTop: 24 }]}>
+        <Text
+          style={[
+            styles.sectionTitle,
+            titleSize !== undefined && { fontSize: titleSize },
+            titleSpacing !== undefined && { marginBottom: titleSpacing },
+            { marginTop: 24 },
+          ]}
+        >
           {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
         </Text>
       </View>

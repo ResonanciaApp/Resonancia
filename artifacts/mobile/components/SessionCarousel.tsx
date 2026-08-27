@@ -31,10 +31,11 @@ type SessionCarouselProps = {
   cardWidth?: number;
   cardHeight?: number;
   titleSize?: number;
+  titleSpacing?: number;
   onViewAll?: () => void;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, onViewAll }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll }: SessionCarouselProps) {
   const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
@@ -45,14 +46,14 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   return (
     <View style={[styles.section, style]}>
       {onViewAll ? (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 21 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: titleSpacing ?? 21 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
           <Pressable onPress={onViewAll} hitSlop={8}>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
           </Pressable>
         </View>
       ) : (
-        <Text style={[styles.sectionTitle, { fontSize: titleFontSize }]}>{title}</Text>
+        <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 21 }]}>{title}</Text>
       )}
       <ScrollView
         horizontal
