@@ -106,7 +106,7 @@ const NAV_TABS = [
 ];
 const GRID_GAP = 12;
 const GRID_PAD = 19;
-const INICIO2_SECTION_GAP = 35;
+const INICIO2_SECTION_GAP = 53;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
