@@ -1727,21 +1727,32 @@ export default function HomeScreen2({
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
-            <Text style={[styles.intencionSuper, styles.inicio2PurposeKicker]}>
-              Hoy quiero…
-            </Text>
-            <View style={styles.inicio2PurposeRow}>
-              <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
-              <Text
-                style={
-                  currentIntencion
-                    ? [styles.intencionText, styles.inicio2PurposeText]
-                    : [styles.intencionPlaceholder, styles.inicio2PurposeText]
-                }
-                numberOfLines={2}
-              >
-                {currentIntencion ?? "Proyecta tu propósito"}
+            <View style={styles.inicio2PurposeCopy}>
+              <Text style={[styles.intencionSuper, styles.inicio2PurposeKicker]}>
+                Hoy quiero…
               </Text>
+              <View style={styles.inicio2PurposeRow}>
+                <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
+                <Text
+                  style={
+                    currentIntencion
+                      ? [styles.intencionText, styles.inicio2PurposeText]
+                      : [styles.intencionPlaceholder, styles.inicio2PurposeText]
+                  }
+                  numberOfLines={2}
+                >
+                  {currentIntencion ?? "Proyecta tu propósito"}
+                </Text>
+              </View>
+            </View>
+            <View
+              pointerEvents="none"
+              style={[
+                styles.inicio2PurposeIcon,
+                { backgroundColor: activeTheme.gradient[0] as string },
+              ]}
+            >
+              <Feather name="edit-3" size={18} color="#FFFFFF" />
             </View>
           </Pressable>
         )}
@@ -2422,7 +2433,14 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(130,96,181,0.2)",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(0,0,0,0.15)",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  inicio2PurposeCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   inicio2PurposeKicker: {
     textAlign: "left",
@@ -2436,6 +2454,14 @@ const styles = StyleSheet.create({
   inicio2PurposeText: {
     flexShrink: 1,
     textAlign: "left",
+  },
+  inicio2PurposeIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 12,
   },
 
   // Intención
