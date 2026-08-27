@@ -2426,7 +2426,7 @@ const styles = StyleSheet.create({
 
   inicio2PurposeBlock: {
     marginHorizontal: GRID_PAD,
-    marginTop: 8,
+    marginTop: 28,
     marginBottom: 0,
     paddingHorizontal: 16,
     paddingVertical: 14,
