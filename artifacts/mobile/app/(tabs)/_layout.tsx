@@ -42,6 +42,7 @@ import { CategoryOverlay } from "@/components/CategoryOverlay";
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
+const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
 const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
@@ -335,15 +336,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                   transform: [{ translateX: pillX }],
                 },
               ]}
-            >
-              <LinearGradient
-                colors={["#774544", "#50316F"]}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={StyleSheet.absoluteFill}
-                pointerEvents="none"
-              />
-            </Animated.View>
+            />
           )}
 
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -750,7 +743,7 @@ const styles = StyleSheet.create({
     // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
     left: 5,
     borderRadius: 28,
-    overflow: "hidden",
+    backgroundColor: GHOST_PILL_BG,
   },
   mezcladorHandle: {
     position: "absolute",
