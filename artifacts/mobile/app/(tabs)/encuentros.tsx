@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "left",
     marginTop: -9,
-    transform: [{ translateX: -1 }, { translateY: -3 }],
+    transform: [{ translateX: -2 }, { translateY: -2 }],
   },
   carouselTitle: {
     fontFamily: "Manrope",
