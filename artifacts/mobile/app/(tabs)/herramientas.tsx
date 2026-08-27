@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { AstralGuidanceSection } from "@/components/AstralGuidanceSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -141,6 +142,10 @@ export default function HerramientasScreen() {
 
         <QuickAccessSection />
 
+        <View style={styles.fullBleedSection}>
+          <EncuentrosResonadoresSection titleMarginTop={0} />
+        </View>
+
         <AstralGuidanceSection
           backgroundColor={
             activeSceneId === "tibet"
@@ -178,6 +183,9 @@ const styles = StyleSheet.create({
     gap: GRID_GAP,
     justifyContent: "center",
     marginTop: -6,
+  },
+  fullBleedSection: {
+    marginHorizontal: -GRID_PAD,
   },
   card: {
     alignItems: "center",

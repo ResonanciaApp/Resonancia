@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   ActivityIndicator,
   Animated,
-  Dimensions,
   FlatList,
   Pressable,
   RefreshControl,
@@ -12,16 +11,14 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewToken,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAuth } from "@/context/AuthContext";
-import { EncuentroCard } from "@/components/EncuentroCard";
-import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
-import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
+import { ENCUENTROS } from "@/data/encuentros";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ActivityFeedCard } from "@/components/ActivityFeedCard";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
@@ -29,10 +26,7 @@ import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 
-const { width: SCREEN_W } = Dimensions.get("window");
 const CARD_H_PADDING = 20;
-const CARD_GAP = 12;
-const CARD_W = SCREEN_W - CARD_H_PADDING * 2;
 const PILL_H = 68;
 
 function getCommunityEventTitle(event: CommunityFeedEvent): string {
@@ -68,8 +62,6 @@ function getCommunityEventAction(event: CommunityFeedEvent): string {
 export default function EncuentrosScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = PILL_H + Math.max(8, insets.bottom - 10);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
   const [searchVisible, setSearchVisible] = useState(false);
   const { theme: activeTheme } = useSceneTheme();
   const { clerkUserId } = useAuth();
@@ -124,66 +116,12 @@ export default function EncuentrosScreen() {
     prevRefreshing.current = refreshing;
   }, [refreshing, feedOpacity]);
 
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        setActiveIndex(viewableItems[0].index);
-      }
-    },
-  ).current;
-
-  const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
-
-  function handleCardPress(enc: Encuentro) {
-    router.push(`/encuentro/${enc.id}` as never);
-  }
-
-  function handleCalendarPress(enc: Encuentro) {
-    setCalSheetEncuentro(enc);
-  }
-
-  // ── Header element (carrusel + dots + mezclas + feed title/state) ──────
-  // Nota: se pasa como ELEMENTO (no componente) para que el FlatList del
-  // carrusel no se re-monte cuando cambia activeIndex (perdía el scroll).
+  // ── Header element (encuentros + mezclas + feed title/state) ───────────
   const listHeaderElement = (
       <View>
         <ResonadoresSection marginTop={40} marginBottom={32} />
 
-        {/* Título del carrusel */}
-        <Text style={styles.carouselTitle}>Encuentros Resonadores</Text>
-
-        {/* Carrusel de encuentros — FlatList horizontal propio */}
-        <FlatList
-          data={ENCUENTROS}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_W + CARD_GAP}
-          snapToAlignment="start"
-          decelerationRate="fast"
-          contentContainerStyle={styles.carouselContent}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig}
-          renderItem={({ item }) => (
-            <View style={{ width: CARD_W }}>
-              <EncuentroCard
-                encuentro={item}
-                onPress={() => handleCardPress(item)}
-                onCalendarPress={() => handleCalendarPress(item)}
-              />
-            </View>
-          )}
-        />
-
-        {/* Puntos de paginación */}
-        <View style={styles.dots}>
-          {ENCUENTROS.map((_, i) => (
-            <View
-              key={i}
-              style={[styles.dot, i === activeIndex ? styles.dotActive : styles.dotInactive]}
-            />
-          ))}
-        </View>
+        <EncuentrosResonadoresSection />
 
         {/* Mezclas de la comunidad */}
         <View style={{ marginTop: 36 }}>
@@ -285,12 +223,6 @@ export default function EncuentrosScreen() {
         }}
       />
 
-      {/* Sheet calendario */}
-      <CalendarioEncuentroSheet
-        encuentro={calSheetEncuentro}
-        visible={calSheetEncuentro !== null}
-        onClose={() => setCalSheetEncuentro(null)}
-      />
     </View>
   );
 }
@@ -320,39 +252,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginTop: -9,
     transform: [{ translateX: -2 }, { translateY: -2 }],
-  },
-  carouselTitle: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#F4F4F4",
-    paddingHorizontal: CARD_H_PADDING,
-    marginTop: 25,
-  },
-  carouselContent: {
-    paddingHorizontal: CARD_H_PADDING,
-    gap: CARD_GAP,
-    paddingTop: 24,
-  },
-  dots: {
-    marginTop: 25,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 6,
-  },
-  dot: {
-    borderRadius: 4,
-  },
-  dotActive: {
-    width: 20,
-    height: 6,
-    backgroundColor: "#f9f9f9",
-  },
-  dotInactive: {
-    width: 6,
-    height: 6,
-    backgroundColor: "rgba(244,244,244,0.35)",
   },
   feedSection: {
     marginTop: 36,
