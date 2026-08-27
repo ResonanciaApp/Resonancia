@@ -110,7 +110,7 @@ const GRID_PAD = 19;
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 270;
-const INICIO2_HERO_HEIGHT = Math.min(425, Math.max(361, width * 0.92 + 35));
+const INICIO2_HERO_HEIGHT = Math.min(465, Math.max(401, width * 0.92 + 75));
 const INICIO2_SLIDES = [
   {
     id: "templo",
@@ -2315,12 +2315,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio2HeroLotusButton: {
-    minWidth: 40,
+    minWidth: 54,
     height: 36,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 10,
   },
   inicio2HeroLotusContent: {
     flexDirection: "row",
