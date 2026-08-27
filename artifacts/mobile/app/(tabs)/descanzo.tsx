@@ -26,6 +26,7 @@ import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -276,6 +277,7 @@ export default function DescansoScreen() {
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId | null>(null);
   const [timerSheet,  setTimerSheet]  = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const scrollY      = useRef(new Animated.Value(0)).current;
@@ -413,6 +415,18 @@ export default function DescansoScreen() {
 
   // Mismo conjunto que la cola implícita del reproductor (DESCANSO_VISIBLE_TAGS).
   const allDormiSessions = useMemo(() => getDescansoVisibleSessions(), []);
+  const sleepSearchItems = useMemo(
+    () =>
+      allDormiSessions.map((session) => ({
+        id: session.id,
+        title: session.title,
+        meta: session.categoryLabel,
+        subtitle: session.subtitle ?? undefined,
+        searchText: [session.title, session.categoryLabel, session.subtitle ?? ""].join(" "),
+        image: session.image as number,
+      })),
+    [allDormiSessions],
+  );
 
   return (
     <LinearGradient
@@ -454,7 +468,19 @@ export default function DescansoScreen() {
       >
         {/* ── Hero ── */}
         <View style={styles.hero}>
-          <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
+          <View style={styles.heroTitleRow}>
+            <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={styles.headerSearchButton}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Dormir"
+              testID="sleep-search-button"
+            >
+              <Feather name="search" size={22} color={colors.foreground} />
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Tabs de modo ── */}
@@ -618,10 +644,18 @@ export default function DescansoScreen() {
         pointerEvents={stickyVisible ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 13, width: "100%" }}>
-          <View style={{ width: 38 }} />
+        <View style={styles.stickyTitleRow}>
           <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "left" }]}>Dormir</Text>
-          <View style={{ width: 38 }} />
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={styles.headerSearchButton}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar en Dormir"
+            testID="sleep-sticky-search-button"
+          >
+            <Feather name="search" size={20} color={colors.foreground} />
+          </Pressable>
         </View>
       </Animated.View>
 
@@ -655,6 +689,19 @@ export default function DescansoScreen() {
         setTimerMin={setTimerMin}
         fadeVol={fadeVol}
         setFadeVol={setFadeVol}
+      />
+
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={sleepSearchItems}
+        placeholder="Buscar en Dormir..."
+        emptyTitle="Encuentra algo para descansar"
+        emptySubtitle="Busca historias, ASMR y sonidos para dormir"
+        onSelect={(item) => {
+          const session = allDormiSessions.find((candidate) => candidate.id === item.id);
+          if (session) handleSessionTap(session);
+        }}
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
@@ -1010,6 +1057,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.2,
   },
+  stickyTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: H_PAD,
+    width: "100%",
+  },
   stickyTabs: {
     position: "absolute",
     left: 0,
@@ -1035,6 +1088,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 19,
     paddingTop: 7,
     paddingBottom: 10,
+  },
+  heroTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerSearchButton: {
+    padding: 4,
   },
   heroTitle: {
     fontFamily: "Manrope",

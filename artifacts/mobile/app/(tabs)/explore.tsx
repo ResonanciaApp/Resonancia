@@ -4,16 +4,12 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Animated,
   Dimensions,
-  FlatList,
-  Keyboard,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -43,6 +39,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
@@ -129,160 +126,6 @@ function getSessionAuthor(s: Session): string {
   if (s.guideId) return getGuide(s.guideId).name;
   return getArtist(s.artistId).name;
 }
-
-// ── Overlay de búsqueda ────────────────────────────────────────────────────
-function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const { openCategory } = useCategoryOverlay();
-  const { playSession } = usePlayer();
-  const { isPremium: srIsPremium } = usePremium();
-  const { theme: srTheme } = useSceneTheme();
-  const srBg =
-    srTheme.id === "tibet"
-      ? (srTheme.gradient[srTheme.gradient.length - 1] as string)
-      : srTheme.id === "indigo"
-        ? (srTheme.solid as string)
-        : "#190913";
-  const [q, setQ] = useState("");
-  const inputRef  = useRef<TextInput>(null);
-  const [kbHeight, setKbHeight] = useState(0);
-  const [kbReady,  setKbReady]  = useState(false);
-  const fadeAnim  = useRef(new Animated.Value(0)).current;
-  const insets    = useSafeAreaInsets();
-
-  useEffect(() => {
-    if (!visible) { setQ(""); setKbReady(false); setKbHeight(0); fadeAnim.setValue(0); return; }
-    const show = Keyboard.addListener("keyboardWillShow", (e) => {
-      setKbHeight(e.endCoordinates.height);
-      setKbReady(true);
-      Animated.timing(fadeAnim, { toValue: 1, duration: e.duration ?? 250, useNativeDriver: true }).start();
-    });
-    const showFallback = Keyboard.addListener("keyboardDidShow", (e) => {
-      setKbHeight(e.endCoordinates.height);
-      setKbReady(true);
-      fadeAnim.setValue(1);
-    });
-    const hide = Keyboard.addListener("keyboardWillHide", () => { setKbReady(false); fadeAnim.setValue(0); });
-    return () => { show.remove(); showFallback.remove(); hide.remove(); };
-  }, [visible, fadeAnim]);
-
-  const results = useMemo(() => {
-    const term = q.trim().toLowerCase();
-    if (!term) return SESSIONS.slice(0, 0);
-    return SESSIONS.filter((s) =>
-      s.title.toLowerCase().includes(term) ||
-      s.categoryLabel.toLowerCase().includes(term) ||
-      (s.subtitle ?? "").toLowerCase().includes(term)
-    ).slice(0, 30);
-  }, [q]);
-
-  return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <View style={[srStyles.root, { paddingBottom: kbHeight, backgroundColor: srBg }]}>
-        {srTheme.id === "tibet" && (
-          <LinearGradient
-            colors={srTheme.gradient as [string, string, ...string[]]}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-        )}
-        {/* Barra */}
-        <View style={[srStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: srTheme.id === "tibet" ? "transparent" : srBg }]}>
-          <View style={srStyles.bar}>
-            <Feather name="search" size={16} color="#F9F9F9" />
-            <TextInput
-              ref={inputRef}
-              style={srStyles.input}
-              placeholder="Buscar sesiones, músicas, sonidos..."
-              placeholderTextColor="#F9F9F9"
-              value={q}
-              onChangeText={setQ}
-              returnKeyType="search"
-              autoCorrect={false}
-            />
-            {q.length > 0 && (
-              <Pressable onPress={() => setQ("")} hitSlop={10}>
-                <Feather name="x" size={15} color="rgba(242,231,228,0.45)" />
-              </Pressable>
-            )}
-          </View>
-          <Pressable onPress={onClose} style={srStyles.cancel}>
-            <Text style={srStyles.cancelText}>Cancelar</Text>
-          </Pressable>
-        </View>
-
-        {/* Placeholder vacío */}
-        {q.length === 0 && kbReady && (
-          <Animated.View style={[srStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={48} color="#F9F9F9" style={{ marginBottom: 16 }} />
-            <Text style={srStyles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
-            <Text style={srStyles.emptySub}>Busca meditaciones, sonidos, historias…</Text>
-          </Animated.View>
-        )}
-
-        {/* Resultados */}
-        {q.length > 0 && (
-          <FlatList
-            data={results}
-            keyExtractor={(s) => s.id}
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
-            ListEmptyComponent={
-              <View style={srStyles.empty}>
-                <Feather name="search" size={36} color="rgba(242,231,228,0.45)" style={{ marginBottom: 12 }} />
-                <Text style={srStyles.emptyTitle}>Sin resultados</Text>
-                <Text style={srStyles.emptySub}>Intenta con otro término</Text>
-              </View>
-            }
-            renderItem={({ item }) => {
-              const authorName = item.guideId
-                ? getGuide(item.guideId).name
-                : item.artistId
-                ? getArtist(item.artistId).name
-                : item.subtitle ?? null;
-              return (
-                <Pressable
-                  onPress={() => {
-                    onClose();
-                    if (item.skipMiniPlayer && !(item.isPremium && !srIsPremium)) { playSession(item); return; }
-                    if (item.skipDetail) { playSession(item); router.push("/player" as never); return; }
-                    openCategory(`/session/${item.id}`);
-                  }}
-                  style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
-                >
-                  <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />
-                  <View style={{ flex: 1 }}>
-                    <Text style={srStyles.resultCat} numberOfLines={1}>{item.categoryLabel}</Text>
-                    <Text style={srStyles.resultTitle} numberOfLines={1}>{item.title}</Text>
-                    {authorName && (
-                      <Text style={srStyles.resultAuthor} numberOfLines={1}>{authorName}</Text>
-                    )}
-                  </View>
-                </Pressable>
-              );
-            }}
-          />
-        )}
-      </View>
-    </Modal>
-  );
-}
-
-const srStyles = StyleSheet.create({
-  root:        { flex: 1, backgroundColor: "#190913" },
-  overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
-  bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11, borderWidth: 1, borderColor: "#ffffff" },
-  input:       { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
-  cancel:      { paddingVertical: 6 },
-  cancelText:  { fontFamily: "Manrope", color: "#F9F9F9", fontSize: 14, fontWeight: "600" },
-  empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
-  emptyTitle:  { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
-  emptySub:    { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
-  resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
-  thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
-  resultCat:   { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
-  resultTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
-  resultAuthor:{ fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)" },
-});
 
 // ── ChakraBodyRow ──────────────────────────────────────────────────────────────
 const GLOW_R = 34;
@@ -542,6 +385,24 @@ export default function ExploreScreen() {
       .slice(0, 10);
   }, [popularData, catalogVersion]);
 
+  const discoverSearchItems = React.useMemo(
+    () =>
+      SESSIONS.map((session) => ({
+        id: session.id,
+        title: session.title,
+        meta: session.categoryLabel,
+        subtitle: getSessionAuthor(session),
+        searchText: [
+          session.title,
+          session.categoryLabel,
+          session.subtitle ?? "",
+          getSessionAuthor(session),
+        ].join(" "),
+        image: session.image as number,
+      })),
+    [catalogVersion],
+  );
+
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -613,16 +474,17 @@ export default function ExploreScreen() {
       <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.titleRow}>
           <Text style={styles.pageTitle}>Descubrir</Text>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={styles.headerSearchButton}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar en Descubrir"
+            testID="discover-search-button"
+          >
+            <Feather name="search" size={22} color="#F9F9F9" />
+          </Pressable>
         </View>
-        {/* Barra de búsqueda pegada al header */}
-        <Pressable style={styles.searchWrap} onPress={() => setSearchVisible(true)}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.2)", borderColor: "rgba(255,255,255,0.7)", borderWidth: 1 }]} pointerEvents="none">
-            <Feather name="search" size={16} color="#F9F9F9" />
-            <Text style={[styles.searchInput, { color: "#F9F9F9", flex: 1 }]} numberOfLines={1}>
-              Titulo, voz guía, artista o tema
-            </Text>
-          </View>
-        </Pressable>
       </View>
 
       <ScrollView
@@ -958,7 +820,18 @@ export default function ExploreScreen() {
         )}
       </ScrollView>
 
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={discoverSearchItems}
+        placeholder="Buscar en Descubrir..."
+        emptyTitle="Encuentra algo para ti"
+        emptySubtitle="Busca sesiones, voces guía, artistas o temas"
+        onSelect={(item) => {
+          const session = SESSIONS.find((candidate) => candidate.id === item.id);
+          if (session) handleSessionPress(session);
+        }}
+      />
     </View>
   );
 }
@@ -969,7 +842,8 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10 },
-  titleRow:     { alignItems: "stretch", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
+  titleRow:     { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
+  headerSearchButton: { padding: 4 },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
