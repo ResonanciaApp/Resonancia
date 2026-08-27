@@ -81,9 +81,7 @@ export function ContextSearchModal({
     onClose();
   };
 
-  const backgroundColor = theme.id === "tibet"
-    ? theme.gradient[theme.gradient.length - 1] as string
-    : colors.background;
+  const backgroundColor = theme.gradient[0] as string;
 
   return (
     <Modal

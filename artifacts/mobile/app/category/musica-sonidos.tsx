@@ -476,6 +476,16 @@ export default function MusicaSonidosScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Música</Text>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={[styles.headerSearchButton, { transform: [{ translateY: -4 }] }]}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar en Música"
+            testID="music-search-button"
+          >
+            <Feather name="search" size={24} color={TEXT} />
+          </Pressable>
         </View>
 
         {/* ── Tabs ── */}
@@ -522,14 +532,23 @@ export default function MusicaSonidosScreen() {
           <View style={styles.headerTitleCol}>
             <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Música</Text>
           </View>
-          <View style={{ width: 40 }} />
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={styles.headerSearchButton}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar en Música"
+            testID="music-sticky-search-button"
+          >
+            <Feather name="search" size={24} color={TEXT} />
+          </Pressable>
         </View>
         <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
           <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
             <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: -1 }] }} />
           </View>
         </View>
-        <View style={{ marginTop: 14 }}>
+        <View style={{ marginTop: 19 }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
         </View>
         <View style={styles.stickyTabsDivider} />
@@ -546,6 +565,7 @@ const styles = StyleSheet.create({
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
+  headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.12)" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center", includeFontPadding: false, textAlignVertical: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
@@ -566,7 +586,7 @@ const styles = StyleSheet.create({
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
 
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -17, paddingHorizontal: H_PAD },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -12, paddingHorizontal: H_PAD },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRowWrapper: { position: "relative", marginHorizontal: -H_PAD },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
