@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: "700",
     color: "#F4F4F4",
     paddingHorizontal: HORIZONTAL_PAD,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   carouselContent: {
     paddingHorizontal: HORIZONTAL_PAD,
     gap: CARD_GAP,
-    paddingTop: 24,
+    paddingTop: 16,
   },
   dots: {
     marginTop: 25,

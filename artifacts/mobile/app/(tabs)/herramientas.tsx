@@ -190,7 +190,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: GRID_GAP,
     justifyContent: "center",
-    marginTop: -6,
   },
   fullBleedSection: {
     marginHorizontal: -GRID_PAD,
