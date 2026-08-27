@@ -83,7 +83,7 @@ const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const TAG_CARD_GAP = 6;
 const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
-const HERO_HEIGHT = 270;
+const HERO_HEIGHT = 330;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
