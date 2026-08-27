@@ -11,12 +11,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
-const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
-  "meditaciones-guiadas": 164,
-  "sonidos-ancestrales": 150,
-  "musica-sonidos": 112,
-  "__descanzo__": 108,
-};
 
 /**
  * Accesos de exploración compartidos por Inicio y Descubrir.
@@ -170,7 +164,6 @@ export function ContentCategoryGrid({
                   horizontal
                     ? [
                         styles.horizontalCard,
-                        { width: HORIZONTAL_CARD_WIDTHS[category.id] ?? 120 },
                         (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
                           styles.horizontalSmallRadiusCard,
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
@@ -239,6 +232,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   horizontalCard: {
+    width: 185,
     borderRadius: 27,
     flexDirection: "row",
     alignItems: "center",
