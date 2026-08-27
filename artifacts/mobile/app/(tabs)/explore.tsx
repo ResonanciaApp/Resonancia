@@ -719,59 +719,40 @@ export default function ExploreScreen() {
           );
         })}
 
-        {/* ── Carruseles por temática ── */}
-        {themeCarousels.length > 0 && (
-          <>
-            {themeCarousels
-              .filter((tc) =>
-                tc.label !== "Para la ansiedad" &&
-                tc.label !== "Energiza tus mañanas" &&
-                tc.label !== "Foco y concentración")
-              .map((tc) => (
-                <SessionCarousel
-                  key={tc.label}
-                  title={tc.label}
-                  sessions={tc.sessions}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionPress(s)}
-                  style={{ marginTop: 0, marginBottom: SECTION_GAP }}
-                  cardWidth={SQCARD_W}
-                  titleSize={20}
-                />
+        {/* ── Otras temáticas ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+          <Pressable
+            onPress={() => openCategory("/todas-las-tematicas")}
+            style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
+          </Pressable>
+          <View style={styles.tagGrid}>
+            {TAG_CARDS
+              .filter((tag) =>
+                tag.label !== "Para la ansiedad" &&
+                tag.label !== "Energiza tus mañanas" &&
+                tag.label !== "Foco y concentración")
+              .slice(0, 8)
+              .map((tag) => (
+                <Pressable
+                  key={tag.id}
+                  onPress={() => openCategory(`/tag/${tag.id}`)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
+                >
+                  <View style={styles.tagCard}>
+                    <Image
+                      source={tag.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
+                  </View>
+                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
+                </Pressable>
               ))}
-            <>
-                      {/* ── Otras temáticas ── */}
-                      <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-                        <Pressable
-                          onPress={() => openCategory("/todas-las-tematicas")}
-                          style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
-                        >
-                          <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
-                        </Pressable>
-                        <View style={styles.tagGrid}>
-                          {TAG_CARDS.filter((t) => !themeCarousels.some((tc) => tc.label === t.label)).slice(0, 8).map((tag) => (
-                            <Pressable
-                              key={tag.id}
-                              onPress={() => openCategory(`/tag/${tag.id}`)}
-                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 4 }]}
-                            >
-                              <View style={styles.tagCard}>
-                                <Image
-                                  source={tag.image}
-                                  style={StyleSheet.absoluteFill}
-                                  contentFit="cover"
-                                  cachePolicy="memory-disk"
-                                />
-                              </View>
-                              <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
-                            </Pressable>
-                          ))}
-                        </View>
-                      </View>
-
-            </>
-          </>
-        )}
+          </View>
+        </View>
 
         {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
         {false && (
