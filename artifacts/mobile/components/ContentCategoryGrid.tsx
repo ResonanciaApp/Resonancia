@@ -258,15 +258,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   horizontalSmallRadiusCard: {
-    borderRadius: 10,
+    borderRadius: 17,
   },
   horizontalRightSmallRadiusCard: {
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
+    borderTopRightRadius: 17,
+    borderBottomRightRadius: 17,
   },
   horizontalLeftSmallRadiusCard: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 17,
+    borderBottomLeftRadius: 17,
   },
   iconWrap: {
     width: 26,
