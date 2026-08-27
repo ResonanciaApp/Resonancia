@@ -107,6 +107,7 @@ const NAV_TABS = [
 ];
 const GRID_GAP = 12;
 const GRID_PAD = 19;
+const INICIO2_SECTION_GAP = 35;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
@@ -1758,7 +1759,7 @@ export default function HomeScreen2({
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: 25, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            style={{ marginTop: INICIO2_SECTION_GAP, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
@@ -1838,7 +1839,7 @@ export default function HomeScreen2({
             sessions={recentSessions}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: -10, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
@@ -1852,7 +1853,7 @@ export default function HomeScreen2({
             sessions={favoriteSessions}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: -10, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
@@ -1861,26 +1862,28 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <InicioMoodRecommendations
-            selectedMood={selectedMood}
-            moodRecommended={moodRecommended}
-            isPremium={isPremium}
-            cardBg={cardBg}
-            showTitle
-            showDivider={false}
-            moodTopOffset={0}
-            titleSize={19}
-            titleSpacing={20}
-            onOpenMoodPicker={() => setMoodSheetVisible(true)}
-            onClearMood={() => setSelectedMood(null)}
-            onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
-            onPlaySession={playSession}
-            openCategory={openCategory}
-          />
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <InicioMoodRecommendations
+              selectedMood={selectedMood}
+              moodRecommended={moodRecommended}
+              isPremium={isPremium}
+              cardBg={cardBg}
+              showTitle
+              showDivider={false}
+              moodTopOffset={0}
+              titleSize={19}
+              titleSpacing={20}
+              onOpenMoodPicker={() => setMoodSheetVisible(true)}
+              onClearMood={() => setSelectedMood(null)}
+              onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
+              onPlaySession={playSession}
+              openCategory={openCategory}
+            />
+          </View>
         )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
-          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
+          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
               <Pressable
@@ -1939,7 +1942,10 @@ export default function HomeScreen2({
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: isInicio2 ? 55 : 15 }]}>
+          <View style={[styles.section, {
+            marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
+            marginTop: isInicio2 ? 0 : 15,
+          }]}>
             <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle]}>
               Para este momento
             </Text>
@@ -2109,7 +2115,7 @@ export default function HomeScreen2({
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
-          <View style={styles.premBannerOuter}>
+          <View style={[styles.premBannerOuter, isInicio2 && { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Pressable
               onPress={() => router.push("/membresia" as never)}
               style={({ pressed }) => [styles.premBannerWrap, { opacity: pressed ? 0.82 : 1 }]}
@@ -2142,14 +2148,17 @@ export default function HomeScreen2({
         )}
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
-        <View style={styles.sectionDivider} />
-        <View style={{ marginBottom: SECTION_GAP, marginTop: -25 }}>
+        <View style={[styles.sectionDivider, isInicio2 && { marginBottom: INICIO2_SECTION_GAP }]} />
+        <View style={{
+          marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
+          marginTop: isInicio2 ? 0 : -25,
+        }}>
           <AlmaCommunitySection />
         </View>
 
 
         {/* ── 10. BANNER PREMIUM ── */}
-        <View style={{ marginBottom: SECTION_GAP }}>
+        <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />
         </View>
 
@@ -2856,8 +2865,8 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   inicio2SectionTitle: { fontSize: 19, marginBottom: 20 },
   continueSection: {
-    marginTop: 13,
-    marginBottom: 47,
+    marginTop: 0,
+    marginBottom: INICIO2_SECTION_GAP,
     paddingHorizontal: GRID_PAD,
   },
   continueSectionTitle: {
