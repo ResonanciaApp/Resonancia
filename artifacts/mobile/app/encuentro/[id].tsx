@@ -166,6 +166,12 @@ export default function EncuentroDetalle() {
             style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
             onPress={() => setCalSheet(true)}
           >
+            <LinearGradient
+              colors={["#774544", "#50316f"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
             <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginRight: 8 }} />
             <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           </Pressable>
@@ -389,7 +395,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#5146A8",
+    overflow: "hidden",
     borderRadius: 30,
     borderWidth: 1,
     borderColor: "rgba(218,212,236,0.25)",

@@ -188,9 +188,15 @@ export default function DiarioScreen() {
           onPress={() => router.push("/diario-entrada" as never)}
           style={({ pressed }) => [
             styles.addBtn,
-            { overflow: "hidden", opacity: pressed ? 0.85 : 1, backgroundColor: colors.primary },
+            { opacity: pressed ? 0.85 : 1 },
           ]}
         >
+          <LinearGradient
+            colors={["#774544", "#50316f"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
@@ -253,7 +259,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: undefined,
+    overflow: "hidden",
   },
-  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#050619" },
+  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#FFFFFF" },
 });
