@@ -523,7 +523,7 @@ export default function DescansoScreen() {
                   sessions={recentInDescanso}
                   isPremium={isPremium}
                   onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+                   style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                 />

@@ -54,6 +54,7 @@ import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
+import { computeTotalActiveDays, formatMinutes } from "@/utils/stats";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -101,6 +102,8 @@ function isoDow(d: Date): number {
 
 
 const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
+
+type StatsPeriod = "30d" | "daily" | "total";
 
 
 
@@ -230,15 +233,35 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, maxStreak, weekFlags } = useStreak();
-  const rachaStats = useMemo(() => {
-    const weekActivity = weekFlags;
-    const totalSessions = statEvents.length;
-    const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
-    const timeDisplay =
-      totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
-    return { currentStreak, maxStreak, weekActivity, totalSessions, timeDisplay };
-  }, [statEvents, currentStreak, maxStreak, weekFlags]);
+  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
+  const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>("30d");
+  const [statsPeriodOpen, setStatsPeriodOpen] = useState(false);
+
+  const personalStats = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let periodEvents = statEvents;
+    if (statsPeriod !== "total") {
+      const start = new Date(today);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      if (statsPeriod === "30d") start.setDate(start.getDate() - 29);
+      periodEvents = statEvents.filter((event) => {
+        const playedAt = new Date(event.playedAt);
+        return playedAt >= start && playedAt < tomorrow;
+      });
+    }
+
+    const minutes = Math.round(periodEvents.reduce((sum, event) => sum + (event.minutes ?? 0), 0));
+    return {
+      minutes,
+      activeDays: computeTotalActiveDays(periodEvents),
+    };
+  }, [statEvents, statsPeriod]);
+
+  const statsPeriodLabel =
+    statsPeriod === "30d" ? "Últimos 30 días" : statsPeriod === "daily" ? "Diario" : "Totales";
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -813,67 +836,150 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
           </View>
         </View>
 
-        {/* ── Tu racha (oculta a pedido del usuario) ── */}
-        {false && (
-        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
-          <View style={styles.rachaTop}>
-            <View style={[styles.rachaBubble, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
-              <Text style={styles.rachaFlame}>{rachaStats.currentStreak > 0 ? "🔥" : "✨"}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.rachaValue, { color: colors.foreground }]}>
-                {rachaStats.currentStreak > 0
-                  ? `${rachaStats.currentStreak} día${rachaStats.currentStreak !== 1 ? "s" : ""} de racha`
-                  : "Comienza tu racha"}
-              </Text>
-              <Text style={[styles.rachaSub, { color: colors.mutedForeground }]}>
-                {rachaStats.currentStreak > 0
-                  ? "Sigue así, no pierdas tu constancia"
-                  : "Escucha una sesión hoy para empezar"}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.rachaWeekRow}>
-            {WEEK_INITIALS.map((label, i) => {
-              const done = rachaStats.weekActivity[i];
-              const isToday = i === isoDow(new Date());
-              return (
-                <View key={i} style={styles.rachaDayPill}>
-                  <Text style={[styles.rachaDayLabel, { color: isToday ? colors.foreground : colors.mutedForeground }]}>
-                    {label}
+        {/* ── Racha y estadísticas personales (solo en el Perfil dedicado) ── */}
+        {dedicated && (
+          <>
+            <View
+              style={[
+                styles.streakSection,
+                { backgroundColor: "rgba(0,0,0,0.16)", borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.streakHeadingRow}>
+                <View style={styles.streakHeadingCopy}>
+                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu racha</Text>
+                  <Text style={[styles.streakSubtitle, { color: colors.mutedForeground }]}>
+                    {currentStreak > 0
+                      ? `Llevas ${currentStreak} día${currentStreak === 1 ? "" : "s"} de constancia`
+                      : "Escucha una sesión para comenzar"}
                   </Text>
-                  <View
-                    style={[
-                      styles.rachaDayCircle,
-                      {
-                        backgroundColor: done ? colors.primary : "transparent",
-                        borderColor: done ? colors.primary : isToday ? colors.foreground : colors.border,
-                      },
-                    ]}
-                  >
-                    {done && <Feather name="check" size={13} color="#1B060F" />}
-                  </View>
                 </View>
-              );
-            })}
-          </View>
-
-          <View style={[styles.rachaStatsRow, { borderTopWidth: 1, borderTopColor: colors.border, marginTop: 16 }]}>
-            {[
-              { icon: "🧘", value: rachaStats.totalSessions.toString(), label: "Sesiones\ntotales" },
-              { icon: "⏱️", value: rachaStats.timeDisplay, label: "Tiempo\ntotal" },
-              { icon: "🏆", value: rachaStats.maxStreak > 0 ? `${rachaStats.maxStreak} d` : "—", label: "Racha\nmáxima" },
-            ].map((s, i) => (
-              <View key={s.label} style={styles.rachaStatCol}>
-                {i > 0 && <View style={[styles.rachaStatDivider, { backgroundColor: colors.border }]} />}
-                <Text style={styles.rachaStatEmoji}>{s.icon}</Text>
-                <Text style={[styles.rachaStatVal, { color: colors.accent }]}>{s.value || "—"}</Text>
-                <Text style={[styles.rachaStatLabel, { color: colors.mutedForeground }]}>{s.label}</Text>
+                <View style={[styles.streakCountPill, { backgroundColor: "rgba(212,175,55,0.14)" }]}>
+                  <Feather name="zap" size={15} color={colors.primary} />
+                  <Text style={[styles.streakCountText, { color: colors.foreground }]}>
+                    {currentStreak}
+                  </Text>
+                </View>
               </View>
-            ))}
-          </View>
-        </View>
+
+              <View style={styles.streakDaysRow}>
+                {WEEK_INITIALS.map((label, i) => {
+                  const done = weekFlags[i] === true;
+                  const isToday = i === todayIndex;
+                  return (
+                    <View key={`${label}-${i}`} style={styles.streakDay}>
+                      <Text
+                        style={[
+                          styles.streakDayLabel,
+                          { color: isToday ? colors.foreground : colors.mutedForeground },
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                      <View
+                        style={[
+                          styles.streakDayCircle,
+                          {
+                            backgroundColor: done ? colors.primary : "transparent",
+                            borderColor: done
+                              ? colors.primary
+                              : isToday
+                                ? colors.foreground
+                                : colors.border,
+                          },
+                        ]}
+                      >
+                        {done && <Feather name="check" size={14} color={colors.primaryForeground} />}
+                        {!done && isToday && <View style={[styles.todayDot, { backgroundColor: colors.foreground }]} />}
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+
+              <Text style={[styles.streakBestText, { color: colors.mutedForeground }]}>
+                Mejor racha: {maxStreak} día{maxStreak === 1 ? "" : "s"}
+              </Text>
+            </View>
+
+            <View
+              style={[
+                styles.personalStatsCard,
+                { backgroundColor: "rgba(0,0,0,0.24)", borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.personalStatsHeader}>
+                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                  Estadísticas personales
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Periodo: ${statsPeriodLabel}`}
+                  onPress={() => setStatsPeriodOpen((open) => !open)}
+                  style={({ pressed }) => [styles.statsPeriodButton, { opacity: pressed ? 0.72 : 1 }]}
+                >
+                  <Text style={[styles.statsPeriodButtonText, { color: colors.mutedForeground }]}>
+                    {statsPeriodLabel}
+                  </Text>
+                  <Feather name={statsPeriodOpen ? "chevron-up" : "chevron-down"} size={15} color={colors.mutedForeground} />
+                </Pressable>
+              </View>
+
+              {statsPeriodOpen && (
+                <View style={[styles.statsPeriodMenu, { borderColor: colors.border }]}>
+                  {([
+                    ["30d", "Últimos 30 días"],
+                    ["daily", "Diario"],
+                    ["total", "Totales"],
+                  ] as const).map(([value, label]) => (
+                    <Pressable
+                      key={value}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: statsPeriod === value }}
+                      onPress={() => {
+                        setStatsPeriod(value);
+                        setStatsPeriodOpen(false);
+                      }}
+                      style={[
+                        styles.statsPeriodOption,
+                        statsPeriod === value && { backgroundColor: "rgba(255,255,255,0.08)" },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.statsPeriodOptionText,
+                          { color: statsPeriod === value ? colors.foreground : colors.mutedForeground },
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                      {statsPeriod === value && <Feather name="check" size={15} color={colors.primary} />}
+                    </Pressable>
+                  ))}
+                </View>
+              )}
+
+              <View style={styles.personalStatsMetrics}>
+                <View style={styles.personalStatMetric}>
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {formatMinutes(personalStats.minutes)}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
+                    Minutos de práctica
+                  </Text>
+                </View>
+                <View style={[styles.personalStatsDivider, { backgroundColor: colors.border }]} />
+                <View style={styles.personalStatMetric}>
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.activeDays}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
+                    Días logrados
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </>
         )}
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
@@ -1458,24 +1564,93 @@ const styles = StyleSheet.create({
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
   planMejorarText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
-  // Tu Progreso — racha card
-  rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
-  rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
-  rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
-  rachaFlame: { fontFamily: "Manrope", fontSize: 24 },
-  rachaValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 3 },
-  rachaSub: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16 },
-  rachaWeekRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
-  rachaDayPill: { alignItems: "center", gap: 5 },
-  rachaDayLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
-  rachaDayCircle: { width: 34, height: 34, borderRadius: 17, borderWidth: 2, alignItems: "center", justifyContent: "center" },
-  rachaMaxRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTopWidth: 1 },
-  rachaMaxIcon: { width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  rachaMaxLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  rachaMaxSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
-  rachaMaxValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  rachaVerMas: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 14 },
-  rachaVerMasText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  // Racha y estadísticas personales
+  streakSection: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+  },
+  streakHeadingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginBottom: 18,
+  },
+  streakHeadingCopy: { flex: 1, gap: 4 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2 },
+  streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
+  streakCountPill: {
+    minWidth: 46,
+    height: 38,
+    borderRadius: 19,
+    paddingHorizontal: 11,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  },
+  streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
+  streakDaysRow: { flexDirection: "row", justifyContent: "space-between" },
+  streakDay: { alignItems: "center", gap: 7 },
+  streakDayLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
+  streakDayCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  todayDot: { width: 6, height: 6, borderRadius: 3 },
+  streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
+  personalStatsCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    marginBottom: 20,
+    overflow: "hidden",
+  },
+  personalStatsHeader: {
+    minHeight: 58,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  personalStatsTitle: { flex: 1, fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.15 },
+  statsPeriodButton: {
+    maxWidth: 142,
+    minHeight: 34,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 4,
+  },
+  statsPeriodButtonText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", textAlign: "right" },
+  statsPeriodMenu: { marginHorizontal: 16, marginBottom: 10, borderWidth: 1, borderRadius: 12, overflow: "hidden" },
+  statsPeriodOption: {
+    minHeight: 40,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  statsPeriodOptionText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  personalStatsMetrics: {
+    flexDirection: "row",
+    paddingVertical: 17,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.06)",
+  },
+  personalStatMetric: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 8 },
+  personalStatsDivider: { width: 1, height: 42, alignSelf: "center" },
+  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.15 },
+  personalStatLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "500", marginTop: 4, textAlign: "center" },
 
   // Membresía
   membershipRow: {
