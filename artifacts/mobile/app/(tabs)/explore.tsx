@@ -15,6 +15,7 @@ import {
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -45,6 +46,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const GAP = 16;
 const SECTION_GAP = 53;
+const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -295,19 +297,42 @@ export default function ExploreScreen() {
     { slug: string; label: string; visible: boolean; sortOrder: number }[] | null
   >(null);
   React.useEffect(() => {
-    const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "";
-    fetch(`${API_URL}/api/explore-sections`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        // Tanto si la API respondió con secciones como con lista vacía,
-        // establecer el estado para que el useMemo use la respuesta real.
-        setExploreSections(data?.sections ?? []);
-      })
-      .catch(() => {
-        // Si falla la red, tratar como lista vacía (no mostrar nada
-        // en lugar de mostrar todas las secciones sin filtrar).
-        setExploreSections([]);
-      });
+    let cancelled = false;
+    void (async () => {
+      // El caché contiene exclusivamente la última configuración recibida del
+      // servidor. Evita que un corte transitorio haga desaparecer carruseles,
+      // sin activar tags locales ni saltarse la visibilidad elegida en Admin.
+      try {
+        const raw = await AsyncStorage.getItem(EXPLORE_SECTIONS_CACHE_KEY);
+        if (raw && !cancelled) {
+          const cached = JSON.parse(raw);
+          if (Array.isArray(cached)) setExploreSections(cached);
+        }
+      } catch {
+        // Caché ausente/corrupto: esperamos la respuesta de red.
+      }
+
+      try {
+        const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "";
+        const response = await fetch(`${API_URL}/api/explore-sections`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const sections = Array.isArray(data?.sections) ? data.sections : [];
+        if (cancelled) return;
+        setExploreSections(sections);
+        AsyncStorage.setItem(
+          EXPLORE_SECTIONS_CACHE_KEY,
+          JSON.stringify(sections),
+        ).catch(() => {});
+      } catch {
+        // Conservar el último valor válido del servidor si existe. Solo cuando
+        // nunca hubo respuesta ni caché se muestra la lista vacía.
+        if (!cancelled) setExploreSections((current) => current ?? []);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const themeCarousels = React.useMemo(() => {

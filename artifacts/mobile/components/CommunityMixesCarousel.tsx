@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useGetSharedMixes,
@@ -42,6 +43,7 @@ const STACK_THUMB = 93;
 const MAX_VISIBLE = 5;
 const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
+const SHARED_MIXES_CACHE_KEY = "cdc_shared_mixes_v1";
 
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
@@ -50,10 +52,34 @@ export function CommunityMixesCarousel() {
   const { openCategory } = useCategoryOverlay();
   const colors = useColors();
   const { data } = useGetSharedMixes();
-  const allMixes = data?.mixes ?? [];
+  const [cachedMixes, setCachedMixes] = useState<SharedMix[]>([]);
+  const allMixes = data?.mixes ?? cachedMixes;
   const { isSignedIn } = useAuth();
   const toggleLike = useToggleSharedMixLike();
   const pendingLike = useRef<Record<number, boolean>>({});
+
+  React.useEffect(() => {
+    let cancelled = false;
+    AsyncStorage.getItem(SHARED_MIXES_CACHE_KEY)
+      .then((raw) => {
+        if (!raw || cancelled) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setCachedMixes(parsed);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!Array.isArray(data?.mixes)) return;
+    setCachedMixes(data.mixes);
+    AsyncStorage.setItem(
+      SHARED_MIXES_CACHE_KEY,
+      JSON.stringify(data.mixes),
+    ).catch(() => {});
+  }, [data]);
 
 
   const sorted = [...allMixes].sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0));
