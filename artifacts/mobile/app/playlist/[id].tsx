@@ -50,6 +50,9 @@ const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 const DEFAULT_PANEL_BG = "transparent";
+const PLAYLIST_PLAY_GRADIENT = ["#774544", "#50316F"] as const;
+const PLAYLIST_CONTROL_BG = "#50316F";
+const PLAYLIST_CARD_BG = "rgba(190,150,80,0.05)";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
 const ACCENT_PALETTE: readonly string[] = [
@@ -309,7 +312,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               <View style={styles.coverEmpty}>
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
-                <View style={[styles.coverPlusBadge, { backgroundColor: "#283673" }]}>
+                <View style={[styles.coverPlusBadge, { backgroundColor: PLAYLIST_CONTROL_BG }]}>
                   <Feather name="plus" size={14} color="#FFFFFF" />
                 </View>
               </View>
@@ -322,7 +325,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             <Pressable
               onPress={() => setMenuVisible(true)}
               hitSlop={10}
-              style={[styles.iconBtn, { backgroundColor: "#283673", borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
+              style={[styles.iconBtn, { backgroundColor: PLAYLIST_CONTROL_BG, borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
             >
               <Feather name="more-horizontal" size={22} color={TEXT} />
             </Pressable>
@@ -351,13 +354,19 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.85 : 1 }]}
               onPress={handleTogglePlay}
             >
+              <LinearGradient
+                colors={PLAYLIST_PLAY_GRADIENT}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={StyleSheet.absoluteFill}
+              />
               <Feather
                 name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
                 size={16}
-                color={BG_GRADIENT[BG_GRADIENT.length - 1]}
+                color="#F9F9F9"
                 style={{ marginRight: 7 }}
               />
-              <Text style={[styles.pillText, { color: BG_GRADIENT[BG_GRADIENT.length - 1] }]}>
+              <Text style={[styles.pillText, { color: "#F9F9F9" }]}>
                 {miniPlayerVisible && displayIsPlaying ? "Pausar" : "Reproducir"}
               </Text>
             </Pressable>
@@ -736,8 +745,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f9f9f9",
     borderRadius: 30,
+    overflow: "hidden",
     paddingVertical: 11,
     paddingHorizontal: 14,
   },
@@ -830,7 +839,7 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: PLAYLIST_CARD_BG,
   },
   coverPlusBadge: {
     position: "absolute",
