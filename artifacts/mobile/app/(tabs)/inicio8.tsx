@@ -1727,7 +1727,6 @@ export default function HomeScreen2({
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
-            <Text style={styles.inicio2PurposeTitle}>Establece tu propósito</Text>
             <Text style={[styles.intencionSuper, styles.inicio2PurposeKicker]}>
               Hoy quiero…
             </Text>
@@ -2424,14 +2423,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(130,96,181,0.2)",
     backgroundColor: "rgba(255,255,255,0.05)",
-  },
-  inicio2PurposeTitle: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FBFBFB",
-    textAlign: "left",
-    marginBottom: 8,
   },
   inicio2PurposeKicker: {
     textAlign: "left",
