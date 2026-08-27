@@ -14,9 +14,11 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAuth } from "@/context/AuthContext";
+import { useDrawer } from "@/context/DrawerContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { ENCUENTROS } from "@/data/encuentros";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
@@ -27,7 +29,6 @@ import type { CommunityFeedEvent } from "@/lib/communityApi";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 
 const CARD_H_PADDING = 20;
-const PILL_H = 68;
 
 function getCommunityEventTitle(event: CommunityFeedEvent): string {
   const { payload, eventType } = event;
@@ -61,11 +62,19 @@ function getCommunityEventAction(event: CommunityFeedEvent): string {
 
 export default function EncuentrosScreen() {
   const insets = useSafeAreaInsets();
-  const tabBarHeight = PILL_H + Math.max(8, insets.bottom - 10);
   const [searchVisible, setSearchVisible] = useState(false);
   const { theme: activeTheme } = useSceneTheme();
   const { clerkUserId } = useAuth();
+  const { open: openDrawer } = useDrawer();
+  const { requestHide, showMenu } = useTabBarVisibility();
   const { events, loading: feedLoading, refresh, refreshing } = useCommunityFeed(clerkUserId);
+
+  useFocusEffect(
+    useCallback(() => {
+      requestHide();
+      return () => showMenu();
+    }, [requestHide, showMenu]),
+  );
 
   const communitySearchItems = useMemo(
     () => [
@@ -171,16 +180,28 @@ export default function EncuentrosScreen() {
       {/* Header fijo */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Comunidad</Text>
-        <Pressable
-          onPress={() => setSearchVisible(true)}
-          hitSlop={10}
-          style={styles.headerSearchButton}
-          accessibilityRole="button"
-          accessibilityLabel="Buscar en Comunidad"
-          testID="community-search-button"
-        >
-          <Feather name="search" size={22} color="#F9F9F9" />
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={styles.headerSearchButton}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar en Comunidad"
+            testID="community-search-button"
+          >
+            <Feather name="search" size={22} color="#F9F9F9" />
+          </Pressable>
+          <Pressable
+            onPress={openDrawer}
+            hitSlop={10}
+            style={styles.headerMenuButton}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú de perfil"
+            testID="community-profile-menu-button"
+          >
+            <Feather name="user" size={22} color="#F9F9F9" />
+          </Pressable>
+        </View>
       </View>
 
       {/* Un único FlatList vertical — sin ScrollView wrapper */}
@@ -191,7 +212,7 @@ export default function EncuentrosScreen() {
         ItemSeparatorComponent={ItemSeparator}
         ListHeaderComponent={listHeaderElement}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
         style={{ opacity: feedOpacity }}
         refreshControl={
           <RefreshControl
@@ -239,9 +260,17 @@ const styles = StyleSheet.create({
     paddingTop: 19,
     paddingBottom: 20,
   },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: -9,
+  },
   headerSearchButton: {
     padding: 4,
-    marginTop: -9,
+  },
+  headerMenuButton: {
+    padding: 4,
   },
   headerTitle: {
     fontFamily: "Manrope",
