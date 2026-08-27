@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 9,
     borderRadius: 30,
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: PLAYLIST_CARD_BG,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.6)",
   },

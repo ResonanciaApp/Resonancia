@@ -52,7 +52,6 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const BG_SHEET  = "#340D1A";
 const GOLD      = "#F9F9F9";
 const NAVY_CHECK = "#060A0F";
 const TEXT      = "#FAF0EE";
@@ -265,7 +264,7 @@ export function PlaylistAddSessionsSheet({
   onClose: () => void;
 }) {
   const insets    = useSafeAreaInsets();
-  const { activeSceneId } = useSceneTheme();
+  const { theme } = useSceneTheme();
   // colorTab: chip dorado (actualización inmediata al tap)
   // displayTab: datos del FlatList (actualización solo al terminar la animación)
   const [colorTab,   setColorTab]   = useState<Tab>("Sesiones sugeridas");
@@ -441,7 +440,7 @@ export function PlaylistAddSessionsSheet({
 
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
         <LinearGradient
-          colors={activeSceneId === "tibet" ? ["#2d1c52", "#1f2a62"] : ["#340D1A", "#340D1A"]}
+          colors={theme.gradient}
           style={StyleSheet.absoluteFill}
         />
         <View style={styles.handle} />
@@ -469,17 +468,34 @@ export function PlaylistAddSessionsSheet({
                 key={tab}
                 style={({ pressed }) => [
                   styles.tabChip,
-                  active ? styles.tabChipActive : (activeSceneId === "tibet" ? styles.tabChipInactiveTibet : null),
+                    active
+                      ? styles.tabChipActive
+                      : (theme.id === "tibet"
+                        ? styles.tabChipInactiveTibet
+                        : theme.id === "indigo"
+                          ? styles.tabChipInactiveIndigo
+                          : null),
                   { opacity: pressed ? 0.8 : 1 },
                 ]}
                 onPress={() => switchTab(tab)}
               >
                 {active && (
-                  activeSceneId === "tibet"
-                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                    : <GoldGradientFill />
+                    <LinearGradient
+                      colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 1, y: 0.5 }}
+                      style={StyleSheet.absoluteFill}
+                    />
                 )}
-                <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
+                  <Text
+                    style={[
+                      styles.tabText,
+                      active && styles.tabTextActive,
+                      active && theme.id === "indigo" && styles.tabTextIndigoActive,
+                    ]}
+                  >
+                    {tab}
+                  </Text>
               </Pressable>
             );
           })}
@@ -564,28 +580,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 2,
   },
   tabChip: {
-    height: 28,
-    paddingHorizontal: 14,
-    borderRadius: 999,
+    height: 46,
+    paddingHorizontal: 12,
+    borderRadius: 27,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.4)",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   tabChipActive: { borderWidth: 0 },
   tabChipInactiveTibet: {
-    backgroundColor: "rgba(0,0,0,0.27)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.4)",
+    backgroundColor: "rgba(0,0,0,0.15)",
   },
-  tabText: { fontFamily: "Manrope", color: "#F4F4F4", fontSize: 11, fontWeight: "400" },
-  tabTextActive: { color: "#2D0D3A", fontWeight: "500" },
+  tabChipInactiveIndigo: {
+    backgroundColor: "rgba(42,40,64,0.65)",
+  },
+  tabText: { fontFamily: "Manrope", color: "#FBFBFB", fontSize: 14, fontWeight: "700", textAlign: "center" },
+  tabTextActive: { color: "#0D0A1E", fontWeight: "600" },
+  tabTextIndigoActive: { color: "#F9F9F9" },
 
   // Session rows
   sessionRow: {
