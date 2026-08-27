@@ -713,12 +713,6 @@ function Inicio2HeroSlider({
           accessibilityLabel={INICIO2_SLIDES[activeIndex].actionLabel}
           testID={`inicio2-slide-action-${activeIndex + 1}`}
         >
-          <LinearGradient
-            colors={["#774544", "#50316F"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={StyleSheet.absoluteFill}
-          />
           <Text style={styles.inicio2HeroActionButtonText}>
             {INICIO2_SLIDES[activeIndex].actionLabel}
           </Text>
@@ -2290,17 +2284,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 8,
     borderRadius: 999,
-    overflow: "hidden",
-    backgroundColor: "transparent",
+    backgroundColor: "#F9F9F9",
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: "rgba(249,249,249,0.5)",
     transform: [{ translateY: 15 }],
   },
   inicio2HeroActionButtonText: {
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
-    color: "#F9F9F9",
+    color: "#0D0A1E",
     textAlign: "center",
   },
   inicio2HeroStreak: {
