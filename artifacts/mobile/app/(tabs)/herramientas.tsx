@@ -10,7 +10,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
@@ -35,17 +34,6 @@ const TOOLS = [
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];
-
-const ACCESS_CARDS = [
-  { id: "premium", label: "Tu Premium", icon: "star-outline", route: "/membresia" },
-  { id: "sessions", label: "Mis sesiones", icon: "calendar-month-outline", route: "/mis-sesiones" },
-  { id: "favorites", label: "Mis favoritos", icon: "heart-outline", route: "/favoritos-todos" },
-  { id: "history", label: "Historial", icon: "history", route: "/historial" },
-  { id: "friends", label: "Amigos", icon: "account-multiple-outline", route: "/amigos" },
-  { id: "groups", label: "Grupos", icon: "account-group-outline", route: "/grupos" },
-] as const;
-
-type AccessId = (typeof ACCESS_CARDS)[number]["id"];
 
 export default function HerramientasScreen() {
   const { width } = useWindowDimensions();
@@ -87,16 +75,6 @@ export default function HerramientasScreen() {
         break;
     }
   }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
-
-  const handleAccessPress = useCallback((id: AccessId) => {
-    const access = ACCESS_CARDS.find((item) => item.id === id);
-    if (!access) return;
-    if (id === "premium") {
-      router.push(access.route as never);
-      return;
-    }
-    openOverlay(access.route);
-  }, [openOverlay]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
@@ -151,43 +129,6 @@ export default function HerramientasScreen() {
           ))}
         </View>
 
-        <View style={styles.accessSection}>
-          <Text style={[styles.accessTitle, { color: colors.foreground }]}>Mis accesos</Text>
-          <ScrollView
-            horizontal
-            nestedScrollEnabled
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.accessScrollContent}
-          >
-            {Array.from({ length: Math.ceil(ACCESS_CARDS.length / 2) }, (_, columnIndex) => (
-              <View key={`access-column-${columnIndex}`} style={[styles.accessColumn, { width: cardWidth }]}>
-                {ACCESS_CARDS.slice(columnIndex * 2, columnIndex * 2 + 2).map((access) => (
-                  <Pressable
-                    key={access.id}
-                    testID={`access-${access.id}`}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Abrir ${access.label}`}
-                    onPress={() => handleAccessPress(access.id)}
-                    style={({ pressed }) => [
-                      styles.accessCard,
-                      { opacity: pressed ? 0.75 : 1 },
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name={access.icon}
-                      size={22}
-                      color={colors.foreground}
-                    />
-                    <Text style={[styles.accessLabel, { color: colors.foreground }]} numberOfLines={1}>
-                      {access.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-
         <AstralGuidanceSection
           backgroundColor={
             activeSceneId === "tibet"
@@ -240,39 +181,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
     marginTop: 11,
     textAlign: "center",
-  },
-  accessSection: {
-    marginTop: 30,
-  },
-  accessTitle: {
-    marginBottom: 16,
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    letterSpacing: 0.3,
-  },
-  accessScrollContent: {
-    gap: GRID_GAP,
-    paddingRight: 24,
-  },
-  accessColumn: {
-    gap: GRID_GAP,
-  },
-  accessCard: {
-    height: 54,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    paddingHorizontal: 14,
-  },
-  accessLabel: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
   },
 });

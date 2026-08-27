@@ -93,6 +93,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1844,6 +1845,7 @@ export default function HomeScreen2({
             titleSpacing={20}
           />
         )}
+        {isInicio2 && <QuickAccessSection />}
         {isInicio2 && (
           <SessionCarousel
             title="Mis favoritos"
