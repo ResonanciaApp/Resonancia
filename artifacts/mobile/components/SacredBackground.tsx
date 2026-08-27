@@ -60,7 +60,11 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
     }
     return (
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+        <LinearGradient
+          colors={theme.gradient}
+          locations={theme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+        />
         {/* Brillo radial — N stops (radialStops) o 2 stops legacy (radialCenter/radialOuter) */}
         {theme.radialStops != null ? (
           <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">

@@ -18,6 +18,8 @@ export type SceneTheme = {
   label: string;
   /** Degradado de fondo (mínimo 2 stops) usado en pantallas con LinearGradient de raíz. */
   gradient: readonly [string, string, ...string[]];
+  /** Posiciones opcionales de los stops del degradado, expresadas entre 0 y 1. */
+  gradientLocations?: readonly [number, number, ...number[]];
   /** Color sólido de fondo — contenedores raíz, tab bar, sheets. */
   solid: string;
   /** Imagen de fondo opcional (require). Se muestra en variant="gradient" con overlay oscuro. */
@@ -52,8 +54,9 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo: {
     id: "indigo",
     label: "Índigo",
-    gradient: ["#15192F", "#15192F", "#15192F", "#15192F"],
-    solid: "#15192F",
+    gradient: ["#02001C", "#030014", "#030012", "#03000D"],
+    gradientLocations: [0, 0.3, 0.62, 0.99],
+    solid: "#03000D",
   },
 };
 

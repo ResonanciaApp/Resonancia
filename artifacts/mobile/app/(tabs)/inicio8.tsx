@@ -1471,6 +1471,7 @@ export default function HomeScreen2({
       {/* ── Fondo degradado del tema (4 stops) ── */}
       <LinearGradient
         colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+        locations={activeTheme.gradientLocations}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
@@ -1519,6 +1520,7 @@ export default function HomeScreen2({
             para que el header se funda sin costura con el fondo de la pantalla */}
         <LinearGradient
           colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+          locations={activeTheme.gradientLocations}
           style={{ position: "absolute", top: 0, left: 0, right: 0, height }}
           pointerEvents="none"
         />
@@ -1742,6 +1744,7 @@ export default function HomeScreen2({
           <View pointerEvents="none" style={styles.inicio2ContentGradientClip}>
             <LinearGradient
               colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+              locations={activeTheme.gradientLocations}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={{
