@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     flexWrap: "nowrap",
     justifyContent: "flex-start",
     marginTop: 5,
-    gap: 10,
+    gap: 8,
   },
   card: {
     width: "48%",

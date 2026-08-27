@@ -496,13 +496,14 @@ export default function ExploreScreen() {
         {/* ── Accesos por contenido ── */}
         <ContentCategoryGrid
           marginTop={0}
+          marginBottom={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
           horizontal
         />
 
         {/* ── Para este momento ── */}
         {featuredHoy && (
-          <View style={[styles.section, { marginBottom: 0, marginTop: 10 }]}>
+          <View style={[styles.section, { marginBottom: 0, marginTop: 20 }]}>
             <Pressable
               onPress={() => {
                 if (featuredHoy.skipMiniPlayer) { handleSessionPress(featuredHoy); return; }
