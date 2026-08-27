@@ -1,4 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
@@ -81,6 +82,7 @@ import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
+import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -381,6 +383,8 @@ function Inicio2HeroSlider({
   onOpenDrawer: () => void;
   onOpenProgress: () => void;
 }) {
+  const { user: clerkUser } = useUser();
+  const { username, photoUri } = useUserProfile();
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
   const desiredIndexRef = useRef(0);
@@ -570,6 +574,15 @@ function Inicio2HeroSlider({
     extrapolate: "clamp",
   });
   const imageScale = Animated.multiply(zoom, pullScale);
+  const displayName =
+    username ||
+    clerkUser?.firstName ||
+    clerkUser?.fullName ||
+    clerkUser?.username ||
+    "Explorador";
+  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
+  const greeting = new Date().getHours() < 12 ? "¡Buenos días!" : "¡Buenas tardes!";
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <View
@@ -632,13 +645,29 @@ function Inicio2HeroSlider({
       >
         <Pressable
           onPress={onOpenDrawer}
-          hitSlop={12}
-          style={styles.inicio2HeroIconButton}
+          hitSlop={10}
+          style={styles.inicio2HeroProfileButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir menú"
+          accessibilityLabel="Abrir menú de perfil"
           testID="inicio2-open-drawer"
         >
-          <Ionicons name="menu" size={27} color="#FFFFFF" />
+          {displayPhoto ? (
+            <ExpoImage
+              source={{ uri: displayPhoto }}
+              style={styles.inicio2HeroAvatar}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={styles.inicio2HeroAvatarFallback}>
+              <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
+            </View>
+          )}
+          <View style={styles.inicio2HeroGreeting}>
+            <Text style={styles.inicio2HeroGreetingName} numberOfLines={1}>
+              Hola {displayName}
+            </Text>
+            <Text style={styles.inicio2HeroGreetingTime}>{greeting}</Text>
+          </View>
         </Pressable>
 
         <Pressable
@@ -2226,13 +2255,56 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 18,
   },
-  inicio2HeroIconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255,255,255,0.12)",
+  inicio2HeroProfileButton: {
+    maxWidth: "76%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inicio2HeroAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.8)",
+  },
+  inicio2HeroAvatarFallback: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.8)",
+  },
+  inicio2HeroAvatarInitial: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  inicio2HeroGreeting: {
+    minWidth: 0,
+    marginLeft: 10,
+    gap: 1,
+  },
+  inicio2HeroGreetingName: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  inicio2HeroGreetingTime: {
+    color: "rgba(255,255,255,0.9)",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "500",
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   inicio2HeroLotusButton: {
     minWidth: 40,
