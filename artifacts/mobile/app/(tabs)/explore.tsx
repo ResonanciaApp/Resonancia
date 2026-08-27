@@ -38,8 +38,6 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { useMixerPanel } from "@/context/MixerPanelContext";
-import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
@@ -127,73 +125,6 @@ function getDailyRecommendations(count = 5): Session[] {
 function getSessionAuthor(s: Session): string {
   if (s.guideId) return getGuide(s.guideId).name;
   return getArtist(s.artistId).name;
-}
-
-const DISCOVER_QUICK_ACCESS = [
-  { id: "favoritos", label: "Favoritos", icon: "heart-outline" },
-  { id: "mezclador", label: "Mezclador", icon: "tune-variant" },
-  { id: "geometrix", label: "Geometrix", icon: "cube-outline" },
-  { id: "videos", label: "Videos", icon: "video-outline" },
-  { id: "diario", label: "Diario", icon: "book-open-page-variant-outline" },
-] as const;
-
-function DiscoverQuickAccessRow() {
-  const { openCategory } = useCategoryOverlay();
-  const { openMixer } = useMixerPanel();
-  const { openGeometrix } = useGeometrixPanel();
-  const { openOverlay } = useDrawer();
-
-  const handlePress = (id: (typeof DISCOVER_QUICK_ACCESS)[number]["id"]) => {
-    switch (id) {
-      case "favoritos":
-        openCategory("/favoritos-todos");
-        break;
-      case "mezclador":
-        openMixer();
-        break;
-      case "geometrix":
-        openGeometrix();
-        break;
-      case "videos":
-        openCategory("/videos");
-        break;
-      case "diario":
-        openOverlay("/diario");
-        break;
-    }
-  };
-
-  return (
-    <View style={styles.discoverQuickAccess} testID="discover-quick-access">
-      <ScrollView
-        horizontal
-        nestedScrollEnabled
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.discoverQuickAccessContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        {DISCOVER_QUICK_ACCESS.map((item) => (
-          <Pressable
-            key={item.id}
-            onPress={() => handlePress(item.id)}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={`Abrir ${item.label}`}
-            testID={`discover-quick-access-${item.id}`}
-            style={({ pressed }) => [
-              styles.discoverQuickAccessPill,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-          >
-            <MaterialCommunityIcons name={item.icon} size={15} color="#F9F9F9" />
-            <Text style={styles.discoverQuickAccessText} numberOfLines={1}>
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
-  );
 }
 
 // ── ChakraBodyRow ──────────────────────────────────────────────────────────────
@@ -563,8 +494,6 @@ export default function ExploreScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* ── Accesos por contenido ── */}
-        <DiscoverQuickAccessRow />
-
         <ContentCategoryGrid
           marginTop={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
@@ -922,34 +851,6 @@ const styles = StyleSheet.create({
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
-  discoverQuickAccess: {
-    marginBottom: 2,
-  },
-  discoverQuickAccessContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: H_PAD,
-  },
-  discoverQuickAccessPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 29,
-    paddingHorizontal: 11.5,
-    borderRadius: 999,
-    gap: 5,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  discoverQuickAccessText: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "400",
-    letterSpacing: 0.3,
-    color: "#F4F4F4",
-  },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
