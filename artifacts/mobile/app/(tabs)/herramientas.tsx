@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: GRID_GAP,
     justifyContent: "center",
-    marginTop: 9,
+    marginTop: -6,
   },
   card: {
     alignItems: "center",
