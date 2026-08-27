@@ -669,7 +669,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       {dedicated && (
         <View
           pointerEvents="none"
-          style={[styles.profileHeroBackground, { height: topPad + 280 }]}
+          style={[styles.profileHeroBackground, { height: topPad + 120 }]}
         >
           <LinearGradient
             colors={["#774544", "#50316F"]}
@@ -678,7 +678,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             style={StyleSheet.absoluteFill}
           />
           <LinearGradient
-            colors={["rgba(6,10,15,0)", "rgba(6,10,15,0.98)"]}
+            colors={["rgba(6,10,15,0)", activeTheme.solid]}
             start={{ x: 0, y: 0.35 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
