@@ -620,7 +620,7 @@ export default function DescansoScreen() {
       >
         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 13, width: "100%" }}>
           <View style={{ width: 38 }} />
-          <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "center" }]}>Dormir</Text>
+          <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "left" }]}>Dormir</Text>
           <View style={{ width: 38 }} />
         </View>
       </Animated.View>
@@ -1041,7 +1041,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: 0,
     transform: [{ translateY: 1 }],
   },

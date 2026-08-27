@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: -0.3,
-    textAlign: "center",
+    textAlign: "left",
   },
   grid: {
     flexDirection: "row",

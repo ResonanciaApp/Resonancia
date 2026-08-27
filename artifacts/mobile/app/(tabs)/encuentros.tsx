@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#F4F4F4",
     letterSpacing: 0.2,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: -9,
   },
   carouselTitle: {
