@@ -184,7 +184,7 @@ export function ContentCategoryGrid({
 
   return (
     <View
-      style={[styles.section, { marginBottom, marginTop }]}
+      style={[styles.section, horizontal && styles.horizontalSection, { marginBottom, marginTop }]}
       testID="content-category-grid"
     >
       {horizontal ? (
@@ -206,6 +206,10 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: SECTION_GAP - 20,
     paddingHorizontal: GRID_PAD,
+  },
+  horizontalSection: {
+    paddingRight: 0,
+    marginRight: -GRID_PAD,
   },
   grid: {
     flexDirection: "row",
