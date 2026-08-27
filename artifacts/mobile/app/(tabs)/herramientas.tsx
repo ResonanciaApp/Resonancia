@@ -13,7 +13,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { AstralGuidanceSection } from "@/components/AstralGuidanceSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -154,13 +153,6 @@ export default function HerramientasScreen() {
           <EncuentrosResonadoresSection titleMarginTop={0} />
         </View>
 
-        <AstralGuidanceSection
-          backgroundColor={
-            activeSceneId === "tibet"
-              ? "rgba(0,0,0,0.15)"
-              : "rgba(38,3,84,0.15)"
-          }
-        />
       </ScrollView>
     </View>
   );

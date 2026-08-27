@@ -68,7 +68,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { TEMAS } from "@/data/temas";
-import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
+import { useGetSceneAnimations } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
@@ -78,7 +78,7 @@ import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
+import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -912,7 +912,6 @@ export default function HomeScreen2({
     return () => blink.stop();
   }, [cursorOpacity]);
 
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
   const { setSelectedScene, bgScene, setBgScene } = useSelectedScene();
@@ -1013,34 +1012,6 @@ export default function HomeScreen2({
     const vary = (v: number) => Math.max(0, Math.min(200, Math.floor(v + (Math.random() - 0.5) * 70)));
     setShuffleBgColor(`rgba(${vary(r0)},${vary(g0)},${vary(b0)},0.92)`);
   }, [activeTheme]);
-
-  const featuredSession = React.useMemo(() => {
-    // Si el admin pineó una sesión, usarla directamente.
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned) {
-      return getSessionById(pinned.id) ?? {
-        id: pinned.id,
-        title: pinned.title,
-        subtitle: pinned.subtitle ?? "",
-        description: pinned.description ?? "",
-        categoryId: pinned.categoryId ?? "",
-        categoryLabel: pinned.categoryLabel ?? "",
-        duration: pinned.duration ?? 0,
-        durationLabel: pinned.durationLabel ?? "",
-        isPremium: pinned.isPremium ?? false,
-        isFeatured: true,
-        imageKey: pinned.imageUrl ?? undefined,
-        themeTag: [],
-      } as unknown as Session;
-    }
-    // Fallback: sesión aleatoria del día desde las marcadas isFeatured.
-    const featured = getFeaturedSessions();
-    if (!featured.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return featured[dayOfYear % featured.length];
-  }, [pinnedFeaturedData]);
 
   const { version: catalogVersion } = useCatalog();
 
@@ -1239,21 +1210,6 @@ export default function HomeScreen2({
       .filter((s): s is Session => s !== undefined)
       .slice(0, 10);
   }, [favorites]);
-
-
-  const filteredFeatured = React.useMemo(() => {
-    if (!activeFilter) return featuredSession;
-    const pool = SESSIONS.filter((s) => activeFilter.includes(s.categoryId));
-    if (!pool.length) return undefined;
-    const seed = new Date().toDateString() + activeFilter.join();
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
-    return pool[Math.abs(hash) % pool.length];
-  }, [activeFilter, featuredSession]);
-
-  const isFeaturedPlaying =
-    !!currentSession && !!filteredFeatured &&
-    currentSession.id === filteredFeatured.id && isPlaying;
 
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -1951,60 +1907,6 @@ export default function HomeScreen2({
           </View>
         )}
 
-        {/* ── SESIÓN DESTACADA ── */}
-        {filteredFeatured && (
-          <View style={[styles.section, {
-            marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
-            marginTop: isInicio2 ? 0 : 15,
-          }]}>
-            <Text style={[styles.sectionTitle, isInicio2 && styles.inicio2SectionTitle]}>
-              Para este momento
-            </Text>
-            <Pressable
-              onPress={() => {
-                if (filteredFeatured.skipMiniPlayer) { playSession(filteredFeatured); return; }
-                if (filteredFeatured.skipDetail) { playSession(filteredFeatured); router.push("/player" as never); }
-                else openCategory(`/session/${filteredFeatured.id}`);
-              }}
-            >
-              <View style={styles.heroImageContainer}>
-                <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
-              </View>
-              {(() => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const s = filteredFeatured as any;
-                const guideId  = s.guideId  as string | undefined;
-                const artistId = s.artistId as string | undefined;
-                const guide  = guideId  ? getGuide(guideId)   : undefined;
-                const artist = artistId ? getArtist(artistId) : undefined;
-                const heroAuthor = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                const heroPhoto  = guide?.photo ?? artist?.photo ?? null;
-                return (
-                  <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    {heroPhoto && (
-                      <Image
-                        source={heroPhoto}
-                        style={styles.heroAvatar}
-                        resizeMode="cover"
-                      />
-                    )}
-                    <View style={{ flex: 1 }}>
-                      <Text style={[styles.heroAuthor, { marginBottom: 4 }]} numberOfLines={1}>
-                        {filteredFeatured.categoryLabel}{filteredFeatured.durationLabel ? ` · ${filteredFeatured.durationLabel}` : ""}
-                      </Text>
-                      <Text style={styles.heroTitle} numberOfLines={2}>
-                        {filteredFeatured.title}
-                      </Text>
-                      <Text style={[styles.heroAuthor, { marginTop: -1 }]} numberOfLines={1}>
-                        {heroAuthor}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })()}
-            </Pressable>
-          </View>
-        )}
         {isInicio2 && (
           <ResonadoresSection
             marginTop={0}
