@@ -23,7 +23,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
@@ -40,10 +40,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { MoodPickerSheet } from "@/components/MoodPickerSheet";
-import { InicioMoodRecommendations } from "./inicio8";
-import { getMoodById, type Mood, type MoodId } from "@/data/moods";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -233,9 +230,6 @@ export default function ExploreScreen() {
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
   const [query, setQuery] = useState("");
-  const [moodSheetVisible, setMoodSheetVisible] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
-  const [recoOffset, setRecoOffset] = useState(0);
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayer();
@@ -267,17 +261,6 @@ export default function ExploreScreen() {
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
   const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
-  const moodRecommended = React.useMemo<Session[]>(() => {
-    if (selectedMood) {
-      const cats = new Set(selectedMood.categoryIds);
-      const themes = new Set<string>(selectedMood.themeTags);
-      const pool = SESSIONS.filter((s) => cats.has(s.categoryId));
-      const boosted = pool.filter((s) => s.themeTag?.some((t) => themes.has(t)));
-      const rest = pool.filter((s) => !s.themeTag?.some((t) => themes.has(t)));
-      return [...boosted, ...rest].slice(0, 5);
-    }
-    return getDailyRecommendations(5, recoOffset);
-  }, [selectedMood, catalogVersion, recoOffset]);
 
   // ── Recientes (últimas meditaciones agregadas) ──
   const recientesMeditaciones = React.useMemo(() => {
@@ -302,6 +285,9 @@ export default function ExploreScreen() {
     }
     return list;
   }, [history, catalogVersion]);
+
+  // ── Destacada de hoy (solo meditaciones) ──
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
   // ── Orden de carruseles desde la API ──
   // null = todavía cargando (no mostrar nada aún)
@@ -370,6 +356,19 @@ export default function ExploreScreen() {
     }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const featuredHoy = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]);
+
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
@@ -411,11 +410,6 @@ export default function ExploreScreen() {
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     openCategory(`/session/${s.id}`);
-  }
-
-  function handleMoodSelect(moodId: MoodId) {
-    setSelectedMood(getMoodById(moodId) ?? null);
-    setMoodSheetVisible(false);
   }
 
   function renderCarousel(title: string, sessions: Session[], categoryRoute: string, contentPaddingTop = 0) {
@@ -507,25 +501,34 @@ export default function ExploreScreen() {
           horizontal
         />
 
-        {/* ── Para este momento — misma sección de Inicio 2 ── */}
-        <View style={{ marginTop: 15, marginBottom: SECTION_GAP }}>
-          <InicioMoodRecommendations
-            selectedMood={selectedMood}
-            moodRecommended={moodRecommended}
-            isPremium={isPremium}
-            cardBg={temaCardBg}
-            sectionHeading="Para este momento"
-            titleSize={19}
-            titleSpacing={16}
-            maxItems={5}
-            showDivider={false}
-            onOpenMoodPicker={() => setMoodSheetVisible(true)}
-            onClearMood={() => setSelectedMood(null)}
-            onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
-            onPlaySession={playSession}
-            openCategory={openCategory}
-          />
-        </View>
+        {/* ── Para este momento: sesión destacada ── */}
+        {featuredHoy && (
+          <View style={[styles.section, { marginBottom: 0, marginTop: 20 }]}>
+            <Pressable onPress={() => handleSessionPress(featuredHoy)}>
+              <View style={styles.heroImageContainer}>
+                <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Reproducir ${featuredHoy.title}`}
+                  onPress={() => handleSessionPress(featuredHoy)}
+                  style={({ pressed }) => [
+                    styles.heroPlayButton,
+                    { opacity: pressed ? 0.78 : 1 },
+                  ]}
+                >
+                  <LinearGradient
+                    colors={["#774544", "#50316f"]}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <MaterialCommunityIcons name="play" size={26} color="#F9F9F9" />
+                  <Text style={styles.heroPlayButtonText}>Reproducir</Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          </View>
+        )}
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginTop: 35, marginBottom: SECTION_GAP }]}>
@@ -726,11 +729,6 @@ export default function ExploreScreen() {
         }}
       />
 
-      <MoodPickerSheet
-        visible={moodSheetVisible}
-        onClose={() => setMoodSheetVisible(false)}
-        onSelect={handleMoodSelect}
-      />
     </View>
   );
 }
