@@ -33,7 +33,6 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 
@@ -399,12 +398,6 @@ export default function ExploreScreen() {
 
         {/* ── Chakras ── */}
         <ChakraCarousel />
-
-        {/* ── Top 5 mezclas ── */}
-        <View style={{ marginBottom: SECTION_GAP }}>
-          <CommunityMixesCarousel />
-        </View>
-
 
         {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
         {false && (
