@@ -831,6 +831,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               showTitle={false}
               showCardBorders={false}
               cardBackgroundColor="#292840"
+              cardOpacity={0.7}
               style={{ marginTop: 10, marginBottom: 10 }}
             />
 

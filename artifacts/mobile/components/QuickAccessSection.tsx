@@ -59,6 +59,7 @@ export function QuickAccessSection({
   showTitle = true,
   showCardBorders = true,
   cardBackgroundColor,
+  cardOpacity = 1,
   style,
 }: {
   includeExtras?: boolean;
@@ -66,6 +67,7 @@ export function QuickAccessSection({
   showTitle?: boolean;
   showCardBorders?: boolean;
   cardBackgroundColor?: string;
+  cardOpacity?: number;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -124,7 +126,7 @@ export function QuickAccessSection({
                 width: cardWidth,
                 backgroundColor: cardBackground,
                 borderWidth: showCardBorders ? 1 : 0,
-                opacity: pressed ? 0.75 : 1,
+                opacity: pressed ? cardOpacity * 0.75 : cardOpacity,
               },
             ]}
           >
