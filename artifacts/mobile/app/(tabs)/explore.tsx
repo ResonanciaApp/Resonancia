@@ -78,7 +78,7 @@ const CHAKRA_LEFT_LABELS = [
 ] as const;
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
-const HERO_HEIGHT = 470;
+const HERO_HEIGHT = 320;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -373,6 +373,12 @@ export default function ExploreScreen() {
     const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
     return pool[dayOfYear % pool.length];
   }, [pinnedFeaturedData, catalogVersion]);
+  const featuredAuthor = React.useMemo(() => {
+    if (!featuredHoy) return undefined;
+    return featuredHoy.categoryId === "meditaciones-guiadas"
+      ? getGuide(featuredHoy.guideId)
+      : getArtist(featuredHoy.artistId);
+  }, [featuredHoy]);
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: popularData } = useGetPopularSessions(
@@ -513,18 +519,25 @@ export default function ExploreScreen() {
             <Pressable onPress={() => handleSessionPress(featuredHoy)}>
               <View style={styles.heroImageContainer}>
                 <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Reproducir ${featuredHoy.title}`}
-                  onPress={() => handleSessionPress(featuredHoy)}
-                  style={({ pressed }) => [
-                    styles.heroPlayButton,
-                    { opacity: pressed ? 0.78 : 1 },
-                  ]}
-                >
-                  <MaterialCommunityIcons name="play" size={26} color="#0D0A1E" />
-                  <Text style={styles.heroPlayButtonText}>Reproducir</Text>
-                </Pressable>
+              </View>
+              <View style={styles.heroInfoRow}>
+                {featuredAuthor && (
+                  <Image source={featuredAuthor.photo} style={styles.heroAvatar} contentFit="cover" />
+                )}
+                <View style={styles.heroTextWrap}>
+                  <Text style={styles.heroMeta} numberOfLines={1}>
+                    {featuredHoy.categoryLabel}
+                    {featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
+                  </Text>
+                  <Text style={styles.heroTitle} numberOfLines={2}>
+                    {featuredHoy.title}
+                  </Text>
+                  {featuredAuthor && (
+                    <Text style={styles.heroAuthor} numberOfLines={1}>
+                      {featuredAuthor.name}
+                    </Text>
+                  )}
+                </View>
               </View>
             </Pressable>
           </View>
@@ -851,32 +864,41 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     borderRadius: 15,
     overflow: "hidden",
-    position: "relative",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   heroImage: { width: "100%", height: "100%" },
-  heroPlayButton: {
-    position: "absolute",
-    left: 16,
-    right: 16,
-    bottom: 16,
+  heroInfoRow: {
+    marginTop: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 41,
-    paddingVertical: 0,
-    borderRadius: 999,
-    backgroundColor: "#F9F9F9",
-    borderWidth: 1,
-    borderColor: "rgba(13,10,30,0.2)",
+    gap: 10,
   },
-  heroPlayButtonText: {
+  heroAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
+  heroTextWrap: { flex: 1 },
+  heroMeta: {
     fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#0D0A1E",
+    fontSize: 12,
+    color: "#c2c2c2",
+    marginBottom: 4,
+  },
+  heroTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 24,
+    color: "#FBFBFB",
+    marginBottom: 3,
+  },
+  heroAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    color: "#c2c2c2",
   },
 
   sqAuthor: {
