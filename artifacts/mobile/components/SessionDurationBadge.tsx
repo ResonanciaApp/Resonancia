@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
   Platform,
@@ -14,6 +15,7 @@ type Props = {
   label: string;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  showClock?: boolean;
 };
 
 /**
@@ -21,7 +23,7 @@ type Props = {
  * The tint layer stays exact while BlurView only supplies the frosted image
  * behind it, so the badge never inherits the old burgundy color.
  */
-export function SessionDurationBadge({ label, style, textStyle }: Props) {
+export function SessionDurationBadge({ label, style, textStyle, showClock = false }: Props) {
   return (
     <View pointerEvents="none" style={[styles.root, style]}>
       <BlurView
@@ -31,7 +33,10 @@ export function SessionDurationBadge({ label, style, textStyle }: Props) {
         style={StyleSheet.absoluteFill}
       />
       <View style={[StyleSheet.absoluteFill, styles.blackTint]} />
-      <Text style={[styles.text, textStyle]}>{label}</Text>
+      <View style={styles.content}>
+        {showClock && <Feather name="clock" size={11} color="#F9F9F9" />}
+        <Text style={[styles.text, textStyle]}>{label}</Text>
+      </View>
     </View>
   );
 }
@@ -51,5 +56,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "600",
     color: "#FFFFFF",
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
 });

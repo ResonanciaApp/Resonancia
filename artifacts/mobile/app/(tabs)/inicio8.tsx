@@ -1728,6 +1728,7 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={19}
             titleSpacing={16}
+            showCardMetadata
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -1808,6 +1809,7 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={19}
             titleSpacing={16}
+            showCardMetadata
           />
         )}
         {isInicio2 && (
@@ -1822,6 +1824,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={16}
             onViewAll={() => openCategory("/favoritos-todos")}
+            showCardMetadata
           />
         )}
         {isInicio2 && (
@@ -1980,6 +1983,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={20}
+            showCardMetadata
           />
         )}
 
@@ -1994,6 +1998,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={20}
+            showCardMetadata
           />
         )}
 
@@ -2009,6 +2014,7 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             onViewAll={() => openCategory("/favoritos-todos")}
+            showCardMetadata
           />
         )}
 

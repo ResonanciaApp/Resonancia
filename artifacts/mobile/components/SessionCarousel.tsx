@@ -20,6 +20,33 @@ const CARD_W = 150;
 const GRID_PAD = 15;
 const SECTION_GAP = 53;
 
+const CATEGORY_PILL_META: Record<string, {
+  label: string;
+  color: string;
+  icon: number;
+}> = {
+  "meditaciones-guiadas": {
+    label: "Meditación",
+    color: "#C8A6FF",
+    icon: require("@/assets/images/cat-meditaciones.png"),
+  },
+  "musica-sonidos": {
+    label: "Música",
+    color: "#6FD7D8",
+    icon: require("@/assets/images/cat-musica.png"),
+  },
+  descanso: {
+    label: "Dormir",
+    color: "#8ED9FF",
+    icon: require("@/assets/images/cat-luna.png"),
+  },
+  "sonidos-ancestrales": {
+    label: "Sonoterapia",
+    color: "#E7A36E",
+    icon: require("@/assets/images/cat-sesiones.png"),
+  },
+};
+
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
   title: string;
@@ -33,9 +60,10 @@ type SessionCarouselProps = {
   titleSize?: number;
   titleSpacing?: number;
   onViewAll?: () => void;
+  showCardMetadata?: boolean;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll, showCardMetadata = false }: SessionCarouselProps) {
   const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
@@ -63,6 +91,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
       >
         {sessions.map((s) => {
           const locked = !!s.isPremium && !isPremium;
+          const category = CATEGORY_PILL_META[s.categoryId];
           return (
             <Pressable
               key={s.id}
@@ -74,7 +103,26 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
             >
               <View style={[styles.thumbWrap, thumbStyle]}>
                 <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
-                <SessionDurationBadge label={s.durationLabel} style={styles.durBadge} textStyle={styles.durText} />
+                {showCardMetadata && category && (
+                  <View pointerEvents="none" style={styles.categoryPill}>
+                    <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
+                      <Image
+                        source={category.icon}
+                        style={styles.categoryIcon}
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <Text style={styles.categoryLabel} numberOfLines={1}>
+                      {category.label}
+                    </Text>
+                  </View>
+                )}
+                <SessionDurationBadge
+                  label={s.durationLabel}
+                  style={styles.durBadge}
+                  textStyle={styles.durText}
+                  showClock={showCardMetadata}
+                />
                 {locked && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
@@ -186,6 +234,40 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  categoryPill: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    maxWidth: "78%",
+    minHeight: 27,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 3,
+    paddingRight: 9,
+    paddingLeft: 3,
+    borderRadius: 100,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  categoryCircle: {
+    width: 21,
+    height: 21,
+    borderRadius: 10.5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  categoryIcon: {
+    width: 14,
+    height: 14,
+    tintColor: "#FFFFFF",
+  },
+  categoryLabel: {
+    flexShrink: 1,
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
   cardTitleWrap: {
     width: CARD_W,
     backgroundColor: "rgba(27,6,15,0.30)",
