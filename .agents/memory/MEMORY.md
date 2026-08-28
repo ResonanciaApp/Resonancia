@@ -154,3 +154,4 @@
 - [Slider local sin frames negros](slider-local-image-layers.md) — carruseles locales: capas RN Image persistentes + wrappers animados; no remontar expo-image con opacidad compartida
 - [Android mixed pill radii](android-mixed-pill-radii.md) — no combinar radio extremo 999 con esquinas pequeñas en una View bordeada: usar el radio real de la altura para conservar los 10 px
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
+- [Colecciones multi-tag de Sonidos](sonidos-multitag.md) — `sonidosTags` es independiente del `sonidosTag` legado; cualquier colección específica incluye también “Todos los sonidos”

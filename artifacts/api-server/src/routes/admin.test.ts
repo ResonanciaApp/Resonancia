@@ -429,6 +429,62 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Colección de Dormir inválida");
   });
+
+  it("crea y edita membresías multi-tag de Sonidos", async () => {
+    authAs(adminUser);
+    const createRes = await request(app)
+      .post("/api/catalog/submissions")
+      .send({
+        title: "Sesión Sonidos multi-tag",
+        subtitle: "Prueba de colecciones",
+        categoryId: "musica-sonidos",
+        categoryLabel: "Música",
+        duration: 12,
+        description: "Contenido de prueba para validar las colecciones de Sonidos.",
+        benefits: [],
+        instruments: [],
+        isPlaceholder: true,
+        status: "draft",
+        audioFiles: [],
+        sonidosTags: ["Sonidos de naturaleza", "Sonidos de lluvia"],
+      });
+
+    expect(createRes.status).toBe(201);
+    createdSessionIds.push(createRes.body.id);
+    expect(createRes.body.sonidosTags).toEqual([
+      "Todos los sonidos",
+      "Sonidos de naturaleza",
+      "Sonidos de lluvia",
+    ]);
+
+    const editRes = await request(app)
+      .patch(`/api/catalog/submissions/${createRes.body.id}`)
+      .send({ sonidosTags: ["Sonidos binaurales"] });
+    expect(editRes.status).toBe(200);
+    expect(editRes.body.sonidosTags).toEqual([
+      "Todos los sonidos",
+      "Sonidos binaurales",
+    ]);
+
+    const [stored] = await db
+      .select({ sonidosTags: catalogSessionsTable.sonidosTags })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createRes.body.id))
+      .limit(1);
+    expect(stored.sonidosTags).toEqual([
+      "Todos los sonidos",
+      "Sonidos binaurales",
+    ]);
+  });
+
+  it("rechaza colecciones de Sonidos fuera de la taxonomía canónica", async () => {
+    authAs(adminUser);
+    const res = await request(app)
+      .patch(`/api/catalog/submissions/${sessionId}`)
+      .send({ sonidosTags: ["Etiqueta inventada"] });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Colección de Sonidos inválida");
+  });
 });
 
 // El pool de conexiones es compartido por todo el archivo; cerrarlo una sola

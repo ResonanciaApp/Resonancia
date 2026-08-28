@@ -4740,6 +4740,10 @@ components:
         sonidosTag:
           type: string
           nullable: true
+        sonidosTags:
+          type: array
+          items:
+            type: string
         descansoTag:
           type: string
           nullable: true
@@ -5063,6 +5067,11 @@ components:
         sonidosTag:
           type: string
           nullable: true
+        sonidosTags:
+          type: array
+          maxItems: 7
+          items:
+            type: string
         descansoTag:
           type: string
           nullable: true
@@ -5259,6 +5268,10 @@ components:
         sonidosTag:
           type: string
           nullable: true
+        sonidosTags:
+          type: array
+          items:
+            type: string
         descansoTag:
           type: string
           nullable: true
@@ -5461,6 +5474,11 @@ components:
         sonidosTag:
           type: string
           nullable: true
+        sonidosTags:
+          type: array
+          maxItems: 7
+          items:
+            type: string
         descansoTag:
           type: string
           nullable: true

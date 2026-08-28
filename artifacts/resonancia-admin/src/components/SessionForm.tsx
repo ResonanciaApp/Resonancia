@@ -84,6 +84,15 @@ const DESCANSO_TAGS = [
   "Ruido",
 ];
 const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
+const SONIDOS_COLLECTION_TAGS = [
+  "Todos los sonidos",
+  "Sonidos de naturaleza",
+  "Sonidos binaurales",
+  "Música de enfoque",
+  "Cantos medicinales",
+  "Sonidos de lluvia",
+  "Sonidos para Chakras",
+];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
@@ -198,11 +207,21 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [descansoTags, setDescansoTags] = useState<string[]>(initial?.descansoTags ?? []);
   const [artistId, setArtistId] = useState(initial?.artistId ?? "");
   const [sonidosTag, setSonidosTag] = useState(initial?.sonidosTag ?? "");
+  const [sonidosTags, setSonidosTags] = useState<string[]>(initial?.sonidosTags ?? []);
   const [podcastTag, setPodcastTag] = useState(initial?.podcastTag ?? "");
   const [sabiduriaTag, setSabiduriaTag] = useState(initial?.sabiduriaTag ?? "");
   const [sleepTag, setSleepTag] = useState(initial?.sleepTag ?? "");
   const [themeTag, setThemeTag] = useState<string[]>(initial?.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(initial?.temaTag ?? []);
+  const toggleSonidos = (tag: string) => {
+    setSonidosTags((current) => {
+      const selected = new Set(current);
+      if (selected.has(tag)) selected.delete(tag);
+      else selected.add(tag);
+      if (selected.size > 0) selected.add("Todos los sonidos");
+      return SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+    });
+  };
   const [guideIds, setGuideIds] = useState<string[]>(initial?.guideId ? [initial.guideId] : [""]);
   const addGuideSlot = () => setGuideIds((p) => p.length < 4 ? [...p, ""] : p);
   const removeGuideSlot = (i: number) => setGuideIds((p) => p.filter((_, idx) => idx !== i));
@@ -391,6 +410,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         soundTag: soundTag || undefined,
         descansoTags,
         sonidosTag: sonidosTag || undefined,
+        sonidosTags,
         podcastTag: podcastTag || undefined,
         sabiduriaTag: sabiduriaTag || undefined,
         artistId: isMusica ? (artistId.trim() || null) : null,
@@ -469,6 +489,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         soundTag: soundTag || null,
         descansoTags,
         sonidosTag: sonidosTag || null,
+        sonidosTags,
         podcastTag: podcastTag || null,
         sabiduriaTag: sabiduriaTag || null,
         artistId: isMusica ? (artistId.trim() || null) : null,
@@ -875,6 +896,16 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               label="Colecciones de Dormir (opcional)"
               selected={descansoTags}
               onToggle={toggleDescanso}
+              pill
+              fixed
+            />
+
+            <TagOptionSelector
+              tagType="sonidos_collection"
+              defaults={SONIDOS_COLLECTION_TAGS}
+              label="Colecciones de Sonidos (opcional)"
+              selected={sonidosTags}
+              onToggle={toggleSonidos}
               pill
               fixed
             />

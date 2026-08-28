@@ -114,6 +114,77 @@ export const SLEEP_TAG_CARDS: SleepTagCard[] = [
   },
 ];
 
+// ── Sonidos Tags ─────────────────────────────────────────────────────────────
+
+export type SonidosCollectionTag =
+  | "Todos los sonidos"
+  | "Sonidos de naturaleza"
+  | "Sonidos binaurales"
+  | "Música de enfoque"
+  | "Cantos medicinales"
+  | "Sonidos de lluvia"
+  | "Sonidos para Chakras";
+
+export interface SonidosTagCard {
+  id: string;
+  label: SonidosCollectionTag;
+  description: string;
+  icon: string;
+  accent: string;
+}
+
+export const SONIDOS_TAG_CARDS: SonidosTagCard[] = [
+  {
+    id: "todos-los-sonidos",
+    label: "Todos los sonidos",
+    description: "La colección completa de experiencias sonoras para explorar, concentrarte y volver al presente.",
+    icon: "headphones",
+    accent: "#BE9650",
+  },
+  {
+    id: "sonidos-de-naturaleza",
+    label: "Sonidos de naturaleza",
+    description: "Paisajes de agua, bosque, viento y tierra para reconectar con el ritmo natural.",
+    icon: "wind",
+    accent: "#78A982",
+  },
+  {
+    id: "sonidos-binaurales",
+    label: "Sonidos binaurales",
+    description: "Frecuencias inmersivas que acompañan estados de enfoque, descanso y expansión.",
+    icon: "radio",
+    accent: "#8AAAD4",
+  },
+  {
+    id: "musica-de-enfoque",
+    label: "Música de enfoque",
+    description: "Atmósferas musicales creadas para sostener la atención y reducir distracciones.",
+    icon: "target",
+    accent: "#8F9FD1",
+  },
+  {
+    id: "cantos-medicinales",
+    label: "Cantos medicinales",
+    description: "Voces, mantras y cantos de tradición que acompañan procesos de conexión interior.",
+    icon: "mic",
+    accent: "#C58E6B",
+  },
+  {
+    id: "sonidos-de-lluvia",
+    label: "Sonidos de lluvia",
+    description: "Lluvia suave y constante para crear refugio, calma y continuidad.",
+    icon: "cloud-rain",
+    accent: "#6FA9C7",
+  },
+  {
+    id: "sonidos-para-chakras",
+    label: "Sonidos para Chakras",
+    description: "Frecuencias y resonancias orientadas a equilibrar los centros energéticos.",
+    icon: "aperture",
+    accent: "#9B8BC8",
+  },
+];
+
 // ── Descanso Tags ────────────────────────────────────────────────────────────
 
 export type DescansoTag =

@@ -39,9 +39,11 @@ export type AncestralTag =
 
 import {
   DESCANSO_TAG_CARDS,
+  SONIDOS_TAG_CARDS,
   type DescansoTag,
   type LegacyDescansoTag,
   type SleepTag,
+  type SonidosCollectionTag,
   type ThemeTag,
 } from "@/data/tags";
 
@@ -77,6 +79,7 @@ export type Session = {
   sabiduriaTag?: SabiduriaTag;
   podcastTag?: PodcastTag;
   sonidosTag?: SonidosTag;
+  sonidosTags?: SonidosCollectionTag[];
   themeTag?: ThemeTag[];
   /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
   temaTag?: string[];
@@ -1203,6 +1206,65 @@ export function getSessionsBySleepTag(sleepTag: SleepTag): Session[] {
   return SESSIONS.filter((s) => s.sleepTag === sleepTag);
 }
 
+const CANONICAL_SONIDOS_TAGS = new Set<SonidosCollectionTag>(
+  SONIDOS_TAG_CARDS.map((card) => card.label),
+);
+
+const LEGACY_SONIDOS_TAG_MAP: Record<SonidosTag, SonidosCollectionTag[]> = {
+  "Sonidos Binaurales": ["Todos los sonidos", "Sonidos binaurales"],
+  "Sonidos Naturaleza": ["Todos los sonidos", "Sonidos de naturaleza"],
+  "Sonidos Atmosféricos": ["Todos los sonidos"],
+  "Sonidos Hipnóticos": ["Todos los sonidos"],
+};
+
+export function normalizeSonidosTags(
+  tags: readonly string[] | null | undefined,
+  legacySonidosTag?: string | null,
+): SonidosCollectionTag[] {
+  const result = new Set<SonidosCollectionTag>();
+  if (Array.isArray(tags)) {
+    for (const tag of tags) {
+      if (CANONICAL_SONIDOS_TAGS.has(tag as SonidosCollectionTag)) {
+        result.add(tag as SonidosCollectionTag);
+      }
+    }
+  } else if (legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
+    for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag as SonidosTag]) {
+      result.add(tag);
+    }
+  }
+  if (result.size > 0) result.add("Todos los sonidos");
+  return SONIDOS_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag));
+}
+
+export function getSessionSonidosTags(session: Session): SonidosCollectionTag[] {
+  return normalizeSonidosTags(session.sonidosTags, session.sonidosTag);
+}
+
+export function getSessionsBySonidosTag(tag: SonidosCollectionTag): Session[] {
+  return SESSIONS
+    .filter((session) => getSessionSonidosTags(session).includes(tag))
+    .sort(newestFirst);
+}
+
+export const SONIDOS_VISIBLE_TAGS: SonidosCollectionTag[] = SONIDOS_TAG_CARDS.map(
+  (card) => card.label,
+);
+
+export function getSonidosVisibleSessions(): Session[] {
+  const seen = new Set<string>();
+  const result: Session[] = [];
+  for (const tag of SONIDOS_VISIBLE_TAGS) {
+    for (const session of getSessionsBySonidosTag(tag)) {
+      if (!seen.has(session.id)) {
+        seen.add(session.id);
+        result.push(session);
+      }
+    }
+  }
+  return result;
+}
+
 const CANONICAL_DESCANSO_TAGS = new Set<DescansoTag>(
   DESCANSO_TAG_CARDS.map((card) => card.label),
 );
@@ -1339,6 +1401,7 @@ export type CatalogSessionSnapshot = {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  sonidosTags?: string[] | null;
   descansoTag?: string | null;
   descansoTags?: string[] | null;
   themeTag?: string[] | null;
@@ -1505,6 +1568,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sabiduriaTag = (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined;
     local.podcastTag = (r.podcastTag ?? undefined) as PodcastTag | undefined;
     local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
+    local.sonidosTags = normalizeSonidosTags(r.sonidosTags, r.sonidosTag);
     local.descansoTags = normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag);
     local.descansoTag = undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
@@ -1582,6 +1646,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sabiduriaTag: (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined,
       podcastTag: (r.podcastTag ?? undefined) as PodcastTag | undefined,
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
+      sonidosTags: normalizeSonidosTags(r.sonidosTags, r.sonidosTag),
       descansoTags: normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag),
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
       temaTag: r.temaTag ?? undefined,

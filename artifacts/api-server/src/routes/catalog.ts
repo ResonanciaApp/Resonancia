@@ -50,9 +50,29 @@ const DESCANSO_TAGS = new Set([
   "Sonidos de lluvia",
   "Ruido",
 ]);
+const SONIDOS_TAGS = [
+  "Todos los sonidos",
+  "Sonidos de naturaleza",
+  "Sonidos binaurales",
+  "Música de enfoque",
+  "Cantos medicinales",
+  "Sonidos de lluvia",
+  "Sonidos para Chakras",
+] as const;
+const SONIDOS_TAG_SET = new Set<string>(SONIDOS_TAGS);
 
 function hasInvalidDescansoTags(tags: string[] | undefined): boolean {
   return (tags ?? []).some((tag) => !DESCANSO_TAGS.has(tag));
+}
+
+function normalizeSonidosTags(tags: string[] | undefined): string[] {
+  const selected = new Set((tags ?? []).filter((tag) => SONIDOS_TAG_SET.has(tag)));
+  if (selected.size > 0) selected.add("Todos los sonidos");
+  return SONIDOS_TAGS.filter((tag) => selected.has(tag));
+}
+
+function hasInvalidSonidosTags(tags: string[] | undefined): boolean {
+  return (tags ?? []).some((tag) => !SONIDOS_TAG_SET.has(tag));
 }
 
 function serializeCategory(c: CatalogCategory) {
@@ -117,6 +137,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     sabiduriaTag: s.sabiduriaTag,
     podcastTag: s.podcastTag,
     sonidosTag: s.sonidosTag,
+    sonidosTags: s.sonidosTags,
     descansoTag: s.descansoTag,
     descansoTags: s.descansoTags,
     themeTag: s.themeTag,
@@ -451,6 +472,10 @@ router.post(
       res.status(400).json({ error: "Colección de Dormir inválida" });
       return;
     }
+    if (hasInvalidSonidosTags(body.sonidosTags)) {
+      res.status(400).json({ error: "Colección de Sonidos inválida" });
+      return;
+    }
 
     // Validación de assets (el server no ve los bytes; valida la metadata).
     for (const a of body.audioFiles) {
@@ -533,6 +558,7 @@ router.post(
           sabiduriaTag: body.sabiduriaTag ?? null,
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
+          sonidosTags: normalizeSonidosTags(body.sonidosTags),
           descansoTag: null,
           descansoTags: body.descansoTags ?? [],
           themeTag: body.themeTag ?? null,
@@ -632,6 +658,7 @@ router.get(
         conditions.push(
           or(
             sql`${catalogSessionsTable.descansoTags} @> ARRAY[${otherTag}]::text[]`,
+            sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${otherTag}]::text[]`,
             eq(catalogSessionsTable.sleepTag, otherTag),
             eq(catalogSessionsTable.meditationTag, otherTag),
             eq(catalogSessionsTable.soundTag, otherTag),
@@ -665,6 +692,7 @@ router.get(
           categoryLabel: catalogSessionsTable.categoryLabel,
           themeTag: catalogSessionsTable.themeTag,
           descansoTags: catalogSessionsTable.descansoTags,
+          sonidosTags: catalogSessionsTable.sonidosTags,
           sleepTag: catalogSessionsTable.sleepTag,
           meditationTag: catalogSessionsTable.meditationTag,
           soundTag: catalogSessionsTable.soundTag,
@@ -693,6 +721,9 @@ router.get(
       const otherTagSet = new Set<string>();
       for (const r of rows) {
         for (const t of r.descansoTags ?? []) {
+          if (t) otherTagSet.add(t);
+        }
+        for (const t of r.sonidosTags ?? []) {
           if (t) otherTagSet.add(t);
         }
         if (r.sleepTag) otherTagSet.add(r.sleepTag);
@@ -848,6 +879,10 @@ router.patch(
       res.status(400).json({ error: "Colección de Dormir inválida" });
       return;
     }
+    if (hasInvalidSonidosTags(data.sonidosTags)) {
+      res.status(400).json({ error: "Colección de Sonidos inválida" });
+      return;
+    }
     const updates: Partial<typeof catalogSessionsTable.$inferInsert> = {
       updatedAt: new Date(),
     };
@@ -884,6 +919,9 @@ router.patch(
     if (data.sabiduriaTag !== undefined) updates.sabiduriaTag = data.sabiduriaTag ?? null;
     if (data.podcastTag !== undefined) updates.podcastTag = data.podcastTag ?? null;
     if (data.sonidosTag !== undefined) updates.sonidosTag = data.sonidosTag ?? null;
+    if (data.sonidosTags !== undefined) {
+      updates.sonidosTags = normalizeSonidosTags(data.sonidosTags);
+    }
     if (data.descansoTags !== undefined) {
       updates.descansoTags = data.descansoTags;
       updates.descansoTag = null;

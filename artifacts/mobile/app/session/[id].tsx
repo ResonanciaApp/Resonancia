@@ -33,7 +33,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
-import { getSessionById } from "@/data/sessions";
+import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -130,13 +130,13 @@ function GlowPill({ onPress, pillStyle, bgColor }: { onPress: () => void; pillSt
 
 
 export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}) {
-  const { id: idParam } = useLocalSearchParams<{ id: string }>();
+  const { id: idParam, source } = useLocalSearchParams<{ id: string; source?: string }>();
   const id = idProp ?? idParam;
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, clearSessionProgress } = usePlayer();
+  const { playSession, playSessionInPlaylist, isFavorite, toggleFavorite, currentSession, isPlaying, progress, clearSessionProgress } = usePlayer();
   const { isPremium } = usePremium();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
@@ -323,7 +323,14 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     clearSessionProgress(session.id);
-    playSession(session);
+    if (source === "sonidos") {
+      playSessionInPlaylist(
+        session,
+        getSonidosVisibleSessions().map((candidate) => candidate.id),
+      );
+    } else {
+      playSession(session);
+    }
     if (session.skipMiniPlayer) return;
     router.push("/player" as never);
   };

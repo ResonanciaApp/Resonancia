@@ -805,6 +805,7 @@ export interface CatalogSession {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
   descansoTags?: string[];
@@ -1035,6 +1036,8 @@ export interface CreatorSubmissionInput {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @maxItems 7 */
+  sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
   /** @maxItems 8 */
@@ -1181,6 +1184,7 @@ export interface Submission {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
   descansoTags?: string[];
@@ -1287,6 +1291,8 @@ export interface ReviewEditBody {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @maxItems 7 */
+  sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
   /** @maxItems 8 */

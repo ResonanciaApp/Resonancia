@@ -65,6 +65,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   sabiduriaTag: text("sabiduria_tag"),
   podcastTag: text("podcast_tag"),
   sonidosTag: text("sonidos_tag"),
+  /** Colecciones dinámicas de Sonidos. Una sesión puede pertenecer a varias. */
+  sonidosTags: text("sonidos_tags").array().notNull().default([]),
   /** @deprecated Compatibilidad de migración; usar descansoTags. */
   descansoTag: text("descanso_tag"),
   /** Colecciones dinámicas de Dormir. Una sesión puede pertenecer a varias. */
