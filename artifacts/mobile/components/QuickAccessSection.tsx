@@ -26,6 +26,7 @@ const ACCESS_CARDS = [
 const EXTRA_ACCESS_CARDS = [
   { id: "downloads", label: "Descargas", icon: "download-outline", route: "" },
   { id: "sessions", label: "Sesiones", icon: "calendar-outline", route: "/mis-sesiones" },
+  { id: "library", label: "Biblioteca", icon: "book-open-variant", route: "__biblioteca_overlay" },
 ] as const;
 
 type AccessId = (typeof ACCESS_CARDS)[number]["id"] | (typeof EXTRA_ACCESS_CARDS)[number]["id"];
@@ -40,7 +41,7 @@ export function QuickAccessSection({
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
-  const { openOverlay } = useDrawer();
+  const { openLib, openOverlay } = useDrawer();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -55,12 +56,16 @@ export function QuickAccessSection({
       Alert.alert("Descargas", "La descarga estará disponible próximamente.");
       return;
     }
+    if (id === "library") {
+      openLib();
+      return;
+    }
     if (id === "saved") {
       router.push(access.route as never);
       return;
     }
     openOverlay(access.route);
-  }, [openOverlay]);
+  }, [openLib, openOverlay]);
 
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
