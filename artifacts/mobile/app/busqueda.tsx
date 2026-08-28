@@ -20,6 +20,7 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CardTint } from "@/components/CardTint";
+import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -29,6 +30,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
+const RESULT_CARD_GAP = 12;
+const RESULT_CARD_W = (width - H_PAD * 2 - RESULT_CARD_GAP) / 2;
 
 const DURATION_SLOTS = [
   { label: "5 min",  min: 0,  max: 5 },
@@ -197,6 +200,7 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
   const [durSheetOpen, setDurSheetOpen] = useState(false);
 
   const hasFilters = q.trim().length > 0 || selectedCat !== null || selectedDur !== null;
+  const showVerticalResults = selectedDur !== null;
 
   const results = useMemo(() => {
     if (!hasFilters) return [] as Session[];
@@ -320,18 +324,37 @@ export default function BusquedaScreen({ tiempo: tiempoProp }: { tiempo?: string
         </View>
       ) : (
         <FlatList
+          key={showVerticalResults ? "vertical-results" : "list-results"}
           data={results}
           keyExtractor={(s) => s.id}
+          numColumns={showVerticalResults ? 2 : 1}
+          columnWrapperStyle={showVerticalResults ? styles.resultGridRow : undefined}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 40 + insets.bottom }}
+          contentContainerStyle={[
+            styles.resultsContent,
+            showVerticalResults && styles.verticalResultsContent,
+            { paddingBottom: 40 + insets.bottom },
+          ]}
           ListEmptyComponent={
-            <View style={styles.empty}>
+            <View style={[styles.empty, showVerticalResults && { width: width - H_PAD * 2 }]}>
               <Feather name="search" size={36} color="rgba(242,231,228,0.45)" style={{ marginBottom: 12 }} />
               <Text style={styles.emptyTitle}>Sin resultados</Text>
               <Text style={styles.emptySub}>Intenta con otro término o cambia los filtros</Text>
             </View>
           }
           renderItem={({ item }) => {
+            if (showVerticalResults) {
+              return (
+                <SessionCard
+                  session={item}
+                  width={RESULT_CARD_W}
+                  showCardMetadata
+                  overridePress={() => handleSessionPress(item)}
+                  style={styles.verticalResultCard}
+                />
+              );
+            }
+
             const authorName = getSessionAuthor(item);
             return (
               <Pressable
@@ -443,6 +466,10 @@ const styles = StyleSheet.create({
   emptySub: { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
 
   resultRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 11 },
+  resultsContent: { paddingHorizontal: H_PAD, paddingTop: 8 },
+  verticalResultsContent: { paddingTop: 12 },
+  resultGridRow: { justifyContent: "space-between", gap: RESULT_CARD_GAP, marginBottom: 24 },
+  verticalResultCard: { marginRight: 0 },
   thumb: { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
   premiumBadge: {
     position: "absolute",
