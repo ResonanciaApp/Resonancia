@@ -57,7 +57,7 @@ function SleepPill({
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
-      {sel && <LinearGradient colors={["#774544", "#50316f"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      {sel && <LinearGradient colors={["#E7B65C", "#B85D6E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
         {label}
       </Text>
