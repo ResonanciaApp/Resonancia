@@ -857,7 +857,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               </Text>
             </View>
 
-            <QuickAccessSection />
+            <QuickAccessSection includeExtras />
 
             <View
               style={[
