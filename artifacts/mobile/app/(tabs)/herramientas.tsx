@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 19;
 const GRID_GAP = 7;
-const GRID_COLUMNS = 2;
+const GRID_COLUMNS = 3;
 
 const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   },
   fullBleedSection: {
     marginHorizontal: -GRID_PAD,
+    marginTop: 53,
   },
   card: {
     alignItems: "center",
