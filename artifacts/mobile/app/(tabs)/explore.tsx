@@ -373,7 +373,7 @@ export default function ExploreScreen() {
       >
         {/* ── Accesos por contenido ── */}
         <ContentCategoryGrid
-          marginTop={-15}
+          marginTop={-9}
           marginBottom={0}
           hiddenIds={["__mezcla__", "__geometrix__"]}
           horizontal
@@ -387,7 +387,10 @@ export default function ExploreScreen() {
             sessions={carousel.sessions}
             isPremium={isPremium}
             onPress={(s) => handleSessionPress(s)}
-            style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+            style={{
+              marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 40 : 0,
+              marginBottom: SECTION_GAP,
+            }}
             cardWidth={SQCARD_W}
             titleSize={19}
             showCardMetadata
