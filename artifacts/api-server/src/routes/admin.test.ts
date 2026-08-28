@@ -271,6 +271,7 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
   let creatorUser: User;
   let adminUser: User;
   const sessionId = `test-session-${suffix}`;
+  const createdSessionIds: string[] = [];
 
   beforeAll(async () => {
     userUser = await createUser("hide_user", "user");
@@ -298,7 +299,9 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
   });
 
   afterAll(async () => {
-    await db.delete(catalogSessionsTable).where(eq(catalogSessionsTable.id, sessionId));
+    await db
+      .delete(catalogSessionsTable)
+      .where(inArray(catalogSessionsTable.id, [sessionId, ...createdSessionIds]));
     await db
       .delete(usersTable)
       .where(inArray(usersTable.id, [userUser.id, creatorUser.id, adminUser.id]));
@@ -376,6 +379,55 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
       .where(eq(catalogSessionsTable.id, sessionId))
       .limit(1);
     expect(stored.skipMiniPlayer).toBe(false);
+  });
+
+  it("crea y edita membresías multi-tag de Dormir", async () => {
+    authAs(adminUser);
+    const createRes = await request(app)
+      .post("/api/catalog/submissions")
+      .send({
+        title: "Sesión multi-tag",
+        subtitle: "Prueba de colecciones",
+        categoryId: "historias",
+        categoryLabel: "Historias",
+        duration: 12,
+        description: "Contenido de prueba para validar las colecciones de Dormir.",
+        benefits: [],
+        instruments: [],
+        isPlaceholder: true,
+        status: "draft",
+        audioFiles: [],
+        descansoTags: ["Historias para dormir", "Para niños"],
+      });
+
+    expect(createRes.status).toBe(201);
+    createdSessionIds.push(createRes.body.id);
+    expect(createRes.body.descansoTags).toEqual([
+      "Historias para dormir",
+      "Para niños",
+    ]);
+
+    const editRes = await request(app)
+      .patch(`/api/catalog/submissions/${createRes.body.id}`)
+      .send({ descansoTags: ["Meditaciones para dormir"] });
+    expect(editRes.status).toBe(200);
+    expect(editRes.body.descansoTags).toEqual(["Meditaciones para dormir"]);
+
+    const [stored] = await db
+      .select({ descansoTags: catalogSessionsTable.descansoTags })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createRes.body.id))
+      .limit(1);
+    expect(stored.descansoTags).toEqual(["Meditaciones para dormir"]);
+  });
+
+  it("rechaza colecciones de Dormir fuera de la taxonomía canónica", async () => {
+    authAs(adminUser);
+    const res = await request(app)
+      .patch(`/api/catalog/submissions/${sessionId}`)
+      .send({ descansoTags: ["Etiqueta inventada"] });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Colección de Dormir inválida");
   });
 });
 

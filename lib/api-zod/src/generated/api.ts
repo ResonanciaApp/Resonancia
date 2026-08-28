@@ -1225,6 +1225,7 @@ export const GetCatalogResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1311,6 +1312,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1470,6 +1472,7 @@ export const GetPopularSessionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1529,6 +1532,8 @@ export const createSubmissionBodyIsLoopDefault = false;
 export const createSubmissionBodyIsPlaceholderDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
+export const createSubmissionBodyDescansoTagsMax = 8;
+
 export const createSubmissionBodyPlayerDescriptionMax = 300;
 
 
@@ -1570,6 +1575,7 @@ export const CreateSubmissionBody = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).max(createSubmissionBodyDescansoTagsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
@@ -1637,6 +1643,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1733,6 +1740,7 @@ export const GetMySubmissionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1819,6 +1827,7 @@ export const ApproveSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1912,6 +1921,7 @@ export const RejectSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -1986,6 +1996,8 @@ export const editSubmissionBodyPlayerDescriptionMax = 300;
 
 export const editSubmissionBodyFrequencyMax = 60;
 
+export const editSubmissionBodyDescansoTagsMax = 8;
+
 
 
 
@@ -2020,6 +2032,7 @@ export const EditSubmissionBody = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).max(editSubmissionBodyDescansoTagsMax).optional(),
   "sortOrder": zod.number().optional(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2069,6 +2082,7 @@ export const EditSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2166,6 +2180,7 @@ export const HideSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2251,6 +2266,7 @@ export const UnhideSubmissionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2345,6 +2361,7 @@ export const GetAdminSessionsResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2434,6 +2451,7 @@ export const GetAdminSessionResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2538,6 +2556,7 @@ export const AddAdminSessionAudioResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
@@ -2624,6 +2643,7 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
   "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),

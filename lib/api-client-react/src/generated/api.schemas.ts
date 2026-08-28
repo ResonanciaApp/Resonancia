@@ -805,7 +805,9 @@ export interface CatalogSession {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @deprecated */
   descansoTag?: string | null;
+  descansoTags?: string[];
   themeTag?: string[] | null;
   temaTag?: string[] | null;
   sleepTag?: string | null;
@@ -1033,7 +1035,10 @@ export interface CreatorSubmissionInput {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @deprecated */
   descansoTag?: string | null;
+  /** @maxItems 8 */
+  descansoTags?: string[];
   sleepTag?: string | null;
   voiceTag?: CreatorSubmissionInputVoiceTag;
   themeTag?: string[] | null;
@@ -1176,7 +1181,9 @@ export interface Submission {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @deprecated */
   descansoTag?: string | null;
+  descansoTags?: string[];
   themeTag?: string[] | null;
   temaTag?: string[] | null;
   sleepTag?: string | null;
@@ -1280,7 +1287,10 @@ export interface ReviewEditBody {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  /** @deprecated */
   descansoTag?: string | null;
+  /** @maxItems 8 */
+  descansoTags?: string[];
   sortOrder?: number;
   guests?: CatalogSessionGuest[] | null;
   isPinnedFeatured?: boolean;

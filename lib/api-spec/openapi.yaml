@@ -4743,6 +4743,11 @@ components:
         descansoTag:
           type: string
           nullable: true
+          deprecated: true
+        descansoTags:
+          type: array
+          items:
+            type: string
         themeTag:
           type: array
           nullable: true
@@ -5061,6 +5066,12 @@ components:
         descansoTag:
           type: string
           nullable: true
+          deprecated: true
+        descansoTags:
+          type: array
+          maxItems: 8
+          items:
+            type: string
         sleepTag:
           type: string
           nullable: true
@@ -5251,6 +5262,11 @@ components:
         descansoTag:
           type: string
           nullable: true
+          deprecated: true
+        descansoTags:
+          type: array
+          items:
+            type: string
         themeTag:
           type: array
           nullable: true
@@ -5448,6 +5464,12 @@ components:
         descansoTag:
           type: string
           nullable: true
+          deprecated: true
+        descansoTags:
+          type: array
+          maxItems: 8
+          items:
+            type: string
         sortOrder:
           type: integer
         guests:

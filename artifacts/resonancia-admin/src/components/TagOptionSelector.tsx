@@ -21,6 +21,7 @@ interface TagOptionSelectorProps {
   selected: string[];
   onToggle: (tag: string) => void;
   pill?: boolean;
+  fixed?: boolean;
 }
 
 export function TagOptionSelector({
@@ -30,6 +31,7 @@ export function TagOptionSelector({
   selected,
   onToggle,
   pill = false,
+  fixed = false,
 }: TagOptionSelectorProps) {
   const { getToken } = useAuth();
   const [dbTags, setDbTags] = useState<TagOption[]>([]);
@@ -64,7 +66,9 @@ export function TagOptionSelector({
     }
   }, [tagType, hiddenType, getToken]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (!fixed) load();
+  }, [fixed, load]);
 
   // ── Agregar tag custom nueva ──────────────────────────────────────────────
   const handleAdd = async () => {
@@ -138,10 +142,10 @@ export function TagOptionSelector({
   };
 
   // ── Derivados ─────────────────────────────────────────────────────────────
-  const visibleDefaults = defaults.filter(
-    (d) => !hiddenIds.has(d.toLowerCase()),
-  );
-  const customOnly = dbTags.filter(
+  const visibleDefaults = fixed
+    ? defaults
+    : defaults.filter((d) => !hiddenIds.has(d.toLowerCase()));
+  const customOnly = fixed ? [] : dbTags.filter(
     (d) => !defaults.some((def) => def.toLowerCase() === d.label.toLowerCase()),
   );
 
@@ -177,7 +181,7 @@ export function TagOptionSelector({
               <button type="button" onClick={() => onToggle(tag)} className={btnClass(tag)}>
                 {tag}
               </button>
-              {deleteBtn(key, busy, () => handleHideDefault(tag))}
+              {!fixed && deleteBtn(key, busy, () => handleHideDefault(tag))}
             </div>
           );
         })}
@@ -197,7 +201,7 @@ export function TagOptionSelector({
         })}
 
         {/* ── Agregar nueva ── */}
-        {adding ? (
+        {!fixed && (adding ? (
           <div className="flex items-center gap-1">
             <input
               autoFocus
@@ -235,7 +239,7 @@ export function TagOptionSelector({
             <Plus className="w-3 h-3" />
             Nueva
           </button>
-        )}
+        ))}
       </div>
     </div>
   );

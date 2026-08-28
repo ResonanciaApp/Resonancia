@@ -19,8 +19,9 @@ import { PremiumBadge } from "@/components/PremiumBadge";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { SLEEP_TAG_CARDS } from "@/data/tags";
-import { getSessionsBySleepTag } from "@/data/sessions";
+import { DESCANSO_TAG_CARDS } from "@/data/tags";
+import { getSessionsByDescansoTag } from "@/data/sessions";
+import { useCatalog } from "@/context/CatalogContext";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -34,15 +35,16 @@ export default function SleepTagDetailScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  useCatalog();
   const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const tag = SLEEP_TAG_CARDS.find((t) => t.id === id);
+  const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
 
   if (!tag) return null;
 
-  const sessions = getSessionsBySleepTag(tag.label);
+  const sessions = getSessionsByDescansoTag(tag.label);
 
   const rows: (typeof sessions)[] = [];
   for (let i = 0; i < sessions.length; i += 2) {

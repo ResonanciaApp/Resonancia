@@ -65,8 +65,10 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   sabiduriaTag: text("sabiduria_tag"),
   podcastTag: text("podcast_tag"),
   sonidosTag: text("sonidos_tag"),
-  /** Subcategoría de Dormir (ej. "Relajaciones", "Historias para dormir"). */
+  /** @deprecated Compatibilidad de migración; usar descansoTags. */
   descansoTag: text("descanso_tag"),
+  /** Colecciones dinámicas de Dormir. Una sesión puede pertenecer a varias. */
+  descansoTags: text("descanso_tags").array().notNull().default([]),
   themeTag: text("theme_tag").array(),
   /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
   temaTag: text("tema_tag").array(),

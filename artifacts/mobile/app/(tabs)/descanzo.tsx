@@ -21,7 +21,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
-import { getSessionsByDescansoTag, getSessionById, DESCANSO_VISIBLE_TAGS, getDescansoVisibleSessions } from "@/data/sessions";
+import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } from "@/data/sessions";
+import { DESCANSO_TAG_CARDS } from "@/data/tags";
+import { useCatalog } from "@/context/CatalogContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -32,15 +34,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 
-/* ─── Descanso tabs ─────────────────────────────────────────────────── */
-const SLEEP_TABS = [
-  { id: "historias", label: "Historias" },
-  { id: "asmr",      label: "ASMR" },
-  { id: "binaural",  label: "Sonidos Binaurales" },
-  { id: "ambiental", label: "Ambientales" },
-] as const;
-
-type SleepTabId = typeof SLEEP_TABS[number]["id"];
 function SleepPill({
   sel, label, onPress,
 }: { sel: boolean; label: string; onPress: () => void }) {
@@ -284,9 +277,9 @@ export default function DescansoScreen() {
   const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
 
-  const [activeTab,   setActiveTab]   = useState<SleepTabId | null>(null);
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const scrollY      = useRef(new Animated.Value(0)).current;
@@ -357,23 +350,14 @@ export default function DescansoScreen() {
 
   const tabBarH = 68 + Math.max(8, bottomPad - 10);
 
-  const visibleSessions = activeTab === "historias"
-    ? [...getSessionsByDescansoTag("Historias para dormir"), ...getSessionsByDescansoTag("Historias infantiles")]
-    : activeTab === "asmr"
-      ? getSessionsByDescansoTag("ASMR")
-      : activeTab === "binaural"
-        ? getSessionsByDescansoTag("Sonidos Binaurales")
-        : activeTab === "ambiental"
-          ? getSessionsByDescansoTag("Sonidos Ambientales")
-          : [];
-
-  const historiasForTodos = useMemo(() =>
-    [...getSessionsByDescansoTag("Historias para dormir"), ...getSessionsByDescansoTag("Historias infantiles")],
-    [],
+  const sleepCollections = useMemo(
+    () =>
+      DESCANSO_TAG_CARDS.map((tag) => ({
+        ...tag,
+        sessions: getSessionsByDescansoTag(tag.label),
+      })).filter((tag) => tag.sessions.length > 0),
+    [catalogVersion],
   );
-  const asmrForTodos = useMemo(() => getSessionsByDescansoTag("ASMR"), []);
-  const binauralForTodos = useMemo(() => getSessionsByDescansoTag("Sonidos Binaurales"), []);
-  const ambientalForTodos = useMemo(() => getSessionsByDescansoTag("Sonidos Ambientales"), []);
 
   // allDescansoIds usa getDescansoVisibleSessions() como fuente de verdad compartida
   // con el reproductor: solo las sesiones con tags en DESCANSO_VISIBLE_TAGS.
@@ -382,7 +366,7 @@ export default function DescansoScreen() {
     getDescansoVisibleSessions().forEach((s) => ids.add(s.id));
     return ids;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [catalogVersion]);
 
   const recentInDescanso = useMemo(() => {
     const seen = new Set<string>();
@@ -423,7 +407,7 @@ export default function DescansoScreen() {
   }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Mismo conjunto que la cola implícita del reproductor (DESCANSO_VISIBLE_TAGS).
-  const allDormiSessions = useMemo(() => getDescansoVisibleSessions(), []);
+  const allDormiSessions = useMemo(() => getDescansoVisibleSessions(), [catalogVersion]);
   const sleepSearchItems = useMemo(
     () =>
       allDormiSessions.map((session) => ({
@@ -500,142 +484,71 @@ export default function DescansoScreen() {
             style={styles.tabGrid}
             contentContainerStyle={styles.tabGridContent}
           >
-            <SleepPill sel={activeTab === null} label="Todos" onPress={() => setActiveTab(null)} />
-            {SLEEP_TABS.map((tab) => (
+            {sleepCollections.map((tab) => (
               <SleepPill
                 key={tab.id}
-                sel={activeTab === tab.id}
+                sel={false}
                 label={tab.label}
-                onPress={() => setActiveTab(tab.id)}
+                onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
               />
             ))}
           </ScrollView>
         </View>
 
 
-        {activeTab === null ? (
-          /* ── Vista "Todos": recientes + favoritos + carruseles por subcategoría ── */
-          <View style={{ marginTop: -25 }}>
-            {recentInDescanso.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="Escuchadas recientemente"
-                  sessions={recentInDescanso}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                />
-              </>
-            )}
-            {favoritesInDescanso.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="Favoritos"
-                  sessions={favoritesInDescanso}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                />
-              </>
-            )}
-            {historiasForTodos.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="Historias"
-                  sessions={historiasForTodos.slice(0, 5)}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                  onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
-                />
-              </>
-            )}
-            {asmrForTodos.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="ASMR"
-                  sessions={asmrForTodos.slice(0, 5)}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                  onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
-                />
-              </>
-            )}
-            {binauralForTodos.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="Sonidos Binaurales"
-                  sessions={binauralForTodos.slice(0, 5)}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                  onViewAll={binauralForTodos.length > 5 ? () => setActiveTab("binaural") : undefined}
-                />
-              </>
-            )}
-            {ambientalForTodos.length > 0 && (
-              <>
-                <SessionCarousel
-                  title="Ambientales"
-                  sessions={ambientalForTodos.slice(0, 5)}
-                  isPremium={isPremium}
-                  onPress={(s) => handleSessionTap(s)}
-                   style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
-                  cardWidth={RECENT_CARD_W}
-                  titleSize={18}
-                  showCardMetadata
-                  onViewAll={ambientalForTodos.length > 5 ? () => setActiveTab("ambiental") : undefined}
-                />
-              </>
-            )}
+        <View style={{ marginTop: -25 }}>
+          {recentInDescanso.length > 0 && (
+            <SessionCarousel
+              title="Escuchadas recientemente"
+              sessions={recentInDescanso}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionTap(s)}
+              style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={18}
+              showCardMetadata
+            />
+          )}
+          {favoritesInDescanso.length > 0 && (
+            <SessionCarousel
+              title="Favoritos"
+              sessions={favoritesInDescanso}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionTap(s)}
+              style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={18}
+              showCardMetadata
+            />
+          )}
+          {sleepCollections.map((collection) => (
+            <SessionCarousel
+              key={collection.id}
+              title={collection.label}
+              sessions={collection.sessions.slice(0, 5)}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionTap(s)}
+              style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={18}
+              showCardMetadata
+              onViewAll={() => router.push(`/sleep-tag/${collection.id}` as never)}
+            />
+          ))}
 
-            {/* ── Botón "Ver todas las sesiones de Dormir" ── */}
-            <Pressable
-              onPress={() => setAllVisible(true)}
-              style={({ pressed }) => [{
-                flexDirection: "row", alignItems: "center", justifyContent: "center",
-                paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1,
-              }]}
-            >
-              <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>
-                Todas las sesiones de Dormir
-              </Text>
-              <Feather name="chevron-right" size={16} color="#F9F9F9" />
-            </Pressable>
-          </View>
-        ) : (
-          /* ── Grilla de sesiones (Historias / ASMR / Binaurales / Ambientales) ── */
-          <View style={styles.sessionGrid}>
-            {visibleSessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                width={cardW}
-                style={{ marginRight: 0 }}
-                showCardMetadata
-                showAuthorAvatar={false}
-                overridePress={() => handleSessionTap(session)}
-                playing={currentSession?.id === session.id}
-              />
-            ))}
-          </View>
-        )}
+          <Pressable
+            onPress={() => setAllVisible(true)}
+            style={({ pressed }) => [{
+              flexDirection: "row", alignItems: "center", justifyContent: "center",
+              paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1,
+            }]}
+          >
+            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>
+              Todas las sesiones de Dormir
+            </Text>
+            <Feather name="chevron-right" size={16} color="#F9F9F9" />
+          </Pressable>
+        </View>
 
       </ScrollView>
 
@@ -676,13 +589,12 @@ export default function DescansoScreen() {
             style={[styles.tabGrid, { marginBottom: 13 }]}
             contentContainerStyle={styles.tabGridContent}
           >
-            <SleepPill sel={activeTab === null} label="Todos" onPress={() => setActiveTab(null)} />
-            {SLEEP_TABS.map((tab) => (
+            {sleepCollections.map((tab) => (
               <SleepPill
                 key={tab.id}
-                sel={activeTab === tab.id}
+                sel={false}
                 label={tab.label}
-                onPress={() => setActiveTab(tab.id)}
+                onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
               />
             ))}
           </ScrollView>

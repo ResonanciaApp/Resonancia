@@ -117,6 +117,16 @@ export const SLEEP_TAG_CARDS: SleepTagCard[] = [
 // ── Descanso Tags ────────────────────────────────────────────────────────────
 
 export type DescansoTag =
+  | "Música para dormir"
+  | "Meditaciones para dormir"
+  | "Historias para dormir"
+  | "Sonidos para dormir"
+  | "Paisajes sonoros"
+  | "Para niños"
+  | "Sonidos de lluvia"
+  | "Ruido";
+
+export type LegacyDescansoTag =
   | "Relajaciones"
   | "Sueño profundo"
   | "Ruidos"
@@ -137,32 +147,18 @@ export interface DescansoTagCard {
 
 export const DESCANSO_TAG_CARDS: DescansoTagCard[] = [
   {
-    id: "relajaciones",
-    label: "Relajaciones",
-    description: "Sesiones de relajación muscular progresiva y respiración profunda para soltar la tensión del día.",
-    icon: "wind",
+    id: "musica-para-dormir",
+    label: "Música para dormir",
+    description: "Música suave y frecuencias creadas para acompañar la transición hacia un descanso profundo.",
+    icon: "music",
     accent: "#8AAAD4",
   },
   {
-    id: "sueno-profundo",
-    label: "Sueño profundo",
-    description: "Frecuencias y atmósferas diseñadas para inducir un sueño reparador y profundo desde los primeros minutos.",
-    icon: "moon",
-    accent: "#9B8BC8",
-  },
-  {
-    id: "ruidos",
-    label: "Ruidos",
-    description: "Ruido blanco, lluvia, olas y sonidos de naturaleza que enmascaran el entorno y preparan el sistema nervioso.",
-    icon: "volume-2",
-    accent: "#7AB8A8",
-  },
-  {
-    id: "meditaciones",
-    label: "Meditaciones",
-    description: "Meditaciones guiadas específicamente diseñadas para el momento de dormir y el descanso nocturno.",
+    id: "meditaciones-para-dormir",
+    label: "Meditaciones para dormir",
+    description: "Prácticas guiadas para soltar el día, aquietar la mente y conciliar el sueño.",
     icon: "eye",
-    accent: "#C8A8D4",
+    accent: "#9B8BC8",
   },
   {
     id: "historias-para-dormir",
@@ -172,31 +168,38 @@ export const DESCANSO_TAG_CARDS: DescansoTagCard[] = [
     accent: "#D4B896",
   },
   {
-    id: "historias-infantiles",
-    label: "Historias infantiles",
-    description: "Cuentos tranquilos y entrañables para acompañar a los más pequeños en su viaje al mundo de los sueños.",
-    icon: "star",
-    accent: "#D4C896",
-  },
-  {
-    id: "asmr",
-    label: "ASMR",
-    description: "Sonidos íntimos y susurrados que activan la respuesta sensorial del cuerpo, disolviendo la tensión hasta el sueño.",
+    id: "sonidos-para-dormir",
+    label: "Sonidos para dormir",
+    description: "Texturas sonoras envolventes que ayudan a calmar el sistema nervioso antes de descansar.",
     icon: "headphones",
     accent: "#C8B4E0",
   },
   {
-    id: "sonidos-binaurales",
-    label: "Sonidos Binaurales",
-    description: "Frecuencias que sincronizan tu cerebro para el descanso más profundo. Usa auriculares para la experiencia completa.",
-    icon: "radio",
-    accent: "#8AAAD4",
+    id: "paisajes-sonoros",
+    label: "Paisajes sonoros",
+    description: "Ambientes naturales y espacios acústicos inmersivos para crear una atmósfera de descanso.",
+    icon: "wind",
+    accent: "#7AB8A8",
   },
   {
-    id: "sonidos-ambientales",
-    label: "Sonidos Ambientales",
-    description: "Paisajes sonoros naturales y ambientes envolventes que preparan el sistema nervioso para un descanso profundo.",
-    icon: "wind",
+    id: "para-ninos",
+    label: "Para niños",
+    description: "Cuentos y experiencias tranquilas para acompañar a los más pequeños a la hora de dormir.",
+    icon: "star",
+    accent: "#D4C896",
+  },
+  {
+    id: "sonidos-de-lluvia",
+    label: "Sonidos de lluvia",
+    description: "Lluvia suave y constante para enmascarar el entorno y favorecer un sueño continuo.",
+    icon: "cloud-rain",
+    accent: "#6FA9C7",
+  },
+  {
+    id: "ruido",
+    label: "Ruido",
+    description: "Ruido blanco y otras frecuencias estables para reducir distracciones durante la noche.",
+    icon: "volume-2",
     accent: "#7AB8A8",
   },
 ];

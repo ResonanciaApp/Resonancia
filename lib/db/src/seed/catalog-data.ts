@@ -169,7 +169,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sortOrder": 1,
     "frequency": "Delta 0.5–4 Hz",
     "ancestralTag": "Cuencos y Gongs",
-    "sleepTag": "Sonidos Ancestrales"
+    "sleepTag": "Sonidos Ancestrales",
+    "descansoTags": ["Sonidos para dormir"]
   },
   {
     "id": "5",
@@ -253,7 +254,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sortOrder": 5,
     "frequency": "Delta 1–4 Hz",
     "ancestralTag": "Cuencos Tibetanos",
-    "sleepTag": "Sonidos Binaurales"
+    "sleepTag": "Sonidos Binaurales",
+    "descansoTags": ["Música para dormir"]
   },
   {
     "id": "9",
@@ -282,7 +284,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sortOrder": 6,
     "frequency": "Theta 4–8 Hz",
     "ancestralTag": "Cuencos de Cuarzo",
-    "sleepTag": "Sonidos Binaurales"
+    "sleepTag": "Sonidos Binaurales",
+    "descansoTags": ["Música para dormir"]
   },
   {
     "id": "10",
@@ -311,7 +314,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sortOrder": 7,
     "frequency": "Gamma 40 Hz",
     "ancestralTag": "Cuencos de Cuarzo",
-    "sleepTag": "Sonidos Binaurales"
+    "sleepTag": "Sonidos Binaurales",
+    "descansoTags": ["Música para dormir"]
   },
   {
     "id": "20",
@@ -594,7 +598,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "themeTag": [
       "Energiza tus mañanas"
     ],
-    "sleepTag": "ASMR Expansivos"
+    "sleepTag": "ASMR Expansivos",
+    "descansoTags": ["Sonidos para dormir"]
   },
   {
     "id": "29",
@@ -624,7 +629,8 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "themeTag": [
       "Para la ansiedad"
     ],
-    "sleepTag": "Sonidos Binaurales"
+    "sleepTag": "Sonidos Binaurales",
+    "descansoTags": ["Música para dormir"]
   },
   {
     "id": "31",

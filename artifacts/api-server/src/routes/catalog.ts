@@ -40,6 +40,20 @@ const router: IRouter = Router();
 /** Tamaños máximos aceptados (la validación de bytes reales vive en storage). */
 const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
+const DESCANSO_TAGS = new Set([
+  "Música para dormir",
+  "Meditaciones para dormir",
+  "Historias para dormir",
+  "Sonidos para dormir",
+  "Paisajes sonoros",
+  "Para niños",
+  "Sonidos de lluvia",
+  "Ruido",
+]);
+
+function hasInvalidDescansoTags(tags: string[] | undefined): boolean {
+  return (tags ?? []).some((tag) => !DESCANSO_TAGS.has(tag));
+}
 
 function serializeCategory(c: CatalogCategory) {
   return {
@@ -104,6 +118,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     podcastTag: s.podcastTag,
     sonidosTag: s.sonidosTag,
     descansoTag: s.descansoTag,
+    descansoTags: s.descansoTags,
     themeTag: s.themeTag,
     temaTag: s.temaTag,
     sleepTag: s.sleepTag,
@@ -432,6 +447,10 @@ router.post(
     }
     const body = parsed.data;
     const me = req.currentUser!;
+    if (hasInvalidDescansoTags(body.descansoTags)) {
+      res.status(400).json({ error: "Colección de Dormir inválida" });
+      return;
+    }
 
     // Validación de assets (el server no ve los bytes; valida la metadata).
     for (const a of body.audioFiles) {
@@ -514,7 +533,8 @@ router.post(
           sabiduriaTag: body.sabiduriaTag ?? null,
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
-          descansoTag: body.descansoTag ?? null,
+          descansoTag: null,
+          descansoTags: body.descansoTags ?? [],
           themeTag: body.themeTag ?? null,
           temaTag: body.temaTag ?? null,
           sleepTag: body.sleepTag ?? null,
@@ -611,6 +631,7 @@ router.get(
       if (otherTag) {
         conditions.push(
           or(
+            sql`${catalogSessionsTable.descansoTags} @> ARRAY[${otherTag}]::text[]`,
             eq(catalogSessionsTable.sleepTag, otherTag),
             eq(catalogSessionsTable.meditationTag, otherTag),
             eq(catalogSessionsTable.soundTag, otherTag),
@@ -643,6 +664,7 @@ router.get(
           categoryId: catalogSessionsTable.categoryId,
           categoryLabel: catalogSessionsTable.categoryLabel,
           themeTag: catalogSessionsTable.themeTag,
+          descansoTags: catalogSessionsTable.descansoTags,
           sleepTag: catalogSessionsTable.sleepTag,
           meditationTag: catalogSessionsTable.meditationTag,
           soundTag: catalogSessionsTable.soundTag,
@@ -667,9 +689,12 @@ router.get(
         }
       }
 
-      // otherTags: sleepTag + meditationTag + soundTag + ancestralTag únicos
+      // otherTags: colecciones de Dormir + taxonomías secundarias únicas
       const otherTagSet = new Set<string>();
       for (const r of rows) {
+        for (const t of r.descansoTags ?? []) {
+          if (t) otherTagSet.add(t);
+        }
         if (r.sleepTag) otherTagSet.add(r.sleepTag);
         if (r.meditationTag) otherTagSet.add(r.meditationTag);
         if (r.soundTag) otherTagSet.add(r.soundTag);
@@ -819,6 +844,10 @@ router.patch(
       return;
     }
     const data = parsed.data;
+    if (hasInvalidDescansoTags(data.descansoTags)) {
+      res.status(400).json({ error: "Colección de Dormir inválida" });
+      return;
+    }
     const updates: Partial<typeof catalogSessionsTable.$inferInsert> = {
       updatedAt: new Date(),
     };
@@ -855,7 +884,10 @@ router.patch(
     if (data.sabiduriaTag !== undefined) updates.sabiduriaTag = data.sabiduriaTag ?? null;
     if (data.podcastTag !== undefined) updates.podcastTag = data.podcastTag ?? null;
     if (data.sonidosTag !== undefined) updates.sonidosTag = data.sonidosTag ?? null;
-    if (data.descansoTag !== undefined) updates.descansoTag = data.descansoTag ?? null;
+    if (data.descansoTags !== undefined) {
+      updates.descansoTags = data.descansoTags;
+      updates.descansoTag = null;
+    }
     if (data.sortOrder !== undefined) updates.sortOrder = data.sortOrder;
     if (data.guests !== undefined)
       updates.guests =

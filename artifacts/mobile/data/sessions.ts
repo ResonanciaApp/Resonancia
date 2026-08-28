@@ -37,7 +37,13 @@ export type AncestralTag =
   | "Percusión"
   | "Selva";
 
-import type { DescansoTag, SleepTag, ThemeTag } from "@/data/tags";
+import {
+  DESCANSO_TAG_CARDS,
+  type DescansoTag,
+  type LegacyDescansoTag,
+  type SleepTag,
+  type ThemeTag,
+} from "@/data/tags";
 
 export type Session = {
   id: string;
@@ -75,7 +81,9 @@ export type Session = {
   /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
   temaTag?: string[];
   sleepTag?: SleepTag;
-  descansoTag?: DescansoTag;
+  /** @deprecated Compatibilidad con sesiones bundleadas anteriores. */
+  descansoTag?: LegacyDescansoTag;
+  descansoTags?: DescansoTag[];
   /**
    * Etiqueta de voz mostrada en las cards. Controlada desde el panel admin.
    * - `undefined` → sesión bundleada (caption derivado de VOICE_MAP: "Guiada"/"Sin voz").
@@ -1195,21 +1203,58 @@ export function getSessionsBySleepTag(sleepTag: SleepTag): Session[] {
   return SESSIONS.filter((s) => s.sleepTag === sleepTag);
 }
 
-export function getSessionsByDescansoTag(tag: DescansoTag): Session[] {
-  return SESSIONS.filter((s) => s.descansoTag === tag);
+const CANONICAL_DESCANSO_TAGS = new Set<DescansoTag>(
+  DESCANSO_TAG_CARDS.map((card) => card.label),
+);
+
+const LEGACY_DESCANSO_TAG_MAP: Record<LegacyDescansoTag, DescansoTag[]> = {
+  Relajaciones: ["Meditaciones para dormir"],
+  "Sueño profundo": ["Música para dormir"],
+  Ruidos: ["Ruido"],
+  Meditaciones: ["Meditaciones para dormir"],
+  "Historias para dormir": ["Historias para dormir"],
+  "Historias infantiles": ["Historias para dormir", "Para niños"],
+  ASMR: ["Sonidos para dormir"],
+  "Sonidos Binaurales": ["Música para dormir"],
+  "Sonidos Ambientales": ["Paisajes sonoros"],
+};
+
+const LEGACY_SLEEP_TAG_MAP: Record<SleepTag, DescansoTag[]> = {
+  "Sonidos Binaurales": ["Música para dormir"],
+  "Sonidos Ancestrales": ["Sonidos para dormir"],
+  "ASMR Expansivos": ["Sonidos para dormir"],
+};
+
+export function normalizeDescansoTags(
+  tags: readonly string[] | null | undefined,
+  legacyDescansoTag?: string | null,
+  legacySleepTag?: string | null,
+): DescansoTag[] {
+  const result = new Set<DescansoTag>();
+  for (const tag of tags ?? []) {
+    if (CANONICAL_DESCANSO_TAGS.has(tag as DescansoTag)) result.add(tag as DescansoTag);
+  }
+  if (result.size === 0 && legacyDescansoTag && legacyDescansoTag in LEGACY_DESCANSO_TAG_MAP) {
+    for (const tag of LEGACY_DESCANSO_TAG_MAP[legacyDescansoTag as LegacyDescansoTag]) result.add(tag);
+  }
+  if (result.size === 0 && legacySleepTag && legacySleepTag in LEGACY_SLEEP_TAG_MAP) {
+    for (const tag of LEGACY_SLEEP_TAG_MAP[legacySleepTag as SleepTag]) result.add(tag);
+  }
+  return DESCANSO_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag));
 }
 
-/** Tags visibles en la pantalla Dormir (fuente de verdad compartida con el reproductor).
- *  Solo las sesiones con estos tags aparecen en los tabs de Dormir; las demás
- *  (Relajaciones, Sueño profundo, Ruidos, Meditaciones) nunca se muestran y no
- *  deben entrar en la cola implícita de navegación prev/next. */
-export const DESCANSO_VISIBLE_TAGS: DescansoTag[] = [
-  "Historias para dormir",
-  "Historias infantiles",
-  "ASMR",
-  "Sonidos Binaurales",
-  "Sonidos Ambientales",
-];
+export function getSessionDescansoTags(session: Session): DescansoTag[] {
+  return normalizeDescansoTags(session.descansoTags, session.descansoTag, session.sleepTag);
+}
+
+export function getSessionsByDescansoTag(tag: DescansoTag): Session[] {
+  return SESSIONS.filter((s) => getSessionDescansoTags(s).includes(tag));
+}
+
+/** Orden editorial canónico compartido por Dormir y la cola del reproductor. */
+export const DESCANSO_VISIBLE_TAGS: DescansoTag[] = DESCANSO_TAG_CARDS.map(
+  (card) => card.label,
+);
 
 /** Devuelve todas las sesiones visibles en la pantalla Dormir, deduplicadas
  *  y en el mismo orden en que aparecerían al recorrer los tabs de izquierda a
@@ -1276,6 +1321,7 @@ export type CatalogSessionSnapshot = {
   podcastTag?: string | null;
   sonidosTag?: string | null;
   descansoTag?: string | null;
+  descansoTags?: string[] | null;
   themeTag?: string[] | null;
   temaTag?: string[] | null;
   sleepTag?: string | null;
@@ -1440,7 +1486,8 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sabiduriaTag = (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined;
     local.podcastTag = (r.podcastTag ?? undefined) as PodcastTag | undefined;
     local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
-    local.descansoTag = (r.descansoTag ?? undefined) as DescansoTag | undefined;
+    local.descansoTags = normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag);
+    local.descansoTag = undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
     local.temaTag = r.temaTag ?? undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
@@ -1516,7 +1563,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sabiduriaTag: (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined,
       podcastTag: (r.podcastTag ?? undefined) as PodcastTag | undefined,
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
-      descansoTag: (r.descansoTag ?? undefined) as DescansoTag | undefined,
+      descansoTags: normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag),
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
       temaTag: r.temaTag ?? undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,

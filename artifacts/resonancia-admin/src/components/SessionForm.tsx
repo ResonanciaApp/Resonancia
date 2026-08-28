@@ -73,7 +73,16 @@ const CATS = [
 const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
 const MEDITATION_TAGS = ["No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría"];
 const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica","Música Tribal"];
-const DESCANSO_TAGS = ["Relajaciones","Sueño profundo","Ruidos","Meditaciones","Historias para dormir","Historias infantiles","ASMR","Sonidos Binaurales","Sonidos Ambientales"];
+const DESCANSO_TAGS = [
+  "Música para dormir",
+  "Meditaciones para dormir",
+  "Historias para dormir",
+  "Sonidos para dormir",
+  "Paisajes sonoros",
+  "Para niños",
+  "Sonidos de lluvia",
+  "Ruido",
+];
 const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
@@ -186,7 +195,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [ancestralTag, setAncestralTag] = useState(initial?.ancestralTag ?? "");
   const [meditationTag, setMeditationTag] = useState(initial?.meditationTag ?? "");
   const [soundTag, setSoundTag] = useState(initial?.soundTag ?? "");
-  const [descansoTag, setDescansoTag] = useState(initial?.descansoTag ?? "");
+  const [descansoTags, setDescansoTags] = useState<string[]>(initial?.descansoTags ?? []);
   const [artistId, setArtistId] = useState(initial?.artistId ?? "");
   const [sonidosTag, setSonidosTag] = useState(initial?.sonidosTag ?? "");
   const [podcastTag, setPodcastTag] = useState(initial?.podcastTag ?? "");
@@ -253,6 +262,11 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
 
+  const toggleDescanso = (tag: string) =>
+    setDescansoTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+
   const addBenefit = () => {
     const v = benefitInput.trim();
     if (v && benefits.length < 8) { setBenefits((p) => [...p, v]); setBenefitInput(""); }
@@ -291,7 +305,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   // ── Validación rápida ──
   const validate = (): string | null => {
     if (!categoryId) return "Seleccioná una categoría";
-    if (categoryId === "descanso" && !descansoTag) return "Seleccioná una subcategoría de Dormir";
     if (categoryId === "musica-sonidos" && !soundTag) return "Seleccioná una subcategoría de Música";
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
@@ -376,7 +389,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         ancestralTag: ancestralTag || undefined,
         meditationTag: meditationTag || undefined,
         soundTag: soundTag || undefined,
-        descansoTag: descansoTag || undefined,
+        descansoTags,
         sonidosTag: sonidosTag || undefined,
         podcastTag: podcastTag || undefined,
         sabiduriaTag: sabiduriaTag || undefined,
@@ -454,7 +467,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         ancestralTag: ancestralTag || null,
         meditationTag: meditationTag || null,
         soundTag: soundTag || null,
-        descansoTag: descansoTag || null,
+        descansoTags,
         sonidosTag: sonidosTag || null,
         podcastTag: podcastTag || null,
         sabiduriaTag: sabiduriaTag || null,
@@ -490,7 +503,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     setDuration(""); setIsPremium(false); setSkipDetail(false); setSkipMiniPlayer(false); setIsLoop(false);
     setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
-    setSoundTag(""); setDescansoTag(""); setArtistId("");
+    setSoundTag(""); setDescansoTags([]); setArtistId("");
     setSonidosTag(""); setPodcastTag(""); setSabiduriaTag(""); setSleepTag(""); setThemeTag([]); setTemaTag([]);
     setGuideIds([""]);
     setBenefits([]); setInstruments([]);
@@ -556,7 +569,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                 if (!isEdit) {
                   // reset tags al cambiar categoría
                   setAncestralTag(""); setMeditationTag("");
-                  setSoundTag(""); setDescansoTag(""); setArtistId("");
+                  setSoundTag(""); setDescansoTags([]); setArtistId("");
                   setSonidosTag(""); setPodcastTag(""); setGuideIds([""]);
                   // auto-mostrar audio2 con rol correcto según categoría
                   if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas" || cat.id === "descanso") {
@@ -801,16 +814,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               />
             )}
 
-            {categoryId === "descanso" && (
-              <SingleTagOptionSelector
-                tagType="descanso"
-                defaults={DESCANSO_TAGS}
-                label="Subcategoría *"
-                selected={descansoTag}
-                onSelect={setDescansoTag}
-              />
-            )}
-
             {categoryId === "musica-sonidos" && (
               <SingleTagOptionSelector
                 tagType="sound"
@@ -864,6 +867,16 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               selected={temaTag}
               onToggle={toggleTema}
               pill
+            />
+
+            <TagOptionSelector
+              tagType="descanso"
+              defaults={DESCANSO_TAGS}
+              label="Colecciones de Dormir (opcional)"
+              selected={descansoTags}
+              onToggle={toggleDescanso}
+              pill
+              fixed
             />
 
             <TagOptionSelector
