@@ -9,10 +9,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { ResonadoresSection } from "@/components/ResonadoresSection";
-import { ToolsGrid } from "@/components/ToolsGrid";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -43,12 +40,8 @@ export default function HerramientasScreen() {
       >
         <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
 
-        <ToolsGrid />
-
         <View style={styles.fullBleedSection}>
           <EncuentrosResonadoresSection titleMarginTop={0} />
-          <ResonadoresSection />
-          <AlmaCommunitySection />
         </View>
 
       </ScrollView>
