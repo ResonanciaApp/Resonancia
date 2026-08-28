@@ -68,7 +68,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
-  const ch = (cardHeight ?? cw) + (showCardMetadata ? 40 : 0);
+  const ch = (cardHeight ?? cw) + (showCardMetadata ? 50 : 0);
   const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
   const thumbStyle = cw !== CARD_W ? { width: cw, height: ch } : undefined;
   const titleFontSize = titleSize ?? 17;
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     right: 8,
-    bottom: 9,
+    bottom: 15,
   },
   cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 4 },
 });
