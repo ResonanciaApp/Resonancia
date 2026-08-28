@@ -830,7 +830,8 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               includeExtras
               showTitle={false}
               showCardBorders={false}
-              cardOpacity={0.7}
+              cardBackgroundColor={resourceBlockBackground}
+              cardOpacity={1}
               style={{ marginTop: 10, marginBottom: 10 }}
             />
 
