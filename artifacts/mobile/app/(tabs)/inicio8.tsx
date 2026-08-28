@@ -93,6 +93,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1825,6 +1826,12 @@ export default function HomeScreen2({
             titleSpacing={16}
             onViewAll={() => openCategory("/favoritos-todos")}
             showCardMetadata
+          />
+        )}
+        {isInicio2 && (
+          <QuickAccessSection
+            includeExtras
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
         {isInicio2 && (

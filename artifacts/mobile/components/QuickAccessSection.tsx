@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import {
+  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -22,9 +23,20 @@ const ACCESS_CARDS = [
   { id: "history", label: "Historial", icon: "history", route: "/historial" },
 ] as const;
 
-type AccessId = (typeof ACCESS_CARDS)[number]["id"];
+const EXTRA_ACCESS_CARDS = [
+  { id: "downloads", label: "Descargas", icon: "download-outline", route: "" },
+  { id: "sessions", label: "Sesiones", icon: "calendar-outline", route: "/mis-sesiones" },
+] as const;
 
-export function QuickAccessSection() {
+type AccessId = (typeof ACCESS_CARDS)[number]["id"] | (typeof EXTRA_ACCESS_CARDS)[number]["id"];
+
+export function QuickAccessSection({
+  includeExtras = false,
+  style,
+}: {
+  includeExtras?: boolean;
+  style?: object;
+}) {
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -37,8 +49,12 @@ export function QuickAccessSection() {
       : "rgba(255,255,255,0.05)";
 
   const handlePress = useCallback((id: AccessId) => {
-    const access = ACCESS_CARDS.find((item) => item.id === id);
+    const access = [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS].find((item) => item.id === id);
     if (!access) return;
+    if (id === "downloads") {
+      Alert.alert("Descargas", "La descarga estará disponible próximamente.");
+      return;
+    }
     if (id === "saved") {
       router.push(access.route as never);
       return;
@@ -47,10 +63,10 @@ export function QuickAccessSection() {
   }, [openOverlay]);
 
   return (
-    <View style={styles.section} testID="quick-access-section">
+    <View style={[styles.section, style]} testID="quick-access-section">
       <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>
       <View style={styles.accessRow}>
-        {ACCESS_CARDS.map((access) => (
+        {(includeExtras ? [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS] : ACCESS_CARDS).map((access) => (
           <Pressable
             key={access.id}
             testID={`access-${access.id}`}
@@ -95,8 +111,8 @@ const styles = StyleSheet.create({
   },
   accessRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: GRID_GAP,
-    marginBottom: GRID_GAP,
   },
   card: {
     height: 76,

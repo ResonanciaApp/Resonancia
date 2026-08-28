@@ -63,7 +63,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-meditaciones.png")}
-                style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
+                style={{ width: horizontal ? 18 : 22, height: horizontal ? 18 : 22 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -76,7 +76,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-sesiones.png")}
-                style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
+                style={{ width: horizontal ? 22 : 26, height: horizontal ? 22 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -89,7 +89,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-musica.png")}
-                style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
+                style={{ width: horizontal ? 22 : 26, height: horizontal ? 22 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -102,7 +102,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-luna.png")}
-                style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
+                style={{ width: horizontal ? 18 : 22, height: horizontal ? 18 : 22 }}
                 contentFit="contain"
                 tintColor={color ?? CATEGORY_ICON_COLOR}
               />
@@ -113,7 +113,7 @@ export function ContentCategoryGrid({
             label: "Mezclador",
             color: "#E6BE67",
             icon: (color?: string) => (
-              <MaterialCommunityIcons name="tune-variant" size={24} color={color ?? "#E6BE67"} />
+              <MaterialCommunityIcons name="tune-variant" size={horizontal ? 22 : 24} color={color ?? "#E6BE67"} />
             ),
           },
           {
@@ -123,7 +123,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cubo-4.png")}
-                style={{ width: 26, height: 26 }}
+                style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
