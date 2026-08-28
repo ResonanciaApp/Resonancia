@@ -1,4 +1,3 @@
-import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { router } from "expo-router";
@@ -18,8 +17,8 @@ import {
 } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { useUserProfile } from "@/context/UserProfileContext";
 
-const WINDOW_MS = 24 * 60 * 60 * 1000;
 const PREVIEW_COUNT = 10;
 
 function timeAgo(iso: string | Date): string {
@@ -43,6 +42,7 @@ function AuthorAvatar({ uri, name }: { uri?: string | null; name?: string | null
 
 export function AlmaCommunitySection() {
   const colors = useColors();
+  const { sentMessageIds } = useUserProfile();
 
   const { data, isLoading } = useGetMessages(
     { page: 1 },
@@ -52,6 +52,7 @@ export function AlmaCommunitySection() {
   const allMessages = data?.messages ?? [];
   const total = data?.total ?? 0;
   const preview = allMessages.slice(0, PREVIEW_COUNT);
+  const hasPublished = sentMessageIds.some((id) => allMessages.some((message) => message.id === id));
 
   return (
     <View style={styles.section}>
@@ -66,21 +67,23 @@ export function AlmaCommunitySection() {
       </View>
 
       {/* Compose tap area */}
-      <Pressable
-        onPress={() => router.push("/mensajes-del-alma" as never)}
-        style={({ pressed }) => [
-          styles.composeTap,
-          { opacity: pressed ? 0.75 : 1 },
-        ]}
-      >
-        <LinearGradient
-          colors={["#784576", "#50326E"]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
-        <Text style={styles.composeChipText}>Publicar</Text>
-      </Pressable>
+      {!hasPublished && (
+        <Pressable
+          onPress={() => router.push("/mensajes-del-alma" as never)}
+          style={({ pressed }) => [
+            styles.composeTap,
+            { opacity: pressed ? 0.75 : 1 },
+          ]}
+        >
+          <LinearGradient
+            colors={["#784576", "#50326E"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <Text style={styles.composeChipText}>Publicar</Text>
+        </Pressable>
+      )}
 
       {/* Messages preview */}
       {isLoading ? (
@@ -94,8 +97,6 @@ export function AlmaCommunitySection() {
       ) : (
         <View style={styles.messagesList}>
           {preview.map((msg) => {
-            const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
-            const isExpiring = msLeft < 3 * 60 * 60 * 1000;
             return (
               <Pressable
                 key={msg.id}
@@ -103,9 +104,7 @@ export function AlmaCommunitySection() {
                 style={({ pressed }) => [
                   styles.msgCard,
                   {
-                    borderBottomColor: isExpiring
-                      ? "rgba(192,112,90,0.20)"
-                      : "rgba(61,14,22,0.40)",
+                    borderBottomColor: "rgba(255,255,255,0.1)",
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
@@ -122,12 +121,6 @@ export function AlmaCommunitySection() {
                     <Text style={[styles.msgTime, { color: colors.mutedForeground }]}>
                       {timeAgo(msg.createdAt)}
                     </Text>
-                    {isExpiring && (
-                      <View style={styles.expiringTag}>
-                        <Feather name="clock" size={9} color="#C0705A" />
-                        <Text style={styles.expiringText}>expira pronto</Text>
-                      </View>
-                    )}
                   </View>
                 </View>
               </Pressable>
@@ -210,8 +203,6 @@ const styles = StyleSheet.create({
   msgText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, opacity: 0.82 },
   msgMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5 },
   msgTime: { fontFamily: "Manrope", fontSize: 10 },
-  expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
-  expiringText: { fontFamily: "Manrope", fontSize: 9, color: "#C0705A" },
 
   cargarMasBtn: {
     alignItems: "center",

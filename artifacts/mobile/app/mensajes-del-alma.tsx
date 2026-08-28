@@ -36,23 +36,12 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MAX_CHARS = 300;
-const WINDOW_MS = 24 * 60 * 60 * 1000;
 
 function timeAgo(iso: string | Date): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (mins < 1) return "ahora mismo";
   if (mins < 60) return `hace ${mins} min`;
   return `hace ${Math.floor(mins / 60)} h`;
-}
-
-function expiresIn(iso: string | Date): string {
-  const msLeft = new Date(iso).getTime() + WINDOW_MS - Date.now();
-  if (msLeft <= 0) return "expirado";
-  const totalMins = Math.floor(msLeft / 60000);
-  const hrs = Math.floor(totalMins / 60);
-  const mins = totalMins % 60;
-  if (hrs > 0) return `${hrs} h ${mins} min`;
-  return `${mins} min`;
 }
 
 function AuthorAvatar({ uri, name, size = 38 }: { uri?: string | null; name?: string | null; size?: number }) {
@@ -77,9 +66,10 @@ export default function MensajesDelAlmaScreen() {
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const queryClient = useQueryClient();
-  const { recordSentMessage, username, photoUri } = useUserProfile();
+  const { recordSentMessage, sentMessageIds, username, photoUri } = useUserProfile();
 
   const [text, setText] = useState("");
+  const [publishedThisVisit, setPublishedThisVisit] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   const { data, isLoading, refetch, isRefetching } = useGetMessages(
@@ -93,6 +83,7 @@ export default function MensajesDelAlmaScreen() {
         setText("");
         Keyboard.dismiss();
         recordSentMessage(created.id);
+        setPublishedThisVisit(true);
         queryClient.invalidateQueries({ queryKey: getGetMessagesQueryKey() });
       },
       onError: () => {
@@ -110,6 +101,7 @@ export default function MensajesDelAlmaScreen() {
   const allMessages = data?.messages ?? [];
   const total = data?.total ?? 0;
   const remaining = MAX_CHARS - text.length;
+  const hasPublished = publishedThisVisit || sentMessageIds.some((id) => allMessages.some((message) => message.id === id));
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -152,53 +144,61 @@ export default function MensajesDelAlmaScreen() {
           }
         >
           {/* Compose card */}
-          <View style={[styles.composeCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
-            <View style={styles.composeTop}>
-              <AuthorAvatar uri={photoUri} name={username} size={36} />
-              <TextInput
-                ref={inputRef}
-                value={text}
-                onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
-                placeholder="¿Qué te gustaría compartir hoy?"
-                placeholderTextColor="#F9F9F9"
-                multiline
-                style={[styles.composeInput, { color: colors.foreground }]}
-                selectionColor={colors.primary}
-              />
-            </View>
-            <View style={[styles.composeFooter, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
-              <Text style={[styles.charCount, { color: remaining < 40 ? "#D07060" : colors.mutedForeground }]}>
-                {remaining}
+          {hasPublished ? (
+            <View style={[styles.publishedNotice, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }]}>
+              <Text style={[styles.publishedNoticeText, { color: colors.mutedForeground }]}>
+                Ya compartiste tu mensaje de hoy
               </Text>
-              <View style={styles.composeFooterRight}>
-                <View style={[styles.infoBadge, { borderColor: "rgba(255,255,255,0.08)" }]}>
-                  <Feather name="clock" size={10} color={colors.mutedForeground} />
-                  <Text style={[styles.infoBadgeText, { color: colors.mutedForeground }]}>24 h</Text>
+            </View>
+          ) : (
+            <View style={[styles.composeCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
+              <View style={styles.composeTop}>
+                <AuthorAvatar uri={photoUri} name={username} size={36} />
+                <TextInput
+                  ref={inputRef}
+                  value={text}
+                  onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
+                  placeholder="¿Qué te gustaría compartir hoy?"
+                  placeholderTextColor="#F9F9F9"
+                  multiline
+                  style={[styles.composeInput, { color: colors.foreground }]}
+                  selectionColor={colors.primary}
+                />
+              </View>
+              <View style={[styles.composeFooter, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
+                <Text style={[styles.charCount, { color: remaining < 40 ? "#D07060" : colors.mutedForeground }]}>
+                  {remaining}
+                </Text>
+                <View style={styles.composeFooterRight}>
+                  <View style={[styles.infoBadge, { borderColor: "rgba(255,255,255,0.08)" }]}>
+                    <Feather name="clock" size={10} color={colors.mutedForeground} />
+                    <Text style={[styles.infoBadgeText, { color: colors.mutedForeground }]}>24 h</Text>
+                  </View>
+                  <Pressable
+                    onPress={handleSend}
+                    disabled={!text.trim() || isSubmitting}
+                    style={({ pressed }) => [
+                      styles.sendBtn,
+                      {
+                        backgroundColor: text.trim() ? undefined : "rgba(212,175,55,0.20)",
+                        overflow: "hidden",
+                        opacity: pressed ? 0.8 : 1,
+                      },
+                    ]}
+                  >
+                    {text.trim() && <GoldGradientFill />}
+                    {isSubmitting ? (
+                      <ActivityIndicator size="small" color="#1B060F" />
+                    ) : (
+                      <Text style={[styles.sendBtnText, { color: text.trim() ? "#1B060F" : colors.mutedForeground }]}>
+                        Compartir
+                      </Text>
+                    )}
+                  </Pressable>
                 </View>
-                <Pressable
-                  onPress={handleSend}
-                  disabled={!text.trim() || isSubmitting}
-                  style={({ pressed }) => [
-                    styles.sendBtn,
-                    {
-                      backgroundColor: text.trim() ? undefined : "rgba(212,175,55,0.20)",
-                      overflow: "hidden",
-                      opacity: pressed ? 0.8 : 1,
-                    },
-                  ]}
-                >
-                  {text.trim() && <GoldGradientFill />}
-                  {isSubmitting ? (
-                    <ActivityIndicator size="small" color="#1B060F" />
-                  ) : (
-                    <Text style={[styles.sendBtnText, { color: text.trim() ? "#1B060F" : colors.mutedForeground }]}>
-                      Compartir
-                    </Text>
-                  )}
-                </Pressable>
               </View>
             </View>
-          </View>
+          )}
 
           {/* Divider label */}
           <View style={styles.dividerRow}>
@@ -225,18 +225,12 @@ export default function MensajesDelAlmaScreen() {
           ) : (
             <View style={styles.feedList}>
               {allMessages.map((msg) => {
-                const msLeft = new Date(msg.createdAt).getTime() + WINDOW_MS - Date.now();
-                const isExpiring = msLeft < 3 * 60 * 60 * 1000;
                 return (
                   <View
                     key={msg.id}
                     style={[
                       styles.msgCard,
-                      {
-                        borderBottomColor: isExpiring
-                          ? "rgba(192,112,90,0.18)"
-                          : "rgba(61,14,22,0.40)",
-                      },
+                      { borderBottomColor: "rgba(255,255,255,0.1)" },
                     ]}
                   >
                     <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} size={40} />
@@ -252,14 +246,6 @@ export default function MensajesDelAlmaScreen() {
                       <Text style={[styles.msgContent, { color: colors.foreground }]}>
                         {msg.content}
                       </Text>
-                      {isExpiring && (
-                        <View style={[styles.msgFooter, { marginTop: 8 }]}>
-                          <View style={styles.expiringTag}>
-                            <Feather name="clock" size={9} color="#C07060" />
-                            <Text style={styles.expiringText}>expira en {expiresIn(msg.createdAt)}</Text>
-                          </View>
-                        </View>
-                      )}
                     </View>
                   </View>
                 );
@@ -303,6 +289,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     overflow: "hidden",
   },
+  publishedNotice: {
+    marginHorizontal: 20,
+    borderRadius: 18,
+    borderWidth: 1,
+    marginBottom: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 20,
+    alignItems: "center",
+  },
+  publishedNoticeText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
   composeTop: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -378,12 +374,4 @@ const styles = StyleSheet.create({
   msgAuthor: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   msgTime: { fontFamily: "Manrope", fontSize: 10 },
   msgContent: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, opacity: 0.82 },
-  msgFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
-  expiringText: { fontFamily: "Manrope", fontSize: 9, color: "#C07060" },
 });
