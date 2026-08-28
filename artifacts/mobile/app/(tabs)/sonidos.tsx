@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontFamily: "Manrope",
     fontSize: 30,
-    fontWeight: "850" as any,
+    fontWeight: "800",
     letterSpacing: 0.3,
     textAlign: "left",
     marginTop: 0,
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   compactPageTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
-    fontWeight: "850" as any,
+    fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "center",
   },
