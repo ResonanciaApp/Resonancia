@@ -55,7 +55,6 @@ import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
-import { computeTotalActiveDays, formatMinutes } from "@/utils/stats";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -100,10 +99,6 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
-
-
-
-type StatsPeriod = "30d" | "daily" | "total";
 
 
 
@@ -220,7 +215,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
+  const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
   const {
     username,
@@ -233,43 +228,13 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, maxStreak, weekFlags, todayIndex, totalActiveDays } = useStreak();
-  const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>("30d");
-  const [statsPeriodOpen, setStatsPeriodOpen] = useState(false);
+  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
-
-  const personalStats = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let periodEvents = statEvents;
-    if (statsPeriod !== "total") {
-      const start = new Date(today);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      if (statsPeriod === "30d") start.setDate(start.getDate() - 29);
-      periodEvents = statEvents.filter((event) => {
-        const playedAt = new Date(event.playedAt);
-        return playedAt >= start && playedAt < tomorrow;
-      });
-    }
-
-    const minutes = Math.round(periodEvents.reduce((sum, event) => sum + (event.minutes ?? 0), 0));
-    return {
-      minutes,
-      activeDays: statsPeriod === "total"
-        ? totalActiveDays
-        : computeTotalActiveDays(periodEvents),
-    };
-  }, [statEvents, statsPeriod, totalActiveDays]);
-
-  const statsPeriodLabel =
-    statsPeriod === "30d" ? "Últimos 30 días" : statsPeriod === "daily" ? "Diario" : "Totales";
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -820,7 +785,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
           </View>
         </View>
 
-        {/* ── Racha y estadísticas personales (solo en el Perfil dedicado) ── */}
+        {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
             <View
@@ -867,83 +832,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               style={{ marginTop: 10, marginBottom: 10 }}
             />
 
-            <View
-              style={[
-                styles.personalStatsCard,
-                { backgroundColor: resourceBlockBackground, borderColor: resourceBlockBorder },
-              ]}
-            >
-              <View style={styles.personalStatsHeader}>
-                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                  Estadísticas personales
-                </Text>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Periodo: ${statsPeriodLabel}`}
-                  onPress={() => setStatsPeriodOpen((open) => !open)}
-                  style={({ pressed }) => [styles.statsPeriodButton, { opacity: pressed ? 0.72 : 1 }]}
-                >
-                  <Text style={[styles.statsPeriodButtonText, { color: colors.mutedForeground }]}>
-                    {statsPeriodLabel}
-                  </Text>
-                  <Feather name={statsPeriodOpen ? "chevron-up" : "chevron-down"} size={15} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
-
-              {statsPeriodOpen && (
-                <View style={[styles.statsPeriodMenu, { borderColor: colors.border }]}>
-                  {([
-                    ["30d", "Últimos 30 días"],
-                    ["daily", "Diario"],
-                    ["total", "Totales"],
-                  ] as const).map(([value, label]) => (
-                    <Pressable
-                      key={value}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: statsPeriod === value }}
-                      onPress={() => {
-                        setStatsPeriod(value);
-                        setStatsPeriodOpen(false);
-                      }}
-                      style={[
-                        styles.statsPeriodOption,
-                        statsPeriod === value && { backgroundColor: "rgba(255,255,255,0.08)" },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.statsPeriodOptionText,
-                          { color: statsPeriod === value ? colors.foreground : colors.mutedForeground },
-                        ]}
-                      >
-                        {label}
-                      </Text>
-                      {statsPeriod === value && <Feather name="check" size={15} color={colors.primary} />}
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-
-              <View style={styles.personalStatsMetrics}>
-                <View style={styles.personalStatMetric}>
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {formatMinutes(personalStats.minutes)}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
-                    Minutos de práctica
-                  </Text>
-                </View>
-                <View style={[styles.personalStatsDivider, { backgroundColor: colors.border }]} />
-                <View style={styles.personalStatMetric}>
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.activeDays}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
-                    Días logrados
-                  </Text>
-                </View>
-              </View>
-            </View>
           </>
         )}
 
@@ -1551,52 +1439,6 @@ const styles = StyleSheet.create({
   },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
-  personalStatsCard: {
-    borderRadius: 18,
-    borderWidth: 1,
-    marginBottom: 20,
-    overflow: "hidden",
-  },
-  personalStatsHeader: {
-    minHeight: 58,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  personalStatsTitle: { flex: 1, fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.15 },
-  statsPeriodButton: {
-    maxWidth: 142,
-    minHeight: 34,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 4,
-  },
-  statsPeriodButtonText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", textAlign: "right" },
-  statsPeriodMenu: { marginHorizontal: 16, marginBottom: 10, borderWidth: 1, borderRadius: 12, overflow: "hidden" },
-  statsPeriodOption: {
-    minHeight: 40,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  statsPeriodOptionText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  personalStatsMetrics: {
-    flexDirection: "row",
-    paddingVertical: 17,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.06)",
-  },
-  personalStatMetric: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 8 },
-  personalStatsDivider: { width: 1, height: 42, alignSelf: "center" },
-  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.15 },
-  personalStatLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "500", marginTop: 4, textAlign: "center" },
 
   // Membresía
   membershipRow: {
