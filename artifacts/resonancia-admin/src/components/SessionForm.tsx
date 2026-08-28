@@ -66,6 +66,8 @@ const CATS = [
   { id: "descanso", label: "Dormir", categoryLabel: "Dormir", color: "#8AAAD4" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
   { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },
+  { id: "historias", label: "Historias", categoryLabel: "Historias", color: "#D5A4E8" },
+  { id: "charlas", label: "Charlas", categoryLabel: "Charlas", color: "#F0B17A" },
 ] as const;
 
 const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];

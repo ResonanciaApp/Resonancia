@@ -1982,9 +1982,10 @@ export default function HomeScreen2({
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        {!isInicio2 && (
-          <ContentCategoryGrid marginTop={showAnimatedScene ? 28 : 22} />
-        )}
+        <ContentCategoryGrid
+          marginTop={showAnimatedScene ? 28 : 22}
+          marginBottom={isInicio2 ? INICIO2_SECTION_GAP : undefined}
+        />
 
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (

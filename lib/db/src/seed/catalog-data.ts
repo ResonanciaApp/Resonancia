@@ -47,6 +47,32 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "sortOrder": 2
   },
   {
+    "id": "historias",
+    "title": "Historias",
+    "subtitle": "Relatos que acompañan, inspiran y transforman",
+    "icon": "book-open-page-variant",
+    "sessionCount": 0,
+    "color": "#D5A4E8",
+    "gradientStart": "#4A2A5A",
+    "gradientEnd": "#24142D",
+    "isPrimary": true,
+    "sortOrder": 4,
+    "iconFamily": "MaterialCommunityIcons"
+  },
+  {
+    "id": "charlas",
+    "title": "Charlas",
+    "subtitle": "Conversaciones para abrir nuevas perspectivas",
+    "icon": "message-text-outline",
+    "sessionCount": 0,
+    "color": "#F0B17A",
+    "gradientStart": "#5A3422",
+    "gradientEnd": "#2D1910",
+    "isPrimary": true,
+    "sortOrder": 5,
+    "iconFamily": "MaterialCommunityIcons"
+  },
+  {
     "id": "podcast",
     "title": "Sonidos",
     "subtitle": "Frecuencias, naturaleza y atmósferas para transformar tu estado",
@@ -56,7 +82,7 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "gradientStart": "#243350",
     "gradientEnd": "#101A28",
     "isPrimary": true,
-    "sortOrder": 4,
+    "sortOrder": 6,
     "iconFamily": "MaterialCommunityIcons"
   },
   {
@@ -69,7 +95,7 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "gradientStart": "#5C4A10",
     "gradientEnd": "#2E2408",
     "isPrimary": true,
-    "sortOrder": 5
+    "sortOrder": 7
   },
   {
     "id": "noches",
@@ -81,7 +107,7 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "gradientStart": "#1A4A42",
     "gradientEnd": "#0C2420",
     "isPrimary": true,
-    "sortOrder": 6
+    "sortOrder": 8
   }
 ];
 

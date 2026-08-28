@@ -17,12 +17,16 @@ const CARD_CATEGORY_COLORS: Record<string, string> = {
   "sonidos-ancestrales": "#9A5A2C",
   "musica-sonidos": "#287F83",
   "__descanzo__": "#32708E",
+  "historias": "#704886",
+  "charlas": "#8D5135",
 };
 const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
   "meditaciones-guiadas": 164,
   "sonidos-ancestrales": 158,
   "musica-sonidos": 126,
   "__descanzo__": 120,
+  "historias": 130,
+  "charlas": 118,
 };
 
 /**
@@ -105,6 +109,30 @@ export function ContentCategoryGrid({
                 style={{ width: horizontal ? 16 : 22, height: horizontal ? 16 : 22 }}
                 contentFit="contain"
                 tintColor={color ?? CATEGORY_ICON_COLOR}
+              />
+            ),
+          },
+          {
+            id: "historias",
+            label: "Historias",
+            color: "#D5A4E8",
+            icon: (color?: string) => (
+              <MaterialCommunityIcons
+                name="book-open-page-variant"
+                size={horizontal ? 19 : 24}
+                color={color ?? "#D5A4E8"}
+              />
+            ),
+          },
+          {
+            id: "charlas",
+            label: "Charlas",
+            color: "#F0B17A",
+            icon: (color?: string) => (
+              <MaterialCommunityIcons
+                name="message-text-outline"
+                size={horizontal ? 19 : 24}
+                color={color ?? "#F0B17A"}
               />
             ),
           },
@@ -193,7 +221,7 @@ export function ContentCategoryGrid({
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
                         category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
-                    : corners[index],
+                    : corners[index] ?? { borderRadius: radius },
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >

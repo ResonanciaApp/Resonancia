@@ -11,4 +11,8 @@ description: Descanso tab replaced sound-grid (dormirme/zen/relax/ruido) with 4 
 
 **Why:** old 4 sound categories (dormirme/zen/relax/ruido) were replaced entirely per product decision; DB table was empty at migration time so no data backfill was needed — if the table has data next time, this enum swap needs a migration step.
 
+La categoría global `historias` es independiente del tab Historias de Dormir. No mover, duplicar ni reclasificar las sesiones con `descansoTag` de historias cuando se trabaje en la categoría global.
+
+**Why:** el producto confirmó que la categoría principal Historias comienza vacía y no debe alterar la cola, búsqueda ni clasificación nocturna de Dormir.
+
 **Gotcha:** session image pool is sparse — no `session-3.jpg` exists (jumps 1,2,4,5...65, `.png` starts at 56). Always verify a numbered session image exists before `require()`-ing it, or Metro web bundling fails with "Unable to resolve".

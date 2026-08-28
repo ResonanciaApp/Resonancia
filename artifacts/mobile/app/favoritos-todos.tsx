@@ -37,6 +37,8 @@ const FAV_TABS = [
   { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
   { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
   { id: "dormir",       label: "Dormir",       categoryId: "descanso" },
+  { id: "historias",    label: "Historias",    categoryId: "historias" },
+  { id: "charlas",      label: "Charlas",      categoryId: "charlas" },
   { id: "videos",       label: "Videos",       categoryId: null },
 ] as const;
 
