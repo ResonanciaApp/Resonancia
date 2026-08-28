@@ -29,6 +29,15 @@ const EXTRA_ACCESS_CARDS = [
   { id: "library", label: "Biblioteca", icon: "book-open-variant", route: "__biblioteca_overlay" },
 ] as const;
 
+const ACCESS_CARDS_WITH_EXTRAS = [
+  EXTRA_ACCESS_CARDS[2],
+  ACCESS_CARDS[1],
+  ACCESS_CARDS[2],
+  EXTRA_ACCESS_CARDS[0],
+  EXTRA_ACCESS_CARDS[1],
+  ACCESS_CARDS[0],
+] as const;
+
 type AccessId = (typeof ACCESS_CARDS)[number]["id"] | (typeof EXTRA_ACCESS_CARDS)[number]["id"];
 
 export function QuickAccessSection({
@@ -71,7 +80,7 @@ export function QuickAccessSection({
     <View style={[styles.section, style]} testID="quick-access-section">
       <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>
       <View style={styles.accessRow}>
-        {(includeExtras ? [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS] : ACCESS_CARDS).map((access) => (
+        {(includeExtras ? ACCESS_CARDS_WITH_EXTRAS : ACCESS_CARDS).map((access) => (
           <Pressable
             key={access.id}
             testID={`access-${access.id}`}
