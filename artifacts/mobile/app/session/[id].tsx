@@ -8,8 +8,7 @@ import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,10 +33,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
-import { getSessionById, SESSIONS } from "@/data/sessions";
+import { getSessionById } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
 import { getGuide } from "@/data/guides";
-import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
@@ -136,14 +134,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const id = idProp ?? idParam;
   const overlayBack = useBackOverride();
   const goBack = () => (overlayBack ? overlayBack() : router.back());
-  const overlay = useCategoryOverlayOptional();
-  const openSession = (sid: string) => {
-    const s = getSessionById(sid);
-    if (s?.skipMiniPlayer && !(s.isPremium && !isPremium)) { playSession(s); return; }
-    if (s?.skipDetail) { playSession(s); router.push("/player" as never); return; }
-    if (overlay) overlay.openCategory(`/session/${sid}`);
-    else router.push(`/session/${sid}` as never);
-  };
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, clearSessionProgress } = usePlayer();
@@ -173,7 +163,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isMusica = session.categoryId === "musica-sonidos";
   const isPlaceholder = session.isPlaceholder === true;
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const sessionGradient: string[] = sceneTheme.id === "tibet"
@@ -327,16 +316,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
 
-  const related = useMemo(() => {
-    const pool = SESSIONS.filter((s) => s.categoryId === session.categoryId && s.id !== session.id);
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    return pool.slice(0, 7);
-  }, [session.id]);
-
-
   const { data: playsData } = useGetSessionPlayCount(session.id, {
     query: { queryKey: getGetSessionPlayCountQueryKey(session.id), staleTime: 60_000 },
   });
@@ -394,7 +373,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // ── Autores de la sesión ─────────────────────────────────────────────────────
+  // ── Autor de la sesión ───────────────────────────────────────────────────────
   // guideIds (array) tiene prioridad; sino guideId; sino Casa del Cuenco
   const resolvedIds: string[] = session.guideIds?.length
     ? session.guideIds
@@ -412,17 +391,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
         photo: g.photo, country: g.country, city: g.city,
         bio: g.bio, profilePath: `/guiador/${g.id}`,
       }));
-
-  // ── Perfil "Sobre el…" ───────────────────────────────────────────────────────
-  // Guiadas → guiador | Música ambient/enteógena → artista | resto → null
-  const aboutPerson: { name: string; firstName: string; photo: import("react-native").ImageSourcePropType; city?: string; country?: string; bio: string; profilePath: string } | null = (() => {
-    if (isGuiada) return authors[0] ?? null;
-    if (isMusica && session.artistId) {
-      const a = getArtist(session.artistId);
-      return { name: a.name, firstName: a.name.split(" ")[0], photo: a.photo, city: a.city, country: a.country, bio: a.bio, profilePath: `/artista/${a.id}` };
-    }
-    return null;
-  })();
 
   return (
     <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
@@ -577,83 +545,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           </Text>
 
 
-          {/* ── Sobre el/la guiador/artista ─────────────────────────────── */}
-          {aboutPerson && (
-            <View style={styles.aboutBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 21 }]}>
-                {`Sobre ${aboutPerson.firstName}`}
-              </Text>
-              <View style={styles.aboutCard}>
-                <View style={styles.aboutCardHeader}>
-                  <Image
-                    source={aboutPerson.photo}
-                    style={styles.aboutAvatar}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.aboutName}>{aboutPerson.name}</Text>
-                    {(aboutPerson.city || aboutPerson.country) && (
-                      <Text style={styles.aboutLocation}>
-                        {[aboutPerson.city, aboutPerson.country].filter(Boolean).join(", ")}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-                <Text style={styles.aboutBio}>{aboutPerson.bio}</Text>
-                <Pressable
-                  onPress={() => router.push(aboutPerson.profilePath as never)}
-                  style={({ pressed }) => [styles.aboutProfileLink, { opacity: pressed ? 0.7 : 1 }]}
-                >
-                  <Text style={styles.aboutProfileLinkText}>Ver perfil</Text>
-                  <Feather name="chevron-right" size={14} color="#F9F9F9" />
-                </Pressable>
-              </View>
-            </View>
-          )}
-
-          {/* ── Más sesiones como estas ──────────────────────────────────── */}
-          {related.length > 0 && (
-            <View style={styles.relatedBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]} numberOfLines={1} ellipsizeMode="tail">
-                Más sesiones como estas
-              </Text>
-              <View style={styles.relatedList}>
-                {related.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    onPress={() => openSession(s.id)}
-                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <Image
-                      source={s.image as never}
-                      style={styles.relatedCardImg}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <View style={styles.relatedCardBody}>
-                      <Text style={[styles.relatedCardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {s.title}
-                      </Text>
-                      {(() => {
-                        const g = getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined);
-                        return (
-                          <View style={styles.relatedAuthorRow}>
-                            <Text style={[styles.relatedCardSub, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={1}>
-                              {g.name}
-                            </Text>
-                          </View>
-                        );
-                      })()}
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-
-            </View>
-          )}
         </View>
         </View>{/* /bloque fondo+contenido */}
       </Animated.ScrollView>
@@ -1097,52 +988,6 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
 
-  blockTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    marginBottom: 14,
-  },
-
-  // Sobre el guiador / artista
-  aboutBlock: { marginTop: 18, marginBottom: 8 },
-  aboutCard: {
-    backgroundColor: "rgba(255,255,255,0.03)",
-    borderRadius: 16,
-    padding: 16,
-    gap: 10,
-  },
-  aboutCardHeader: { flexDirection: "row", alignItems: "center", gap: 12 },
-  aboutAvatar: { width: 52, height: 52, borderRadius: 26 },
-  aboutName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#FBFBFB" },
-  aboutLocation: { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2 },
-  aboutBio: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 19 },
-  aboutProfileLink: { flexDirection: "row", alignItems: "center", gap: 3, alignSelf: "flex-start", marginTop: 2 },
-  aboutProfileLinkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
-
-  // Related vertical list
-  relatedBlock: { marginBottom: 20, marginTop: 4 },
-  relatedList: { gap: 18, marginTop: 21 },
-  relatedCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  relatedCardImg: {
-    width: 127,
-    height: 89,
-    borderRadius: 10,
-  },
-  relatedCardBody: {
-    flex: 1,
-    paddingVertical: 12,
-    gap: 4,
-  },
-  relatedCardTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", lineHeight: 19 },
-  relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
-  relatedCardSub: { fontFamily: "Manrope", fontSize: 12 },
   // Sticky header
   stickyHeader: {
     position: "absolute",
