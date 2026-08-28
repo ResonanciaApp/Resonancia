@@ -14,7 +14,10 @@ import { useColors } from "@/hooks/useColors";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import {
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCardMetadataOverlay,
+} from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const CARD_W = 150;
@@ -41,7 +44,10 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
-  const ch = (cardHeight ?? cw) + (showCardMetadata ? 50 : 0);
+  const baseCardHeight = cardHeight ?? cw;
+  const ch = showCardMetadata
+    ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
+    : baseCardHeight;
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;

@@ -3,7 +3,10 @@ import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import {
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCardMetadataOverlay,
+} from "@/components/SessionCardMetadataOverlay";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -213,7 +216,7 @@ function CategoryCard({
   }
   return (
     <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.card,{width:cardWidth,opacity:pressed?0.85:1}]}>
-      <View style={[ac.imgContainer, { height: cardWidth + 50, aspectRatio: undefined }]}>
+      <View style={[ac.imgContainer, { height: (cardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }]}>
         <Image source={session.image} style={ac.cardImage} contentFit="cover" />
         <SessionCardMetadataOverlay
           categoryId={session.categoryId}
@@ -249,7 +252,7 @@ const ac = StyleSheet.create({
   durationBadgeText:{ fontFamily: "Manrope",fontSize:11,fontWeight:"600",color:"#fff"},
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
   lCard:{ width:299 },
-  lImgWrap:{ width:299, height:237, borderRadius:14, overflow:"hidden" },
+  lImgWrap:{ width:299, height:237 * SESSION_CARD_METADATA_HEIGHT_SCALE, borderRadius:14, overflow:"hidden" },
   lDurPill:{ position:"absolute", bottom:8, left:8, borderRadius:8, paddingHorizontal:8, paddingVertical:3 },
   
   lDur:{ fontFamily:"Manrope", fontSize:11, fontWeight:"600", color:"#fff" },

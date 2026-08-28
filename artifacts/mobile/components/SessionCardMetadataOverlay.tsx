@@ -4,6 +4,8 @@ import { Image, StyleSheet, Text, View, type ImageSourcePropType } from "react-n
 
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
+export const SESSION_CARD_METADATA_HEIGHT_SCALE = 1.2;
+
 const CATEGORY_PILL_META: Record<string, {
   label: string;
   color: string;

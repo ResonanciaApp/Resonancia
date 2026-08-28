@@ -22,7 +22,10 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import {
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCardMetadataOverlay,
+} from "@/components/SessionCardMetadataOverlay";
 
 type Props = {
   session: Session;
@@ -169,7 +172,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style={[
           styles.imageContainer,
           { borderRadius: colors.radius - 4 },
-          showCardMetadata ? { height: width + 50, aspectRatio: undefined } : undefined,
+          showCardMetadata
+            ? { height: (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }
+            : undefined,
         ]}
       >
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
