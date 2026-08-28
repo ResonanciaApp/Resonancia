@@ -60,8 +60,11 @@ export function ToolsGrid({
     Math.floor((width - GRID_PAD * 2 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS),
   );
   const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
-  const cardBackground = "rgba(42,40,64,0.40)";
-  const cardBorderWidth = activeSceneId === "tibet" || activeSceneId === "indigo" ? 1 : 0;
+  const cardBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
   const tools: readonly Tool[] = replaceVideosWithLibrary
     ? TOOLS.map((tool) =>
         tool.id === "videos"
@@ -111,8 +114,7 @@ export function ToolsGrid({
               width: cardWidth,
               height: cardHeight,
               backgroundColor: cardBackground,
-              borderColor: "rgba(255,255,255,0.1)",
-              borderWidth: cardBorderWidth,
+              borderWidth: 0,
               opacity: pressed ? 0.75 : 1,
             },
           ]}
