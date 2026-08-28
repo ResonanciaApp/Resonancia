@@ -221,6 +221,7 @@ export default function SonidosScreen() {
           }}
           onScroll={handleScroll}
         >
+        <View style={styles.contentStart}>
         {allSessions.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="headphones" size={30} color={colors.mutedForeground} />
@@ -237,7 +238,7 @@ export default function SonidosScreen() {
                 sessions={recent}
                 isPremium={isPremium}
                 onPress={openSession}
-                style={styles.carousel}
+                style={[styles.carousel, styles.recentCarousel]}
                 cardWidth={CARD_W}
                 titleSize={18}
                 showCardMetadata
@@ -259,6 +260,7 @@ export default function SonidosScreen() {
             ))}
           </>
         )}
+        </View>
         </ScrollView>
       </View>
 
@@ -364,11 +366,13 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   scroll: { flex: 1 },
+  contentStart: { marginTop: -15 },
   carousel: {
-    marginTop: 38,
+    marginTop: 53,
     marginBottom: 0,
     paddingHorizontal: H_PAD,
   },
+  recentCarousel: { marginTop: 33 },
   empty: {
     marginHorizontal: H_PAD,
     marginTop: 70,
