@@ -20,8 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
-import { SESSIONS, getSessionById } from "@/data/sessions";
+import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
@@ -36,7 +35,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -45,15 +44,6 @@ const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
-const HERO_HEIGHT = 320;
-
-const DURATION_SLOTS = [
-  { label: "5 min",  min: 0,  max: 5 },
-  { label: "10 min", min: 6,  max: 10 },
-  { label: "20 min", min: 11, max: 25 },
-  { label: "30 min", min: 26, max: 35 },
-  { label: "60 min", min: 36, max: Infinity },
-] as const;
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -145,13 +135,6 @@ export default function ExploreScreen() {
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const temaCardBg = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
-      ? "rgba(42,40,64,0.65)"
-      : activeSceneId === "profundo"
-        ? "rgba(255,255,255,0.06)"
-        : "rgba(255,255,255,0.07)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -192,9 +175,6 @@ export default function ExploreScreen() {
     }
     return list;
   }, [history, catalogVersion]);
-
-  // ── Destacada de hoy (solo meditaciones) ──
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
   // ── Orden de carruseles desde la API ──
   // null = todavía cargando (no mostrar nada aún)
@@ -266,25 +246,6 @@ export default function ExploreScreen() {
         ),
       }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const featuredHoy = React.useMemo(() => {
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
-      return getSessionById(pinned.id) ?? undefined;
-    }
-    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
-    if (!pool.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return pool[dayOfYear % pool.length];
-  }, [pinnedFeaturedData, catalogVersion]);
-  const featuredAuthor = React.useMemo(() => {
-    if (!featuredHoy) return undefined;
-    return featuredHoy.categoryId === "meditaciones-guiadas"
-      ? getGuide(featuredHoy.guideId)
-      : getArtist(featuredHoy.artistId);
-  }, [featuredHoy]);
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: popularData } = useGetPopularSessions(
@@ -417,58 +378,6 @@ export default function ExploreScreen() {
           hiddenIds={["__mezcla__", "__geometrix__"]}
           horizontal
         />
-
-        {/* ── Para este momento: sesión destacada ── */}
-        {featuredHoy && (
-          <View style={[styles.section, { marginBottom: 0, marginTop: 45 }]}>
-            <Text style={styles.sectionTitle}>Para este momento</Text>
-            <Pressable onPress={() => handleSessionPress(featuredHoy)}>
-              <View style={styles.heroImageContainer}>
-                <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
-                <SessionCardMetadataOverlay
-                  categoryId={featuredHoy.categoryId}
-                  durationLabel={featuredHoy.durationLabel}
-                  title={featuredHoy.title}
-                  authorName={featuredAuthor?.name}
-                  authorAvatar={featuredAuthor?.photo}
-                  titleFontSize={16}
-                />
-              </View>
-            </Pressable>
-          </View>
-        )}
-
-        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.durSection, { marginTop: 55, marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: H_PAD }]}>
-            ¿Cuánto tiempo tienes hoy?
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.durPillRow}
-          >
-            {DURATION_SLOTS.map((slot) => (
-              <Pressable
-                key={slot.label}
-                onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                style={({ pressed }) => [
-                  styles.durPill,
-                  { backgroundColor: temaCardBg, opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                <Text
-                  style={styles.durPillText}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.7}
-                >
-                  {slot.label}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
 
         {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
         {themeCarousels.map((carousel) => (
@@ -694,49 +603,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 10,
   },
-  // Hero — sesión destacada del día
-  heroImageContainer: {
-    width: "100%",
-    height: HERO_HEIGHT,
-    borderRadius: 15,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  heroImage: { width: "100%", height: "100%" },
-  heroInfoRow: {
-    marginTop: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  heroAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(255,255,255,0.05)",
-  },
-  heroTextWrap: { flex: 1 },
-  heroMeta: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "#c2c2c2",
-    marginBottom: 4,
-  },
-  heroTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "600",
-    lineHeight: 24,
-    color: "#FBFBFB",
-    marginBottom: 3,
-  },
-  heroAuthor: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "#c2c2c2",
-  },
-
   sqAuthor: {
     fontFamily: "Manrope",
     fontSize: 11,
@@ -767,34 +633,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     color: "rgba(244,218,213,0.75)",
-  },
-
-  // Pills de duración → /busqueda
-  durSection: {},
-  durPillRow: {
-    flexDirection: "row",
-    paddingHorizontal: H_PAD,
-    paddingRight: H_PAD + 24,
-    gap: 6,
-    paddingBottom: 2,
-  },
-  durPill: {
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    minWidth: 80,
-    height: 42,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.07)",
-  },
-  durPillText: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#FBFBFB",
-    letterSpacing: 0.2,
-    marginTop: -3,
   },
 
   // Ejercicios de respiración

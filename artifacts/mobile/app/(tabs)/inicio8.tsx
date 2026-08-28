@@ -69,6 +69,7 @@ import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { TEMAS } from "@/data/temas";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
+import { useGetPinnedFeatured } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
@@ -95,6 +96,7 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 
 const { width, height } = Dimensions.get("window");
 
@@ -112,7 +114,7 @@ const INICIO2_SECTION_GAP = 53;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
-const HERO_HEIGHT = 270;
+const HERO_HEIGHT = 320;
 const INICIO2_HERO_HEIGHT = Math.min(465, Math.max(401, width * 0.92 + 75));
 const INICIO2_SLIDES = [
   {
@@ -1015,6 +1017,7 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const { version: catalogVersion } = useCatalog();
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
@@ -1085,6 +1088,43 @@ export default function HomeScreen2({
     }
     return shuffled.slice(0, 5);
   }, [selectedMood, catalogVersion, recoOffset]);
+
+  const featuredHoy = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]);
+
+  const featuredAuthor = React.useMemo(() => {
+    if (!featuredHoy) return undefined;
+    return featuredHoy.categoryId === "meditaciones-guiadas"
+      ? getGuide(featuredHoy.guideId)
+      : getArtist(featuredHoy.artistId);
+  }, [featuredHoy]);
+
+  const handleFeaturedPress = useCallback((session: Session) => {
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia" as never);
+      return;
+    }
+    if (session.skipMiniPlayer) {
+      playSession(session);
+      return;
+    }
+    if (session.skipDetail) {
+      playSession(session);
+      router.push("/player" as never);
+      return;
+    }
+    openCategory(`/session/${session.id}`);
+  }, [isPremium, openCategory, playSession]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -1834,6 +1874,57 @@ export default function HomeScreen2({
             includeExtras
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
+        )}
+        {isInicio2 && featuredHoy && (
+          <View style={[styles.section, { marginBottom: 0 }]}>
+            <Text style={styles.sectionTitle}>Para este momento</Text>
+            <Pressable onPress={() => handleFeaturedPress(featuredHoy)}>
+              <View style={styles.heroImageContainer}>
+                <Image source={featuredHoy.image as number} style={styles.heroImage} resizeMode="cover" />
+                <SessionCardMetadataOverlay
+                  categoryId={featuredHoy.categoryId}
+                  durationLabel={featuredHoy.durationLabel}
+                  title={featuredHoy.title}
+                  authorName={featuredAuthor?.name}
+                  authorAvatar={featuredAuthor?.photo}
+                  titleFontSize={16}
+                />
+              </View>
+            </Pressable>
+          </View>
+        )}
+        {isInicio2 && (
+          <View style={[styles.durSection, { marginTop: 55, marginBottom: INICIO2_SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: GRID_PAD }]}>
+              ¿Cuánto tiempo tienes hoy?
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
+                  style={({ pressed }) => [
+                    styles.durPill,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
+                  <Text
+                    style={styles.durPillText}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                  >
+                    {slot.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
         )}
         {isInicio2 && (
           <View style={{ marginTop: 15, marginBottom: INICIO2_SECTION_GAP }}>
