@@ -1874,12 +1874,13 @@ export default function HomeScreen2({
         {isInicio2 && (
           <View style={styles.inicio2ToolsSection}>
             <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Mis herramientas</Text>
-            <ToolsGrid />
+            <ToolsGrid replaceVideosWithLibrary />
           </View>
         )}
         {isInicio2 && (
           <QuickAccessSection
             includeExtras
+            replaceLibraryWithVideos
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}

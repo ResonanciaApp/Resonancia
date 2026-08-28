@@ -30,16 +30,30 @@ const TOOLS = [
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
 ] as const;
 
-type ToolId = (typeof TOOLS)[number]["id"];
+const LIBRARY_TOOL = {
+  id: "biblioteca",
+  label: "Biblioteca",
+  icon: "book-open-variant",
+  color: "#E7C978",
+} as const;
 
-export function ToolsGrid({ style }: { style?: StyleProp<ViewStyle> }) {
+type ToolId = (typeof TOOLS)[number]["id"] | typeof LIBRARY_TOOL["id"];
+type Tool = (typeof TOOLS)[number] | typeof LIBRARY_TOOL;
+
+export function ToolsGrid({
+  style,
+  replaceVideosWithLibrary = false,
+}: {
+  style?: StyleProp<ViewStyle>;
+  replaceVideosWithLibrary?: boolean;
+}) {
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
-  const { openOverlay } = useDrawer();
+  const { openLib, openOverlay } = useDrawer();
 
   const cardWidth = Math.max(
     0,
@@ -48,6 +62,13 @@ export function ToolsGrid({ style }: { style?: StyleProp<ViewStyle> }) {
   const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
   const cardBackground = "rgba(42,40,64,0.40)";
   const cardBorderWidth = activeSceneId === "tibet" || activeSceneId === "indigo" ? 1 : 0;
+  const tools: readonly Tool[] = replaceVideosWithLibrary
+    ? TOOLS.map((tool) =>
+        tool.id === "videos"
+          ? LIBRARY_TOOL
+          : tool,
+      )
+    : TOOLS;
 
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
@@ -56,6 +77,9 @@ export function ToolsGrid({ style }: { style?: StyleProp<ViewStyle> }) {
         break;
       case "geometrix":
         openGeometrix();
+        break;
+      case "biblioteca":
+        openLib();
         break;
       case "videos":
         openCategory("/videos");
@@ -70,11 +94,11 @@ export function ToolsGrid({ style }: { style?: StyleProp<ViewStyle> }) {
         openOverlay("/diario");
         break;
     }
-  }, [openCategory, openMixer, openGeometrix, openOverlay]);
+  }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
 
   return (
     <View style={[styles.grid, style]} testID="tools-grid">
-      {TOOLS.map((tool) => (
+      {tools.map((tool) => (
         <Pressable
           key={tool.id}
           testID={`tool-${tool.id}`}

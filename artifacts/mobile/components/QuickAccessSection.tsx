@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -38,19 +39,34 @@ const ACCESS_CARDS_WITH_EXTRAS = [
   ACCESS_CARDS[0],
 ] as const;
 
-type AccessId = (typeof ACCESS_CARDS)[number]["id"] | (typeof EXTRA_ACCESS_CARDS)[number]["id"];
+const ACCESS_CARDS_WITH_VIDEOS = [
+  { id: "videos", label: "Videos", icon: "video-outline", route: "/videos" },
+  ACCESS_CARDS[1],
+  ACCESS_CARDS[2],
+  EXTRA_ACCESS_CARDS[0],
+  EXTRA_ACCESS_CARDS[1],
+  ACCESS_CARDS[0],
+] as const;
+
+type AccessId =
+  | (typeof ACCESS_CARDS)[number]["id"]
+  | (typeof EXTRA_ACCESS_CARDS)[number]["id"]
+  | (typeof ACCESS_CARDS_WITH_VIDEOS)[number]["id"];
 
 export function QuickAccessSection({
   includeExtras = false,
+  replaceLibraryWithVideos = false,
   style,
 }: {
   includeExtras?: boolean;
+  replaceLibraryWithVideos?: boolean;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openLib, openOverlay } = useDrawer();
+  const { openCategory } = useCategoryOverlay();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -69,18 +85,25 @@ export function QuickAccessSection({
       openLib();
       return;
     }
+    if (id === "videos") {
+      openCategory("/videos");
+      return;
+    }
     if (id === "saved") {
       router.push(access.route as never);
       return;
     }
     openOverlay(access.route);
-  }, [openLib, openOverlay]);
+  }, [openCategory, openLib, openOverlay]);
 
+  const accessCards = replaceLibraryWithVideos
+    ? ACCESS_CARDS_WITH_VIDEOS
+    : ACCESS_CARDS_WITH_EXTRAS;
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
       <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>
       <View style={styles.accessRow}>
-        {(includeExtras ? ACCESS_CARDS_WITH_EXTRAS : ACCESS_CARDS).map((access) => (
+        {(includeExtras ? accessCards : ACCESS_CARDS).map((access) => (
           <Pressable
             key={access.id}
             testID={`access-${access.id}`}
