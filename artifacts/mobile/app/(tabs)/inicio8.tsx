@@ -95,6 +95,7 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1933,6 +1934,13 @@ export default function HomeScreen2({
               openCategory={openCategory}
             />
           </View>
+        )}
+        {isInicio2 && (
+          <EncuentrosResonadoresSection
+            marginTop={0}
+            titleMarginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
         )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (

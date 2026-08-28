@@ -9,7 +9,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -40,10 +39,6 @@ export default function HerramientasScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
-
-          <View style={styles.fullBleedSection}>
-            <EncuentrosResonadoresSection titleMarginTop={0} />
-          </View>
 
         </ScrollView>
       </View>
