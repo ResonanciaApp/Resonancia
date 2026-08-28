@@ -33,3 +33,7 @@ if (sort === "nuevas") return [...arr].sort((a, b) => {
 ```
 Y en `applyCatalogSnapshot` paso 1: `local.createdAt = r.createdAt ?? undefined;`
 La API debe incluir `createdAt: s.createdAt.toISOString()` en `serializeSession`.
+
+Las colecciones de Dormir también usan `createdAt DESC` para poner la última
+sesión subida al frente de cada carrusel. No depender solo de `parseInt(id)`:
+los IDs de sesiones creadas desde el admin suelen ser `usr_*`.

@@ -1247,8 +1247,27 @@ export function getSessionDescansoTags(session: Session): DescansoTag[] {
   return normalizeDescansoTags(session.descansoTags, session.descansoTag, session.sleepTag);
 }
 
+function newestFirst(a: Session, b: Session): number {
+  const parsedA = a.createdAt ? Date.parse(a.createdAt) : 0;
+  const parsedB = b.createdAt ? Date.parse(b.createdAt) : 0;
+  const aTime = Number.isFinite(parsedA) ? parsedA : 0;
+  const bTime = Number.isFinite(parsedB) ? parsedB : 0;
+  if (aTime !== bTime) return bTime - aTime;
+
+  // Las sesiones bundleadas históricas usan IDs numéricos. Mantener este
+  // desempate evita cambiar su orden cuando todavía no tienen createdAt.
+  const aId = Number(a.id);
+  const bId = Number(b.id);
+  if (Number.isFinite(aId) && Number.isFinite(bId) && aId !== bId) {
+    return bId - aId;
+  }
+  return 0;
+}
+
 export function getSessionsByDescansoTag(tag: DescansoTag): Session[] {
-  return SESSIONS.filter((s) => getSessionDescansoTags(s).includes(tag));
+  return SESSIONS
+    .filter((s) => getSessionDescansoTags(s).includes(tag))
+    .sort(newestFirst);
 }
 
 /** Orden editorial canónico compartido por Dormir y la cola del reproductor. */
