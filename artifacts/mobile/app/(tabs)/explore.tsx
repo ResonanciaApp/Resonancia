@@ -1,8 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -17,19 +16,15 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, RadialGradient, Stop, Ellipse } from "react-native-svg";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
-import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
-import { SacredGlyph } from "@/components/SacredGlyph";
+import { CHAKRAS, isChakraTag } from "@/data/chakras";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
@@ -48,36 +43,7 @@ const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
-/** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
-function hexTint(hex: string, alpha: number): string {
-  const h = hex.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(74,12,12,0.08)`;
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
-const CHAKRA_PANEL_H = 580;
-const CHAKRA_ORB_SIZE = 64;
-const CHAKRA_ORB_CENTER_X = Math.round(width / 2);
-const CHAKRA_LINE_W = 36; // longitud fija del conector a cada lado
-const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
-// +8 px de separación acumulada entre cada chakra respecto a los originales
-const CHAKRA_TOP_PCTS = [0.087, 0.233, 0.380, 0.527, 0.673, 0.820, 0.966] as const;
-// Textos izquierda — mismo orden que CHAKRAS_VISUAL (Sahasrara → Muladhara)
-const CHAKRA_LEFT_LABELS = [
-  "Consciencia cósmica",
-  "Visión interior",
-  "Voz auténtica",
-  "Amor incondicional",
-  "Voluntad",
-  "Fluir creativo",
-  "Fuerza interior",
-] as const;
-const CAT_CARD_GAP = 16;
-const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const HERO_HEIGHT = 320;
 
 const DURATION_SLOTS = [
@@ -124,100 +90,33 @@ function getSessionAuthor(s: Session): string {
   return getArtist(s.artistId).name;
 }
 
-// ── ChakraBodyRow ──────────────────────────────────────────────────────────────
-const GLOW_R = 34;
-const ROW_H = 72;
-
-function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; topPct: number; side: "left" | "right"; colorAnim: Animated.Value }) {
+function ChakraCarousel() {
   const { openCategory } = useCategoryOverlay();
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const dimAnim   = useRef(new Animated.Value(0.75)).current;
-
-  const handlePress = () => {
-    scaleAnim.setValue(1);
-    // Color (JS driver — no puede mezclarse con native)
-    Animated.sequence([
-      Animated.timing(colorAnim, { toValue: 1, duration: 300, useNativeDriver: false }),
-      Animated.timing(colorAnim, { toValue: 0, duration: 500, useNativeDriver: false }),
-    ]).start();
-    // Scale + dim (native driver)
-    Animated.parallel([
-      Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.07, duration: 230, useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1,    duration: 230, useNativeDriver: true }),
-      ]),
-      Animated.sequence([
-        Animated.timing(dimAnim,   { toValue: 1,    duration: 230, useNativeDriver: true }),
-        Animated.timing(dimAnim,   { toValue: 0.75, duration: 230, useNativeDriver: true }),
-      ]),
-    ]).start(() => openCategory(`/chakra/${chakra.id}`));
-  };
-
-  const rowTop = Math.round(topPct * CHAKRA_PANEL_H) - ROW_H / 2;
-
-  const glyphAnimStyle = {
-    transform: [{ scale: scaleAnim }],
-    opacity: dimAnim,
-  };
-
-  if (side === "right") {
-    return (
-      <Pressable
-        onPress={handlePress}
-        hitSlop={6}
-        style={{
-          position: "absolute",
-          top: rowTop,
-          left: CHAKRA_ORB_CENTER_X - GLOW_R,
-          right: 0,
-          height: ROW_H,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Animated.View style={[{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
-          <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
-        </Animated.View>
-        <View style={{ marginLeft: 23 }}>
-          <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
-            {chakra.name}
-          </Text>
-          <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2 }}>
-            {chakra.subtitle}
-          </Text>
-        </View>
-      </Pressable>
-    );
-  }
-
-  // side === "left" — espejo: label → línea → orb
   return (
-    <Pressable
-      onPress={handlePress}
-      hitSlop={6}
-      style={{
-        position: "absolute",
-        top: rowTop,
-        left: 0,
-        right: width - CHAKRA_ORB_CENTER_X - GLOW_R,
-        height: ROW_H,
-        flexDirection: "row-reverse",
-        alignItems: "center",
-      }}
-    >
-      <Animated.View style={[{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
-        <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
-      </Animated.View>
-      <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.3, marginRight: 4 }} />
-      <View style={{ marginRight: 9, alignItems: "flex-end" }}>
-        <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700", textAlign: "right" }}>
-          {chakra.name}
-        </Text>
-        <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2, textAlign: "right" }}>
-          {chakra.subtitle}
-        </Text>
-      </View>
-    </Pressable>
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Armoniza tus chakras</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ marginHorizontal: -H_PAD }}
+        contentContainerStyle={styles.carouselContent}
+      >
+        {CHAKRAS.map((chakra) => (
+          <Pressable
+            key={chakra.id}
+            onPress={() => openCategory(`/chakra/${chakra.id}`)}
+            style={({ pressed }) => [styles.chakraCard, { opacity: pressed ? 0.82 : 1 }]}
+          >
+            <Text style={styles.chakraName} numberOfLines={1}>
+              {chakra.name}
+            </Text>
+            <Text style={styles.chakraDescription} numberOfLines={4}>
+              {chakra.description}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -255,9 +154,6 @@ export default function ExploreScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [catalogVersion],
   );
-
-  // Animated values para el color de los textos izquierda de cada chakra
-  const chakraColorAnims = useRef(CHAKRAS_VISUAL.map(() => new Animated.Value(0))).current;
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
@@ -590,96 +486,7 @@ export default function ExploreScreen() {
         ))}
 
         {/* ── Chakras ── */}
-        <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
-          {/* Título encima */}
-          <View style={{ paddingHorizontal: H_PAD, marginTop: 0, marginBottom: 21 }}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: "#FBFBFB" }}>
-              Armoniza tus chakras
-            </Text>
-          </View>
-
-          {/* Panel de orbs — ancho completo para que CHAKRA_ORB_CENTER_X calce */}
-          <View style={{ width, height: CHAKRA_PANEL_H + 25, position: "relative" }}>
-            {/* Fondo redondeado inset */}
-            <View style={{
-              position: "absolute",
-              top: 0, bottom: 0,
-              left: H_PAD, right: H_PAD,
-              backgroundColor: "rgba(255,255,255,0.024)",
-              borderRadius: 25,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.07)",
-              overflow: "hidden",
-            }}>
-              {/* Aurora iridiscente — blobs radiales muy sutiles */}
-              <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
-                <Defs>
-                  {/* Colores de los 7 chakras, corona (arriba) → raíz (abajo) */}
-                  <RadialGradient id="aurCorona" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#A776D6" stopOpacity={0.20} />
-                    <Stop offset="100%" stopColor="#A776D6" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurTercerOjo" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#6F68B6" stopOpacity={0.20} />
-                    <Stop offset="100%" stopColor="#6F68B6" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurGarganta" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#5998BB" stopOpacity={0.18} />
-                    <Stop offset="100%" stopColor="#5998BB" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurCorazon" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#60A186" stopOpacity={0.18} />
-                    <Stop offset="100%" stopColor="#60A186" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurPlexo" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#F9F9F9" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#F9F9F9" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurSacro" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#DE9363" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#DE9363" stopOpacity={0} />
-                  </RadialGradient>
-                  <RadialGradient id="aurRaiz" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#C65860" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#C65860" stopOpacity={0} />
-                  </RadialGradient>
-                </Defs>
-                <Ellipse cx="20%" cy="4%"  rx="55%" ry="34%" fill="url(#aurCorona)" />
-                <Ellipse cx="85%" cy="18%" rx="52%" ry="34%" fill="url(#aurTercerOjo)" />
-                <Ellipse cx="14%" cy="34%" rx="52%" ry="34%" fill="url(#aurGarganta)" />
-                <Ellipse cx="86%" cy="50%" rx="52%" ry="34%" fill="url(#aurCorazon)" />
-                <Ellipse cx="14%" cy="66%" rx="52%" ry="34%" fill="url(#aurPlexo)" />
-                <Ellipse cx="86%" cy="82%" rx="52%" ry="34%" fill="url(#aurSacro)" />
-                <Ellipse cx="30%" cy="98%" rx="55%" ry="34%" fill="url(#aurRaiz)" />
-              </Svg>
-            </View>
-            {CHAKRA_LEFT_LABELS.map((label, i) => {
-              const rowTop = Math.round(CHAKRA_TOP_PCTS[i] * CHAKRA_PANEL_H) - ROW_H / 2;
-              const animColor = chakraColorAnims[i].interpolate({
-                inputRange: [0, 1],
-                outputRange: ["rgba(249,249,249,0.5)", CHAKRAS_VISUAL[i].color],
-              });
-              return (
-                <View key={`lbl-${i}`} style={{
-                  position: "absolute",
-                  top: rowTop,
-                  left: H_PAD + 8,
-                  right: width - CHAKRA_ORB_CENTER_X + 62,
-                  height: ROW_H,
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                }}>
-                  <Animated.Text style={{ color: animColor, fontFamily: "Manrope", fontSize: 11, textAlign: "right" }}>
-                    {label}
-                  </Animated.Text>
-                </View>
-              );
-            })}
-            {CHAKRAS_VISUAL.map((c, i) => (
-              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" colorAnim={chakraColorAnims[i]} />
-            ))}
-          </View>
-        </View>
+        <ChakraCarousel />
 
         {/* ── Top 5 mezclas ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
@@ -835,6 +642,24 @@ const styles = StyleSheet.create({
   },
   sqCard: {
     width: SQCARD_W,
+  },
+  chakraCard: {
+    width: SQCARD_W,
+  },
+  chakraName: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+    color: "#FBFBFB",
+    marginBottom: 7,
+  },
+  chakraDescription: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.60)",
   },
   sqImageWrap: {
     width: SQCARD_W,
