@@ -95,6 +95,7 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import { ToolsGrid } from "@/components/ToolsGrid";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1871,6 +1872,12 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
+          <View style={styles.inicio2ToolsSection}>
+            <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Mis herramientas</Text>
+            <ToolsGrid />
+          </View>
+        )}
+        {isInicio2 && (
           <QuickAccessSection
             includeExtras
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
@@ -2256,6 +2263,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
+  },
+  inicio2ToolsSection: {
+    marginBottom: INICIO2_SECTION_GAP,
+    paddingHorizontal: GRID_PAD,
   },
   inicio2ContentGradientClip: {
     ...StyleSheet.absoluteFillObject,
