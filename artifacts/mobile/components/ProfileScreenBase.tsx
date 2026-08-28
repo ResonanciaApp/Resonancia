@@ -702,7 +702,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
           style={[styles.profileHeroBackground, { height: topPad + 130 }]}
         >
           <LinearGradient
-            colors={["#774544", "#50316F"]}
+            colors={["#3D7BFF", "#8B4DE8"]}
             start={{ x: 0, y: 0.15 }}
             end={{ x: 1, y: 0.85 }}
             style={StyleSheet.absoluteFill}
