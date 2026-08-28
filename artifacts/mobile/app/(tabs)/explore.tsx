@@ -20,6 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -424,25 +425,13 @@ export default function ExploreScreen() {
             <Pressable onPress={() => handleSessionPress(featuredHoy)}>
               <View style={styles.heroImageContainer}>
                 <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
-              </View>
-              <View style={styles.heroInfoRow}>
-                {featuredAuthor && (
-                  <Image source={featuredAuthor.photo} style={styles.heroAvatar} contentFit="cover" />
-                )}
-                <View style={styles.heroTextWrap}>
-                  <Text style={styles.heroMeta} numberOfLines={1}>
-                    {featuredHoy.categoryLabel}
-                    {featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
-                  </Text>
-                  <Text style={styles.heroTitle} numberOfLines={2}>
-                    {featuredHoy.title}
-                  </Text>
-                  {featuredAuthor && (
-                    <Text style={styles.heroAuthor} numberOfLines={1}>
-                      {featuredAuthor.name}
-                    </Text>
-                  )}
-                </View>
+                <SessionCardMetadataOverlay
+                  categoryId={featuredHoy.categoryId}
+                  durationLabel={featuredHoy.durationLabel}
+                  title={featuredHoy.title}
+                  authorName={featuredAuthor?.name}
+                  authorAvatar={featuredAuthor?.photo}
+                />
               </View>
             </Pressable>
           </View>

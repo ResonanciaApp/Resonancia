@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
 
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
@@ -36,6 +36,7 @@ type Props = {
   durationLabel: string;
   title: string;
   authorName?: string;
+  authorAvatar?: ImageSourcePropType;
   showDuration?: boolean;
   durationBottom?: number;
 };
@@ -45,6 +46,7 @@ export function SessionCardMetadataOverlay({
   durationLabel,
   title,
   authorName,
+  authorAvatar,
   showDuration = true,
   durationBottom = 65,
 }: Props) {
@@ -79,7 +81,12 @@ export function SessionCardMetadataOverlay({
       <View pointerEvents="none" style={styles.meta}>
         <Text style={styles.title} numberOfLines={2}>{title}</Text>
         {authorName ? (
-          <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
+          <View style={styles.authorRow}>
+            {authorAvatar ? (
+              <Image source={authorAvatar} style={styles.authorAvatar} resizeMode="cover" />
+            ) : null}
+            <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
+          </View>
         ) : null}
       </View>
     </>
@@ -158,6 +165,18 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     color: "#F4F4F4",
+    marginTop: 4,
+    flexShrink: 1,
+  },
+  authorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  authorAvatar: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
     marginTop: 4,
   },
 });
