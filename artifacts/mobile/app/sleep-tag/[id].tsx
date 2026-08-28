@@ -16,11 +16,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCardMetadataOverlay,
+} from "@/components/SessionCardMetadataOverlay";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { getSessionsByDescansoTag } from "@/data/sessions";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { useCatalog } from "@/context/CatalogContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -28,7 +33,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const COL_GAP = 12;
 const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
-const CARD_IMG_H = Math.round(CARD_W * 0.85);
+const CARD_H = Math.round((CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE);
 
 export default function SleepTagDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -72,31 +77,19 @@ export default function SleepTagDetailScreen() {
                 backgroundColor: colors.card,
                 borderColor: "rgba(212,175,55,0.2)",
                 opacity: pressed ? 0.7 : 1,
+                top: topPad + 8,
               },
             ]}
           >
-            <Feather name="arrow-left" size={18} color={colors.foreground} />
+            <Feather name="chevron-left" size={26} color={colors.foreground} />
           </Pressable>
-        </View>
-
-        {/* ── Title & Description ── */}
-        <View style={styles.intro}>
-          <View
-            style={[
-              styles.tagIcon,
-              {
-                backgroundColor: `${tag.accent}20`,
-                borderColor: `${tag.accent}40`,
-              },
-            ]}
+          <Text
+            style={[styles.pageTitle, { color: colors.foreground }]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.85}
           >
-            <Feather name={tag.icon as never} size={20} color={tag.accent} />
-          </View>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>
             {tag.label}
-          </Text>
-          <Text style={[styles.pageDesc, { color: colors.mutedForeground }]}>
-            {tag.description}
           </Text>
         </View>
 
@@ -134,7 +127,7 @@ export default function SleepTagDetailScreen() {
                     <View
                       style={[
                         styles.cardImg,
-                        { height: CARD_IMG_H, backgroundColor: colors.card },
+                         { height: CARD_H, backgroundColor: colors.card },
                       ]}
                     >
                       <Image
@@ -142,30 +135,17 @@ export default function SleepTagDetailScreen() {
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
                       />
-                      <SessionDurationBadge
-                        label={session.durationLabel}
-                        style={styles.durationBadge}
-                        textStyle={styles.durationText}
+                       <SessionCardMetadataOverlay
+                         categoryId={session.categoryId}
+                         durationLabel={session.durationLabel}
+                         title={session.title}
+                         authorName={
+                           session.guideId
+                             ? getGuide(session.guideId).name
+                             : getArtist(session.artistId).name
+                         }
                       />
                       <PremiumBadge session={session} />
-                    </View>
-                    <Text
-                      style={[styles.cardTitle, { color: colors.foreground }]}
-                      numberOfLines={2}
-                    >
-                      {session.title}
-                    </Text>
-                    <View style={styles.cardMeta}>
-                      <Feather
-                        name="clock"
-                        size={11}
-                        color={colors.mutedForeground}
-                      />
-                      <Text
-                        style={[styles.cardDuration, { color: colors.mutedForeground }]}
-                      >
-                        {" "}{session.durationLabel}
-                      </Text>
                     </View>
                   </Pressable>
                   );
@@ -186,9 +166,15 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: H_PAD,
-    paddingBottom: 8,
+    paddingBottom: 12,
+    minHeight: 48,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   backBtn: {
+    position: "absolute",
+    left: H_PAD,
     width: 36,
     height: 36,
     borderRadius: 11,
@@ -196,37 +182,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  intro: {
-    paddingHorizontal: H_PAD,
-    paddingBottom: 28,
-    paddingTop: 16,
-  },
-  tagIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 15,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
   pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 28,
+    fontSize: 22,
+    lineHeight: 28,
     fontWeight: "700",
     letterSpacing: 0.2,
-    marginBottom: 10,
-  },
-  pageDesc: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 22,
-    maxWidth: 340,
   },
 
   grid: {
     paddingHorizontal: H_PAD,
+    paddingTop: 16,
     gap: COL_GAP,
   },
   row: {
@@ -240,36 +206,6 @@ const styles = StyleSheet.create({
   cardImg: {
     borderRadius: 14,
     overflow: "hidden",
-    marginBottom: 8,
-  },
-  durationBadge: {
-    position: "absolute",
-    bottom: 7,
-    left: 7,
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  durationText: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  cardTitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    lineHeight: 18,
-    marginBottom: 4,
-  },
-  cardMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cardDuration: {
-    fontFamily: "Manrope",
-    fontSize: 11,
   },
 
   emptySlot: {
