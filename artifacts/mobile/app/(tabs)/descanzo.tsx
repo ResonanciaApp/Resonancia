@@ -458,7 +458,7 @@ export default function DescansoScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={styles.tabGrid}
+              style={[styles.tabGrid, { marginBottom: 0 }]}
               contentContainerStyle={styles.tabGridContent}
             >
               {sleepCollections.map((tab) => (
@@ -913,7 +913,7 @@ const styles = StyleSheet.create({
   },
   sleepTabsHeader: {
     marginTop: 9,
-    paddingBottom: 13,
+    paddingBottom: 15,
   },
   stickyTabsBorder: {
     position: "absolute",

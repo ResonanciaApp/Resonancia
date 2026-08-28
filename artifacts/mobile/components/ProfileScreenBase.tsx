@@ -690,7 +690,11 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
         ]}
       >
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={[styles.stickyHeaderRow, !dedicated && !asTab && { paddingTop: 25 }]}>
+        <View style={[
+          styles.stickyHeaderRow,
+          !dedicated && !asTab && { paddingTop: 25 },
+          dedicated && { paddingBottom: 15 },
+        ]}>
           {!asTab && !dedicated && (
             <BackPill
               onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
