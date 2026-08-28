@@ -42,7 +42,7 @@ export default function SleepTagDetailScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -107,7 +107,7 @@ export default function SleepTagDetailScreen() {
               {
                 backgroundColor: profileSectionBackground,
                 opacity: pressed ? 0.7 : 1,
-                top: topPad + 8,
+                top: topPad + 3,
               },
             ]}
           >
@@ -192,7 +192,7 @@ export default function SleepTagDetailScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad + 8,
-            backgroundColor: colors.background,
+            backgroundColor: theme.gradient[0] as string,
             opacity: stickyHeaderOpacity,
           },
         ]}
@@ -206,7 +206,7 @@ export default function SleepTagDetailScreen() {
             {
               backgroundColor: profileSectionBackground,
               opacity: pressed ? 0.7 : 1,
-              top: topPad + 8,
+              top: topPad + 2,
             },
           ]}
         >
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
 
   grid: {
     paddingHorizontal: H_PAD,
-    paddingTop: 16,
+    paddingTop: 36,
     gap: COL_GAP,
   },
   row: {
