@@ -435,7 +435,7 @@ export default function DescansoScreen() {
       <NightSky />
 
       <View style={styles.contentShift}>
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2, backgroundColor: bgGradient[0] }]}>
+        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
               Dormir
@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
   /* Sticky header */
   fixedHeader: {
     zIndex: 20,
-    backgroundColor: "#0D0512",
+    backgroundColor: "transparent",
   },
   titleRow: {
     position: "relative",

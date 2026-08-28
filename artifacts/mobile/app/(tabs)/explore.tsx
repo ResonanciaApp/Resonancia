@@ -369,7 +369,6 @@ export default function ExploreScreen() {
             styles.fixedHeader,
             {
               paddingTop: topPad + 2,
-              backgroundColor: activeTheme.gradient[0] as string,
             },
           ]}
         >
