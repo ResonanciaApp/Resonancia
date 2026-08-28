@@ -807,6 +807,9 @@ export default function HomeScreen2({
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
+  const durationPillBg = activeSceneId === "indigo"
+    ? "rgba(42,40,64,0.40)"
+    : cardBg;
   const recommendationSurfaceBg = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
     : cardBg;
@@ -1912,7 +1915,7 @@ export default function HomeScreen2({
                     { opacity: pressed ? 0.75 : 1 },
                   ]}
                 >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
                   <Text
                     style={styles.durPillText}
                     numberOfLines={1}
@@ -2035,7 +2038,7 @@ export default function HomeScreen2({
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
                 <Text
                   style={styles.durPillText}
                   numberOfLines={1}
