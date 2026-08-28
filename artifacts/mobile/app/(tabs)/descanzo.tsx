@@ -303,7 +303,7 @@ export default function DescansoScreen() {
       titleCompactRef.current = shouldCompact;
       Animated.timing(titleCompactAnim, {
         toValue: shouldCompact ? 1 : 0,
-        duration: 450,
+        duration: 300,
         useNativeDriver: true,
       }).start();
     }

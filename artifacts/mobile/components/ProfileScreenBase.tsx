@@ -279,7 +279,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       profileTitleCompactRef.current = shouldCompact;
       Animated.timing(profileTitleCompactAnim, {
         toValue: shouldCompact ? 1 : 0,
-        duration: 450,
+        duration: 300,
         useNativeDriver: true,
       }).start();
     }
