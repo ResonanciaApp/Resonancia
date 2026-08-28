@@ -421,7 +421,7 @@ export default function ExploreScreen() {
               isPremium={isPremium}
               onPress={(s) => handleSessionPress(s)}
               style={{
-                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 40 : 0,
+                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 5 : 0,
                 marginBottom: SECTION_GAP,
               }}
               cardWidth={SQCARD_W}
