@@ -46,6 +46,7 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -855,6 +856,8 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                 Mejor racha: {maxStreak} día{maxStreak === 1 ? "" : "s"}
               </Text>
             </View>
+
+            <QuickAccessSection />
 
             <View
               style={[
