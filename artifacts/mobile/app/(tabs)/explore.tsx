@@ -509,6 +509,7 @@ export default function ExploreScreen() {
         {/* ── Para este momento: sesión destacada ── */}
         {featuredHoy && (
           <View style={[styles.section, { marginBottom: 0, marginTop: 20 }]}>
+            <Text style={styles.sectionTitle}>Para este momento</Text>
             <Pressable onPress={() => handleSessionPress(featuredHoy)}>
               <View style={styles.heroImageContainer}>
                 <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
