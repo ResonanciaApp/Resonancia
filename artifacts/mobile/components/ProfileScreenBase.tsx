@@ -826,7 +826,11 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <View
               style={[
                 styles.streakSection,
-                { backgroundColor: resourceBlockBackground, borderColor: resourceBlockBorder },
+                {
+                  backgroundColor: resourceBlockBackground,
+                  borderColor: resourceBlockBorder,
+                  marginBottom: 0,
+                },
               ]}
             >
               <View style={styles.streakHeadingRow}>
@@ -857,7 +861,11 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               </Text>
             </View>
 
-            <QuickAccessSection includeExtras showTitle={false} />
+            <QuickAccessSection
+              includeExtras
+              showTitle={false}
+              style={{ marginTop: 10, marginBottom: 10 }}
+            />
 
             <View
               style={[
