@@ -56,10 +56,12 @@ type AccessId =
 export function QuickAccessSection({
   includeExtras = false,
   replaceLibraryWithVideos = false,
+  showTitle = true,
   style,
 }: {
   includeExtras?: boolean;
   replaceLibraryWithVideos?: boolean;
+  showTitle?: boolean;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -101,7 +103,7 @@ export function QuickAccessSection({
     : ACCESS_CARDS_WITH_EXTRAS;
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
-      <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>
+      {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>}
       <View style={styles.accessRow}>
         {(includeExtras ? accessCards : ACCESS_CARDS).map((access) => (
           <Pressable
