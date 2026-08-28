@@ -97,7 +97,6 @@ import { useVideos } from "@/hooks/useVideos";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
-import { TOOLS, ToolsGrid } from "@/components/ToolsGrid";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1764,23 +1763,12 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <ToolsGrid
-            tools={TOOLS.slice(0, 3)}
-            showTitle={false}
-            style={{
-              marginTop: 24,
-              marginBottom: INICIO2_SECTION_GAP,
-              paddingHorizontal: GRID_PAD,
-            }}
-          />
-        )}
-        {isInicio2 && (
           <SessionCarousel
             title="Escuchadas recientemente"
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: INICIO2_SECTION_GAP - 65, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            style={{ marginTop: INICIO2_SECTION_GAP - 20, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
