@@ -529,15 +529,16 @@ export default function DescansoScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad + 10,
-            opacity: stickyAnim,
-            backgroundColor: bgGradient[0],
+            backgroundColor: stickyVisible ? bgGradient[0] : "transparent",
           },
         ]}
         pointerEvents={stickyVisible ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
         <View style={styles.stickyTitleRow}>
-          <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
+          <Animated.Text style={[styles.stickyHeaderTitle, { color: colors.foreground, opacity: stickyAnim }]}>
+            Dormir
+          </Animated.Text>
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
