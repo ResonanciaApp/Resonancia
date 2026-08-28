@@ -202,12 +202,12 @@ export const modules: ModuleMap = {
   "./components/mockups/tab-seleccionados/TabDisenoA.tsx": () => import("../components/mockups/tab-seleccionados/TabDisenoA.tsx"),
   "./components/mockups/tab-seleccionados/TabDisenoB.tsx": () => import("../components/mockups/tab-seleccionados/TabDisenoB.tsx"),
   "./components/mockups/tab-seleccionados/TabDisenoC.tsx": () => import("../components/mockups/tab-seleccionados/TabDisenoC.tsx"),
-  "./components/mockups/vesica-animaciones/CruceZen.tsx": () => import("../components/mockups/vesica-animaciones/CruceZen.tsx"),
-  "./components/mockups/vesica-animaciones/DestelloCentral.tsx": () => import("../components/mockups/vesica-animaciones/DestelloCentral.tsx"),
-  "./components/mockups/vesica-animaciones/OrbitaZen.tsx": () => import("../components/mockups/vesica-animaciones/OrbitaZen.tsx"),
-  "./components/mockups/vesica-animaciones/RespiracionZen.tsx": () => import("../components/mockups/vesica-animaciones/RespiracionZen.tsx"),
   "./components/mockups/universo-header/DiagonalNavyBurgundy.tsx": () => import("../components/mockups/universo-header/DiagonalNavyBurgundy.tsx"),
   "./components/mockups/universo-header/RadialNavyBurgundy.tsx": () => import("../components/mockups/universo-header/RadialNavyBurgundy.tsx"),
   "./components/mockups/universo-header/ReversedBurgundyNavy.tsx": () => import("../components/mockups/universo-header/ReversedBurgundyNavy.tsx"),
-  "./components/mockups/universo-header/VerticalNavyBurgundy.tsx": () => import("../components/mockups/universo-header/VerticalNavyBurgundy.tsx")
+  "./components/mockups/universo-header/VerticalNavyBurgundy.tsx": () => import("../components/mockups/universo-header/VerticalNavyBurgundy.tsx"),
+  "./components/mockups/vesica-animaciones/CruceZen.tsx": () => import("../components/mockups/vesica-animaciones/CruceZen.tsx"),
+  "./components/mockups/vesica-animaciones/DestelloCentral.tsx": () => import("../components/mockups/vesica-animaciones/DestelloCentral.tsx"),
+  "./components/mockups/vesica-animaciones/OrbitaZen.tsx": () => import("../components/mockups/vesica-animaciones/OrbitaZen.tsx"),
+  "./components/mockups/vesica-animaciones/RespiracionZen.tsx": () => import("../components/mockups/vesica-animaciones/RespiracionZen.tsx")
 };

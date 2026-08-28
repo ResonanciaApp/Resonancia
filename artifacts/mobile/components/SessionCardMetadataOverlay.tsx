@@ -31,6 +31,11 @@ const CATEGORY_PILL_META: Record<string, {
     color: "#9A5A2C",
     icon: require("@/assets/images/cat-sesiones.png"),
   },
+  ambientales: {
+    label: "Ambientales",
+    color: "#4D8A5D",
+    icon: require("@/assets/images/cat-sonidos.png"),
+  },
 };
 
 type Props = {
