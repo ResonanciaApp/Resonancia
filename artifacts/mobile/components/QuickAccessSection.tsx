@@ -57,11 +57,15 @@ export function QuickAccessSection({
   includeExtras = false,
   replaceLibraryWithVideos = false,
   showTitle = true,
+  showCardBorders = true,
+  cardBackgroundColor,
   style,
 }: {
   includeExtras?: boolean;
   replaceLibraryWithVideos?: boolean;
   showTitle?: boolean;
+  showCardBorders?: boolean;
+  cardBackgroundColor?: string;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -70,11 +74,13 @@ export function QuickAccessSection({
   const { openLib, openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
-  const cardBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
-      ? "rgba(42,40,64,0.65)"
-      : "rgba(255,255,255,0.05)";
+  const cardBackground = cardBackgroundColor ?? (
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : activeSceneId === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)"
+  );
 
   const handlePress = useCallback((id: AccessId) => {
     const access = [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS].find((item) => item.id === id);
@@ -117,6 +123,7 @@ export function QuickAccessSection({
               {
                 width: cardWidth,
                 backgroundColor: cardBackground,
+                borderWidth: showCardBorders ? 1 : 0,
                 opacity: pressed ? 0.75 : 1,
               },
             ]}

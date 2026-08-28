@@ -793,7 +793,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                 styles.streakSection,
                 {
                   backgroundColor: resourceBlockBackground,
-                  borderColor: resourceBlockBorder,
+                  borderWidth: 0,
                   marginBottom: 0,
                 },
               ]}
@@ -829,6 +829,8 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <QuickAccessSection
               includeExtras
               showTitle={false}
+              showCardBorders={false}
+              cardBackgroundColor="#292840"
               style={{ marginTop: 10, marginBottom: 10 }}
             />
 
