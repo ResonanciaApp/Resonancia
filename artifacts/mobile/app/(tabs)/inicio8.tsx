@@ -97,6 +97,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import { TOOLS, ToolsGrid } from "@/components/ToolsGrid";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1761,6 +1762,16 @@ export default function HomeScreen2({
               }}
             />
           </View>
+        )}
+        {isInicio2 && (
+          <ToolsGrid
+            tools={TOOLS.slice(0, 3)}
+            style={{
+              marginTop: 24,
+              marginBottom: INICIO2_SECTION_GAP,
+              paddingHorizontal: GRID_PAD,
+            }}
+          />
         )}
         {isInicio2 && (
           <SessionCarousel
