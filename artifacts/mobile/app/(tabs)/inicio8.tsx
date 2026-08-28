@@ -40,6 +40,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
+import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -2086,6 +2087,7 @@ export default function HomeScreen2({
         }}>
           <AlmaCommunitySection />
         </View>
+        <AhoraEnResonanciaSection />
         {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />

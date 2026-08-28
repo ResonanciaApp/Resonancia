@@ -13,9 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -25,18 +23,15 @@ import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 19;
 const GRID_GAP = 7;
-const GRID_COLUMNS = 3;
+const GRID_COLUMNS = 2;
 
 const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
   { id: "geometrix", label: "Geometrix", icon: "cube-outline", color: "#C4C8D4" },
   { id: "videos", label: "Videos", icon: "video-outline", color: "#8ED9FF" },
-  { id: "respiracion", label: "Respiración", icon: "weather-windy", color: "#C8A6FF" },
-  { id: "biblioteca", label: "Biblioteca", icon: "bookmark-outline", color: "#D4B7FF" },
+  { id: "bitacora", label: "Bitácora", icon: "history", color: "#B8C5F4" },
+  { id: "respiracion", label: "Ejercicios Respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
-  { id: "sesiones", label: "Sesiones", icon: "calendar-month-outline", color: "#F1C879" },
-  { id: "amigos", label: "Amigos", icon: "account-multiple-outline", color: "#A6D8C8" },
-  { id: "grupos", label: "Grupos", icon: "account-group-outline", color: "#B8C5F4" },
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];
@@ -49,7 +44,7 @@ export default function HerramientasScreen() {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
-  const { openLib, openOverlay } = useDrawer();
+  const { openOverlay } = useDrawer();
 
   const cardWidth = Math.max(
     0,
@@ -72,26 +67,17 @@ export default function HerramientasScreen() {
       case "videos":
         openCategory("/videos");
         break;
+      case "bitacora":
+        openOverlay("/historial");
+        break;
       case "respiracion":
         openCategory("/respiracion");
-        break;
-      case "biblioteca":
-        openLib();
         break;
       case "diario":
         openOverlay("/diario");
         break;
-      case "sesiones":
-        openOverlay("/mis-sesiones");
-        break;
-      case "amigos":
-        openOverlay("/amigos");
-        break;
-      case "grupos":
-        openOverlay("/grupos");
-        break;
     }
-  }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
+  }, [openCategory, openMixer, openGeometrix, openOverlay]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
@@ -148,13 +134,9 @@ export default function HerramientasScreen() {
           ))}
         </View>
 
-        <QuickAccessSection />
-
         <View style={styles.fullBleedSection}>
           <EncuentrosResonadoresSection titleMarginTop={0} />
         </View>
-
-        <AhoraEnResonanciaSection />
 
       </ScrollView>
     </View>
