@@ -315,7 +315,6 @@ export default function DescansoScreen() {
     pauseResume,
     stop,
     history,
-    favorites,
   } = usePlayer();
 
   /** Lógica de tres estados para tocar una sesión de Dormir
@@ -380,15 +379,6 @@ export default function DescansoScreen() {
     }
     return result;
   }, [history, allDescansoIds]);
-
-  const favoritesInDescanso = useMemo(() => {
-    const result: import("@/data/sessions").Session[] = [];
-    for (const id of favorites) {
-      const s = getSessionById(id);
-      if (s && allDescansoIds.has(s.id)) result.push(s);
-    }
-    return result;
-  }, [favorites, allDescansoIds]);
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
 
@@ -504,18 +494,6 @@ export default function DescansoScreen() {
               isPremium={isPremium}
               onPress={(s) => handleSessionTap(s)}
               style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
-              cardWidth={RECENT_CARD_W}
-              titleSize={18}
-              showCardMetadata
-            />
-          )}
-          {favoritesInDescanso.length > 0 && (
-            <SessionCarousel
-              title="Favoritos"
-              sessions={favoritesInDescanso}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
               titleSize={18}
               showCardMetadata
