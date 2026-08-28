@@ -696,30 +696,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       )}
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="gradient" noImage />
-      {dedicated && (
-        <View
-          pointerEvents="none"
-          style={[styles.profileHeroBackground, { height: topPad + 130 }]}
-        >
-          <LinearGradient
-            colors={["#784565", "#50326E"]}
-            start={{ x: 0, y: 0.15 }}
-            end={{ x: 1, y: 0.85 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <LinearGradient
-            colors={[
-              "rgba(6,10,15,0)",
-              "rgba(6,10,15,0.12)",
-              "rgba(6,10,15,0.58)",
-              activeTheme.solid,
-            ]}
-            start={{ x: 0, y: 0.15 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
-      )}
       <GeometrixOverlay active={profileGeoActive} />
 
       {/* ── Sticky header (estilo Calm) ── */}
@@ -1358,13 +1334,6 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  profileHeroBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    overflow: "hidden",
-  },
 
   header: {
     marginBottom: 20,
