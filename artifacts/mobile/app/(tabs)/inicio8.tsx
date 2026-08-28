@@ -2827,14 +2827,14 @@ const styles = StyleSheet.create({
   headerTabText: {
     fontFamily: "Manrope",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "850" as any,
     color: "#FBFBFB",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
     fontFamily: "Manrope",
     color: "#1B060F",
-    fontWeight: "600",
+    fontWeight: "850" as any,
   },
   intentionCard: {
     paddingVertical: 10,

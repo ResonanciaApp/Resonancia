@@ -1277,7 +1277,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 28, fontWeight: "850" as any, letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
@@ -1315,7 +1315,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginTop: 1,
   },
-  stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "850" as any, color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   stickyTitleDedicated: { fontSize: 31, textAlign: "left", marginLeft: 0, transform: [{ translateY: 6 }] },
   compactTitleOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -1325,14 +1325,14 @@ const styles = StyleSheet.create({
   compactProfileTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "850" as any,
     color: "#F4F4F4",
     letterSpacing: 0.3,
     textAlign: "center",
     transform: [{ translateY: 4 }],
   },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
-  stickyTitleTab: { fontSize: 30, fontWeight: "700", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
+  stickyTitleTab: { fontSize: 30, fontWeight: "850" as any, textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libActionsPill: {
     flexDirection: "row",
     alignItems: "center",
