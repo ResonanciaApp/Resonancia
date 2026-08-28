@@ -37,6 +37,7 @@ type Props = {
   title: string;
   authorName?: string;
   authorAvatar?: ImageSourcePropType;
+  titleFontSize?: number;
   showDuration?: boolean;
   durationBottom?: number;
 };
@@ -47,6 +48,7 @@ export function SessionCardMetadataOverlay({
   title,
   authorName,
   authorAvatar,
+  titleFontSize,
   showDuration = true,
   durationBottom = 65,
 }: Props) {
@@ -78,16 +80,24 @@ export function SessionCardMetadataOverlay({
           showClock
         />
       )}
-      <View pointerEvents="none" style={styles.meta}>
-        <Text style={styles.title} numberOfLines={2}>{title}</Text>
-        {authorName ? (
-          <View style={styles.authorRow}>
-            {authorAvatar ? (
-              <Image source={authorAvatar} style={styles.authorAvatar} resizeMode="cover" />
-            ) : null}
-            <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
-          </View>
+      <View pointerEvents="none" style={[styles.meta, authorAvatar ? styles.metaWithAvatar : null]}>
+        {authorAvatar ? (
+          <Image source={authorAvatar} style={styles.authorAvatar} resizeMode="cover" />
         ) : null}
+        <View style={styles.metaText}>
+          <Text
+            style={[
+              styles.title,
+              titleFontSize ? { fontSize: titleFontSize, lineHeight: titleFontSize + 4 } : null,
+            ]}
+            numberOfLines={2}
+          >
+            {title}
+          </Text>
+          {authorName ? (
+            <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
+          ) : null}
+        </View>
       </View>
     </>
   );
@@ -154,6 +164,15 @@ const styles = StyleSheet.create({
     right: 8,
     bottom: 15,
   },
+  metaWithAvatar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  metaText: {
+    flex: 1,
+    minWidth: 0,
+  },
   title: {
     fontFamily: "Manrope",
     fontSize: 13,
@@ -168,15 +187,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     flexShrink: 1,
   },
-  authorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
   authorAvatar: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    marginTop: 4,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
 });

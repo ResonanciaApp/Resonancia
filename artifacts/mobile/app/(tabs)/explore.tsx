@@ -431,6 +431,7 @@ export default function ExploreScreen() {
                   title={featuredHoy.title}
                   authorName={featuredAuthor?.name}
                   authorAvatar={featuredAuthor?.photo}
+                  titleFontSize={16}
                 />
               </View>
             </Pressable>
