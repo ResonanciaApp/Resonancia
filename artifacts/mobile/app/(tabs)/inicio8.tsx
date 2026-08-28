@@ -95,6 +95,7 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 
 const { width, height } = Dimensions.get("window");
@@ -807,7 +808,7 @@ export default function HomeScreen2({
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
   const durationPillBg = activeSceneId === "indigo"
-    ? "rgba(42,40,64,0.40)"
+    ? "rgba(42,40,64,0.65)"
     : cardBg;
   const recommendationSurfaceBg = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
@@ -1934,6 +1935,12 @@ export default function HomeScreen2({
               openCategory={openCategory}
             />
           </View>
+        )}
+        {isInicio2 && (
+          <ResonadoresSection
+            marginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
         )}
         {isInicio2 && (
           <EncuentrosResonadoresSection
