@@ -36,10 +36,16 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 
 function CollectionPill({ label, onPress }: { label: string; onPress: () => void }) {
+  const { theme } = useSceneTheme();
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [
+        styles.pill,
+        theme.id === "tibet" && styles.pillTibet,
+        theme.id === "indigo" && styles.pillIndigo,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
     >
       <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
     </Pressable>
@@ -60,8 +66,38 @@ export default function SonidosScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const indigoSurface = theme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
+  const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+
+  const handleScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const y = event.nativeEvent.contentOffset.y;
+    const compact = y > 8;
+    if (compact !== compactRef.current) {
+      compactRef.current = compact;
+      Animated.timing(titleProgress, {
+        toValue: compact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+    const showBorder = scrollable > 0 && y / scrollable >= 0.01;
+    if (showBorder !== headerBorderActiveRef.current) {
+      headerBorderActiveRef.current = showBorder;
+      Animated.timing(headerBorderAnim, {
+        toValue: showBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [headerBorderAnim, titleProgress]);
 
   const collections = useMemo(
     () =>
@@ -126,66 +162,65 @@ export default function SonidosScreen() {
     <LinearGradient colors={theme.gradient} style={styles.root}>
       <StatusBar hidden />
       <GeoUniverseBackground />
-      <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
-        <View style={styles.titleRow}>
-          <Animated.Text
-            style={[
-              styles.heroTitle,
-              {
-                color: colors.foreground,
-                opacity: titleProgress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-              },
-            ]}
-          >
-            Sonidos
-          </Animated.Text>
-          <Animated.Text
-            pointerEvents="none"
-            style={[styles.compactTitle, { color: colors.foreground, opacity: titleProgress }]}
-          >
-            Sonidos
-          </Animated.Text>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={styles.searchButton}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Sonidos"
-          >
-            <Feather name="search" size={24} color={colors.foreground} />
-          </Pressable>
+      <View style={styles.contentShift}>
+        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+          <View style={styles.titleRow}>
+            <Animated.Text
+              style={[
+                styles.heroTitle,
+                {
+                  color: colors.foreground,
+                  opacity: titleProgress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+                },
+              ]}
+            >
+              Sonidos
+            </Animated.Text>
+            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: titleProgress }]}>
+              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Sonidos</Text>
+            </Animated.View>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Sonidos"
+            >
+              <Feather name="search" size={24} color={colors.foreground} />
+            </Pressable>
+          </View>
+          <View style={styles.sonidosTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.tabGrid, { marginBottom: 0 }]}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {collections.map((collection) => (
+                <CollectionPill
+                  key={collection.id}
+                  label={collection.label}
+                  onPress={() => router.push(`/sound-tag/${collection.id}` as never)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.pills}
-        >
-          {collections.map((collection) => (
-            <CollectionPill
-              key={collection.id}
-              label={collection.label}
-              onPress={() => router.push(`/sound-tag/${collection.id}` as never)}
-            />
-          ))}
-        </ScrollView>
-      </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={(event) => {
-          const compact = event.nativeEvent.contentOffset.y > 8;
-          if (compact === compactRef.current) return;
-          compactRef.current = compact;
-          Animated.timing(titleProgress, {
-            toValue: compact ? 1 : 0,
-            duration: 300,
-            useNativeDriver: true,
-          }).start();
-        }}
-      >
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onLayout={(event) => {
+            scrollLayoutHeightRef.current = event.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(_width, height) => {
+            scrollContentHeightRef.current = height;
+          }}
+          onScroll={handleScroll}
+        >
         {allSessions.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="headphones" size={30} color={colors.mutedForeground} />
@@ -224,7 +259,8 @@ export default function SonidosScreen() {
             ))}
           </>
         )}
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <ContextSearchModal
         visible={searchVisible}
@@ -244,54 +280,88 @@ export default function SonidosScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   fixedHeader: {
-    paddingHorizontal: H_PAD,
-    paddingBottom: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    zIndex: 20,
+    backgroundColor: "transparent",
   },
   titleRow: {
-    minHeight: 52,
-    justifyContent: "center",
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    paddingTop: 7,
+    paddingBottom: 10,
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 32,
-    lineHeight: 40,
+    fontSize: 30,
     fontWeight: "700",
+    letterSpacing: 0.3,
+    textAlign: "left",
+    marginTop: 0,
+    transform: [{ translateY: 1 }],
   },
-  compactTitle: {
-    position: "absolute",
-    alignSelf: "center",
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  searchButton: {
-    position: "absolute",
-    right: 0,
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+  compactTitleOverlay: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
   },
-  pills: { gap: 8, paddingVertical: 8, paddingRight: H_PAD },
-  pill: {
-    minHeight: 38,
-    paddingHorizontal: 16,
-    borderRadius: 19,
+  compactPageTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
+  },
+  headerSearchButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  sonidosTabsHeader: {
+    marginTop: 9,
+    paddingBottom: 15,
+  },
+  tabGrid: {
+    marginBottom: 43,
+  },
+  tabGridContent: {
+    paddingHorizontal: H_PAD,
+    gap: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  pill: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 46,
+    paddingHorizontal: 12,
+    borderRadius: 27,
+    gap: 12,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 0,
+  },
+  pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
+  pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  stickyTabsBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#F9F9F9",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#F4F4F4",
   },
   scroll: { flex: 1 },
   carousel: {
