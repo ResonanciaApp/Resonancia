@@ -1,0 +1,417 @@
+Planificación — Nueva sección “Sonidos”
+
+Quiero crear una nueva pantalla y un nuevo menú dentro del Tab Bar llamado Sonidos.
+
+
+
+Sonidos funcionará como una super categoría, al igual que Dormir.
+
+La pantalla de sonidos tiene que ser una copia identica del lay out de como está Dormir, tanto para el contenido, cards, etc, tdoo.
+
+
+
+Las categorías originales de las sesiones se mantienen independientes:
+
+
+
+Sonoterapia
+
+Música
+
+Meditaciones
+
+Charlas
+
+Historias
+
+
+
+Sonidos será una sección especial que reúne contenido de estas categorías mediante tags.
+
+1. Tags especiales para Sonidos
+
+Crearemos tags específicos que permitirán determinar qué sesiones deben aparecer dentro de la sección Sonidos.
+
+
+
+Los tags serán:
+
+
+
+Todos los sonidos
+
+Sonidos de naturaleza
+
+Sonidos binaurales
+
+Música de enfoque
+
+Cantos medicinales
+
+Sonidos de lluvia
+
+Sonidos para Chakras
+
+
+
+Cuando creemos una sesión, podremos asignarle uno o más de estos tags.
+
+2. Una sesión puede tener múltiples tags
+
+Una misma sesión puede tener más de un tag de Sonidos.
+
+
+
+Por ejemplo, una sesión de sonidos de naturaleza podría tener:
+
+
+
+Sonidos de naturaleza
+
+Sonidos de lluvia
+
+
+
+En ese caso, la sesión aparecerá en ambos carruseles dentro de Sonidos.
+
+
+
+Los tags funcionan de manera independiente entre sí.
+
+3. ¿Qué ocurre cuando se asigna un tag?
+
+Cuando una sesión recibe un tag de Sonidos, ocurren dos cosas:
+
+
+
+A. El tag genera un Tab dentro de Sonidos
+
+
+
+Por ejemplo:
+
+
+
+Sonidos de naturaleza
+
+
+
+B. El tag genera un carrusel
+
+
+
+El carrusel contiene todas las sesiones que tienen ese tag.
+
+
+
+Por ejemplo:
+
+
+
+Sonidos de naturaleza
+
+
+
+[Sesión 1] [Sesión 2] [Sesión 3] [Sesión 4]
+
+
+
+Si posteriormente se crea una nueva sesión con el mismo tag, esta se incorpora automáticamente al carrusel.
+
+4. Los Tabs de Sonidos son accesos a una pantalla filtrada
+
+Importante: los tabs de Sonidos NO funcionan como filtros dentro de la propia pantalla de Sonidos.
+
+
+
+Cuando el usuario toca un tab, debe ser llevado a una pantalla independiente que muestra todas las sesiones que tienen ese tag.
+
+
+
+Por ejemplo:
+
+
+
+El usuario está en:
+
+
+
+Sonidos
+
+
+
+Tabs:
+
+
+
+Todos los sonidos | Sonidos de naturaleza | Sonidos binaurales | Música de enfoque | ...
+
+
+
+Si toca:
+
+
+
+Sonidos de naturaleza
+
+
+
+→ Se abre una nueva pantalla/listado de Sonidos de naturaleza
+
+
+
+→ Esta pantalla muestra todas las sesiones que tengan el tag “Sonidos de naturaleza”, no solamente las cards que estaban visibles en el carrusel de Sonidos.
+
+
+
+De esta manera, el carrusel funciona como una vista previa / descubrimiento, mientras que el tab permite acceder al catálogo completo de esa colección.
+
+5. El tag “Todos los sonidos”
+
+“Todos los sonidos” funcionará como una colección especial.
+
+
+
+Este tag permitirá acceder a una pantalla donde se muestran todas las sesiones que forman parte de la super categoría Sonidos.
+
+
+
+Por lo tanto, una sesión que pertenezca a Sonidos deberá llevar el tag:
+
+
+
+Todos los sonidos
+
+
+
+y además podrá llevar uno o más tags específicos.
+
+
+
+Por ejemplo:
+
+
+
+Sesión: Lluvia suave para relajarse
+
+
+
+Tags:
+
+
+
+Todos los sonidos
+
+Sonidos de naturaleza
+
+Sonidos de lluvia
+
+
+
+Esta sesión aparecerá:
+
+
+
+En el carrusel Todos los sonidos
+
+En el carrusel Sonidos de naturaleza
+
+En el carrusel Sonidos de lluvia
+
+
+
+Y estará disponible en las tres pantallas correspondientes.
+
+6. Estructura de la pantalla Sonidos
+
+La pantalla Sonidos será accesible directamente desde el Tab Bar principal.
+
+
+
+Al entrar a Sonidos:
+
+
+
+No habrá un tab seleccionado por defecto.
+
+Los tabs serán generados dinámicamente según los tags que estén siendo utilizados.
+
+Los carruseles se generarán automáticamente según esos tags.
+
+Cada carrusel mostrará las sesiones que tengan el tag correspondiente.
+
+
+
+Los tabs serán:
+
+
+
+Todos los sonidos | Sonidos de naturaleza | Sonidos binaurales | Música de enfoque | Cantos medicinales | Sonidos de lluvia | Sonidos para Chakras
+
+
+
+Si un tag todavía no tiene ninguna sesión asociada, ese tab no aparecerá.
+
+
+
+Cuando exista contenido con ese tag, el tab aparecerá automáticamente.
+
+7. Ejemplo completo
+
+Creo una sesión:
+
+
+
+“Lluvia nocturna para relajarse”
+
+
+
+Categoría original:
+
+
+
+Música
+
+
+
+Tags:
+
+
+
+Todos los sonidos
+
+Sonidos de naturaleza
+
+Sonidos de lluvia
+
+
+
+Como consecuencia:
+
+
+
+En Sonidos:
+
+
+
+La sesión aparece dentro de:
+
+
+
+Carrusel Todos los sonidos
+
+Carrusel Sonidos de naturaleza
+
+Carrusel Sonidos de lluvia
+
+
+
+Además, los tabs correspondientes estarán disponibles.
+
+
+
+Si el usuario toca:
+
+
+
+Sonidos de lluvia
+
+
+
+→ Se abre una pantalla independiente.
+
+
+
+→ Esa pantalla muestra todas las sesiones que tengan el tag “Sonidos de lluvia”.
+
+
+
+Si toca:
+
+
+
+Todos los sonidos
+
+
+
+→ Se abre una pantalla independiente.
+
+
+
+→ Esa pantalla muestra todas las sesiones que tengan el tag “Todos los sonidos”.
+
+8. Lógica general
+
+La lógica sería:
+
+
+
+SESIÓN
+
+
+
+↓
+
+
+
+Categoría original
+Música / Meditaciones / Sonoterapia / Historias / Charlas
+
+
+
+
+
+
+
+Uno o más Tags de Sonidos
+
+
+
+↓
+
+
+
+Pantalla Sonidos
+
+
+
+→ Genera el Tab correspondiente
+→ Genera el carrusel correspondiente
+→ La sesión aparece en todos los carruseles cuyos tags tenga
+
+
+
+↓
+
+
+
+Al tocar un Tab
+
+
+
+→ Se abre una pantalla/listado independiente
+→ Muestra todas las sesiones con ese tag
+
+
+
+En resumen:
+
+
+
+Sonidos = super categoría / hub de descubrimiento
+
+
+
+Carruseles = preview del contenido
+
+
+
+Tabs = acceso al catálogo completo de cada colección
+
+
+
+Tags = sistema que conecta y organiza el contenido
+
+
+
+“Todos los sonidos” = colección general que reúne todo el contenido de Sonidos
