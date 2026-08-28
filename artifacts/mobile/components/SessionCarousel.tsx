@@ -54,14 +54,14 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   return (
     <View style={[styles.section, style]}>
       {onViewAll ? (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: titleSpacing ?? 21 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: titleSpacing ?? 17 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
           <Pressable onPress={onViewAll} hitSlop={8}>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
           </Pressable>
         </View>
       ) : (
-        <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 21 }]}>{title}</Text>
+        <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
       )}
       <ScrollView
         horizontal
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
-    marginBottom: 21,
+    marginBottom: 17,
     color: "#FBFBFB",
   },
   card: { width: CARD_W },

@@ -1770,7 +1770,7 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
-            titleSpacing={16}
+            titleSpacing={17}
             showCardMetadata
           />
         )}
@@ -1851,14 +1851,14 @@ export default function HomeScreen2({
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={19}
-            titleSpacing={16}
+            titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
             showCardMetadata
           />
         )}
         {isInicio2 && (
           <View style={styles.inicio2ToolsSection}>
-            <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Mis herramientas</Text>
+            <Text style={[styles.sectionTitle, { marginBottom: 17 }]}>Mis herramientas</Text>
             <ToolsGrid replaceVideosWithLibrary />
           </View>
         )}
@@ -1882,7 +1882,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 55, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 20, paddingHorizontal: GRID_PAD }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
               ¿Cuánto tiempo tienes hoy?
             </Text>
             <ScrollView
@@ -1924,7 +1924,7 @@ export default function HomeScreen2({
               showDivider={false}
               moodTopOffset={0}
               titleSize={19}
-              titleSpacing={16}
+              titleSpacing={17}
               maxItems={5}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
               onClearMood={() => setSelectedMood(null)}
@@ -1938,7 +1938,7 @@ export default function HomeScreen2({
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={[styles.sectionTitle, isInicio2 && { marginBottom: 16 }]}>
+              <Text style={[styles.sectionTitle, isInicio2 && { marginBottom: 17 }]}>
                 Tu próxima sesión
               </Text>
               <Pressable
@@ -2034,7 +2034,7 @@ export default function HomeScreen2({
         {/* ── VIDEOS DESTACADOS ── */}
         {false && videos.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
                 <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
@@ -2860,8 +2860,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
-  inicio2SectionTitle: { fontSize: 19, marginBottom: 16 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 17, color: "#FBFBFB" },
+  inicio2SectionTitle: { fontSize: 19, marginBottom: 17 },
   continueSection: {
     marginTop: 0,
     marginBottom: INICIO2_SECTION_GAP,
@@ -2869,7 +2869,7 @@ const styles = StyleSheet.create({
   },
   continueSectionTitle: {
     color: "#F9F9F9",
-    marginBottom: 16,
+    marginBottom: 17,
   },
   continueCard: {
     flexDirection: "row",

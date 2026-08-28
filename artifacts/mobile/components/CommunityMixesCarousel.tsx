@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 24,
+    marginBottom: 17,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
   verTodas: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
