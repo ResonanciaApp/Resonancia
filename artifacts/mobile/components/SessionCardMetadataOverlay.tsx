@@ -1,0 +1,163 @@
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+
+const CATEGORY_PILL_META: Record<string, {
+  label: string;
+  color: string;
+  icon: number;
+}> = {
+  "meditaciones-guiadas": {
+    label: "Meditación",
+    color: "#7251A3",
+    icon: require("@/assets/images/cat-meditaciones.png"),
+  },
+  "musica-sonidos": {
+    label: "Música",
+    color: "#287F83",
+    icon: require("@/assets/images/cat-musica.png"),
+  },
+  descanso: {
+    label: "Dormir",
+    color: "#32708E",
+    icon: require("@/assets/images/cat-luna.png"),
+  },
+  "sonidos-ancestrales": {
+    label: "Sonoterapia",
+    color: "#9A5A2C",
+    icon: require("@/assets/images/cat-sesiones.png"),
+  },
+};
+
+type Props = {
+  categoryId?: string;
+  durationLabel: string;
+  title: string;
+  authorName?: string;
+  showDuration?: boolean;
+  durationBottom?: number;
+};
+
+export function SessionCardMetadataOverlay({
+  categoryId,
+  durationLabel,
+  title,
+  authorName,
+  showDuration = true,
+  durationBottom = 65,
+}: Props) {
+  const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
+
+  return (
+    <>
+      <LinearGradient
+        pointerEvents="none"
+        colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
+        locations={[0, 0.42, 1]}
+        style={styles.bottomGradient}
+      />
+      {category && (
+        <View pointerEvents="none" style={styles.categoryPill}>
+          <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
+            <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+          </View>
+          <Text style={styles.categoryLabel} numberOfLines={1}>
+            {category.label}
+          </Text>
+        </View>
+      )}
+      {showDuration && (
+        <SessionDurationBadge
+          label={durationLabel}
+          style={[styles.durationBadge, { bottom: durationBottom }]}
+          textStyle={styles.durationText}
+          showClock
+        />
+      )}
+      <View pointerEvents="none" style={styles.meta}>
+        <Text style={styles.title} numberOfLines={2}>{title}</Text>
+        {authorName ? (
+          <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
+        ) : null}
+      </View>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  bottomGradient: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 112,
+  },
+  categoryPill: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    maxWidth: "78%",
+    minHeight: 27,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 3,
+    paddingRight: 9,
+    paddingLeft: 3,
+    borderRadius: 100,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  categoryCircle: {
+    width: 19,
+    height: 19,
+    borderRadius: 9.5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  categoryIcon: {
+    width: 12,
+    height: 12,
+    tintColor: "#FFFFFF",
+  },
+  categoryLabel: {
+    flexShrink: 1,
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  durationBadge: {
+    position: "absolute",
+    left: 8,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  durationText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#F9F9F9",
+  },
+  meta: {
+    position: "absolute",
+    left: 10,
+    right: 8,
+    bottom: 15,
+  },
+  title: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    lineHeight: 17,
+    color: "#FFFFFF",
+  },
+  author: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    color: "#F4F4F4",
+    marginTop: 4,
+  },
+});

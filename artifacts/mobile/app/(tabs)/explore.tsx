@@ -491,6 +491,7 @@ export default function ExploreScreen() {
             style={{ marginTop: 0, marginBottom: SECTION_GAP }}
             cardWidth={SQCARD_W}
             titleSize={19}
+            showCardMetadata
           />
         ))}
 

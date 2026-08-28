@@ -229,7 +229,7 @@ export default function TagScreen({ id: idProp }: { id?: string } = {}) {
                   session={session}
                   width={(width - H_PAD * 2 - 14) / 2}
                   style={{ marginRight: 0 }}
-                  showDuration={false}
+                  showCardMetadata
                   showAuthorAvatar={false}
                   overridePress={() => {
                     if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }

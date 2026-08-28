@@ -526,6 +526,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                 />
               </>
             )}
@@ -539,6 +540,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                 />
               </>
             )}
@@ -552,6 +554,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
                 />
               </>
@@ -566,6 +569,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
                 />
               </>
@@ -580,6 +584,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                   onViewAll={binauralForTodos.length > 5 ? () => setActiveTab("binaural") : undefined}
                 />
               </>
@@ -594,6 +599,7 @@ export default function DescansoScreen() {
                    style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
+                  showCardMetadata
                   onViewAll={ambientalForTodos.length > 5 ? () => setActiveTab("ambiental") : undefined}
                 />
               </>
@@ -622,7 +628,7 @@ export default function DescansoScreen() {
                 session={session}
                 width={cardW}
                 style={{ marginRight: 0 }}
-                showDuration={false}
+                showCardMetadata
                 showAuthorAvatar={false}
                 overridePress={() => handleSessionTap(session)}
                 playing={currentSession?.id === session.id}

@@ -19,10 +19,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { SessionCard } from "@/components/SessionCard";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { getArtist } from "@/data/artists";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { chakraMatchesTag, getChakraById } from "@/data/chakras";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
@@ -153,21 +153,15 @@ export default function ChakraScreen({ id: idProp }: { id?: string } = {}) {
         ) : (
           <View style={styles.sessionGrid}>
             {sessions.map((session) => (
-              <Pressable
+              <SessionCard
                 key={session.id}
-                onPress={() => handleSessionPress(session)}
-                style={({ pressed }) => [{ width: CARD_W, opacity: pressed ? 0.85 : 1 }]}
-              >
-                <View style={[styles.cardImageWrap, { borderRadius: colors.radius - 4 }]}>
-                  <Image source={session.image} style={styles.cardImage} contentFit="cover" cachePolicy="memory-disk" />
-                </View>
-                <Text style={styles.cardLabel} numberOfLines={2}>
-                  {session.title}
-                </Text>
-                <Text style={styles.cardAuthor} numberOfLines={1}>
-                  {getArtist(session.artistId).name}
-                </Text>
-              </Pressable>
+                session={session}
+                width={CARD_W}
+                style={{ marginRight: 0 }}
+                showCardMetadata
+                showAuthorAvatar={false}
+                overridePress={() => handleSessionPress(session)}
+              />
             ))}
           </View>
         )}

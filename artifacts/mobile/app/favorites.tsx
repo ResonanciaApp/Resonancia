@@ -14,6 +14,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -126,6 +127,8 @@ function FavMixRow({ mix, onPress }: { mix: MixPreset; onPress: () => void }) {
 export default function FavoritesScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
+  const sessionCardWidth = (screenWidth - 40 - 14) / 2;
   const { favorites } = usePlayer();
   const { presets } = useMixer();
   const loadMix = useLoadMix();
@@ -267,7 +270,18 @@ export default function FavoritesScreen() {
           </Text>
         </View>
       ) : (
-        filteredSessions.map((s) => <SessionCard key={s.id} session={s} horizontal />)
+        <View style={styles.sessionGrid}>
+          {filteredSessions.map((s) => (
+            <SessionCard
+              key={s.id}
+              session={s}
+              width={sessionCardWidth}
+              style={{ marginRight: 0 }}
+              showCardMetadata
+              showAuthorAvatar={false}
+            />
+          ))}
+        </View>
       )}
     </View>
   );
@@ -542,6 +556,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     padding: 0,
+  },
+  sessionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 14,
   },
 
   // Textos

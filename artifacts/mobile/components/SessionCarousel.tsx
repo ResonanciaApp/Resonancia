@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -15,38 +14,12 @@ import { useColors } from "@/hooks/useColors";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
 const SECTION_GAP = 53;
-
-const CATEGORY_PILL_META: Record<string, {
-  label: string;
-  color: string;
-  icon: number;
-}> = {
-  "meditaciones-guiadas": {
-    label: "Meditación",
-    color: "#7251A3",
-    icon: require("@/assets/images/cat-meditaciones.png"),
-  },
-  "musica-sonidos": {
-    label: "Música",
-    color: "#287F83",
-    icon: require("@/assets/images/cat-musica.png"),
-  },
-  descanso: {
-    label: "Dormir",
-    color: "#32708E",
-    icon: require("@/assets/images/cat-luna.png"),
-  },
-  "sonidos-ancestrales": {
-    label: "Sonoterapia",
-    color: "#9A5A2C",
-    icon: require("@/assets/images/cat-sesiones.png"),
-  },
-};
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
@@ -69,8 +42,8 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
   const ch = (cardHeight ?? cw) + (showCardMetadata ? 50 : 0);
-  const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
-  const thumbStyle = cw !== CARD_W ? { width: cw, height: ch } : undefined;
+  const cardStyle = { width: cw };
+  const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
   return (
     <View style={[styles.section, style]}>
@@ -92,7 +65,6 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
       >
         {sessions.map((s) => {
           const locked = !!s.isPremium && !isPremium;
-          const category = CATEGORY_PILL_META[s.categoryId];
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           return (
@@ -106,42 +78,20 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
             >
               <View style={[styles.thumbWrap, thumbStyle]}>
                 <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
-                {showCardMetadata && (
-                  <LinearGradient
-                    pointerEvents="none"
-                    colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
-                    locations={[0, 0.42, 1]}
-                    style={styles.cardBottomGradient}
+                {showCardMetadata ? (
+                  <SessionCardMetadataOverlay
+                    categoryId={s.categoryId}
+                    durationLabel={s.durationLabel}
+                    title={s.title}
+                    authorName={authorName}
+                  />
+                ) : (
+                  <SessionDurationBadge
+                    label={s.durationLabel}
+                    style={styles.durBadge}
+                    textStyle={styles.durText}
                   />
                 )}
-                {showCardMetadata && category && (
-                  <View pointerEvents="none" style={styles.categoryPill}>
-                    <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
-                      <Image
-                        source={category.icon}
-                        style={styles.categoryIcon}
-                        resizeMode="contain"
-                      />
-                    </View>
-                    <Text style={styles.categoryLabel} numberOfLines={1}>
-                      {category.label}
-                    </Text>
-                  </View>
-                )}
-                <SessionDurationBadge
-                  label={s.durationLabel}
-                  style={[styles.durBadge, showCardMetadata && styles.durBadgeInCard]}
-                  textStyle={styles.durText}
-                  showClock={showCardMetadata}
-                />
-                {showCardMetadata ? (
-                  <View pointerEvents="none" style={styles.cardOverlayMeta}>
-                    <Text style={styles.cardTitle} numberOfLines={2}>{s.title}</Text>
-                    {authorName ? (
-                      <Text style={styles.cardAuthor} numberOfLines={1}>{authorName}</Text>
-                    ) : null}
-                  </View>
-                ) : null}
                 {locked && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
@@ -252,51 +202,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  durBadgeInCard: {
-    bottom: 65,
-  },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
-  cardBottomGradient: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 112,
-  },
-  categoryPill: {
-    position: "absolute",
-    top: 8,
-    left: 8,
-    maxWidth: "78%",
-    minHeight: 27,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 3,
-    paddingRight: 9,
-    paddingLeft: 3,
-    borderRadius: 100,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  categoryCircle: {
-    width: 19,
-    height: 19,
-    borderRadius: 9.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  categoryIcon: {
-    width: 12,
-    height: 12,
-    tintColor: "#FFFFFF",
-  },
-  categoryLabel: {
-    flexShrink: 1,
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
   cardTitleWrap: {
     width: CARD_W,
     backgroundColor: "rgba(27,6,15,0.30)",
@@ -312,12 +218,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#FFFFFF",
     lineHeight: 17,
-  },
-  cardOverlayMeta: {
-    position: "absolute",
-    left: 10,
-    right: 8,
-    bottom: 15,
   },
   cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 4 },
 });

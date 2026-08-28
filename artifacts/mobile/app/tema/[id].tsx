@@ -152,7 +152,7 @@ export default function TemaScreen({ id: idProp }: { id?: string } = {}) {
               session={s}
               width={CARD_W}
               style={{ marginRight: 0 }}
-              showDuration={false}
+              showCardMetadata
               showAuthorAvatar={false}
               overridePress={() => {
                 if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }

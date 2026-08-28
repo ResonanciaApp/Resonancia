@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -121,11 +121,14 @@ function CategoryCard({
         style={({ pressed }) => [ac.lCard, { opacity: pressed ? 0.85 : 1 }]}>
         <View style={ac.lImgWrap}>
           <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
-          <SessionDurationBadge label={session.durationLabel} style={ac.lDurPill} textStyle={ac.lDur} />
+          <SessionCardMetadataOverlay
+            categoryId={session.categoryId}
+            durationLabel={session.durationLabel}
+            title={session.title}
+            authorName={author}
+          />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
-        <Text style={ac.lTitle} numberOfLines={2}>{session.title}</Text>
-        {!!author && <Text style={ac.lAuthor} numberOfLines={1}>{author}</Text>}
       </Pressable>
     );
   }
@@ -150,13 +153,16 @@ function CategoryCard({
   return (
     <Pressable onPress={handlePress} onLongPress={onLongPress}
       style={({ pressed }) => [ac.card, { width: cardWidth, opacity: pressed ? 0.85 : 1 }]}>
-      <View style={ac.imgContainer}>
+      <View style={[ac.imgContainer, { height: cardWidth + 50, aspectRatio: undefined }]}>
         <Image source={session.image} style={ac.cardImage} contentFit="cover" />
+        <SessionCardMetadataOverlay
+          categoryId={session.categoryId}
+          durationLabel={session.durationLabel}
+          title={session.title}
+          authorName={author}
+        />
         {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-        <SessionDurationBadge label={session.durationLabel} style={ac.durationBadge} textStyle={ac.durationBadgeText} />
       </View>
-      <Text style={ac.cardTitle} numberOfLines={2}>{session.title}</Text>
-      {!!author && <Text style={ac.cardAuthor} numberOfLines={1}>{author}</Text>}
     </Pressable>
   );
 }
@@ -179,7 +185,7 @@ const ac = StyleSheet.create({
   durationBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lockDot: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
   lCard: { width: 299 },
-  lImgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
+  lImgWrap: { width: 299, height: 237, borderRadius: 14, overflow: "hidden" },
   lDurPill: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   lDur: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 17, marginTop: 10 },
@@ -305,6 +311,7 @@ export default function NochesScreen() {
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
+              showCardMetadata
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -319,6 +326,7 @@ export default function NochesScreen() {
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
+              showCardMetadata
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -340,6 +348,7 @@ export default function NochesScreen() {
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={19}
+                  showCardMetadata
                   onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
                 />
                 {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}

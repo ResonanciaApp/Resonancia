@@ -22,6 +22,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 
 type Props = {
   session: Session;
@@ -39,6 +40,7 @@ type Props = {
   showAuthorAvatar?: boolean;
   showAuthor?: boolean;
   showMetaBelow?: boolean;
+  showCardMetadata?: boolean;
   titleFontSize?: number;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -83,7 +85,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, titleFontSize, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, titleFontSize, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -163,29 +165,47 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style,
       ]}
     >
-      <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
+      <View
+        style={[
+          styles.imageContainer,
+          { borderRadius: colors.radius - 4 },
+          showCardMetadata ? { height: width + 50, aspectRatio: undefined } : undefined,
+        ]}
+      >
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-        {locked && <LockStar />}
-        {showDuration && (
+        {showCardMetadata ? (
+          <SessionCardMetadataOverlay
+            categoryId={session.categoryId}
+            durationLabel={session.durationLabel}
+            title={session.title}
+            authorName={showAuthor ? authorName : undefined}
+            showDuration={showDuration}
+          />
+        ) : showDuration ? (
           <SessionDurationBadge
             label={session.durationLabel}
             style={styles.durationBadge}
             textStyle={styles.durationBadgeText}
           />
-        )}
+        ) : null}
+        {locked && <LockStar />}
       </View>
-      <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
-        {session.title}
-      </Text>
-      {!!authorName && (
-        <View style={styles.cardAuthorRow}>
-          {showAuthorAvatar && (
-            <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
-          )}
-          <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {authorName}
+      {!showCardMetadata && (
+        <>
+          <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+            {session.title}
           </Text>
-        </View>
+          {!!authorName && (
+            <View style={styles.cardAuthorRow}>
+              {showAuthorAvatar && (
+                <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
+              )}
+              <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+                {authorName}
+              </Text>
+            </View>
+          )}
+        </>
       )}
     </Pressable>
   );
@@ -369,7 +389,7 @@ const styles = StyleSheet.create({
   lockBadge: {
     position: "absolute",
     top: 8,
-    left: 8,
+    right: 8,
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,

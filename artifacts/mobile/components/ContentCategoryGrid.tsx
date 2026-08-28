@@ -12,6 +12,12 @@ const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
+const CARD_CATEGORY_COLORS: Record<string, string> = {
+  "meditaciones-guiadas": "#7251A3",
+  "sonidos-ancestrales": "#9A5A2C",
+  "musica-sonidos": "#287F83",
+  "__descanzo__": "#32708E",
+};
 const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
   "meditaciones-guiadas": 164,
   "sonidos-ancestrales": 158,
@@ -192,8 +198,16 @@ export function ContentCategoryGrid({
                 ]}
               >
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-                <View style={styles.iconWrap}>
-                  {category.icon(isDiscoverGrid ? CATEGORY_ICON_COLOR : undefined)}
+                <View
+                  style={[
+                    styles.iconWrap,
+                    horizontal && styles.horizontalIconCircle,
+                    horizontal && {
+                      backgroundColor: CARD_CATEGORY_COLORS[category.id] ?? category.color,
+                    },
+                  ]}
+                >
+                  {category.icon(horizontal || isDiscoverGrid ? CATEGORY_ICON_COLOR : undefined)}
                 </View>
                 <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
               </Pressable>
@@ -281,6 +295,10 @@ const styles = StyleSheet.create({
     width: 26,
     alignItems: "center",
     justifyContent: "center",
+  },
+  horizontalIconCircle: {
+    height: 26,
+    borderRadius: 13,
   },
   label: {
     fontSize: 15,

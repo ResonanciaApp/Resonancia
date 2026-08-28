@@ -10,6 +10,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { ZenStonesIcon } from "@/components/ZenStonesIcon";
@@ -25,6 +26,8 @@ export default function CategoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = (screenWidth - 40 - 14) / 2;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -100,9 +103,18 @@ export default function CategoryScreen() {
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
             {allSessions.length} Sesiones
           </Text>
-          {allSessions.map((s) => (
-            <SessionCard key={s.id} session={s} horizontal />
-          ))}
+          <View style={styles.sessionGrid}>
+            {allSessions.map((s) => (
+              <SessionCard
+                key={s.id}
+                session={s}
+                width={cardWidth}
+                style={{ marginRight: 0 }}
+                showCardMetadata
+                showAuthorAvatar={false}
+              />
+            ))}
+          </View>
           {allSessions.length === 0 && (
             <View style={styles.emptyState}>
               <Feather name="music" size={40} color={colors.border} />
@@ -175,6 +187,11 @@ const styles = StyleSheet.create({
   },
   sessionsSection: {
     gap: 0,
+  },
+  sessionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 14,
   },
   sectionTitle: {
     fontFamily: "Manrope",
