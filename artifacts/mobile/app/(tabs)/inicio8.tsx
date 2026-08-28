@@ -2200,7 +2200,7 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: 21,
     borderWidth: 2,
-    borderColor: "#50316F",
+    borderColor: "#50326E",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
@@ -2210,7 +2210,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(190,150,80,0.28)",
     borderWidth: 2,
-    borderColor: "#50316F",
+    borderColor: "#50326E",
   },
   inicio2HeroAvatarInitial: {
     color: "#FFFFFF",

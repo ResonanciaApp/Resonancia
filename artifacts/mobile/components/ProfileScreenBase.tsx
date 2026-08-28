@@ -804,7 +804,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
               ) : (
-                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: "#774544" }]}>
+                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: "#784576" }]}>
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
@@ -1496,7 +1496,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarImage: { width: 80, height: 80, borderRadius: 40, borderWidth: 2, borderColor: "#774544" },
+  avatarImage: { width: 80, height: 80, borderRadius: 40, borderWidth: 2, borderColor: "#784576" },
   avatarEditBadge: {
     position: "absolute",
     bottom: 0,

@@ -145,7 +145,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
-      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
     </Pressable>
   );

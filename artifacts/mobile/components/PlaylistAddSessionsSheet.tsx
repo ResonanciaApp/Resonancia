@@ -481,7 +481,7 @@ export function PlaylistAddSessionsSheet({
               >
                 {active && (
                     <LinearGradient
-                      colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#FFFFFF", "#F5F5F5"]}
+                      colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
                       start={{ x: 0, y: 0.5 }}
                       end={{ x: 1, y: 0.5 }}
                       style={StyleSheet.absoluteFill}

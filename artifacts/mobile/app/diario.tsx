@@ -192,7 +192,7 @@ export default function DiarioScreen() {
           ]}
         >
           <LinearGradient
-            colors={["#774544", "#50316f"]}
+            colors={["#784576", "#50326E"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={StyleSheet.absoluteFill}

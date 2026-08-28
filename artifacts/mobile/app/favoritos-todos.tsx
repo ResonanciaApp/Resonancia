@@ -52,7 +52,7 @@ function FavPill({
       onPress={onPress}
       style={({ pressed }) => [styles.pill, theme.id === "indigo" && styles.pillIndigo, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#774544", "#50316f"] : ["#F9F9F9", "#F9F9F9"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#F9F9F9", "#F9F9F9"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.pillText, sel && styles.pillTextSel, sel && theme.id === "indigo" && styles.pillTextIndigoSel]} numberOfLines={1}>
         {label}
       </Text>
