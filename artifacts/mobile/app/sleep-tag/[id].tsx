@@ -198,6 +198,20 @@ export default function SleepTagDetailScreen() {
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
+        <View style={styles.stickyHeaderRow}>
+          <View style={styles.stickyHeaderSpacer} />
+          <View style={styles.stickyTitleCol}>
+            <Text
+              style={[styles.stickyTitle, { color: colors.foreground }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
+            >
+              {tag.label}
+            </Text>
+          </View>
+          <View style={styles.stickyHeaderSpacer} />
+        </View>
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
@@ -212,14 +226,6 @@ export default function SleepTagDetailScreen() {
         >
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
-        <Text
-          style={[styles.stickyTitle, { color: colors.foreground }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.85}
-        >
-          {tag.label}
-        </Text>
       </Animated.View>
     </View>
   );
@@ -267,6 +273,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.1)",
   },
+  stickyHeaderRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  stickyHeaderSpacer: {
+    width: 40,
+  },
+  stickyTitleCol: {
+    flex: 1,
+    alignItems: "center",
+  },
   stickyTitle: {
     fontFamily: "Manrope",
     fontSize: 20,
@@ -274,7 +293,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",
-    alignSelf: "stretch",
   },
 
   grid: {
