@@ -65,6 +65,12 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
+function getLibraryTabSurface(sceneId: string): string {
+  if (sceneId === "tibet") return "rgba(0,0,0,0.15)";
+  if (sceneId === "indigo") return "rgba(42,40,64,0.65)";
+  return "rgba(255,255,255,0.05)";
+}
+
 type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
@@ -328,6 +334,7 @@ function AnimatedChipRow({
 
 // ── Fila de carpeta del usuario ───────────────────────────────────────────────
 function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPress: () => void; onLongPress?: () => void }) {
+  const { activeSceneId } = useSceneTheme();
   const nPl = (folder.playlistIds ?? []).length;
   const nMix = (folder.presetIds ?? []).length;
   const nSub = (folder.subFolderIds ?? []).length;
@@ -337,7 +344,7 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
     : `${nPl} playlist${nPl !== 1 ? "s" : ""}`;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={styles.userPlCover}>
+      <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
         <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
@@ -355,10 +362,11 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
 
 // ── Fila de carpeta de mezclas ────────────────────────────────────────────────
 function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onPress: () => void; onLongPress?: () => void }) {
+  const { activeSceneId } = useSceneTheme();
   const count = folder.presetIds.length;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={styles.userPlCover}>
+      <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
         <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
@@ -376,9 +384,10 @@ function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onP
 
 // ── Fila de playlist del usuario ─────────────────────────────────────────────
 function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPress: () => void; onLongPress?: () => void }) {
+  const { activeSceneId } = useSceneTheme();
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={styles.userPlCover}>
+      <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
         {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
           <Image source={getDefaultPlaylistCover(pl.id)} style={styles.userPlCover} contentFit="cover" />
         ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
@@ -886,10 +895,11 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
 
 // ── Fila de carpeta de favoritos ──────────────────────────────────────────────
 function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onPress: () => void; onLongPress?: () => void }) {
+  const { activeSceneId } = useSceneTheme();
   const count = folder.sessionIds.length;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={styles.userPlCover}>
+      <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
         <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
@@ -915,6 +925,8 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   gradient: readonly string[];
 }) {
   const { openGeometrix } = useGeometrixPanel();
+  const { activeSceneId } = useSceneTheme();
+  const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const ITEMS = [
     { icon: "list" as const,     title: "Crear una Playlist",        sub: "Crea una playlist con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
@@ -929,7 +941,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
           <Pressable key={it.title} style={({ pressed }) => [styles.sheetRow, { opacity: pressed ? 0.7 : 1 }]} onPress={it.onPress}>
-            <View style={styles.sheetIcon}>
+            <View style={[styles.sheetIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name={it.icon} size={20} color={GOLD} />
             </View>
             <View style={{ flex: 1 }}>
@@ -1096,6 +1108,7 @@ export function BibliotecaScreen({
   const { open: openDrawer } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
   const iconPlaceholderColor = "#fefefe";
+  const libraryTabSurface = getLibraryTabSurface(activeSceneId);
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
@@ -1382,7 +1395,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => setNombreVisible(true)}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="list" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
@@ -1391,7 +1404,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => openMixer()}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="sliders" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
@@ -1400,7 +1413,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => openGeometrix()}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="hexagon" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una geometría</Text>
@@ -1409,7 +1422,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="plus" size={28} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
@@ -1418,7 +1431,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => setNombreCarpetaVisible(true)}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="folder" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
@@ -1528,7 +1541,7 @@ export function BibliotecaScreen({
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => setNombreCarpetaVisible(true)}
           >
-            <View style={styles.addResonadorIcon}>
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
               <Feather name="folder" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
@@ -1739,7 +1752,7 @@ export function BibliotecaScreen({
           style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1, paddingHorizontal: H_PAD }]}
           onPress={() => setNombreCarpetaFavVisible(true)}
         >
-          <View style={styles.addResonadorIcon}>
+          <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
             <Feather name="folder" size={25} color={iconPlaceholderColor} />
           </View>
           <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
@@ -2462,7 +2475,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     alignItems: "center",
     justifyContent: "center",
   },
