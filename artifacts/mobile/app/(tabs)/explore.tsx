@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import React, { useState, useMemo } from "react";
 import {
   Dimensions,
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -279,6 +280,17 @@ export default function ExploreScreen() {
 
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const exploreScrollY = React.useRef(new Animated.Value(0)).current;
+  const compactTitleOpacity = exploreScrollY.interpolate({
+    inputRange: [0, 42],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const largeTitleOpacity = exploreScrollY.interpolate({
+    inputRange: [0, 24, 42],
+    outputRange: [1, 1, 0],
+    extrapolate: "clamp",
+  });
 
 
   function handleSessionPress(s: Session) {
@@ -345,10 +357,26 @@ export default function ExploreScreen() {
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        {/* ── Header fijo — título + barra de búsqueda sticky ── */}
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+        {/* ── Header sticky desde el inicio — título + accesos ── */}
+        <View
+          style={[
+            styles.fixedHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: activeTheme.gradient[0] as string,
+            },
+          ]}
+        >
           <View style={styles.titleRow}>
-            <Text style={styles.pageTitle}>Descubrir</Text>
+            <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
+              Descubrir
+            </Animated.Text>
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
+            >
+              <Text style={styles.compactPageTitle}>Descubrir</Text>
+            </Animated.View>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -363,22 +391,25 @@ export default function ExploreScreen() {
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
-        </View>
-
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16 }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* ── Accesos por contenido ── */}
           <ContentCategoryGrid
-            marginTop={-9}
+            marginTop={7}
             marginBottom={0}
             hiddenIds={["__mezcla__", "__geometrix__"]}
             horizontal
           />
+        </View>
 
+        <Animated.ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
+            { useNativeDriver: true },
+          )}
+          scrollEventThrottle={16}
+        >
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
             <SessionCarousel
@@ -440,7 +471,7 @@ export default function ExploreScreen() {
             </ScrollView>
           </View>
           )}
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
 
       <ContextSearchModal
@@ -467,7 +498,9 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10 },
-  titleRow:     { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
+  titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
+  compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
+  compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
     width: 40,
     height: 40,
