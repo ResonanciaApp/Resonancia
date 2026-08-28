@@ -33,7 +33,7 @@ export function QuickAccessSection() {
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(42,40,64,0.40)"
       : "rgba(255,255,255,0.05)";
 
   const handlePress = useCallback((id: AccessId) => {
