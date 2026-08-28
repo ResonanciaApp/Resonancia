@@ -397,7 +397,7 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
           <ContentCategoryGrid
-            marginTop={7}
+            marginTop={4}
             marginBottom={0}
             hiddenIds={["__mezcla__", "__geometrix__"]}
             horizontal
