@@ -50,7 +50,8 @@ export function SessionCardMetadataOverlay({
   authorAvatar,
   titleFontSize,
   showDuration = true,
-  durationBottom = 65,
+  // Deja un poco más de aire cuando el título ocupa dos líneas.
+  durationBottom = 70,
 }: Props) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
 
