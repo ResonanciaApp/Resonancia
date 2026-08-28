@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 20,
     lineHeight: 23,
     fontWeight: "700",
     letterSpacing: 0.2,
