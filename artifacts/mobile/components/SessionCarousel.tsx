@@ -27,22 +27,22 @@ const CATEGORY_PILL_META: Record<string, {
 }> = {
   "meditaciones-guiadas": {
     label: "Meditación",
-    color: "#C8A6FF",
+    color: "#7251A3",
     icon: require("@/assets/images/cat-meditaciones.png"),
   },
   "musica-sonidos": {
     label: "Música",
-    color: "#6FD7D8",
+    color: "#287F83",
     icon: require("@/assets/images/cat-musica.png"),
   },
   descanso: {
     label: "Dormir",
-    color: "#8ED9FF",
+    color: "#32708E",
     icon: require("@/assets/images/cat-luna.png"),
   },
   "sonidos-ancestrales": {
     label: "Sonoterapia",
-    color: "#E7A36E",
+    color: "#9A5A2C",
     icon: require("@/assets/images/cat-sesiones.png"),
   },
 };
@@ -250,21 +250,21 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   categoryCircle: {
-    width: 21,
-    height: 21,
-    borderRadius: 10.5,
+    width: 19,
+    height: 19,
+    borderRadius: 9.5,
     alignItems: "center",
     justifyContent: "center",
   },
   categoryIcon: {
-    width: 14,
-    height: 14,
+    width: 12,
+    height: 12,
     tintColor: "#FFFFFF",
   },
   categoryLabel: {
     flexShrink: 1,
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "600",
     color: "#FFFFFF",
   },
