@@ -1862,20 +1862,6 @@ export default function HomeScreen2({
             <ToolsGrid replaceVideosWithLibrary />
           </View>
         )}
-        {isInicio2 && (
-          <SessionCarousel
-            title="Recién subidas"
-            sessions={recentSessions}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={RECENT_CARD_W}
-            titleSize={19}
-            titleSpacing={16}
-            showCardMetadata
-          />
-        )}
         {isInicio2 && featuredHoy && (
           <View style={[styles.section, { marginBottom: 0 }]}>
             <Text style={styles.sectionTitle}>Para este momento</Text>
