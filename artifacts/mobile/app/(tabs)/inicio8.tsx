@@ -93,7 +93,6 @@ import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
 
@@ -1875,13 +1874,6 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={16}
             showCardMetadata
-          />
-        )}
-        {isInicio2 && (
-          <QuickAccessSection
-            includeExtras
-            replaceLibraryWithVideos
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
         {isInicio2 && featuredHoy && (
