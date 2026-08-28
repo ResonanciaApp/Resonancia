@@ -257,6 +257,12 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const HEADER_BORDER_THRESHOLD_PX = 8;
   const headerBorderActiveRef = useRef(false);
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
+  const profileTitleCompactAnim = useRef(new Animated.Value(0)).current;
+  const profileTitleCompactRef = useRef(false);
+  const profileLargeTitleOpacity = profileTitleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
@@ -265,6 +271,15 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       Animated.timing(headerBorderAnim, {
         toValue: shouldShowBorder ? 1 : 0,
         duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+    const shouldCompact = dedicated && y > HEADER_BORDER_THRESHOLD_PX;
+    if (shouldCompact !== profileTitleCompactRef.current) {
+      profileTitleCompactRef.current = shouldCompact;
+      Animated.timing(profileTitleCompactAnim, {
+        toValue: shouldCompact ? 1 : 0,
+        duration: 450,
         useNativeDriver: true,
       }).start();
     }
@@ -684,12 +699,21 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
             />
           )}
-          <Text style={[
+          <Animated.Text style={[
             styles.stickyTitle,
             dedicated && styles.stickyTitleDedicated,
             !dedicated && !asTab && styles.stickyTitleBiblioteca,
             asTab && styles.stickyTitleTab,
-          ]}>{dedicated ? "Perfil" : "Biblioteca"}</Text>
+            dedicated && { opacity: profileLargeTitleOpacity },
+          ]}>{dedicated ? "Perfil" : "Biblioteca"}</Animated.Text>
+          {dedicated && (
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.compactTitleOverlay, { opacity: profileTitleCompactAnim }]}
+            >
+              <Text style={styles.compactProfileTitle}>Perfil</Text>
+            </Animated.View>
+          )}
           {dedicated ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               <Pressable hitSlop={8} onPress={openEdit}>
@@ -1265,6 +1289,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.035)",
   },
   stickyHeaderRow: {
+    position: "relative",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -1288,6 +1313,20 @@ const styles = StyleSheet.create({
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   stickyTitleDedicated: { fontSize: 31, textAlign: "left", marginLeft: 0, transform: [{ translateY: 6 }] },
+  compactTitleOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  compactProfileTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#F4F4F4",
+    letterSpacing: 0.3,
+    textAlign: "center",
+    transform: [{ translateY: 4 }],
+  },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "700", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libActionsPill: {

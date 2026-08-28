@@ -280,17 +280,23 @@ export default function ExploreScreen() {
 
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const exploreScrollY = React.useRef(new Animated.Value(0)).current;
-  const compactTitleOpacity = exploreScrollY.interpolate({
-    inputRange: [0, 42],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
+  const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
+  const titleCompactRef = React.useRef(false);
+  const compactTitleOpacity = titleCompactAnim;
+  const largeTitleOpacity = titleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
   });
-  const largeTitleOpacity = exploreScrollY.interpolate({
-    inputRange: [0, 24, 42],
-    outputRange: [1, 1, 0],
-    extrapolate: "clamp",
-  });
+  const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const shouldCompact = event.nativeEvent.contentOffset.y > 8;
+    if (shouldCompact === titleCompactRef.current) return;
+    titleCompactRef.current = shouldCompact;
+    Animated.timing(titleCompactAnim, {
+      toValue: shouldCompact ? 1 : 0,
+      duration: 450,
+      useNativeDriver: true,
+    }).start();
+  }, [titleCompactAnim]);
 
 
   function handleSessionPress(s: Session) {
@@ -404,10 +410,7 @@ export default function ExploreScreen() {
           contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
-            { useNativeDriver: true },
-          )}
+          onScroll={handleExploreScroll}
           scrollEventThrottle={16}
         >
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}

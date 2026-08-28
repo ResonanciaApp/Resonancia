@@ -282,22 +282,13 @@ export default function DescansoScreen() {
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
-  const scrollY      = useRef(new Animated.Value(0)).current;
-  const [stickyVisible, setStickyVisible] = useState(false);
-  const stickyAnim = useRef(new Animated.Value(0)).current;
-  const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
-  const [headerH,     setHeaderH]     = useState(60);
-  const [tabsMounted, setTabsMounted] = useState(false);
-  useEffect(() => {
-    if (stickyVisible) {
-      setTabsMounted(true);
-      Animated.timing(stickyAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start();
-    } else {
-      Animated.timing(stickyAnim, { toValue: 0, duration: 250, useNativeDriver: true }).start(({ finished }) => {
-        if (finished) setTabsMounted(false);
-      });
-    }
-  }, [stickyVisible]);
+  const titleCompactAnim = useRef(new Animated.Value(0)).current;
+  const titleCompactRef = useRef(false);
+  const compactTitleOpacity = titleCompactAnim;
+  const largeTitleOpacity = titleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
 
   // ── Borde del sticky header (tabs): se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
@@ -305,6 +296,29 @@ export default function DescansoScreen() {
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
+  const handleScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const shouldCompact = y > 8;
+    if (shouldCompact !== titleCompactRef.current) {
+      titleCompactRef.current = shouldCompact;
+      Animated.timing(titleCompactAnim, {
+        toValue: shouldCompact ? 1 : 0,
+        duration: 450,
+        useNativeDriver: true,
+      }).start();
+    }
+    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+    const progress = scrollable > 0 ? y / scrollable : 0;
+    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+    if (shouldShowBorder !== headerBorderActiveRef.current) {
+      headerBorderActiveRef.current = shouldShowBorder;
+      Animated.timing(headerBorderAnim, {
+        toValue: shouldShowBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [headerBorderAnim, titleCompactAnim]);
 
   const {
     currentSession,
@@ -421,39 +435,14 @@ export default function DescansoScreen() {
       <NightSky />
 
       <View style={styles.contentShift}>
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 2 }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onLayout={(e) => {
-            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(_w, h) => {
-            scrollContentHeightRef.current = h;
-          }}
-          onScroll={(e) => {
-            const y = e.nativeEvent.contentOffset.y;
-            scrollY.setValue(y);
-            const visible = y > HERO_H * 0.5565;
-            if (visible !== stickyVisible) setStickyVisible(visible);
-            const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-            const progress = scrollable > 0 ? y / scrollable : 0;
-            const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-            if (shouldShowBorder !== headerBorderActiveRef.current) {
-              headerBorderActiveRef.current = shouldShowBorder;
-              Animated.timing(headerBorderAnim, {
-                toValue: shouldShowBorder ? 1 : 0,
-                duration: 300,
-                useNativeDriver: true,
-              }).start();
-            }
-          }}
-        >
-        {/* ── Hero ── */}
-        <View style={styles.hero}>
-          <View style={styles.heroTitleRow}>
-            <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
+        <View style={[styles.fixedHeader, { paddingTop: topPad + 2, backgroundColor: bgGradient[0] }]}>
+          <View style={styles.titleRow}>
+            <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
+              Dormir
+            </Animated.Text>
+            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}>
+              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Dormir</Text>
+            </Animated.View>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -465,28 +454,39 @@ export default function DescansoScreen() {
               <Feather name="search" size={24} color={colors.foreground} />
             </Pressable>
           </View>
+          <View style={styles.sleepTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabGrid}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {sleepCollections.map((tab) => (
+                <SleepPill
+                  key={tab.id}
+                  sel={false}
+                  label={tab.label}
+                  onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
         </View>
 
-        {/* ── Tabs de modo ── */}
-        <View onLayout={(e) => setTabsOffsetY(e.nativeEvent.layout.y)} style={{ marginTop: 9 }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.tabGrid}
-            contentContainerStyle={styles.tabGridContent}
-          >
-            {sleepCollections.map((tab) => (
-              <SleepPill
-                key={tab.id}
-                sel={false}
-                label={tab.label}
-                onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onLayout={(e) => {
+            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(_w, h) => {
+            scrollContentHeightRef.current = h;
+          }}
+          onScroll={handleScroll}
+        >
         <View style={{ marginTop: -25 }}>
           {recentInDescanso.length > 0 && (
             <SessionCarousel
@@ -530,56 +530,6 @@ export default function DescansoScreen() {
         </View>
 
         </ScrollView>
-
-        {/* ── Sticky header (título) ── */}
-        <Animated.View
-          style={[
-            styles.stickyHeader,
-            {
-              paddingTop: topPad + 10,
-              opacity: stickyAnim,
-              backgroundColor: bgGradient[0],
-            },
-          ]}
-          pointerEvents={stickyVisible ? "auto" : "none"}
-          onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
-        >
-          <View style={styles.stickyTitleRow}>
-            <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "left" }]}>Dormir</Text>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              hitSlop={10}
-              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Dormir"
-              testID="sleep-sticky-search-button"
-            >
-              <Feather name="search" size={22} color={colors.foreground} />
-            </Pressable>
-          </View>
-        </Animated.View>
-
-        {/* ── Tabs sticky (se pegan debajo del título) ── */}
-        {tabsMounted && (
-          <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={[styles.tabGrid, { marginBottom: 13 }]}
-              contentContainerStyle={styles.tabGridContent}
-            >
-              {sleepCollections.map((tab) => (
-                <SleepPill
-                  key={tab.id}
-                  sel={false}
-                  label={tab.label}
-                  onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
-                />
-              ))}
-            </ScrollView>
-            <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
-          </Animated.View>
-        )}
       </View>
 
       <NightTimerSheet
@@ -936,35 +886,34 @@ const styles = StyleSheet.create({
   sleepPillTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
 
   /* Sticky header */
-  stickyHeader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
+  fixedHeader: {
     zIndex: 20,
-    paddingBottom: 4,
     backgroundColor: "#0D0512",
   },
-  stickyHeaderTitle: {
+  titleRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    paddingTop: 7,
+    paddingBottom: 10,
+  },
+  compactTitleOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  compactPageTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
+    textAlign: "center",
   },
-  stickyTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: H_PAD,
-    width: "100%",
-  },
-  stickyTabs: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    zIndex: 19,
-    backgroundColor: "#0D0512",
-    paddingTop: 24,
-    paddingBottom: 0,
+  sleepTabsHeader: {
+    marginTop: 9,
+    paddingBottom: 13,
   },
   stickyTabsBorder: {
     position: "absolute",
