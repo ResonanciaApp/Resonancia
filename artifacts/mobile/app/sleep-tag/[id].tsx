@@ -28,6 +28,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useCatalog } from "@/context/CatalogContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -40,10 +41,16 @@ export default function SleepTagDetailScreen() {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  const { activeSceneId } = useSceneTheme();
   useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const profileSectionBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
 
   const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
 
@@ -74,8 +81,7 @@ export default function SleepTagDetailScreen() {
             style={({ pressed }) => [
               styles.backBtn,
               {
-                backgroundColor: colors.card,
-                borderColor: "rgba(212,175,55,0.2)",
+                backgroundColor: profileSectionBackground,
                 opacity: pressed ? 0.7 : 1,
                 top: topPad + 8,
               },
@@ -177,15 +183,14 @@ const styles = StyleSheet.create({
     left: H_PAD,
     width: 36,
     height: 36,
-    borderRadius: 11,
-    borderWidth: 1,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
   },
   pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 20,
+    lineHeight: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
