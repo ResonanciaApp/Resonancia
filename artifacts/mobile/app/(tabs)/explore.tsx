@@ -399,7 +399,7 @@ export default function ExploreScreen() {
           <ContentCategoryGrid
             marginTop={4}
             marginBottom={0}
-            hiddenIds={["__mezcla__", "__geometrix__"]}
+            hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
             horizontal
           />
         </View>
