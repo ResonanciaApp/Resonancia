@@ -23,9 +23,12 @@ const PREVIEW_COUNT = 10;
 
 function timeAgo(iso: string | Date): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 1) return "ahora";
-  if (mins < 60) return `${mins} min`;
-  return `${Math.floor(mins / 60)} h`;
+  if (mins < 1) return "Ahora";
+  if (mins < 60) return `Hace ${mins} ${mins === 1 ? "minuto" : "minutos"}`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `Hace ${hours} ${hours === 1 ? "hora" : "horas"}`;
+  const days = Math.floor(hours / 24);
+  return `Hace ${days} ${days === 1 ? "día" : "días"}`;
 }
 
 function AuthorAvatar({ uri, name }: { uri?: string | null; name?: string | null }) {
@@ -111,17 +114,17 @@ export function AlmaCommunitySection() {
               >
                 <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} />
                 <View style={styles.msgBody}>
-                  <Text style={[styles.msgAuthor, { color: colors.primary }]}>
-                    {msg.authorName ?? "Anónimo"}
-                  </Text>
-                  <Text style={[styles.msgText, { color: colors.foreground }]} numberOfLines={2}>
-                    {msg.content}
-                  </Text>
-                  <View style={styles.msgMeta}>
-                    <Text style={[styles.msgTime, { color: colors.mutedForeground }]}>
+                  <View style={styles.msgHeader}>
+                    <Text style={styles.msgTime}>
                       {timeAgo(msg.createdAt)}
                     </Text>
+                    <Text style={styles.msgAuthor}>
+                      {msg.authorName ?? "Anónimo"}
+                    </Text>
                   </View>
+                  <Text style={styles.msgText} numberOfLines={2}>
+                    {msg.content}
+                  </Text>
                 </View>
               </Pressable>
             );
@@ -199,10 +202,10 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   msgBody: { flex: 1 },
-  msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },
-  msgText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, opacity: 0.82 },
-  msgMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5 },
-  msgTime: { fontFamily: "Manrope", fontSize: 10 },
+  msgHeader: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 4 },
+  msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
+  msgText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#F9F9F9" },
+  msgTime: { fontFamily: "Manrope", fontSize: 10, color: "#F4F4F4" },
 
   cargarMasBtn: {
     alignItems: "center",
