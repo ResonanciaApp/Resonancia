@@ -1,0 +1,186 @@
+## Planificación — Nueva sección “Dormir”
+
+Quiero transformar **Dormir** en una **super categoría** dentro de la app.
+
+Las categorías actuales se mantienen independientes:
+
+* Sonoterapia
+* Música
+* Meditaciones
+* Charlas
+* Historias
+
+**Dormir será una sección especial que reúne contenido de estas categorías mediante tags.**
+
+### 1. Tags especiales para Dormir
+
+Crearemos tags específicos que permitirán determinar qué sesiones deben aparecer dentro de Dormir.
+
+Los tags serán:
+
+* Música para dormir
+* Meditaciones para dormir
+* Historias para dormir
+* Sonidos para dormir
+* Paisajes sonoros
+* Para niños
+* Sonidos de lluvia
+* Ruido
+
+Cuando creemos una sesión, podremos asignarle uno o más de estos tags.
+
+### 2. Una sesión puede tener múltiples tags
+
+Una misma sesión puede tener **más de un tag de Dormir**.
+
+Por ejemplo, una meditación podría tener:
+
+* `Meditaciones para dormir`
+* `Para niños`
+
+En ese caso, la sesión aparecerá en **ambos carruseles** dentro de Dormir.
+
+Por lo tanto, los tags funcionan de manera independiente entre sí.
+
+---
+
+### 3. ¿Qué ocurre cuando se asigna un tag?
+
+Cuando una sesión recibe un tag de Dormir, ocurren dos cosas:
+
+**A. El tag genera un Tab en Dormir**
+
+Por ejemplo:
+
+`Música para dormir`
+
+**B. El tag genera un carrusel**
+
+El carrusel contiene todas las sesiones que tienen ese tag.
+
+Por ejemplo:
+
+**Música para dormir**
+
+[Sesión 1] [Sesión 2] [Sesión 3] [Sesión 4]
+
+Si posteriormente se crea una nueva sesión con el mismo tag, esta se incorpora automáticamente al carrusel.
+
+---
+
+### 4. Los Tabs de Dormir son accesos a una pantalla filtrada
+
+**Importante:** los tabs de Dormir **NO funcionan como filtros dentro de la propia pantalla de Dormir**.
+
+Cuando el usuario toca un tab, debe ser llevado a una **pantalla independiente que muestra todas las sesiones que tienen ese tag**.
+
+Por ejemplo:
+
+El usuario está en:
+
+**Dormir**
+
+Tabs:
+
+`Música para dormir | Meditaciones para dormir | Historias para dormir | ...`
+
+Si toca:
+
+**Música para dormir**
+
+→ Se abre una nueva pantalla/listado de **Música para dormir**
+
+→ Esta pantalla muestra **todas las sesiones que tengan el tag “Música para dormir”**, no solamente las cards que estaban visibles en el carrusel de Dormir.
+
+Esto permite que el carrusel de Dormir funcione como una **vista previa / descubrimiento**, mientras que el tab permite acceder al **catálogo completo de esa colección**.
+
+---
+
+### 5. Estructura de la pantalla Dormir
+
+La pantalla Dormir:
+
+* No tendrá un tab **“Todos”**.
+* No tendrá ningún tab seleccionado por defecto.
+* Los tabs serán generados dinámicamente según los tags que estén siendo utilizados.
+* El orden de los tabs seguirá el orden definido para los tags.
+
+Por ejemplo:
+
+`Música para dormir | Meditaciones para dormir | Historias para dormir | Sonidos para dormir | Paisajes sonoros | Para niños | Sonidos de lluvia | Ruido`
+
+Si todavía no existe ninguna sesión con un determinado tag, ese tab **no aparecerá**.
+
+Cuando exista al menos una sesión con ese tag, el tab aparecerá automáticamente.
+
+---
+
+### 6. Ejemplo completo
+
+Creo una sesión:
+
+**“Meditación para conciliar el sueño”**
+
+Categoría:
+
+**Meditaciones**
+
+Tags:
+
+* `Meditaciones para dormir`
+* `Para niños`
+
+Como consecuencia:
+
+**En Dormir:**
+
+* Aparece dentro del carrusel **Meditaciones para dormir**.
+* Aparece dentro del carrusel **Para niños**.
+
+**Además:**
+
+Los tabs **Meditaciones para dormir** y **Para niños** estarán disponibles.
+
+Si el usuario toca **Meditaciones para dormir**, será llevado a una pantalla donde podrá ver **todas las sesiones que tengan ese tag**, independientemente de la categoría original de cada sesión.
+
+---
+
+### 7. Lógica general
+
+La lógica sería:
+
+**SESIÓN**
+
+↓
+
+**Categoría original**
+Música / Meditaciones / Sonoterapia / Historias / Charlas
+
+*
+
+**Uno o más Tags de Dormir**
+
+↓
+
+**Pantalla Dormir**
+
+→ Genera el Tab correspondiente
+→ Genera el carrusel correspondiente
+→ La sesión aparece en todos los carruseles cuyos tags tenga
+
+↓
+
+**Al tocar un Tab**
+
+→ Se abre una pantalla/listado independiente
+→ Muestra **todas las sesiones con ese tag**
+
+En resumen:
+
+**Dormir = hub de descubrimiento**
+
+**Carruseles = preview del contenido**
+
+**Tabs = acceso al catálogo completo de cada colección**
+
+**Tags = sistema que conecta y organiza todo el contenido**
