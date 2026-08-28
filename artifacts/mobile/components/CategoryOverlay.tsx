@@ -22,6 +22,7 @@ import DescanzoScreen from "@/app/(tabs)/descanzo";
 const LazyMeditaciones = React.lazy(() => import("@/app/category/meditaciones-guiadas"));
 const LazySonidos      = React.lazy(() => import("@/app/category/sonidos-ancestrales"));
 const LazyMusica       = React.lazy(() => import("@/app/category/musica-sonidos"));
+const LazyCategory      = React.lazy(() => import("@/app/category/[id]"));
 const LazySessionDetail = React.lazy(() => import("@/app/session/[id]"));
 const LazyMezcla        = React.lazy(() => import("@/app/mezcla/[id]"));
 const LazyTema          = React.lazy(() => import("@/app/tema/[id]"));
@@ -41,6 +42,13 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
   if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
   if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
+  const category = route.match(/^\/category\/(.+)$/);
+  if (category) {
+    return {
+      node: <LazyCategory categoryId={decodeURIComponent(category[1])} />,
+      eager: false,
+    };
+  }
   const b = route.match(/^\/busqueda(?:\?tiempo=(.+))?$/);
   if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
   if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };

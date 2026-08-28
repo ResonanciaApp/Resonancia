@@ -43,6 +43,17 @@ export const CATEGORIES: Category[] = [
     primary: true,
   },
   {
+    id: "ambientales",
+    title: "Ambientales",
+    subtitle: "Sonidos de la naturaleza y el mundo",
+    icon: "leaf",
+    iconFamily: "MaterialCommunityIcons",
+    sessionCount: 0,
+    color: "#78A982",
+    gradient: ["#274A34", "#12251A"],
+    primary: true,
+  },
+  {
     id: "descanso",
     title: "Dormir",
     subtitle: "Sonidos y relatos para acompañar tu noche",

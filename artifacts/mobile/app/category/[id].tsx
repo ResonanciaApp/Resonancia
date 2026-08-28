@@ -22,8 +22,9 @@ import { CATEGORIES } from "@/data/categories";
 import { getSessionsByCategory } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
-export default function CategoryScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function CategoryScreen({ categoryId }: { categoryId?: string } = {}) {
+  const { id: routeId } = useLocalSearchParams<{ id: string }>();
+  const id = categoryId ?? routeId;
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width: screenWidth } = useWindowDimensions();

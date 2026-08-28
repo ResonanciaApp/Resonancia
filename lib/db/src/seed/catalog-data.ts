@@ -47,6 +47,19 @@ export const SEED_CATEGORIES: InsertCatalogCategory[] = [
     "sortOrder": 2
   },
   {
+    "id": "ambientales",
+    "title": "Ambientales",
+    "subtitle": "Sonidos de la naturaleza y el mundo",
+    "icon": "leaf",
+    "sessionCount": 0,
+    "color": "#78A982",
+    "gradientStart": "#274A34",
+    "gradientEnd": "#12251A",
+    "isPrimary": true,
+    "sortOrder": 3,
+    "iconFamily": "MaterialCommunityIcons"
+  },
+  {
     "id": "historias",
     "title": "Historias",
     "subtitle": "Relatos que acompañan, inspiran y transforman",

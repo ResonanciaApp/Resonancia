@@ -16,6 +16,7 @@ const CARD_CATEGORY_COLORS: Record<string, string> = {
   "meditaciones-guiadas": "#7251A3",
   "sonidos-ancestrales": "#9A5A2C",
   "musica-sonidos": "#287F83",
+  "ambientales": "#3F704D",
   "__descanzo__": "#32708E",
   "historias": "#704886",
   "charlas": "#8D5135",
@@ -24,6 +25,7 @@ const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
   "meditaciones-guiadas": 164,
   "sonidos-ancestrales": 158,
   "musica-sonidos": 126,
+  "ambientales": 144,
   "__descanzo__": 120,
   "historias": 130,
   "charlas": 118,
@@ -96,6 +98,18 @@ export function ContentCategoryGrid({
                 style={{ width: horizontal ? 20 : 26, height: horizontal ? 20 : 26 }}
                 contentFit="contain"
                 tintColor={color}
+              />
+            ),
+          },
+          {
+            id: "ambientales",
+            label: "Ambientales",
+            color: "#86C49A",
+            icon: (color?: string) => (
+              <MaterialCommunityIcons
+                name="leaf"
+                size={horizontal ? 20 : 24}
+                color={color ?? "#86C49A"}
               />
             ),
           },

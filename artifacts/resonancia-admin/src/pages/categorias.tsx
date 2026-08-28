@@ -34,9 +34,12 @@ type FormState = {
   title: string;
   subtitle: string;
   icon: string;
+  iconFamily: string;
   color: string;
   gradientStart: string;
   gradientEnd: string;
+  isPrimary: boolean;
+  sortOrder: number;
 };
 
 const EMPTY_FORM: FormState = {
@@ -44,9 +47,12 @@ const EMPTY_FORM: FormState = {
   title: "",
   subtitle: "",
   icon: "sparkles",
+  iconFamily: "MaterialCommunityIcons",
   color: "#D4AF37",
   gradientStart: "#1B060F",
   gradientEnd: "#27070E",
+  isPrimary: false,
+  sortOrder: 0,
 };
 
 function Field({
@@ -104,6 +110,12 @@ function CreateDialog() {
           />
           <Field label="Icono" value={form.icon} onChange={set("icon")} />
           <Field
+            label="Familia del icono"
+            value={form.iconFamily}
+            onChange={set("iconFamily")}
+            placeholder="MaterialCommunityIcons"
+          />
+          <Field
             label="Título"
             value={form.title}
             onChange={set("title")}
@@ -126,6 +138,28 @@ function CreateDialog() {
             value={form.gradientEnd}
             onChange={set("gradientEnd")}
           />
+          <Field
+            label="Orden"
+            type="number"
+            min={0}
+            value={String(form.sortOrder)}
+            onChange={(e) =>
+              setForm((current) => ({
+                ...current,
+                sortOrder: Math.max(0, Number.parseInt(e.target.value, 10) || 0),
+              }))
+            }
+          />
+          <label className="col-span-2 flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.isPrimary}
+              onChange={(e) =>
+                setForm((current) => ({ ...current, isPrimary: e.target.checked }))
+              }
+            />
+            Categoría principal
+          </label>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
@@ -134,7 +168,12 @@ function CreateDialog() {
           <Button
             disabled={!valid || mutation.isPending}
             onClick={() =>
-              mutation.mutate({ data: form as AdminCategoryInput })
+              mutation.mutate({
+                data: {
+                  ...form,
+                  iconFamily: form.iconFamily.trim() || null,
+                } as AdminCategoryInput,
+              })
             }
           >
             Crear
@@ -151,7 +190,12 @@ function EditDialog({ category }: { category: CatalogCategory }) {
   const [title, setTitle] = useState(category.title);
   const [subtitle, setSubtitle] = useState(category.subtitle);
   const [icon, setIcon] = useState(category.icon);
+  const [iconFamily, setIconFamily] = useState(category.iconFamily ?? "");
   const [color, setColor] = useState(category.color);
+  const [gradientStart, setGradientStart] = useState(category.gradientStart);
+  const [gradientEnd, setGradientEnd] = useState(category.gradientEnd);
+  const [isPrimary, setIsPrimary] = useState(category.isPrimary);
+  const [sortOrder, setSortOrder] = useState(category.sortOrder);
   const mutation = useUpdateAdminCategory({
     mutation: {
       onSuccess: () => {
@@ -196,7 +240,40 @@ function EditDialog({ category }: { category: CatalogCategory }) {
               value={color}
               onChange={(e) => setColor(e.target.value)}
             />
+            <Field
+              label="Familia del icono"
+              value={iconFamily}
+              onChange={(e) => setIconFamily(e.target.value)}
+              placeholder="MaterialCommunityIcons"
+            />
+            <Field
+              label="Orden"
+              type="number"
+              min={0}
+              value={String(sortOrder)}
+              onChange={(e) =>
+                setSortOrder(Math.max(0, Number.parseInt(e.target.value, 10) || 0))
+              }
+            />
+            <Field
+              label="Gradiente inicio"
+              value={gradientStart}
+              onChange={(e) => setGradientStart(e.target.value)}
+            />
+            <Field
+              label="Gradiente fin"
+              value={gradientEnd}
+              onChange={(e) => setGradientEnd(e.target.value)}
+            />
           </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={isPrimary}
+              onChange={(e) => setIsPrimary(e.target.checked)}
+            />
+            Categoría principal
+          </label>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
@@ -211,7 +288,12 @@ function EditDialog({ category }: { category: CatalogCategory }) {
                   title: title.trim(),
                   subtitle: subtitle.trim(),
                   icon: icon.trim(),
+                  iconFamily: iconFamily.trim() || null,
                   color: color.trim(),
+                  gradientStart: gradientStart.trim(),
+                  gradientEnd: gradientEnd.trim(),
+                  isPrimary,
+                  sortOrder,
                 },
               })
             }
@@ -268,7 +350,7 @@ export default function CategoriasPage() {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">
-                    {c.sessionCount} sesiones · {c.id}
+                    {c.sessionCount} sesiones · orden {c.sortOrder} · {c.id}
                   </span>
                   <EditDialog category={c} />
                 </div>
