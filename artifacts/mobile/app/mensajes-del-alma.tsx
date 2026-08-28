@@ -239,11 +239,11 @@ export default function MensajesDelAlmaScreen() {
                     <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} size={40} />
                     <View style={styles.msgRight}>
                       <View style={styles.msgHeader}>
-                        <Text style={styles.msgTime}>
-                          {timeAgo(msg.createdAt)}
-                        </Text>
                         <Text style={styles.msgAuthor}>
                           {msg.authorName ?? "Anónimo"}
+                        </Text>
+                        <Text style={styles.msgTime}>
+                          {timeAgo(msg.createdAt)}
                         </Text>
                       </View>
                       <Text style={styles.msgContent}>

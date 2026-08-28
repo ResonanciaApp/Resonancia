@@ -115,11 +115,11 @@ export function AlmaCommunitySection() {
                 <AuthorAvatar uri={resolveAvatarUrl(msg.authorAvatarUrl)} name={msg.authorName} />
                 <View style={styles.msgBody}>
                   <View style={styles.msgHeader}>
-                    <Text style={styles.msgTime}>
-                      {timeAgo(msg.createdAt)}
-                    </Text>
                     <Text style={styles.msgAuthor}>
                       {msg.authorName ?? "Anónimo"}
+                    </Text>
+                    <Text style={styles.msgTime}>
+                      {timeAgo(msg.createdAt)}
                     </Text>
                   </View>
                   <Text style={styles.msgText} numberOfLines={2}>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   msgBody: { flex: 1 },
-  msgHeader: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 4 },
+  msgHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 4 },
   msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
   msgText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, color: "#F9F9F9" },
   msgTime: { fontFamily: "Manrope", fontSize: 10, color: "#F4F4F4" },
