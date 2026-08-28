@@ -22,6 +22,8 @@ export type Chakra = {
   radialOuter: string;
   /** Descripción corta (2 líneas) en español neutro. */
   description: string;
+  /** Imagen cuadrada del carrusel de Descubrir. */
+  image: number;
   /** Elemento tradicional (Tierra, Agua, Fuego…). */
   element: string;
   /** Nombre del color tradicional. */
@@ -44,7 +46,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#2A0808", "#6B1510", "#9A2018"],
     radialCenter: "#5B1015",
     radialOuter: "#470F13",
-    description: "Raíz y seguridad. Sesiones para anclarte a la tierra y sentirte a salvo en tu cuerpo.",
+    description: "Raíz segura",
+    image: require("@/assets/images/chakras/chakra-muladhara.png"),
     element: "Tierra",
     colorName: "Rojo",
     mantra: "LAM",
@@ -61,7 +64,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#1A0A04", "#7A3008", "#B04A10"],
     radialCenter: "#5B2D10",
     radialOuter: "#47250F",
-    description: "Emoción y creatividad. Sesiones para fluir con tus emociones y despertar tu energía vital.",
+    description: "Flujo creativo",
+    image: require("@/assets/images/chakras/chakra-svadhisthana.png"),
     element: "Agua",
     colorName: "Naranja",
     mantra: "VAM",
@@ -78,7 +82,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#16120A", "#6E520E", "#B08020"],
     radialCenter: "#5B4810",
     radialOuter: "#47390F",
-    description: "Poder personal. Sesiones para fortalecer tu voluntad, tu confianza y tu determinación.",
+    description: "Poder personal",
+    image: require("@/assets/images/chakras/chakra-manipura.png"),
     element: "Fuego",
     colorName: "Amarillo",
     mantra: "RAM",
@@ -95,7 +100,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#060E0A", "#1A4A32", "#287A50"],
     radialCenter: "#105B3C",
     radialOuter: "#0F4730",
-    description: "Amor y compasión. Sesiones para abrir el corazón y cultivar la aceptación.",
+    description: "Amor compasivo",
+    image: require("@/assets/images/chakras/chakra-anahata.png"),
     element: "Aire",
     colorName: "Verde",
     mantra: "YAM",
@@ -112,7 +118,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#06101A", "#162E6E", "#204A98"],
     radialCenter: "#10415B",
     radialOuter: "#0F3447",
-    description: "Expresión y verdad. Sesiones para liberar tu voz y comunicar desde la autenticidad.",
+    description: "Verdad expresiva",
+    image: require("@/assets/images/chakras/chakra-vishuddha.png"),
     element: "Éter",
     colorName: "Azul",
     mantra: "HAM",
@@ -130,7 +137,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#04060E", "#0E1640", "#161E58"],
     radialCenter: "#0E355C",
     radialOuter: "#100E48",
-    description: "Intuición y visión. Sesiones para aquietar la mente y despertar la percepción interior.",
+    description: "Visión intuitiva",
+    image: require("@/assets/images/chakras/chakra-ajna.png"),
     element: "Mente",
     colorName: "Índigo",
     mantra: "OM",
@@ -147,7 +155,8 @@ export const CHAKRAS: Chakra[] = [
     gradient: ["#0C0614", "#3A1268", "#5E2488"],
     radialCenter: "#37105B",
     radialOuter: "#2C0F47",
-    description: "Conexión y unidad. Sesiones para expandir la consciencia y unirte con el todo.",
+    description: "Conexión universal",
+    image: require("@/assets/images/chakras/chakra-sahasrara.png"),
     element: "Consciencia",
     colorName: "Violeta",
     mantra: "Silencio",

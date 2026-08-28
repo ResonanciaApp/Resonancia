@@ -107,10 +107,19 @@ function ChakraCarousel() {
             onPress={() => openCategory(`/chakra/${chakra.id}`)}
             style={({ pressed }) => [styles.chakraCard, { opacity: pressed ? 0.82 : 1 }]}
           >
+            <View style={[styles.chakraImageWrap, { backgroundColor: `${chakra.color}22` }]}>
+              <Image
+                source={chakra.image}
+                style={styles.chakraImage}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+              />
+            </View>
             <Text style={styles.chakraName} numberOfLines={1}>
               {chakra.name}
             </Text>
-            <Text style={styles.chakraDescription} numberOfLines={4}>
+            <Text style={styles.chakraDescription} numberOfLines={1}>
               {chakra.description}
             </Text>
           </Pressable>
@@ -645,6 +654,17 @@ const styles = StyleSheet.create({
   },
   chakraCard: {
     width: SQCARD_W,
+  },
+  chakraImageWrap: {
+    width: SQCARD_W,
+    height: SQCARD_W,
+    borderRadius: 15,
+    overflow: "hidden",
+    marginBottom: 10,
+  },
+  chakraImage: {
+    width: "100%",
+    height: "100%",
   },
   chakraName: {
     fontFamily: "Manrope",
