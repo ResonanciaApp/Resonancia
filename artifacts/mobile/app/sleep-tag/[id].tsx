@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Animated,
   Dimensions,
   Image,
   Platform,
@@ -51,6 +52,17 @@ export default function SleepTagDetailScreen() {
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
+  const [stickyActive, setStickyActive] = React.useState(false);
+  const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
+  const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyActive, stickyHeaderOpacity]);
 
   const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
 
@@ -72,9 +84,21 @@ export default function SleepTagDetailScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(event) => {
+          const y = event.nativeEvent.contentOffset.y;
+          const active = y > headerBottomY - topPad - 8;
+          if (active !== stickyActive) setStickyActive(active);
+        }}
       >
         {/* ── Header ── */}
-        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+        <View
+          style={[styles.header, { paddingTop: topPad + 8 }]}
+          onLayout={(event) => {
+            const { y, height } = event.nativeEvent.layout;
+            setHeaderBottomY(y + height);
+          }}
+        >
           <Pressable
             onPress={() => router.back()}
             hitSlop={10}
@@ -162,6 +186,41 @@ export default function SleepTagDetailScreen() {
           </View>
         )}
       </ScrollView>
+
+      <Animated.View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 8,
+            backgroundColor: colors.background,
+            opacity: stickyHeaderOpacity,
+          },
+        ]}
+        pointerEvents={stickyActive ? "auto" : "none"}
+      >
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.backBtn,
+            {
+              backgroundColor: profileSectionBackground,
+              opacity: pressed ? 0.7 : 1,
+              top: topPad + 8,
+            },
+          ]}
+        >
+          <Feather name="chevron-left" size={26} color={colors.foreground} />
+        </Pressable>
+        <Text
+          style={[styles.stickyTitle, { color: colors.foreground }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
+        >
+          {tag.label}
+        </Text>
+      </Animated.View>
     </View>
   );
 }
@@ -193,6 +252,28 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+    minHeight: 48,
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+  },
+  stickyTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    lineHeight: 23,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
 
   grid: {
