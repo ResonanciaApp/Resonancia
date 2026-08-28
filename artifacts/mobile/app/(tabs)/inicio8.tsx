@@ -39,7 +39,6 @@ import RAnimated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
@@ -94,7 +93,6 @@ import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
-import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 
@@ -2011,13 +2009,6 @@ export default function HomeScreen2({
           </View>
         )}
 
-        {isInicio2 && (
-          <ResonadoresSection
-            marginTop={0}
-            marginBottom={INICIO2_SECTION_GAP}
-          />
-        )}
-
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         {!isInicio2 && (
           <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
@@ -2136,9 +2127,6 @@ export default function HomeScreen2({
         )}
 
 
-        {/* ── CARRUSEL RESONADORES ── */}
-        {!isInicio2 && <ResonadoresSection marginTop={57} />}
-
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
           <View style={[styles.premBannerOuter, isInicio2 && { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
@@ -2173,14 +2161,6 @@ export default function HomeScreen2({
           </View>
         )}
 
-        {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
-        <View style={{ height: 0, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }} />
-        <View style={{
-          marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP,
-          marginTop: isInicio2 ? 0 : -25,
-        }}>
-          <AlmaCommunitySection />
-        </View>
         <AhoraEnResonanciaSection />
         {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>

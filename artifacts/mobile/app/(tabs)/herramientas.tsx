@@ -13,7 +13,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -136,6 +138,8 @@ export default function HerramientasScreen() {
 
         <View style={styles.fullBleedSection}>
           <EncuentrosResonadoresSection titleMarginTop={0} />
+          <ResonadoresSection />
+          <AlmaCommunitySection />
         </View>
 
       </ScrollView>
