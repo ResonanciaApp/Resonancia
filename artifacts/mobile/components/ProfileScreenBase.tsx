@@ -664,6 +664,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       <SacredBackground variant="gradient" noImage />
       <GeometrixOverlay active={profileGeoActive} />
 
+      <View style={styles.contentShift}>
       {/* ── Sticky header (estilo Calm) ── */}
       <View
         style={[
@@ -985,6 +986,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
 
 
       {!dedicated && <BibliotecaScreen embedded onHeaderActions={setLibActions} />}
+      </View>
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet
@@ -1235,6 +1237,10 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  contentShift: {
+    flex: 1,
+    transform: [{ translateY: -5 }],
+  },
   scroll: { flex: 1 },
 
   header: {

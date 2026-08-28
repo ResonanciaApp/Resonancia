@@ -27,24 +27,26 @@ export default function HerramientasScreen() {
       <SacredBackground variant="gradient" />
       <StatusBar hidden />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.content,
-          {
-            paddingTop: topPad + 8,
-            paddingBottom: 160 + bottomPad,
-          },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
+      <View style={styles.contentShift}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[
+            styles.content,
+            {
+              paddingTop: topPad + 8,
+              paddingBottom: 160 + bottomPad,
+            },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={[styles.title, { color: colors.foreground }]}>Recursos</Text>
 
-        <View style={styles.fullBleedSection}>
-          <EncuentrosResonadoresSection titleMarginTop={0} />
-        </View>
+          <View style={styles.fullBleedSection}>
+            <EncuentrosResonadoresSection titleMarginTop={0} />
+          </View>
 
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -52,6 +54,10 @@ export default function HerramientasScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  contentShift: {
+    flex: 1,
+    transform: [{ translateY: -5 }],
   },
   scroll: {
     flex: 1,

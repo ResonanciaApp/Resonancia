@@ -344,102 +344,104 @@ export default function ExploreScreen() {
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar hidden />
 
-      {/* ── Header fijo — título + barra de búsqueda sticky ── */}
-      <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
-        <View style={styles.titleRow}>
-          <Text style={styles.pageTitle}>Descubrir</Text>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[
-              styles.headerSearchButton,
-              activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Descubrir"
-            testID="discover-search-button"
-          >
-            <Feather name="search" size={24} color="#F9F9F9" />
-          </Pressable>
+      <View style={styles.contentShift}>
+        {/* ── Header fijo — título + barra de búsqueda sticky ── */}
+        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.pageTitle}>Descubrir</Text>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[
+                styles.headerSearchButton,
+                activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Descubrir"
+              testID="discover-search-button"
+            >
+              <Feather name="search" size={24} color="#F9F9F9" />
+            </Pressable>
+          </View>
         </View>
-      </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16 }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* ── Accesos por contenido ── */}
-        <ContentCategoryGrid
-          marginTop={-9}
-          marginBottom={0}
-          hiddenIds={["__mezcla__", "__geometrix__"]}
-          horizontal
-        />
-
-        {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
-        {themeCarousels.map((carousel) => (
-          <SessionCarousel
-            key={carousel.label}
-            title={carousel.label}
-            sessions={carousel.sessions}
-            isPremium={isPremium}
-            onPress={(s) => handleSessionPress(s)}
-            style={{
-              marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 40 : 0,
-              marginBottom: SECTION_GAP,
-            }}
-            cardWidth={SQCARD_W}
-            titleSize={19}
-            showCardMetadata
-          />
-        ))}
-
-        {/* ── Chakras ── */}
-        <ChakraCarousel />
-
-        {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
-        {false && (
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
-          <ScrollView
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* ── Accesos por contenido ── */}
+          <ContentCategoryGrid
+            marginTop={-9}
+            marginBottom={0}
+            hiddenIds={["__mezcla__", "__geometrix__"]}
             horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -H_PAD }}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-          >
-            {([
-              ["Cuencos", "Meditaciones"],
-              ["Energízate", "Gongs"],
-              ["Playlists", "Paisajes sonoros"],
-            ] as [string, string][]).map(([top, bottom]) => (
-              <View key={top} style={{ gap: 10 }}>
-                {[top, bottom].map((label) => (
-                  <View
-                    key={label}
-                    style={{
-                      width: 148,
-                      height: 70,
-                      backgroundColor: "rgba(218,212,236,0.05)",
-                      borderRadius: 12,
-                      borderWidth: 2,
-                      borderColor: "rgba(255,255,255,0.7)",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", textAlign: "center" }}>
-                      {label}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        )}
-      </ScrollView>
+          />
+
+          {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
+          {themeCarousels.map((carousel) => (
+            <SessionCarousel
+              key={carousel.label}
+              title={carousel.label}
+              sessions={carousel.sessions}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionPress(s)}
+              style={{
+                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 40 : 0,
+                marginBottom: SECTION_GAP,
+              }}
+              cardWidth={SQCARD_W}
+              titleSize={19}
+              showCardMetadata
+            />
+          ))}
+
+          {/* ── Chakras ── */}
+          <ChakraCarousel />
+
+          {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
+          {false && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+            <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+            >
+              {([
+                ["Cuencos", "Meditaciones"],
+                ["Energízate", "Gongs"],
+                ["Playlists", "Paisajes sonoros"],
+              ] as [string, string][]).map(([top, bottom]) => (
+                <View key={top} style={{ gap: 10 }}>
+                  {[top, bottom].map((label) => (
+                    <View
+                      key={label}
+                      style={{
+                        width: 148,
+                        height: 70,
+                        backgroundColor: "rgba(218,212,236,0.05)",
+                        borderRadius: 12,
+                        borderWidth: 2,
+                        borderColor: "rgba(255,255,255,0.7)",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", textAlign: "center" }}>
+                        {label}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+          )}
+        </ScrollView>
+      </View>
 
       <ContextSearchModal
         visible={searchVisible}
@@ -461,6 +463,7 @@ export default function ExploreScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
+  contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10 },

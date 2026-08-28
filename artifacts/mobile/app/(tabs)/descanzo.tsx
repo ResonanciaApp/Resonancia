@@ -420,35 +420,36 @@ export default function DescansoScreen() {
       <GeoUniverseBackground />
       <NightSky />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 2 }}
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onLayout={(e) => {
-          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-        }}
-        onContentSizeChange={(_w, h) => {
-          scrollContentHeightRef.current = h;
-        }}
-        onScroll={(e) => {
-          const y = e.nativeEvent.contentOffset.y;
-          scrollY.setValue(y);
-          const visible = y > HERO_H * 0.5565;
-          if (visible !== stickyVisible) setStickyVisible(visible);
-          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-          const progress = scrollable > 0 ? y / scrollable : 0;
-          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActiveRef.current) {
-            headerBorderActiveRef.current = shouldShowBorder;
-            Animated.timing(headerBorderAnim, {
-              toValue: shouldShowBorder ? 1 : 0,
-              duration: 300,
-              useNativeDriver: true,
-            }).start();
-          }
-        }}
-      >
+      <View style={styles.contentShift}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 2 }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onLayout={(e) => {
+            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(_w, h) => {
+            scrollContentHeightRef.current = h;
+          }}
+          onScroll={(e) => {
+            const y = e.nativeEvent.contentOffset.y;
+            scrollY.setValue(y);
+            const visible = y > HERO_H * 0.5565;
+            if (visible !== stickyVisible) setStickyVisible(visible);
+            const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+            const progress = scrollable > 0 ? y / scrollable : 0;
+            const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+            if (shouldShowBorder !== headerBorderActiveRef.current) {
+              headerBorderActiveRef.current = shouldShowBorder;
+              Animated.timing(headerBorderAnim, {
+                toValue: shouldShowBorder ? 1 : 0,
+                duration: 300,
+                useNativeDriver: true,
+              }).start();
+            }
+          }}
+        >
         {/* ── Hero ── */}
         <View style={styles.hero}>
           <View style={styles.heroTitleRow}>
@@ -528,57 +529,58 @@ export default function DescansoScreen() {
           </Pressable>
         </View>
 
-      </ScrollView>
+        </ScrollView>
 
-      {/* ── Sticky header (título) ── */}
-      <Animated.View
-        style={[
-          styles.stickyHeader,
-          {
-            paddingTop: topPad + 10,
-            opacity: stickyAnim,
-            backgroundColor: bgGradient[0],
-          },
-        ]}
-        pointerEvents={stickyVisible ? "auto" : "none"}
-        onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
-      >
-        <View style={styles.stickyTitleRow}>
-          <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "left" }]}>Dormir</Text>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Dormir"
-            testID="sleep-sticky-search-button"
-          >
-            <Feather name="search" size={22} color={colors.foreground} />
-          </Pressable>
-        </View>
-      </Animated.View>
-
-      {/* ── Tabs sticky (se pegan debajo del título) ── */}
-      {tabsMounted && (
-        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={[styles.tabGrid, { marginBottom: 13 }]}
-            contentContainerStyle={styles.tabGridContent}
-          >
-            {sleepCollections.map((tab) => (
-              <SleepPill
-                key={tab.id}
-                sel={false}
-                label={tab.label}
-                onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
-              />
-            ))}
-          </ScrollView>
-          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
+        {/* ── Sticky header (título) ── */}
+        <Animated.View
+          style={[
+            styles.stickyHeader,
+            {
+              paddingTop: topPad + 10,
+              opacity: stickyAnim,
+              backgroundColor: bgGradient[0],
+            },
+          ]}
+          pointerEvents={stickyVisible ? "auto" : "none"}
+          onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
+        >
+          <View style={styles.stickyTitleRow}>
+            <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "left" }]}>Dormir</Text>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Dormir"
+              testID="sleep-sticky-search-button"
+            >
+              <Feather name="search" size={22} color={colors.foreground} />
+            </Pressable>
+          </View>
         </Animated.View>
-      )}
+
+        {/* ── Tabs sticky (se pegan debajo del título) ── */}
+        {tabsMounted && (
+          <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.tabGrid, { marginBottom: 13 }]}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {sleepCollections.map((tab) => (
+                <SleepPill
+                  key={tab.id}
+                  sel={false}
+                  label={tab.label}
+                  onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
+                />
+              ))}
+            </ScrollView>
+            <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
+          </Animated.View>
+        )}
+      </View>
 
       <NightTimerSheet
         visible={timerSheet}
@@ -670,6 +672,7 @@ export default function DescansoScreen() {
 
 const styles = StyleSheet.create({
   root:   { flex: 1 },
+  contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
 
   /* NightTimerSheet */
