@@ -11,6 +11,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
+const CATEGORY_ICON_COLOR = "#F9F9F9";
 const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
   "meditaciones-guiadas": 164,
   "sonidos-ancestrales": 158,
@@ -53,11 +54,12 @@ export function ContentCategoryGrid({
             id: "meditaciones-guiadas",
             label: "Meditaciones",
             color: "#C8A6FF",
-            icon: () => (
+            icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-meditaciones.png")}
                 style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
                 contentFit="contain"
+                tintColor={color}
               />
             ),
           },
@@ -65,11 +67,12 @@ export function ContentCategoryGrid({
             id: "sonidos-ancestrales",
             label: "Sonoterapia",
             color: "#E7A36E",
-            icon: () => (
+            icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-sesiones.png")}
                 style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
                 contentFit="contain"
+                tintColor={color}
               />
             ),
           },
@@ -77,11 +80,12 @@ export function ContentCategoryGrid({
             id: "musica-sonidos",
             label: "Música",
             color: "#6FD7D8",
-            icon: () => (
+            icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-musica.png")}
                 style={{ width: horizontal ? 24 : 26, height: horizontal ? 24 : 26 }}
                 contentFit="contain"
+                tintColor={color}
               />
             ),
           },
@@ -89,12 +93,12 @@ export function ContentCategoryGrid({
             id: "__descanzo__",
             label: "Dormir",
             color: "#8ED9FF",
-            icon: () => (
+            icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-luna.png")}
                 style={{ width: horizontal ? 20 : 22, height: horizontal ? 20 : 22 }}
                 contentFit="contain"
-                tintColor="#f9f9f9"
+                tintColor={color ?? CATEGORY_ICON_COLOR}
               />
             ),
           },
@@ -102,19 +106,20 @@ export function ContentCategoryGrid({
             id: "__mezcla__",
             label: "Mezclador",
             color: "#E6BE67",
-            icon: (color: string) => (
-              <MaterialCommunityIcons name="tune-variant" size={24} color={color} />
+            icon: (color?: string) => (
+              <MaterialCommunityIcons name="tune-variant" size={24} color={color ?? "#E6BE67"} />
             ),
           },
           {
             id: "__geometrix__",
             label: "Geometrix",
             color: "#C4C8D4",
-            icon: () => (
+            icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cubo-4.png")}
                 style={{ width: 26, height: 26 }}
                 contentFit="contain"
+                tintColor={color}
               />
             ),
           },
@@ -187,7 +192,9 @@ export function ContentCategoryGrid({
                 ]}
               >
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-                <View style={styles.iconWrap}>{category.icon(category.color)}</View>
+                <View style={styles.iconWrap}>
+                  {category.icon(isDiscoverGrid ? CATEGORY_ICON_COLOR : undefined)}
+                </View>
                 <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
               </Pressable>
             );
