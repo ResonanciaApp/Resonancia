@@ -163,11 +163,10 @@ export function ContentCategoryGrid({
             label: "Geometrix",
             color: "#C4C8D4",
             icon: (color?: string) => (
-              <ExpoImage
-                source={require("@/assets/images/cubo-4.png")}
-                style={{ width: horizontal ? 22 : 26, height: horizontal ? 22 : 26 }}
-                contentFit="contain"
-                tintColor={color}
+              <MaterialCommunityIcons
+                name="cube-outline"
+                size={horizontal ? 20 : 29}
+                color={color ?? "#C4C8D4"}
               />
             ),
           },

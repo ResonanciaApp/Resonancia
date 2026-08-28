@@ -1967,11 +1967,14 @@ export default function HomeScreen2({
         )}
 
 
-        {/* ── EXPLORA POR CONTENIDO ── */}
-        <ContentCategoryGrid
-          marginTop={showAnimatedScene ? 28 : 22}
-          marginBottom={isInicio2 ? INICIO2_SECTION_GAP : undefined}
-        />
+        {/* ── EXPLORA POR CONTENIDO ──
+            En Inicio 2 esta sección de nueve bloques no se muestra. */}
+        {!isInicio2 && (
+          <ContentCategoryGrid
+            marginTop={showAnimatedScene ? 28 : 22}
+            marginBottom={undefined}
+          />
+        )}
 
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
