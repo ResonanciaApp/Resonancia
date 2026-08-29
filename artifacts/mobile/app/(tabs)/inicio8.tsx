@@ -115,7 +115,7 @@ const INICIO2_SECTION_GAP = 53;
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
-const INICIO2_HERO_HEIGHT = Math.min(465, Math.max(401, width * 0.92 + 75));
+const INICIO2_HERO_HEIGHT = Math.round(Math.min(465, Math.max(401, width * 0.92 + 75)) * 1.15);
 const INICIO2_SLIDES = [
   {
     id: "templo",
