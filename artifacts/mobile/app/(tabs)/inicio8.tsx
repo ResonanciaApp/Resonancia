@@ -681,23 +681,41 @@ function Inicio2HeroSlider({
           </Pressable>
         </View>
 
-        <Pressable
-          onPress={onOpenProgress}
-          onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
-          onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
-          hitSlop={12}
-          style={styles.inicio2HeroLotusButton}
-          accessibilityRole="button"
-          accessibilityLabel="Ver tu progreso"
-          testID="inicio2-open-progress"
-        >
-          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <View style={styles.inicio2HeroLotusContent}>
-              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
-              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+        <View style={styles.inicio2HeroRightActions}>
+          <Pressable
+            onPress={onOpenProgress}
+            onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
+            onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
+            hitSlop={12}
+            style={styles.inicio2HeroLotusButton}
+            accessibilityRole="button"
+            accessibilityLabel="Ver tu progreso"
+            testID="inicio2-open-progress"
+          >
+            <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+              <View style={styles.inicio2HeroLotusContent}>
+                <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
+                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+              </View>
+            </Animated.View>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push("/(tabs)/emocion" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Agregar emoción"
+            testID="inicio2-add-emotion"
+            style={({ pressed }) => [
+              styles.inicio2HeroEmotionWidget,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
+            <View style={styles.inicio2HeroEmotionAdd}>
+              <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
             </View>
-          </Animated.View>
-        </Pressable>
+          </Pressable>
+        </View>
       </Animated.View>
 
       <Animated.View
@@ -2288,9 +2306,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   inicio2HeroProfileButton: {
-    maxWidth: "76%",
+    maxWidth: "56%",
     flexDirection: "row",
     alignItems: "center",
+    flexShrink: 1,
+  },
+  inicio2HeroRightActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    flexShrink: 0,
   },
   inicio2HeroAvatar: {
     width: 42,
@@ -2347,6 +2372,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+  },
+  inicio2HeroEmotionWidget: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(26,28,54,0.90)",
+    position: "relative",
+  },
+  inicio2HeroEmotionEmoji: {
+    fontSize: 31,
+    lineHeight: 38,
+  },
+  inicio2HeroEmotionAdd: {
+    position: "absolute",
+    top: -4,
+    left: -4,
+    width: 31,
+    height: 31,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#63B7A0",
+  },
+  inicio2HeroEmotionAddText: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 25,
+    lineHeight: 28,
+    fontWeight: "600",
   },
   inicio2HeroCopy: {
     ...StyleSheet.absoluteFillObject,
