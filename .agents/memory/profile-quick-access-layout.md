@@ -7,4 +7,4 @@ En “Mi perfil”, el bloque de accesos no incluye Biblioteca. Guardados ocupa 
 
 **Why:** El usuario pidió separar el acceso a Biblioteca del Perfil y priorizar Guardados, manteniendo Descargas y Sesiones como accesos secundarios más compactos.
 
-**How to apply:** Mantener este comportamiento como una variante exclusiva del Perfil. No cambiar por este motivo la grilla de accesos de Biblioteca, Descubrir u otras superficies compartidas.
+**How to apply:** Mantener este comportamiento como una variante exclusiva del Perfil. No cambiar por este motivo la grilla de accesos de Biblioteca, Descubrir u otras superficies compartidas. La tarjeta de usuario usa el mismo fondo que la tarjeta de racha; el avatar no lleva borde, el correo va bajo el nombre y no se muestra “Miembro desde”.

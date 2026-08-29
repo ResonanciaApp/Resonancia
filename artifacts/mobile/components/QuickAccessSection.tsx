@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   profileWideCard: {
     flexDirection: "row",
-    height: 38,
+    height: 44,
     justifyContent: "center",
     gap: 10,
     paddingHorizontal: 16,

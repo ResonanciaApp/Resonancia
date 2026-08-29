@@ -50,6 +50,7 @@ import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
@@ -215,6 +216,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
+  const { email } = useAuth();
   const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
   const {
@@ -238,14 +240,10 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
-  const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
+  const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const { data: followCounts } = useGetMyFollowCounts({
     query: { queryKey: getGetMyFollowCountsQueryKey(), staleTime: 30_000 },
   });
-  const memberSince = me?.createdAt
-    ? new Date(me.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
-    : null;
-
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -768,14 +766,14 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
         </View>
 
         {/* ── Profile Card ── */}
-        <View style={styles.profileCard}>
+        <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
               ) : (
-                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary, borderColor: "#784576" }]}>
+                <View style={[styles.avatarCircle, { backgroundColor: colors.secondary }]}>
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
@@ -791,6 +789,16 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                 {username}{lastName ? ` ${lastName}` : ""}
               </Text>
 
+              {email ? (
+                <Text
+                  style={[styles.emailText, { color: colors.mutedForeground }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {email}
+                </Text>
+              ) : null}
+
               {location ? (
                 <View style={styles.locationRow}>
                   <Feather name="map-pin" size={12} color={colors.mutedForeground} />
@@ -798,18 +806,6 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                 </View>
               ) : null}
 
-              {description ? (
-                <Text style={[styles.bioText, styles.bioTextLeft, { color: colors.mutedForeground }]}>{description}</Text>
-              ) : null}
-
-              {memberSince ? (
-                <View style={styles.locationRow}>
-                  <Feather name="calendar" size={12} color={colors.mutedForeground} />
-                  <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
-                    Miembro desde {memberSince}
-                  </Text>
-                </View>
-              ) : null}
             </View>
           </View>
         </View>
@@ -1413,11 +1409,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarImage: { width: 80, height: 80, borderRadius: 40, borderWidth: 2, borderColor: "#784576" },
+  avatarImage: { width: 80, height: 80, borderRadius: 40 },
   avatarEditBadge: {
     position: "absolute",
     bottom: 0,
@@ -1433,6 +1428,7 @@ const styles = StyleSheet.create({
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   userNameLeft: { textAlign: "left" },
+  emailText: { fontFamily: "Manrope", fontSize: 12 },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
