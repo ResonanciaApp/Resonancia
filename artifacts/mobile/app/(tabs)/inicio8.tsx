@@ -2000,14 +2000,11 @@ export default function HomeScreen2({
         )}
 
 
-        {/* ── EXPLORA POR CONTENIDO ──
-            En Inicio 2 esta sección de nueve bloques no se muestra. */}
-        {!isInicio2 && (
-          <ContentCategoryGrid
-            marginTop={showAnimatedScene ? 28 : 22}
-            marginBottom={undefined}
-          />
-        )}
+        {/* ── EXPLORA POR CONTENIDO ── */}
+        <ContentCategoryGrid
+          marginTop={isInicio2 ? 0 : showAnimatedScene ? 28 : 22}
+          marginBottom={isInicio2 ? INICIO2_SECTION_GAP : undefined}
+        />
 
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
@@ -2068,19 +2065,17 @@ export default function HomeScreen2({
         )}
 
         {/* ── RECIENTES ── */}
-        {!isInicio2 && (
-          <SessionCarousel
-            title="Recientes"
-            sessions={recentSessions}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={RECENT_CARD_W}
-            titleSize={20}
-            showCardMetadata
-          />
-        )}
+        <SessionCarousel
+          title="Recientes"
+          sessions={recentSessions}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+          style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP, paddingHorizontal: GRID_PAD }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+          titleSize={isInicio2 ? 19 : 20}
+          showCardMetadata
+        />
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         {!isInicio2 && (
