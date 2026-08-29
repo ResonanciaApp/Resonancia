@@ -234,10 +234,9 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(119,82,161,0.3)",
+    borderWidth: 0,
   },
-  pillSel: { borderWidth: 1, borderColor: "rgba(119,82,161,0.3)" },
+  pillSel: { borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",

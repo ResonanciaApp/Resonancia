@@ -482,8 +482,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(119,82,161,0.3)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },

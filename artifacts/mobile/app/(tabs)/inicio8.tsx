@@ -3341,8 +3341,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(119,82,161,0.3)",
   },
   durPillText: {
     fontFamily: "Manrope",

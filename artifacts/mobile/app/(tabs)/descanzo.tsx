@@ -879,12 +879,10 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(119,82,161,0.3)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  sleepPillSel: { borderWidth: 1, borderColor: "rgba(119,82,161,0.3)" },
+  sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 13,
