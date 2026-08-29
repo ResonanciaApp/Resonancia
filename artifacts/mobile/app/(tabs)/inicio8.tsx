@@ -681,41 +681,23 @@ function Inicio2HeroSlider({
           </Pressable>
         </View>
 
-        <View style={styles.inicio2HeroRightActions}>
-          <Pressable
-            onPress={onOpenProgress}
-            onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
-            onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
-            hitSlop={12}
-            style={styles.inicio2HeroLotusButton}
-            accessibilityRole="button"
-            accessibilityLabel="Ver tu progreso"
-            testID="inicio2-open-progress"
-          >
-            <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-              <View style={styles.inicio2HeroLotusContent}>
-                <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
-                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
-              </View>
-            </Animated.View>
-          </Pressable>
-
-          <Pressable
-            onPress={() => router.push("/(tabs)/emocion" as never)}
-            accessibilityRole="button"
-            accessibilityLabel="Agregar emoción"
-            testID="inicio2-add-emotion"
-            style={({ pressed }) => [
-              styles.inicio2HeroEmotionWidget,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-            <View style={styles.inicio2HeroEmotionAdd}>
-              <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
+        <Pressable
+          onPress={onOpenProgress}
+          onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
+          onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
+          hitSlop={12}
+          style={styles.inicio2HeroLotusButton}
+          accessibilityRole="button"
+          accessibilityLabel="Ver tu progreso"
+          testID="inicio2-open-progress"
+        >
+          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+            <View style={styles.inicio2HeroLotusContent}>
+              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
-          </Pressable>
-        </View>
+          </Animated.View>
+        </Pressable>
       </Animated.View>
 
       <Animated.View
@@ -760,6 +742,26 @@ function Inicio2HeroSlider({
         })}
       </Animated.View>
     </View>
+  );
+}
+
+function InicioEmotionWidget({ bottom }: { bottom: number }) {
+  return (
+    <Pressable
+      onPress={() => router.push("/(tabs)/emocion" as never)}
+      accessibilityRole="button"
+      accessibilityLabel="Agregar emoción"
+      testID="inicio-add-emotion"
+      style={({ pressed }) => [
+        styles.inicio2HeroEmotionWidget,
+        { right: 18, bottom, opacity: pressed ? 0.82 : 1 },
+      ]}
+    >
+      <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
+      <View style={styles.inicio2HeroEmotionAdd}>
+        <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -820,6 +822,11 @@ export default function HomeScreen2({
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  // La tab bar flotante usa la misma separación inferior que su propio layout.
+  // El widget queda 25 px por encima de la parte superior de esa barra.
+  const tabBarBottomOffset =
+    Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
+  const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2192,6 +2199,7 @@ export default function HomeScreen2({
         </View>
       </Animated.ScrollView>
 
+      <InicioEmotionWidget bottom={emotionWidgetBottom} />
       </Animated.View>{/* fin contenido desvanecible */}
 
 
@@ -2306,16 +2314,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   inicio2HeroProfileButton: {
-    maxWidth: "56%",
+    maxWidth: "76%",
     flexDirection: "row",
     alignItems: "center",
-    flexShrink: 1,
-  },
-  inicio2HeroRightActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    flexShrink: 0,
   },
   inicio2HeroAvatar: {
     width: 42,
@@ -2380,7 +2381,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(26,28,54,0.90)",
-    position: "relative",
+    position: "absolute",
+    zIndex: 25,
+    elevation: 25,
   },
   inicio2HeroEmotionEmoji: {
     fontSize: 31,
