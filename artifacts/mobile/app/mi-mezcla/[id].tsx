@@ -11,14 +11,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
-  Keyboard,
   Modal,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -28,6 +26,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { useSounds } from "@/context/SoundsContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
@@ -43,10 +42,14 @@ export function MixCover({
   mix,
   size = 120,
   radius = 16,
+  showSoundStack = true,
+  placeholderBackgroundColor,
 }: {
   mix: Pick<MixPreset, "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "sounds">;
   size?: number;
   radius?: number;
+  showSoundStack?: boolean;
+  placeholderBackgroundColor?: string;
 }) {
   const img = mix.image ? getMixImage(mix.image) : undefined;
   const containerStyle = {
@@ -103,7 +106,7 @@ export function MixCover({
   }
 
   const stackedSounds = mix.sounds.slice(0, 3);
-  if (stackedSounds.length > 0) {
+  if (showSoundStack && stackedSounds.length > 0) {
     const thumbSize = size * 0.74;
     const shift = stackedSounds.length > 1
       ? (size - thumbSize) / (stackedSounds.length - 1)
@@ -152,8 +155,13 @@ export function MixCover({
   }
 
   return (
-    <View style={containerStyle}>
-      <LinearGradient colors={["#4D293F", "#24131D"]} style={StyleSheet.absoluteFill} />
+    <View
+      style={[
+        containerStyle,
+        placeholderBackgroundColor ? { backgroundColor: placeholderBackgroundColor } : null,
+      ]}
+    >
+      <Feather name="image" size={size * 0.34} color="rgba(249,249,249,0.68)" />
     </View>
   );
 }
@@ -231,18 +239,25 @@ export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
   const bgGradient = theme.gradient;
 
   const { presets, updatePresetMeta, loadedPresetId, isPlaying, togglePlay, deletePreset } = useMixer();
+  const { sounds: catalogSounds } = useSounds();
   const loadMix = useLoadMix();
 
   const mix = useMemo(() => presets.find((p) => p.id === id), [presets, id]);
 
-  const [name, setName] = useState(mix?.name ?? "");
-  const [description, setDescription] = useState(mix?.description ?? "");
   const [category, setCategory] = useState<MixCategory>(mix?.category ?? "dormir");
   const [pickerVisible, setPickerVisible] = useState(false);
+  const profileBlockBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
+  const listenNowBtnColors: [string, string, ...string[]] = activeSceneId === "indigo"
+    ? ["#784576", "#50326E"]
+    : ["#F9F9F9", "#F9F9F9"];
 
   const isThisLoaded = loadedPresetId === id;
   const isPlayingThis = isThisLoaded && isPlaying;
@@ -322,7 +337,7 @@ export default function MiMezclaScreen() {
         <Pressable onPress={() => router.back()} hitSlop={12} style={s.iconBtn}>
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
-        <Text style={s.headerTitle} numberOfLines={1}>Mi mezcla</Text>
+        <Text style={s.headerTitle} numberOfLines={1}>{mix.name}</Text>
         <Pressable onPress={handleDelete} hitSlop={12} style={s.iconBtn}>
           <Feather name="trash-2" size={20} color="rgba(224,92,92,0.75)" />
         </Pressable>
@@ -335,37 +350,32 @@ export default function MiMezclaScreen() {
       >
         {/* Portada */}
         <Pressable style={s.coverWrap} onPress={() => setPickerVisible(true)}>
-          <MixCover mix={mix} size={160} radius={20} />
+          <MixCover
+            mix={mix}
+            size={160}
+            radius={20}
+            showSoundStack={false}
+            placeholderBackgroundColor={profileBlockBackground}
+          />
           <View style={s.coverEditBadge}>
             <GoldGradientFill />
             <Feather name="camera" size={14} color="#1B060F" />
           </View>
         </Pressable>
 
-        {/* Nombre */}
-        <Text style={s.label}>Nombre</Text>
-        <TextInput
-          style={s.input}
-          value={name}
-          onChangeText={setName}
-          onBlur={() => { if (name.trim()) save({ name: name.trim() }); }}
-          placeholder="Nombre de tu mezcla"
-          placeholderTextColor={MUTED}
-          returnKeyType="done"
-          onSubmitEditing={() => {
-            if (name.trim()) save({ name: name.trim() });
-            Keyboard.dismiss();
-          }}
-        />
-
-        {/* Grid de categorías — fila única */}
+        {/* Categoría */}
         <View style={s.catGrid}>
           {MIX_CATEGORIES.map((cat) => {
             const selected = category === cat.id;
             return (
               <Pressable
                 key={cat.id}
-                style={({ pressed }) => [s.catCell, selected && s.catCellSelected, { opacity: pressed ? 0.82 : 1 }]}
+                style={({ pressed }) => [
+                  s.catCell,
+                  { backgroundColor: profileBlockBackground },
+                  selected && s.catCellSelected,
+                  { opacity: pressed ? 0.82 : 1 },
+                ]}
                 onPress={() => {
                   setCategory(cat.id);
                   save({ category: cat.id, categoryChosen: true });
@@ -383,6 +393,43 @@ export default function MiMezclaScreen() {
           })}
         </View>
 
+        {/* Sonidos usados */}
+        <Text style={s.sectionTitle}>Sonidos utilizados</Text>
+        <ScrollView
+          style={mix.sounds.length > 5 ? s.soundList : undefined}
+          nestedScrollEnabled
+          scrollEnabled={mix.sounds.length > 5}
+          showsVerticalScrollIndicator={mix.sounds.length > 5}
+        >
+          <View style={s.soundListContent}>
+            {mix.sounds.map((activeSound, index) => {
+              const sound = catalogSounds.find((candidate) => candidate.id === activeSound.id);
+              const localImage = getSoundImage(activeSound.id);
+              const remoteImage = REMOTE_SOUND_IMAGE_MAP[activeSound.id];
+              const source = localImage ?? (remoteImage ? { uri: remoteImage } : undefined);
+              const fallbackName = activeSound.id.replace(/[-_]/g, " ");
+
+              return (
+                <View
+                  key={`${activeSound.id}-${index}`}
+                  style={[s.soundRow, { backgroundColor: profileBlockBackground }]}
+                >
+                  <View style={s.soundThumb}>
+                    {source ? (
+                      <Image source={source} style={StyleSheet.absoluteFill} contentFit="cover" />
+                    ) : (
+                      <Feather name="image" size={20} color="rgba(249,249,249,0.55)" />
+                    )}
+                  </View>
+                  <Text style={s.soundName} numberOfLines={1}>
+                    {sound?.name ?? fallbackName}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        </ScrollView>
+
       </ScrollView>
 
       {/* ── Botón flotante Reproducir ──────────────────────────────────────── */}
@@ -391,8 +438,13 @@ export default function MiMezclaScreen() {
           style={({ pressed }) => [s.playBtn, { opacity: pressed ? 0.85 : 1, overflow: "hidden" }]}
           onPress={handlePlay}
         >
-          <GoldGradientFill />
-          <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#1B060F" />
+          <LinearGradient
+            colors={listenNowBtnColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: activeSceneId === "indigo" ? 1 : 0, y: activeSceneId === "indigo" ? 0 : 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#F9F9F9" />
           <Text style={s.playBtnText}>{isPlayingThis ? "Pausar" : "Reproducir mezcla"}</Text>
         </Pressable>
       </View>
@@ -453,32 +505,6 @@ const s = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
-  label: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 8,
-    marginTop: 4,
-  },
-  input: {
-    fontFamily: "Manrope",
-    backgroundColor: "rgba(74,12,12,0.35)",
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(61,14,22,0.6)",
-    color: TEXT,
-    fontSize: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 20,
-  },
-  inputMulti: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
   floatingBar: {
     position: "absolute",
     bottom: 0,
@@ -497,7 +523,7 @@ const s = StyleSheet.create({
   },
   playBtnText: {
     fontFamily: "Manrope",
-    color: "#1B060F",
+    color: "#F9F9F9",
     fontSize: 16,
     fontWeight: "700",
   },
@@ -514,7 +540,6 @@ const s = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
-    backgroundColor: "rgba(74,12,12,0.35)",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
@@ -525,7 +550,7 @@ const s = StyleSheet.create({
   },
   catCellOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(212,175,55,0.10)",
+    backgroundColor: "rgba(249,249,249,0.08)",
   },
   catCellLabelRow: {
     flexDirection: "row",
@@ -543,6 +568,44 @@ const s = StyleSheet.create({
   },
   catCellLabelSelected: {
     color: GOLD,
+  },
+  sectionTitle: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+  soundList: {
+    maxHeight: 300,
+  },
+  soundListContent: {
+    gap: 8,
+    paddingBottom: 10,
+  },
+  soundRow: {
+    minHeight: 62,
+    borderRadius: 14,
+    padding: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  soundThumb: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  soundName: {
+    flex: 1,
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 15,
+    fontWeight: "600",
   },
 });
 
