@@ -675,7 +675,7 @@ function Inicio2HeroSlider({
             testID="inicio2-open-drawer"
           >
             <Text style={styles.inicio2HeroGreetingName} numberOfLines={1}>
-              Hola {displayName}
+              {displayName}
             </Text>
             <Text style={styles.inicio2HeroGreetingTime}>{greeting}</Text>
           </Pressable>
@@ -2296,8 +2296,6 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    borderWidth: 2,
-    borderColor: "#50326E",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
@@ -2306,8 +2304,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(190,150,80,0.28)",
-    borderWidth: 2,
-    borderColor: "#50326E",
   },
   inicio2HeroAvatarInitial: {
     color: "#FFFFFF",
