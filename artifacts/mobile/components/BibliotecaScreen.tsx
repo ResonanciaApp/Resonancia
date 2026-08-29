@@ -75,10 +75,10 @@ type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" 
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
-const LIB_TABS: { id: LibTab; label: string }[] = [
-  { id: "playlists",   label: "Playlists" },
-  { id: "mezclas",     label: "Mezclas" },
-  { id: "geometrix",   label: "Geometrías" },
+const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
+  { id: "playlists", label: "Playlists", icon: "list" },
+  { id: "mezclas", label: "Mezclas", icon: "sliders" },
+  { id: "geometrix", label: "Geometrías", icon: "hexagon" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -158,8 +158,9 @@ function MixRow({
 }
 
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
-function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.ComponentProps<typeof Feather>["name"]; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
+  const contentColor = sel && theme.id !== "indigo" ? "#0D0A1E" : "#F4F4F4";
 
   return (
     <Pressable
@@ -174,6 +175,7 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
           style={StyleSheet.absoluteFill}
         />
       )}
+      <Feather name={icon} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
         {label}
       </Text>
@@ -196,7 +198,7 @@ function AnimatedChipRow({
   onSearch,
   onAdd,
 }: {
-  tabs: { id: LibTab; label: string }[];
+  tabs: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[];
   activeTab: LibTab | null;
   onSelect: (id: LibTab) => void;
   onClear: () => void;
@@ -321,6 +323,7 @@ function AnimatedChipRow({
             >
               <LibChip
                 label={t.label}
+                icon={t.icon}
                 sel={colorTab === t.id}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
@@ -2154,19 +2157,19 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    height: 42,
-    paddingHorizontal: 11.5,
-    borderRadius: 999,
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: 0,
     justifyContent: "center",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "400", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 

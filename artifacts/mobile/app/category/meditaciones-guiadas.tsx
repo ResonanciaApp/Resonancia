@@ -93,10 +93,12 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress:()=>void }) {
   const { theme } = useSceneTheme();
+  const contentColor = sel && theme.id !== "indigo" ? "#0D0A1E" : "#F4F4F4";
 
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
       {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      <Feather name={(icon ?? "grid") as never} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
     </Pressable>
   );
@@ -107,7 +109,7 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; l
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Todos" sel={activeTab === null} onPress={onClear} />
+        <Chip label="Todos" icon="grid" sel={activeTab === null} onPress={onClear} />
         {tabs.map((t) => (
           <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
             onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
@@ -609,14 +611,14 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 46, paddingHorizontal: 12, borderRadius: 27, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
+  chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: TEXT, textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 

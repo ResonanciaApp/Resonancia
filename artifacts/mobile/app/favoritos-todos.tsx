@@ -33,21 +33,22 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 const FAV_TABS = [
-  { id: "sesiones",     label: "Sonoterapia",  categoryId: "sonidos-ancestrales" },
-  { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
-  { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
-  { id: "dormir",       label: "Dormir",       categoryId: "descanso" },
-  { id: "historias",    label: "Historias",    categoryId: "historias" },
-  { id: "charlas",      label: "Charlas",      categoryId: "charlas" },
-  { id: "videos",       label: "Videos",       categoryId: null },
+  { id: "sesiones",     label: "Sonoterapia",  icon: "radio",       categoryId: "sonidos-ancestrales" },
+  { id: "meditaciones", label: "Meditaciones", icon: "compass",     categoryId: "meditaciones-guiadas" },
+  { id: "musica",       label: "Música",       icon: "music",       categoryId: "musica-sonidos" },
+  { id: "dormir",       label: "Dormir",       icon: "moon",        categoryId: "descanso" },
+  { id: "historias",    label: "Historias",    icon: "book-open",   categoryId: "historias" },
+  { id: "charlas",      label: "Charlas",      icon: "message-circle", categoryId: "charlas" },
+  { id: "videos",       label: "Videos",       icon: "play-circle", categoryId: null },
 ] as const;
 
 type FavTabId = typeof FAV_TABS[number]["id"];
 
 function FavPill({
-  sel, label, onPress,
-}: { sel: boolean; label: string; onPress: () => void }) {
+  sel, label, icon, onPress,
+}: { sel: boolean; label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
+  const contentColor = sel && theme.id !== "indigo" ? "#2D0D3A" : "#F4F4F4";
 
   return (
     <Pressable
@@ -55,6 +56,7 @@ function FavPill({
       style={({ pressed }) => [styles.pill, theme.id === "indigo" && styles.pillIndigo, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#F9F9F9", "#F9F9F9"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      <Feather name={icon as never} size={22} color={contentColor} />
       <Text style={[styles.pillText, sel && styles.pillTextSel, sel && theme.id === "indigo" && styles.pillTextIndigoSel]} numberOfLines={1}>
         {label}
       </Text>
@@ -141,6 +143,7 @@ export default function FavoritosTodosScreen() {
               key={tab.id}
               sel={activeTab === tab.id}
               label={tab.label}
+              icon={tab.icon}
               onPress={() => setActiveTab(tab.id)}
             />
           ))}
@@ -225,10 +228,10 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 42,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    gap: 5,
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 0,
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.2,
     color: "#F4F4F4",

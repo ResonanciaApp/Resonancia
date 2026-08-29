@@ -35,7 +35,7 @@ const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
 const CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 
-function CollectionPill({ label, onPress }: { label: string; onPress: () => void }) {
+function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
   return (
     <Pressable
@@ -47,6 +47,7 @@ function CollectionPill({ label, onPress }: { label: string; onPress: () => void
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
+      <Feather name={icon as never} size={22} color="#F4F4F4" />
       <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
     </Pressable>
   );
@@ -200,6 +201,7 @@ export default function SonidosScreen() {
                 <CollectionPill
                   key={collection.id}
                   label={collection.label}
+                  icon={collection.icon}
                   onPress={() => router.push(`/sound-tag/${collection.id}` as never)}
                 />
               ))}
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 46,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
@@ -361,8 +363,8 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "600",
     color: "#F4F4F4",
   },
   scroll: { flex: 1 },
