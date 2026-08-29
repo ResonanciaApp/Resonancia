@@ -865,7 +865,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               style={{ marginTop: 10, marginBottom: 10 }}
             />
 
-            <ChakraSection backgroundColor={resourceBlockBackground} />
+            <ChakraSection />
 
           </>
         )}
