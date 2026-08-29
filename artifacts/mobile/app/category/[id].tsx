@@ -37,7 +37,7 @@ const MUTED = "#c2c2c2";
 const CATEGORY_TAB_GRADIENTS: Record<string, [string, string]> = {
   ambientales: ["#357849", "#23522F"],
   historias: ["#704886", "#4A2A5A"],
-  charlas: ["#8D5135", "#5A3422"],
+  charlas: ["#953732", "#78221E"],
 };
 
 function getSessionTags(session: Session, categoryId: string): string[] {
