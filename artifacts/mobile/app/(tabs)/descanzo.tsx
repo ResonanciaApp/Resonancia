@@ -51,6 +51,7 @@ function SleepPill({
         styles.sleepPill,
         theme.id === "tibet" && styles.sleepPillTibet,
         theme.id === "indigo" && styles.sleepPillIndigo,
+        !sel && styles.sleepPillInactive,
         sel && styles.sleepPillSel,
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -886,6 +887,7 @@ const styles = StyleSheet.create({
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  sleepPillInactive: { backgroundColor: "#2B2944" },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
