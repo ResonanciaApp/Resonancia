@@ -1099,7 +1099,12 @@ export type LibHeaderActions = { onSearch: () => void; onAdd: () => void; hidden
 export function BibliotecaScreen({
   embedded = false,
   onHeaderActions,
-}: { embedded?: boolean; onHeaderActions?: (state: LibHeaderActions | null) => void } = {}) {
+  initialTab,
+}: {
+  embedded?: boolean;
+  onHeaderActions?: (state: LibHeaderActions | null) => void;
+  initialTab?: LibTab | null;
+} = {}) {
   const openLibraryRoute = useLibraryRouteOpener();
   const openPlaylistPanel = usePlaylistPanelOpener();
   const insets = useSafeAreaInsets();
@@ -1131,7 +1136,7 @@ export function BibliotecaScreen({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab, setActiveTab] = useState<LibTab | null>(null);
+  const [activeTab, setActiveTab] = useState<LibTab | null>(initialTab ?? null);
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");

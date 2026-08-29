@@ -13,7 +13,7 @@ const W = Dimensions.get("window").width;
  * la pantalla, el drawer sigue visible.
  */
 export function BibliotecaOverlay() {
-  const { libOpen, closeLib } = useDrawer();
+  const { libOpen, libraryInitialTab, closeLib } = useDrawer();
   const [rendered, setRendered] = useState(false);
   const slideAnim = useRef(new Animated.Value(W)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -66,7 +66,7 @@ export function BibliotecaOverlay() {
     <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
       {/* Usa el mismo encabezado centrado que la ruta de Biblioteca.
           onBack mantiene el comportamiento de cerrar el overlay sobre el drawer. */}
-      <ProfileScreenBase asTab onBack={closeLib} />
+      <ProfileScreenBase asTab onBack={closeLib} initialLibraryTab={libraryInitialTab} />
     </Animated.View>
   );
 }

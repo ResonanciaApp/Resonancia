@@ -51,6 +51,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
+import type { LibraryTab } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
@@ -212,7 +213,17 @@ function BgGlyph({
   );
 }
 
-export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: { dedicated?: boolean; onBack?: () => void; asTab?: boolean }) {
+export function ProfileScreenBase({
+  dedicated = false,
+  onBack,
+  asTab = false,
+  initialLibraryTab,
+}: {
+  dedicated?: boolean;
+  onBack?: () => void;
+  asTab?: boolean;
+  initialLibraryTab?: LibraryTab | null;
+}) {
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -1040,7 +1051,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
       )}
 
 
-      {!dedicated && <BibliotecaScreen embedded onHeaderActions={setLibActions} />}
+      {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
 
       {/* ── Invitar Sheet ── */}

@@ -6,7 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
@@ -29,6 +29,7 @@ import { useSounds } from "@/context/SoundsContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 
@@ -235,7 +236,8 @@ function CoverPickerSheet({
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, fromLibrary } = useLocalSearchParams<{ id: string; fromLibrary?: string }>();
+  const goBack = useLibraryReturnBack(fromLibrary, "mezclas");
 
   const { theme, activeSceneId } = useSceneTheme();
   const bgGradient = theme.gradient;
@@ -285,11 +287,11 @@ export default function MiMezclaScreen() {
         style: "destructive",
         onPress: () => {
           deletePreset(id!);
-          router.back();
+          goBack();
         },
       },
     ]);
-  }, [mix, id, deletePreset]);
+  }, [mix, id, deletePreset, goBack]);
 
   if (!mix) {
     return (
@@ -303,7 +305,7 @@ export default function MiMezclaScreen() {
     <LinearGradient colors={bgGradient} style={{ flex: 1 }}>
       {/* Header */}
       <View style={[s.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={12} style={s.iconBtn}>
+        <Pressable onPress={goBack} hitSlop={12} style={s.iconBtn}>
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
         <Text style={s.headerTitle} numberOfLines={1}>{mix.name}</Text>
