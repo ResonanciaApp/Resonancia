@@ -24,7 +24,7 @@ export default function HerramientasScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
-      <SacredBackground variant="gradient" />
+      <SacredBackground variant="gradient" noImage />
       <RainbowAuroraBackground idPrefix="recursos-aurora" />
       <StatusBar hidden />
 
