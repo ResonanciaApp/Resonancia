@@ -86,7 +86,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, libOpen, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -110,12 +110,6 @@ export function DrawerMenu() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  // Biblioteca deja visible la tab bar en la franja inferior. El drawer queda
-  // debajo del overlay, así que también debe retirarse de esa franja o taparía
-  // la barra salvo por el extremo que queda fuera de su ancho.
-  const tabBarInset = Platform.OS === "web" ? 8 : insets.bottom;
-  const tabBarBottom = Math.max(3, tabBarInset - 15) - 1;
-  const tabBarReserve = 68 + tabBarBottom;
 
   const translateX = React.useMemo(() => drawerAnim.interpolate({
     inputRange: [0, 1],
@@ -207,7 +201,7 @@ export function DrawerMenu() {
           styles.drawer,
           visible && styles.drawerShadow,
           {
-            bottom: libOpen ? tabBarReserve : 0,
+            bottom: 0,
             transform: [{ translateX: drawerTranslate }],
             opacity: drawerOpacity,
           },

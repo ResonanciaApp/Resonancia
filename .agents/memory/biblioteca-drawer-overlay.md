@@ -12,12 +12,8 @@ Los detalles que sí usan una ruta raíz (playlists y carpetas) deben montarse a
 
 La entrada y la salida del overlay deben animar en paralelo desplazamiento y opacidad, usando la misma curva y duración, para evitar que abrir Biblioteca se sienta brusco frente a su cierre.
 
-Los overlays que nacen desde el drawer (Diario, Mis sesiones, Favoritos, Historial, Amigos y Grupos) deben animar también el NavStack de fondo −56 px en paralelo, igual que Mezclador. Biblioteca es la excepción: debe dejar el NavStack y la tab bar centrados para no recortar el extremo derecho de la barra.
+Los overlays que nacen desde el drawer (Diario, Mis sesiones, Favoritos, Historial, Amigos y Grupos) deben animar también el NavStack de fondo −56 px en paralelo, igual que Mezclador. Biblioteca conserva ese parallax y oculta por completo la tab bar.
 
-Cuando Biblioteca está abierta, el drawer debe reservar también la franja inferior de la tab bar. BibliotecaOverlay queda por encima del drawer y deja esa franja libre; si el drawer conserva altura completa, tapa la barra salvo por el extremo derecho.
+**Why:** Biblioteca funciona como una pantalla completa sobre el drawer; reservar o pintar una franja inferior para la tab bar genera recortes y deja ver el fondo de Inicio detrás del menú.
 
-**Why:** el tab bar vive dentro del NavStack, pero DrawerMenu y BibliotecaOverlay son hermanos montados encima; dejar libre la franja solo en BibliotecaOverlay no basta para que la barra sea visible completa.
-
-**How to apply:** usar la misma reserva calculada para la tab bar (`68 + tabBarBottom`) en el bottom del drawer únicamente mientras `libOpen` sea true, con `tabBarInset = 8` en web y `insets.bottom` en nativo. En `PushWrapper` y `CustomTabBar`, no aplicar parallax horizontal cuando `libOpen` sea true.
-
-La franja inferior reservada debe tener una base oscura propia detrás de la tab bar. Si queda transparente, aparece el fondo de Inicio debajo del menú aunque la barra esté correctamente alineada.
+**How to apply:** cuando `libOpen` sea true, `CustomTabBar` debe tratar Biblioteca como superficie oculta (`tabBarHidden`) y `BibliotecaOverlay` debe ocupar todo el alto, sin `bottom` reservado. El drawer también conserva su altura completa.

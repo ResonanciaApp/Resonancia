@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Platform, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Animated, Dimensions, StyleSheet } from "react-native";
 
 import { ProfileScreenBase } from "@/components/ProfileScreenBase";
 import { useDrawer } from "@/context/DrawerContext";
@@ -15,13 +14,9 @@ const W = Dimensions.get("window").width;
  */
 export function BibliotecaOverlay() {
   const { libOpen, libraryInitialTab, closeLib } = useDrawer();
-  const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(false);
   const slideAnim = useRef(new Animated.Value(W)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const bottomInset = Platform.OS === "web" ? 8 : insets.bottom;
-  const tabBarBottom = Math.max(3, bottomInset - 15) - 1;
-  const tabBarReserve = 68 + tabBarBottom;
 
   useEffect(() => {
     if (libOpen) {
@@ -72,7 +67,6 @@ export function BibliotecaOverlay() {
       style={[
         StyleSheet.absoluteFill,
         {
-          bottom: tabBarReserve,
           opacity: fadeAnim,
           transform: [{ translateX: slideAnim }],
         },

@@ -163,16 +163,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
-  const tabBarHidden = hidden && !libOpen && !isLibraryRoute;
+  const librarySurface = libOpen || isLibraryRoute;
+  const tabBarHidden = hidden || librarySurface;
   const libraryBarOffset = libraryParallax.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 56],
     extrapolate: "clamp",
   });
-  // Con Biblioteca abierta el NavStack no aplica parallax, así que la barra
-  // tampoco debe desplazarse: moverla dentro del contenedor recortaría su
-  // extremo derecho, justo donde está Perfil.
-  const tabBarLibraryOffset = libOpen ? 0 : libraryBarOffset;
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
@@ -252,7 +249,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
     // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
     const panelOpen = isMixerOpen || isGeometrixOpen;
-    if (panelOpen || !tabBarHidden) {
+    if (panelOpen || !tabBarHidden || librarySurface) {
       // Ocultar de inmediato (sin fade) para que no quede visible durante la
       // transición de cierre de los paneles.
       handleOpacity.stopAnimation();
@@ -269,12 +266,12 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         useNativeDriver: true,
       }).start();
     }
-  }, [tabBarHidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
+  }, [tabBarHidden, librarySurface, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
 
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: tabBarLibraryOffset }, { translateY }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
       >
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
@@ -334,7 +331,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
       {state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
         <Animated.View
-          pointerEvents={hidden ? "auto" : "none"}
+          pointerEvents={hidden && !librarySurface ? "auto" : "none"}
           style={{
             position: "absolute",
             bottom: pb + 6,
