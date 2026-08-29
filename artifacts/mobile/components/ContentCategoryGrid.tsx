@@ -12,6 +12,25 @@ const GRID_PAD = 19;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
+const CARD_CATEGORY_COLORS: Record<string, string> = {
+  "meditaciones-guiadas": "#7251A3",
+  "sonidos-ancestrales": "#9A5A2C",
+  "musica-sonidos": "#287F83",
+  "ambientales": "#3F704D",
+  "__descanzo__": "#32708E",
+  "historias": "#704886",
+  "charlas": "#8D5135",
+};
+const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
+  "meditaciones-guiadas": 164,
+  "sonidos-ancestrales": 158,
+  "musica-sonidos": 126,
+  "ambientales": 144,
+  "__descanzo__": 120,
+  "historias": 130,
+  "charlas": 118,
+};
+
 /**
  * Accesos de exploración compartidos por Inicio y Descubrir.
  * Las acciones de Mezclador y Geometrix abren sus paneles, no rutas.
@@ -50,7 +69,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-meditaciones.png")}
-                style={{ width: 22, height: 22 }}
+                style={{ width: horizontal ? 16 : 22, height: horizontal ? 16 : 22 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -63,7 +82,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-sesiones.png")}
-                style={{ width: horizontal ? 22 : 26, height: horizontal ? 22 : 26 }}
+                style={{ width: horizontal ? 20 : 26, height: horizontal ? 20 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -76,7 +95,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-musica.png")}
-                style={{ width: horizontal ? 22 : 26, height: horizontal ? 22 : 26 }}
+                style={{ width: horizontal ? 20 : 26, height: horizontal ? 20 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -89,7 +108,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="leaf"
-                size={horizontal ? 22 : 24}
+                size={horizontal ? 20 : 24}
                 color={color ?? "#86C49A"}
               />
             ),
@@ -101,7 +120,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-luna.png")}
-                style={{ width: 22, height: 22 }}
+                style={{ width: horizontal ? 16 : 22, height: horizontal ? 16 : 22 }}
                 contentFit="contain"
                 tintColor={color ?? CATEGORY_ICON_COLOR}
               />
@@ -114,7 +133,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="book-open-page-variant"
-                size={horizontal ? 22 : 24}
+                size={horizontal ? 19 : 24}
                 color={color ?? "#D5A4E8"}
               />
             ),
@@ -126,7 +145,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="message-text-outline"
-                size={horizontal ? 22 : 24}
+                size={horizontal ? 19 : 24}
                 color={color ?? "#F0B17A"}
               />
             ),
@@ -209,6 +228,11 @@ export function ContentCategoryGrid({
                   horizontal
                     ? [
                         styles.horizontalCard,
+                        { width: HORIZONTAL_CARD_WIDTHS[category.id] ?? 140 },
+                        (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
+                          styles.horizontalSmallRadiusCard,
+                        category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
+                        category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
                     : corners[index] ?? { borderRadius: radius },
                   { opacity: pressed ? 0.75 : 1 },
@@ -219,6 +243,9 @@ export function ContentCategoryGrid({
                   style={[
                     styles.iconWrap,
                     horizontal && styles.horizontalIconCircle,
+                    horizontal && {
+                      backgroundColor: CARD_CATEGORY_COLORS[category.id] ?? category.color,
+                    },
                   ]}
                 >
                   {category.icon(horizontal || isDiscoverGrid ? CATEGORY_ICON_COLOR : undefined)}
@@ -285,14 +312,24 @@ const styles = StyleSheet.create({
   },
   horizontalCard: {
     borderRadius: 27,
-    height: 46,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
-    paddingVertical: 0,
-    paddingHorizontal: 16,
+    paddingVertical: 11,
+    paddingHorizontal: 12,
     borderWidth: 0,
+  },
+  horizontalSmallRadiusCard: {
+    borderRadius: 23,
+  },
+  horizontalRightSmallRadiusCard: {
+    borderTopRightRadius: 23,
+    borderBottomRightRadius: 23,
+  },
+  horizontalLeftSmallRadiusCard: {
+    borderTopLeftRadius: 23,
+    borderBottomLeftRadius: 23,
   },
   iconWrap: {
     width: 26,
@@ -300,9 +337,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   horizontalIconCircle: {
-    height: 22,
-    width: 22,
-    borderRadius: 0,
+    height: 27,
+    width: 27,
+    borderRadius: 14,
   },
   label: {
     fontSize: 15,
@@ -310,8 +347,7 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
   horizontalLabel: {
-    fontSize: 13,
-    fontWeight: "600",
+    fontSize: 14,
     textAlign: "center",
     flexShrink: 0,
   },
