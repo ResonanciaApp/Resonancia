@@ -47,6 +47,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { ChakraSection } from "@/components/ChakraSection";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -863,6 +864,8 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               cardOpacity={1}
               style={{ marginTop: 10, marginBottom: 10 }}
             />
+
+            <ChakraSection backgroundColor={resourceBlockBackground} />
 
           </>
         )}
