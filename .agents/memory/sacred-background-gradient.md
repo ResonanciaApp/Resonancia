@@ -5,6 +5,8 @@ The current aurora variant intentionally uses only the cool chakra colors (lila/
 **Why:** The translucent aurora reveals the image's high-contrast dark areas underneath, producing black-looking spots in the middle of the screen.
 
 **How to apply:** Keep the aurora above a smooth theme gradient for Recursos and similar surfaces. Preserve the background image only on screens where its texture is intentional and does not sit behind translucent multi-color halos.
+
+Sonidos uses the same clean no-image base and cool aurora treatment as Recursos.
 ---
 name: SacredBackground solid-by-default + per-category color identity
 description: Backgrounds are now flat/solid (Calm style). SacredBackground defaults to solid and renders null without solidColor, letting each screen's own root backgroundColor show.

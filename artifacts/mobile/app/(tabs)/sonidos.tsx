@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -17,6 +16,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
+import { RainbowAuroraBackground } from "@/components/RainbowAuroraBackground";
+import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -160,7 +161,9 @@ export default function SonidosScreen() {
   );
 
   return (
-    <LinearGradient colors={theme.gradient} style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
+      <SacredBackground variant="gradient" noImage />
+      <RainbowAuroraBackground idPrefix="sonidos-aurora" />
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
@@ -278,7 +281,7 @@ export default function SonidosScreen() {
           if (session) openSession(session);
         }}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
