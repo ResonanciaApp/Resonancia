@@ -1763,6 +1763,11 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <View style={[styles.inicio2ToolsSection, { marginBottom: 0 }]}>
+            <ToolsGrid replaceVideosWithLibrary />
+          </View>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Escuchadas recientemente"
             sessions={filteredListened}
@@ -1857,12 +1862,6 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             showCardMetadata
           />
-        )}
-        {isInicio2 && (
-          <View style={styles.inicio2ToolsSection}>
-            <Text style={[styles.sectionTitle, { marginBottom: 17 }]}>Mis herramientas</Text>
-            <ToolsGrid replaceVideosWithLibrary />
-          </View>
         )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
