@@ -2,11 +2,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback } from "react";
 import {
   Pressable,
+  ScrollView,
   StyleProp,
   StyleSheet,
   Text,
-  useWindowDimensions,
-  View,
   ViewStyle,
 } from "react-native";
 
@@ -17,9 +16,8 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
-const GRID_PAD = 19;
-const GRID_GAP = 7;
-const GRID_COLUMNS = 3;
+const PILLS_PAD = 19;
+const PILLS_GAP = 8;
 
 const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
@@ -47,7 +45,6 @@ export function ToolsGrid({
   style?: StyleProp<ViewStyle>;
   replaceVideosWithLibrary?: boolean;
 }) {
-  const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openCategory } = useCategoryOverlay();
@@ -55,12 +52,7 @@ export function ToolsGrid({
   const { openGeometrix } = useGeometrixPanel();
   const { openLib, openOverlay } = useDrawer();
 
-  const cardWidth = Math.max(
-    0,
-    Math.floor((width - GRID_PAD * 2 - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS),
-  );
-  const cardHeight = Math.max(100, Math.min(132, Math.round(cardWidth * 0.96)));
-  const cardBackground = activeSceneId === "tibet"
+  const pillBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
@@ -100,7 +92,13 @@ export function ToolsGrid({
   }, [openCategory, openMixer, openGeometrix, openLib, openOverlay]);
 
   return (
-    <View style={[styles.grid, style]} testID="tools-grid">
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={[styles.row, style]}
+      contentContainerStyle={styles.rowContent}
+      testID="tools-grid"
+    >
       {tools.map((tool) => (
         <Pressable
           key={tool.id}
@@ -111,9 +109,7 @@ export function ToolsGrid({
           style={({ pressed }) => [
             styles.card,
             {
-              width: cardWidth,
-              height: cardHeight,
-              backgroundColor: cardBackground,
+              backgroundColor: pillBackground,
               borderWidth: 0,
               opacity: pressed ? 0.75 : 1,
             },
@@ -121,43 +117,43 @@ export function ToolsGrid({
         >
           <MaterialCommunityIcons
             name={tool.icon}
-            size={29}
+            size={22}
             color={tool.color}
           />
           <Text
             style={[styles.label, { color: colors.foreground }]}
-            numberOfLines={2}
-            adjustsFontSizeToFit
-            minimumFontScale={0.86}
+            numberOfLines={1}
           >
             {tool.label}
           </Text>
         </Pressable>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  grid: {
+  row: {
+    marginHorizontal: -PILLS_PAD,
+  },
+  rowContent: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: GRID_GAP,
-    justifyContent: "center",
+    alignItems: "center",
+    gap: PILLS_GAP,
+    paddingHorizontal: PILLS_PAD,
   },
   card: {
+    flexDirection: "row",
     alignItems: "center",
     borderRadius: 27,
-    justifyContent: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 14,
+    height: 46,
+    gap: 12,
+    paddingHorizontal: 12,
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.1,
-    marginTop: 11,
-    textAlign: "center",
   },
 });
