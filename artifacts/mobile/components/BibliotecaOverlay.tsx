@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
+import { Animated, Dimensions, Platform, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ProfileScreenBase } from "@/components/ProfileScreenBase";
 import { useDrawer } from "@/context/DrawerContext";
@@ -14,9 +15,13 @@ const W = Dimensions.get("window").width;
  */
 export function BibliotecaOverlay() {
   const { libOpen, libraryInitialTab, closeLib } = useDrawer();
+  const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(false);
   const slideAnim = useRef(new Animated.Value(W)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const bottomInset = Platform.OS === "web" ? 8 : insets.bottom;
+  const tabBarBottom = Math.max(3, bottomInset - 15) - 1;
+  const tabBarReserve = 68 + tabBarBottom;
 
   useEffect(() => {
     if (libOpen) {
@@ -63,7 +68,16 @@ export function BibliotecaOverlay() {
   if (!rendered) return null;
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
+    <Animated.View
+      style={[
+        StyleSheet.absoluteFill,
+        {
+          bottom: tabBarReserve,
+          opacity: fadeAnim,
+          transform: [{ translateX: slideAnim }],
+        },
+      ]}
+    >
       {/* Usa el mismo encabezado centrado que la ruta de Biblioteca.
           onBack mantiene el comportamiento de cerrar el overlay sobre el drawer. */}
       <ProfileScreenBase asTab onBack={closeLib} initialLibraryTab={libraryInitialTab} />

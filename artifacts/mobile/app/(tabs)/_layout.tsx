@@ -47,7 +47,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas"]);
+const HIDDEN_ROUTES = new Set(["inicio8", "musica", "video", "emocion", "encuentros", "herramientas"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -151,6 +151,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
   const { isGeometrixOpen } = useGeometrixPanel();
   const { closeAllCategories } = useCategoryOverlay();
+  const { libOpen, closeLib } = useDrawer();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5) - 1;
@@ -161,6 +162,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { activeSceneId } = useSceneTheme();
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
+  const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
+  const tabBarHidden = hidden && !libOpen && !isLibraryRoute;
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
@@ -232,7 +235,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   useEffect(() => {
     Animated.timing(translateY, {
-      toValue: hidden ? barHeight + 40 : 0,
+      toValue: tabBarHidden ? barHeight + 40 : 0,
       duration: DURATION.SHEET_CLOSE,
       easing: easeOutCubic,
       useNativeDriver: true,
@@ -240,14 +243,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
     // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
     const panelOpen = isMixerOpen || isGeometrixOpen;
-    if (panelOpen || !hidden) {
+    if (panelOpen || !tabBarHidden) {
       // Ocultar de inmediato (sin fade) para que no quede visible durante la
       // transición de cierre de los paneles.
       handleOpacity.stopAnimation();
       handleOpacity.setValue(0);
     } else {
       // Mostrar con un pequeño delay: al cerrar Mezclador/Geometrix hay unos
-      // milisegundos donde hidden sigue true antes de que el panel llame a
+      // milisegundos donde el estado sigue true antes de que el panel llame a
       // showMenu(); el delay evita que la pestañita alcance a aparecer.
       Animated.timing(handleOpacity, {
         toValue: 1,
@@ -257,7 +260,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         useNativeDriver: true,
       }).start();
     }
-  }, [hidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
+  }, [tabBarHidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
 
   return (
     <>
@@ -287,6 +290,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
             const isFocused = effectiveRouteIndex === index;
             const onPress   = () => {
+              if (libOpen) closeLib();
               if (route.name === "musica") {
                 openMixer();
                 return;
