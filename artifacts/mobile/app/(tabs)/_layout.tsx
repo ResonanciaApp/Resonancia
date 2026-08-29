@@ -1,6 +1,3 @@
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -160,11 +157,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
-  const { hidden, showMenu, tabBarColors } = useTabBarVisibility();
+  const { hidden, showMenu } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
-  const accentOpacity = useRef(new Animated.Value(0)).current;
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
@@ -235,14 +231,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // ────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    Animated.timing(accentOpacity, {
-      toValue: tabBarColors ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [tabBarColors]);
-
-  useEffect(() => {
     Animated.timing(translateY, {
       toValue: hidden ? barHeight + 40 : 0,
       duration: DURATION.SHEET_CLOSE,
@@ -276,48 +264,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
-        {/* ── Glass Material ─────────────────────────────────────────────────── */}
-        {/* 1. Blur base */}
-        {/* En Android el blur experimental (dimezis) no se dibuja si el radio/clip
-            vive solo en el padre: hay que darle el borderRadius al propio BlurView */}
-        <BlurView
-          intensity={Platform.OS === "android" ? 100 : 40}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
-        >
-          {/* 2. Tinte uniforme de la barra en todos los temas y plataformas */}
-          <View
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11,11,36,0.9)" }]}
-            pointerEvents="none"
-          />
-          {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
-            locations={[0, 0.18, 0.5, 1]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-            pointerEvents="none"
-          />
-          {/* 6. Acento curva inferior-izquierda — bajo Inicio, toma la curva, casi imperceptible */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
-            pointerEvents="none"
-          />
-          {/* Acento del tab activo (crossfade) */}
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
-        </BlurView>
-
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
           onLayout={onRowLayout}
@@ -370,60 +316,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             );
           })}
         </View>
-      </Animated.View>
-
-      {/* 4. Borde GhostPill — capa aparte (sin overflow:hidden) para que el bulge de la curva no se recorte */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: PILL_MARGIN_H,
-          right: PILL_MARGIN_H,
-          bottom: barBottom,
-          height: PILL_H,
-          transform: [{ translateY }],
-        }}
-      >
-        {(() => {
-          const sw = 0.5;
-          const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
-          const bh = PILL_H;
-          const r  = bh / 2 - sw / 2;
-          const canvasH = bh;
-          const x0 = sw / 2;
-          const y0 = sw / 2;
-          const x1 = bw - sw / 2;
-          const y1 = canvasH - sw / 2;
-          const d =
-            `M ${x0 + r} ${y0} ` +
-            `L ${x1 - r} ${y0} ` +
-            `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
-            `L ${x1} ${y1 - r} ` +
-            `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
-            `L ${x0 + r} ${y1} ` +
-            `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
-            `L ${x0} ${y0 + r} ` +
-            `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
-            `Z`;
-          return (
-            <Svg width={bw} height={canvasH} style={{ position: "absolute", top: 0, left: 0 }} pointerEvents="none">
-              <Defs>
-                <SvgLinearGradient id="tabBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
-                  <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-                  <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
-                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
-                </SvgLinearGradient>
-                <SvgLinearGradient id="tabBorderB" x1="1" y1="1" x2="0.3" y2="0">
-                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
-                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
-                  <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
-                </SvgLinearGradient>
-              </Defs>
-              <Path d={d} fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
-              <Path d={d} fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
-            </Svg>
-          );
-        })()}
       </Animated.View>
 
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
@@ -674,10 +566,9 @@ const styles = StyleSheet.create({
     right: PILL_MARGIN_H,
     height: PILL_H,
     borderRadius: 999,
-    // En Android el overflow:hidden del contenedor rompe la captura del blur dimezis;
-    // el recorte lo hace el propio BlurView
-    overflow: Platform.OS === "android" ? "visible" : "hidden",
-    borderWidth: 1,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
