@@ -39,7 +39,7 @@ export default function EmocionScreen() {
   const { openCategory } = useCategoryOverlay();
   const [draft, setDraft] = useState("");
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
   const [recoOffset, setRecoOffset] = useState(0);
   const topPad = Platform.OS === "web" ? 66 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 126 : insets.bottom + 118;
@@ -47,9 +47,9 @@ export default function EmocionScreen() {
     ? "rgba(0,0,0,0.15)"
     : CARD_BG;
   const moodRecommended = React.useMemo<Session[]>(() => {
-    if (selectedMood) {
-      const cats = new Set(selectedMood.categoryIds);
-      const themes = new Set<string>(selectedMood.themeTags);
+    if (selectedMoods.length) {
+      const cats = new Set(selectedMoods.flatMap((mood) => mood.categoryIds));
+      const themes = new Set<string>(selectedMoods.flatMap((mood) => mood.themeTags));
       const pool = SESSIONS.filter((session) => cats.has(session.categoryId));
       const boosted = pool.filter((session) => session.themeTag?.some((tag) => themes.has(tag)));
       const rest = pool.filter((session) => !session.themeTag?.some((tag) => themes.has(tag)));
@@ -69,11 +69,20 @@ export default function EmocionScreen() {
       [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
     }
     return shuffled.slice(0, 5);
-  }, [catalogVersion, recoOffset, selectedMood]);
+  }, [catalogVersion, recoOffset, selectedMoods]);
 
-  function handleMoodSelect(moodId: MoodId) {
-    setSelectedMood(getMoodById(moodId) ?? null);
+  function handleMoodSelect(moodIds: MoodId[]) {
+    setSelectedMoods(
+      moodIds
+        .map((moodId) => getMoodById(moodId))
+        .filter((mood): mood is Mood => Boolean(mood)),
+    );
   }
+
+  const moodSelectionEmoji = selectedMoods.map((mood) => mood.emoji).join(" ");
+  const moodSelectionLabel = selectedMoods.length === 1
+    ? selectedMoods[0].label
+    : `${selectedMoods.length} emociones`;
 
   return (
     <LinearGradient colors={theme.gradient} style={styles.root}>
@@ -156,7 +165,7 @@ export default function EmocionScreen() {
             <Text style={styles.homeSectionTitle}>Personaliza tus recomendaciones</Text>
           </View>
 
-          {selectedMood ? (
+          {selectedMoods.length ? (
             <Pressable
               onPress={() => setMoodSheetVisible(true)}
               style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
@@ -170,10 +179,10 @@ export default function EmocionScreen() {
                 end={{ x: 1, y: 0 }}
                 style={styles.moodPill}
               >
-                <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
-                <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
+                <Text style={styles.moodPillEmoji} numberOfLines={1}>{moodSelectionEmoji}</Text>
+                <Text style={styles.moodPillLabel} numberOfLines={1}>{moodSelectionLabel}</Text>
                 <Pressable
-                  onPress={(event) => { event.stopPropagation?.(); setSelectedMood(null); }}
+                  onPress={(event) => { event.stopPropagation?.(); setSelectedMoods([]); }}
                   hitSlop={10}
                   style={{ marginLeft: 2 }}
                 >
@@ -195,7 +204,7 @@ export default function EmocionScreen() {
 
           <View style={{ paddingHorizontal: GRID_PAD }}>
             <Text style={[styles.homeSectionTitle, { marginTop: 24 }]}>
-              {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+              {selectedMoods.length ? "Para tus estados de ánimo" : "Recomendado para ti"}
             </Text>
           </View>
           <View style={styles.recoSection}>
@@ -241,6 +250,7 @@ export default function EmocionScreen() {
       <MoodPickerSheet
         visible={moodSheetVisible}
         onClose={() => setMoodSheetVisible(false)}
+        initialSelectedIds={selectedMoods.map((mood) => mood.id)}
         onSelect={handleMoodSelect}
       />
     </LinearGradient>

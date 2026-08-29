@@ -748,13 +748,15 @@ function Inicio2HeroSlider({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
+  onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
+  onOpenMoodPicker: () => void;
 }) {
   return (
     <Pressable
-      onPress={() => router.push("/(tabs)/emocion" as never)}
+      onPress={onOpenMoodPicker}
       accessibilityRole="button"
       accessibilityLabel="Agregar emoción"
       testID="inicio-add-emotion"
@@ -772,7 +774,7 @@ function InicioEmotionWidget({
 }
 
 type InicioMoodRecommendationsProps = {
-  selectedMood: Mood | null;
+  selectedMoods: Mood[];
   moodRecommended: Session[];
   isPremium: boolean;
   cardBg: string;
@@ -885,7 +887,7 @@ export default function HomeScreen2({
   }, [activeSceneId]);
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
   const [immersive, setImmersive] = useState(false);
   const [immersiveRendered, setImmersiveRendered] = useState(false);
   const { requestHide, showMenu } = useTabBarVisibility();
@@ -933,8 +935,12 @@ export default function HomeScreen2({
 
   const immersiveGesture = Gesture.Simultaneous(pinchGesture, doubleTap);
 
-  function handleMoodSelect(moodId: MoodId) {
-    setSelectedMood(getMoodById(moodId) ?? null);
+  function handleMoodSelect(moodIds: MoodId[]) {
+    setSelectedMoods(
+      moodIds
+        .map((moodId) => getMoodById(moodId))
+        .filter((mood): mood is Mood => Boolean(mood)),
+    );
   }
 
   function handleIntentionPress() {
@@ -1107,9 +1113,9 @@ export default function HomeScreen2({
   // Sesiones para "Recomendado para ti" / "Para tu estado de ánimo"
   const RECO_CATS = ["meditaciones-guiadas", "sonidos-ancestrales", "musica-sonidos"];
   const moodRecommended = React.useMemo<Session[]>(() => {
-    if (selectedMood) {
-      const cats = new Set(selectedMood.categoryIds);
-      const themes = new Set<string>(selectedMood.themeTags);
+    if (selectedMoods.length) {
+      const cats = new Set(selectedMoods.flatMap((mood) => mood.categoryIds));
+      const themes = new Set<string>(selectedMoods.flatMap((mood) => mood.themeTags));
       const pool = SESSIONS.filter((s) => cats.has(s.categoryId));
       const boosted = pool.filter((s) => s.themeTag?.some((t) => themes.has(t)));
       const rest = pool.filter((s) => !s.themeTag?.some((t) => themes.has(t)));
@@ -1125,7 +1131,7 @@ export default function HomeScreen2({
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled.slice(0, 5);
-  }, [selectedMood, catalogVersion, recoOffset]);
+  }, [selectedMoods, catalogVersion, recoOffset]);
 
   const featuredHoy = React.useMemo(() => {
     const pinned = pinnedFeaturedData?.session;
@@ -1984,7 +1990,7 @@ export default function HomeScreen2({
         {isInicio2 && (
           <View style={{ marginTop: 15, marginBottom: INICIO2_SECTION_GAP }}>
             <InicioMoodRecommendations
-              selectedMood={selectedMood}
+              selectedMoods={selectedMoods}
               moodRecommended={moodRecommended}
               isPremium={isPremium}
               cardBg={recommendationSurfaceBg}
@@ -1995,7 +2001,7 @@ export default function HomeScreen2({
               titleSpacing={17}
               maxItems={5}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
-              onClearMood={() => setSelectedMood(null)}
+              onClearMood={() => setSelectedMoods([])}
               onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
               onPlaySession={playSession}
               openCategory={openCategory}
@@ -2155,12 +2161,12 @@ export default function HomeScreen2({
 
         {!isInicio2 && (
           <InicioMoodRecommendations
-            selectedMood={selectedMood}
+            selectedMoods={selectedMoods}
             moodRecommended={moodRecommended}
             isPremium={isPremium}
             cardBg={recommendationSurfaceBg}
             onOpenMoodPicker={() => setMoodSheetVisible(true)}
-            onClearMood={() => setSelectedMood(null)}
+            onClearMood={() => setSelectedMoods([])}
             onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
             onPlaySession={playSession}
             openCategory={openCategory}
@@ -2214,6 +2220,7 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
+        onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
 
@@ -2231,6 +2238,7 @@ export default function HomeScreen2({
       <MoodPickerSheet
         visible={moodSheetVisible}
         onClose={() => setMoodSheetVisible(false)}
+        initialSelectedIds={selectedMoods.map((mood) => mood.id)}
         onSelect={handleMoodSelect}
       />
 
@@ -3345,7 +3353,7 @@ const styles = StyleSheet.create({
 });
 
 function InicioMoodRecommendations({
-  selectedMood,
+  selectedMoods,
   moodRecommended,
   isPremium,
   cardBg,
@@ -3379,7 +3387,7 @@ function InicioMoodRecommendations({
         </View>
       )}
 
-      {selectedMood ? (
+      {selectedMoods.length ? (
         <Pressable
           onPress={onOpenMoodPicker}
           style={({ pressed }) => [
@@ -3397,8 +3405,14 @@ function InicioMoodRecommendations({
             end={{ x: 1, y: 0 }}
             style={styles.moodPill}
           >
-            <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
-            <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
+            <Text style={styles.moodPillEmoji} numberOfLines={1}>
+              {selectedMoods.map((mood) => mood.emoji).join(" ")}
+            </Text>
+            <Text style={styles.moodPillLabel} numberOfLines={1}>
+              {selectedMoods.length === 1
+                ? selectedMoods[0].label
+                : `${selectedMoods.length} emociones`}
+            </Text>
             <Pressable
               onPress={(event) => {
                 event.stopPropagation?.();
@@ -3436,7 +3450,7 @@ function InicioMoodRecommendations({
             { marginTop: 24 },
           ]}
         >
-          {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+          {selectedMoods.length ? "Para tus estados de ánimo" : "Recomendado para ti"}
         </Text>
       </View>
       <View style={styles.recoSection}>
