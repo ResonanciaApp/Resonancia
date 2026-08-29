@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 
@@ -14,6 +14,9 @@ type Props = {
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
   const colors = useColors();
+  const { width: screenWidth } = useWindowDimensions();
+  const cardGap = 15;
+  const cardWidth = Math.round((screenWidth - 40 - cardGap) / 1.8);
 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
@@ -36,10 +39,17 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           <Pressable
             key={resonador.id}
             onPress={() => router.push(`/resonador/${resonador.id}` as never)}
-            style={({ pressed }) => [styles.resonador, { opacity: pressed ? 0.75 : 1 }]}
+            style={({ pressed }) => [
+              styles.resonador,
+              { width: cardWidth, opacity: pressed ? 0.75 : 1 },
+            ]}
           >
-            <View style={styles.photoFrame}>
-              <ExpoImage source={resonador.photo} style={styles.photo} contentFit="cover" />
+            <View style={[styles.photoFrame, { width: cardWidth, height: cardWidth }]}>
+              <ExpoImage
+                source={resonador.photo}
+                style={[styles.photo, { width: cardWidth, height: cardWidth }]}
+                contentFit="cover"
+              />
             </View>
             <Text numberOfLines={2} style={styles.name}>
               {resonador.name}
@@ -84,20 +94,13 @@ const styles = StyleSheet.create({
   },
   resonador: {
     alignItems: "center",
-    width: 128,
   },
   photoFrame: {
-    width: 128,
-    height: 178,
-    borderRadius: 14,
+    borderRadius: 15,
     overflow: "hidden",
-    borderWidth: 1.5,
-    borderColor: "rgba(218,212,236,0.35)",
     marginBottom: 12,
   },
   photo: {
-    width: 128,
-    height: 178,
   },
   name: {
     fontFamily: "Manrope",

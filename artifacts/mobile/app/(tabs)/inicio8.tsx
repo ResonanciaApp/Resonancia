@@ -745,7 +745,13 @@ function Inicio2HeroSlider({
   );
 }
 
-function InicioEmotionWidget({ bottom }: { bottom: number }) {
+function InicioEmotionWidget({
+  bottom,
+  backgroundColor,
+}: {
+  bottom: number;
+  backgroundColor: string;
+}) {
   return (
     <Pressable
       onPress={() => router.push("/(tabs)/emocion" as never)}
@@ -754,7 +760,7 @@ function InicioEmotionWidget({ bottom }: { bottom: number }) {
       testID="inicio-add-emotion"
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
-        { right: 18, bottom, opacity: pressed ? 0.82 : 1 },
+        { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -827,6 +833,12 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
+  const emotionWidgetBackground =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : activeSceneId === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2199,7 +2211,10 @@ export default function HomeScreen2({
         </View>
       </Animated.ScrollView>
 
-      <InicioEmotionWidget bottom={emotionWidgetBottom} />
+      <InicioEmotionWidget
+        bottom={emotionWidgetBottom}
+        backgroundColor={emotionWidgetBackground}
+      />
       </Animated.View>{/* fin contenido desvanecible */}
 
 
@@ -2380,7 +2395,6 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(26,28,54,0.90)",
     position: "absolute",
     zIndex: 25,
     elevation: 25,
@@ -2398,7 +2412,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#63B7A0",
+    backgroundColor: "#50326E",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
