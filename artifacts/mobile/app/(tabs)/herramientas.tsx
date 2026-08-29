@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { RainbowAuroraBackground } from "@/components/RainbowAuroraBackground";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -24,6 +25,7 @@ export default function HerramientasScreen() {
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] as string }]}>
       <SacredBackground variant="gradient" />
+      <RainbowAuroraBackground idPrefix="recursos-aurora" />
       <StatusBar hidden />
 
       <View style={styles.contentShift}>

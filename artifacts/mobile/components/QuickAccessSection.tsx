@@ -48,6 +48,14 @@ const ACCESS_CARDS_WITH_VIDEOS = [
   ACCESS_CARDS[0],
 ] as const;
 
+const PROFILE_ACCESS_CARDS = [
+  ACCESS_CARDS[0],
+  ACCESS_CARDS[1],
+  ACCESS_CARDS[2],
+  EXTRA_ACCESS_CARDS[0],
+  EXTRA_ACCESS_CARDS[1],
+] as const;
+
 type AccessId =
   | (typeof ACCESS_CARDS)[number]["id"]
   | (typeof EXTRA_ACCESS_CARDS)[number]["id"]
@@ -56,6 +64,7 @@ type AccessId =
 export function QuickAccessSection({
   includeExtras = false,
   replaceLibraryWithVideos = false,
+  profileLayout = false,
   showTitle = true,
   showCardBorders = true,
   cardBackgroundColor,
@@ -64,6 +73,7 @@ export function QuickAccessSection({
 }: {
   includeExtras?: boolean;
   replaceLibraryWithVideos?: boolean;
+  profileLayout?: boolean;
   showTitle?: boolean;
   showCardBorders?: boolean;
   cardBackgroundColor?: string;
@@ -76,6 +86,7 @@ export function QuickAccessSection({
   const { openLib, openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
+  const profileWideCardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -106,9 +117,11 @@ export function QuickAccessSection({
     openOverlay(access.route);
   }, [openCategory, openLib, openOverlay]);
 
-  const accessCards = replaceLibraryWithVideos
-    ? ACCESS_CARDS_WITH_VIDEOS
-    : ACCESS_CARDS_WITH_EXTRAS;
+  const accessCards = profileLayout
+    ? PROFILE_ACCESS_CARDS
+    : replaceLibraryWithVideos
+      ? ACCESS_CARDS_WITH_VIDEOS
+      : ACCESS_CARDS_WITH_EXTRAS;
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
       {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>}
@@ -122,8 +135,12 @@ export function QuickAccessSection({
             onPress={() => handlePress(access.id)}
             style={({ pressed }) => [
               styles.card,
+              profileLayout && styles.profileCard,
+              profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+                access.id !== "history" && styles.profileWideCard,
               {
-                width: cardWidth,
+                width: profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+                  access.id !== "history" ? profileWideCardWidth : cardWidth,
                 backgroundColor: cardBackground,
                 borderWidth: showCardBorders ? 1 : 0,
                 opacity: pressed ? cardOpacity * 0.75 : cardOpacity,
@@ -135,7 +152,15 @@ export function QuickAccessSection({
               size={22}
               color={colors.foreground}
             />
-            <Text style={[styles.label, { color: colors.foreground }]} numberOfLines={1}>
+            <Text
+              style={[
+                styles.label,
+                profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+                  access.id !== "history" && styles.profileWideLabel,
+                { color: colors.foreground },
+              ]}
+              numberOfLines={1}
+            >
               {access.label}
             </Text>
           </Pressable>
@@ -173,10 +198,22 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     paddingHorizontal: 8,
   },
+  profileCard: {
+    // La primera fila conserva el formato compacto de tres accesos.
+  },
+  profileWideCard: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    gap: 10,
+    paddingHorizontal: 16,
+  },
   label: {
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
+  },
+  profileWideLabel: {
+    textAlign: "left",
   },
 });

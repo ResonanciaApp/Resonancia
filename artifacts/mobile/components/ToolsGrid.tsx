@@ -41,9 +41,11 @@ type Tool = (typeof TOOLS)[number] | typeof LIBRARY_TOOL;
 export function ToolsGrid({
   style,
   replaceVideosWithLibrary = false,
+  libraryFirst = false,
 }: {
   style?: StyleProp<ViewStyle>;
   replaceVideosWithLibrary?: boolean;
+  libraryFirst?: boolean;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -57,13 +59,15 @@ export function ToolsGrid({
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
-  const tools: readonly Tool[] = replaceVideosWithLibrary
-    ? TOOLS.map((tool) =>
-        tool.id === "videos"
-          ? LIBRARY_TOOL
-          : tool,
-      )
-    : TOOLS;
+  const tools: readonly Tool[] = libraryFirst
+    ? [LIBRARY_TOOL, ...TOOLS]
+    : replaceVideosWithLibrary
+      ? TOOLS.map((tool) =>
+          tool.id === "videos"
+            ? LIBRARY_TOOL
+            : tool,
+        )
+      : TOOLS;
 
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {

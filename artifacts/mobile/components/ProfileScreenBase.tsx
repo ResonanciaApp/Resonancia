@@ -858,6 +858,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
 
             <QuickAccessSection
               includeExtras
+              profileLayout
               showTitle={false}
               showCardBorders={false}
               cardBackgroundColor={resourceBlockBackground}

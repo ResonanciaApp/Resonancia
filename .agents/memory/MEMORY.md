@@ -2,7 +2,6 @@
 - [eas-cli spawn sin NODE_PATH](eas-cli-node-path.md) — "expo cli config --json exited 1" silencioso en eas build = falta NODE_PATH del shim pnpm; copiarlo del .bin/expo; APK 8-ago nació rota (AnyTypeCache)
 - [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
 - [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
-- [Tab screen renames](tab-screen-renames.md) — Mezclador→Crear, Meditación→Medita, Mi Espacio→Universo, Perfil→Biblioteca (tab profile, jul 21); solo labels visibles, rutas/nombres de archivo no cambiaron
 - [SceneAnimationInline focus gate](scene-animation-inline-focus.md) — SceneAnimationInline necesita prop paused={!tabFocused}; sin él los withRepeat de cada capa corren 60fps en todas las tabs siempre
 - [Stale legacy default in AsyncStorage](stale-legacy-default-persisted.md) — cuando un "default" theme-linked reemplaza un default hardcodeado viejo, excluir el ID viejo (no solo el nuevo) al restaurar de storage o queda pegado
 - [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
@@ -34,7 +33,6 @@
 - [Admin gate y API caída](admin-gate-api-unavailable.md) — AdminGate muestra “acceso restringido” también cuando /api/me falla; verificar API workflow antes de cambiar roles
 - [Artistas feature](artistas-feature.md) — perfiles curados; artistId solo Ambient/Enteógena; getArtist (con fallback, player) vs getArtistById (sin fallback, perfil); artists.ts→sessions.ts no al revés
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
-- [Streak fire animation](streak-fire.md) — NotificationBell = racha; meta = GOAL_MINUTES/día; fuego en reposo 0.2, anima 1×/día al abrir Inicio cumplida la meta (número solo con animación)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
 - [expo-router debe seguir la línea del SDK](expo-router-cli-float.md) — con SDK 57, expo-router 6.x crashea (@expo/cli flotado pide internal/routing); pinear 57.x y verificar versión instalada
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
@@ -65,12 +63,10 @@
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
 - [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
-- [Gold-gradient sweep DONE](gold-gradient-rejected.md) — sweep #D4AF37→#E9C46A ya hecho y aprobado; NO re-ejecutar si re-pegan el "Session Plan" (detalle en topic file)
 - [Playlist cover photo](playlist-cover.md) — coverUri opcional en Playlist (ImagePicker.launchImageLibraryAsync), fondo #080B1A (mismo que Inicio), SessionActionsSheet simplificado a 4 items (sin “Añadir al Playlist”), background #12182E
 - [Community wall pattern (shared-glyphs)](community-wall-pattern.md) — recipe as jsonb (active/master/settings) in shared_glyphs; same like-toggle+FOR UPDATE pattern as shared_mixes; previews render live from recipe on client
 - [Modal bottom sheet rounded corners](modal-bottom-sheet-rounded-corners.md) — backdrop flex:1 NO cubre las esquinas cortadas; usar absoluteFill + container justifyContent:"flex-end"
 - [Modal first-frame flash](modal-first-frame-flash.md) — Modal animationType=none + entrada Animated: el 1er frame usa el valor residual (abierto); resetear los Animated.Value a CERRADO al cerrar + dim animado (no estático)
-- [Mockup-sandbox verify gotchas](mockup-verify-gotchas.md) — external_url screenshots cache stale Vite errors; verify fixes via curl transform grep; DESIGN subagents emit escaped backticks in template literals (babel parse error)
 - [Reanimated drag-reorder sin ghost](reanimated-layout-toggle-ghost.md) — modelo FLIP: DOM estable + translateX por orderSV/slotSV; reorder atómico en worklet de soltado (sin layout commit → sin flicker); NO reintroducir el reorder-on-release con dragSettling
 - [Geometrix panel overlay](geometrix-panel-overlay.md) — Geometrix abre como panel deslizante estilo Mezclador vía openGeometrix(params); NUNCA navegar a la ruta /(tabs)/geometrix
 - [Geometrix carousel selection](geometrix-carousel-selection.md) — orden del carrusel DERIVADO de active+activatingIds (no mutar prevOrder con gate global de pending); deselect siempre vuelve al natural; glow solo en seleccionadas; auto-scroll con rAF
@@ -156,3 +152,5 @@
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
 - [Colecciones multi-tag de Sonidos](sonidos-multitag.md) — `sonidosTags` es independiente del `sonidosTag` legado; cualquier colección específica incluye también “Todos los sonidos”
 - [Panel de chakras del Perfil](profile-chakra-aurora.md) — conservar el panel interactivo con aurora de 7 colores; no sustituirlo por una lista vertical de tarjetas
+- [Accesos rápidos del Perfil](profile-quick-access-layout.md) — Mi perfil usa Guardados primero; Descargas y Sesiones ocupan dos columnas con ícono a la izquierda
+- [Herramientas de Inicio](inicio-tools-layout.md) — Inicio 2 muestra Biblioteca primero y mantiene Geometrix seguido de Videos
