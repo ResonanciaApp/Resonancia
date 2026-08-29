@@ -2001,7 +2001,7 @@ export function BibliotecaScreen({
         mix={mixMenuPreset}
         visible={mixMenuPreset !== null}
         onClose={() => setMixMenuPreset(null)}
-        onEdit={(mix) => router.push(`/mi-mezcla/${mix.id}` as never)}
+        onEdit={(mix) => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
         onDuplicate={(mix) => { setMixMenuPreset(null); duplicatePreset(mix.id); }}
         onDelete={(mix) => deletePreset(mix.id)}
       />
