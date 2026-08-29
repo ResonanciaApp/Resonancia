@@ -12,10 +12,10 @@ import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { Animated, Dimensions, I18nManager, StyleSheet, Text, TextInput, View, AppState } from "react-native";
+import { Animated, AppState, Dimensions, I18nManager, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
 import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
@@ -183,6 +183,7 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
 
 function PushWrapper({ children }: { children: React.ReactNode }) {
   const { drawerAnim, isOpen, libOpen, overlayParallax } = useDrawer();
+  const insets = useSafeAreaInsets();
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 0.6],
@@ -201,8 +202,24 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
   // NavStack desplazado aquí recorta la tab bar en su borde derecho, porque
   // esa barra vive dentro de este mismo contenedor transformado.
   const backgroundTransformX = libOpen ? 0 : backgroundParallaxX;
+  const tabBarInset = Platform.OS === "web" ? 8 : insets.bottom;
+  const tabBarBottom = Math.max(3, tabBarInset - 15) - 1;
+  const tabBarReserve = 68 + tabBarBottom;
   return (
     <Animated.View style={{ flex: 1, transform: [{ translateX: backgroundTransformX }] }}>
+      {libOpen && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: tabBarReserve,
+            backgroundColor: "rgba(5,16,35,0.5)",
+          }}
+        />
+      )}
       {children}
       <Animated.View
         pointerEvents={isOpen ? "auto" : "none"}

@@ -19,3 +19,5 @@ Cuando Biblioteca está abierta, el drawer debe reservar también la franja infe
 **Why:** el tab bar vive dentro del NavStack, pero DrawerMenu y BibliotecaOverlay son hermanos montados encima; dejar libre la franja solo en BibliotecaOverlay no basta para que la barra sea visible completa.
 
 **How to apply:** usar la misma reserva calculada para la tab bar (`68 + tabBarBottom`) en el bottom del drawer únicamente mientras `libOpen` sea true, con `tabBarInset = 8` en web y `insets.bottom` en nativo. En `PushWrapper` y `CustomTabBar`, no aplicar parallax horizontal cuando `libOpen` sea true.
+
+La franja inferior reservada debe tener una base oscura propia detrás de la tab bar. Si queda transparente, aparece el fondo de Inicio debajo del menú aunque la barra esté correctamente alineada.
