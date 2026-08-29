@@ -39,7 +39,7 @@ import { CategoryOverlay } from "@/components/CategoryOverlay";
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#A9A9C3";
 const GRAD_END       = "#F9F9F9";
-const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
+const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
 
 const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
