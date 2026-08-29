@@ -1676,7 +1676,7 @@ export function BibliotecaScreen({
       if (viewMode === "grid") {
         return (
           <>
-            <View style={styles.gridWrap}>
+            <View style={[styles.gridWrap, styles.geometrixGridWrap]}>
               {visibleGeo.map((c) => {
                 const firstLayers = c.active.slice(0, 3);
                 return (
@@ -1717,7 +1717,7 @@ export function BibliotecaScreen({
       }
       return (
         <>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 14, paddingHorizontal: H_PAD }}>
+          <View style={[styles.geometrixList, { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 14, paddingHorizontal: H_PAD }]}>
             {visibleGeo.map((c) => (
               <GeometrixRow
                 key={c.id}
@@ -2191,7 +2191,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingHorizontal: H_PAD,
-    marginTop: 0,
+    marginTop: 15,
     marginBottom: -8,
   },
   sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
@@ -2238,6 +2238,9 @@ const styles = StyleSheet.create({
     gap: 5,
     paddingHorizontal: H_PAD,
     paddingTop: 4,
+  },
+  geometrixGridWrap: {
+    marginTop: 20,
   },
   gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.04)" },
   gridTitle: { fontFamily: "Manrope", fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
@@ -2326,6 +2329,9 @@ const styles = StyleSheet.create({
   emptyBtnText: { fontFamily: "Manrope", color: "#000", fontWeight: "700", fontSize: 14 },
 
   // Geometrix rows
+  geometrixList: {
+    marginTop: 20,
+  },
   geoRow: {
     width: GEO_CELL,
   },

@@ -711,15 +711,21 @@ export function ProfileScreenBase({
           {asTab && (
             <Pressable
               onPress={onBack ?? (() => router.navigate("/(tabs)/inicio-copia" as never))}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.libraryTabBackBtn,
-                { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
-              ]}
+              hitSlop={6}
+              style={styles.libraryTabBackHitArea}
               accessibilityRole="button"
               accessibilityLabel="Volver a Inicio"
             >
-              <Feather name="chevron-left" size={26} color="#FBFBFB" />
+              {({ pressed }) => (
+                <View
+                  style={[
+                    styles.libraryTabBackBtn,
+                    { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                </View>
+              )}
             </Pressable>
           )}
           {!asTab && !dedicated && (
@@ -1376,14 +1382,22 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   libraryTabBackBtn: {
-    position: "absolute",
-    left: 19,
-    top: 0,
     width: 36,
     height: 36,
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
+  },
+  libraryTabBackHitArea: {
+    position: "absolute",
+    left: 13,
+    top: -6,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
   },
   stickyTitleLibraryTab: {
     fontFamily: "Manrope",
