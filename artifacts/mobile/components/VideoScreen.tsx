@@ -295,11 +295,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(119,82,161,0.3)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  chipSel: { borderWidth: 0 },
+  chipSel: { borderWidth: 1, borderColor: "rgba(119,82,161,0.3)" },
   chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "400", letterSpacing: 0.3 },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },

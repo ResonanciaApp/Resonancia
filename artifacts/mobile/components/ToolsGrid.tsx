@@ -110,7 +110,8 @@ export function ToolsGrid({
             styles.card,
             {
               backgroundColor: pillBackground,
-              borderWidth: 0,
+              borderWidth: 1,
+              borderColor: "rgba(119,82,161,0.3)",
               opacity: pressed ? 0.75 : 1,
             },
           ]}
