@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -11,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { MOODS, type MoodId } from "@/data/moods";
 
 type Props = {
@@ -27,6 +27,7 @@ export function MoodPickerSheet({
   onSelect,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const [selected, setSelected] = useState<MoodId[]>(initialSelectedIds);
   const initialSelectionKey = initialSelectedIds.join("|");
 
@@ -80,20 +81,16 @@ export function MoodPickerSheet({
           <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
         </Pressable>
 
-        <LinearGradient
-          colors={["#121127", "#0D0D17"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+        <View
           style={[
             styles.sheet,
             {
+              backgroundColor: theme.gradient[0],
               paddingTop: insets.top + 8,
               paddingBottom: insets.bottom + 16,
             },
           ]}
         >
-          <View style={styles.handle} />
-
           <Pressable
             onPress={handleClose}
             style={styles.closeBtn}
@@ -156,7 +153,7 @@ export function MoodPickerSheet({
               Continuar
             </Text>
           </Pressable>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );
@@ -186,14 +183,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     overflow: "hidden",
   },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    alignSelf: "center",
-    marginBottom: 12,
-  },
   closeBtn: {
     position: "absolute",
     top: 24,
@@ -203,12 +192,12 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(20,16,30,0.82)",
+    backgroundColor: "#A9A9C3",
   },
   closeX: {
     fontFamily: "Manrope",
-    fontSize: 30,
-    lineHeight: 32,
+    fontSize: 36,
+    lineHeight: 38,
     fontWeight: "300",
     color: PRIMARY,
   },
@@ -217,7 +206,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: FG,
-    marginTop: 30,
+    marginTop: 16,
     marginBottom: 5,
     paddingRight: 8,
   },
