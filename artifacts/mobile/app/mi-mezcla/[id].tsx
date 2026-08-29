@@ -4,7 +4,6 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -269,35 +268,6 @@ export default function MiMezclaScreen() {
     [id, updatePresetMeta],
   );
 
-  const handlePickPhoto = useCallback(async () => {
-    setPickerVisible(false);
-    await new Promise<void>((resolve) => setTimeout(resolve, 300));
-
-    if (Platform.OS !== "web") {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) {
-        Alert.alert("Permiso requerido", "Necesitamos acceso a tu galería para elegir una foto de portada.");
-        return;
-      }
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.85,
-    });
-    const uri = result.canceled ? undefined : result.assets[0]?.uri;
-    if (!uri) return;
-
-    save({
-      coverUri: uri,
-      image: undefined,
-      coverGeometryId: undefined,
-      coverCreationId: undefined,
-    });
-  }, [save]);
-
   const handlePlay = useCallback(() => {
     if (!mix) return;
     if (isThisLoaded) {
@@ -358,7 +328,7 @@ export default function MiMezclaScreen() {
               placeholderBackgroundColor={profileBlockBackground}
             />
           </Pressable>
-          <Pressable style={s.coverEditBadge} onPress={handlePickPhoto} hitSlop={8}>
+          <Pressable style={s.coverEditBadge} onPress={() => setPickerVisible(true)} hitSlop={8}>
             <GoldGradientFill />
             <Feather name="camera" size={14} color="#1B060F" />
           </Pressable>
@@ -388,7 +358,6 @@ export default function MiMezclaScreen() {
                   <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
                     {MIX_CATEGORY_LABELS[cat.id]}
                   </Text>
-                  {selected && <Feather name="check-circle" size={12} color={GOLD} />}
                 </View>
               </Pressable>
             );
@@ -547,7 +516,7 @@ const s = StyleSheet.create({
     minHeight: 50,
   },
   catCellSelected: {
-    borderColor: GOLD,
+    borderColor: "rgba(249,249,249,0.7)",
   },
   catCellOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -575,7 +544,7 @@ const s = StyleSheet.create({
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
-    marginBottom: 10,
+    marginBottom: 17,
   },
   soundList: {
     maxHeight: 300,
