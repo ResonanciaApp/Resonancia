@@ -44,6 +44,7 @@ const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
 const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
+const TAB_BAR_LIFT   = 6;    // separación adicional solicitada con el borde inferior
 
 
 // Rutas que nunca aparecen en el menú inferior
@@ -154,7 +155,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { libOpen, closeLib, libraryParallax } = useDrawer();
 
   // 8 px de separación con el borde inferior de la pantalla
-  const barBottom = Math.max(3, pb - 10 - 5) - 1;
+  const barBottom = Math.max(3, pb - 10 - 5) - 1 + TAB_BAR_LIFT;
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
