@@ -285,6 +285,7 @@ export default function DescansoScreen() {
 
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
@@ -441,7 +442,10 @@ export default function DescansoScreen() {
       <NightSky />
 
       <View style={styles.contentShift}>
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+        <View
+          style={[styles.fixedHeader, { paddingTop: topPad + 2, backgroundColor: bgGradient[0] }]}
+          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
+        >
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
               Dormir
@@ -483,7 +487,7 @@ export default function DescansoScreen() {
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          contentContainerStyle={{ paddingTop: fixedHeaderHeight, paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onLayout={(e) => {
@@ -893,6 +897,10 @@ const styles = StyleSheet.create({
 
   /* Sticky header */
   fixedHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
     opacity: 0.9,
