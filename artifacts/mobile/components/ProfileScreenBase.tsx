@@ -715,7 +715,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             <BackPill
               onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
               size={28}
-              bgColor="rgba(255,255,255,0.1)"
+              bgColor={libraryHeaderButtonBackground}
               style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
             />
           )}
