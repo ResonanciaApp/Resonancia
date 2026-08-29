@@ -2,8 +2,9 @@
  * Detalle y edición de una mezcla guardada (propia del usuario).
  * Permite cambiar portada, nombre, descripción y reproducir.
  */
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -25,11 +26,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
+import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
@@ -41,7 +44,7 @@ export function MixCover({
   size = 120,
   radius = 16,
 }: {
-  mix: Pick<MixPreset, "image" | "coverUri" | "coverGeometryId" | "coverCreationId">;
+  mix: Pick<MixPreset, "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "sounds">;
   size?: number;
   radius?: number;
 }) {
@@ -98,9 +101,59 @@ export function MixCover({
       </View>
     );
   }
+
+  const stackedSounds = mix.sounds.slice(0, 3);
+  if (stackedSounds.length > 0) {
+    const thumbSize = size * 0.74;
+    const shift = stackedSounds.length > 1
+      ? (size - thumbSize) / (stackedSounds.length - 1)
+      : 0;
+    const stackRadius = Math.max(5, radius * 0.78);
+
+    return (
+      <View style={[containerStyle, { backgroundColor: "transparent" }]}>
+        <View style={{ width: size, height: thumbSize, position: "relative" }}>
+          {stackedSounds.map((sound, index) => {
+            const localImage = getSoundImage(sound.id);
+            const remoteImage = REMOTE_SOUND_IMAGE_MAP[sound.id];
+            const source = localImage ?? (remoteImage ? { uri: remoteImage } : undefined);
+
+            return (
+              <View
+                key={`${sound.id}-${index}`}
+                style={{
+                  position: "absolute",
+                  left: index * shift,
+                  top: 0,
+                  width: thumbSize,
+                  height: thumbSize,
+                  zIndex: index,
+                  borderRadius: stackRadius,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: "rgba(255,255,255,0.20)",
+                  backgroundColor: "#24131D",
+                }}
+              >
+                {source ? (
+                  <Image source={source} style={{ width: thumbSize, height: thumbSize }} contentFit="cover" />
+                ) : (
+                  <LinearGradient
+                    colors={["#4D293F", "#24131D"]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={containerStyle}>
-      <MaterialCommunityIcons name="tune-variant" size={size * 0.4} color={MUTED} />
+      <LinearGradient colors={["#4D293F", "#24131D"]} style={StyleSheet.absoluteFill} />
     </View>
   );
 }
@@ -109,11 +162,13 @@ export function MixCover({
 function CoverPickerSheet({
   visible,
   onClose,
+  onPickPhoto,
   onPickPreset,
   onClearCover,
 }: {
   visible: boolean;
   onClose: () => void;
+  onPickPhoto: () => void;
   onPickPreset: (key: string) => void;
   onClearCover: () => void;
 }) {
@@ -129,6 +184,14 @@ function CoverPickerSheet({
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Elige una imagen</Text>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
+          <Pressable
+            style={({ pressed }) => [ms.row, { marginBottom: 16, opacity: pressed ? 0.7 : 1 }]}
+            onPress={onPickPhoto}
+          >
+            <Feather name="image" size={20} color={TEXT} />
+            <Text style={ms.rowText}>Elegir foto de portada</Text>
+            <Feather name="chevron-right" size={18} color={MUTED} />
+          </Pressable>
           <View style={ms.gridRow}>
             {MIX_IMAGE_GALLERY.map((key) => {
               const img = getMixImage(key);
@@ -191,6 +254,35 @@ export default function MiMezclaScreen() {
     },
     [id, updatePresetMeta],
   );
+
+  const handlePickPhoto = useCallback(async () => {
+    setPickerVisible(false);
+    await new Promise<void>((resolve) => setTimeout(resolve, 300));
+
+    if (Platform.OS !== "web") {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert("Permiso requerido", "Necesitamos acceso a tu galería para elegir una foto de portada.");
+        return;
+      }
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.85,
+    });
+    const uri = result.canceled ? undefined : result.assets[0]?.uri;
+    if (!uri) return;
+
+    save({
+      coverUri: uri,
+      image: undefined,
+      coverGeometryId: undefined,
+      coverCreationId: undefined,
+    });
+  }, [save]);
 
   const handlePlay = useCallback(() => {
     if (!mix) return;
@@ -308,6 +400,7 @@ export default function MiMezclaScreen() {
       <CoverPickerSheet
         visible={pickerVisible}
         onClose={() => setPickerVisible(false)}
+        onPickPhoto={handlePickPhoto}
         onPickPreset={(key) =>
           save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined, categoryChosen: true })
         }
