@@ -65,7 +65,6 @@ import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
-import { CATEGORIES } from "@/data/categories";
 import { TEMAS } from "@/data/temas";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGetPinnedFeatured } from "@workspace/api-client-react";
@@ -77,7 +76,6 @@ import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
-import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
@@ -1863,6 +1861,19 @@ export default function HomeScreen2({
             showCardMetadata
           />
         )}
+        {isInicio2 && (
+          <SessionCarousel
+            title="Recientes"
+            sessions={recentSessions}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={19}
+            showCardMetadata
+          />
+        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2000,12 +2011,6 @@ export default function HomeScreen2({
         )}
 
 
-        {/* ── EXPLORA POR CONTENIDO ── */}
-        <ContentCategoryGrid
-          marginTop={isInicio2 ? 0 : showAnimatedScene ? 28 : 22}
-          marginBottom={isInicio2 ? INICIO2_SECTION_GAP : undefined}
-        />
-
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
@@ -2065,17 +2070,19 @@ export default function HomeScreen2({
         )}
 
         {/* ── RECIENTES ── */}
-        <SessionCarousel
-          title="Recientes"
-          sessions={recentSessions}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-          style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP, paddingHorizontal: GRID_PAD }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-          titleSize={isInicio2 ? 19 : 20}
-          showCardMetadata
-        />
+        {!isInicio2 && (
+          <SessionCarousel
+            title="Recientes"
+            sessions={recentSessions}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={RECENT_CARD_W}
+            titleSize={20}
+            showCardMetadata
+          />
+        )}
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         {!isInicio2 && (

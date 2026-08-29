@@ -23,7 +23,6 @@ const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
   { id: "geometrix", label: "Geometrix", icon: "cube-outline", color: "#C4C8D4" },
   { id: "videos", label: "Videos", icon: "video-outline", color: "#8ED9FF" },
-  { id: "bitacora", label: "Bitácora", icon: "history", color: "#B8C5F4" },
   { id: "respiracion", label: "Ejercicios Respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
 ] as const;
@@ -82,9 +81,6 @@ export function ToolsGrid({
         break;
       case "videos":
         openCategory("/videos");
-        break;
-      case "bitacora":
-        openOverlay("/historial");
         break;
       case "respiracion":
         openCategory("/respiracion");
