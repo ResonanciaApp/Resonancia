@@ -64,9 +64,9 @@ export function BibliotecaOverlay() {
 
   return (
     <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
-      {/* ProfileScreenBase en modo "no-dedicated" = la pestaña Biblioteca original.
-          Pasamos onBack para que la flecha ← cierre el overlay en vez de navegar. */}
-      <ProfileScreenBase onBack={closeLib} />
+      {/* Usa el mismo encabezado centrado que la ruta de Biblioteca.
+          onBack mantiene el comportamiento de cerrar el overlay sobre el drawer. */}
+      <ProfileScreenBase asTab onBack={closeLib} />
     </Animated.View>
   );
 }

@@ -699,7 +699,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
         ]}>
           {asTab && (
             <Pressable
-              onPress={() => router.navigate("/(tabs)/inicio8" as never)}
+              onPress={onBack ?? (() => router.navigate("/(tabs)/inicio8" as never))}
               hitSlop={10}
               style={({ pressed }) => [
                 styles.libraryTabBackBtn,
