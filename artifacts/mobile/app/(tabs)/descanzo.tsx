@@ -1,7 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BlurView } from "expo-blur";
 import {
   Animated,
   Dimensions,
@@ -56,15 +55,6 @@ function SleepPill({
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
-      {!sel && (
-        <BlurView
-          intensity={Platform.OS === "android" ? 100 : 55}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          pointerEvents="none"
-          style={StyleSheet.absoluteFill}
-        />
-      )}
       {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={icon} size={22} color="#F4F4F4" />
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
