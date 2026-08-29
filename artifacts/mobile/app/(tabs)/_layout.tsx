@@ -47,7 +47,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "video", "emocion", "encuentros", "herramientas"]);
+const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -151,7 +151,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
   const { isGeometrixOpen } = useGeometrixPanel();
   const { closeAllCategories } = useCategoryOverlay();
-  const { libOpen, closeLib } = useDrawer();
+  const { libOpen, closeLib, libraryParallax } = useDrawer();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5) - 1;
@@ -164,6 +164,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
   const tabBarHidden = hidden && !libOpen && !isLibraryRoute;
+  const libraryBarOffset = libraryParallax.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 56],
+    extrapolate: "clamp",
+  });
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
@@ -265,7 +270,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
       >
         <View
           style={[styles.row, isWeb && styles.rowWeb]}

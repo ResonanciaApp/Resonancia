@@ -21,6 +21,8 @@ type DrawerCtx = {
   /** Overlay de Biblioteca que se desliza SOBRE el drawer (el drawer queda
    *  abierto debajo; al cerrarse el overlay, el drawer sigue visible). */
   libOpen: boolean;
+  /** Parallax dedicado para mantener la tab bar fija sobre Biblioteca. */
+  libraryParallax: Animated.Value;
   libraryInitialTab: LibraryTab | null;
   openLib: (initialTab?: LibraryTab) => void;
   closeLib: () => void;
@@ -78,6 +80,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   }, [animate]);
 
   const [libOpen, setLibOpen] = useState(false);
+  const libraryParallax = useRef(new Animated.Value(0)).current;
   const [libraryInitialTab, setLibraryInitialTab] = useState<LibraryTab | null>(null);
   const openLib = useCallback((initialTab?: LibraryTab) => {
     setLibraryInitialTab(initialTab ?? null);
@@ -87,6 +90,15 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setLibOpen(false);
     setLibraryInitialTab(null);
   }, []);
+  useEffect(() => {
+    libraryParallax.stopAnimation();
+    Animated.timing(libraryParallax, {
+      toValue: libOpen ? 1 : 0,
+      duration: 320,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start();
+  }, [libOpen, libraryParallax]);
 
   const [overlayRoute, setOverlayRoute] = useState<string | null>(null);
   // Parallax: el drawer y la pantalla que queda detrás se corren un poco al
@@ -109,8 +121,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
