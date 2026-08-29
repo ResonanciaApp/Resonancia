@@ -2398,6 +2398,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 25,
     elevation: 25,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.38,
+    shadowRadius: 10,
   },
   inicio2HeroEmotionEmoji: {
     fontSize: 31,
@@ -2405,7 +2409,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroEmotionAdd: {
     position: "absolute",
-    top: -2,
+    top: 0,
     left: -4,
     width: 31,
     height: 31,
@@ -2413,6 +2417,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#50326E",
+    transform: [{ translateY: 2 }],
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
