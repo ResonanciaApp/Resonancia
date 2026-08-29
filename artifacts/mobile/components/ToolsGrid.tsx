@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     height: 46,
     gap: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   label: {
     fontFamily: "Manrope",
