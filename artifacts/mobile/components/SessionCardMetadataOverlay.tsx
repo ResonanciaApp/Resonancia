@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Image, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
@@ -6,13 +7,16 @@ import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 export const SESSION_CARD_METADATA_HEIGHT_SCALE = 1.2;
 
+type MaterialIconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+
 const CATEGORY_PILL_META: Record<string, {
   label: string;
   color: string;
-  icon: number;
+  icon?: number;
+  materialIcon?: MaterialIconName;
 }> = {
   "meditaciones-guiadas": {
-    label: "Meditación",
+    label: "Meditaciones",
     color: "#7251A3",
     icon: require("@/assets/images/cat-meditaciones.png"),
   },
@@ -33,8 +37,18 @@ const CATEGORY_PILL_META: Record<string, {
   },
   ambientales: {
     label: "Ambientales",
-    color: "#4D8A5D",
-    icon: require("@/assets/images/cat-sonidos.png"),
+    color: "#3F704D",
+    materialIcon: "leaf",
+  },
+  historias: {
+    label: "Historias",
+    color: "#691E5E",
+    materialIcon: "book-open-page-variant",
+  },
+  charlas: {
+    label: "Charlas",
+    color: "#78221E",
+    materialIcon: "message-text-outline",
   },
 };
 
@@ -73,7 +87,11 @@ export function SessionCardMetadataOverlay({
       {category && (
         <View pointerEvents="none" style={styles.categoryPill}>
           <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
-            <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+            {category.materialIcon ? (
+              <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
+            ) : category.icon ? (
+              <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+            ) : null}
           </View>
           <Text style={styles.categoryLabel} numberOfLines={1}>
             {category.label}
