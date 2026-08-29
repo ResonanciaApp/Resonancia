@@ -37,6 +37,15 @@ const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 
+const MIX_CATEGORY_LABELS: Record<MixCategory, string> = {
+  motivarme: "Meditar",
+  concentracion: "Enfocarme",
+  dormir: "Descansar",
+  trabajar: "Energizarme",
+  paz_interior: "Paz interior",
+  magico: "Soltar la pena",
+};
+
 // ── Portada de mezcla (exportada para usar en biblioteca) ─────────────────────
 export function MixCover({
   mix,
@@ -170,13 +179,11 @@ export function MixCover({
 function CoverPickerSheet({
   visible,
   onClose,
-  onPickPhoto,
   onPickPreset,
   onClearCover,
 }: {
   visible: boolean;
   onClose: () => void;
-  onPickPhoto: () => void;
   onPickPreset: (key: string) => void;
   onClearCover: () => void;
 }) {
@@ -192,14 +199,6 @@ function CoverPickerSheet({
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Elige una imagen</Text>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
-          <Pressable
-            style={({ pressed }) => [ms.row, { marginBottom: 16, opacity: pressed ? 0.7 : 1 }]}
-            onPress={onPickPhoto}
-          >
-            <Feather name="image" size={20} color={TEXT} />
-            <Text style={ms.rowText}>Elegir foto de portada</Text>
-            <Feather name="chevron-right" size={18} color={MUTED} />
-          </Pressable>
           <View style={ms.gridRow}>
             {MIX_IMAGE_GALLERY.map((key) => {
               const img = getMixImage(key);
@@ -349,21 +348,24 @@ export default function MiMezclaScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Portada */}
-        <Pressable style={s.coverWrap} onPress={() => setPickerVisible(true)}>
-          <MixCover
-            mix={mix}
-            size={160}
-            radius={20}
-            showSoundStack={false}
-            placeholderBackgroundColor={profileBlockBackground}
-          />
-          <View style={s.coverEditBadge}>
+        <View style={s.coverWrap}>
+          <Pressable onPress={() => setPickerVisible(true)}>
+            <MixCover
+              mix={mix}
+              size={160}
+              radius={20}
+              showSoundStack={false}
+              placeholderBackgroundColor={profileBlockBackground}
+            />
+          </Pressable>
+          <Pressable style={s.coverEditBadge} onPress={handlePickPhoto} hitSlop={8}>
             <GoldGradientFill />
             <Feather name="camera" size={14} color="#1B060F" />
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
 
         {/* Categoría */}
+        <Text style={s.sectionTitle}>Usa tu mezcla para</Text>
         <View style={s.catGrid}>
           {MIX_CATEGORIES.map((cat) => {
             const selected = category === cat.id;
@@ -384,7 +386,7 @@ export default function MiMezclaScreen() {
                 {selected && <View style={s.catCellOverlay} />}
                 <View style={s.catCellLabelRow}>
                   <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
-                    {cat.label}
+                    {MIX_CATEGORY_LABELS[cat.id]}
                   </Text>
                   {selected && <Feather name="check-circle" size={12} color={GOLD} />}
                 </View>
@@ -412,7 +414,7 @@ export default function MiMezclaScreen() {
               return (
                 <View
                   key={`${activeSound.id}-${index}`}
-                  style={[s.soundRow, { backgroundColor: profileBlockBackground }]}
+                  style={s.soundRow}
                 >
                   <View style={s.soundThumb}>
                     {source ? (
@@ -452,7 +454,6 @@ export default function MiMezclaScreen() {
       <CoverPickerSheet
         visible={pickerVisible}
         onClose={() => setPickerVisible(false)}
-        onPickPhoto={handlePickPhoto}
         onPickPreset={(key) =>
           save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined, categoryChosen: true })
         }
@@ -590,6 +591,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+    backgroundColor: "transparent",
   },
   soundThumb: {
     width: 48,
