@@ -203,7 +203,8 @@ const styles = StyleSheet.create({
   },
   profileWideCard: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    height: 38,
+    justifyContent: "center",
     gap: 10,
     paddingHorizontal: 16,
   },
@@ -214,6 +215,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   profileWideLabel: {
-    textAlign: "left",
+    textAlign: "center",
   },
 });
