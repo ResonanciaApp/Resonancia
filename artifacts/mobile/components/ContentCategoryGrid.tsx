@@ -347,7 +347,8 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
   horizontalLabel: {
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: "600",
     textAlign: "center",
     flexShrink: 0,
   },
