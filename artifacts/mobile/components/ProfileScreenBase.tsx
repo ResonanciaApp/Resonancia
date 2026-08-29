@@ -703,7 +703,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               hitSlop={10}
               style={({ pressed }) => [
                 styles.libraryTabBackBtn,
-                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.7 : 1 },
+                { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Volver a Inicio"
@@ -1389,7 +1389,7 @@ const styles = StyleSheet.create({
   libActionsPill: {
     position: "absolute",
     right: 19,
-    top: 0,
+    top: 5,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
