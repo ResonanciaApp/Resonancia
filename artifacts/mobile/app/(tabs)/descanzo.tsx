@@ -178,7 +178,6 @@ function NightSky() {
 /* ─── Constantes del sheet ───────────────────────────────────────────── */
 const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
 const SHEET_BG = "#120A18";
-const DORMIR_BACKGROUND = "#1D1D30";
 
 /* ─── NightTimerSheet (controlado desde DescansoScreen) ─────────────── */
 interface NightTimerSheetProps {
@@ -281,7 +280,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const bgGradient = [DORMIR_BACKGROUND, DORMIR_BACKGROUND] as const;
+  const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
 
   const [timerSheet,  setTimerSheet]  = useState(false);
