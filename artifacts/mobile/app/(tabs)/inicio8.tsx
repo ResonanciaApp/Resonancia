@@ -1864,6 +1864,25 @@ export default function HomeScreen2({
             <ToolsGrid replaceVideosWithLibrary />
           </View>
         )}
+        {isInicio2 && videos.length > 0 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
+              <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
+            >
+              {videos.slice(0, 8).map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
         {isInicio2 && featuredHoy && (
           <View style={[styles.section, { marginBottom: 0 }]}>
             <Text style={styles.sectionTitle}>Para este momento</Text>
@@ -2046,27 +2065,6 @@ export default function HomeScreen2({
               </Pressable>
             ))}
           </ScrollView>
-          </View>
-        )}
-
-        {/* ── VIDEOS DESTACADOS ── */}
-        {false && videos.length > 0 && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
-              </Pressable>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
-            >
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
           </View>
         )}
 
