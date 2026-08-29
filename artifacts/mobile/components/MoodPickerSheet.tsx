@@ -28,6 +28,12 @@ export function MoodPickerSheet({
 }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const inactiveSleepTabBackground =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
   const [selected, setSelected] = useState<MoodId[]>(initialSelectedIds);
   const initialSelectionKey = initialSelectedIds.join("|");
 
@@ -93,7 +99,7 @@ export function MoodPickerSheet({
         >
           <Pressable
             onPress={handleClose}
-            style={styles.closeBtn}
+            style={[styles.closeBtn, { backgroundColor: inactiveSleepTabBackground }]}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Cerrar selector de emociones"
@@ -192,14 +198,18 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#A9A9C3",
   },
   closeX: {
     fontFamily: "Manrope",
-    fontSize: 36,
-    lineHeight: 38,
+    width: 40,
+    height: 40,
+    fontSize: 40,
+    lineHeight: 40,
     fontWeight: "300",
     color: PRIMARY,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false,
   },
   title: {
     fontFamily: "Manrope",
