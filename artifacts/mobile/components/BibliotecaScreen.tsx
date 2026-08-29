@@ -116,16 +116,14 @@ function MixRow({
   mix,
   isPlayingThis,
   onPress,
-  onLongPress,
   onPressThumb,
-  onPressMenu,
+  onPressEdit,
 }: {
   mix: MixPreset;
   isPlayingThis: boolean;
   onPress: () => void;
-  onLongPress?: () => void;
   onPressThumb: () => void;
-  onPressMenu: () => void;
+  onPressEdit: () => void;
 }) {
   return (
     <View style={styles.row}>
@@ -134,8 +132,6 @@ function MixRow({
       </Pressable>
       <Pressable
         onPress={onPress}
-        onLongPress={onLongPress}
-        delayLongPress={600}
         style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}
       >
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
@@ -150,8 +146,8 @@ function MixRow({
           </Text>
         )}
       </Pressable>
-      <Pressable onPress={onPressMenu} hitSlop={10} style={styles.mixMenuBtn}>
-        <Feather name="more-vertical" size={18} color={MUTED} />
+      <Pressable onPress={onPressEdit} hitSlop={10} style={styles.mixMenuBtn}>
+        <Feather name="edit-2" size={18} color={MUTED} />
       </Pressable>
     </View>
   );
@@ -169,7 +165,7 @@ function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.Com
     >
       {sel && (
         <LinearGradient
-          colors={["#307E91", "#1A5863"]}
+          colors={["#784576", "#50326E"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={StyleSheet.absoluteFill}
@@ -1182,13 +1178,12 @@ export function BibliotecaScreen({
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
   const {
-    presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet,
+    presets, loadedPresetId, isPlaying: mixerPlaying, openSheet,
     mixFolders,
   } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const loadMix = useLoadMix();
-  const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
   const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
 
   const { history, favorites } = usePlayer();
@@ -1368,9 +1363,8 @@ export function BibliotecaScreen({
                     mix={mix}
                     isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                     onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                    onLongPress={() => setMixMenuPreset(mix)}
                     onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                    onPressMenu={() => setMixMenuPreset(mix)}
+                    onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
                   />
                 ))}
               </View>
@@ -1641,9 +1635,8 @@ export function BibliotecaScreen({
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
                 onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                onLongPress={() => setMixMenuPreset(mix)}
                 onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                onPressMenu={() => setMixMenuPreset(mix)}
+                onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
               />
             ))}
           </View>
@@ -1947,7 +1940,7 @@ export function BibliotecaScreen({
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
-              <Feather name="chevron-down" size={15} color={MUTED} />
+              <Feather name="chevron-down" size={15} color={MUTED} style={{ transform: [{ translateY: 7 }] }} />
             </Pressable>
           </View>
         )}
@@ -1996,14 +1989,6 @@ export function BibliotecaScreen({
         itemKind={favActionsItemKind}
         visible={favActionsItemId !== null}
         onClose={() => { setFavActionsItemId(null); setFavActionsItemKind(null); }}
-      />
-      <MixActionsSheet
-        mix={mixMenuPreset}
-        visible={mixMenuPreset !== null}
-        onClose={() => setMixMenuPreset(null)}
-        onEdit={(mix) => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
-        onDuplicate={(mix) => { setMixMenuPreset(null); duplicatePreset(mix.id); }}
-        onDelete={(mix) => deletePreset(mix.id)}
       />
       <MixActionsSheet
         mix={null}
@@ -2179,7 +2164,7 @@ const styles = StyleSheet.create({
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
   controlRow: {
