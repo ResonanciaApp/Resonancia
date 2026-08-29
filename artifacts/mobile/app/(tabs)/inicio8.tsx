@@ -835,10 +835,10 @@ export default function HomeScreen2({
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
   const emotionWidgetBackground =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
+      ? "#1A2453"
       : activeSceneId === "indigo"
-        ? "rgba(42,40,64,0.65)"
-        : "rgba(255,255,255,0.05)";
+        ? "#212033"
+        : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2405,7 +2405,7 @@ const styles = StyleSheet.create({
   },
   inicio2HeroEmotionAdd: {
     position: "absolute",
-    top: -4,
+    top: -2,
     left: -4,
     width: 31,
     height: 31,
