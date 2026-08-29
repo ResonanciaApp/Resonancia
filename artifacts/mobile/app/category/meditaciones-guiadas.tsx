@@ -1,7 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
-import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
@@ -264,13 +263,18 @@ const ac = StyleSheet.create({
 export default function MeditacionesGuiadasScreen() {
   const { openCategory } = useCategoryOverlay();
   const insets    = useSafeAreaInsets();
-  const topPad    = Platform.OS==="web" ? 0 : insets.top;
+  const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { version } = useCatalog();
-  const { theme } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const { history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
+  const profileSectionBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : "rgba(255,255,255,0.05)";
 
   const TABS = useMemo(() => {
     const uniqueTags = [...new Set(
@@ -475,26 +479,32 @@ export default function MeditacionesGuiadasScreen() {
         }}
       >
 
-        {/* ── Hero banner ── */}
-        <View style={[styles.heroArea, { height: topPad + 48 }]}>
-          {/* Flecha atrás flotante */}
-          <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
-            <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-              <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: -1 }] }} />
-            </View>
-          </View>
-        </View>
-
-        {/* ── Título + Descripción ── */}
-        <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Meditaciones</Text>
+        {/* ── Header ── */}
+        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+          <Pressable
+            onPress={backOverride ?? (() => router.back())}
+            hitSlop={10}
+            style={({ pressed }) => [
+              styles.backBtn,
+              {
+                backgroundColor: profileSectionBackground,
+                opacity: pressed ? 0.7 : 1,
+                top: topPad + 3,
+              },
+            ]}
+          >
+            <Feather name="chevron-left" size={26} color={TEXT} />
+          </Pressable>
+          <Text style={styles.pageTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+            Meditaciones
+          </Text>
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
             style={[
               styles.headerSearchButton,
               theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
-              { transform: [{ translateY: -4 }] },
+              { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
             accessibilityLabel="Buscar en Meditaciones"
@@ -544,29 +554,42 @@ export default function MeditacionesGuiadasScreen() {
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <View style={styles.stickyHeaderRow}>
-          <View style={{ width: 40 }} />
-          <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Meditaciones</Text>
+          <View style={styles.stickyHeaderSpacer} />
+          <View style={styles.stickyTitleCol}>
+            <Text style={styles.stickyTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+              Meditaciones
+            </Text>
           </View>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[
-              styles.headerSearchButton,
-              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Meditaciones"
-            testID="meditations-sticky-search-button"
-          >
-            <Feather name="search" size={24} color={TEXT} />
-          </Pressable>
-        </View>
-        <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
-          <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-            <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: -1 }] }} />
+          <View style={styles.stickyHeaderSpacer}>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[
+                styles.headerSearchButton,
+                theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Meditaciones"
+              testID="meditations-sticky-search-button"
+            >
+              <Feather name="search" size={24} color={TEXT} />
+            </Pressable>
           </View>
         </View>
+        <Pressable
+          onPress={backOverride ?? (() => router.back())}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.backBtn,
+            {
+              backgroundColor: profileSectionBackground,
+              opacity: pressed ? 0.7 : 1,
+              top: topPad + 2,
+            },
+          ]}
+        >
+          <Feather name="chevron-left" size={26} color={TEXT} />
+        </Pressable>
         <View style={{ marginTop: 19 }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
         </View>
@@ -580,9 +603,15 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, paddingHorizontal: H_PAD, paddingBottom: 0, backgroundColor: "#1B060F" },
+  header: { paddingHorizontal: H_PAD, paddingBottom: 12, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
+  pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center", backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
+  stickyHeaderSpacer: { width: 40 },
+  stickyTitleCol: { flex: 1, alignItems: "center" },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
   headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.12)" },
   headerTitleCol: { flex: 1, alignItems: "center" },
@@ -662,7 +691,6 @@ const styles = StyleSheet.create({
   searchEmpty: { flex: 1, backgroundColor: "#0D0A1A", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
   searchEmptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
   searchEmptySub: { fontFamily: "Manrope", fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
-  backBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   chipsShadow: { position: "absolute", left: 0, right: 0, bottom: -7, height: 7 },
 });
