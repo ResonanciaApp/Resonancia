@@ -166,6 +166,7 @@ export default function SonidosScreen() {
       <RainbowAuroraBackground idPrefix="sonidos-aurora" />
       <StatusBar hidden />
       <GeoUniverseBackground />
+      <View pointerEvents="none" style={styles.backgroundShade} />
       <View style={styles.contentShift}>
         <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
@@ -287,6 +288,10 @@ export default function SonidosScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  backgroundShade: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   fixedHeader: {
     zIndex: 20,
