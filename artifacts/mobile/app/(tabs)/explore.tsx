@@ -240,6 +240,7 @@ export default function ExploreScreen() {
         return true;
       })
       .map((sec) => ({
+        slug: sec.slug,
         label: sec.label,
         sessions: SESSIONS.filter((s) =>
           (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
@@ -415,7 +416,7 @@ export default function ExploreScreen() {
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
             <SessionCarousel
-              key={carousel.label}
+              key={carousel.slug}
               title={carousel.label}
               sessions={carousel.sessions}
               isPremium={isPremium}
@@ -427,6 +428,7 @@ export default function ExploreScreen() {
               cardWidth={SQCARD_W}
               titleSize={19}
               showCardMetadata
+              onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
             />
           ))}
 

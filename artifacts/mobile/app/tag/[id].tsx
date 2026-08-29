@@ -1,11 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { BackPill } from "@/components/BackPill";
-import { GhostPill } from "@/components/GhostPill";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useBackOverride } from "@/context/BackOverrideContext";
-import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
-import React, { useRef, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Animated,
   Dimensions,
@@ -15,453 +10,320 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  type TextStyle,
   View,
 } from "react-native";
-import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PremiumBadge } from "@/components/PremiumBadge";
+import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { usePremium } from "@/context/PremiumContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCatalog } from "@/context/CatalogContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS, type Session } from "@/data/sessions";
-import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
+import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
-
-function sessionAuthor(session: Session): string {
-  const guideId = session.guideIds?.[0] ?? session.guideId;
-  if (guideId) return getGuide(guideId).name;
-  return getArtist(session.artistId).name;
-}
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const HERO_H = Math.round(width * 0.72);
-const CARD_W = 150;
-const CARD_IMG_H = 108;
+const COL_GAP = 12;
+const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
 
-const DURATION_FILTERS = [
-  { label: "5–10 min",  min: 0,  max: 10  },
-  { label: "10–20 min", min: 11, max: 20  },
-  { label: "20–30 min", min: 21, max: 30  },
-  { label: "30+ min",   min: 31, max: 9999 },
-];
+/**
+ * The API stores the display label on each session and exposes a slug on the
+ * Explore section. Resolve the slug back to that exact label before filtering
+ * so custom labels work just like the predefined thematic tags.
+ */
+function resolveThemeLabel(slug: string | undefined): string | undefined {
+  if (!slug) return undefined;
 
-export default function TagScreen({ id: idProp }: { id?: string } = {}) {
-  const { id: idParam } = useLocalSearchParams<{ id: string }>();
-  const id = idProp ?? idParam;
-  const overlayBack = useBackOverride();
-  const goBack = () => (overlayBack ? overlayBack() : router.back());
-  const overlay = useCategoryOverlayOptional();
+  const predefined = TAG_CARDS.find((tag) => tag.id === slug);
+  if (predefined) return predefined.label;
+
+  const labels = new Set(
+    SESSIONS.flatMap((session) => session.themeTag ?? []),
+  );
+  const dynamicLabel = [...labels].find((label) => slugifyThemeTag(label) === slug);
+  if (dynamicLabel) return dynamicLabel;
+
+  const readableSlug = slug.replace(/-+/g, " ").trim();
+  return readableSlug
+    ? readableSlug.charAt(0).toUpperCase() + readableSlug.slice(1)
+    : undefined;
+}
+
+export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
+  const params = useLocalSearchParams<{ id?: string | string[] }>();
+  const rawId = idProp ?? params.id;
+  const slug = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const overlayBack = useBackOverride();
+  const overlay = useCategoryOverlayOptional();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
-  const insets = useSafeAreaInsets();
-  const { theme: activeTheme } = useSceneTheme();
-
-
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const { version: catalogVersion } = useCatalog();
+  const { theme } = useSceneTheme();
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [durationFilter, setDurationFilter] = useState<string | null>(null);
-
-  const tag = TAG_CARDS.find((t) => t.id === id);
-
-  // Sessions for this tag
-  const tagSessions = SESSIONS.filter(
-    (s) => Array.isArray(s.themeTag) && s.themeTag.includes(tag?.label as never)
+  const tagLabel = useMemo(
+    () => resolveThemeLabel(slug ? decodeURIComponent(slug) : undefined),
+    [slug, catalogVersion],
+  );
+  const sessions = useMemo(
+    () =>
+      tagLabel
+        ? SESSIONS.filter((session) =>
+            (session.themeTag as readonly string[] | undefined)?.includes(tagLabel),
+          )
+        : [],
+    [tagLabel, catalogVersion],
   );
 
-  // Fallback: show featured sessions if none assigned yet
-  const displaySessions =
-    tagSessions.length > 0
-      ? tagSessions
-      : SESSIONS.filter((s) => s.isFeatured || s.isNew).slice(0, 8);
+  const [stickyActive, setStickyActive] = React.useState(false);
+  const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
+  const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
 
-  // Duration filter
-  const filteredSessions = durationFilter
-    ? (() => {
-        const f = DURATION_FILTERS.find((d) => d.label === durationFilter);
-        return f
-          ? displaySessions.filter((s) => s.duration >= f.min && s.duration <= f.max)
-          : displaySessions;
-      })()
-    : displaySessions;
+  React.useEffect(() => {
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyActive, stickyHeaderOpacity]);
 
-  // "Más escuchados" = featured ones (or first 4)
-  const topSessions = displaySessions
-    .filter((s) => s.isFeatured)
-    .concat(displaySessions.filter((s) => !s.isFeatured))
-    .slice(0, 5);
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
 
-  // Sticky header: empieza tarde, rango amplio (sutil, como pantalla de sesión)
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [HERO_H * 0.72, HERO_H * 1.25],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
+  const openSession = (session: Session) => {
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia" as never);
+      return;
+    }
+    if (session.skipMiniPlayer) {
+      playSession(session);
+      return;
+    }
+    if (session.skipDetail) {
+      playSession(session);
+      router.push("/player" as never);
+      return;
+    }
+    if (overlay) {
+      overlay.openCategory(`/session/${session.id}`);
+    } else {
+      router.push(`/session/${session.id}` as never);
+    }
+  };
 
-  if (!tag) return null;
+  if (!tagLabel) return null;
 
   return (
-        <LinearGradient
-      style={styles.root}
-      colors={activeTheme.gradient}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
+      <SacredBackground />
 
-      {/* ── STICKY HEADER (fades in on scroll) ── */}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(event) => {
+          const y = event.nativeEvent.contentOffset.y;
+          const active = y > headerBottomY - topPad - 8;
+          if (active !== stickyActive) setStickyActive(active);
+        }}
+      >
+        <View
+          style={[styles.header, { paddingTop: topPad + 8 }]}
+          onLayout={(event) => {
+            const { y, height } = event.nativeEvent.layout;
+            setHeaderBottomY(y + height);
+          }}
+        >
+          <Pressable
+            onPress={goBack}
+            hitSlop={10}
+            style={({ pressed }) => [
+              styles.backBtn,
+              { backgroundColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Feather name="chevron-left" size={26} color={colors.foreground} />
+          </Pressable>
+          <Text
+            style={[styles.pageTitle, { color: colors.foreground }]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+          >
+            {tagLabel}
+          </Text>
+        </View>
+
+        {sessions.length === 0 ? (
+          <View style={[styles.emptySlot, { borderColor: colors.border }]}>
+            <Feather name="inbox" size={28} color={colors.mutedForeground} />
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+              Aún no hay sesiones
+            </Text>
+            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+              Estamos preparando nuevas experiencias para esta temática
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.sessionGrid}>
+            {sessions.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                width={CARD_W}
+                style={{ marginRight: 0 }}
+                showCardMetadata
+                showAuthorAvatar={false}
+                overridePress={() => openSession(session)}
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
       <Animated.View
         style={[
           styles.stickyHeader,
           {
-            paddingTop: topPad,
-            backgroundColor: activeTheme.gradient[0],
-            borderBottomColor: "rgba(212,175,55,0.15)",
-            opacity: headerOpacity,
+            paddingTop: topPad + 8,
+            backgroundColor: theme.gradient[0] as string,
+            opacity: stickyHeaderOpacity,
           },
         ]}
-        pointerEvents="box-none"
+        pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <View style={styles.stickyInner} pointerEvents="box-none">
-          <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
-          <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
-            {tag.label}
-          </Text>
-          <View style={{ width: 38 }} />
-        </View>
-      </Animated.View>
-
-      {/* ── SCROLLABLE CONTENT ── */}
-      <Animated.ScrollView
-        style={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: bottomPad + 120 }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-      >
-        {/* HERO IMAGE */}
-        <View style={[styles.hero, { height: HERO_H }]}>
-          <Image source={tag.image} style={StyleSheet.absoluteFill} resizeMode="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          <LinearGradient
-            colors={["rgba(15,10,6,0)", "rgba(15,10,6,0.35)", "rgba(15,10,6,0.9)", "#0F0A06"]}
-            locations={[0, 0.5, 0.88, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-          {/* Back button floating on hero */}
-          <BackPill onPress={goBack} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
-        </View>
-
-        {/* TITLE + DESCRIPTION */}
-        <View style={styles.intro}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>{tag.label}</Text>
-          <Text style={[styles.pageDesc, { color: "#F4F4F4" }]} numberOfLines={1}>{tag.description}</Text>
-        </View>
-
-        {/* DURATION FILTERS */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersRow}
-        >
-          <Pressable
-            onPress={() => setDurationFilter(null)}
-            style={[
-              styles.filterPill,
-              !durationFilter ? styles.filterPillSel : styles.filterPillIdle,
-              { overflow: "hidden" },
-            ]}
-          >
-            {!durationFilter && (
-              <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-            )}
-            <Text style={!durationFilter ? [styles.filterLabel, { color: "#0D0A1E" }] : styles.filterLabelIdle}>
-              Todos
+        <View style={styles.stickyHeaderRow}>
+          <View style={styles.stickyHeaderSpacer} />
+          <View style={styles.stickyTitleCol}>
+            <Text
+              style={[styles.stickyTitle, { color: colors.foreground }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+            >
+              {tagLabel}
             </Text>
-          </Pressable>
-          {DURATION_FILTERS.map((f) => {
-            const active = durationFilter === f.label;
-            return (
-              <Pressable
-                key={f.label}
-                onPress={() => setDurationFilter(active ? null : f.label)}
-                style={[
-                  styles.filterPill,
-                  active ? styles.filterPillSel : styles.filterPillIdle,
-                  { overflow: "hidden" },
-                ]}
-              >
-                {active && (
-                  <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-                )}
-                <Text style={active ? [styles.filterLabel, { color: "#0D0A1E" }] : styles.filterLabelIdle}>
-                  {f.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {filteredSessions.length === 0 ? (
-          <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.15)" }]}>
-            <Feather name="inbox" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin sesiones en este filtro</Text>
-            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>Probá otra duración</Text>
           </View>
-        ) : (
-          <>
-            {/* TODOS */}
-            <View style={styles.sessionGrid}>
-              {filteredSessions.map((session) => (
-                <SessionCard
-                  key={session.id}
-                  session={session}
-                  width={(width - H_PAD * 2 - 14) / 2}
-                  style={{ marginRight: 0 }}
-                  showCardMetadata
-                  showAuthorAvatar={false}
-                  overridePress={() => {
-                    if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                    if (session.skipMiniPlayer) { playSession(session); return; }
-                    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-                    if (overlay) overlay.openCategory(`/session/${session.id}`);
-                    else router.push(`/session/${session.id}` as never);
-                  }}
-                />
-              ))}
-            </View>
-          </>
-        )}
-      </Animated.ScrollView>
-    </LinearGradient>
+          <View style={styles.stickyHeaderSpacer} />
+        </View>
+        <Pressable
+          onPress={goBack}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.backBtn,
+            {
+              backgroundColor: "rgba(255,255,255,0.08)",
+              opacity: pressed ? 0.7 : 1,
+              top: topPad + 2,
+            },
+          ]}
+        >
+          <Feather name="chevron-left" size={26} color={colors.foreground} />
+        </Pressable>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-
-  // Sticky header
+  scroll: { flex: 1 },
+  header: {
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+    minHeight: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backBtn: {
+    position: "absolute",
+    left: H_PAD,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pageTitle: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    maxWidth: width - H_PAD * 2 - 56,
+    textAlign: "center",
+  },
+  sessionGrid: {
+    paddingHorizontal: H_PAD,
+    paddingTop: 36,
+    paddingBottom: 40,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    rowGap: 35,
+  },
+  emptySlot: {
+    marginHorizontal: H_PAD,
+    marginTop: 36,
+    minHeight: 160,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingHorizontal: 24,
+  },
+  emptyTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  emptySub: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    textAlign: "center",
+  },
   stickyHeader: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 50,
+    zIndex: 20,
+    minHeight: 48,
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+    alignItems: "center",
+    justifyContent: "center",
     borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
-  stickyInner: {
+  stickyHeaderRow: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    paddingBottom: 12,
-    paddingTop: 10,
+  },
+  stickyHeaderSpacer: { width: 40 },
+  stickyTitleCol: {
+    flex: 1,
+    alignItems: "center",
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 20,
+    lineHeight: 23,
     fontWeight: "700",
-    flex: 1,
-    textAlign: "center",
-    paddingHorizontal: 8,
-  },
-
-  scroll: { flex: 1 },
-
-  sessionGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    rowGap: 35,
-    marginTop: 8,
-    marginBottom: 40,
-  },
-
-  // Hero
-  hero: {
-    width: "100%",
-    overflow: "hidden",
-  },
-  pillBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // Intro
-  intro: {
-    paddingHorizontal: H_PAD,
-    paddingTop: 24,
-    paddingBottom: 8,
-    alignItems: "center",
-  },
-  pageTitle: {
-    fontFamily: "Manrope",
-    fontSize: 26,
-    fontWeight: "700",
-    textAlign: "center",
     letterSpacing: 0.2,
-    marginBottom: 12,
-  },
-  pageDesc: {
-    fontFamily: "Manrope",
-    fontSize: 14,
     textAlign: "center",
-    lineHeight: 22,
-    maxWidth: 320,
   },
-
-  // Duration filters
-  filtersRow: {
-    paddingHorizontal: H_PAD,
-    paddingVertical: 20,
-    gap: 10,
-  },
-  filterPill: {
-    paddingHorizontal: 18,
-    borderRadius: 999,
-    height: 31,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  filterPillSel: {
-    borderWidth: 0,
-  },
-  filterPillIdle: {
-    paddingHorizontal: 13,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  filterLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  filterLabelIdle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "400",
-    letterSpacing: 0.3,
-    color: "#F4F4F4",
-  },
-
-  // Section
-  section: {
-    marginBottom: 28,
-  },
-  sectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "700",
-    paddingHorizontal: H_PAD,
-    marginBottom: 14,
-  },
-
-  // Horizontal cards
-  hScroll: {
-    paddingHorizontal: H_PAD,
-    gap: 12,
-  },
-  hCard: {
-    width: CARD_W,
-  },
-  hCardImg: {
-    width: CARD_W,
-    height: CARD_IMG_H,
-    borderRadius: 14,
-    overflow: "hidden",
-    marginBottom: 8,
-  },
-  hCardTitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    lineHeight: 18,
-    marginBottom: 3,
-  },
-  hCardSub: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 15,
-  },
-
-  // Duration badge (on image)
-  durationBadge: {
-    position: "absolute",
-    bottom: 7,
-    left: 7,
-    backgroundColor: "rgba(0,0,0,0.62)",
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  durationText: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-
-
-  // Todos list
-  list: {
-    paddingHorizontal: H_PAD,
-    gap: 10,
-  },
-  listRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 14,
-    borderWidth: 0,
-    padding: 10,
-    gap: 12,
-  },
-  listThumb: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
-    overflow: "hidden",
-    flexShrink: 0,
-  },
-  listMeta: {
-    flex: 1,
-  },
-  listTitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    lineHeight: 20,
-    marginBottom: 5,
-  },
-  listSub: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 16,
-  },
-
-  // Empty
-  emptyBox: {
-    marginHorizontal: H_PAD,
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingVertical: 44,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  emptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", marginBottom: 6 },
-  emptySub: { fontFamily: "Manrope", fontSize: 13 },
 });

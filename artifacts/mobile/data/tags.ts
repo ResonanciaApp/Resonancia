@@ -16,6 +16,17 @@ export interface TagCard {
   image: number;
 }
 
+/** Convierte una etiqueta temática en el slug usado por los carruseles y sus rutas. */
+export function slugifyThemeTag(label: string): string {
+  return label
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export const TAG_CARDS: TagCard[] = [
   {
     id: "para-la-ansiedad",
