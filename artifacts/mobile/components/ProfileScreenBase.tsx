@@ -236,6 +236,9 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
+  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+    ? "rgba(42,40,64,0.65)"
+    : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
@@ -683,7 +686,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
         style={[
           styles.stickyHeader,
           {
-            paddingTop: topPad + 2,
+            paddingTop: asTab ? topPad + 8 : topPad + 2,
           },
         ]}
       >
@@ -692,7 +695,22 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
           styles.stickyHeaderRow,
           !dedicated && !asTab && { paddingTop: 25 },
           dedicated && { paddingBottom: 15 },
+          asTab && styles.libraryTabHeaderRow,
         ]}>
+          {asTab && (
+            <Pressable
+              onPress={() => router.navigate("/(tabs)/inicio8" as never)}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.libraryTabBackBtn,
+                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.7 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Volver a Inicio"
+            >
+              <Feather name="chevron-left" size={26} color="#FBFBFB" />
+            </Pressable>
+          )}
           {!asTab && !dedicated && (
             <BackPill
               onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
@@ -705,7 +723,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             styles.stickyTitle,
             dedicated && styles.stickyTitleDedicated,
             !dedicated && !asTab && styles.stickyTitleBiblioteca,
-            asTab && styles.stickyTitleTab,
+            asTab && styles.stickyTitleLibraryTab,
             dedicated && { opacity: profileLargeTitleOpacity },
           ]}>{dedicated ? "Perfil" : "Biblioteca"}</Animated.Text>
           {dedicated && (
@@ -727,11 +745,23 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
             </View>
           ) : libActions && !libActions.hidden ? (
             <View style={styles.libActionsPill}>
-              <Pressable onPress={libActions.onSearch} hitSlop={10} style={styles.libActionBtn}>
+              <Pressable
+                onPress={libActions.onSearch}
+                hitSlop={10}
+                style={[styles.libActionBtn, { backgroundColor: libraryHeaderButtonBackground }]}
+                accessibilityRole="button"
+                accessibilityLabel="Buscar en Biblioteca"
+              >
                 <Feather name="search" size={22} color="#f9f9f9" />
               </Pressable>
-              <Pressable onPress={libActions.onAdd} hitSlop={10} style={styles.libActionBtn}>
-                <Feather name="plus" size={29} color="#f9f9f9" />
+              <Pressable
+                onPress={libActions.onAdd}
+                hitSlop={10}
+                style={[styles.libActionBtn, { backgroundColor: libraryHeaderButtonBackground }]}
+                accessibilityRole="button"
+                accessibilityLabel="Crear en Biblioteca"
+              >
+                <Feather name="plus" size={24} color="#f9f9f9" />
               </Pressable>
             </View>
           ) : (
@@ -1330,16 +1360,51 @@ const styles = StyleSheet.create({
   },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
+  libraryTabHeaderRow: {
+    minHeight: 48,
+    paddingBottom: 12,
+  },
+  libraryTabBackBtn: {
+    position: "absolute",
+    left: 19,
+    top: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stickyTitleLibraryTab: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+    marginLeft: 0,
+    transform: [{ translateY: 0 }],
+  },
   libActionsPill: {
+    position: "absolute",
+    right: 19,
+    top: 0,
     flexDirection: "row",
     alignItems: "center",
-    gap: 2,
-    height: 48,
-    marginRight: -5,
-    marginTop: 4,
+    gap: 8,
+    height: 40,
+    marginRight: 0,
+    marginTop: 0,
     borderRadius: 100,
   },
-  libActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
+  libActionBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   pillRowScroll: { marginTop: 5 },
   pillRow: {
     flexDirection: "row",

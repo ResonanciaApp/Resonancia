@@ -160,7 +160,7 @@ function MixRow({
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
 function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.ComponentProps<typeof Feather>["name"]; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
-  const contentColor = sel && theme.id !== "indigo" ? "#0D0A1E" : "#F4F4F4";
+  const contentColor = "#F4F4F4";
 
   return (
     <Pressable
@@ -169,7 +169,7 @@ function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.Com
     >
       {sel && (
         <LinearGradient
-          colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
+          colors={["#307E91", "#1A5863"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={StyleSheet.absoluteFill}
@@ -1902,14 +1902,16 @@ export function BibliotecaScreen({
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
-          paddingTop: topPad - 34,
+          paddingTop: embedded ? 0 : topPad - 34,
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
         {/* En Android/tablet el inset real es chico (piso 40): dar más aire
             entre el título y los tabs para igualar la altura del header de iPhone */}
         <View
-          style={{ marginTop: -52 + (Platform.OS !== "web" && insets.top < 40 ? 31 : 0), marginBottom: -4 }}
+          style={embedded
+            ? styles.embeddedTabsHeader
+            : { marginTop: -52 + (Platform.OS !== "web" && insets.top < 40 ? 31 : 0), marginBottom: -4 }}
         >
           <AnimatedChipRow
             tabs={LIB_TABS}
@@ -1921,17 +1923,19 @@ export function BibliotecaScreen({
           />
         </View>
 
-        <LinearGradient
-          colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
-          style={styles.stickyHeaderShadow}
-          pointerEvents="none"
-        />
+        {!embedded && (
+          <LinearGradient
+            colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
+            style={styles.stickyHeaderShadow}
+            pointerEvents="none"
+          />
+        )}
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 23 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: embedded ? 0 : 23 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
@@ -2098,6 +2102,11 @@ const styles = StyleSheet.create({
     bottom: -12,
     height: 12,
   },
+  embeddedTabsHeader: {
+    marginTop: 6,
+    paddingTop: 10,
+    paddingBottom: 5,
+  },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
     flexDirection: "row",
@@ -2119,7 +2128,7 @@ const styles = StyleSheet.create({
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10, marginTop: 20 },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 5, marginTop: 0 },
   chipRowActions: {
     flexDirection: "row",
     alignItems: "center",
@@ -2139,7 +2148,7 @@ const styles = StyleSheet.create({
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 13, paddingTop: 5, paddingBottom: 5, paddingLeft: H_PAD, paddingRight: H_PAD },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -2169,7 +2178,7 @@ const styles = StyleSheet.create({
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
