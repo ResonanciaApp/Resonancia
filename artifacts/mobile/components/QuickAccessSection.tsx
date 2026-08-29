@@ -83,7 +83,7 @@ export function QuickAccessSection({
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
-  const { openLib, openOverlay } = useDrawer();
+  const { openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
   const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
   const profileWideCardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
@@ -103,7 +103,7 @@ export function QuickAccessSection({
       return;
     }
     if (id === "library") {
-      openLib();
+      router.push("/(tabs)/biblioteca" as never);
       return;
     }
     if (id === "videos") {
@@ -115,7 +115,7 @@ export function QuickAccessSection({
       return;
     }
     openOverlay(access.route);
-  }, [openCategory, openLib, openOverlay]);
+  }, [openCategory, openOverlay]);
 
   const accessCards = profileLayout
     ? PROFILE_ACCESS_CARDS
