@@ -1763,7 +1763,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={[styles.inicio2ToolsSection, { marginTop: 30, marginBottom: 0 }]}>
+          <View style={[styles.inicio2ToolsSection, { marginTop: 36, marginBottom: 0 }]}>
             <ToolsGrid replaceVideosWithLibrary />
           </View>
         )}
