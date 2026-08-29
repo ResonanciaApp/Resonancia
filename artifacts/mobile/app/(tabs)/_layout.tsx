@@ -276,7 +276,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
-        {/* ── iOS Glass Material ────────────────────────────────────────────── */}
+        {/* ── Glass Material ─────────────────────────────────────────────────── */}
         {/* 1. Blur base */}
         {/* En Android el blur experimental (dimezis) no se dibuja si el radio/clip
             vive solo en el padre: hay que darle el borderRadius al propio BlurView */}
@@ -287,10 +287,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           pointerEvents="none"
           style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}
         >
-          {/* 2. Tinte violeta base (sin tinte en Android para no tapar el blur) */}
-          {Platform.OS !== "android" && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(29,11,77,0.15)" }]} pointerEvents="none" />
-          )}
+          {/* 2. Tinte uniforme de la barra en todos los temas y plataformas */}
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11,11,36,0.5)" }]}
+            pointerEvents="none"
+          />
           {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
           <LinearGradient
             colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
@@ -315,10 +316,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           />
           {/* Acento del tab activo (crossfade) */}
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
-          {/* Tinte Universo (sin tinte en Android para no tapar el blur) */}
-          {activeSceneId === "tibet" && Platform.OS !== "android" && (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
-          )}
         </BlurView>
 
         <View
