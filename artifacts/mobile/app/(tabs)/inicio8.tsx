@@ -1776,8 +1776,7 @@ export default function HomeScreen2({
             style={{ marginTop: INICIO2_SECTION_GAP - 20, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
-            titleSize={18}
-            titleWeight="600"
+            titleSize={19}
             titleSpacing={17}
             showCardMetadata
           />

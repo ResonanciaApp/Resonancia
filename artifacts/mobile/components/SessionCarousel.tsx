@@ -35,13 +35,12 @@ type SessionCarouselProps = {
   cardWidth?: number;
   cardHeight?: number;
   titleSize?: number;
-  titleWeight?: "400" | "500" | "600" | "700" | "800" | "900";
   titleSpacing?: number;
   onViewAll?: () => void;
   showCardMetadata?: boolean;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleWeight, titleSpacing, onViewAll, showCardMetadata = false }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll, showCardMetadata = false }: SessionCarouselProps) {
   const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
@@ -56,13 +55,13 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
     <View style={[styles.section, style]}>
       {onViewAll ? (
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: titleSpacing ?? 17 }}>
-          <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }, titleWeight !== undefined && { fontWeight: titleWeight }]}>{title}</Text>
+          <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
           <Pressable onPress={onViewAll} hitSlop={8}>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
           </Pressable>
         </View>
       ) : (
-        <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }, titleWeight !== undefined && { fontWeight: titleWeight }]}>{title}</Text>
+        <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
       )}
       <ScrollView
         horizontal
