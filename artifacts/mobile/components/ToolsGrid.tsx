@@ -18,6 +18,7 @@ import { useColors } from "@/hooks/useColors";
 
 const PILLS_PAD = 19;
 const PILLS_GAP = 8;
+const TOOL_ICON_COLOR = "#774576";
 
 const TOOLS = [
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
@@ -122,7 +123,7 @@ export function ToolsGrid({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color="#F4F4F4"
+            color={TOOL_ICON_COLOR}
           />
           <Text
             style={[styles.label, { color: colors.foreground }]}
