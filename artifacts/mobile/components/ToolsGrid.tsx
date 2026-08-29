@@ -118,7 +118,7 @@ export function ToolsGrid({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color={tool.color}
+            color="#F4F4F4"
           />
           <Text
             style={[styles.label, { color: colors.foreground }]}
