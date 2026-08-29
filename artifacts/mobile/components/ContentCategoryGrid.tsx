@@ -69,7 +69,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-meditaciones.png")}
-                style={{ width: horizontal ? 16 : 22, height: horizontal ? 16 : 22 }}
+                style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -82,7 +82,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-sesiones.png")}
-                style={{ width: horizontal ? 20 : 26, height: horizontal ? 20 : 26 }}
+                style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -95,7 +95,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-musica.png")}
-                style={{ width: horizontal ? 20 : 26, height: horizontal ? 20 : 26 }}
+                style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
                 contentFit="contain"
                 tintColor={color}
               />
@@ -108,7 +108,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="leaf"
-                size={horizontal ? 20 : 24}
+                size={horizontal ? 18 : 24}
                 color={color ?? "#86C49A"}
               />
             ),
@@ -120,7 +120,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <ExpoImage
                 source={require("@/assets/images/cat-luna.png")}
-                style={{ width: horizontal ? 16 : 22, height: horizontal ? 16 : 22 }}
+                style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
                 contentFit="contain"
                 tintColor={color ?? CATEGORY_ICON_COLOR}
               />
@@ -133,7 +133,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="book-open-page-variant"
-                size={horizontal ? 19 : 24}
+                size={horizontal ? 17 : 24}
                 color={color ?? "#D5A4E8"}
               />
             ),
@@ -145,7 +145,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="message-text-outline"
-                size={horizontal ? 19 : 24}
+                size={horizontal ? 17 : 24}
                 color={color ?? "#F0B17A"}
               />
             ),
@@ -155,7 +155,7 @@ export function ContentCategoryGrid({
             label: "Mezclador",
             color: "#E6BE67",
             icon: (color?: string) => (
-              <MaterialCommunityIcons name="tune-variant" size={horizontal ? 20 : 24} color={color ?? "#E6BE67"} />
+              <MaterialCommunityIcons name="tune-variant" size={horizontal ? 18 : 24} color={color ?? "#E6BE67"} />
             ),
           },
           {
@@ -165,7 +165,7 @@ export function ContentCategoryGrid({
             icon: (color?: string) => (
               <MaterialCommunityIcons
                 name="cube-outline"
-                size={horizontal ? 20 : 29}
+                size={horizontal ? 18 : 29}
                 color={color ?? "#C4C8D4"}
               />
             ),
@@ -338,8 +338,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   horizontalIconCircle: {
-    height: 27,
-    width: 27,
+    height: 28,
+    width: 28,
     borderRadius: 14,
   },
   label: {
