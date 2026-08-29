@@ -18,8 +18,8 @@ const CARD_CATEGORY_COLORS: Record<string, string> = {
   "musica-sonidos": "#287F83",
   "ambientales": "#3F704D",
   "__descanzo__": "#32708E",
-  "historias": "#704886",
-  "charlas": "#8D5135",
+  "historias": "#691E5E",
+  "charlas": "#78221E",
 };
 const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
   "meditaciones-guiadas": 164,
