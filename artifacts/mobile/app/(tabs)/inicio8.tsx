@@ -2409,15 +2409,14 @@ const styles = StyleSheet.create({
   },
   inicio2HeroEmotionAdd: {
     position: "absolute",
-    top: 0,
-    left: -4,
+    top: -4,
+    left: -7,
     width: 31,
     height: 31,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#50326E",
-    transform: [{ translateY: 2 }],
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
@@ -2425,6 +2424,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     lineHeight: 28,
     fontWeight: "600",
+    transform: [{ translateY: 2 }],
   },
   inicio2HeroCopy: {
     ...StyleSheet.absoluteFillObject,
