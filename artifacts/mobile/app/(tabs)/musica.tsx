@@ -186,7 +186,7 @@ const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
-  const fgColor = sel ? (theme.id === "indigo" ? "#F9F9F9" : "#0D0A1E") : "#FBFBFB";
+  const fgColor = "#F9F9F9";
 
   return (
     <Pressable
@@ -195,7 +195,7 @@ const PillTab = memo(function PillTab({
     >
       {/* Fondo seleccionado */}
       {sel && (
-        <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[StyleSheet.absoluteFill, { borderRadius: 999 }]} />
+        <LinearGradient colors={["#307E91", "#1A5863"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[StyleSheet.absoluteFill, { borderRadius: 999 }]} />
       )}
 
       {/* Texto */}
