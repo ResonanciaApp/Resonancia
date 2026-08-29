@@ -12,10 +12,10 @@ Los detalles que sí usan una ruta raíz (playlists y carpetas) deben montarse a
 
 La entrada y la salida del overlay deben animar en paralelo desplazamiento y opacidad, usando la misma curva y duración, para evitar que abrir Biblioteca se sienta brusco frente a su cierre.
 
-Biblioteca y todos los overlays que nacen desde el drawer (Diario, Mis sesiones, Favoritos, Historial, Amigos y Grupos) deben animar también el NavStack de fondo −56 px en paralelo, igual que Mezclador. No basta con desplazar la capa superior o el drawer.
+Los overlays que nacen desde el drawer (Diario, Mis sesiones, Favoritos, Historial, Amigos y Grupos) deben animar también el NavStack de fondo −56 px en paralelo, igual que Mezclador. Biblioteca es la excepción: debe dejar el NavStack y la tab bar centrados para no recortar el extremo derecho de la barra.
 
 Cuando Biblioteca está abierta, el drawer debe reservar también la franja inferior de la tab bar. BibliotecaOverlay queda por encima del drawer y deja esa franja libre; si el drawer conserva altura completa, tapa la barra salvo por el extremo derecho.
 
 **Why:** el tab bar vive dentro del NavStack, pero DrawerMenu y BibliotecaOverlay son hermanos montados encima; dejar libre la franja solo en BibliotecaOverlay no basta para que la barra sea visible completa.
 
-**How to apply:** usar la misma reserva calculada para la tab bar (`68 + tabBarBottom`) en el bottom del drawer únicamente mientras `libOpen` sea true, con `tabBarInset = 8` en web y `insets.bottom` en nativo.
+**How to apply:** usar la misma reserva calculada para la tab bar (`68 + tabBarBottom`) en el bottom del drawer únicamente mientras `libOpen` sea true, con `tabBarInset = 8` en web y `insets.bottom` en nativo. En `PushWrapper` y `CustomTabBar`, no aplicar parallax horizontal cuando `libOpen` sea true.

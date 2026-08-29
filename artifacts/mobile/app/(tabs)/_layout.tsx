@@ -169,6 +169,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     outputRange: [0, 56],
     extrapolate: "clamp",
   });
+  // Con Biblioteca abierta el NavStack no aplica parallax, así que la barra
+  // tampoco debe desplazarse: moverla dentro del contenedor recortaría su
+  // extremo derecho, justo donde está Perfil.
+  const tabBarLibraryOffset = libOpen ? 0 : libraryBarOffset;
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
@@ -270,7 +274,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: tabBarLibraryOffset }, { translateY }] }]}
       >
         <View
           style={[styles.row, isWeb && styles.rowWeb]}

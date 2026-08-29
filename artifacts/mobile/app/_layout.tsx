@@ -182,7 +182,7 @@ function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
 }
 
 function PushWrapper({ children }: { children: React.ReactNode }) {
-  const { drawerAnim, isOpen, overlayParallax } = useDrawer();
+  const { drawerAnim, isOpen, libOpen, overlayParallax } = useDrawer();
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 0.6],
@@ -197,8 +197,12 @@ function PushWrapper({ children }: { children: React.ReactNode }) {
     outputRange: [0, -56],
     extrapolate: "clamp",
   });
+  // Biblioteca ya ocupa la pantalla completa sobre el drawer. Mantener el
+  // NavStack desplazado aquí recorta la tab bar en su borde derecho, porque
+  // esa barra vive dentro de este mismo contenedor transformado.
+  const backgroundTransformX = libOpen ? 0 : backgroundParallaxX;
   return (
-    <Animated.View style={{ flex: 1, transform: [{ translateX: backgroundParallaxX }] }}>
+    <Animated.View style={{ flex: 1, transform: [{ translateX: backgroundTransformX }] }}>
       {children}
       <Animated.View
         pointerEvents={isOpen ? "auto" : "none"}
