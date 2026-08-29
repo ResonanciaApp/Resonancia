@@ -289,7 +289,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         >
           {/* 2. Tinte uniforme de la barra en todos los temas y plataformas */}
           <View
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11,11,36,0.5)" }]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(11,11,36,0.9)" }]}
             pointerEvents="none"
           />
           {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
