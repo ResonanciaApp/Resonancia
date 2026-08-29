@@ -1,10 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { type VideoItem } from "@/data/videos";
+import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -51,6 +51,25 @@ export function VideoCard({
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!video.isPremium && !isPremium;
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
+  const localThumbnail =
+    STATIC_VIDEOS.find((staticVideo) => staticVideo.id === video.id)?.thumbnail ??
+    STATIC_VIDEOS[0].thumbnail;
+  const thumbnailSource = thumbnailFailed ? localThumbnail : video.thumbnail;
+  const thumbnailKey =
+    typeof video.thumbnail === "object" &&
+    video.thumbnail !== null &&
+    "uri" in video.thumbnail
+      ? String(video.thumbnail.uri)
+      : video.id;
+
+  useEffect(() => {
+    setThumbnailFailed(false);
+  }, [video.id, thumbnailKey]);
+
+  const handleThumbnailError = () => {
+    if (!thumbnailFailed) setThumbnailFailed(true);
+  };
 
   const handlePress = () => {
     if (locked) router.push("/membresia" as never);
@@ -64,11 +83,12 @@ export function VideoCard({
         <Pressable onPress={handlePress} style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}>
           <View style={styles.feedImageWrap}>
             <Image
-              source={video.thumbnail}
+              source={thumbnailSource}
               style={styles.feedImage}
               contentFit="cover"
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
+              onError={handleThumbnailError}
             />
             {locked && <LockStar />}
             <View style={styles.feedCamBadge}>
@@ -128,11 +148,12 @@ export function VideoCard({
       >
         <View style={styles.hImageWrap}>
           <Image
-            source={video.thumbnail}
+            source={thumbnailSource}
             style={styles.hImage}
             contentFit="cover"
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
+            onError={handleThumbnailError}
           />
           {locked && <LockStar />}
         </View>
@@ -169,11 +190,12 @@ export function VideoCard({
     >
       <View style={styles.imageContainer}>
         <Image
-          source={video.thumbnail}
+          source={thumbnailSource}
           style={styles.cardImage}
           contentFit="cover"
           placeholder={BLUR_PLACEHOLDER}
           transition={IMAGE_TRANSITION}
+          onError={handleThumbnailError}
         />
         {locked && <LockStar />}
         <View style={styles.durBadge}>
