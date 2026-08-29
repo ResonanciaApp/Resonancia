@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -35,8 +35,13 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 
 function SleepPill({
-  sel, label, onPress,
-}: { sel: boolean; label: string; onPress: () => void }) {
+  sel, label, icon, onPress,
+}: {
+  sel: boolean;
+  label: string;
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  onPress: () => void;
+}) {
   const { theme } = useSceneTheme();
 
   return (
@@ -51,6 +56,7 @@ function SleepPill({
       ]}
     >
       {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      <MaterialCommunityIcons name={icon} size={22} color="#F4F4F4" />
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
         {label}
       </Text>
@@ -466,6 +472,7 @@ export default function DescansoScreen() {
                   key={tab.id}
                   sel={false}
                   label={tab.label}
+                  icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
                   onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
                 />
               ))}
@@ -867,7 +874,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 46,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
@@ -879,8 +886,8 @@ const styles = StyleSheet.create({
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "600",
     color: "#F4F4F4",
   },
   sleepPillTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
