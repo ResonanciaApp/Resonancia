@@ -1,5 +1,7 @@
 When a full-screen rainbow aurora is layered over a screen, use the scene's clean gradient without its background image (`noImage`); the image layer can create dark patches between the translucent radial halos.
 
+The current aurora variant intentionally uses only the cool chakra colors (lila/violet, índigo and azul), repeated across the radial halo positions; do not restore warm halos or the continuous spectrum layer unless requested.
+
 **Why:** The translucent aurora reveals the image's high-contrast dark areas underneath, producing black-looking spots in the middle of the screen.
 
 **How to apply:** Keep the aurora above a smooth theme gradient for Recursos and similar surfaces. Preserve the background image only on screens where its texture is intentional and does not sit behind translucent multi-color halos.
