@@ -895,6 +895,7 @@ const styles = StyleSheet.create({
   fixedHeader: {
     zIndex: 20,
     backgroundColor: "transparent",
+    opacity: 0.9,
   },
   titleRow: {
     position: "relative",
