@@ -1940,7 +1940,7 @@ export function BibliotecaScreen({
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
-              <Feather name="chevron-down" size={15} color={MUTED} style={{ transform: [{ translateY: 7 }] }} />
+              <Feather name="chevron-down" size={15} color={MUTED} />
             </Pressable>
           </View>
         )}
@@ -2181,7 +2181,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 8,
   },
-  sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
+  sortBtn: { flexDirection: "row", alignItems: "center", gap: 4, transform: [{ translateY: 7 }] },
   sortTriggerRow: {
     flexDirection: "row",
     justifyContent: "flex-start",
