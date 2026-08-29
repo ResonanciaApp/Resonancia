@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -129,6 +130,7 @@ export function MoodPickerSheet({
                     testID={`mood-option-${mood.id}`}
                     style={({ pressed }) => [
                       styles.card,
+                      { backgroundColor: inactiveSleepTabBackground },
                       isSelected && styles.cardSelected,
                       { opacity: pressed ? 0.8 : 1 },
                     ]}
@@ -155,6 +157,14 @@ export function MoodPickerSheet({
               { opacity: pressed ? 0.85 : 1 },
             ]}
           >
+            {!!selected.length && (
+              <LinearGradient
+                colors={["#784576", "#50326E"]}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={StyleSheet.absoluteFill}
+              />
+            )}
             <Text style={[styles.continueBtnText, !selected.length && styles.continueBtnTextDisabled]}>
               Continuar
             </Text>
@@ -168,7 +178,6 @@ export function MoodPickerSheet({
 const PRIMARY = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.58)";
-const CARD_BG = "rgba(255,255,255,0.20)";
 const CARD_BORDER = "rgba(255,255,255,0.05)";
 const CARD_SELECTED_BG = "rgba(139,92,246,0.24)";
 const CARD_SELECTED_BORDER = "#8B5CF6";
@@ -210,6 +219,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
     includeFontPadding: false,
+    transform: [{ translateY: 6 }],
   },
   title: {
     fontFamily: "Manrope",
@@ -243,7 +253,6 @@ const styles = StyleSheet.create({
     width: "48%",
     minHeight: 75,
     borderRadius: 14,
-    backgroundColor: CARD_BG,
     borderWidth: 1.5,
     borderColor: CARD_BORDER,
     alignItems: "center",
@@ -280,6 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
     backgroundColor: "#8B5CF6",
   },
   continueBtnDisabled: {
