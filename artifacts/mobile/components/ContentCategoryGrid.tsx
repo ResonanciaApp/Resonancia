@@ -312,11 +312,12 @@ const styles = StyleSheet.create({
   },
   horizontalCard: {
     borderRadius: 27,
+    height: 46,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
-    paddingVertical: 11,
+    paddingVertical: 0,
     paddingHorizontal: 12,
     borderWidth: 0,
   },
