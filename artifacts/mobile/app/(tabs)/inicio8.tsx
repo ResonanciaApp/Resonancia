@@ -94,6 +94,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -167,11 +168,11 @@ const HEADER_PHRASES = [
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const DURATION_SLOTS = [
-  { label: "5 min",  min: 0,  max: 5  },
-  { label: "10 min", min: 6,  max: 10 },
-  { label: "20 min", min: 11, max: 25 },
-  { label: "30 min", min: 26, max: 35 },
-  { label: "60 min", min: 36, max: Infinity },
+  { label: "5 min",  displayLabel: "5 Minutos",  min: 0,  max: 5  },
+  { label: "10 min", displayLabel: "10 Minutos", min: 6,  max: 10 },
+  { label: "20 min", displayLabel: "20 Minutos", min: 11, max: 25 },
+  { label: "30 min", displayLabel: "30 Minutos", min: 26, max: 35 },
+  { label: "60 min", displayLabel: "60 Minutos", min: 36, max: Infinity },
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
@@ -1905,7 +1906,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <SessionCarousel
-            title="Recientes"
+            title="Recien subidas"
             sessions={recentSessions}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
@@ -1919,7 +1920,7 @@ export default function HomeScreen2({
         {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
-              ¿Cuánto tiempo tienes hoy?
+              Explora según tu tiempo
             </Text>
             <ScrollView
               horizontal
@@ -1932,22 +1933,34 @@ export default function HomeScreen2({
                   onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
                   style={({ pressed }) => [
                     styles.durPill,
+                    styles.inicio2DurPill,
                     { opacity: pressed ? 0.75 : 1 },
                   ]}
                 >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 10, backgroundColor: durationPillBg }]} />
                   <Text
                     style={styles.durPillText}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.7}
                   >
-                    {slot.label}
+                    {slot.displayLabel}
                   </Text>
                 </Pressable>
               ))}
             </ScrollView>
           </View>
+        )}
+        {isInicio2 && (
+          <QuickAccessSection
+            includeExtras
+            profileLayout
+            showTitle={false}
+            showCardBorders={false}
+            cardBackgroundColor={cardBg}
+            cardOpacity={1}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP }}
+          />
         )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
@@ -3333,6 +3346,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inicio2DurPill: {
+    borderRadius: 10,
   },
   durPillText: {
     fontFamily: "Manrope",
