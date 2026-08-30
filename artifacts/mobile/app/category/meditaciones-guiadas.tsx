@@ -1,6 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import MaskedView from "@react-native-masked-view/masked-view";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
@@ -40,6 +39,12 @@ const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
+const PILL_VIOLET = "#7C58FF";
+const PILL_BACKGROUND = "rgba(124,88,255,0.08)";
+const PILL_BACKGROUND_ACTIVE = "rgba(124,88,255,0.16)";
+const PILL_BORDER = "rgba(124,88,255,0.14)";
+const PILL_BORDER_ACTIVE = "rgba(124,88,255,0.24)";
+const PILL_TEXT_SECONDARY = "rgba(255,255,255,0.65)";
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
@@ -96,14 +101,40 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress:()=>void }) {
-  const { theme } = useSceneTheme();
-  const contentColor = sel && theme.id !== "indigo" ? "#0D0A1E" : "#F4F4F4";
-
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-      <Feather name={(icon ?? "grid") as never} size={22} color={contentColor} />
-      <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.chipShell,
+        sel && styles.chipShellActive,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      <View style={[styles.chip, sel ? styles.chipActive : styles.chipInactive]}>
+        <BlurView
+          intensity={20}
+          tint="dark"
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+        />
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: sel ? PILL_BACKGROUND_ACTIVE : PILL_BACKGROUND },
+          ]}
+        />
+        <View style={styles.chipContent}>
+          <Feather
+            name={(icon ?? "grid") as never}
+            size={22}
+            color={sel ? "#FFFFFF" : PILL_TEXT_SECONDARY}
+          />
+          <Text style={[styles.chipText, sel ? styles.chipTextActive : styles.chipTextInactive]}>
+            {label}
+          </Text>
+        </View>
+      </View>
     </Pressable>
   );
 }
@@ -645,16 +676,41 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  chipBorder: {},
-  chipBorderSel: {},
-  chipUnsel: {},
-  chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
-  chipTextIndigoSel: { color: "#F9F9F9" },
+  chipShell: {
+    borderRadius: 27,
+    shadowColor: PILL_VIOLET,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+  },
+  chipShellActive: {
+    shadowOpacity: 0.65,
+    shadowRadius: 14,
+    elevation: 5,
+  },
+  chip: {
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    overflow: "hidden",
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipInactive: {
+    backgroundColor: PILL_BACKGROUND,
+    borderColor: PILL_BORDER,
+  },
+  chipActive: {
+    backgroundColor: PILL_BACKGROUND_ACTIVE,
+    borderColor: PILL_BORDER_ACTIVE,
+  },
+  chipContent: { flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", textAlign: "center" },
+  chipTextInactive: { color: PILL_TEXT_SECONDARY },
+  chipTextActive: { color: "#FFFFFF" },
 
   sectionLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },
