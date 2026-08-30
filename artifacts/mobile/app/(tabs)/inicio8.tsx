@@ -1948,7 +1948,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <View style={[styles.inicio2ToolsSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, styles.inicio2SectionTitle, { paddingHorizontal: GRID_PAD }]}>
+            <Text style={[styles.sectionTitle, styles.inicio2SectionTitle]}>
               Herramientas
             </Text>
             <ToolsGrid />
