@@ -971,7 +971,6 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
-    opacity: 0.9,
   },
   titleRow: {
     position: "relative",
