@@ -25,6 +25,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CATEGORIES } from "@/data/categories";
+import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 
 const H_PAD = 14;
@@ -39,23 +40,6 @@ const CATEGORY_TAB_GRADIENTS: Record<string, [string, string]> = {
   historias: ["#8F227F", "#691E5E"],
   charlas: ["#953732", "#78221E"],
 };
-
-function getSessionTags(session: Session, categoryId: string): string[] {
-  const tags = categoryId === "ambientales"
-    ? [
-        session.sonidosTag,
-        ...(session.sonidosTags ?? []),
-        session.soundTag,
-        ...(session.temaTag ?? []),
-      ]
-    : [
-        session.podcastTag,
-        session.sabiduriaTag,
-        ...(session.temaTag ?? []),
-      ];
-
-  return [...new Set(tags.filter((tag): tag is string => Boolean(tag)))];
-}
 
 function Chip({
   label,
@@ -152,7 +136,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const category = CATEGORIES.find((candidate) => candidate.id === id);
   const allSessions = useMemo(() => getSessionsByCategory(id), [id, version]);
   const tabs = useMemo(
-    () => [...new Set(allSessions.flatMap((session) => getSessionTags(session, id)))],
+    () => getCategoryTabs(allSessions, id),
     [allSessions, id],
   );
   const [activeTab, setActiveTab] = useState<string | null>(null);
@@ -160,7 +144,9 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const filteredSessions = useMemo(
     () => activeTab === null
       ? allSessions
-      : allSessions.filter((session) => getSessionTags(session, id).includes(activeTab)),
+      : allSessions.filter((session) =>
+          getCategorySessionTags(session, id).includes(activeTab),
+        ),
     [activeTab, allSessions, id],
   );
   const searchItems = useMemo(
@@ -173,7 +159,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         session.title,
         session.subtitle,
         session.categoryLabel,
-        ...getSessionTags(session, id),
+        ...getCategorySessionTags(session, id),
       ].join(" "),
       image: session.image,
     })),
@@ -240,7 +226,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         <>
           {tabs.map((tab, index) => {
             const tabSessions = allSessions.filter((session) =>
-              getSessionTags(session, id).includes(tab),
+              getCategorySessionTags(session, id).includes(tab),
             );
             return (
               <SessionCarousel

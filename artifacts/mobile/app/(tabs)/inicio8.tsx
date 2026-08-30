@@ -95,6 +95,7 @@ import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
+import { ExpandConsciousnessSection } from "@/components/ExpandConsciousnessSection";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width, height } = Dimensions.get("window");
@@ -2043,6 +2044,13 @@ export default function HomeScreen2({
             catalogVersion={catalogVersion}
             isPremium={isPremium}
             onPress={handleRecommendedSessionPress}
+          />
+        )}
+        {isInicio2 && (
+          <ExpandConsciousnessSection
+            isPremium={isPremium}
+            onPress={handleRecommendedSessionPress}
+            marginBottom={INICIO2_SECTION_GAP}
           />
         )}
         {isInicio2 && (
