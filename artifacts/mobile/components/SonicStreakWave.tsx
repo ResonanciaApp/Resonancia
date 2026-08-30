@@ -14,8 +14,6 @@ import Svg, {
 } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getListenNowButtonColors } from "@/components/GoldGradient";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 const RING_SIZE    = 79;
@@ -78,8 +76,8 @@ export function SonicStreakDays({
   todayIndex: number;
   idPrefix?: string;
 }) {
-  const { theme } = useSceneTheme();
-  const [borderColor0, borderColor1] = getListenNowButtonColors(theme.id === "indigo");
+  const borderColor0 = "#CF5FCB";
+  const borderColor1 = "#985DD4";
 
   return (
     <View style={styles.row}>
