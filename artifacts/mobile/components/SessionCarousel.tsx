@@ -87,11 +87,16 @@ export function SessionCarousel({
   return (
     <View style={[styles.section, style]}>
       {onViewAll ? (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: titleSpacing ?? 17 }}>
-          <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
-          <Pressable onPress={onViewAll} hitSlop={8}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
-          </Pressable>
+        <View style={{ marginBottom: titleSpacing ?? 17 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
+            <Pressable onPress={onViewAll} hitSlop={8}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
+            </Pressable>
+          </View>
+          {description && (
+            <Text style={[styles.sectionDescription, { color: "#acaac2" }]}>{description}</Text>
+          )}
         </View>
       ) : description ? (
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
