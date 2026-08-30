@@ -2056,7 +2056,7 @@ export default function HomeScreen2({
                   title={featuredHoy.title}
                   authorName={featuredAuthor?.name}
                   authorAvatar={featuredAuthor?.photo}
-                  titleFontSize={16}
+                  titleFontSize={17}
                 />
               </View>
             </Pressable>

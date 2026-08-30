@@ -1,7 +1,13 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Image, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  type ImageSourcePropType,
+} from "react-native";
 
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 
@@ -250,9 +256,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "700",
-    lineHeight: 17,
+    lineHeight: 18,
     color: "#FFFFFF",
   },
   author: {
