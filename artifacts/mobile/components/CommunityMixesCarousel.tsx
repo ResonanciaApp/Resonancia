@@ -143,7 +143,7 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={styles.verTodas}>Ver todos</Text>
+          <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
         </Pressable>
       </View>
 
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
-  verTodas: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
+  verTodas: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   // Portada / Avatar
   avatarWrap: {

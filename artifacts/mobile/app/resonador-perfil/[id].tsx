@@ -540,7 +540,7 @@ export default function ResonadorPerfilScreen() {
                 hitSlop={8}
                 style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
               >
-                <Text style={styles.verTodasText}>Ver todas</Text>
+                <Text style={[styles.verTodasText, { color: colors.primary }]}>Ver todas</Text>
               </Pressable>
             </View>
 
@@ -995,7 +995,7 @@ const styles = StyleSheet.create({
   },
 
   /* ── Sección 1: Sesiones ── */
-  verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: GOLD, letterSpacing: 0.2 },
+  verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
   sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
   sessionSortText: { fontFamily: "Manrope", fontSize: 12, color: "rgba(250,240,238,0.40)", fontWeight: "500" },
   sessionList: { gap: 4 },
