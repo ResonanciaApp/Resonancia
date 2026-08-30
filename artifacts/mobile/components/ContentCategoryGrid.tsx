@@ -7,29 +7,101 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import {
+  CONTENT_CATEGORIES,
+  type ContentCategoryDefinition,
+} from "@/data/content-categories";
 
 const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const CARD_CATEGORY_COLORS: Record<string, string> = {
-  "meditaciones-guiadas": "#7251A3",
-  "sonidos-ancestrales": "#9A5A2C",
-  "musica-sonidos": "#287F83",
-  "ambientales": "#3F704D",
-  "__descanzo__": "#32708E",
-  "historias": "#691E5E",
-  "charlas": "#78221E",
-};
-const HORIZONTAL_CARD_WIDTHS: Record<string, number> = {
-  "meditaciones-guiadas": 164,
-  "sonidos-ancestrales": 158,
-  "musica-sonidos": 126,
-  "ambientales": 144,
-  "__descanzo__": 120,
-  "historias": 130,
-  "charlas": 118,
-};
+
+function renderCategoryIcon(
+  category: ContentCategoryDefinition,
+  horizontal: boolean,
+  forceWhite: boolean,
+) {
+  const color = forceWhite ? CATEGORY_ICON_COLOR : undefined;
+  switch (category.id) {
+    case "meditaciones-guiadas":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-meditaciones.png")}
+          style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "sonidos-ancestrales":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-sesiones.png")}
+          style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "musica-sonidos":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-musica.png")}
+          style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "__descanzo__":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-luna.png")}
+          style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
+          contentFit="contain"
+          tintColor={color ?? CATEGORY_ICON_COLOR}
+        />
+      );
+    case "ambientales":
+      return (
+        <MaterialCommunityIcons
+          name="leaf"
+          size={horizontal ? 18 : 24}
+          color={color ?? category.color}
+        />
+      );
+    case "historias":
+      return (
+        <MaterialCommunityIcons
+          name="book-open-page-variant"
+          size={horizontal ? 17 : 24}
+          color={color ?? category.color}
+        />
+      );
+    case "charlas":
+      return (
+        <MaterialCommunityIcons
+          name="message-text-outline"
+          size={horizontal ? 17 : 24}
+          color={color ?? category.color}
+        />
+      );
+    case "__mezcla__":
+      return (
+        <MaterialCommunityIcons
+          name="tune-variant"
+          size={horizontal ? 18 : 24}
+          color={color ?? category.color}
+        />
+      );
+    case "__geometrix__":
+      return (
+        <MaterialCommunityIcons
+          name="cube-outline"
+          size={horizontal ? 18 : 29}
+          color={color ?? category.color}
+        />
+      );
+  }
+}
 
 /**
  * Accesos de exploración compartidos por Inicio y Descubrir.
@@ -61,116 +133,7 @@ export function ContentCategoryGrid({
 
   const categoryCards = (
       <>
-        {([
-          {
-            id: "meditaciones-guiadas",
-            label: "Meditaciones",
-            color: "#C8A6FF",
-            icon: (color?: string) => (
-              <ExpoImage
-                source={require("@/assets/images/cat-meditaciones.png")}
-                style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
-                contentFit="contain"
-                tintColor={color}
-              />
-            ),
-          },
-          {
-            id: "sonidos-ancestrales",
-            label: "Sonoterapia",
-            color: "#E7A36E",
-            icon: (color?: string) => (
-              <ExpoImage
-                source={require("@/assets/images/cat-sesiones.png")}
-                style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
-                contentFit="contain"
-                tintColor={color}
-              />
-            ),
-          },
-          {
-            id: "musica-sonidos",
-            label: "Música",
-            color: "#6FD7D8",
-            icon: (color?: string) => (
-              <ExpoImage
-                source={require("@/assets/images/cat-musica.png")}
-                style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
-                contentFit="contain"
-                tintColor={color}
-              />
-            ),
-          },
-          {
-            id: "ambientales",
-            label: "Ambientales",
-            color: "#86C49A",
-            icon: (color?: string) => (
-              <MaterialCommunityIcons
-                name="leaf"
-                size={horizontal ? 18 : 24}
-                color={color ?? "#86C49A"}
-              />
-            ),
-          },
-          {
-            id: "__descanzo__",
-            label: "Dormir",
-            color: "#8ED9FF",
-            icon: (color?: string) => (
-              <ExpoImage
-                source={require("@/assets/images/cat-luna.png")}
-                style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
-                contentFit="contain"
-                tintColor={color ?? CATEGORY_ICON_COLOR}
-              />
-            ),
-          },
-          {
-            id: "historias",
-            label: "Historias",
-            color: "#D5A4E8",
-            icon: (color?: string) => (
-              <MaterialCommunityIcons
-                name="book-open-page-variant"
-                size={horizontal ? 17 : 24}
-                color={color ?? "#D5A4E8"}
-              />
-            ),
-          },
-          {
-            id: "charlas",
-            label: "Charlas",
-            color: "#F0B17A",
-            icon: (color?: string) => (
-              <MaterialCommunityIcons
-                name="message-text-outline"
-                size={horizontal ? 17 : 24}
-                color={color ?? "#F0B17A"}
-              />
-            ),
-          },
-          {
-            id: "__mezcla__",
-            label: "Mezclador",
-            color: "#E6BE67",
-            icon: (color?: string) => (
-              <MaterialCommunityIcons name="tune-variant" size={horizontal ? 18 : 24} color={color ?? "#E6BE67"} />
-            ),
-          },
-          {
-            id: "__geometrix__",
-            label: "Geometrix",
-            color: "#C4C8D4",
-            icon: (color?: string) => (
-              <MaterialCommunityIcons
-                name="cube-outline"
-                size={horizontal ? 18 : 29}
-                color={color ?? "#C4C8D4"}
-              />
-            ),
-          },
-        ] as const)
+        {CONTENT_CATEGORIES
           .filter((category) => !hiddenIds.includes(category.id))
           .map((category, index) => {
           const radius = 27;
@@ -228,7 +191,7 @@ export function ContentCategoryGrid({
                   horizontal
                     ? [
                         styles.horizontalCard,
-                        { width: HORIZONTAL_CARD_WIDTHS[category.id] ?? 140 },
+                        { width: category.horizontalWidth },
                         (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
                           styles.horizontalSmallRadiusCard,
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
@@ -244,11 +207,11 @@ export function ContentCategoryGrid({
                     styles.iconWrap,
                     horizontal && styles.horizontalIconCircle,
                     horizontal && {
-                      backgroundColor: CARD_CATEGORY_COLORS[category.id] ?? category.color,
+                      backgroundColor: category.cardColor,
                     },
                   ]}
                 >
-                  {category.icon(horizontal || isDiscoverGrid ? CATEGORY_ICON_COLOR : undefined)}
+                  {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
                 </View>
                 <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
               </Pressable>

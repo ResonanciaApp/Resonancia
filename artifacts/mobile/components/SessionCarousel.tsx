@@ -49,6 +49,7 @@ type SessionCarouselProps = {
   showImageCategoryPill?: boolean;
   onViewAll?: () => void;
   showCardMetadata?: boolean;
+  showHeader?: boolean;
 };
 
 export function SessionCarousel({
@@ -68,6 +69,7 @@ export function SessionCarousel({
   showImageCategoryPill = false,
   onViewAll,
   showCardMetadata = false,
+  showHeader = true,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { width: viewportWidth } = useWindowDimensions();
@@ -86,7 +88,7 @@ export function SessionCarousel({
   const titleFontSize = titleSize ?? 17;
   return (
     <View style={[styles.section, style]}>
-      {onViewAll ? (
+      {showHeader && (onViewAll ? (
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
@@ -105,7 +107,7 @@ export function SessionCarousel({
         </View>
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
-      )}
+      ))}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useCallback } from "react";
 import {
   Pressable,
@@ -20,9 +21,11 @@ const PILLS_PAD = 19;
 const PILLS_GAP = 8;
 
 const TOOLS = [
+  { id: "favoritos", label: "Favoritos", icon: "heart-outline", color: "#F29BB7" },
+  { id: "biblioteca", label: "Biblioteca", icon: "book-open-variant", color: "#8ED9FF" },
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
   { id: "geometrix", label: "Geometrix", icon: "cube-outline", color: "#C4C8D4" },
-  { id: "respiracion", label: "Ejercicios Respiración", icon: "weather-windy", color: "#C8A6FF" },
+  { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
 ] as const;
 
@@ -47,6 +50,12 @@ export function ToolsGrid({
       : "rgba(255,255,255,0.05)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
+      case "favoritos":
+        openCategory("/favoritos-todos");
+        break;
+      case "biblioteca":
+        router.push("/(tabs)/biblioteca" as never);
+        break;
       case "mezclador":
         openMixer();
         break;

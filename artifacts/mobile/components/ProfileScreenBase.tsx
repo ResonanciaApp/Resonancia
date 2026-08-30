@@ -1249,6 +1249,25 @@ export function ProfileScreenBase({
               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
             </Pressable>
 
+            <Pressable
+              onPress={() => Alert.alert("Descargas", "La descarga estará disponible próximamente.")}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Descargas"
+              testID="profile-downloads-row"
+              style={({ pressed }) => [
+                styles.profileNotificationRow,
+                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
+              ]}
+            >
+              <View style={styles.profileNotificationIcon}>
+                <Feather name="download" size={19} color={colors.foreground} />
+              </View>
+              <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
+                Descargas
+              </Text>
+              <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+            </Pressable>
+
             <MilestoneCards />
 
           </>

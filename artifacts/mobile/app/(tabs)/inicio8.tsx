@@ -93,8 +93,8 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
+import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width, height } = Dimensions.get("window");
@@ -942,6 +942,7 @@ export default function HomeScreen2({
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
+  const [moodRecommendationGeneration, setMoodRecommendationGeneration] = useState(0);
   const [immersive, setImmersive] = useState(false);
   const [immersiveRendered, setImmersiveRendered] = useState(false);
   const { requestHide, showMenu } = useTabBarVisibility();
@@ -990,12 +991,28 @@ export default function HomeScreen2({
   const immersiveGesture = Gesture.Simultaneous(pinchGesture, doubleTap);
 
   function handleMoodSelect(moodIds: MoodId[]) {
-    setSelectedMoods(
-      moodIds
-        .map((moodId) => getMoodById(moodId))
-        .filter((mood): mood is Mood => Boolean(mood)),
-    );
+    const nextMoods = moodIds
+      .map((moodId) => getMoodById(moodId))
+      .filter((mood): mood is Mood => Boolean(mood));
+    setSelectedMoods(nextMoods);
+    setMoodRecommendationGeneration((generation) => generation + 1);
   }
+
+  const handleRecommendedSessionPress = useCallback(
+    (session: Session) => {
+      if (session.skipMiniPlayer) {
+        playSession(session);
+        return;
+      }
+      if (session.skipDetail) {
+        playSession(session);
+        router.push("/player" as never);
+        return;
+      }
+      openCategory(`/session/${session.id}`);
+    },
+    [openCategory, playSession],
+  );
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
@@ -1114,7 +1131,7 @@ export default function HomeScreen2({
     setShuffleBgColor(`rgba(${vary(r0)},${vary(g0)},${vary(b0)},0.92)`);
   }, [activeTheme]);
 
-  const { version: catalogVersion } = useCatalog();
+  const { version: catalogVersion, status: catalogStatus } = useCatalog();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
@@ -2035,18 +2052,13 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <QuickAccessSection
-            includeExtras
-            profileLayout
-            title="Tu contenido"
-            showCardBorders={false}
-            cardBackgroundColor={durationPillBg}
-            cardOpacity={1}
-            style={{
-              marginTop: 0,
-              marginBottom: INICIO2_SECTION_GAP,
-              paddingHorizontal: GRID_PAD,
-            }}
+          <RecommendedForYouSection
+            selectedMoods={selectedMoods}
+            generation={moodRecommendationGeneration}
+            catalogStatus={catalogStatus}
+            catalogVersion={catalogVersion}
+            isPremium={isPremium}
+            onPress={handleRecommendedSessionPress}
           />
         )}
         {isInicio2 && (
