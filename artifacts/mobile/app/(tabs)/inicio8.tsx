@@ -1955,7 +1955,7 @@ export default function HomeScreen2({
           <QuickAccessSection
             includeExtras
             profileLayout
-            showTitle={false}
+            title="Tu contenido"
             showCardBorders={false}
             cardBackgroundColor={durationPillBg}
             cardOpacity={1}

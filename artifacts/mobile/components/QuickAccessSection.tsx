@@ -66,6 +66,7 @@ export function QuickAccessSection({
   replaceLibraryWithVideos = false,
   profileLayout = false,
   showTitle = true,
+  title = "Mis accesos",
   showCardBorders = true,
   cardBackgroundColor,
   cardOpacity = 1,
@@ -75,6 +76,7 @@ export function QuickAccessSection({
   replaceLibraryWithVideos?: boolean;
   profileLayout?: boolean;
   showTitle?: boolean;
+  title?: string;
   showCardBorders?: boolean;
   cardBackgroundColor?: string;
   cardOpacity?: number;
@@ -124,7 +126,7 @@ export function QuickAccessSection({
       : ACCESS_CARDS_WITH_EXTRAS;
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
-      {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>Mis accesos</Text>}
+      {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>}
       <View style={styles.accessRow}>
         {(includeExtras ? accessCards : ACCESS_CARDS).map((access) => (
           <Pressable
