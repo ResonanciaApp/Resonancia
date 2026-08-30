@@ -2015,7 +2015,7 @@ export default function HomeScreen2({
               moodTopOffset={0}
               titleSize={19}
               titleSpacing={17}
-              maxItems={5}
+              maxItems={3}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
               onClearMood={() => setSelectedMoods([])}
               onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
@@ -2544,7 +2544,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: GRID_PAD,
     marginBottom: 8,
-    borderRadius: 999,
+    borderRadius: 17,
     overflow: "hidden",
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -3472,7 +3472,7 @@ function InicioMoodRecommendations({
             <SessionRow
               session={session}
               imageSize={84}
-              metaText={session.categoryLabel}
+              showCategoryPill
               onPress={() => {
                 if (session.isPremium && !isPremium) {
                   router.push("/membresia" as never);

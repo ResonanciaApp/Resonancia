@@ -7,6 +7,7 @@ import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { getVoiceLabel } from "@/config/audio-map";
 import { getGuideById } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -20,11 +21,12 @@ type Props = {
   style?: object;
   imageSize?: number;
   metaText?: string;
+  showCategoryPill?: boolean;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
 
-export function SessionRow({ session, rating, style, imageSize = 80, metaText, onActionsPress, onPress }: Props) {
+export function SessionRow({ session, rating, style, imageSize = 80, metaText, showCategoryPill = false, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession, prewarmSession } = usePlayer();
@@ -69,7 +71,9 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, o
 
         <View style={styles.sessionContent}>
           <View style={styles.sessionMeta}>
-            {metaText ? (
+            {showCategoryPill ? (
+              <SessionCategoryPill categoryId={session.categoryId} />
+            ) : metaText ? (
               <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
             ) : (
               <>

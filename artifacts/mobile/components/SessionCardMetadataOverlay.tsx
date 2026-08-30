@@ -52,6 +52,26 @@ const CATEGORY_PILL_META: Record<string, {
   },
 };
 
+export function SessionCategoryPill({ categoryId }: { categoryId?: string }) {
+  const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
+  if (!category) return null;
+
+  return (
+    <View pointerEvents="none" style={styles.categoryPill}>
+      <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
+        {category.materialIcon ? (
+          <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
+        ) : category.icon ? (
+          <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+        ) : null}
+      </View>
+      <Text style={styles.categoryLabel} numberOfLines={1}>
+        {category.label}
+      </Text>
+    </View>
+  );
+}
+
 type Props = {
   categoryId?: string;
   durationLabel: string;
@@ -74,8 +94,6 @@ export function SessionCardMetadataOverlay({
   // Deja un poco más de aire cuando el título ocupa dos líneas.
   durationBottom = 70,
 }: Props) {
-  const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
-
   return (
     <>
       <LinearGradient
@@ -84,20 +102,7 @@ export function SessionCardMetadataOverlay({
         locations={[0, 0.42, 1]}
         style={styles.bottomGradient}
       />
-      {category && (
-        <View pointerEvents="none" style={styles.categoryPill}>
-          <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
-            {category.materialIcon ? (
-              <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
-            ) : category.icon ? (
-              <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
-            ) : null}
-          </View>
-          <Text style={styles.categoryLabel} numberOfLines={1}>
-            {category.label}
-          </Text>
-        </View>
-      )}
+      <SessionCategoryPill categoryId={categoryId} />
       {showDuration && (
         <SessionDurationBadge
           label={durationLabel}
