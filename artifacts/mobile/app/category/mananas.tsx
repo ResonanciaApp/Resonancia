@@ -39,7 +39,7 @@ import {
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
 
-const H_PAD = 20;
+const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);

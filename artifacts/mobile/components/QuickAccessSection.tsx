@@ -15,7 +15,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
-const GRID_PAD = 19;
+const GRID_PAD = 14;
 const GRID_GAP = 7;
 
 const ACCESS_CARDS = [

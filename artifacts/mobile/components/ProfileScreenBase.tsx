@@ -1016,7 +1016,7 @@ export function ProfileScreenBase({
       <ScrollView
         ref={profileScrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 1, paddingHorizontal: 19 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 1, paddingHorizontal: 14 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
@@ -1684,7 +1684,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 19,
+    paddingHorizontal: 14,
     paddingBottom: 10,
   },
   gearBtn: {
@@ -1905,7 +1905,7 @@ const styles = StyleSheet.create({
   pillRow: {
     flexDirection: "row",
     gap: 8,
-    paddingHorizontal: 19,
+    paddingHorizontal: 14,
     paddingBottom: 14,
   },
   pillBorder: {},

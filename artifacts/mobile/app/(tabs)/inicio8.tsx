@@ -107,7 +107,7 @@ const NAV_TABS = [
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
 ];
 const GRID_GAP = 12;
-const GRID_PAD = 15;
+const GRID_PAD = 14;
 const INICIO2_SECTION_GAP = 53;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;

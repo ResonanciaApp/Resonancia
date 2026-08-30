@@ -32,7 +32,7 @@ import {
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
-const H_PAD = 19;
+const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 

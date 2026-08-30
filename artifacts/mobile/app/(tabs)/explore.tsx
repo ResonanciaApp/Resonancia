@@ -38,7 +38,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 19;
+const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
-  titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
+  titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {

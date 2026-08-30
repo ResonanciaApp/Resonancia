@@ -27,7 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 
-const H_PAD   = 20;
+const H_PAD   = 14;
 const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);

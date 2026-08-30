@@ -127,7 +127,7 @@ function SleepPill({
   );
 }
 
-const H_PAD = 19;
+const H_PAD = 14;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
@@ -1012,7 +1012,7 @@ const styles = StyleSheet.create({
   hero: {
     flexDirection: "column",
     alignItems: "stretch",
-    paddingHorizontal: 19,
+    paddingHorizontal: H_PAD,
     paddingTop: 7,
     paddingBottom: 10,
   },

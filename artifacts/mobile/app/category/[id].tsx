@@ -27,7 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 
-const H_PAD = 20;
+const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 20) / 2;
 const CAROUSEL_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
