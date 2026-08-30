@@ -580,12 +580,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#161521",
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.07)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 24,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.38,
+    shadowRadius: 10,
     // elevation rompe el blur dimezis en Android (capa separada → no captura el fondo)
-    ...(Platform.OS === "android" ? {} : { elevation: 20 }),
+    ...(Platform.OS === "android" ? {} : { elevation: 25 }),
   },
   row: {
     flex: 1,
