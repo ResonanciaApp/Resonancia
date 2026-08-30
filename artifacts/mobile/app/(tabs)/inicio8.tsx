@@ -3494,8 +3494,6 @@ function InicioMoodRecommendations({
           gap: 6,
           paddingVertical: 12,
           borderRadius: 100,
-          borderWidth: 1.5,
-          borderColor: "rgba(249,249,249,0.5)",
           backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
         })}
       >
