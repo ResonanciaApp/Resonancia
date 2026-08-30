@@ -20,7 +20,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
   const colors = useColors();
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = getContentCarouselCardWidth(screenWidth, 20);
-  const cardHeight = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
+  const photoSize = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
@@ -48,10 +48,19 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
               { width: cardWidth, opacity: pressed ? 0.75 : 1 },
             ]}
           >
-            <View style={[styles.photoFrame, { width: cardWidth, height: cardHeight }]}>
+            <View
+              style={[
+                styles.photoFrame,
+                {
+                  width: photoSize,
+                  height: photoSize,
+                  borderRadius: photoSize / 2,
+                },
+              ]}
+            >
               <ExpoImage
                 source={resonador.photo}
-                style={[styles.photo, { width: cardWidth, height: cardHeight }]}
+                style={[styles.photo, { width: photoSize, height: photoSize }]}
                 contentFit="cover"
               />
             </View>
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-    color: "#F4F4F4",
+    color: "#acaac2",
     textAlign: "center",
     lineHeight: 19,
   },
