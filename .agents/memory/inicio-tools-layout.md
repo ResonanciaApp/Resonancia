@@ -3,8 +3,8 @@ name: Herramientas de Inicio
 description: Orden deliberado de la fila horizontal de accesos de Inicio 2.
 ---
 
-La fila horizontal de herramientas de Inicio 2 debe comenzar con Biblioteca y conservar Geometrix junto a Videos, en ese orden. Biblioteca no reemplaza a Videos en esta vista.
+La fila horizontal de herramientas de Inicio 2 no lleva título propio y aparece antes de “Escuchadas recientemente”; conserva los accesos definidos por `ToolsGrid`.
 
-**Why:** El usuario pidió priorizar Biblioteca en el tab de Inicio y recuperar Videos como opción contigua a Geometrix.
+**Why:** El usuario pidió que los accesos principales (Geometrix, Mezclador, Diario, etc.) estén disponibles antes del contenido escuchado, con una presentación más directa.
 
-**How to apply:** Usar una variante exclusiva de la fila de Inicio para anteponer Biblioteca a las herramientas existentes. No cambiar por esto la distribución de accesos de Mi perfil ni la navegación del menú.
+**How to apply:** Mantener la sección exclusiva de Inicio 2, sin encabezado “Herramientas”, y no cambiar por esto la distribución de accesos de Mi perfil ni la navegación del menú.

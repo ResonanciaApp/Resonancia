@@ -1863,6 +1863,11 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <View style={[styles.inicio2ToolsSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
+            <ToolsGrid />
+          </View>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Escuchadas recientemente"
             sessions={filteredListened}
@@ -1988,14 +1993,6 @@ export default function HomeScreen2({
                 <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
               ))}
             </ScrollView>
-          </View>
-        )}
-        {isInicio2 && (
-          <View style={[styles.inicio2ToolsSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, styles.inicio2SectionTitle]}>
-              Herramientas
-            </Text>
-            <ToolsGrid />
           </View>
         )}
         {isInicio2 && (
