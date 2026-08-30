@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
@@ -36,7 +36,6 @@ const FAV_TABS = [
   { id: "sesiones",     label: "Sonoterapia",  icon: "radio",       categoryId: "sonidos-ancestrales" },
   { id: "musica",       label: "Música",       icon: "music",       categoryId: "musica-sonidos" },
   { id: "ambientales",  label: "Ambientales",  icon: "leaf",        categoryId: "ambientales" },
-  { id: "dormir",       label: "Dormir",       icon: "moon",        categoryId: "descanso" },
   { id: "historias",    label: "Historias",    icon: "book-open",   categoryId: "historias" },
   { id: "charlas",      label: "Charlas",      icon: "message-circle", categoryId: "charlas" },
   { id: "videos",       label: "Videos",       icon: "play-circle", categoryId: null },
@@ -54,7 +53,7 @@ function FavPill({
         : tabId === "ambientales" ? ["#357849", "#23522F"]
           : tabId === "historias" ? ["#8F227F", "#691E5E"]
             : tabId === "charlas" ? ["#953732", "#78221E"]
-              : tabId === "dormir" || theme.id === "indigo" ? ["#784576", "#50326E"]
+              : theme.id === "indigo" ? ["#784576", "#50326E"]
                 : ["#FFFFFF", "#F5F5F5"];
   const isDarkSelectedText = ["meditaciones", "sesiones", "musica", "videos"].includes(tabId) && theme.id !== "indigo";
   const contentColor = sel && isDarkSelectedText ? "#0D0A1E" : "#F4F4F4";
@@ -79,7 +78,11 @@ function FavPill({
           style={StyleSheet.absoluteFill}
         />
       )}
-      <Feather name={icon as never} size={22} color={contentColor} />
+      {tabId === "ambientales" ? (
+        <MaterialCommunityIcons name="leaf" size={22} color={contentColor} />
+      ) : (
+        <Feather name={icon as never} size={22} color={contentColor} />
+      )}
       <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
         {label}
       </Text>
