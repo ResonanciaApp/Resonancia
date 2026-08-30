@@ -872,7 +872,7 @@ export function ProfileScreenBase({
               <View style={styles.streakHeadingRow}>
                 <View style={styles.streakHeadingMain}>
                   <View style={styles.streakLotusIcon}>
-                    <MaterialCommunityIcons name="spa" size={31} color="#F9F9F9" />
+                    <MaterialCommunityIcons name="spa" size={39} color="#F9F9F9" />
                   </View>
                   <View style={styles.streakHeadingCopy}>
                     <View style={styles.streakTitleRow}>
