@@ -37,11 +37,10 @@ import {
 const SLOTS: {
   id: PracticeNotificationSlot;
   icon: React.ComponentProps<typeof Feather>["name"];
-  description: string;
 }[] = [
-  { id: "manana", icon: "sunrise", description: "Comienza el día volviendo a ti" },
-  { id: "tarde", icon: "sun", description: "Haz una pausa consciente" },
-  { id: "noche", icon: "moon", description: "Cierra el día en calma" },
+  { id: "manana", icon: "sunrise" },
+  { id: "tarde", icon: "sun" },
+  { id: "noche", icon: "moon" },
 ];
 
 function dateForPreference(preference: PracticeNotificationPreference): Date {
@@ -236,23 +235,8 @@ export default function PracticeNotificationsScreen() {
           <View style={styles.headerButton} />
         </View>
 
-        <View style={styles.hero}>
-          <View style={styles.heroIcon}>
-            <Feather name="bell" size={24} color="#FBFBFB" />
-          </View>
-          <Text style={styles.heroTitle}>Recordatorios de práctica</Text>
-          <Text style={styles.heroText}>
-            Elige los momentos que te acompañan a volver a tu centro.
-          </Text>
-        </View>
-
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Tus momentos</Text>
-          <Text style={styles.cardText}>
-            Puedes activar uno o varios recordatorios y cambiar la hora cuando quieras.
-          </Text>
-
-          {SLOTS.map(({ id, icon, description }, index) => {
+          {SLOTS.map(({ id, icon }, index) => {
             const preference = settings[id];
             const isPending = pendingSlot === id;
             return (
@@ -267,7 +251,6 @@ export default function PracticeNotificationsScreen() {
                   <Text style={styles.slotTitle}>
                     {PRACTICE_NOTIFICATION_LABELS[id]}
                   </Text>
-                  <Text style={styles.slotDescription}>{description}</Text>
                   <Pressable
                     onPress={() => openTimePicker(id)}
                     accessibilityRole="button"
@@ -427,54 +410,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
   },
-  hero: { alignItems: "center", marginBottom: 30, paddingHorizontal: 16 },
-  heroIcon: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  heroTitle: {
-    color: "#FBFBFB",
-    fontFamily: "Manrope",
-    fontSize: 25,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  heroText: {
-    color: "rgba(255,255,255,0.78)",
-    fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 22,
-    textAlign: "center",
-    marginTop: 9,
-  },
   card: {
     borderRadius: 22,
-    backgroundColor: "rgba(18,10,24,0.42)",
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
     overflow: "hidden",
-    paddingTop: 20,
-  },
-  cardTitle: {
-    color: "#FBFBFB",
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    paddingHorizontal: 18,
-  },
-  cardText: {
-    color: "rgba(255,255,255,0.65)",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 19,
-    paddingHorizontal: 18,
-    marginTop: 5,
-    marginBottom: 6,
   },
   slot: {
     flexDirection: "row",
@@ -503,12 +444,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
-  },
-  slotDescription: {
-    color: "rgba(255,255,255,0.60)",
-    fontFamily: "Manrope",
-    fontSize: 12,
-    marginTop: 2,
   },
   timeButton: {
     flexDirection: "row",
