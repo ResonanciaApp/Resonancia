@@ -1041,10 +1041,6 @@ export function ProfileScreenBase({
                   <Feather name="user" size={28} color={colors.primary} />
                 </View>
               )}
-              <View style={styles.avatarEditBadge}>
-                <GoldGradientFill />
-                <Feather name="camera" size={11} color="#fff" />
-              </View>
             </Pressable>
 
             {/* Name + details */}
@@ -1949,19 +1945,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarImage: { width: 80, height: 80, borderRadius: 40 },
-  avatarEditBadge: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "#1B060F",
-  },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   userNameLeft: { textAlign: "left" },
   emailText: { fontFamily: "Manrope", fontSize: 12 },
