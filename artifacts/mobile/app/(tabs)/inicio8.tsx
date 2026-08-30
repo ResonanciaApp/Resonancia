@@ -1914,6 +1914,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             squareCards
+            cardAuthorColor="#acaac2"
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (

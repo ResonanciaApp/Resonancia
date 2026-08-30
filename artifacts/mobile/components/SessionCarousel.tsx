@@ -44,6 +44,7 @@ type SessionCarouselProps = {
   titleSpacing?: number;
   description?: string;
   squareCards?: boolean;
+  cardAuthorColor?: string;
   onViewAll?: () => void;
   showCardMetadata?: boolean;
 };
@@ -61,6 +62,7 @@ export function SessionCarousel({
   titleSpacing,
   description,
   squareCards = false,
+  cardAuthorColor,
   onViewAll,
   showCardMetadata = false,
 }: SessionCarouselProps) {
@@ -91,7 +93,7 @@ export function SessionCarousel({
       ) : description ? (
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 4 }]}>{title}</Text>
-          <Text style={[styles.sectionDescription, { color: colors.mutedForeground }]}>{description}</Text>
+          <Text style={[styles.sectionDescription, { color: "#acaac2" }]}>{description}</Text>
         </View>
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
@@ -143,7 +145,12 @@ export function SessionCarousel({
                 <>
                   <Text style={[styles.cardTitle, { marginTop: titleOffset ?? 10 }]} numberOfLines={2}>{s.title}</Text>
                   {authorName ? (
-                    <Text style={styles.cardAuthor} numberOfLines={1}>{authorName}</Text>
+                    <Text
+                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      numberOfLines={1}
+                    >
+                      {authorName}
+                    </Text>
                   ) : null}
                 </>
               )}
