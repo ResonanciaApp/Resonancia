@@ -47,7 +47,6 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
-import { ToolsGrid } from "@/components/ToolsGrid";
 import { MilestoneCards } from "@/components/MilestoneCards";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -1103,15 +1102,6 @@ export function ProfileScreenBase({
           </View>
         </View>
 
-        {dedicated && (
-          <View style={styles.profileToolsSection}>
-            <Text style={[styles.streakSectionTitle, { color: colors.foreground }]}>
-              Herramientas de Inicio
-            </Text>
-            <ToolsGrid />
-          </View>
-        )}
-
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
@@ -1972,9 +1962,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 32,
     gap: 6,
-  },
-  profileToolsSection: {
-    marginBottom: 28,
   },
   profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
   profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
