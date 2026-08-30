@@ -56,10 +56,12 @@ export function SessionCategoryPill({
   categoryId,
   inline = false,
   plain = false,
+  textOnly = false,
 }: {
   categoryId?: string;
   inline?: boolean;
   plain?: boolean;
+  textOnly?: boolean;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -71,18 +73,28 @@ export function SessionCategoryPill({
         styles.categoryPill,
         inline && styles.categoryPillInline,
         plain && styles.categoryPillPlain,
+        textOnly && styles.categoryPillTextOnly,
       ]}
     >
-      <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
-        {category.materialIcon ? (
-          <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
-        ) : category.icon ? (
-          <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
-        ) : null}
-      </View>
+      {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
       <Text style={styles.categoryLabel} numberOfLines={1}>
         {category.label}
       </Text>
+    </View>
+  );
+}
+
+export function SessionCategoryIcon({ categoryId, style }: { categoryId?: string; style?: object }) {
+  const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
+  if (!category) return null;
+
+  return (
+    <View style={[styles.categoryCircle, style, { backgroundColor: category.color }]}>
+      {category.materialIcon ? (
+        <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
+      ) : category.icon ? (
+        <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+      ) : null}
     </View>
   );
 }
@@ -184,6 +196,9 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingLeft: 0,
     backgroundColor: "transparent",
+  },
+  categoryPillTextOnly: {
+    gap: 0,
   },
   categoryCircle: {
     width: 19,

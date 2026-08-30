@@ -7,7 +7,10 @@ import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
+import {
+  SessionCategoryIcon,
+  SessionCategoryPill,
+} from "@/components/SessionCardMetadataOverlay";
 import { getVoiceLabel } from "@/config/audio-map";
 import { getGuideById } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -58,19 +61,36 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
         }}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
       >
-        <View style={[styles.sessionImgWrap, { width: imageSize, height: imageSize }]}>
-          <Image
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            source={session.image as any}
-            style={{ width: imageSize, height: imageSize }}
-            placeholder={BLUR_PLACEHOLDER}
-            transition={IMAGE_TRANSITION}
-          />
-          <PremiumBadge session={session} />
+        <View style={[styles.sessionThumb, { width: imageSize, height: imageSize }]}>
+          <View style={[styles.sessionImgWrap, { width: imageSize, height: imageSize }]}>
+            <Image
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              source={session.image as any}
+              style={{ width: imageSize, height: imageSize }}
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
+            />
+            <PremiumBadge session={session} />
+          </View>
+          {showCategoryPill && (
+            <SessionCategoryIcon
+              categoryId={session.categoryId}
+              style={styles.sessionCategoryIcon}
+            />
+          )}
         </View>
 
         <View style={styles.sessionContent}>
-          {!showCategoryPill && (
+          {showCategoryPill ? (
+            <View style={styles.sessionMeta}>
+              <SessionCategoryPill
+                categoryId={session.categoryId}
+                inline
+                plain
+                textOnly
+              />
+            </View>
+          ) : (
             <View style={styles.sessionMeta}>
               {metaText ? (
                 <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
@@ -87,19 +107,9 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
-          {showCategoryPill ? (
-            <View style={styles.sessionAuthorMeta}>
-              <SessionCategoryPill categoryId={session.categoryId} inline plain />
-              <Text style={[styles.sessionAuthorSeparator, { color: colors.mutedForeground }]}>·</Text>
-              <Text style={[styles.sessionAuthor, styles.sessionAuthorRight, { color: colors.mutedForeground }]} numberOfLines={1}>
-                {author}
-              </Text>
-            </View>
-          ) : (
-            <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-              {author}
-            </Text>
-          )}
+          <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+            {author}
+          </Text>
         </View>
       </Pressable>
 
@@ -141,13 +151,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
+  sessionThumb: {
+    position: "relative",
+    zIndex: 1,
+  },
+  sessionCategoryIcon: {
+    position: "absolute",
+    left: -9,
+    top: 8,
+    zIndex: 2,
+  },
   sessionImg: { width: 80, height: 80 },
   sessionContent: { flex: 1 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   sessionMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14 },
   sessionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
   sessionAuthor: { fontFamily: "Manrope", fontSize: 12, flexShrink: 1 },
-  sessionAuthorMeta: { flexDirection: "row", alignItems: "center", gap: 6, minWidth: 0 },
-  sessionAuthorSeparator: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18 },
-  sessionAuthorRight: { flex: 1, textAlign: "right" },
 });
