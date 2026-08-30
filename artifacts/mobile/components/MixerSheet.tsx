@@ -103,6 +103,26 @@ function isLightGradient(g: readonly [string, string, string]): boolean {
   return (r + gr + b) / 3 > 100;
 }
 
+function getDarkestGradientColor(colors: readonly string[]): string {
+  let darkest = colors[0] ?? "#000000";
+  let darkestLuminance = Number.POSITIVE_INFINITY;
+
+  for (const color of colors) {
+    const hex = color.replace("#", "");
+    if (hex.length !== 6) continue;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    if (luminance < darkestLuminance) {
+      darkest = color;
+      darkestLuminance = luminance;
+    }
+  }
+
+  return darkest;
+}
+
 /** Flotante Zen — paleta para el sheet del mezclador. */
 const WARM = {
   bg: "#4A0C0C",
@@ -484,9 +504,21 @@ export function MixerSheet() {
   const sheetEnterY    = useRef(new Animated.Value(Dimensions.get("window").height)).current;
   const immersivoFade  = useRef(new Animated.Value(0)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
+  const nameCursorOpacity = useRef(new Animated.Value(1)).current;
   // Dim del fondo: arranca en 0 y se desvanece HACIA dentro junto con el slide,
   // así no aparece de golpe (era el "overlay negro" que flasheaba en tema claro).
   const backdropOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.timing(nameCursorOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
+        Animated.timing(nameCursorOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
+      ]),
+    );
+    blink.start();
+    return () => blink.stop();
+  }, [nameCursorOpacity]);
 
   // Ref para evitar cierre doble (p.ej. backdrop + gesto simultáneos)
   const closingRef = useRef(false);
@@ -1001,48 +1033,40 @@ export function MixerSheet() {
         <Animated.View style={[styles.modalOverlay, { opacity: saveOverlayOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancelSave} />
           <Pressable
-            style={[styles.modalCard, { backgroundColor: sheetGradient[2] }]}
+            style={[styles.modalCard, { backgroundColor: getDarkestGradientColor(sheetGradient) }]}
             onPress={(e) => e.stopPropagation()}
           >
-                <LinearGradient
-                  colors={sheetGradient}
-                  locations={isDefaultBg ? [0, 1, 1] : undefined}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
-                <Text style={[styles.modalTitle, { color: "#FFFFFF" }]}>
-                  {saveMode === "update" ? "Actualizar mezcla" : "Guardar mezcla"}
+            <Text style={[styles.modalTitle, { color: "#FFFFFF" }]}>Nombra tu mezcla</Text>
+
+            <View style={[styles.modalInput, { backgroundColor: palette.inputBg }]}>
+              <Animated.View
+                style={[styles.modalNameCursor, { opacity: nameCursorOpacity }]}
+                pointerEvents="none"
+              />
+              <TextInput
+                value={presetName}
+                onChangeText={setPresetName}
+                placeholder="Borrador de mezcla"
+                placeholderTextColor={palette.muted}
+                style={styles.modalTextInput}
+                maxLength={40}
+              />
+            </View>
+
+            <View style={styles.modalActions}>
+              <Pressable onPress={cancelSave} style={[styles.modalBtn, styles.modalCancelBtn]}>
+                <Text style={[styles.modalBtnText, { color: palette.muted }]}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                onPress={confirmSave}
+                style={[styles.modalBtn, { overflow: "hidden" }]}
+              >
+                <GoldGradientFill />
+                <Text style={[styles.modalBtnText, { color: colors.primaryForeground, fontWeight: "700" }]}>
+                  {saveMode === "update" ? "Actualizar" : "Guardar"}
                 </Text>
-
-                <Text style={[styles.modalLabel, { color: "#FFFFFF" }]}>Título</Text>
-                <TextInput
-                  value={presetName}
-                  onChangeText={setPresetName}
-                  placeholder="Ej: Lluvia para dormir"
-                  placeholderTextColor={palette.muted}
-                  style={[
-                    styles.modalInput,
-                    { color: "#FFFFFF", backgroundColor: palette.inputBg },
-                  ]}
-                  maxLength={40}
-                />
-
-                <View style={styles.modalActions}>
-                  <Pressable onPress={cancelSave} style={styles.modalBtn}>
-                    <Text style={[styles.modalBtnText, { color: palette.muted }]}>Cancelar</Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={confirmSave}
-                    style={[styles.modalBtn, { overflow: "hidden" }]}
-                  >
-                    <GoldGradientFill />
-                    <Text style={[styles.modalBtnText, { color: colors.primaryForeground, fontWeight: "700" }]}>
-                      {saveMode === "update" ? "Actualizar" : "Guardar"}
-                    </Text>
-                  </Pressable>
-                </View>
+              </Pressable>
+            </View>
           </Pressable>
         </Animated.View>
       )}
@@ -1361,7 +1385,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.7)",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 32,
+    paddingHorizontal: 42,
   },
   modalCard: {
     width: "100%",
@@ -1369,15 +1393,29 @@ const styles = StyleSheet.create({
     padding: 20,
     overflow: "hidden",
   },
-  modalTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 14 },
+  modalTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 14, textAlign: "center" },
   modalScroll: { maxHeight: 420 },
-  modalLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", marginBottom: 6, marginTop: 12 },
   modalInput: {
-    fontFamily: "Manrope",
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
+    minHeight: 50,
+  },
+  modalNameCursor: {
+    width: 2,
+    height: 24,
+    borderRadius: 1,
+    backgroundColor: "#F9F9F9",
+    marginRight: 6,
+  },
+  modalTextInput: {
+    flex: 1,
+    padding: 0,
+    fontFamily: "Manrope",
     fontSize: 15,
+    color: "#FFFFFF",
   },
   modalInputArea: { minHeight: 64, textAlignVertical: "top" },
   catTabRow: { flexDirection: "row", gap: 8, marginTop: 6 },
@@ -1408,14 +1446,20 @@ const styles = StyleSheet.create({
   },
   modalActions: {
     flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 8,
+    gap: 10,
     marginTop: 16,
   },
   modalBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
+    flex: 1,
+    minHeight: 52,
     borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalCancelBtn: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.16)",
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
   modalBtnText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
 

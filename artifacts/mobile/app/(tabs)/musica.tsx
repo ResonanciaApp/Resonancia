@@ -507,7 +507,6 @@ export default function MezcladorScreen() {
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
   const [menuScrolled, setMenuScrolled] = useState(false);
-  const [contentScrolled, setContentScrolled] = useState(false);
 
   const menuSlide = useRef(new Animated.Value(300)).current;
   const menuFade  = useRef(new Animated.Value(0)).current;
@@ -809,7 +808,7 @@ export default function MezcladorScreen() {
                 pointerEvents="none"
                 style={{ position: "absolute", left: 0, right: 0, top: topPad + 3, height: 40, alignItems: "center", justifyContent: "center" }}
               >
-                <Text style={[styles.pageTitle, { fontSize: 19, letterSpacing: 0.3 }]}>Mezclador de Sonidos</Text>
+                <Text style={[styles.pageTitle, { fontSize: 16, letterSpacing: 0.3 }]}>Mezclador de Sonidos</Text>
               </View>
               <View style={{ position: "absolute", right: 20, top: topPad + 3, zIndex: 10 }}>
                 <Pressable
@@ -859,18 +858,6 @@ export default function MezcladorScreen() {
             {/* ── Sub-tabs eliminados ── */}
             <View style={{ height: 8 }} />
 
-            {/* Divisor sticky: solo visible al hacer scroll.
-                Siempre montado (solo cambia opacity) para no alterar el layout
-                y evitar rebotes de la grilla al cruzar el umbral de scroll. */}
-            <View
-              pointerEvents="none"
-              style={{
-                height: StyleSheet.hairlineWidth,
-                backgroundColor: "rgba(255,255,255,0.10)",
-                marginHorizontal: -20,
-                opacity: contentScrolled ? 1 : 0,
-              }}
-            />
         </View>
 
         {/* ── Scroll principal ── */}
@@ -879,7 +866,6 @@ export default function MezcladorScreen() {
           style={[styles.scroll, { marginTop: -3 }]}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
-          onScroll={(e) => setContentScrolled(e.nativeEvent.contentOffset.y > 2)}
           scrollEventThrottle={16}
         >
           <ContentSlide dir={contentDir}>
@@ -1095,7 +1081,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontFamily: "Manrope", fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: 0.2, color: "#FBFBFB" },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 17, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, color: "#FBFBFB" },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#F4F4F4", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
@@ -1112,15 +1098,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     paddingHorizontal: 16,
-    height: 46,
-    borderRadius: 27,
+    height: 43,
+    borderRadius: 24,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 0,
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillTabIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},
 
