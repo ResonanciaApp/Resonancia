@@ -872,18 +872,16 @@ export function ProfileScreenBase({
               <View style={styles.streakHeadingRow}>
                 <View style={styles.streakHeadingMain}>
                   <View style={styles.streakLotusIcon}>
-                    <MaterialCommunityIcons name="spa" size={23} color={colors.primary} />
+                    <MaterialCommunityIcons name="spa" size={31} color="#F9F9F9" />
                   </View>
                   <View style={styles.streakHeadingCopy}>
                     <View style={styles.streakTitleRow}>
+                      <Text style={[styles.streakCountText, styles.streakCountInline, { color: colors.foreground }]}>
+                        {currentStreak}
+                      </Text>
                       <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Días de racha</Text>
-                      <View style={[styles.streakCountPill, { backgroundColor: "rgba(212,175,55,0.14)" }]}>
-                        <Text style={[styles.streakCountText, { color: colors.foreground }]}>
-                          {currentStreak}
-                        </Text>
-                      </View>
                     </View>
-                    <Text style={[styles.streakSubtitle, { color: colors.mutedForeground }]}>
+                    <Text style={[styles.streakSubtitle, { color: "#AAAAC4" }]}>
                       Expande tu consciencia todos los días
                     </Text>
                   </View>
@@ -1562,19 +1560,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  streakHeadingCopy: { flex: 1, gap: 4 },
+  streakHeadingCopy: { flex: 1, gap: 1 },
   streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2 },
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
-  streakCountPill: {
-    minWidth: 46,
-    height: 38,
-    borderRadius: 19,
-    paddingHorizontal: 11,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
 
