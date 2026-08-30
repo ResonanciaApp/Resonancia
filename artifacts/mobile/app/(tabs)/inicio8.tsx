@@ -2010,15 +2010,15 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <ResonadoresSection
+          <EncuentrosResonadoresSection
             marginTop={0}
+            titleMarginTop={0}
             marginBottom={INICIO2_SECTION_GAP}
           />
         )}
         {isInicio2 && (
-          <EncuentrosResonadoresSection
+          <ResonadoresSection
             marginTop={0}
-            titleMarginTop={0}
             marginBottom={INICIO2_SECTION_GAP}
           />
         )}
