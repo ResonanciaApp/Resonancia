@@ -74,7 +74,6 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { dayKey, GOAL_MINUTES } from "@/utils/stats";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -243,7 +242,7 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
@@ -633,28 +632,20 @@ export function ProfileScreenBase({
     rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
     const rangeStartTime = rangeStart.getTime();
     const now = Date.now();
-    const activeByDay = new Map<string, { minutes: number; completed: boolean }>();
     let totalMinutes = 0;
+    let completedSessions = 0;
 
     for (const event of statEvents) {
       const playedAt = new Date(event.playedAt).getTime();
       if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
 
       totalMinutes += event.minutes;
-      const key = dayKey(new Date(event.playedAt));
-      const current = activeByDay.get(key) ?? { minutes: 0, completed: false };
-      current.minutes += event.minutes;
-      current.completed = current.completed || event.completed === true;
-      activeByDay.set(key, current);
+      if (event.completed === true) completedSessions += 1;
     }
-
-    const activeDays = Array.from(activeByDay.values()).filter(
-      (day) => day.minutes >= GOAL_MINUTES || day.completed,
-    ).length;
 
     return {
       totalMinutes: Math.round(totalMinutes),
-      activeDays,
+      completedSessions,
     };
   }, [statEvents, statsRangeDays, todayKey]);
 
@@ -1181,28 +1172,42 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={20} color="#985DD4" />
+                      <MaterialCommunityIcons name="spa" size={22} color="#985DD4" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.totalMinutes} min
+                      {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
                     </Text>
                   </View>
                   <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
-                    MINUTOS TOTALES
+                    TIEMPO DE{"\n"}BIENESTAR
                   </Text>
                 </View>
                 <View style={[styles.personalStatDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="calendar" size={20} color="#985DD4" />
+                      <Feather name="clock" size={20} color="#985DD4" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.activeDays}
+                      {personalStats.completedSessions}
                     </Text>
                   </View>
                   <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
-                    DÍAS ACTIVOS
+                    SESIONES{"\n"}COMPLETADAS
+                  </Text>
+                </View>
+                <View style={[styles.personalStatDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
+                <View style={styles.personalStatItem}>
+                  <View style={styles.personalStatMetricRow}>
+                    <View style={styles.personalStatIcon}>
+                      <Feather name="flag" size={20} color="#985DD4" />
+                    </View>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {maxStreak} {maxStreak === 1 ? "día" : "días"}
+                    </Text>
+                  </View>
+                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                    RACHA{"\n"}MÁXIMA
                   </Text>
                 </View>
               </View>
@@ -2048,17 +2053,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginTop: 24,
   },
-  personalStatItem: { flex: 1, alignItems: "flex-start", gap: 8 },
-  personalStatMetricRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  personalStatItem: { flex: 1, minWidth: 0, alignItems: "center", gap: 8 },
+  personalStatMetricRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
   personalStatIcon: {
     width: 28,
     height: 28,
     alignItems: "center",
     justifyContent: "center",
   },
-  personalStatDivider: { width: 1, height: 58, marginHorizontal: 8 },
-  personalStatValue: { fontFamily: "Manrope", fontSize: 25, fontWeight: "600" },
-  personalStatLabel: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 0.35, marginLeft: 38 },
+  personalStatDivider: { width: 1, height: 58, marginHorizontal: 4 },
+  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "600" },
+  personalStatLabel: { fontFamily: "Manrope", fontSize: 10, lineHeight: 15, letterSpacing: 0.35, textAlign: "center" },
   profileNotificationRow: {
     minHeight: 62,
     borderRadius: 18,
