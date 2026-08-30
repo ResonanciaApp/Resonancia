@@ -89,7 +89,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
 
   React.useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 0.96 : 0,
+      toValue: stickyActive ? 1 : 0,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   header: {
     paddingHorizontal: H_PAD,
-    paddingBottom: 27,
+    paddingBottom: 12,
     minHeight: 48,
     alignItems: "center",
     justifyContent: "center",
@@ -320,8 +320,8 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 20,
+    fontSize: 20,
+    lineHeight: 23,
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",

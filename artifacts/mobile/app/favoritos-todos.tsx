@@ -118,47 +118,36 @@ export default function FavoritosTodosScreen() {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
         showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[0]}
       >
-        <View
-          style={[
-            styles.stickyHeader,
-            {
-              paddingTop: topPad + 12,
-              backgroundColor: sceneTheme.gradient[0] as string,
-            },
-          ]}
-        >
-          {/* Back */}
-          <View style={{ paddingHorizontal: H_PAD, marginBottom: 14 }}>
-            <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
-          </View>
-
-          {/* Título */}
-          <View style={{ paddingHorizontal: H_PAD, marginBottom: 18 }}>
-            <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mis favoritos</Text>
-          </View>
-
-          {/* Tabs */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tabRowContent}
-            style={{ marginBottom: 24 }}
-          >
-            {FAV_TABS.map((tab) => (
-              <FavPill
-                key={tab.id}
-                sel={activeTab === tab.id}
-                label={tab.label}
-                icon={tab.icon}
-                onPress={() => setActiveTab(tab.id)}
-              />
-            ))}
-          </ScrollView>
+        {/* Back */}
+        <View style={{ paddingHorizontal: H_PAD, marginBottom: 14 }}>
+          <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
+
+        {/* Título */}
+        <View style={{ paddingHorizontal: H_PAD, marginBottom: 18 }}>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mis favoritos</Text>
+        </View>
+
+        {/* Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabRowContent}
+          style={{ marginBottom: 24 }}
+        >
+          {FAV_TABS.map((tab) => (
+            <FavPill
+              key={tab.id}
+              sel={activeTab === tab.id}
+              label={tab.label}
+              icon={tab.icon}
+              onPress={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </ScrollView>
 
         {/* Grilla */}
         {activeTab === "videos" ? (
@@ -218,11 +207,6 @@ export default function FavoritosTodosScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  stickyHeader: {
-    zIndex: 20,
-    opacity: 0.96,
-    paddingBottom: 15,
-  },
   backBtn: {
     width: 36,
     height: 36,
@@ -232,7 +216,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
     letterSpacing: 0.5,
   },

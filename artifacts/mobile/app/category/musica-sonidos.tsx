@@ -307,7 +307,7 @@ export default function MusicaSonidosScreen() {
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 0.96 : 0,
+      toValue: stickyActive ? 1 : 0,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -606,12 +606,12 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 12, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 27, alignItems: "center", justifyContent: "center", backgroundColor: "#1B060F" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center", backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },
-  stickyTitle: { fontFamily: "Manrope", fontSize: 17, lineHeight: 20, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
   headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.12)" },
   headerTitleCol: { flex: 1, alignItems: "center" },

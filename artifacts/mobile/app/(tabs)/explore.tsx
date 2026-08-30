@@ -370,8 +370,6 @@ export default function ExploreScreen() {
             styles.fixedHeader,
             {
               paddingTop: topPad + 2,
-              backgroundColor: activeTheme.gradient[0] as string,
-              opacity: 0.96,
             },
           ]}
         >
@@ -503,10 +501,10 @@ const styles = StyleSheet.create({
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
 
-  fixedHeader:  { zIndex: 10, paddingBottom: 30 },
+  fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  compactPageTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
+  compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
     width: 40,
     height: 40,

@@ -3,7 +3,6 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 import {
-  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -24,7 +23,6 @@ import {
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import {
@@ -48,19 +46,8 @@ export default function SoundTagDetailScreen() {
   const { isPremium } = usePremium();
   const { currentSession, playSessionInPlaylist } = usePlayer();
   const { version } = useCatalog();
-  const { theme } = useSceneTheme();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const [stickyActive, setStickyActive] = React.useState(false);
-  const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
-  const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
-  React.useEffect(() => {
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 0.96 : 0,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
-  }, [stickyActive, stickyHeaderOpacity]);
   const tag = SONIDOS_TAG_CARDS.find((candidate) => candidate.id === id);
   const sessions = useMemo(
     () => tag ? getSessionsBySonidosTag(tag.label) : [],
@@ -106,13 +93,7 @@ export default function SoundTagDetailScreen() {
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
       <SacredBackground />
-      <View
-        style={[styles.header, { paddingTop: topPad + 8 }]}
-        onLayout={(event) => {
-          const { y, height } = event.nativeEvent.layout;
-          setHeaderBottomY(y + height);
-        }}
-      >
+      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} hitSlop={10} style={styles.back}>
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
@@ -124,11 +105,6 @@ export default function SoundTagDetailScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={(event) => {
-          const active = event.nativeEvent.contentOffset.y > headerBottomY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
-        }}
       >
         <Text style={[styles.description, { color: colors.mutedForeground }]}>
           {tag.description}
@@ -168,33 +144,6 @@ export default function SoundTagDetailScreen() {
           </View>
         )}
       </ScrollView>
-      <Animated.View
-        style={[
-          styles.stickyHeader,
-          {
-            paddingTop: topPad + 8,
-            backgroundColor: theme.gradient[0] as string,
-            opacity: stickyHeaderOpacity,
-          },
-        ]}
-        pointerEvents={stickyActive ? "auto" : "none"}
-      >
-        <Text
-          style={[styles.stickyTitle, { color: colors.foreground }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.85}
-        >
-          {tag.label}
-        </Text>
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={[styles.stickyBack, { top: topPad + 2 }]}
-        >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
-        </Pressable>
-      </Animated.View>
     </View>
   );
 }
@@ -225,38 +174,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 26,
     fontWeight: "700",
-  },
-  stickyHeader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-    minHeight: 58,
-    paddingHorizontal: H_PAD,
-    paddingBottom: 27,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
-  },
-  stickyBack: {
-    position: "absolute",
-    left: H_PAD,
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stickyTitle: {
-    paddingHorizontal: 48,
-    fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 20,
-    fontWeight: "700",
-    textAlign: "center",
   },
   scroll: { flex: 1 },
   description: {

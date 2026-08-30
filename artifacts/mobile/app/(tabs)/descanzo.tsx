@@ -903,8 +903,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
-    opacity: 0.96,
-    paddingBottom: 15,
+    opacity: 0.9,
   },
   titleRow: {
     position: "relative",
@@ -922,7 +921,7 @@ const styles = StyleSheet.create({
   },
   compactPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "center",
