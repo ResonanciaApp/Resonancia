@@ -862,6 +862,9 @@ export function ProfileScreenBase({
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
+            <Text style={[styles.streakSectionTitle, { color: colors.foreground }]}>
+              Tu progreso de expansión
+            </Text>
             <View
               style={[
                 styles.streakSection,
@@ -942,7 +945,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={20} color="#784576" />
+                      <Feather name="clock" size={20} color="#985DD4" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {personalStats.totalMinutes} min
@@ -956,7 +959,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="calendar" size={20} color="#784576" />
+                      <Feather name="calendar" size={20} color="#985DD4" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {personalStats.activeDays}
@@ -1616,6 +1619,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
     marginBottom: 16,
+  },
+  streakSectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+    marginBottom: 17,
   },
   streakHeadingRow: {
     flexDirection: "row",
