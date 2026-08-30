@@ -250,7 +250,7 @@ export function ProfileScreenBase({
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
-      ? "rgba(240,240,255,0.1)"
+      ? "rgba(240,240,255,0.065)"
       : "rgba(255,255,255,0.05)";
   const libraryHeaderButtonBackground = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
