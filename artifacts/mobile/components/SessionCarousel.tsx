@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   sectionDescription: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 12,
     lineHeight: 20,
   },
   card: { width: CARD_W },
