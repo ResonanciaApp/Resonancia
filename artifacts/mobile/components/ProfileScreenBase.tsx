@@ -870,19 +870,23 @@ export function ProfileScreenBase({
               ]}
             >
               <View style={styles.streakHeadingRow}>
-                <View style={styles.streakHeadingCopy}>
-                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Tu racha</Text>
-                  <Text style={[styles.streakSubtitle, { color: colors.mutedForeground }]}>
-                    {currentStreak > 0
-                      ? `Llevas ${currentStreak} día${currentStreak === 1 ? "" : "s"} de constancia`
-                      : "Escucha una sesión para comenzar"}
-                  </Text>
-                </View>
-                <View style={[styles.streakCountPill, { backgroundColor: "rgba(212,175,55,0.14)" }]}>
-                  <MaterialCommunityIcons name="spa" size={18} color={colors.primary} />
-                  <Text style={[styles.streakCountText, { color: colors.foreground }]}>
-                    {currentStreak}
-                  </Text>
+                <View style={styles.streakHeadingMain}>
+                  <View style={styles.streakLotusIcon}>
+                    <MaterialCommunityIcons name="spa" size={23} color={colors.primary} />
+                  </View>
+                  <View style={styles.streakHeadingCopy}>
+                    <View style={styles.streakTitleRow}>
+                      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Días de racha</Text>
+                      <View style={[styles.streakCountPill, { backgroundColor: "rgba(212,175,55,0.14)" }]}>
+                        <Text style={[styles.streakCountText, { color: colors.foreground }]}>
+                          {currentStreak}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text style={[styles.streakSubtitle, { color: colors.mutedForeground }]}>
+                      Expande tu consciencia todos los días
+                    </Text>
+                  </View>
                 </View>
               </View>
 
@@ -1548,11 +1552,18 @@ const styles = StyleSheet.create({
   streakHeadingRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     gap: 12,
     marginBottom: 18,
   },
+  streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
+  streakLotusIcon: {
+    width: 34,
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   streakHeadingCopy: { flex: 1, gap: 4 },
+  streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2 },
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
   streakCountPill: {
@@ -1563,7 +1574,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
   },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
