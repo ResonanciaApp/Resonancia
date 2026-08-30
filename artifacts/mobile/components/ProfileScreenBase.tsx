@@ -9,7 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -47,6 +47,8 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
+import { ToolsGrid } from "@/components/ToolsGrid";
+import { MilestoneCards } from "@/components/MilestoneCards";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -266,6 +268,23 @@ export function ProfileScreenBase({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
+  const profileScrollRef = useRef<ScrollView>(null);
+  const navigation = useNavigation();
+  useEffect(() => {
+    const tabNavigation = navigation as unknown as {
+      addListener: (event: "tabPress", callback: () => void) => () => void;
+    };
+    const unsubscribe = tabNavigation.addListener("tabPress", () => {
+      if (dedicated) profileScrollRef.current?.scrollTo({ y: 0, animated: true });
+    });
+    return unsubscribe;
+  }, [dedicated, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!dedicated) return;
+      profileScrollRef.current?.scrollTo({ y: 0, animated: false });
+    }, [dedicated]),
+  );
 
   // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
   // (umbral en píxeles, no en % del contenido — así funciona igual en tabs
@@ -961,10 +980,7 @@ export function ProfileScreenBase({
             </Animated.View>
           )}
           {dedicated ? (
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-              <Pressable hitSlop={8} onPress={openEdit}>
-                <Feather name="edit-2" size={22} color="#FBFBFB" />
-              </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Pressable hitSlop={8} onPress={() => router.push("/configuraciones")}>
                 <Feather name="settings" size={23} color="#FBFBFB" />
               </Pressable>
@@ -999,6 +1015,7 @@ export function ProfileScreenBase({
 
       {dedicated && (
       <ScrollView
+        ref={profileScrollRef}
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 1, paddingHorizontal: 19 }}
         showsVerticalScrollIndicator={false}
@@ -1085,6 +1102,15 @@ export function ProfileScreenBase({
             </View>
           </View>
         </View>
+
+        {dedicated && (
+          <View style={styles.profileToolsSection}>
+            <Text style={[styles.streakSectionTitle, { color: colors.foreground }]}>
+              Herramientas de Inicio
+            </Text>
+            <ToolsGrid />
+          </View>
+        )}
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
@@ -1232,6 +1258,8 @@ export function ProfileScreenBase({
               </Text>
               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
             </Pressable>
+
+            <MilestoneCards />
 
           </>
         )}
@@ -1944,6 +1972,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 32,
     gap: 6,
+  },
+  profileToolsSection: {
+    marginBottom: 28,
   },
   profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
   profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },

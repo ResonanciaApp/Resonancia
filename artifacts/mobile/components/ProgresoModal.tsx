@@ -1,11 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { useMilestones } from "@/context/MilestonesContext";
 import { MilestoneCelebration } from "@/components/MilestoneCelebration";
+import { MilestoneCards } from "@/components/MilestoneCards";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -28,7 +27,6 @@ interface Props {
 export function ProgresoModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { statEvents } = usePlayer();
-  const { statuses: milestones, previewMilestone, resetMilestone } = useMilestones();
   const { theme } = useSceneTheme();
 
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
@@ -75,50 +73,7 @@ export function ProgresoModal({ visible, onClose }: Props) {
           {/* ── Ondas + anillo + días (diseño original) ── */}
           <SonicStreakWave />
 
-          {/* ── Hitos ── */}
-          <Text style={[styles.sessionsSectionLabel, { marginTop: 20 }]}>Hitos</Text>
-          <View style={styles.milestoneList}>
-            {milestones.map((m) => {
-              const done = !!m.unlockedAt;
-              return (
-                <Pressable
-                  key={m.id}
-                  onPress={() => previewMilestone(m.id)}
-                  onLongPress={() => {
-                    if (!done) return;
-                    Alert.alert(
-                      "Reiniciar hito",
-                      `¿Borrar "${m.title}" para volver a ganarlo?`,
-                      [
-                        { text: "Cancelar", style: "cancel" },
-                        {
-                          text: "Borrar",
-                          style: "destructive",
-                          onPress: () => resetMilestone(m.id),
-                        },
-                      ],
-                    );
-                  }}
-                  style={[styles.milestoneRow, done && styles.milestoneRowDone]}
-                >
-                  <View style={[styles.milestoneBadge, done && styles.milestoneBadgeDone]}>
-                    <Text style={{ fontSize: 18 }}>{m.icon}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.milestoneTitle, done && { color: "#E9C46A" }]} numberOfLines={1}>
-                      {m.title}
-                    </Text>
-                    <Text style={styles.milestoneMeta} numberOfLines={1}>
-                      {done && m.unlockedAt
-                        ? `Conseguido el ${new Date(m.unlockedAt).toLocaleDateString("es-CL", { day: "numeric", month: "short" })}`
-                        : `${m.progress} / ${m.threshold}`}
-                    </Text>
-                  </View>
-                  {done && <Feather name="check" size={16} color="#E9C46A" />}
-                </Pressable>
-              );
-            })}
-          </View>
+          <MilestoneCards titleStyle={{ marginTop: 20 }} />
 
           <View style={styles.divider} />
 
@@ -240,47 +195,6 @@ const styles = StyleSheet.create({
   sessionList: {
     width: "100%",
     gap: 4,
-  },
-  milestoneList: {
-    width: "100%",
-    gap: 8,
-  },
-  milestoneRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "rgba(190,150,80,0.05)",
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  milestoneRowDone: {
-    backgroundColor: "rgba(190,150,80,0.10)",
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.35)",
-  },
-  milestoneBadge: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  milestoneBadgeDone: {
-    backgroundColor: "rgba(190,150,80,0.15)",
-  },
-  milestoneTitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#F9F9F9",
-  },
-  milestoneMeta: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    color: "rgba(255,255,255,0.5)",
-    marginTop: 2,
   },
   sessionRow: {
     flexDirection: "row",

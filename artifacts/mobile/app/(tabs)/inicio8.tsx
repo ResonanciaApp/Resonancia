@@ -408,7 +408,7 @@ function Inicio2HeroSlider({
   currentStreak,
   giftScale,
   onOpenDrawer,
-  onOpenProgress,
+  onOpenProfile,
   onHorizontalGestureActiveChange,
 }: {
   topInset: number;
@@ -417,7 +417,7 @@ function Inicio2HeroSlider({
   currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
-  onOpenProgress: () => void;
+  onOpenProfile: () => void;
   onHorizontalGestureActiveChange: (active: boolean) => void;
 }) {
   const { user: clerkUser } = useUser();
@@ -735,14 +735,14 @@ function Inicio2HeroSlider({
         </View>
 
         <Pressable
-          onPress={onOpenProgress}
+          onPress={onOpenProfile}
           onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
           onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Ver tu progreso"
-          testID="inicio2-open-progress"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -1657,7 +1657,7 @@ export default function HomeScreen2({
           onPressOut={() => {
             Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
           }}
-          onPress={() => setProgresoVisible(true)}
+          onPress={() => router.push("/(tabs)/profile" as never)}
           // Prueba escondida: presión larga abre el flujo de celebración de
           // día de racha (no marca el día como celebrado).
           onLongPress={previewStreakFlow}
@@ -1711,7 +1711,7 @@ export default function HomeScreen2({
               currentStreak={currentStreakDisplay}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
-              onOpenProgress={() => setProgresoVisible(true)}
+              onOpenProfile={() => router.push("/(tabs)/profile" as never)}
               onHorizontalGestureActiveChange={handleInicio2HorizontalGesture}
             />
           </>
@@ -1959,40 +1959,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                  style={({ pressed }) => [
-                    styles.durPill,
-                    styles.inicio2DurPill,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 10, backgroundColor: durationPillBg }]} />
-                  <Text
-                    style={styles.durPillText}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                  >
-                    {slot.displayLabel}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-        {isInicio2 && (
           <SessionCarousel
             title="Recien subidas"
             sessions={recentSessions}
@@ -2030,6 +1996,40 @@ export default function HomeScreen2({
               Herramientas
             </Text>
             <ToolsGrid />
+          </View>
+        )}
+        {isInicio2 && (
+          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
+                  style={({ pressed }) => [
+                    styles.durPill,
+                    styles.inicio2DurPill,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 10, backgroundColor: durationPillBg }]} />
+                  <Text
+                    style={styles.durPillText}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                  >
+                    {slot.displayLabel}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
           </View>
         )}
         {isInicio2 && (
