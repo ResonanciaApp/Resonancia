@@ -11,14 +11,10 @@ import { router } from "expo-router";
 
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { EncuentroCard } from "@/components/EncuentroCard";
-import {
-  CONTENT_CAROUSEL_GAP,
-  getContentCarouselCardWidth,
-} from "@/constants/carousel";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
 
 const HORIZONTAL_PAD = 20;
-const CARD_GAP = CONTENT_CAROUSEL_GAP;
+const CARD_GAP = 12;
 
 type Props = {
   marginTop?: number;
@@ -34,7 +30,7 @@ export function EncuentrosResonadoresSection({
   const { width } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const [calendarEncounter, setCalendarEncounter] = useState<Encuentro | null>(null);
-  const cardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
+  const cardWidth = Math.max(0, width - HORIZONTAL_PAD * 2);
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
