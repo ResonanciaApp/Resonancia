@@ -52,8 +52,8 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
+import { useDayRollover } from "@/hooks/useDayRollover";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
@@ -70,9 +70,7 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-
-type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
-
+import { dayKey, GOAL_MINUTES } from "@/utils/stats";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -227,8 +225,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email } = useAuth();
-  const { favorites, elapsed, history, currentSession, isPlaying } = usePlayer();
-  const { presets } = useMixer();
+  const { favorites, statEvents } = usePlayer();
   const {
     username,
     lastName,
@@ -240,7 +237,9 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
+  const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const todayKey = useDayRollover();
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(7);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
@@ -541,33 +540,36 @@ export function ProfileScreenBase({
   };
 
 
-  // ── Stats ─────────────────────────────────────────────────────────────────
-  const totalMinutes = Math.floor(elapsed / 60);
+  const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    const activeByDay = new Map<string, { minutes: number; completed: boolean }>();
+    let totalMinutes = 0;
 
-  const stats: {
-    label: string;
-    value: string;
-    icon: FeatherIconName;
-    href?: string;
-  }[] = [
-    {
-      label: "Recientes",
-      value: history.length.toString(),
-      icon: "clock",
-      href: "/recientes",
-    },
-    {
-      label: "Minutos",
-      value: totalMinutes > 0 ? totalMinutes.toString() : "—",
-      icon: "activity",
-    },
-    {
-      label: "Mezclas",
-      value: presets.length.toString(),
-      icon: "sliders",
-      href: "/musica",
-    },
-  ];
+    for (const event of statEvents) {
+      const playedAt = new Date(event.playedAt).getTime();
+      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+
+      totalMinutes += event.minutes;
+      const key = dayKey(new Date(event.playedAt));
+      const current = activeByDay.get(key) ?? { minutes: 0, completed: false };
+      current.minutes += event.minutes;
+      current.completed = current.completed || event.completed === true;
+      activeByDay.set(key, current);
+    }
+
+    const activeDays = Array.from(activeByDay.values()).filter(
+      (day) => day.minutes >= GOAL_MINUTES || day.completed,
+    ).length;
+
+    return {
+      totalMinutes: Math.round(totalMinutes),
+      activeDays,
+    };
+  }, [statEvents, statsRangeDays, todayKey]);
 
   // ── Favorite sessions ─────────────────────────────────────────────────────
   const favSessions = favorites
@@ -812,7 +814,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-        <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
+          <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
@@ -894,9 +896,60 @@ export function ProfileScreenBase({
                 idPrefix="profile-streak"
               />
 
-              <Text style={[styles.streakBestText, { color: colors.mutedForeground }]}>
-                Mejor racha: {maxStreak} día{maxStreak === 1 ? "" : "s"}
-              </Text>
+              <View style={[styles.streakDivider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.personalStatsHeader}>
+                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                  Estadísticas personales
+                </Text>
+                <View style={styles.statsFilterRow}>
+                  {([7, 30, 90] as const).map((days) => {
+                    const selected = statsRangeDays === days;
+                    return (
+                      <Pressable
+                        key={days}
+                        onPress={() => setStatsRangeDays(days)}
+                        style={[
+                          styles.statsFilterChip,
+                          {
+                            backgroundColor: selected ? colors.primary : "rgba(255,255,255,0.06)",
+                            borderColor: selected ? colors.primary : colors.border,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.statsFilterText,
+                            { color: selected ? colors.background : colors.mutedForeground },
+                          ]}
+                        >
+                          {days} d
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <View style={styles.personalStatsValues}>
+                <View style={styles.personalStatItem}>
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.totalMinutes}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
+                    Minutos totales
+                  </Text>
+                </View>
+                <View style={[styles.personalStatDivider, { backgroundColor: colors.border }]} />
+                <View style={styles.personalStatItem}>
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.activeDays}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
+                    Días activos
+                  </Text>
+                </View>
+              </View>
             </View>
 
           </>
@@ -1477,7 +1530,7 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 24,
     padding: 24,
-    paddingLeft: 0,
+    paddingLeft: 24,
     alignItems: "stretch",
     overflow: "hidden",
     marginBottom: 32,
@@ -1566,7 +1619,29 @@ const styles = StyleSheet.create({
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
   streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  streakBestText: { fontFamily: "Manrope", fontSize: 11, marginTop: 14, textAlign: "right" },
+  streakDivider: { height: 1, marginTop: 18, marginBottom: 16 },
+  personalStatsHeader: { gap: 10 },
+  personalStatsTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
+  statsFilterRow: { flexDirection: "row", gap: 6 },
+  statsFilterChip: {
+    minWidth: 48,
+    height: 28,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  statsFilterText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700" },
+  personalStatsValues: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  personalStatItem: { flex: 1, alignItems: "center", gap: 3 },
+  personalStatDivider: { width: 1, height: 34 },
+  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700" },
+  personalStatLabel: { fontFamily: "Manrope", fontSize: 11, textAlign: "center" },
 
   // Membresía
   membershipRow: {
