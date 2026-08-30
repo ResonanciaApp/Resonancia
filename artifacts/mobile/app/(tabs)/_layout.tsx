@@ -36,31 +36,15 @@ import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 
-const ACTIVE_COLOR   = "#ACACC1";
+const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#A9A9C3";
-const GRAD_END       = "#ACACC1";
+const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
 
 const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 const TAB_BAR_LIFT   = 6;    // separación adicional solicitada con el borde inferior
-
-const TAB_COLORS = {
-  inicio: "#F0B17A",
-  descubrir: "#C8A6FF",
-  recursos: "#86C49A",
-  mezclador: "#E6BE67",
-  biblioteca: "#ACACC1",
-  videos: "#D5A4E8",
-  dormir: "#8ED9FF",
-  sonidos: "#E7A36E",
-  emocion: "#F39BC1",
-  perfil: "#A8C4A8",
-} as const;
-
-const tabInactiveColor = (color: string) => `${color}99`;
-
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas"]);
@@ -80,20 +64,19 @@ const TAB_CONFIG: Record<
     iconOffset?: number;
     labelOffset?: number;
     activeColor?: string;
-    inactiveColor?: string;
   }
 > = {
-  inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home", activeColor: TAB_COLORS.inicio, inactiveColor: tabInactiveColor(TAB_COLORS.inicio) },
-  "inicio-copia": { label: "Inicio 2", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home", activeColor: TAB_COLORS.inicio, inactiveColor: tabInactiveColor(TAB_COLORS.inicio) },
-  explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", activeColor: TAB_COLORS.descubrir, inactiveColor: tabInactiveColor(TAB_COLORS.descubrir) },
-  herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25, activeColor: TAB_COLORS.recursos, inactiveColor: tabInactiveColor(TAB_COLORS.recursos) },
-  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: TAB_COLORS.mezclador, inactiveColor: tabInactiveColor(TAB_COLORS.mezclador) },
-  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", activeColor: TAB_COLORS.biblioteca, inactiveColor: tabInactiveColor(TAB_COLORS.biblioteca) },
-  video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video", activeColor: TAB_COLORS.videos, inactiveColor: tabInactiveColor(TAB_COLORS.videos) },
-  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon", activeColor: TAB_COLORS.dormir, inactiveColor: tabInactiveColor(TAB_COLORS.dormir) },
-  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", activeColor: TAB_COLORS.sonidos, inactiveColor: tabInactiveColor(TAB_COLORS.sonidos) },
-  emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂", activeColor: TAB_COLORS.emocion, inactiveColor: tabInactiveColor(TAB_COLORS.emocion) },
-  profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user", activeColor: TAB_COLORS.perfil, inactiveColor: tabInactiveColor(TAB_COLORS.perfil) },
+  inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  "inicio-copia": { label: "Inicio 2", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home" },
+  explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
+  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3", mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
+  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
+  video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
+  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
+  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", activeColor: "#F9F9F9" },
+  emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
+  profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
 };
 
 
@@ -117,8 +100,8 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = conf.activeColor ?? (tibetMode ? "#ffffff" : ACTIVE_COLOR);
-  const inactiveCol = conf.inactiveColor ?? (tibetMode ? "#A9A9C3" : INACTIVE_COLOR);
+  const activeCol   = tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const inactiveCol = tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
