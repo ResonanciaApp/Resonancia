@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   header: {
     minHeight: 58,
     paddingHorizontal: H_PAD,
-    paddingBottom: 12,
+    paddingBottom: 22,
     alignItems: "center",
     justifyContent: "center",
   },

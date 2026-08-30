@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
     minHeight: 48,
     paddingHorizontal: H_PAD,
-    paddingBottom: 12,
+    paddingBottom: 22,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,
