@@ -942,7 +942,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={17} color="#985DD4" />
+                      <Feather name="clock" size={20} color="#784576" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {personalStats.totalMinutes} min
@@ -956,7 +956,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="calendar" size={17} color="#985DD4" />
+                      <Feather name="calendar" size={20} color="#784576" />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {personalStats.activeDays}
@@ -1638,7 +1638,7 @@ const styles = StyleSheet.create({
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   streakDivider: { height: 1, marginTop: 18, marginBottom: 16 },
   personalStatsHeader: { gap: 7 },
-  personalStatsTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700" },
+  personalStatsTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   statsFilterTrigger: {
     flexDirection: "row",
     alignItems: "center",
@@ -1666,8 +1666,6 @@ const styles = StyleSheet.create({
   personalStatIcon: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(152,93,212,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
