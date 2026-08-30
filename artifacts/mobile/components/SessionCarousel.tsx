@@ -16,6 +16,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import {
+  SessionCategoryPill,
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
@@ -45,6 +46,7 @@ type SessionCarouselProps = {
   description?: string;
   squareCards?: boolean;
   cardAuthorColor?: string;
+  showImageCategoryPill?: boolean;
   onViewAll?: () => void;
   showCardMetadata?: boolean;
 };
@@ -63,6 +65,7 @@ export function SessionCarousel({
   description,
   squareCards = false,
   cardAuthorColor,
+  showImageCategoryPill = false,
   onViewAll,
   showCardMetadata = false,
 }: SessionCarouselProps) {
@@ -127,11 +130,14 @@ export function SessionCarousel({
                     authorName={authorName}
                   />
                 ) : (
-                  <SessionDurationBadge
-                    label={s.durationLabel}
-                    style={styles.durBadge}
-                    textStyle={styles.durText}
-                  />
+                  <>
+                    {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
+                    <SessionDurationBadge
+                      label={s.durationLabel}
+                      style={styles.durBadge}
+                      textStyle={styles.durText}
+                    />
+                  </>
                 )}
                 {locked && (
                   <Image

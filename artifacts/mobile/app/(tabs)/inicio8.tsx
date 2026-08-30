@@ -1915,6 +1915,7 @@ export default function HomeScreen2({
             titleSpacing={17}
             squareCards
             cardAuthorColor="#acaac2"
+            showImageCategoryPill
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
