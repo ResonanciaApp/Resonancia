@@ -164,7 +164,16 @@ export default function SonidosScreen() {
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+        <View
+          style={[
+            styles.fixedHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: theme.gradient[0] as string,
+              opacity: 0.96,
+            },
+          ]}
+        >
           <View style={styles.titleRow}>
             <Animated.Text
               style={[
@@ -288,6 +297,7 @@ const styles = StyleSheet.create({
   fixedHeader: {
     zIndex: 20,
     backgroundColor: "transparent",
+    paddingBottom: 15,
   },
   titleRow: {
     position: "relative",
@@ -314,7 +324,7 @@ const styles = StyleSheet.create({
   },
   compactPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "center",

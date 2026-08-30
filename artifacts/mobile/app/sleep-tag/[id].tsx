@@ -58,7 +58,7 @@ export default function SleepTagDetailScreen() {
 
   React.useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 1 : 0,
+      toValue: stickyActive ? 0.96 : 0,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: H_PAD,
-    paddingBottom: 12,
+    paddingBottom: 27,
     minHeight: 48,
     flexDirection: "row",
     alignItems: "center",
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 23,
+    fontSize: 17,
+    lineHeight: 20,
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",

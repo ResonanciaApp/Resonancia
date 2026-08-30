@@ -102,7 +102,16 @@ export function VideoScreen({ showBack = false }: Props) {
       <GeoUniverseBackground />
 
       {/* ── Sticky header ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+      <View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 2,
+            backgroundColor: activeTheme.gradient[0] as string,
+            opacity: 0.96,
+          },
+        ]}
+      >
         {/* Title row */}
         <View style={styles.titleRow}>
           {showBack ? (
@@ -244,7 +253,7 @@ export function VideoScreen({ showBack = false }: Props) {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyHeader: { backgroundColor: "transparent" },
+  stickyHeader: { backgroundColor: "transparent", paddingBottom: 15 },
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -257,7 +266,7 @@ const styles = StyleSheet.create({
   pageTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#F4F4F4",
