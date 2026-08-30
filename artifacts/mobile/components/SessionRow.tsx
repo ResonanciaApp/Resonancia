@@ -8,7 +8,6 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import {
-  SessionCategoryIcon,
   SessionCategoryPill,
 } from "@/components/SessionCardMetadataOverlay";
 import { getVoiceLabel } from "@/config/audio-map";
@@ -72,12 +71,6 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
             />
             <PremiumBadge session={session} />
           </View>
-          {showCategoryPill && (
-            <SessionCategoryIcon
-              categoryId={session.categoryId}
-              style={styles.sessionCategoryIcon}
-            />
-          )}
         </View>
 
         <View style={styles.sessionContent}>
@@ -87,7 +80,6 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
                 categoryId={session.categoryId}
                 inline
                 plain
-                textOnly
               />
             </View>
           ) : (
@@ -151,16 +143,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
-  sessionThumb: {
-    position: "relative",
-    zIndex: 1,
-  },
-  sessionCategoryIcon: {
-    position: "absolute",
-    left: -9,
-    top: 8,
-    zIndex: 2,
-  },
+  sessionThumb: { position: "relative", zIndex: 1 },
   sessionImg: { width: 80, height: 80 },
   sessionContent: { flex: 1 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
