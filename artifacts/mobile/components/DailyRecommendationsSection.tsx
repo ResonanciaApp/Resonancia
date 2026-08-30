@@ -10,6 +10,7 @@ import {
 import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 type Props = {
   sessions: Session[];
@@ -50,7 +51,14 @@ function formatDailyDate(dayKey: string): string {
 
 export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
+  const sleepTabSurface =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   if (recommendations.length < 3) return null;
 
@@ -67,7 +75,7 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
         style={[
           styles.card,
           {
-            borderColor: colors.border ?? "rgba(255,255,255,0.14)",
+            borderColor: sleepTabSurface,
           },
         ]}
       >
@@ -83,7 +91,7 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
               style={styles.row}
             />
             {index < recommendations.length - 1 && (
-              <View style={[styles.divider, { backgroundColor: colors.border ?? "rgba(255,255,255,0.10)" }]} />
+              <View style={[styles.divider, { backgroundColor: sleepTabSurface }]} />
             )}
           </React.Fragment>
         ))}
