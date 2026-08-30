@@ -378,7 +378,7 @@ export function EscenasSheet() {
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
 
-          {/* ── Color picker: 3 rectángulos horizontales ── */}
+          {/* ── Color picker: rectángulos horizontales ── */}
           <View style={{ marginBottom: 14, marginTop: 20 }}>
             <View style={{ flexDirection: "row", gap: 8, marginTop: 6 }}>
               {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {

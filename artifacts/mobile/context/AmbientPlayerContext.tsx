@@ -9,7 +9,8 @@ import React, {
 export type SceneId =
   | "tibet"
   | "profundo"
-  | "indigo";
+  | "indigo"
+  | "indigo2";
 
 export type AmbientScene = {
   id: SceneId;
@@ -37,6 +38,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "indigo",
     label: "Índigo",
+    colors: ["#2F1C4D", "#222C54"] as const,
+    icon: "layers",
+    image: require("@/assets/images/ambient/zafiro.png"),
+  },
+  {
+    id: "indigo2",
+    label: "Indigo 2",
     colors: ["#2F1C4D", "#222C54"] as const,
     icon: "layers",
     image: require("@/assets/images/ambient/zafiro.png"),

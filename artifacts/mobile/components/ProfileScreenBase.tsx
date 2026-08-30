@@ -249,10 +249,10 @@ export function ProfileScreenBase({
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : (activeSceneId === "indigo" || activeSceneId === "indigo2")
       ? "rgba(240,240,255,0.065)"
       : "rgba(255,255,255,0.05)";
-  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+  const libraryHeaderButtonBackground = activeSceneId === "indigo" || activeSceneId === "indigo2"
     ? "rgba(42,40,64,0.65)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
