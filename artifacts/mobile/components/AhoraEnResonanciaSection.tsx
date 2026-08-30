@@ -13,7 +13,7 @@ export function AhoraEnResonanciaSection() {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.title}>Ahora en RESONANCIA</Text>
+      <Text style={styles.title}>Ahora en Resonancia</Text>
 
       {loading ? (
         <ActivityIndicator color="#BE9650" style={styles.loading} />
