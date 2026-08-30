@@ -32,9 +32,10 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 const FAV_TABS = [
-  { id: "sesiones",     label: "Sonoterapia",  icon: "radio",       categoryId: "sonidos-ancestrales" },
   { id: "meditaciones", label: "Meditaciones", icon: "compass",     categoryId: "meditaciones-guiadas" },
+  { id: "sesiones",     label: "Sonoterapia",  icon: "radio",       categoryId: "sonidos-ancestrales" },
   { id: "musica",       label: "Música",       icon: "music",       categoryId: "musica-sonidos" },
+  { id: "ambientales",  label: "Ambientales",  icon: "leaf",        categoryId: "ambientales" },
   { id: "dormir",       label: "Dormir",       icon: "moon",        categoryId: "descanso" },
   { id: "historias",    label: "Historias",    icon: "book-open",   categoryId: "historias" },
   { id: "charlas",      label: "Charlas",      icon: "message-circle", categoryId: "charlas" },
@@ -44,19 +45,42 @@ const FAV_TABS = [
 type FavTabId = typeof FAV_TABS[number]["id"];
 
 function FavPill({
-  sel, label, icon, onPress,
-}: { sel: boolean; label: string; icon: string; onPress: () => void }) {
+  tabId, sel, label, icon, onPress,
+}: { tabId: FavTabId; sel: boolean; label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
-  const contentColor = sel && theme.id !== "indigo" ? "#2D0D3A" : "#F4F4F4";
+  const selectedColors: [string, string] =
+    tabId === "sesiones" ? ["#8C4912", "#7A3C0A"]
+      : tabId === "musica" ? ["#307E91", "#1A5863"]
+        : tabId === "ambientales" ? ["#357849", "#23522F"]
+          : tabId === "historias" ? ["#8F227F", "#691E5E"]
+            : tabId === "charlas" ? ["#953732", "#78221E"]
+              : tabId === "dormir" || theme.id === "indigo" ? ["#784576", "#50326E"]
+                : ["#FFFFFF", "#F5F5F5"];
+  const isDarkSelectedText = ["meditaciones", "sesiones", "musica", "videos"].includes(tabId) && theme.id !== "indigo";
+  const contentColor = sel && isDarkSelectedText ? "#0D0A1E" : "#F4F4F4";
+  const selectedTextColor = sel && isDarkSelectedText ? "#0D0A1E" : "#F4F4F4";
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pill, theme.id === "indigo" && styles.pillIndigo, sel && styles.pillSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [
+        styles.pill,
+        theme.id === "tibet" && styles.pillTibet,
+        theme.id === "indigo" && styles.pillIndigo,
+        sel && styles.pillSel,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
     >
-      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#F9F9F9", "#F9F9F9"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      {sel && (
+        <LinearGradient
+          colors={selectedColors}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <Feather name={icon as never} size={22} color={contentColor} />
-      <Text style={[styles.pillText, sel && styles.pillTextSel, sel && theme.id === "indigo" && styles.pillTextIndigoSel]} numberOfLines={1}>
+      <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -151,6 +175,7 @@ export default function FavoritosTodosScreen() {
               {FAV_TABS.map((tab) => (
                 <FavPill
                   key={tab.id}
+                  tabId={tab.id}
                   sel={activeTab === tab.id}
                   label={tab.label}
                   icon={tab.icon}
@@ -294,6 +319,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 0,
   },
+  pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillSel: { borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
