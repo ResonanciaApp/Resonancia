@@ -1146,7 +1146,7 @@ export function ProfileScreenBase({
                   <Feather name="chevron-down" size={17} color="#AAAAC4" />
                 </Pressable>
                 {statsFilterOpen && (
-                  <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground, borderColor: colors.border }]}>
+                  <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground }]}>
                     {([7, 30, 90] as const).map((days) => (
                       <Pressable
                         key={days}
@@ -2042,7 +2042,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     minWidth: 148,
     borderRadius: 12,
-    borderWidth: 1,
     overflow: "hidden",
     marginTop: 1,
   },
@@ -2054,7 +2053,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   personalStatItem: { flex: 1, minWidth: 0, alignItems: "center", gap: 8 },
-  personalStatMetricRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
+  personalStatMetricRow: { flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4 },
   personalStatIcon: {
     width: 28,
     height: 28,
