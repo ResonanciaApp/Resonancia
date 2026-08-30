@@ -162,7 +162,7 @@ type MixerContextType = {
   pauseMix: () => void;
   stopAll: () => void;
   presets: MixPreset[];
-  savePreset: (input: SaveMixInput) => void;
+  savePreset: (input: SaveMixInput) => string | null;
   /** Sobrescribe un preset existente con la mezcla activa + metadatos. */
   updatePreset: (id: string, input: SaveMixInput) => void;
   /** Actualiza solo los metadatos (nombre/descripción/portada) sin cambiar los sonidos. */
@@ -1701,7 +1701,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const savePreset = useCallback(
     (input: SaveMixInput) => {
-      if (activeSoundsRef.current.length === 0) return;
+      if (activeSoundsRef.current.length === 0) return null;
       const preset: MixPreset = {
         id: Date.now().toString(),
         name: input.name.trim() || "Mi mezcla",
@@ -1712,6 +1712,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         createdAt: new Date().toISOString(),
       };
       persistPresets([preset, ...presetsRef.current]);
+      // La mezcla activa queda ligada al preset recién guardado: así el
+      // miniplayer conserva los sonidos y muestra el nombre de Biblioteca.
+      setLoadedPresetId(preset.id);
+      loadedPresetIdRef.current = preset.id;
+      return preset.id;
     },
     [persistPresets],
   );

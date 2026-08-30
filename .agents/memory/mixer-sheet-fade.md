@@ -1,12 +1,30 @@
 ---
-name: MixerSheet save-popup + reproductor fade
-description: Por qué un popup que es <Modal> aparte no puede desvanecer sincronizado con el contenido detrás, y cómo se resolvió
+name: Guardado y cierre de MixerSheet
+description: El guardado conserva la hoja y pausa la mezcla; los fades globales solo corresponden a cierres reales.
 ---
 
 # Fade sincronizado popup + reproductor (MixerSheet)
 
-Al cerrar el mezclador tras guardar, el popup "Guardar mezcla" debía desvanecer
-EXACTAMENTE a la par del bottom sheet (reproductor) detrás.
+## Estado actual: guardar no cierra “Tu mezcla”
+
+Al confirmar un guardado, se cierra únicamente el popup de nombre. La hoja
+“Tu mezcla” permanece abierta, los sonidos y el miniplayer se conservan y la
+reproducción queda pausada mediante la operación idempotente de pausa. Una
+confirmación compacta con corazón morado indica que la mezcla quedó guardada en
+Biblioteca.
+
+**Why:** Guardar no debe destruir el contexto de edición ni obligar a reconstruir
+la mezcla; el usuario puede revisar lo guardado y reanudarla inmediatamente.
+
+**How to apply:** No llamar al cierre de hoja ni al vaciado total desde el flujo
+de guardado. Vincular la mezcla activa con el preset recién creado, pausar sin
+quitar sonidos y cerrar solo el overlay de nombre. Las notas de fade global que
+siguen aplican exclusivamente a cierres reales del editor.
+
+## Historial técnico del fade de cierre
+
+Cuando un flujo sí cierra todo el mezclador, el popup y la hoja deben
+desvanecerse de forma coherente.
 
 **El problema (no obvio):** dos capas que animan opacidad en simultáneo se
 cancelan visualmente. El popup era un `<Modal>` nativo separado con backdrop

@@ -468,6 +468,7 @@ export function MixerSheet() {
     reorderSounds,
     isPlaying,
     togglePlay,
+    pauseMix,
     stopAll,
     presets,
     savePreset,
@@ -505,6 +506,8 @@ export function MixerSheet() {
   const immersivoFade  = useRef(new Animated.Value(0)).current;
   const saveOverlayOpacity = useRef(new Animated.Value(0)).current;
   const nameCursorOpacity = useRef(new Animated.Value(1)).current;
+  const savedToastOpacity = useRef(new Animated.Value(0)).current;
+  const savedToastY = useRef(new Animated.Value(12)).current;
   // Dim del fondo: arranca en 0 y se desvanece HACIA dentro junto con el slide,
   // así no aparece de golpe (era el "overlay negro" que flasheaba en tema claro).
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -711,6 +714,60 @@ export function MixerSheet() {
     }).start(() => setSaveModalOpen(false));
   };
 
+  const showSavedToast = () => {
+    savedToastOpacity.stopAnimation();
+    savedToastY.stopAnimation();
+    savedToastOpacity.setValue(0);
+    savedToastY.setValue(12);
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(savedToastOpacity, {
+          toValue: 1,
+          duration: 220,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(savedToastY, {
+          toValue: 0,
+          duration: 220,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.delay(1800),
+      Animated.parallel([
+        Animated.timing(savedToastOpacity, {
+          toValue: 0,
+          duration: 260,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(savedToastY, {
+          toValue: 8,
+          duration: 260,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  };
+
+  const finishSaveInMixer = (presetId: string) => {
+    setOriginId(presetId);
+    setSnapshotSounds(activeSounds.map((sound) => ({ id: sound.id, volume: sound.volume })));
+    pauseMix();
+    notifySaved();
+    Animated.timing(saveOverlayOpacity, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.in(Easing.quad),
+      useNativeDriver: true,
+    }).start(() => {
+      setSaveModalOpen(false);
+      showSavedToast();
+    });
+  };
+
   const confirmSave = () => {
     if (saveMode === "update" && originId) {
       // Si el usuario free mueve la mezcla a otra categoría que ya está llena,
@@ -738,8 +795,7 @@ export function MixerSheet() {
         image: mixImage,
         category: mixCategory,
       });
-      setSaveModalOpen(false);
-      Alert.alert("Mezcla actualizada", "Se guardaron los cambios en tu mezcla.");
+      finishSaveInMixer(originId);
       return;
     }
 
@@ -755,37 +811,13 @@ export function MixerSheet() {
       );
       return;
     }
-    savePreset({
+    const savedPresetId = savePreset({
       name: presetName,
       description: mixDescription,
       image: mixImage,
       category: mixCategory,
     });
-    notifySaved();
-    setForceShowModal(true);
-    sheetEnterY.stopAnimation();
-    sheetEnterY.setValue(0);
-    // stopAll() arranca AL INICIO del fade (no en el callback): así el audio se
-    // desvanece (fade-out interno) y las cards de "Mi Música" se deseleccionan
-    // —giro/escala de vuelta— ACOMPAÑANDO el fade de la hoja, sin demora ni corte
-    // de golpe. El trabajo pesado (pause/remove de players) ya está diferido
-    // dentro de stopAll, así que esto no traba el hilo a mitad de la animación.
-    stopAll();
-    // Fade único de todo el contenedor (reproductor + popup + dim como una sola
-    // unidad). Easing.out en vez de lineal: la opacidad baja rápido al inicio
-    // para compensar la percepción gamma (a opacidad 0.5 el ojo aún ve ~73% de
-    // brillo, por eso un fade lineal parece detenerse al 50%).
-    Animated.timing(sheetOpacity, {
-      toValue: 0,
-      duration: 360,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start(() => {
-      setForceShowModal(false);
-      setSaveModalOpen(false);
-      saveOverlayOpacity.setValue(0);
-      closeSheet();
-    });
+    if (savedPresetId) finishSaveInMixer(savedPresetId);
   };
 
   const handleTimerPress = () => {
@@ -1070,6 +1102,20 @@ export function MixerSheet() {
           </Pressable>
         </Animated.View>
       )}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.savedToast,
+          {
+            bottom: insets.bottom + 122,
+            opacity: savedToastOpacity,
+            transform: [{ translateY: savedToastY }],
+          },
+        ]}
+      >
+        <MaterialCommunityIcons name="heart" size={18} color="#A777D0" />
+        <Text style={styles.savedToastText}>Mezcla guardada en Biblioteca</Text>
+      </Animated.View>
       {/* ── Picker de fondo: panel deslizante in-tree ── */}
       {bgPickerOpen && (
         <Animated.View
@@ -1462,6 +1508,33 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   modalBtnText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  savedToast: {
+    position: "absolute",
+    alignSelf: "center",
+    zIndex: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    maxWidth: "88%",
+    minHeight: 42,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 21,
+    backgroundColor: "rgba(22,15,40,0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(167,119,208,0.32)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.24,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  savedToastText: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#F9F9F9",
+  },
 
   // ── Botón Modo Inmersivo ───────────────────────────────────────────────────
   immersivoBtn: {
