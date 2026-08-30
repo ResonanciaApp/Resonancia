@@ -178,6 +178,38 @@ type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
+type Inicio2GestureIntent = "horizontal" | "vertical" | null;
+
+const INICIO2_GESTURE_MIN_DISTANCE = 12;
+const INICIO2_VERTICAL_DOWN_RATIO = 1.65;
+const INICIO2_HORIZONTAL_COMPONENT_RATIO = 0.55;
+
+/**
+ * Resolve the hero's intent before either the carousel or the parent
+ * ScrollView commits to the gesture. A downward drag must be noticeably more
+ * vertical than horizontal to keep the pull-to-zoom interaction; a diagonal
+ * with a meaningful horizontal component belongs to the carousel.
+ */
+function getInicio2GestureIntent(dx: number, dy: number): Inicio2GestureIntent {
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+
+  if (Math.hypot(absDx, absDy) < INICIO2_GESTURE_MIN_DISTANCE) {
+    return null;
+  }
+
+  const isClearlyDownward = dy > 0 && absDy > absDx * INICIO2_VERTICAL_DOWN_RATIO;
+  if (isClearlyDownward) return "vertical";
+
+  if (absDx >= absDy * INICIO2_HORIZONTAL_COMPONENT_RATIO) {
+    return "horizontal";
+  }
+
+  // Let the ScrollView handle a clearly vertical upward drag as well as
+  // small movements that have not established an axis yet.
+  return null;
+}
+
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
   const h = hex.replace("#", "");
@@ -377,6 +409,7 @@ function Inicio2HeroSlider({
   giftScale,
   onOpenDrawer,
   onOpenProgress,
+  onHorizontalGestureActiveChange,
 }: {
   topInset: number;
   focused: boolean;
@@ -385,6 +418,7 @@ function Inicio2HeroSlider({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProgress: () => void;
+  onHorizontalGestureActiveChange: (active: boolean) => void;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
@@ -402,6 +436,13 @@ function Inicio2HeroSlider({
     INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 0 : width)),
   ).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
+  const horizontalGestureActiveRef = useRef(false);
+
+  const setHorizontalGestureActive = useCallback((active: boolean) => {
+    if (horizontalGestureActiveRef.current === active) return;
+    horizontalGestureActiveRef.current = active;
+    onHorizontalGestureActiveChange(active);
+  }, [onHorizontalGestureActiveChange]);
 
   const transitionToSlide = useCallback((nextIndex: number) => {
     if (!focusedRef.current) {
@@ -495,6 +536,7 @@ function Inicio2HeroSlider({
     focusedRef.current = focused;
 
     if (!focused) {
+      setHorizontalGestureActive(false);
       slidePositions.forEach((position, index) => {
         position.stopAnimation();
         position.setValue(index === activeIndexRef.current ? 0 : width);
@@ -511,7 +553,7 @@ function Inicio2HeroSlider({
     ) {
       transitionToSlide(pendingIndex);
     }
-  }, [focused, slidePositions, transitionToSlide]);
+  }, [focused, setHorizontalGestureActive, slidePositions, transitionToSlide]);
 
   useEffect(() => {
     if (!focused) {
@@ -537,11 +579,19 @@ function Inicio2HeroSlider({
   }, [activeIndex, focused, slideDrift]);
 
   const isHorizontalSwipeIntent = useCallback((dx: number, dy: number) => {
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    const isClearlyVertical = absDy > absDx * 1.35;
-    return absDx > 18 && !isClearlyVertical;
-  }, []);
+    const intent = getInicio2GestureIntent(dx, dy);
+    if (intent === "horizontal") {
+      // Prevent the parent ScrollView from taking over once a diagonal has
+      // enough horizontal travel to be a slide gesture.
+      setHorizontalGestureActive(true);
+      return true;
+    }
+    return false;
+  }, [setHorizontalGestureActive]);
+
+  const finishHorizontalGesture = useCallback(() => {
+    setHorizontalGestureActive(false);
+  }, [setHorizontalGestureActive]);
 
   const panResponder = useMemo(
     () =>
@@ -552,12 +602,15 @@ function Inicio2HeroSlider({
           isHorizontalSwipeIntent(gesture.dx, gesture.dy),
         onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_event, gesture) => {
-          if (Math.abs(gesture.dx) < 36) return;
-          const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
-          setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
+          if (horizontalGestureActiveRef.current && Math.abs(gesture.dx) >= 36) {
+            const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
+            setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
+          }
+          finishHorizontalGesture();
         },
+        onPanResponderTerminate: finishHorizontalGesture,
       }),
-    [isHorizontalSwipeIntent, setSlide],
+    [finishHorizontalGesture, isHorizontalSwipeIntent, setSlide],
   );
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
@@ -1309,6 +1362,10 @@ export default function HomeScreen2({
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
   const inicio2ScrollY = useRef(new Animated.Value(0)).current;
+  const [inicio2ScrollEnabled, setInicio2ScrollEnabled] = useState(true);
+  const handleInicio2HorizontalGesture = useCallback((active: boolean) => {
+    setInicio2ScrollEnabled(!active);
+  }, []);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -1632,6 +1689,7 @@ export default function HomeScreen2({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={!isInicio2 || inicio2ScrollEnabled}
         onScroll={isInicio2 ? handleInicio2Scroll : handleMainScroll}
         scrollEventThrottle={16}
         onLayout={(e) => {
@@ -1654,6 +1712,7 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
               onOpenProgress={() => setProgresoVisible(true)}
+              onHorizontalGestureActiveChange={handleInicio2HorizontalGesture}
             />
           </>
         ) : showAnimatedScene ? (
