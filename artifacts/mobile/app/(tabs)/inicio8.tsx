@@ -96,6 +96,7 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1902,16 +1903,17 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <SessionCarousel
-            title="Escuchadas recientemente"
+            title="Sesiones recientes"
+            description="Contenido que has escuchado recientemente"
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
             style={{ marginTop: INICIO2_SECTION_GAP - 26, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
-            cardWidth={RECENT_CARD_W}
+            cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
             titleSize={19}
             titleSpacing={17}
-            showCardMetadata
+            squareCards
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (

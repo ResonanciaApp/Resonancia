@@ -42,11 +42,28 @@ type SessionCarouselProps = {
   cardHeight?: number;
   titleSize?: number;
   titleSpacing?: number;
+  description?: string;
+  squareCards?: boolean;
   onViewAll?: () => void;
   showCardMetadata?: boolean;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll, showCardMetadata = false }: SessionCarouselProps) {
+export function SessionCarousel({
+  title,
+  sessions,
+  isPremium,
+  onPress,
+  style,
+  titleOffset,
+  cardWidth,
+  cardHeight,
+  titleSize,
+  titleSpacing,
+  description,
+  squareCards = false,
+  onViewAll,
+  showCardMetadata = false,
+}: SessionCarouselProps) {
   const colors = useColors();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
@@ -56,7 +73,9 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
   const originalCardHeight = showCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
-  const ch = Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
+  const ch = squareCards
+    ? cw
+    : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
@@ -68,6 +87,11 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
           <Pressable onPress={onViewAll} hitSlop={8}>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
           </Pressable>
+        </View>
+      ) : description ? (
+        <View style={{ marginBottom: titleSpacing ?? 17 }}>
+          <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 4 }]}>{title}</Text>
+          <Text style={[styles.sectionDescription, { color: colors.mutedForeground }]}>{description}</Text>
         </View>
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
@@ -205,6 +229,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     marginBottom: 17,
     color: "#FBFBFB",
+  },
+  sectionDescription: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
   },
   card: { width: CARD_W },
   thumbWrap: {
