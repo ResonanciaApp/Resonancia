@@ -2015,7 +2015,7 @@ export default function HomeScreen2({
               moodTopOffset={0}
               titleSize={19}
               titleSpacing={17}
-              maxItems={3}
+              maxItems={5}
               onOpenMoodPicker={() => setMoodSheetVisible(true)}
               onClearMood={() => setSelectedMoods([])}
               onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}

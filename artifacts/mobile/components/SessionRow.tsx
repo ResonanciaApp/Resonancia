@@ -70,26 +70,36 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
         </View>
 
         <View style={styles.sessionContent}>
-          <View style={styles.sessionMeta}>
-            {showCategoryPill ? (
-              <SessionCategoryPill categoryId={session.categoryId} />
-            ) : metaText ? (
-              <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
-            ) : (
-              <>
-                <Feather name="star" size={11} color={colors.mutedForeground} />
-                <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-                  {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
-                </Text>
-              </>
-            )}
-          </View>
+          {!showCategoryPill && (
+            <View style={styles.sessionMeta}>
+              {metaText ? (
+                <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
+              ) : (
+                <>
+                  <Feather name="star" size={11} color={colors.mutedForeground} />
+                  <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+                    {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
+                  </Text>
+                </>
+              )}
+            </View>
+          )}
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
-          <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-            {author}
-          </Text>
+          {showCategoryPill ? (
+            <View style={styles.sessionAuthorMeta}>
+              <SessionCategoryPill categoryId={session.categoryId} inline plain />
+              <Text style={[styles.sessionAuthorSeparator, { color: colors.mutedForeground }]}>·</Text>
+              <Text style={[styles.sessionAuthor, styles.sessionAuthorRight, { color: colors.mutedForeground }]} numberOfLines={1}>
+                {author}
+              </Text>
+            </View>
+          ) : (
+            <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {author}
+            </Text>
+          )}
         </View>
       </Pressable>
 
@@ -136,5 +146,8 @@ const styles = StyleSheet.create({
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   sessionMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14 },
   sessionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
-  sessionAuthor: { fontFamily: "Manrope", fontSize: 12 },
+  sessionAuthor: { fontFamily: "Manrope", fontSize: 12, flexShrink: 1 },
+  sessionAuthorMeta: { flexDirection: "row", alignItems: "center", gap: 6, minWidth: 0 },
+  sessionAuthorSeparator: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18 },
+  sessionAuthorRight: { flex: 1, textAlign: "right" },
 });

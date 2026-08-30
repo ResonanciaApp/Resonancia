@@ -52,12 +52,27 @@ const CATEGORY_PILL_META: Record<string, {
   },
 };
 
-export function SessionCategoryPill({ categoryId }: { categoryId?: string }) {
+export function SessionCategoryPill({
+  categoryId,
+  inline = false,
+  plain = false,
+}: {
+  categoryId?: string;
+  inline?: boolean;
+  plain?: boolean;
+}) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
 
   return (
-    <View pointerEvents="none" style={styles.categoryPill}>
+    <View
+      pointerEvents="none"
+      style={[
+        styles.categoryPill,
+        inline && styles.categoryPillInline,
+        plain && styles.categoryPillPlain,
+      ]}
+    >
       <View style={[styles.categoryCircle, { backgroundColor: category.color }]}>
         {category.materialIcon ? (
           <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
@@ -156,6 +171,19 @@ const styles = StyleSheet.create({
     paddingLeft: 3,
     borderRadius: 100,
     backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  categoryPillInline: {
+    position: "relative",
+    top: 0,
+    left: 0,
+    maxWidth: "100%",
+  },
+  categoryPillPlain: {
+    minHeight: 0,
+    paddingVertical: 0,
+    paddingRight: 0,
+    paddingLeft: 0,
+    backgroundColor: "transparent",
   },
   categoryCircle: {
     width: 19,
