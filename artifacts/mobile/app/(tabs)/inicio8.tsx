@@ -94,6 +94,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
@@ -2105,6 +2106,13 @@ export default function HomeScreen2({
               </View>
             </Pressable>
           </View>
+        )}
+        {isInicio2 && (
+          <EncuentrosResonadoresSection
+            marginTop={INICIO2_SECTION_GAP}
+            marginBottom={INICIO2_SECTION_GAP}
+            titleMarginTop={0}
+          />
         )}
         {isInicio2 && (
           <ResonadoresSection
