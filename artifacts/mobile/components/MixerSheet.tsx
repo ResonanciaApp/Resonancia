@@ -246,7 +246,7 @@ function DraggableTrackRow({
               accessibilityRole="button"
               accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
             >
-              <Feather name="x" size={16} color="#fff" />
+              <Feather name="x" size={16} color="#060A0F" />
             </Pressable>
           </View>
         </GestureDetector>
@@ -390,6 +390,13 @@ export function MixerSheet() {
   const isLight = activeBgPreset.isLight ?? false;
   /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto, enlazado al tema) */
   const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
+  // Mismo fondo de las pills no seleccionadas de Dormir, adaptado al tema.
+  const sleepTabBackground =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   // Cargar preset y overlay guardados
   // Nota: "borgona" era el fondo por defecto ANTES de enlazar el fondo al tema
@@ -437,14 +444,15 @@ export function MixerSheet() {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
     sliderThumb:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3b0808" : WARM.sliderThumb,
     sliderTrack:    "rgba(255,255,255,0.10)",
-    addText:        hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.55)" : "rgba(255,255,255,0.80)",
+    addText:        "#AAAAC4",
     separator:      isLight ? "rgba(24,2,2,0.10)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
     iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.90)",
     fg:             hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : colors.foreground,
     muted:          isLight ? "rgba(24,2,2,0.45)"  : colors.mutedForeground,
-    inputBg:        hasCustomBg ? "rgba(255,255,255,0.03)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.03)" : "rgba(74,12,12,0.08)",
-    footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.05)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.05)",
-    footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.65)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)",
+    inputBg:        sleepTabBackground,
+    footerCircleBg: sleepTabBackground,
+    footerLabel:    "#AAAAC4",
+    footerSideIcon: "#AAAAC4",
     headerFg:       "#F4F4F4",
   };
   const { isPremium } = usePremium();
@@ -923,11 +931,11 @@ export function MixerSheet() {
             style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8, backgroundColor: "transparent" }]}
             {...panResponder.panHandlers}
           >
-            <View style={[styles.headerRow, { marginTop: -15 }]}>
+            <View style={[styles.headerRow, { marginTop: -8 }]}>
               <Pressable
                 onPress={() => handleAnimatedCloseRef.current()}
                 hitSlop={10}
-                style={[styles.headerBtn, { marginLeft: -7 }]}
+                style={[styles.headerBtn, { marginLeft: -7, backgroundColor: sleepTabBackground }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
@@ -939,7 +947,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => handleAnimatedCloseRef.current(true)}
                 hitSlop={10}
-                style={[styles.headerBtn, { marginRight: -8 }]}
+                style={[styles.headerBtn, { marginRight: -8, backgroundColor: sleepTabBackground }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
@@ -1003,7 +1011,7 @@ export function MixerSheet() {
                 accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
               >
                 <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <MaterialCommunityIcons name="clock" size={29} color={palette.iconColor} />
+                  <MaterialCommunityIcons name="clock" size={29} color={palette.footerSideIcon} />
                 </View>
                 <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
                   {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
@@ -1017,7 +1025,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
               >
                 <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <Svg width={45} height={45} viewBox="0 0 48 48">
+                  <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: 2 }}>
                     {isPlaying ? (
                       <>
                         <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
@@ -1034,7 +1042,7 @@ export function MixerSheet() {
               <View style={[styles.footerSide, { transform: [{ translateY: -10 }] }]}>
                 <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
                   <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
-                    <MaterialCommunityIcons name="heart" size={29} color={palette.iconColor} />
+                    <MaterialCommunityIcons name="heart" size={29} color={palette.footerSideIcon} />
                   </View>
                   <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
                 </Pressable>
@@ -1297,7 +1305,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     borderRadius: 10,
-    paddingLeft: 0,
+    // El row se extiende a los bordes de la hoja; este inset evita que la
+    // miniatura y el botón de quitar queden recortados por el viewport.
+    paddingLeft: 27,
     paddingRight: 8,
     paddingVertical: 6,
     marginBottom: 8,
@@ -1313,7 +1323,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "center",
   },
