@@ -1208,6 +1208,8 @@ export function ProfileScreenBase({
               </View>
             </View>
 
+            <HistorialCalendar embedded />
+
             <Pressable
               onPress={() => router.push("/notificaciones-practica" as never)}
               accessibilityRole="button"
@@ -1225,8 +1227,6 @@ export function ProfileScreenBase({
               </Text>
               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
             </Pressable>
-
-            <HistorialCalendar embedded />
 
           </>
         )}

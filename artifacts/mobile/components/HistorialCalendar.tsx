@@ -12,6 +12,7 @@ import { dayKey } from "@/utils/stats";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
 const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
+const STREAK_VIOLET = "#985DD4";
 
 function isSameDay(a: Date, b: Date): boolean {
   return dayKey(a) === dayKey(b);
@@ -130,15 +131,14 @@ function DayCell({
   };
 
   const dayFill = embedded
-    ? isSelected && hasCompleted
-      ? "#985DD4"
-      : isSelected || hasCompleted
-        ? "rgba(255,255,255,0.16)"
-        : undefined
+    ? !hasCompleted && isSelected
+      ? "rgba(255,255,255,0.16)"
+      : undefined
     : isToday
       ? color
       : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
+  const showCompletedBorder = embedded && hasCompleted;
 
   return (
     <Pressable
@@ -153,7 +153,11 @@ function DayCell({
         style={[
           styles.dayCircle,
           !(embedded && isFuture) && dayFill && { backgroundColor: dayFill },
-          embedded && isToday && {
+          showCompletedBorder && {
+            borderWidth: 1.5,
+            borderColor: STREAK_VIOLET,
+          },
+          embedded && isToday && !showCompletedBorder && {
             borderWidth: 1.5,
             borderColor: "rgba(255,255,255,0.88)",
             borderStyle: "dotted",
@@ -293,9 +297,11 @@ export function HistorialCalendar({
   return (
     <View>
       {/* ── Mi calendario ── */}
-      <View style={[styles.sectionHeader, embedded && styles.embeddedSectionHeader, p ? { paddingHorizontal: p } : undefined]}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
-      </View>
+      {!embedded && (
+        <View style={[styles.sectionHeader, p ? { paddingHorizontal: p } : undefined]}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
+        </View>
+      )}
 
       <View style={[styles.calendarCard, { backgroundColor: calendarBackground }, p ? { marginHorizontal: p } : undefined]}>
         <View style={styles.calendarNav}>
@@ -451,7 +457,6 @@ export function HistorialCalendar({
 
 const styles = StyleSheet.create({
   sectionHeader: { marginBottom: 14 },
-  embeddedSectionHeader: { marginBottom: 12 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   calendarCard: {
     borderRadius: 18,
