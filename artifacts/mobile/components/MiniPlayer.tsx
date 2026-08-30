@@ -20,7 +20,6 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
@@ -84,8 +83,6 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
 }
 
 export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
-  const { activeSceneId } = useSceneTheme();
-  const tibetTint = null;
   const { currentSession, isPlaying, isLoading, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
@@ -281,12 +278,7 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Tinte Universo (igual al tab bar; sin tinte en Android) */}
-            {activeSceneId === "tibet" && Platform.OS !== "android" && (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,33,77,0.45)" }]} pointerEvents="none" />
-            )}
           </BlurView>
-          {tibetTint}
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
@@ -574,7 +566,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#204d90",
+    backgroundColor: "#50326E",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
