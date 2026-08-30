@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
   categoryLabel: {
     flexShrink: 1,
     fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
+    fontSize: 10,
+    fontWeight: "700",
     color: "#FFFFFF",
   },
   durationBadge: {
