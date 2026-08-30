@@ -1891,6 +1891,7 @@ export default function HomeScreen2({
             cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
             titleSize={19}
             titleSpacing={17}
+            onViewAll={() => router.push("/historial" as never)}
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
