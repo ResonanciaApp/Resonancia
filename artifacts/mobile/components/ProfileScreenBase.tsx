@@ -239,7 +239,8 @@ export function ProfileScreenBase({
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
   const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(7);
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
@@ -902,51 +903,67 @@ export function ProfileScreenBase({
                 <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
                   Estadísticas personales
                 </Text>
-                <View style={styles.statsFilterRow}>
-                  {([7, 30, 90] as const).map((days) => {
-                    const selected = statsRangeDays === days;
-                    return (
+                <Pressable
+                  onPress={() => setStatsFilterOpen((open) => !open)}
+                  style={styles.statsFilterTrigger}
+                  accessibilityRole="button"
+                  accessibilityLabel="Elegir filtro de días"
+                  accessibilityState={{ expanded: statsFilterOpen }}
+                >
+                  <Text style={[styles.statsFilterText, { color: "#AAAAC4" }]}>
+                    Últimos {statsRangeDays} días
+                  </Text>
+                  <Feather name="chevron-down" size={17} color="#AAAAC4" />
+                </Pressable>
+                {statsFilterOpen && (
+                  <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground, borderColor: colors.border }]}>
+                    {([7, 30, 90] as const).map((days) => (
                       <Pressable
                         key={days}
-                        onPress={() => setStatsRangeDays(days)}
+                        onPress={() => {
+                          setStatsRangeDays(days);
+                          setStatsFilterOpen(false);
+                        }}
                         style={[
-                          styles.statsFilterChip,
-                          {
-                            backgroundColor: selected ? colors.primary : "rgba(255,255,255,0.06)",
-                            borderColor: selected ? colors.primary : colors.border,
-                          },
+                          styles.statsFilterOption,
+                          statsRangeDays === days && { backgroundColor: "rgba(152,93,212,0.16)" },
                         ]}
                       >
-                        <Text
-                          style={[
-                            styles.statsFilterText,
-                            { color: selected ? colors.background : colors.mutedForeground },
-                          ]}
-                        >
-                          {days} d
+                        <Text style={[styles.statsFilterText, { color: "#AAAAC4" }]}>
+                          Últimos {days} días
                         </Text>
                       </Pressable>
-                    );
-                  })}
-                </View>
+                    ))}
+                  </View>
+                )}
               </View>
 
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.totalMinutes}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
-                    Minutos totales
+                  <View style={styles.personalStatMetricRow}>
+                    <View style={styles.personalStatIcon}>
+                      <Feather name="clock" size={17} color="#985DD4" />
+                    </View>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.totalMinutes} min
+                    </Text>
+                  </View>
+                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                    MINUTOS TOTALES
                   </Text>
                 </View>
                 <View style={[styles.personalStatDivider, { backgroundColor: colors.border }]} />
                 <View style={styles.personalStatItem}>
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.activeDays}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: colors.mutedForeground }]}>
-                    Días activos
+                  <View style={styles.personalStatMetricRow}>
+                    <View style={styles.personalStatIcon}>
+                      <Feather name="calendar" size={17} color="#985DD4" />
+                    </View>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.activeDays}
+                    </Text>
+                  </View>
+                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                    DÍAS ACTIVOS
                   </Text>
                 </View>
               </View>
@@ -1620,28 +1637,43 @@ const styles = StyleSheet.create({
   streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   streakDivider: { height: 1, marginTop: 18, marginBottom: 16 },
-  personalStatsHeader: { gap: 10 },
-  personalStatsTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
-  statsFilterRow: { flexDirection: "row", gap: 6 },
-  statsFilterChip: {
-    minWidth: 48,
-    height: 28,
-    paddingHorizontal: 10,
-    borderRadius: 14,
-    borderWidth: 1,
+  personalStatsHeader: { gap: 7 },
+  personalStatsTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700" },
+  statsFilterTrigger: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    alignSelf: "flex-start",
+    gap: 4,
+    paddingVertical: 1,
   },
+  statsFilterMenu: {
+    alignSelf: "flex-start",
+    minWidth: 148,
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: "hidden",
+    marginTop: 1,
+  },
+  statsFilterOption: { paddingHorizontal: 12, paddingVertical: 9 },
   statsFilterText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700" },
   personalStatsValues: {
     flexDirection: "row",
-    alignItems: "center",
-    marginTop: 16,
+    alignItems: "flex-start",
+    marginTop: 24,
   },
-  personalStatItem: { flex: 1, alignItems: "center", gap: 3 },
-  personalStatDivider: { width: 1, height: 34 },
-  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700" },
-  personalStatLabel: { fontFamily: "Manrope", fontSize: 11, textAlign: "center" },
+  personalStatItem: { flex: 1, alignItems: "flex-start", gap: 8 },
+  personalStatMetricRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  personalStatIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(152,93,212,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  personalStatDivider: { width: 1, height: 58, marginHorizontal: 8 },
+  personalStatValue: { fontFamily: "Manrope", fontSize: 25, fontWeight: "600" },
+  personalStatLabel: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 0.35, marginLeft: 38 },
 
   // Membresía
   membershipRow: {
