@@ -95,6 +95,7 @@ import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOver
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1238,6 +1239,31 @@ export default function HomeScreen2({
     return shuffled.slice(0, 10);
   }, [history, catalogVersion]);
 
+  // Recomendaciones diarias — selección estable durante el día local.
+  // No depende del historial: escuchar una sesión no cambia las otras
+  // recomendaciones hasta que cambie la fecha.
+  const dailyRecommendations = React.useMemo<Session[]>(() => {
+    const pool = SESSIONS.filter((session) => !session.isPlaceholder);
+    const seed = `${todayKey}:${pool.map((session) => session.id).join(",")}`;
+    let hash = 2166136261;
+    for (let i = 0; i < seed.length; i++) {
+      hash ^= seed.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+
+    let state = hash >>> 0;
+    const shuffled = [...pool];
+    const nextRandom = () => {
+      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+      return state / 0x100000000;
+    };
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(nextRandom() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 3);
+  }, [todayKey, catalogVersion]);
+
   // Recientes — últimas sesiones incorporadas al catálogo, no confundir con
   // “Escuchadas recientemente”, que depende del historial personal.
   const recentSessions = React.useMemo<Session[]>(
@@ -1866,6 +1892,13 @@ export default function HomeScreen2({
           <View style={[styles.inicio2ToolsSection, { marginTop: 25, marginBottom: INICIO2_SECTION_GAP }]}>
             <ToolsGrid />
           </View>
+        )}
+        {isInicio2 && (
+          <DailyRecommendationsSection
+            sessions={dailyRecommendations}
+            dayKey={todayKey}
+            style={{ paddingHorizontal: GRID_PAD }}
+          />
         )}
         {isInicio2 && (
           <SessionCarousel

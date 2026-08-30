@@ -10,7 +10,9 @@ import { PremiumBadge } from "@/components/PremiumBadge";
 import {
   SessionCategoryPill,
 } from "@/components/SessionCardMetadataOverlay";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { getVoiceLabel } from "@/config/audio-map";
+import { getArtist } from "@/data/artists";
 import { getGuideById } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -24,21 +26,36 @@ type Props = {
   imageSize?: number;
   metaText?: string;
   showCategoryPill?: boolean;
+  categoryPillPlain?: boolean;
+  showDurationBadge?: boolean;
+  showChevron?: boolean;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
 
-export function SessionRow({ session, rating, style, imageSize = 80, metaText, showCategoryPill = false, onActionsPress, onPress }: Props) {
+export function SessionRow({
+  session,
+  rating,
+  style,
+  imageSize = 80,
+  metaText,
+  showCategoryPill = false,
+  categoryPillPlain = true,
+  showDurationBadge = false,
+  showChevron = false,
+  onActionsPress,
+  onPress,
+}: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession, prewarmSession } = usePlayer();
   const overlay = useCategoryOverlayOptional();
   const locked = !!session.isPremium && !isPremium;
   const voiceLabel = getVoiceLabel(session);
-  const guide = (session as Session & { guideId?: string }).guideId
-    ? getGuideById((session as Session & { guideId?: string }).guideId!)
-    : null;
-  const author = guide?.name ?? "Casa del Cuenco";
+  const guideId = session.guideIds?.[0] ?? session.guideId;
+  const guide = guideId ? getGuideById(guideId) : undefined;
+  const artist = session.artistId ? getArtist(session.artistId) : undefined;
+  const author = guide?.name ?? artist?.name ?? "Casa del Cuenco";
   const displayRating = rating ?? 4.7;
 
   const defaultPress = () => {
@@ -70,6 +87,13 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
               transition={IMAGE_TRANSITION}
             />
             <PremiumBadge session={session} />
+            {showDurationBadge && (
+              <SessionDurationBadge
+                label={session.durationLabel}
+                style={styles.rowDurationBadge}
+                textStyle={styles.rowDurationText}
+              />
+            )}
           </View>
         </View>
 
@@ -79,7 +103,7 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
               <SessionCategoryPill
                 categoryId={session.categoryId}
                 inline
-                plain
+                plain={categoryPillPlain}
               />
             </View>
           ) : (
@@ -103,6 +127,14 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, s
             {author}
           </Text>
         </View>
+        {showChevron && (
+          <Feather
+            name="chevron-right"
+            size={25}
+            color={colors.mutedForeground}
+            style={styles.chevron}
+          />
+        )}
       </Pressable>
 
       {onActionsPress && (
@@ -143,9 +175,18 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
+  rowDurationBadge: {
+    position: "absolute",
+    left: 6,
+    bottom: 6,
+  },
+  rowDurationText: {
+    fontSize: 11,
+  },
   sessionThumb: { position: "relative", zIndex: 1 },
   sessionImg: { width: 80, height: 80 },
   sessionContent: { flex: 1 },
+  chevron: { marginLeft: 2 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   sessionMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14 },
   sessionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
