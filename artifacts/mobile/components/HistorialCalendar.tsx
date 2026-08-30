@@ -127,7 +127,7 @@ function DayCell({
 
   const handlePress = () => {
     onPress();
-    if (isToday || isSelected) bounce();
+    if (isToday || isSelected || hasCompleted) bounce();
   };
 
   const dayFill = embedded
@@ -314,7 +314,7 @@ export function HistorialCalendar({
           </Pressable>
         </View>
 
-        <View style={styles.weekRow}>
+        <View style={[styles.weekRow, embedded && styles.embeddedWeekRow]}>
           {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
             <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: colors.mutedForeground }]}>
               {label}
@@ -349,7 +349,7 @@ export function HistorialCalendar({
             {formatSelectedDate(selectedDate, today)}
           </Text>
           {dayEntries.length === 0 ? (
-            <Text style={[styles.embeddedEmptyText, { color: colors.foreground }]}>
+            <Text style={styles.embeddedEmptyText}>
               {isSameDay(selectedDate, today)
                 ? "Aún no has completado nada hoy. Tómate un momento para pausar y comenzar tu práctica. 🌿"
                 : "No hay actividad"}
@@ -482,6 +482,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 6,
   },
+  embeddedWeekRow: { marginTop: 10 },
   weekLabel: {
     fontFamily: "Manrope",
     flex: 1,
@@ -530,9 +531,10 @@ const styles = StyleSheet.create({
   },
   embeddedEmptyText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22,
     fontWeight: "600",
+    color: "#AAAAC4",
   },
   embeddedEntryRow: {
     flexDirection: "row",
