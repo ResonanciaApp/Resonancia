@@ -39,7 +39,6 @@ const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
-const PILL_VIOLET = "#7C58FF";
 const PILL_BACKGROUND = "rgba(124,88,255,0.08)";
 const PILL_BACKGROUND_ACTIVE = "rgba(124,88,255,0.16)";
 const PILL_BORDER = "rgba(124,88,255,0.14)";
@@ -106,10 +105,15 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
       onPress={onPress}
       style={({ pressed }) => [
         styles.chipShell,
-        sel && styles.chipShellActive,
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
+      {sel && (
+        <>
+          <View pointerEvents="none" style={styles.chipGlowWide} />
+          <View pointerEvents="none" style={styles.chipGlow} />
+        </>
+      )}
       <View style={[styles.chip, sel ? styles.chipActive : styles.chipInactive]}>
         <BlurView
           intensity={20}
@@ -677,17 +681,30 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipShell: {
+    position: "relative",
     borderRadius: 27,
-    shadowColor: PILL_VIOLET,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    elevation: 0,
   },
-  chipShellActive: {
-    shadowOpacity: 0.65,
-    shadowRadius: 14,
-    elevation: 5,
+  chipGlowWide: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    bottom: -5,
+    left: -5,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(124,88,255,0.08)",
+    backgroundColor: "rgba(124,88,255,0.04)",
+  },
+  chipGlow: {
+    position: "absolute",
+    top: -2,
+    right: -2,
+    bottom: -2,
+    left: -2,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(124,88,255,0.12)",
+    backgroundColor: "rgba(124,88,255,0.04)",
   },
   chip: {
     height: 46,
