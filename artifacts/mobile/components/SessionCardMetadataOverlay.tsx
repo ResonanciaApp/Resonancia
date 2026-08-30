@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Image, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
 
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 export const SESSION_CARD_METADATA_HEIGHT_SCALE = 1.2;
 
@@ -76,9 +76,10 @@ export function SessionCategoryPill({
         textOnly && styles.categoryPillTextOnly,
       ]}
     >
+      {!plain && <SessionBadgeGlass />}
       {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
       <Text style={styles.categoryLabel} numberOfLines={1}>
-        {category.label}
+        {category.label.toUpperCase()}
       </Text>
     </View>
   );
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     paddingRight: 9,
     paddingLeft: 3,
     borderRadius: 100,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    overflow: "hidden",
   },
   categoryPillInline: {
     position: "relative",
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
   durationBadge: {
     position: "absolute",
     left: 8,
-    borderRadius: 8,
+    borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },

@@ -25,7 +25,20 @@ type Props = {
  */
 export function SessionDurationBadge({ label, style, textStyle, showClock = false }: Props) {
   return (
-    <View pointerEvents="none" style={[styles.root, style]}>
+    <View pointerEvents="none" style={[styles.root, style, styles.rounded]}>
+      <SessionBadgeGlass />
+      <View style={styles.content}>
+        {showClock && <Feather name="clock" size={11} color="#F9F9F9" />}
+        <Text style={[styles.text, textStyle]}>{label}</Text>
+      </View>
+    </View>
+  );
+}
+
+/** Superficie compartida por las píldoras de metadata de las cards. */
+export function SessionBadgeGlass() {
+  return (
+    <>
       <BlurView
         intensity={Platform.OS === "android" ? 60 : 28}
         tint="default"
@@ -33,11 +46,7 @@ export function SessionDurationBadge({ label, style, textStyle, showClock = fals
         style={StyleSheet.absoluteFill}
       />
       <View style={[StyleSheet.absoluteFill, styles.blackTint]} />
-      <View style={styles.content}>
-        {showClock && <Feather name="clock" size={11} color="#F9F9F9" />}
-        <Text style={[styles.text, textStyle]}>{label}</Text>
-      </View>
-    </View>
+    </>
   );
 }
 
@@ -47,6 +56,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
+  },
+  rounded: {
+    borderRadius: 999,
   },
   blackTint: {
     backgroundColor: "rgba(0,0,0,0.20)",
