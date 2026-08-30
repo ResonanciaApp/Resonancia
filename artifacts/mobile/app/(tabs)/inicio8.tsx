@@ -1868,7 +1868,14 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={[styles.inicio2ToolsSection, { marginTop: 25, marginBottom: INICIO2_SECTION_GAP }]}>
+          <View
+            style={[
+              styles.inicio2ToolsSection,
+              // Los tabs bajan 6 px; el espacio siguiente se reduce 11 px
+              // para que Recomendaciones diarias y lo que sigue suban 5 px.
+              { marginTop: 31, marginBottom: INICIO2_SECTION_GAP - 11 },
+            ]}
+          >
             <ToolsGrid />
           </View>
         )}
