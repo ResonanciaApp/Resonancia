@@ -11,6 +11,7 @@ import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
+const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
 function isSameDay(a: Date, b: Date): boolean {
   return dayKey(a) === dayKey(b);
@@ -89,17 +90,22 @@ function DayCell({
   d,
   isToday,
   isSelected,
+  hasCompleted,
+  isFuture,
+  embedded,
   color,
   onPress,
 }: {
   d: Date;
   isToday: boolean;
   isSelected: boolean;
+  hasCompleted: boolean;
+  isFuture: boolean;
+  embedded: boolean;
   color: string;
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
-  const showSelectedOutline = isSelected && !isToday;
 
   const bounce = () => {
     scale.setValue(1);
@@ -120,23 +126,57 @@ function DayCell({
 
   const handlePress = () => {
     onPress();
-    if (isToday || showSelectedOutline) bounce();
+    if (isToday || isSelected) bounce();
   };
 
+  const dayFill = embedded
+    ? isSelected && hasCompleted
+      ? "#985DD4"
+      : isSelected || hasCompleted
+        ? "rgba(255,255,255,0.16)"
+        : undefined
+    : isToday
+      ? color
+      : undefined;
+  const showLegacySelectedOutline = !embedded && isSelected && !isToday;
+
   return (
-    <Pressable onPress={handlePress} style={styles.dayCell}>
+    <Pressable
+      onPress={handlePress}
+      disabled={embedded && isFuture}
+      style={styles.dayCell}
+      accessibilityRole="button"
+      accessibilityLabel={`${d.toLocaleDateString("es-CL", { day: "numeric", month: "long" })}${hasCompleted ? ", con sesión completada" : ""}`}
+      accessibilityState={{ selected: isSelected, disabled: embedded && isFuture }}
+    >
       <Animated.View
         style={[
           styles.dayCircle,
-          isToday && { backgroundColor: color },
-          showSelectedOutline && {
+          !(embedded && isFuture) && dayFill && { backgroundColor: dayFill },
+          embedded && isToday && {
+            borderWidth: 1.5,
+            borderColor: "rgba(255,255,255,0.88)",
+            borderStyle: "dotted",
+          },
+          showLegacySelectedOutline && {
             borderWidth: 1.5,
             borderColor: color,
           },
           { transform: [{ scale }] },
         ]}
       >
-        <Text style={[styles.dayNum, { color: isToday ? "#1B060F" : color }]}>
+        <Text
+          style={[
+            styles.dayNum,
+            {
+              color: embedded && isFuture
+                ? "rgba(255,255,255,0.24)"
+                : !embedded && isToday
+                  ? "#1B060F"
+                  : color,
+            },
+          ]}
+        >
           {d.getDate()}
         </Text>
       </Animated.View>
@@ -144,10 +184,31 @@ function DayCell({
   );
 }
 
-export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?: number }) {
+type CalendarEntry = {
+  sessionId: string;
+  playedAt: string;
+  categoryLabel?: string;
+};
+
+function formatSelectedDate(date: Date, today: Date): string {
+  const month = date
+    .toLocaleDateString("es-CL", { month: "short" })
+    .replace(/\./g, "")
+    .toUpperCase();
+  const day = date.getDate();
+  return isSameDay(date, today) ? `HOY, ${day} ${month}.` : `${day} ${month}.`;
+}
+
+export function HistorialCalendar({
+  containerPadding = 0,
+  embedded = false,
+}: {
+  containerPadding?: number;
+  embedded?: boolean;
+}) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
-  const { history, isFavorite, toggleFavorite, playSession } = usePlayer();
+  const { history, statEvents, isFavorite, toggleFavorite, playSession } = usePlayer();
   const calendarBackground = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
     : activeSceneId === "tibet"
@@ -169,23 +230,62 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
     return rows;
   }, [grid]);
 
-  const isNewUser = history.length === 0;
+  const entries = useMemo<CalendarEntry[]>(
+    () =>
+      embedded
+        ? statEvents
+            .filter((event) => event.completed === true)
+            .map((event) => ({
+              sessionId: event.sessionId,
+              playedAt: event.playedAt,
+              categoryLabel: event.categoryLabel,
+            }))
+        : history,
+    [embedded, history, statEvents],
+  );
 
-  const monthLabel = viewMonth
-    .toLocaleDateString("es", { month: "long" })
-    .replace(/^./, (c) => c.toUpperCase());
+  const completedDayKeys = useMemo(
+    () =>
+      embedded
+        ? new Set(entries.map((entry) => dayKey(new Date(entry.playedAt))))
+        : new Set<string>(),
+    [embedded, entries],
+  );
+
+  const isNewUser = !embedded && history.length === 0;
+
+  const monthName = viewMonth.toLocaleDateString("es", { month: "long" });
+  const monthLabel = embedded
+    ? `${monthName.toLowerCase()}, ${viewMonth.getFullYear()}`
+    : monthName.replace(/^./, (c) => c.toUpperCase());
 
   const dayEntries = useMemo(() => {
-    return history
+    return entries
       .filter((e) => isSameDay(new Date(e.playedAt), selectedDate))
       .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime());
-  }, [history, selectedDate]);
+  }, [entries, selectedDate]);
 
   const goPrevMonth = () => {
-    setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1));
+    const next = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+    setViewMonth(next);
+    if (embedded) {
+      setSelectedDate(
+        next.getFullYear() === today.getFullYear() && next.getMonth() === today.getMonth()
+          ? today
+          : next,
+      );
+    }
   };
   const goNextMonth = () => {
-    setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1));
+    const next = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+    setViewMonth(next);
+    if (embedded) {
+      setSelectedDate(
+        next.getFullYear() === today.getFullYear() && next.getMonth() === today.getMonth()
+          ? today
+          : next,
+      );
+    }
   };
 
   const p = containerPadding;
@@ -193,7 +293,7 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
   return (
     <View>
       {/* ── Mi calendario ── */}
-      <View style={[styles.sectionHeader, p ? { paddingHorizontal: p } : undefined]}>
+      <View style={[styles.sectionHeader, embedded && styles.embeddedSectionHeader, p ? { paddingHorizontal: p } : undefined]}>
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
@@ -209,8 +309,8 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
         </View>
 
         <View style={styles.weekRow}>
-          {WEEK_LABELS.map((label) => (
-            <Text key={label} style={[styles.weekLabel, { color: colors.mutedForeground }]}>
+          {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
+            <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: colors.mutedForeground }]}>
               {label}
             </Text>
           ))}
@@ -226,6 +326,9 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
                   d={d}
                   isToday={isSameDay(d, today)}
                   isSelected={isSameDay(d, selectedDate)}
+                  hasCompleted={completedDayKeys.has(dayKey(d))}
+                  isFuture={d.getTime() > today.getTime()}
+                  embedded={embedded}
                   color={colors.foreground}
                   onPress={() => setSelectedDate(d)}
                 />
@@ -233,28 +336,80 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
             })}
           </View>
         ))}
+
+        {embedded && (
+        <View style={styles.embeddedSummary}>
+          <Text style={[styles.embeddedDateLabel, { color: colors.mutedForeground }]}>
+            {formatSelectedDate(selectedDate, today)}
+          </Text>
+          {dayEntries.length === 0 ? (
+            <Text style={[styles.embeddedEmptyText, { color: colors.foreground }]}>
+              {isSameDay(selectedDate, today)
+                ? "Aún no has completado nada hoy. Tómate un momento para pausar y comenzar tu práctica. 🌿"
+                : "No hay actividad"}
+            </Text>
+          ) : (
+            dayEntries.map((entry, i) => {
+              const session = getSessionById(entry.sessionId);
+              if (!session) return null;
+              const fav = isFavorite(session.id);
+              return (
+                <Pressable
+                  key={`${entry.sessionId}-${entry.playedAt}-${i}`}
+                  style={({ pressed }) => [styles.embeddedEntryRow, { opacity: pressed ? 0.75 : 1 }]}
+                  onPress={() => {
+                    if (session.skipMiniPlayer) {
+                      playSession(session);
+                      return;
+                    }
+                    if (session.skipDetail) {
+                      playSession(session);
+                      router.push("/player" as never);
+                    } else {
+                      router.push(`/session/${session.id}` as never);
+                    }
+                  }}
+                >
+                  <View style={styles.embeddedEntryAccent} />
+                  <View style={styles.embeddedEntryCopy}>
+                    <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
+                      {entry.categoryLabel || session.categoryLabel || "Contenido"}
+                    </Text>
+                    <Text style={[styles.embeddedEntryTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                  </View>
+                  <FavoriteHeartButton favorited={fav} onToggle={() => toggleFavorite(session.id)} />
+                </Pressable>
+              );
+            })
+          )}
+        </View>
+        )}
       </View>
 
-      {/* ── Mi historial ── */}
-      <View style={[styles.sectionHeader, { marginTop: 28 }, p ? { paddingHorizontal: p } : undefined]}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi historial</Text>
-      </View>
+      {/* ── Resumen del día ── */}
+      {!embedded && (
+        <View style={[styles.sectionHeader, { marginTop: 28 }, p ? { paddingHorizontal: p } : undefined]}>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi historial</Text>
+        </View>
+      )}
 
-      {isNewUser ? (
+      {!embedded && isNewUser ? (
         <View style={[styles.emptyWrap, { backgroundColor: colors.card }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             Aquí aparecerán tu historial de Resonancia
           </Text>
         </View>
-      ) : dayEntries.length === 0 ? (
+      ) : !embedded && dayEntries.length === 0 ? (
         <View style={[styles.emptyWrap, { backgroundColor: "rgba(255,255,255,0.045)" }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             No hay sesiones registradas este día.
           </Text>
         </View>
-      ) : (
+      ) : !embedded ? (
         dayEntries.map((entry, i) => {
           const session = getSessionById(entry.sessionId);
           if (!session) return null;
@@ -289,13 +444,14 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
             </Pressable>
           );
         })
-      )}
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   sectionHeader: { marginBottom: 14 },
+  embeddedSectionHeader: { marginBottom: 12 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   calendarCard: {
     borderRadius: 18,
@@ -353,6 +509,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emptyText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
+  embeddedSummary: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.1)",
+  },
+  embeddedDateLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1.1,
+    marginBottom: 16,
+  },
+  embeddedEmptyText: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: "600",
+  },
+  embeddedEntryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    minHeight: 64,
+    paddingVertical: 4,
+  },
+  embeddedEntryAccent: {
+    width: 3,
+    alignSelf: "stretch",
+    minHeight: 48,
+    borderRadius: 2,
+    backgroundColor: "#985DD4",
+  },
+  embeddedEntryCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  embeddedEntryCategory: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  embeddedEntryTitle: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+  },
   entryRow: {
     flexDirection: "row",
     alignItems: "center",

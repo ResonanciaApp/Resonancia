@@ -65,6 +65,7 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
+import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
   gradientColors,
@@ -1224,6 +1225,8 @@ export function ProfileScreenBase({
               </Text>
               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
             </Pressable>
+
+            <HistorialCalendar embedded />
 
           </>
         )}
