@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   author: {
     fontFamily: "Manrope",
     fontSize: 11,
-    color: "#F4F4F4",
+    color: "#A9A9C3",
     marginTop: 4,
     flexShrink: 1,
   },
