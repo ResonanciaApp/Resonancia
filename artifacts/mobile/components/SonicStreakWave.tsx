@@ -15,6 +15,7 @@ import Svg, {
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 const RING_SIZE    = 79;
@@ -68,40 +69,6 @@ const LEFT_PATH   = buildLeftPath();
 const RIGHT_START = COMP_W / 2 + NUM_BOX_W / 2 + SIDE_GAP - INSET;
 const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP + INSET;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function brightenHex(hex: string, pct: number): string {
-  const h = hex.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16) / 255;
-  const g = parseInt(h.slice(2, 4), 16) / 255;
-  const b = parseInt(h.slice(4, 6), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let hh = 0, s = 0;
-  let l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: hh = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: hh = ((b - r) / d + 2) / 6; break;
-      case b: hh = ((r - g) / d + 4) / 6; break;
-    }
-  }
-  l = Math.min(1, l + pct / 100);
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  const hue2rgb = (t: number) => {
-    if (t < 0) t += 1; if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-    return p;
-  };
-  const rr = Math.round(hue2rgb(hh + 1/3) * 255);
-  const gg = Math.round(hue2rgb(hh) * 255);
-  const bb = Math.round(hue2rgb(hh - 1/3) * 255);
-  return `rgb(${rr},${gg},${bb})`;
-}
-
 export function SonicStreakDays({
   activeFlags,
   todayIndex,
@@ -112,9 +79,7 @@ export function SonicStreakDays({
   idPrefix?: string;
 }) {
   const { theme } = useSceneTheme();
-  const isTibet = theme.id === "tibet";
-  const borderColor0 = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
-  const borderColor1 = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
+  const [borderColor0, borderColor1] = getListenNowButtonColors(theme.id === "indigo");
 
   return (
     <View style={styles.row}>

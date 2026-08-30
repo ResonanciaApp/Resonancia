@@ -38,6 +38,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { hexToRgba } from "@/utils/color";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
@@ -171,12 +172,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
   const isIndigoPlayBtn = sceneTheme.id === "indigo";
-  const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["#5146A8", "#5146A8"]
-    : ["#F9F9F9", "#F9F9F9"];
-  const listenNowBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
-    ? ["#784576", "#50326E"]
-    : playBtnColors;
+  const listenNowBtnColors: [string, string, ...string[]] = getListenNowButtonColors(isIndigoPlayBtn);
   const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
   const listenNowBtnTextColor = isIndigoPlayBtn ? "#F9F9F9" : playBtnTextColor;
   const shareBtnTextColor = "#F9F9F9";
