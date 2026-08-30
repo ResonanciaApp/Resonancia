@@ -6,6 +6,7 @@ import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 
@@ -145,7 +146,13 @@ function DayCell({
 
 export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?: number }) {
   const colors = useColors();
+  const { activeSceneId } = useSceneTheme();
   const { history, isFavorite, toggleFavorite, playSession } = usePlayer();
+  const calendarBackground = activeSceneId === "indigo"
+    ? "rgba(42,40,64,0.65)"
+    : activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : "rgba(255,255,255,0.05)";
 
   const today = useMemo(() => new Date(), []);
   const [viewMonth, setViewMonth] = useState<Date>(startOfMonth(today));
@@ -190,7 +197,7 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
-      <View style={[styles.calendarCard, { backgroundColor: "rgba(0,0,0,0.27)" }, p ? { marginHorizontal: p } : undefined]}>
+      <View style={[styles.calendarCard, { backgroundColor: calendarBackground }, p ? { marginHorizontal: p } : undefined]}>
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />

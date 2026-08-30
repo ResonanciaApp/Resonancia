@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
@@ -71,12 +70,15 @@ export default function FavoritosTodosScreen() {
   const { favorites, playSession, currentSession } = usePlayer();
   const { favFolders } = useFoldersPlaylists();
   const { favoriteVideoIds } = useVideosState();
-  const { theme: sceneTheme } = useSceneTheme();
+  const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+    ? "rgba(42,40,64,0.65)"
+    : "rgba(255,255,255,0.12)";
 
   const [activeTab, setActiveTab] = useState<FavTabId>("sesiones");
 
@@ -116,85 +118,101 @@ export default function FavoritosTodosScreen() {
     >
       <StatusBar hidden />
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Back */}
-        <View style={{ paddingHorizontal: H_PAD, marginBottom: 14 }}>
-          <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+      <View style={styles.contentShift}>
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+          <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+            <Pressable
+              onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+              hitSlop={6}
+              style={styles.libraryTabBackHitArea}
+              accessibilityRole="button"
+              accessibilityLabel="Volver a Inicio"
+            >
+              {({ pressed }) => (
+                <View
+                  style={[
+                    styles.libraryTabBackBtn,
+                    { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                </View>
+              )}
+            </Pressable>
+            <Text style={[styles.stickyTitleLibraryTab, { color: colors.foreground }]}>Mis favoritos</Text>
+          </View>
+
+          <View style={styles.embeddedTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tabRowContent}
+            >
+              {FAV_TABS.map((tab) => (
+                <FavPill
+                  key={tab.id}
+                  sel={activeTab === tab.id}
+                  label={tab.label}
+                  icon={tab.icon}
+                  onPress={() => setActiveTab(tab.id)}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </View>
 
-        {/* Título */}
-        <View style={{ paddingHorizontal: H_PAD, marginBottom: 18 }}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mis favoritos</Text>
-        </View>
-
-        {/* Tabs */}
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabRowContent}
-          style={{ marginBottom: 24 }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 25 }}
+          showsVerticalScrollIndicator={false}
         >
-          {FAV_TABS.map((tab) => (
-            <FavPill
-              key={tab.id}
-              sel={activeTab === tab.id}
-              label={tab.label}
-              icon={tab.icon}
-              onPress={() => setActiveTab(tab.id)}
-            />
-          ))}
-        </ScrollView>
-
-        {/* Grilla */}
-        {activeTab === "videos" ? (
-          favVideos.length === 0 ? (
+          {/* Grilla */}
+          {activeTab === "videos" ? (
+            favVideos.length === 0 ? (
+              <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+                <Feather name="heart" size={20} color="#f9f9f9" />
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  Aún no tienes videos favoritos.
+                </Text>
+              </View>
+            ) : (
+              <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+                {favVideos.map((v) => (
+                  <VideoCard
+                    key={v.id}
+                    video={v}
+                    horizontal
+                    cardBg="rgba(255,255,255,0.045)"
+                    onOptionsPress={() => setActionsVideo(v)}
+                  />
+                ))}
+              </View>
+            )
+          ) : tabSessions.length === 0 ? (
             <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
               <Feather name="heart" size={20} color="#f9f9f9" />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Aún no tienes videos favoritos.
+                Aún no tienes favoritos en esta colección.
               </Text>
             </View>
           ) : (
-            <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
-              {favVideos.map((v) => (
-                <VideoCard
-                  key={v.id}
-                  video={v}
-                  horizontal
-                  cardBg="rgba(255,255,255,0.045)"
-                  onOptionsPress={() => setActionsVideo(v)}
+            <View style={styles.grid}>
+              {tabSessions.map((session) => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  width={CARD_W}
+                  style={{ marginRight: 0 }}
+                  showCardMetadata
+                  showAuthorAvatar={false}
+                  overridePress={() => openSession(session)}
+                  playing={currentSession?.id === session.id}
                 />
               ))}
             </View>
-          )
-        ) : tabSessions.length === 0 ? (
-          <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
-            <Feather name="heart" size={20} color="#f9f9f9" />
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              Aún no tienes favoritos en esta colección.
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.grid}>
-            {tabSessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                width={CARD_W}
-                style={{ marginRight: 0 }}
-                showCardMetadata
-                showAuthorAvatar={false}
-                overridePress={() => openSession(session)}
-                playing={currentSession?.id === session.id}
-              />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+          )}
+        </ScrollView>
+      </View>
 
       <VideoActionsSheet
         video={actionsVideo}
@@ -207,18 +225,58 @@ export default function FavoritosTodosScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  backBtn: {
+  contentShift: {
+    flex: 1,
+    transform: [{ translateY: -5 }],
+  },
+  stickyHeader: {
+    zIndex: 10,
+    backgroundColor: "transparent",
+  },
+  stickyHeaderRow: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 19,
+    paddingBottom: 10,
+  },
+  libraryTabHeaderRow: {
+    minHeight: 48,
+    paddingBottom: 12,
+  },
+  libraryTabBackBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
   },
-  pageTitle: {
+  libraryTabBackHitArea: {
+    position: "absolute",
+    left: 13,
+    top: -6,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
+    elevation: 20,
+  },
+  stickyTitleLibraryTab: {
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 20,
+    lineHeight: 26,
     fontWeight: "700",
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
+    textAlign: "center",
+    flex: 1,
+    marginLeft: 0,
+  },
+  embeddedTabsHeader: {
+    marginTop: 6,
+    paddingTop: 10,
+    paddingBottom: 5,
   },
   tabRowContent: {
     paddingHorizontal: H_PAD,
