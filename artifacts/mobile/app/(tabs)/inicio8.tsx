@@ -1893,7 +1893,7 @@ export default function HomeScreen2({
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: INICIO2_SECTION_GAP - 26, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
             cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
             titleSize={19}
