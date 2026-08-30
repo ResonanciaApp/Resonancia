@@ -1805,7 +1805,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <View style={[styles.inicio2ToolsSection, { marginTop: 36, marginBottom: 0 }]}>
-            <ToolsGrid libraryFirst />
+            <ToolsGrid />
           </View>
         )}
         {isInicio2 && (
