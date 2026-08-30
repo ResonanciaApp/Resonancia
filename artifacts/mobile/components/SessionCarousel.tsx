@@ -49,6 +49,7 @@ type SessionCarouselProps = {
   cardAuthorColor?: string;
   showImageCategoryPill?: boolean;
   onViewAll?: () => void;
+  viewAllColor?: string;
   showCardMetadata?: boolean;
   showHeader?: boolean;
 };
@@ -70,6 +71,7 @@ export function SessionCarousel({
   cardAuthorColor,
   showImageCategoryPill = false,
   onViewAll,
+  viewAllColor,
   showCardMetadata = false,
   showHeader = true,
 }: SessionCarouselProps) {
@@ -97,7 +99,7 @@ export function SessionCarousel({
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
             <Pressable onPress={onViewAll} hitSlop={8}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllColor ?? colors.primary }}>Ver todos</Text>
             </Pressable>
           </View>
           {description && (

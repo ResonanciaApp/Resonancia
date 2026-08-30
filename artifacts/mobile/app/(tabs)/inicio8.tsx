@@ -1907,6 +1907,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
+            viewAllColor="#985DD4"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
@@ -1982,7 +1983,6 @@ export default function HomeScreen2({
         {isInicio2 && (
           <SessionCarousel
             title="Mis favoritos"
-            description="Contenido que te gustó"
             sessions={favoriteSessions}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
@@ -1993,6 +1993,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
+            viewAllColor="#985DD4"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
