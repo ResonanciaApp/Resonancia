@@ -1917,6 +1917,39 @@ export default function HomeScreen2({
             showCardMetadata
           />
         )}
+        {isInicio2 && (
+          <View style={[styles.durSection, { marginTop: 55, marginBottom: INICIO2_SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
+              ¿Cuánto tiempo tienes hoy?
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
+                  style={({ pressed }) => [
+                    styles.durPill,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
+                  <Text
+                    style={styles.durPillText}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                  >
+                    {slot.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -1952,39 +1985,6 @@ export default function HomeScreen2({
                 />
               </View>
             </Pressable>
-          </View>
-        )}
-        {isInicio2 && (
-          <View style={[styles.durSection, { marginTop: 55, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
-              ¿Cuánto tiempo tienes hoy?
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                  style={({ pressed }) => [
-                    styles.durPill,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
-                  <Text
-                    style={styles.durPillText}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                  >
-                    {slot.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
           </View>
         )}
         {isInicio2 && (
