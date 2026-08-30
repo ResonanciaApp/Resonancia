@@ -837,7 +837,7 @@ export function ProfileScreenBase({
 
               {email ? (
                 <Text
-                  style={[styles.emailText, { color: colors.mutedForeground }]}
+                  style={[styles.emailText, { color: "#AAAAC4" }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
@@ -1483,7 +1483,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     gap: 6,
   },
-  profileIdentityRow: { flexDirection: "row", alignItems: "flex-start", width: "100%", gap: 16 },
+  profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
   profileDetails: { flex: 1, alignItems: "flex-start", gap: 6 },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
