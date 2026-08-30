@@ -570,7 +570,7 @@ export default function DescansoScreen() {
               onPress={(s) => handleSessionTap(s)}
               style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
+              titleSize={19}
               showCardMetadata
             />
           )}
@@ -583,7 +583,7 @@ export default function DescansoScreen() {
               onPress={(s) => handleSessionTap(s)}
               style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
+              titleSize={19}
               showCardMetadata
               onViewAll={() => openCategory(`/sleep-tag/${collection.id}`)}
             />

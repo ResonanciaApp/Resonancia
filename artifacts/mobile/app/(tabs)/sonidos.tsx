@@ -241,7 +241,7 @@ export default function SonidosScreen() {
                 onPress={openSession}
                 style={[styles.carousel, styles.recentCarousel]}
                 cardWidth={CARD_W}
-                titleSize={18}
+                titleSize={19}
                 showCardMetadata
               />
             )}
@@ -254,7 +254,7 @@ export default function SonidosScreen() {
                 onPress={openSession}
                 style={styles.carousel}
                 cardWidth={CARD_W}
-                titleSize={18}
+                titleSize={19}
                 showCardMetadata
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />

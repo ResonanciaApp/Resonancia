@@ -38,7 +38,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 20;
+const H_PAD = 19;
 const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
@@ -424,6 +424,7 @@ export default function ExploreScreen() {
               style={{
                 marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 5 : 0,
                 marginBottom: SECTION_GAP,
+                paddingHorizontal: H_PAD,
               }}
               cardWidth={SQCARD_W}
               titleSize={19}
