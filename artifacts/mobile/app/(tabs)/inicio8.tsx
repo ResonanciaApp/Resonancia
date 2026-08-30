@@ -1918,7 +1918,7 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <View style={[styles.durSection, { marginTop: 55, marginBottom: INICIO2_SECTION_GAP }]}>
+          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
               ¿Cuánto tiempo tienes hoy?
             </Text>
@@ -1988,7 +1988,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={{ marginTop: 15, marginBottom: INICIO2_SECTION_GAP }}>
+          <View style={{ marginTop: INICIO2_SECTION_GAP, marginBottom: INICIO2_SECTION_GAP }}>
             <InicioMoodRecommendations
               selectedMoods={selectedMoods}
               moodRecommended={moodRecommended}
@@ -3374,7 +3374,7 @@ function InicioMoodRecommendations({
       {/* ── ESTADO DE ÁNIMO ── */}
       {showDivider && <View style={[styles.sectionDivider, { marginTop: -15 }]} />}
       {showTitle && (
-        <View style={{ paddingHorizontal: GRID_PAD, marginTop: -15 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginTop: showDivider ? -15 : 0 }}>
           <Text
             style={[
               styles.sectionTitle,
