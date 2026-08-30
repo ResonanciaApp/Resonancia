@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
     right: PILL_MARGIN_H,
     height: PILL_H,
     borderRadius: 999,
-    overflow: "hidden",
+    overflow: "visible",
     backgroundColor: "#161521",
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.07)",
@@ -592,6 +592,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 6,
     alignItems: "center",
+    borderRadius: 999,
+    overflow: "hidden",
   },
   rowWeb: {
     maxWidth: 430,
