@@ -1033,7 +1033,12 @@ export function ProfileScreenBase({
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
-            <Pressable onPress={pickPhoto} style={styles.avatarWrapper}>
+            <Pressable
+              onPress={() => router.push("/mi-perfil")}
+              style={styles.avatarWrapper}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Mi cuenta"
+            >
               {photoUri ? (
                 <Image source={{ uri: photoUri }} style={styles.avatarImage} contentFit="cover" />
               ) : (
@@ -1045,7 +1050,12 @@ export function ProfileScreenBase({
 
             {/* Name + details */}
             <View style={styles.profileDetailsRow}>
-              <View style={styles.profileDetails}>
+              <Pressable
+                onPress={() => router.push("/mi-perfil")}
+                style={styles.profileDetails}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Mi cuenta"
+              >
                 <Text
                   style={[styles.userName, styles.userNameLeft, { color: colors.foreground }]}
                   numberOfLines={1}
@@ -1070,7 +1080,7 @@ export function ProfileScreenBase({
                     <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
                   </View>
                 ) : null}
-              </View>
+              </Pressable>
               <Pressable
                 onPress={() => router.push("/mi-perfil")}
                 style={styles.profileChevronButton}
