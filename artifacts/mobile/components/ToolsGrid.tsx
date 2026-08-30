@@ -24,6 +24,7 @@ const TOOLS = [
   { id: "favoritos", label: "Favoritos", icon: "heart-outline", color: "#F29BB7" },
   { id: "biblioteca", label: "Biblioteca", icon: "book-open-variant", color: "#8ED9FF" },
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
+  { id: "videos", label: "Videos", icon: "video-outline", color: "#D5A4E8" },
   { id: "geometrix", label: "Geometrix", icon: "cube-outline", color: "#C4C8D4" },
   { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
@@ -58,6 +59,9 @@ export function ToolsGrid({
         break;
       case "mezclador":
         openMixer();
+        break;
+      case "videos":
+        openCategory("/videos");
         break;
       case "geometrix":
         openGeometrix();

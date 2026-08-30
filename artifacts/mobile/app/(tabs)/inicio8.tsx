@@ -1982,23 +1982,6 @@ export default function HomeScreen2({
             showImageCategoryPill
           />
         )}
-        {isInicio2 && (
-          <SessionCarousel
-            title="Recien subidas"
-            description="Contenido subido recientemente a Resonancia"
-            sessions={recentSessions}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
-            titleSize={19}
-            titleSpacing={17}
-            squareCards
-            cardAuthorColor="#acaac2"
-            showImageCategoryPill
-          />
-        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
