@@ -189,7 +189,7 @@ export default function FavoritosTodosScreen() {
               </View>
             )
           ) : tabSessions.length === 0 ? (
-            <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+            <View style={styles.empty}>
               <Feather name="heart" size={20} color="#f9f9f9" />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Aún no tienes favoritos en esta colección.
