@@ -98,7 +98,7 @@ export function SonicStreakDays({
                       <Stop offset="1" stopColor={borderColor1} stopOpacity="1" />
                     </SvgGradient>
                   </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={3.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
@@ -111,7 +111,7 @@ export function SonicStreakDays({
                       <Stop offset="1" stopColor={borderColor1} stopOpacity="1" />
                     </SvgGradient>
                   </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={3.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
               </View>
             ) : (
