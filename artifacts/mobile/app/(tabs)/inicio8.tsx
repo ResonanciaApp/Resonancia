@@ -67,7 +67,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { TEMAS } from "@/data/temas";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
-import { useGetPinnedFeatured } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
@@ -91,7 +90,6 @@ import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
@@ -1117,7 +1115,6 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const { version: catalogVersion } = useCatalog();
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
@@ -1188,43 +1185,6 @@ export default function HomeScreen2({
     }
     return shuffled.slice(0, 5);
   }, [selectedMoods, catalogVersion, recoOffset]);
-
-  const featuredHoy = React.useMemo(() => {
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
-      return getSessionById(pinned.id) ?? undefined;
-    }
-    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
-    if (!pool.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return pool[dayOfYear % pool.length];
-  }, [pinnedFeaturedData, catalogVersion]);
-
-  const featuredAuthor = React.useMemo(() => {
-    if (!featuredHoy) return undefined;
-    return featuredHoy.categoryId === "meditaciones-guiadas"
-      ? getGuide(featuredHoy.guideId)
-      : getArtist(featuredHoy.artistId);
-  }, [featuredHoy]);
-
-  const handleFeaturedPress = useCallback((session: Session) => {
-    if (session.isPremium && !isPremium) {
-      router.push("/membresia" as never);
-      return;
-    }
-    if (session.skipMiniPlayer) {
-      playSession(session);
-      return;
-    }
-    if (session.skipDetail) {
-      playSession(session);
-      router.push("/player" as never);
-      return;
-    }
-    openCategory(`/session/${session.id}`);
-  }, [isPremium, openCategory, playSession]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -2088,24 +2048,6 @@ export default function HomeScreen2({
               paddingHorizontal: GRID_PAD,
             }}
           />
-        )}
-        {isInicio2 && featuredHoy && (
-          <View style={[styles.section, { marginBottom: 0 }]}>
-            <Text style={styles.sectionTitle}>Para este momento</Text>
-            <Pressable onPress={() => handleFeaturedPress(featuredHoy)}>
-              <View style={styles.heroImageContainer}>
-                <Image source={featuredHoy.image as number} style={styles.heroImage} resizeMode="cover" />
-                <SessionCardMetadataOverlay
-                  categoryId={featuredHoy.categoryId}
-                  durationLabel={featuredHoy.durationLabel}
-                  title={featuredHoy.title}
-                  authorName={featuredAuthor?.name}
-                  authorAvatar={featuredAuthor?.photo}
-                  titleFontSize={17}
-                />
-              </View>
-            </Pressable>
-          </View>
         )}
         {isInicio2 && (
           <EncuentrosResonadoresSection
