@@ -897,7 +897,7 @@ export function ProfileScreenBase({
                 idPrefix="profile-streak"
               />
 
-              <View style={[styles.streakDivider, { backgroundColor: colors.border }]} />
+              <View style={[styles.streakDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
 
               <View style={styles.personalStatsHeader}>
                 <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
@@ -952,7 +952,7 @@ export function ProfileScreenBase({
                     MINUTOS TOTALES
                   </Text>
                 </View>
-                <View style={[styles.personalStatDivider, { backgroundColor: colors.border }]} />
+                <View style={[styles.personalStatDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
