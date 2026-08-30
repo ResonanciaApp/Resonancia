@@ -86,13 +86,6 @@ const TRANSLUCENT_SURFACE = "rgba(0,0,0,0.28)";
 /** Degradé negro sobrio (miniatura sin imagen + fondo de la hoja). */
 const DARK_GRADIENT = ["#27070E", "#1B060F"] as const;
 
-/** Mismo degradé que el fondo de la pantalla de Inicio. */
-const HOME_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
-
-/** Degradé morado del botón "Escuchar ahora" para la pantalla "Tu mezcla". */
-const MIXER_SHEET_GRADIENT = ["#784576", "#50326E", "#50326E"] as const;
-
-
 /** Devuelve true si el primer color del gradiente es claro (luminancia media > 100). */
 function isLightGradient(g: readonly [string, string, string]): boolean {
   const hex = g[0].replace("#", "");
@@ -244,22 +237,19 @@ function DraggableTrackRow({
     <Reanimated.View style={[styles.trackRowAbs, animStyle]}>
       <View style={styles.trackRow}>
         <GestureDetector gesture={pan}>
-          <View style={styles.dragHandle}>
-            <MaterialCommunityIcons name="drag-vertical" size={22} color={palette.muted} />
+          <View>
+            <TrackThumb sound={sound} />
+            <Pressable
+              onPress={() => removeSound(id)}
+              hitSlop={4}
+              style={styles.removeBtnOverlay}
+              accessibilityRole="button"
+              accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
+            >
+              <Feather name="x" size={16} color="#fff" />
+            </Pressable>
           </View>
         </GestureDetector>
-        <View>
-          <TrackThumb sound={sound} />
-          <Pressable
-            onPress={() => removeSound(id)}
-            hitSlop={4}
-            style={styles.removeBtnOverlay}
-            accessibilityRole="button"
-            accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
-          >
-            <Feather name="x" size={11} color="#fff" />
-          </Pressable>
-        </View>
         <View style={styles.trackInfo}>
           <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
             {sound.name}
@@ -280,7 +270,7 @@ function DraggableTrackRow({
               accessibilityRole="button"
               accessibilityLabel="Respiración de volumen"
             >
-              <Feather name="activity" size={14} color={isBreathing ? "#F9F9F9" : palette.muted} />
+              <Feather name="activity" size={17} color={isBreathing ? "#F9F9F9" : palette.muted} />
             </Pressable>
           </View>
         </View>
@@ -394,7 +384,7 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const activeBgPreset = isDefaultBg
-    ? { ...rawBgPreset, colors: MIXER_SHEET_GRADIENT, image: undefined, isLight: false }
+    ? { ...rawBgPreset, colors: theme.gradient, image: undefined, isLight: false }
     : rawBgPreset;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
@@ -876,7 +866,7 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8 },
+            { backgroundColor: sheetGradient[sheetGradient.length - 1], paddingTop: insets.top + 8 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
@@ -1008,12 +998,12 @@ export function MixerSheet() {
               {/* Izquierda: Timer */}
               <Pressable
                 onPress={handleTimerPress}
-                style={[styles.footerSide, { transform: [{ translateY: 10 }] }]}
+                style={[styles.footerSide, { transform: [{ translateY: -10 }] }]}
                 accessibilityRole="button"
                 accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
               >
                 <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <MaterialCommunityIcons name="clock" size={24} color={palette.iconColor} />
+                  <MaterialCommunityIcons name="clock" size={29} color={palette.iconColor} />
                 </View>
                 <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
                   {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
@@ -1023,11 +1013,11 @@ export function MixerSheet() {
               {/* Centro: Play/Pause sin label */}
               <Pressable
                 onPress={togglePlay}
-                style={styles.footerCenter}
+                style={[styles.footerCenter, { transform: [{ translateY: -20 }] }]}
                 accessibilityRole="button"
               >
                 <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <Svg width={40} height={40} viewBox="0 0 48 48">
+                  <Svg width={45} height={45} viewBox="0 0 48 48">
                     {isPlaying ? (
                       <>
                         <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
@@ -1041,10 +1031,10 @@ export function MixerSheet() {
               </Pressable>
 
               {/* Derecha: Guardar */}
-              <View style={[styles.footerSide, { transform: [{ translateY: 10 }] }]}>
+              <View style={[styles.footerSide, { transform: [{ translateY: -10 }] }]}>
                 <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
                   <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
-                    <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
+                    <MaterialCommunityIcons name="heart" size={29} color={palette.iconColor} />
                   </View>
                   <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
                 </Pressable>
@@ -1307,7 +1297,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     borderRadius: 10,
-    paddingLeft: 16,
+    paddingLeft: 0,
     paddingRight: 8,
     paddingVertical: 6,
     marginBottom: 8,
@@ -1323,17 +1313,17 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "rgba(0,0,0,0.40)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },
   trackInfo: { flex: 1, justifyContent: "center", paddingRight: 20 },
-  trackName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
+  trackName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
   sliderRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   breatheBtn: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 27,
+    height: 27,
+    borderRadius: 13.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.06)",
@@ -1379,9 +1369,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerPlayCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 77,
+    height: 77,
+    borderRadius: 38.5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1397,16 +1387,16 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   footerHeartCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 49,
+    height: 49,
+    borderRadius: 24.5,
     alignItems: "center",
     justifyContent: "center",
   },
   footerTimerCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 49,
+    height: 49,
+    borderRadius: 24.5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1705,12 +1695,5 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
-  },
-  dragHandle: {
-    width: 28,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: 0.5,
   },
 });
