@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     color: "#F4F4F4",
   },

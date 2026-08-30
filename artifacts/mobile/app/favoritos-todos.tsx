@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     letterSpacing: 0.2,
     color: "#F4F4F4",

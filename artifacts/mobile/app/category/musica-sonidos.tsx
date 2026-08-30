@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
   chipBorderSel: {},
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 

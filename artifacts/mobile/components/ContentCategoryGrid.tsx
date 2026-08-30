@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   horizontalLabel: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "500",
     textAlign: "center",
     flexShrink: 0,

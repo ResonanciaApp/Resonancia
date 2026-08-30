@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     color: "#F4F4F4",
   },
