@@ -49,7 +49,7 @@ const ACCESS_CARDS_WITH_VIDEOS = [
 ] as const;
 
 const PROFILE_ACCESS_CARDS = [
-  ACCESS_CARDS[0],
+  EXTRA_ACCESS_CARDS[2],
   ACCESS_CARDS[1],
   ACCESS_CARDS[2],
   EXTRA_ACCESS_CARDS[0],
@@ -138,10 +138,12 @@ export function QuickAccessSection({
             style={({ pressed }) => [
               styles.card,
               profileLayout && styles.profileCard,
-              profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+              profileLayout && access.id !== "saved" && access.id !== "library" &&
+                access.id !== "favorites" &&
                 access.id !== "history" && styles.profileWideCard,
               {
-                width: profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+                width: profileLayout && access.id !== "saved" && access.id !== "library" &&
+                  access.id !== "favorites" &&
                   access.id !== "history" ? profileWideCardWidth : cardWidth,
                 backgroundColor: cardBackground,
                 borderWidth: showCardBorders ? 1 : 0,
@@ -157,7 +159,9 @@ export function QuickAccessSection({
             <Text
               style={[
                 styles.label,
-                profileLayout && access.id !== "saved" && access.id !== "favorites" &&
+                profileLayout && styles.profileLabel,
+                profileLayout && access.id !== "saved" && access.id !== "library" &&
+                  access.id !== "favorites" &&
                   access.id !== "history" && styles.profileWideLabel,
                 { color: colors.foreground },
               ]}
@@ -215,6 +219,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
+  },
+  profileLabel: {
+    fontSize: 15,
   },
   profileWideLabel: {
     textAlign: "center",
