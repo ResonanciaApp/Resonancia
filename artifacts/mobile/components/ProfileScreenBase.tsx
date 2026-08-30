@@ -42,6 +42,7 @@ import {
   useGetMyExpansorProfile,
   getGetMyExpansorProfileQueryKey,
   useUpdateMyExpansorProfile,
+  deleteMyAccount,
   type ExpansorProfile,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -58,6 +59,8 @@ import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { removeLocalAccountData } from "@/lib/accountData";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
@@ -212,11 +215,13 @@ function BgGlyph({
 
 export function ProfileScreenBase({
   dedicated = false,
+  accountMode = false,
   onBack,
   asTab = false,
   initialLibraryTab,
 }: {
   dedicated?: boolean;
+  accountMode?: boolean;
   onBack?: () => void;
   asTab?: boolean;
   initialLibraryTab?: LibraryTab | null;
@@ -224,7 +229,7 @@ export function ProfileScreenBase({
   const colors = useColors();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const { email } = useAuth();
+  const { email, logout } = useAuth();
   const { favorites, statEvents } = usePlayer();
   const {
     username,
@@ -467,6 +472,12 @@ export function ProfileScreenBase({
   const [editApellido, setEditApellido] = useState(lastName);
   const [editLocation, setEditLocationLocal] = useState(location);
   const [editDesc, setEditDesc] = useState(description);
+  const [accountName, setAccountName] = useState(username);
+  const [accountAction, setAccountAction] = useState<"delete" | null>(null);
+
+  useEffect(() => {
+    if (accountMode) setAccountName(username);
+  }, [accountMode, username]);
 
   const openEdit = () => {
     setEditNombre(username);
@@ -485,6 +496,60 @@ export function ProfileScreenBase({
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setEditVisible(false);
+  };
+
+  const saveAccount = () => {
+    updateProfile({ username: accountName });
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const performAccountDeletion = async () => {
+    if (accountAction) return;
+    setAccountAction("delete");
+    try {
+      await deleteMyAccount({ confirmation: "ELIMINAR" });
+      await removeLocalAccountData();
+      await logout();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace("/onboarding");
+    } catch (error) {
+      console.warn("[Account] deletion failed", error);
+      Alert.alert(
+        "No se pudo eliminar la cuenta",
+        "No cierres sesión. Inténtalo de nuevo para completar la eliminación de forma segura.",
+      );
+    } finally {
+      setAccountAction(null);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    if (accountAction) return;
+    Alert.alert(
+      "Eliminar mi cuenta",
+      "Se borrarán tu cuenta, perfil, actividad, biblioteca, mensajes, datos sociales y archivos subidos. Esta acción no se puede deshacer.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Continuar",
+          style: "destructive",
+          onPress: () => {
+            Alert.alert(
+              "Confirmación final",
+              "¿Confirmas que quieres eliminar definitivamente tu cuenta de RESONANCIA?",
+              [
+                { text: "Cancelar", style: "cancel" },
+                {
+                  text: "ELIMINAR",
+                  style: "destructive",
+                  onPress: performAccountDeletion,
+                },
+              ],
+            );
+          },
+        },
+      ],
+    );
   };
 
   // ── Photo picker ──────────────────────────────────────────────────────────
@@ -632,6 +697,123 @@ export function ProfileScreenBase({
     }).start();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBgCreation?.id]);
+
+  if (accountMode) {
+    return (
+      <View style={styles.root}>
+        <LinearGradient
+          colors={[activeTheme.gradient[0], activeTheme.gradient[1]]}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
+        <SacredBackground variant="gradient" noImage />
+        <StatusBar barStyle="light-content" />
+
+        <View style={styles.accountContent}>
+          <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+            <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
+              <Pressable
+                onPress={() => (onBack ? onBack() : router.back())}
+                hitSlop={8}
+                style={styles.accountBackButton}
+                accessibilityRole="button"
+                accessibilityLabel="Volver"
+              >
+                <Feather name="chevron-left" size={27} color="#FBFBFB" />
+              </Pressable>
+              <Text style={styles.stickyTitleLibraryTab}>Mi cuenta</Text>
+              <View style={styles.accountHeaderSpacer} />
+            </View>
+          </View>
+
+          <KeyboardAvoidingView
+            style={styles.accountFormFlex}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <ScrollView
+              contentContainerStyle={[styles.accountForm, { paddingBottom: bottomPad + 40 }]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              <Pressable
+                onPress={pickPhoto}
+                style={({ pressed }) => [styles.accountAvatarButton, pressed && styles.accountPressed]}
+                accessibilityRole="button"
+                accessibilityLabel="Cambiar foto de perfil"
+              >
+                {photoUri ? (
+                  <Image source={{ uri: photoUri }} style={styles.accountAvatar} contentFit="cover" />
+                ) : (
+                  <View style={[styles.accountAvatar, styles.accountAvatarFallback, { backgroundColor: colors.secondary }]}>
+                    <Feather name="user" size={34} color={colors.primary} />
+                  </View>
+                )}
+                <View style={styles.accountAvatarBadge}>
+                  <Feather name="camera" size={14} color="#FFFFFF" />
+                </View>
+              </Pressable>
+
+              <View style={styles.accountField}>
+                <Text style={[styles.accountFieldLabel, { color: colors.foreground }]}>
+                  Correo electrónico
+                </Text>
+                <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
+                  {email || "No disponible"}
+                </Text>
+              </View>
+
+              <View style={styles.accountField}>
+                <Text style={[styles.accountFieldLabel, { color: colors.foreground }]}>
+                  Nombre
+                </Text>
+                <TextInput
+                  value={accountName}
+                  onChangeText={setAccountName}
+                  placeholder="Nombre del usuario"
+                  placeholderTextColor={colors.mutedForeground}
+                  style={[
+                    styles.accountNameInput,
+                    { color: colors.foreground, borderBottomColor: colors.border },
+                  ]}
+                  autoCapitalize="words"
+                  returnKeyType="done"
+                />
+              </View>
+
+              <Pressable
+                onPress={saveAccount}
+                disabled={Boolean(accountAction)}
+                style={({ pressed }) => [
+                  styles.accountSaveButton,
+                  { opacity: pressed || accountAction ? 0.78 : 1 },
+                ]}
+              >
+                <LinearGradient
+                  colors={getListenNowButtonColors(true)}
+                  style={StyleSheet.absoluteFill}
+                  start={{ x: 0, y: 0.5 }}
+                  end={{ x: 1, y: 0.5 }}
+                />
+                <Text style={styles.accountSaveButtonText}>Guardar</Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleDeleteAccount}
+                disabled={Boolean(accountAction)}
+                style={({ pressed }) => [
+                  styles.accountDeleteButton,
+                  { opacity: pressed || accountAction ? 0.65 : 1 },
+                ]}
+              >
+                <Text style={styles.accountDeleteButtonText}>Eliminar cuenta</Text>
+              </Pressable>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
@@ -816,28 +998,42 @@ export function ProfileScreenBase({
             </Pressable>
 
             {/* Name + details */}
-            <View style={styles.profileDetails}>
-              <Text style={[styles.userName, styles.userNameLeft, { color: colors.foreground }]}>
-                {username}{lastName ? ` ${lastName}` : ""}
-              </Text>
-
-              {email ? (
+            <View style={styles.profileDetailsRow}>
+              <View style={styles.profileDetails}>
                 <Text
-                  style={[styles.emailText, { color: "#AAAAC4" }]}
+                  style={[styles.userName, styles.userNameLeft, { color: colors.foreground }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {email}
+                  {username}{lastName ? ` ${lastName}` : ""}
                 </Text>
-              ) : null}
 
-              {location ? (
-                <View style={styles.locationRow}>
-                  <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-                  <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
-                </View>
-              ) : null}
+                {email ? (
+                  <Text
+                    style={[styles.emailText, { color: "#AAAAC4" }]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {email}
+                  </Text>
+                ) : null}
 
+                {location ? (
+                  <View style={styles.locationRow}>
+                    <Feather name="map-pin" size={12} color={colors.mutedForeground} />
+                    <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
+                  </View>
+                ) : null}
+              </View>
+              <Pressable
+                onPress={() => router.push("/mi-perfil")}
+                style={styles.profileChevronButton}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel="Abrir Mi cuenta"
+              >
+                <Feather name="chevron-right" size={24} color={colors.foreground} />
+              </Pressable>
             </View>
           </View>
         </View>
@@ -1476,6 +1672,105 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     transform: [{ translateY: 0 }],
   },
+  accountContent: {
+    flex: 1,
+  },
+  accountBackButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountHeaderSpacer: {
+    width: 36,
+    height: 36,
+  },
+  accountFormFlex: {
+    flex: 1,
+  },
+  accountForm: {
+    paddingHorizontal: 24,
+    paddingTop: 34,
+    gap: 26,
+  },
+  accountAvatarButton: {
+    alignSelf: "center",
+    position: "relative",
+    marginBottom: 6,
+  },
+  accountAvatar: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+  },
+  accountAvatarFallback: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  accountAvatarBadge: {
+    position: "absolute",
+    right: 2,
+    bottom: 2,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#784576",
+    borderWidth: 2,
+    borderColor: "#1B060F",
+  },
+  accountPressed: {
+    opacity: 0.75,
+  },
+  accountField: {
+    gap: 8,
+  },
+  accountFieldLabel: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  accountFieldValue: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    minHeight: 24,
+  },
+  accountNameInput: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    minHeight: 42,
+    paddingHorizontal: 0,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+  },
+  accountSaveButton: {
+    height: 52,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginTop: 4,
+  },
+  accountSaveButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  accountDeleteButton: {
+    alignSelf: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginTop: -8,
+  },
+  accountDeleteButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#E58B8B",
+  },
   libActionsPill: {
     position: "absolute",
     right: 19,
@@ -1558,7 +1853,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
-  profileDetails: { flex: 1, alignItems: "flex-start", gap: 6 },
+  profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
+  profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
+  profileChevronButton: {
+    width: 32,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
     width: 80,

@@ -37,7 +37,7 @@ import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
 import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
-import { cancelAllPracticeNotifications } from "@/lib/practiceNotifications";
+import { removeLocalAccountData } from "@/lib/accountData";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
@@ -64,20 +64,6 @@ const SLEEP_OPTIONS: { label: string; value: number | null }[] = [
   { label: "45 min", value: 45 },
   { label: "60 min", value: 60 },
 ];
-
-async function removeLocalAccountData() {
-  const keys = await AsyncStorage.getAllKeys();
-  const accountKeys = keys.filter(
-    (key) =>
-      key.startsWith("@resonance") ||
-      key.startsWith("@resonancia") ||
-      key.startsWith("@profile_"),
-  );
-  if (accountKeys.length > 0) {
-    await AsyncStorage.multiRemove(accountKeys);
-  }
-  await cancelAllPracticeNotifications();
-}
 
 export default function ConfiguracionesScreen() {
   const colors = useColors();

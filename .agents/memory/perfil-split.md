@@ -1,9 +1,11 @@
 ---
 name: Perfil split
-description: Perfil de tabs vs pantalla dedicada /mi-perfil comparten ProfileScreenBase
+description: Perfil conserva progreso/social; /mi-perfil es el editor mínimo de Mi cuenta
 ---
-El antiguo app/(tabs)/profile.tsx (2000 líneas) se movió a components/ProfileScreenBase.tsx con prop `dedicated`.
-- Tabs (`/(tabs)/profile`): solo pills Biblioteca + Historial (default biblioteca); sin Muro ni Mi Espacio.
-- `/mi-perfil` (dedicated): header con volver + "Mi Perfil" + lápiz, sin pills; renderiza el contenido del ex-Muro (profile card, racha, reflexiones).
-**Why:** pedido del usuario (jul 2026) de separar el perfil personal de la biblioteca/historial.
-**How to apply:** cambios de perfil van en ProfileScreenBase gateados por `dedicated`; hay estado/handlers muertos residuales del split (deuda, no crashea).
+La pestaña Perfil conserva la vista personal con identidad, progreso y contenido social. La fila de nombre/correo abre `/mi-perfil`, que es únicamente el editor “Mi cuenta”: avatar, correo, nombre, guardar y eliminar cuenta.
+
+El acceso “Ver Perfil” del drawer debe seguir abriendo la pestaña Perfil, no el editor de cuenta.
+
+**Why:** el usuario pidió separar la consulta del perfil de la edición de los datos básicos y evitar duplicar todo el contenido del perfil dentro del editor.
+
+**How to apply:** contenido social/progreso pertenece a Perfil; cambios de avatar, correo/nombre y eliminación de cuenta pertenecen a “Mi cuenta”.
