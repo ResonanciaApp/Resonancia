@@ -422,7 +422,7 @@ export default function ExploreScreen() {
               isPremium={isPremium}
               onPress={(s) => handleSessionPress(s)}
               style={{
-                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 5 : 0,
+                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 7 : 0,
                 marginBottom: SECTION_GAP,
                 paddingHorizontal: H_PAD,
               }}
