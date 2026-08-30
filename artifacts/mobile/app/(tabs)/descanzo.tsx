@@ -51,7 +51,7 @@ function SleepPill({
         styles.sleepPill,
         theme.id === "tibet" && styles.sleepPillTibet,
         theme.id === "indigo" && styles.sleepPillIndigo,
-        !sel && styles.sleepPillInactive,
+        !sel && { backgroundColor: theme.solid },
         sel && styles.sleepPillSel,
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -444,9 +444,13 @@ export default function DescansoScreen() {
 
       <View style={styles.contentShift}>
         <View
-          style={[styles.fixedHeader, { paddingTop: topPad + 2, backgroundColor: bgGradient[0] }]}
+          style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
+          <View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { backgroundColor: bgGradient[0], opacity: 0.9 }]}
+          />
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
               Dormir
@@ -887,7 +891,6 @@ const styles = StyleSheet.create({
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  sleepPillInactive: { backgroundColor: "#2B2944" },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
@@ -905,7 +908,6 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
-    opacity: 0.9,
   },
   titleRow: {
     position: "relative",
