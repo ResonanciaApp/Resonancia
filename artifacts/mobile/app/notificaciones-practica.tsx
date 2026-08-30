@@ -1,6 +1,3 @@
-import DateTimePicker, {
-  type DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -177,37 +174,23 @@ export default function PracticeNotificationsScreen() {
     [settings],
   );
 
-  const handleTimeChange = useCallback(
-    async (event: DateTimePickerEvent, selectedDate?: Date) => {
-      const slot = pickerSlot;
-      if (!slot) return;
-      if (event.type !== "set" || !selectedDate) {
-        if (Platform.OS !== "ios") setPickerSlot(null);
-        return;
-      }
-
-      if (Platform.OS === "ios") {
-        setPickerValue(selectedDate);
-        return;
-      }
-
-      setPickerSlot(null);
-      const hour = selectedDate.getHours();
-      const minute = selectedDate.getMinutes();
-      try {
-        await updatePreference(slot, { hour, minute });
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-      } catch {
-        Alert.alert(
-          "No se pudo guardar la hora",
-          "Inténtalo de nuevo para actualizar el recordatorio.",
-        );
-      }
+  const adjustPickerTime = useCallback(
+    (part: "hour" | "minute", delta: number) => {
+      setPickerValue((current) => {
+        const next = new Date(current);
+        if (part === "hour") {
+          next.setHours((current.getHours() + delta + 24) % 24);
+        } else {
+          next.setMinutes((current.getMinutes() + delta + 60) % 60);
+        }
+        return next;
+      });
+      Haptics.selectionAsync().catch(() => {});
     },
-    [pickerSlot, updatePreference],
+    [],
   );
 
-  const confirmIOSPicker = useCallback(async () => {
+  const confirmPicker = useCallback(async () => {
     const slot = pickerSlot;
     if (!slot) return;
     setPickerSlot(null);
@@ -330,54 +313,94 @@ export default function PracticeNotificationsScreen() {
       </ScrollView>
 
       {pickerSlot && Platform.OS !== "web" ? (
-        Platform.OS === "ios" ? (
-          <Modal
-            transparent
-            visible
-            animationType="fade"
-            onRequestClose={() => setPickerSlot(null)}
-          >
-            <Pressable
-              style={styles.pickerBackdrop}
-              onPress={() => setPickerSlot(null)}
-            />
-            <View style={[styles.pickerSheet, { paddingBottom: bottomPad + 18 }]}>
-              <View style={styles.pickerHeader}>
+        <Modal
+          transparent
+          visible
+          animationType="fade"
+          onRequestClose={() => setPickerSlot(null)}
+        >
+          <Pressable
+            style={styles.pickerBackdrop}
+            onPress={() => setPickerSlot(null)}
+          />
+          <View style={[styles.pickerSheet, { paddingBottom: bottomPad + 18 }]}>
+            <View style={styles.pickerHeader}>
+              <Pressable
+                onPress={() => setPickerSlot(null)}
+                hitSlop={8}
+                style={styles.pickerHeaderButton}
+              >
+                <Text style={styles.pickerCancel}>Cancelar</Text>
+              </Pressable>
+              <Text style={styles.pickerTitle}>Elegir hora</Text>
+              <Pressable
+                onPress={() => void confirmPicker()}
+                hitSlop={8}
+                style={styles.pickerHeaderButton}
+              >
+                <Text style={styles.pickerDone}>Listo</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.timeSelector}>
+              <View style={styles.timeSelectorColumn}>
+                <Text style={styles.timeSelectorLabel}>HORA</Text>
                 <Pressable
-                  onPress={() => setPickerSlot(null)}
-                  hitSlop={8}
-                  style={styles.pickerHeaderButton}
+                  onPress={() => adjustPickerTime("hour", 1)}
+                  style={({ pressed }) => [
+                    styles.timeArrowButton,
+                    pressed && styles.pressed,
+                  ]}
+                  accessibilityLabel="Aumentar hora"
                 >
-                  <Text style={styles.pickerCancel}>Cancelar</Text>
+                  <Feather name="chevron-up" size={28} color="#F4D7A1" />
                 </Pressable>
-                <Text style={styles.pickerTitle}>Elegir hora</Text>
+                <Text style={styles.timeSelectorValue}>
+                  {String(pickerValue.getHours()).padStart(2, "0")}
+                </Text>
                 <Pressable
-                  onPress={() => void confirmIOSPicker()}
-                  hitSlop={8}
-                  style={styles.pickerHeaderButton}
+                  onPress={() => adjustPickerTime("hour", -1)}
+                  style={({ pressed }) => [
+                    styles.timeArrowButton,
+                    pressed && styles.pressed,
+                  ]}
+                  accessibilityLabel="Disminuir hora"
                 >
-                  <Text style={styles.pickerDone}>Listo</Text>
+                  <Feather name="chevron-down" size={28} color="#F4D7A1" />
                 </Pressable>
               </View>
-              <DateTimePicker
-                value={pickerValue}
-                mode="time"
-                display="spinner"
-                onChange={(event, date) => void handleTimeChange(event, date)}
-                themeVariant="dark"
-                textColor="#FBFBFB"
-                style={styles.iosTimePicker}
-              />
+
+              <Text style={styles.timeSelectorColon}>:</Text>
+
+              <View style={styles.timeSelectorColumn}>
+                <Text style={styles.timeSelectorLabel}>MINUTOS</Text>
+                <Pressable
+                  onPress={() => adjustPickerTime("minute", 5)}
+                  style={({ pressed }) => [
+                    styles.timeArrowButton,
+                    pressed && styles.pressed,
+                  ]}
+                  accessibilityLabel="Aumentar minutos"
+                >
+                  <Feather name="chevron-up" size={28} color="#F4D7A1" />
+                </Pressable>
+                <Text style={styles.timeSelectorValue}>
+                  {String(pickerValue.getMinutes()).padStart(2, "0")}
+                </Text>
+                <Pressable
+                  onPress={() => adjustPickerTime("minute", -5)}
+                  style={({ pressed }) => [
+                    styles.timeArrowButton,
+                    pressed && styles.pressed,
+                  ]}
+                  accessibilityLabel="Disminuir minutos"
+                >
+                  <Feather name="chevron-down" size={28} color="#F4D7A1" />
+                </Pressable>
+              </View>
             </View>
-          </Modal>
-        ) : (
-          <DateTimePicker
-            value={pickerValue}
-            mode="time"
-            display="default"
-            onChange={(event, date) => void handleTimeChange(event, date)}
-          />
-        )
+          </View>
+        </Modal>
       ) : null}
     </LinearGradient>
   );
@@ -548,9 +571,47 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "right",
   },
-  iosTimePicker: {
-    width: "100%",
-    height: 216,
+  timeSelector: {
+    minHeight: 220,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
+    paddingHorizontal: 24,
+    paddingTop: 8,
+  },
+  timeSelectorColumn: {
+    width: 104,
+    alignItems: "center",
+  },
+  timeSelectorLabel: {
+    color: "rgba(255,255,255,0.55)",
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    marginBottom: 2,
+  },
+  timeArrowButton: {
+    width: 58,
+    height: 43,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timeSelectorValue: {
+    color: "#FBFBFB",
+    fontFamily: "Manrope",
+    fontSize: 48,
+    fontWeight: "500",
+    lineHeight: 58,
+    fontVariant: ["tabular-nums"],
+  },
+  timeSelectorColon: {
+    color: "#FBFBFB",
+    fontFamily: "Manrope",
+    fontSize: 42,
+    fontWeight: "400",
+    marginTop: 10,
   },
   permissionNote: {
     flexDirection: "row",
