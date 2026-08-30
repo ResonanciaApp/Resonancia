@@ -1863,7 +1863,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={[styles.inicio2ToolsSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
+          <View style={[styles.inicio2ToolsSection, { marginTop: 25, marginBottom: INICIO2_SECTION_GAP }]}>
             <ToolsGrid />
           </View>
         )}
