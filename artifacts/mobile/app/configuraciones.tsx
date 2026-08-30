@@ -8,7 +8,6 @@ import * as Linking from "expo-linking";
 import * as Sharing from "expo-sharing";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Notifications from "expo-notifications";
 import * as StoreReview from "expo-store-review";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -38,36 +37,25 @@ import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
 import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
+import { cancelAllPracticeNotifications } from "@/lib/practiceNotifications";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
 const SETTINGS_KEY = "@resonance_settings";
-const DAILY_NOTIF_ID = "resonance-daily-reminder";
 
 type Settings = {
-  dailyEnabled: boolean;
-  dailyHour: number;
-  dailyMinute: number;
   communityEnabled: boolean;
   defaultSleepMinutes: number | null;
   rachaEnabled: boolean;
 };
 
 const DEFAULTS: Settings = {
-  dailyEnabled: false,
-  dailyHour: 8,
-  dailyMinute: 0,
   communityEnabled: true,
   defaultSleepMinutes: null,
   rachaEnabled: true,
 };
-
-const TIME_OPTIONS = [
-  { h: 6, m: 0 }, { h: 7, m: 0 }, { h: 8, m: 0 }, { h: 9, m: 0 }, { h: 10, m: 0 },
-  { h: 19, m: 0 }, { h: 20, m: 0 }, { h: 21, m: 0 }, { h: 22, m: 0 }, { h: 23, m: 0 },
-];
 
 const SLEEP_OPTIONS: { label: string; value: number | null }[] = [
   { label: "Off", value: null },
@@ -77,47 +65,18 @@ const SLEEP_OPTIONS: { label: string; value: number | null }[] = [
   { label: "60 min", value: 60 },
 ];
 
-function formatTime(h: number, m: number) {
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-}
-
-async function scheduleDailyReminder(h: number, m: number) {
-  if (Platform.OS === "web") return;
-  try {
-    await Notifications.cancelScheduledNotificationAsync(DAILY_NOTIF_ID).catch(() => {});
-    await Notifications.scheduleNotificationAsync({
-      identifier: DAILY_NOTIF_ID,
-      content: {
-        title: "RESONANCIA",
-        body: "Un momento para respirar y volver a ti.",
-        sound: true,
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-        hour: h,
-        minute: m,
-        repeats: true,
-      },
-    });
-  } catch {}
-}
-
-async function cancelDailyReminder() {
-  if (Platform.OS === "web") return;
-  try {
-    await Notifications.cancelScheduledNotificationAsync(DAILY_NOTIF_ID);
-  } catch {}
-}
-
 async function removeLocalAccountData() {
   const keys = await AsyncStorage.getAllKeys();
   const accountKeys = keys.filter(
-    (key) => key.startsWith("@resonance") || key.startsWith("@resonancia"),
+    (key) =>
+      key.startsWith("@resonance") ||
+      key.startsWith("@resonancia") ||
+      key.startsWith("@profile_"),
   );
   if (accountKeys.length > 0) {
     await AsyncStorage.multiRemove(accountKeys);
   }
-  await cancelDailyReminder();
+  await cancelAllPracticeNotifications();
 }
 
 export default function ConfiguracionesScreen() {
@@ -158,37 +117,6 @@ export default function ConfiguracionesScreen() {
       AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(next)).catch(() => {});
       return next;
     });
-  };
-
-  // Daily reminder toggle: request permission + schedule
-  const onToggleDaily = async (v: boolean) => {
-    if (Platform.OS === "web") {
-      Alert.alert("No disponible", "Las notificaciones diarias funcionan solo en la app móvil.");
-      return;
-    }
-    if (v) {
-      const perm = (await Notifications.requestPermissionsAsync()) as { granted?: boolean; status?: string };
-      if (!perm.granted && perm.status !== "granted") {
-        Alert.alert(
-          "Permiso requerido",
-          "Habilita las notificaciones desde los ajustes de tu teléfono para recibir el recordatorio.",
-          [{ text: "OK" }],
-        );
-        return;
-      }
-      await scheduleDailyReminder(settings.dailyHour, settings.dailyMinute);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } else {
-      await cancelDailyReminder();
-    }
-    update({ dailyEnabled: v });
-  };
-
-  const onPickTime = async (h: number, m: number) => {
-    update({ dailyHour: h, dailyMinute: m });
-    if (settings.dailyEnabled) {
-      await scheduleDailyReminder(h, m);
-    }
   };
 
   const onPickSleep = (minutes: number | null) => {
@@ -423,52 +351,22 @@ export default function ConfiguracionesScreen() {
           <View style={styles.row}>
             <RowIcon icon="bell" colors={colors} />
             <View style={{ flex: 1 }}>
-              <Text style={[styles.rowLabel, { color: colors.foreground }]}>Recordatorio diario</Text>
+              <Text style={[styles.rowLabel, { color: colors.foreground }]}>
+                Recordatorios de práctica
+              </Text>
               <Text style={[styles.rowSub, { color: colors.mutedForeground }]}>
-                {settings.dailyEnabled
-                  ? `Todos los días a las ${formatTime(settings.dailyHour, settings.dailyMinute)}`
-                  : "Una pausa para respirar cada día"}
+                Mañana, tarde y noche
               </Text>
             </View>
-            <Switch
-              value={settings.dailyEnabled}
-              onValueChange={onToggleDaily}
-              trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "88" }}
-              thumbColor={settings.dailyEnabled ? colors.primary : "#666"}
-            />
+            <Pressable
+              onPress={() => router.push("/notificaciones-practica" as never)}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="Administrar recordatorios de práctica"
+            >
+              <Feather name="chevron-right" size={21} color={colors.mutedForeground} />
+            </Pressable>
           </View>
-
-          {settings.dailyEnabled && (
-            <View style={[styles.subBlock, { borderTopWidth: 1, borderTopColor: "rgba(61,14,22,0.40)" }]}>
-              <Text style={[styles.rowSub, { color: colors.mutedForeground, marginBottom: 10 }]}>
-                Hora del recordatorio
-              </Text>
-              <View style={styles.chipsRow}>
-                {TIME_OPTIONS.map((t) => {
-                  const active = settings.dailyHour === t.h && settings.dailyMinute === t.m;
-                  return (
-                    <Pressable
-                      key={`${t.h}-${t.m}`}
-                      onPress={() => onPickTime(t.h, t.m)}
-                      style={[
-                        styles.chip,
-                        {
-                          backgroundColor: active ? undefined : "transparent",
-                          overflow: "hidden",
-                          borderColor: active ? colors.primary : "rgba(61,14,22,0.50)",
-                        },
-                      ]}
-                    >
-                      {active && <GoldGradientFill />}
-                      <Text style={[styles.chipText, { color: active ? "#080F0A" : colors.foreground }]}>
-                        {formatTime(t.h, t.m)}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-          )}
 
           <View style={[styles.row, { borderTopWidth: 1, borderTopColor: "rgba(61,14,22,0.40)" }]}>
             <RowIcon icon="users" colors={colors} />

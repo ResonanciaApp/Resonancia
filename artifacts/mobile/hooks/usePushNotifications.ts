@@ -74,6 +74,8 @@ function routeForPush(data: Record<string, unknown> | undefined) {
     router.push(`/chat/${fromUserId}`);
   } else if (kind === "friend_request" || kind === "friend_accepted") {
     router.push("/amigos");
+  } else if (kind === "practice_reminder") {
+    router.push("/notificaciones-practica" as never);
   }
 }
 

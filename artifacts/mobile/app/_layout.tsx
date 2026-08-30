@@ -34,6 +34,7 @@ import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
+import { initializePracticeNotifications } from "@/lib/practiceNotifications";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { VideosProvider } from "@/context/VideosContext";
@@ -319,6 +320,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="notificaciones-practica"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="nuevas-sesiones"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
@@ -493,6 +498,7 @@ export default function RootLayout() {
   // segundos de anticipación, el primer play sincroniza con el FadeIn sin delay.
   useEffect(() => {
     preloadGeometrixIntro();
+    void initializePracticeNotifications();
   }, []);
 
   return (

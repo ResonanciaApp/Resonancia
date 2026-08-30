@@ -406,26 +406,16 @@ export function ProfileScreenBase({
   const [profileGeoActive, setProfileGeoActive] = useState(false);
   const [profileBgGradientId, setProfileBgGradientId] = useState<string | null>(null);
   const [profileBgCreationId, setProfileBgCreationId] = useState<string | null>(null);
-  const [reminderEnabled, setReminderEnabled] = useState(false);
-  const [reminderHour, setReminderHour] = useState(8);
-  const [reminderMinute, setReminderMinute] = useState(0);
 
   useEffect(() => {
     (async () => {
       try {
-        const [gradId, creId, rem] = await Promise.all([
+        const [gradId, creId] = await Promise.all([
           AsyncStorage.getItem("@profile_bg_gradient"),
           AsyncStorage.getItem("@profile_bg_creation"),
-          AsyncStorage.getItem("@profile_reminder"),
         ]);
         if (gradId !== null) setProfileBgGradientId(gradId === "null" ? null : gradId);
         if (creId !== null) setProfileBgCreationId(creId === "null" ? null : creId);
-        if (rem) {
-          const p = JSON.parse(rem) as { enabled: boolean; hour: number; minute: number };
-          setReminderEnabled(p.enabled ?? false);
-          setReminderHour(p.hour ?? 8);
-          setReminderMinute(p.minute ?? 0);
-        }
       } catch {}
     })();
   }, []);
@@ -444,13 +434,6 @@ export function ProfileScreenBase({
     void AsyncStorage.setItem("@profile_bg_creation", id ?? "null");
     if (id !== null) void AsyncStorage.setItem("@profile_bg_gradient", "null");
   };
-  const saveReminder = async (enabled: boolean, hour: number, minute: number) => {
-    setReminderEnabled(enabled);
-    setReminderHour(hour);
-    setReminderMinute(minute);
-    await AsyncStorage.setItem("@profile_reminder", JSON.stringify({ enabled, hour, minute }));
-  };
-
   // ── Sections visibility toggle ────────────────────────────────────────────
   const [sectionsHidden, setSectionsHidden] = useState(false);
   const sectionsAnim = useRef(new Animated.Value(1)).current;
@@ -971,6 +954,24 @@ export function ProfileScreenBase({
                 </View>
               </View>
             </View>
+
+            <Pressable
+              onPress={() => router.push("/notificaciones-practica" as never)}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir Notificaciones"
+              style={({ pressed }) => [
+                styles.profileNotificationRow,
+                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
+              ]}
+            >
+              <View style={styles.profileNotificationIcon}>
+                <Feather name="bell" size={19} color={colors.foreground} />
+              </View>
+              <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
+                Notificaciones
+              </Text>
+              <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+            </Pressable>
 
           </>
         )}
@@ -1681,6 +1682,28 @@ const styles = StyleSheet.create({
   personalStatDivider: { width: 1, height: 58, marginHorizontal: 8 },
   personalStatValue: { fontFamily: "Manrope", fontSize: 25, fontWeight: "600" },
   personalStatLabel: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 0.35, marginLeft: 38 },
+  profileNotificationRow: {
+    minHeight: 62,
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  profileNotificationIcon: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  profileNotificationLabel: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 
   // Membresía
   membershipRow: {

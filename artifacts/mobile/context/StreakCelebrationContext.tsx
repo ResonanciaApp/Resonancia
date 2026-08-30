@@ -12,6 +12,7 @@ import React, {
 import { usePlayer, type StatEvent } from "@/context/PlayerContext";
 import { useMilestones } from "@/context/MilestonesContext";
 import { computeCurrentStreak, computeWeekFlags, dayKey } from "@/utils/stats";
+import { PRACTICE_REMINDER_SLOT_KEY } from "@/lib/practiceNotifications";
 
 // ── Celebración de "día de racha completado" ─────────────────────────────────
 // Cuando un evento de escucha hace pasar el día de HOY de incompleto a completo
@@ -21,7 +22,7 @@ import { computeCurrentStreak, computeWeekFlags, dayKey } from "@/utils/stats";
 // (setCelebrationHold) para que no se pisen los modales.
 
 const CELEBRATED_KEY = "@resonance_streak_day_celebrated";
-export const REMINDER_SLOT_KEY = "@resonance_reminder_slot";
+export const REMINDER_SLOT_KEY = PRACTICE_REMINDER_SLOT_KEY;
 
 export interface StreakFlowInfo {
   sessionId: string;
