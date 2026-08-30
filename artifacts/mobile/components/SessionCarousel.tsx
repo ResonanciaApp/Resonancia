@@ -41,6 +41,7 @@ type SessionCarouselProps = {
   titleOffset?: number;
   cardWidth?: number;
   cardHeight?: number;
+  allowOversizedCardWidth?: boolean;
   titleSize?: number;
   titleSpacing?: number;
   description?: string;
@@ -61,6 +62,7 @@ export function SessionCarousel({
   titleOffset,
   cardWidth,
   cardHeight,
+  allowOversizedCardWidth = false,
   titleSize,
   titleSpacing,
   description,
@@ -75,7 +77,9 @@ export function SessionCarousel({
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const requestedCardWidth = cardWidth ?? getContentCarouselCardWidth(viewportWidth);
-  const cw = Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
+  const cw = allowOversizedCardWidth
+    ? requestedCardWidth
+    : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
   const baseCardHeight = cardHeight ?? requestedCardWidth;
   const originalCardHeight = showCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE

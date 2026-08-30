@@ -95,7 +95,7 @@ import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
-import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 
 const { width, height } = Dimensions.get("window");
 
@@ -153,6 +153,13 @@ const INICIO2_SLIDES = [
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
+// Inicio 2: 1 card completa + 85% de la siguiente.
+const INICIO2_SESSION_CARD_W = Math.max(
+  120,
+  Math.round(
+    (width - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 1.85,
+  ),
+);
 const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
@@ -1895,7 +1902,8 @@ export default function HomeScreen2({
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
-            cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
+            cardWidth={INICIO2_SESSION_CARD_W}
+            allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
@@ -1980,7 +1988,8 @@ export default function HomeScreen2({
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
             titleOffset={10}
-            cardWidth={getContentCarouselCardWidth(width, GRID_PAD)}
+            cardWidth={INICIO2_SESSION_CARD_W}
+            allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
