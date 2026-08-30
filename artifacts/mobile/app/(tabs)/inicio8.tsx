@@ -1957,9 +1957,13 @@ export default function HomeScreen2({
             profileLayout
             showTitle={false}
             showCardBorders={false}
-            cardBackgroundColor={cardBg}
+            cardBackgroundColor={durationPillBg}
             cardOpacity={1}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP }}
+            style={{
+              marginTop: 0,
+              marginBottom: INICIO2_SECTION_GAP,
+              paddingHorizontal: GRID_PAD,
+            }}
           />
         )}
         {isInicio2 && videos.length > 0 && (
