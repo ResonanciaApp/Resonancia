@@ -89,6 +89,9 @@ const DARK_GRADIENT = ["#27070E", "#1B060F"] as const;
 /** Mismo degradé que el fondo de la pantalla de Inicio. */
 const HOME_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
 
+/** Degradé morado del botón "Escuchar ahora" para la pantalla "Tu mezcla". */
+const MIXER_SHEET_GRADIENT = ["#784576", "#50326E", "#50326E"] as const;
+
 
 /** Devuelve true si el primer color del gradiente es claro (luminancia media > 100). */
 function isLightGradient(g: readonly [string, string, string]): boolean {
@@ -371,7 +374,7 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const activeBgPreset = isDefaultBg
-    ? { ...rawBgPreset, colors: theme.gradient as unknown as [string, string, ...string[]], image: undefined, isLight: false }
+    ? { ...rawBgPreset, colors: MIXER_SHEET_GRADIENT, image: undefined, isLight: false }
     : rawBgPreset;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;

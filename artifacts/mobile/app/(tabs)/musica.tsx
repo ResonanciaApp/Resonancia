@@ -792,7 +792,13 @@ export default function MezcladorScreen() {
                   <BackPill
                     onPress={closeMixer}
                     size={28}
-                    bgColor="rgba(255,255,255,0.10)"
+                    bgColor={
+                      theme.id === "tibet"
+                        ? "rgba(0,0,0,0.15)"
+                        : theme.id === "indigo"
+                          ? "rgba(42,40,64,0.65)"
+                          : "rgba(255,255,255,0.05)"
+                    }
                     iconOffsetX={-1}
                     style={{ transform: [{ translateX: -1 }] }}
                   />
