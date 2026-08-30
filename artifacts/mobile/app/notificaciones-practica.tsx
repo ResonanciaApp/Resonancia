@@ -366,6 +366,7 @@ export default function PracticeNotificationsScreen() {
                 onChange={(event, date) => void handleTimeChange(event, date)}
                 themeVariant="dark"
                 textColor="#FBFBFB"
+                style={styles.iosTimePicker}
               />
             </View>
           </Modal>
@@ -515,6 +516,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 10,
+    minHeight: 310,
   },
   pickerHeader: {
     flexDirection: "row",
@@ -545,6 +547,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     textAlign: "right",
+  },
+  iosTimePicker: {
+    width: "100%",
+    height: 216,
   },
   permissionNote: {
     flexDirection: "row",
