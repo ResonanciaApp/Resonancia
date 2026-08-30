@@ -32,6 +32,8 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -39,13 +41,17 @@ const GAP = 12;
 const CARD_W = (width - H_PAD * 2 - GAP) / 2;
 const CARD_H = Math.round((CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE);
 
-export default function SoundTagDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {}) {
+  const params = useLocalSearchParams<{ id?: string | string[] }>();
+  const rawId = idProp ?? params.id;
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { currentSession, playSessionInPlaylist } = usePlayer();
   const { version } = useCatalog();
+  const overlayBack = useBackOverride();
+  const overlay = useCategoryOverlayOptional();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const tag = SONIDOS_TAG_CARDS.find((candidate) => candidate.id === id);
@@ -59,6 +65,8 @@ export default function SoundTagDetailScreen() {
   );
 
   if (!tag) return null;
+
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
 
   const openSession = (session: Session) => {
     if (session.isPremium && !isPremium) {
@@ -83,10 +91,14 @@ export default function SoundTagDetailScreen() {
       router.push("/player" as never);
       return;
     }
-    router.push({
-      pathname: "/session/[id]",
-      params: { id: session.id, source: "sonidos" },
-    } as never);
+    if (overlay) {
+      overlay.openCategory(`/session/${session.id}`);
+    } else {
+      router.push({
+        pathname: "/session/[id]",
+        params: { id: session.id, source: "sonidos" },
+      } as never);
+    }
   };
 
   return (
@@ -94,7 +106,7 @@ export default function SoundTagDetailScreen() {
       <StatusBar hidden />
       <SacredBackground />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.back}>
+         <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>

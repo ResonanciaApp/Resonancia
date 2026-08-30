@@ -34,6 +34,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -398,6 +399,7 @@ export default function DescansoScreen() {
     stop,
     history,
   } = usePlayer();
+  const { openCategory } = useCategoryOverlay();
 
   /** Lógica de tres estados para tocar una sesión de Dormir
    *  (idéntica a SessionCard.tsx handlePress):
@@ -420,10 +422,10 @@ export default function DescansoScreen() {
         router.push("/player" as never);
         return;
       }
-      router.push(`/session/${s.id}` as never);
+      openCategory(`/session/${s.id}`);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentSession, playSession],
+    [currentSession, openCategory, playSession],
   );
 
   const { isPremium } = usePremium();
@@ -538,7 +540,7 @@ export default function DescansoScreen() {
                   sel={false}
                   label={tab.label}
                   icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                  onPress={() => router.push(`/sleep-tag/${tab.id}` as never)}
+                  onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
                 />
               ))}
             </ScrollView>
@@ -583,7 +585,7 @@ export default function DescansoScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={18}
               showCardMetadata
-              onViewAll={() => router.push(`/sleep-tag/${collection.id}` as never)}
+              onViewAll={() => openCategory(`/sleep-tag/${collection.id}`)}
             />
           ))}
 

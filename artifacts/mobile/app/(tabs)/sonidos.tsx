@@ -22,6 +22,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import {
   getSessionById,
   getSessionsBySonidosTag,
@@ -59,6 +60,7 @@ export default function SonidosScreen() {
   const { theme } = useSceneTheme();
   const { isPremium } = usePremium();
   const { version } = useCatalog();
+  const { openCategory } = useCategoryOverlay();
   const {
     currentSession,
     history,
@@ -141,11 +143,8 @@ export default function SonidosScreen() {
       router.push("/player" as never);
       return;
     }
-    router.push({
-      pathname: "/session/[id]",
-      params: { id: session.id, source: "sonidos" },
-    } as never);
-  }, [allIds, currentSession?.id, playSessionInPlaylist]);
+    openCategory(`/session/${session.id}`);
+  }, [allIds, currentSession?.id, openCategory, playSessionInPlaylist]);
 
   const searchItems = useMemo(
     () => allSessions.map((session) => ({
@@ -202,7 +201,7 @@ export default function SonidosScreen() {
                   key={collection.id}
                   label={collection.label}
                   icon={collection.icon}
-                  onPress={() => router.push(`/sound-tag/${collection.id}` as never)}
+                  onPress={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
               ))}
             </ScrollView>
@@ -257,7 +256,7 @@ export default function SonidosScreen() {
                 cardWidth={CARD_W}
                 titleSize={18}
                 showCardMetadata
-                onViewAll={() => router.push(`/sound-tag/${collection.id}` as never)}
+                onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}
           </>

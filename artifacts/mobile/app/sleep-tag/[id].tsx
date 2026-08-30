@@ -30,6 +30,8 @@ import { getGuide } from "@/data/guides";
 import { useCatalog } from "@/context/CatalogContext";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -37,12 +39,16 @@ const COL_GAP = 12;
 const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
 const CARD_H = Math.round((CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE);
 
-export default function SleepTagDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {}) {
+  const params = useLocalSearchParams<{ id?: string | string[] }>();
+  const rawId = idProp ?? params.id;
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { activeSceneId, theme } = useSceneTheme();
+  const overlayBack = useBackOverride();
+  const overlay = useCategoryOverlayOptional();
   useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -67,6 +73,8 @@ export default function SleepTagDetailScreen() {
   const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
 
   if (!tag) return null;
+
+  const goBack = () => (overlayBack ? overlayBack() : router.back());
 
   const sessions = getSessionsByDescansoTag(tag.label);
 
@@ -100,7 +108,7 @@ export default function SleepTagDetailScreen() {
           }}
         >
           <Pressable
-            onPress={() => router.back()}
+            onPress={goBack}
             hitSlop={10}
             style={({ pressed }) => [
               styles.backBtn,
@@ -147,7 +155,11 @@ export default function SleepTagDetailScreen() {
                       if (locked) { router.push("/membresia" as never); return; }
                       if (session.skipMiniPlayer) { playSession(session); return; }
                       if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-                      router.push(`/session/${session.id}` as never);
+                      if (overlay) {
+                        overlay.openCategory(`/session/${session.id}`);
+                      } else {
+                        router.push(`/session/${session.id}` as never);
+                      }
                     }}
                     style={({ pressed }) => [
                       styles.card,

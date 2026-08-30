@@ -33,6 +33,8 @@ const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"))
 const LazyVideos        = React.lazy(() => import("@/app/videos"));
 const LazyFavoritos     = React.lazy(() => import("@/app/favoritos-todos"));
 const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
+const LazySleepTag      = React.lazy(() => import("@/app/sleep-tag/[id]"));
+const LazySoundTag      = React.lazy(() => import("@/app/sound-tag/[id]"));
 
 const W = Dimensions.get("window").width;
 
@@ -56,7 +58,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   if (route === "/favoritos-todos") return { node: <LazyFavoritos />, eager: false };
   const p = route.match(/^\/playlist\/(.+)$/);
   if (p) return { node: <LazyPlaylist id={decodeURIComponent(p[1])} />, eager: false };
-  const m = route.match(/^\/(session|mezcla|tema|chakra|tag)\/(.+)$/);
+  const m = route.match(/^\/(session|mezcla|tema|chakra|tag|sleep-tag|sound-tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
     // defer: la pantalla de sesión es muy pesada de renderizar; si se monta
@@ -67,6 +69,8 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
     if (m[1] === "tema") return { node: <LazyTema id={id} />, eager: false };
     if (m[1] === "chakra") return { node: <LazyChakra id={id} />, eager: false };
     if (m[1] === "tag") return { node: <LazyTag id={id} />, eager: false };
+    if (m[1] === "sleep-tag") return { node: <LazySleepTag id={id} />, eager: false };
+    if (m[1] === "sound-tag") return { node: <LazySoundTag id={id} />, eager: false };
   }
   return null;
 }
