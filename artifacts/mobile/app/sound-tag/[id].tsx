@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
   title: {
     paddingHorizontal: 48,
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 22,
     fontWeight: "700",
   },
   scroll: { flex: 1 },

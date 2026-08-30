@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 23,
+    fontSize: 16,
+    lineHeight: 19,
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",
