@@ -312,6 +312,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="historial-emociones"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="mensajes-del-alma"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
