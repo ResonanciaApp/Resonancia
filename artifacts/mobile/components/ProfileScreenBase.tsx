@@ -474,6 +474,8 @@ export function ProfileScreenBase({
   const [editDesc, setEditDesc] = useState(description);
   const [accountName, setAccountName] = useState(username);
   const [accountAction, setAccountAction] = useState<"delete" | null>(null);
+  const accountToastOpacity = useRef(new Animated.Value(0)).current;
+  const accountToastY = useRef(new Animated.Value(12)).current;
 
   useEffect(() => {
     if (accountMode) setAccountName(username);
@@ -501,6 +503,41 @@ export function ProfileScreenBase({
   const saveAccount = () => {
     updateProfile({ username: accountName });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    accountToastOpacity.stopAnimation();
+    accountToastY.stopAnimation();
+    accountToastOpacity.setValue(0);
+    accountToastY.setValue(12);
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(accountToastOpacity, {
+          toValue: 1,
+          duration: 220,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(accountToastY, {
+          toValue: 0,
+          duration: 220,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.delay(1800),
+      Animated.parallel([
+        Animated.timing(accountToastOpacity, {
+          toValue: 0,
+          duration: 260,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(accountToastY, {
+          toValue: 8,
+          duration: 260,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
   };
 
   const performAccountDeletion = async () => {
@@ -755,16 +792,18 @@ export function ProfileScreenBase({
               </Pressable>
 
               <View style={styles.accountField}>
-                <Text style={[styles.accountFieldLabel, { color: colors.foreground }]}>
+                <Text style={styles.accountFieldLabel}>
                   Correo electrónico
                 </Text>
-                <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
-                  {email || "No disponible"}
-                </Text>
+                <View style={styles.accountFieldValueBox}>
+                  <Text style={[styles.accountFieldValue, { color: colors.mutedForeground }]}>
+                    {email || "No disponible"}
+                  </Text>
+                </View>
               </View>
 
               <View style={styles.accountField}>
-                <Text style={[styles.accountFieldLabel, { color: colors.foreground }]}>
+                <Text style={styles.accountFieldLabel}>
                   Nombre
                 </Text>
                 <TextInput
@@ -772,10 +811,7 @@ export function ProfileScreenBase({
                   onChangeText={setAccountName}
                   placeholder="Nombre del usuario"
                   placeholderTextColor={colors.mutedForeground}
-                  style={[
-                    styles.accountNameInput,
-                    { color: colors.foreground, borderBottomColor: colors.border },
-                  ]}
+                  style={[styles.accountNameInput, { color: colors.foreground }]}
                   autoCapitalize="words"
                   returnKeyType="done"
                 />
@@ -810,6 +846,20 @@ export function ProfileScreenBase({
               </Pressable>
             </ScrollView>
           </KeyboardAvoidingView>
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.accountSavedToast,
+              {
+                bottom: bottomPad + 24,
+                opacity: accountToastOpacity,
+                transform: [{ translateY: accountToastY }],
+              },
+            ]}
+          >
+            <MaterialCommunityIcons name="ticket-outline" size={20} color="#A777D0" />
+            <Text style={styles.accountSavedToastText}>¡Datos actualizados exitosamente!</Text>
+          </Animated.View>
         </View>
       </View>
     );
@@ -1731,6 +1781,13 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
+    color: "#AAAAC4",
+  },
+  accountFieldValueBox: {
+    backgroundColor: "rgba(42,40,64,0.65)",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
   accountFieldValue: {
     fontFamily: "Manrope",
@@ -1741,9 +1798,11 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     minHeight: 42,
-    paddingHorizontal: 0,
+    paddingHorizontal: 14,
     paddingVertical: 8,
-    borderBottomWidth: 1,
+    backgroundColor: "rgba(42,40,64,0.65)",
+    borderRadius: 10,
+    borderWidth: 0,
   },
   accountSaveButton: {
     height: 52,
@@ -1761,15 +1820,35 @@ const styles = StyleSheet.create({
   },
   accountDeleteButton: {
     alignSelf: "center",
-    paddingHorizontal: 14,
+    paddingHorizontal: 18,
     paddingVertical: 10,
     marginTop: -8,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "rgba(42,40,64,0.65)",
   },
   accountDeleteButtonText: {
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     color: "#E58B8B",
+  },
+  accountSavedToast: {
+    position: "absolute",
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(18,10,24,0.92)",
+  },
+  accountSavedToastText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#F9F9F9",
   },
   libActionsPill: {
     position: "absolute",
