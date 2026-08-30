@@ -222,7 +222,7 @@ export default function SonidosScreen() {
           }}
           onScroll={handleScroll}
         >
-        <View style={styles.contentStart}>
+        <View style={[styles.contentStart, { marginTop: -3 }]}>
         {allSessions.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="headphones" size={30} color={colors.mutedForeground} />

@@ -39,7 +39,6 @@ import RAnimated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
@@ -95,7 +94,6 @@ import { useVideos } from "@/hooks/useVideos";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -2010,13 +2008,6 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <EncuentrosResonadoresSection
-            marginTop={0}
-            titleMarginTop={0}
-            marginBottom={INICIO2_SECTION_GAP}
-          />
-        )}
-        {isInicio2 && (
           <ResonadoresSection
             marginTop={0}
             marginBottom={INICIO2_SECTION_GAP}
@@ -2209,8 +2200,7 @@ export default function HomeScreen2({
           </View>
         )}
 
-        <AlmaCommunitySection />
-        <AhoraEnResonanciaSection />
+        {!isInicio2 && <AlmaCommunitySection />}
         {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />

@@ -407,7 +407,7 @@ export default function ExploreScreen() {
 
         <Animated.ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingTop: 10, paddingBottom: 160 + bottomPad }}
+          contentContainerStyle={{ paddingTop: 22, paddingBottom: 160 + bottomPad }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScroll={handleExploreScroll}
