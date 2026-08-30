@@ -7,6 +7,7 @@ import {
   Easing,
   Image,
   Modal,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -34,6 +35,8 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 
+const SLEEP_PILL_CANCEL_DISTANCE = 14;
+
 function SleepPill({
   sel, label, icon, onPress,
 }: {
@@ -43,24 +46,83 @@ function SleepPill({
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
+  const scale = useRef(new Animated.Value(1)).current;
+  const highlightOpacity = useRef(new Animated.Value(0)).current;
+  const pressCancelledRef = useRef(false);
+
+  const animatePress = useCallback((pressed: boolean) => {
+    scale.stopAnimation();
+    highlightOpacity.stopAnimation();
+    Animated.parallel([
+      Animated.timing(scale, {
+        toValue: pressed ? 1.13 : 1,
+        duration: pressed ? DURATION.BUTTON_PRESS : DURATION.BUTTON_RELEASE,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }),
+      Animated.timing(highlightOpacity, {
+        toValue: pressed ? 1 : 0,
+        duration: pressed ? DURATION.BUTTON_PRESS : DURATION.BUTTON_RELEASE,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [highlightOpacity, scale]);
+
+  const cancelPress = useCallback(() => {
+    pressCancelledRef.current = true;
+    animatePress(false);
+  }, [animatePress]);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      // Let Pressable and the horizontal ScrollView handle the initial touch.
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponderCapture: (_, gesture) =>
+        gesture.dy > SLEEP_PILL_CANCEL_DISTANCE && gesture.dy > Math.abs(gesture.dx),
+      onMoveShouldSetPanResponder: (_, gesture) =>
+        gesture.dy > SLEEP_PILL_CANCEL_DISTANCE && gesture.dy > Math.abs(gesture.dx),
+      onPanResponderGrant: cancelPress,
+      onPanResponderRelease: cancelPress,
+      onPanResponderTerminate: cancelPress,
+    }),
+  ).current;
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.sleepPill,
-        theme.id === "tibet" && styles.sleepPillTibet,
-        theme.id === "indigo" && styles.sleepPillIndigo,
-        sel && styles.sleepPillSel,
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
+    <Animated.View
+      {...panResponder.panHandlers}
+      collapsable={false}
+      style={[styles.sleepPillAnimated, { transform: [{ scale }] }]}
     >
-      {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-      <MaterialCommunityIcons name={icon} size={22} color="#F4F4F4" />
-      <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
-        {label}
-      </Text>
-    </Pressable>
+      <Pressable
+        onPressIn={() => {
+          pressCancelledRef.current = false;
+          animatePress(true);
+        }}
+        onPressOut={() => animatePress(false)}
+        onTouchCancel={cancelPress}
+        onPress={() => {
+          if (pressCancelledRef.current) return;
+          onPress();
+        }}
+        style={[
+          styles.sleepPill,
+          theme.id === "tibet" && styles.sleepPillTibet,
+          theme.id === "indigo" && styles.sleepPillIndigo,
+          sel && styles.sleepPillSel,
+        ]}
+      >
+        {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+        <MaterialCommunityIcons name={icon} size={22} color="#F4F4F4" />
+        <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
+          {label}
+        </Text>
+        <Animated.View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, styles.sleepPillHighlight, { opacity: highlightOpacity }]}
+        />
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -91,7 +153,6 @@ const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
     delay: Math.random() * 4000,
   };
 });
-
 function NightSky() {
   const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
   const shootX   = useRef(new Animated.Value(0)).current;
@@ -863,6 +924,9 @@ const styles = StyleSheet.create({
   },
 
   /* Sleep pills */
+  sleepPillAnimated: {
+    alignSelf: "flex-start",
+  },
   tabGrid: {
     marginBottom: 43,
   },
@@ -884,8 +948,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
   },
+  sleepPillHighlight: {
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  sleepPillInactive: { backgroundColor: "#2B2944" },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
