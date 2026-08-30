@@ -84,7 +84,7 @@ export function SessionCategoryPill({
     >
       {!plain && <SessionBadgeGlass />}
       {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
-      <Text style={styles.categoryLabel} numberOfLines={1}>
+      <Text style={[styles.categoryLabel, !plain && styles.categoryLabelCard]} numberOfLines={1}>
         {category.label.toUpperCase()}
       </Text>
     </View>
@@ -225,6 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "700",
     color: "#FFFFFF",
+  },
+  categoryLabelCard: {
+    fontWeight: "800",
   },
   durationBadge: {
     position: "absolute",
