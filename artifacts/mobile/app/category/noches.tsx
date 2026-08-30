@@ -5,6 +5,10 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
+import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getContentCarouselCardWidth,
+} from "@/constants/carousel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -27,6 +31,7 @@ const H_PAD   = 20;
 const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const ICON_COLOR = "#C87BB5";
 const GOLD    = "#F9F9F9";
 const TEXT    = "#FBFBFB";
@@ -187,8 +192,8 @@ const ac = StyleSheet.create({
   durationBadge: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   durationBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lockDot: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
-  lCard: { width: 299 },
-  lImgWrap: { width: 299, height: 237 * SESSION_CARD_METADATA_HEIGHT_SCALE, borderRadius: 14, overflow: "hidden" },
+  lCard: { width: FEATURED_CARD_W },
+  lImgWrap: { width: FEATURED_CARD_W, height: 237 * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE, borderRadius: 14, overflow: "hidden" },
   lDurPill: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   lDur: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   lTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 17, marginTop: 10 },

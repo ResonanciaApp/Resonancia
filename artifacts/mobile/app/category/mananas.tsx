@@ -34,10 +34,16 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getContentCarouselCardWidth,
+} from "@/constants/carousel";
 
 const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
+const FEATURED_CARD_H = Math.round(187 * CONTENT_CAROUSEL_HEIGHT_SCALE);
 const ICON_COLOR = "#f4c993";
 const RATINGS_KEY = "@resonance_ratings";
 
@@ -127,9 +133,9 @@ function FeaturedCard({ session }: { session: Session }) {
   );
 }
 const fcStyles = StyleSheet.create({
-  card:    { width: 299 },
-  imgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
-  img:     { width: 299, height: 187 },
+  card:    { width: FEATURED_CARD_W },
+  imgWrap: { width: FEATURED_CARD_W, height: FEATURED_CARD_H, borderRadius: 14, overflow: "hidden" },
+  img:     { width: FEATURED_CARD_W, height: FEATURED_CARD_H },
   durPill: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   dur:     { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 10 },

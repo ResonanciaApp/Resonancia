@@ -155,3 +155,4 @@
 - [Accesos rápidos del Perfil](profile-quick-access-layout.md) — Mi perfil usa Guardados primero; Descargas y Sesiones ocupan dos columnas con ícono a la izquierda
 - [Herramientas de Inicio](inicio-tools-layout.md) — Inicio 2 muestra Biblioteca primero y mantiene Geometrix seguido de Videos
 - [Flujo emocional local](mood-checkin-local.md) — primera fase guarda check-ins completos localmente; encuesta secuencial por emoción y recomendaciones con mapeo provisional
+- [Carruseles editoriales compactos](content-carousel-sizing.md) — cards al 85% de alto y ancho para 2 completas + 25 px de la tercera; no aplica a carruseles funcionales

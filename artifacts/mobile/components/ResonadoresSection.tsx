@@ -5,6 +5,10 @@ import { router } from "expo-router";
 
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
+import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getContentCarouselCardWidth,
+} from "@/constants/carousel";
 
 type Props = {
   marginTop?: number;
@@ -15,8 +19,8 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
   const { resonadores } = useResonadores();
   const colors = useColors();
   const { width: screenWidth } = useWindowDimensions();
-  const cardGap = 15;
-  const cardWidth = Math.round((screenWidth - 40 - cardGap) / 1.8);
+  const cardWidth = getContentCarouselCardWidth(screenWidth, 20);
+  const cardHeight = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
@@ -44,10 +48,10 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
               { width: cardWidth, opacity: pressed ? 0.75 : 1 },
             ]}
           >
-            <View style={[styles.photoFrame, { width: cardWidth, height: cardWidth }]}>
+            <View style={[styles.photoFrame, { width: cardWidth, height: cardHeight }]}>
               <ExpoImage
                 source={resonador.photo}
-                style={[styles.photo, { width: cardWidth, height: cardWidth }]}
+                style={[styles.photo, { width: cardWidth, height: cardHeight }]}
                 contentFit="cover"
               />
             </View>

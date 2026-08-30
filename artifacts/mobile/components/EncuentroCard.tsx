@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
 
 type Props = {
   encuentro: Encuentro;
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   },
   heroWrap: {
     width: "100%",
-    height: 200,
+    height: Math.round(200 * CONTENT_CAROUSEL_HEIGHT_SCALE),
     backgroundColor: "rgba(255,255,255,0.05)",
     alignItems: "center",
     justifyContent: "center",

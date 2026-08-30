@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 
@@ -19,6 +20,11 @@ import {
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  CONTENT_CAROUSEL_GAP,
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getContentCarouselCardWidth,
+} from "@/constants/carousel";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
@@ -42,12 +48,15 @@ type SessionCarouselProps = {
 
 export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, titleSpacing, onViewAll, showCardMetadata = false }: SessionCarouselProps) {
   const colors = useColors();
+  const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
-  const cw = cardWidth ?? CARD_W;
-  const baseCardHeight = cardHeight ?? cw;
-  const ch = showCardMetadata
+  const requestedCardWidth = cardWidth ?? getContentCarouselCardWidth(viewportWidth);
+  const cw = Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
+  const baseCardHeight = cardHeight ?? requestedCardWidth;
+  const originalCardHeight = showCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
+  const ch = Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
@@ -67,7 +76,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
-        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
+        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
       >
         {sessions.map((s) => {
           const locked = !!s.isPremium && !isPremium;
@@ -136,7 +145,10 @@ type CoverCarouselProps = {
 };
 
 export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
+  const { width: viewportWidth } = useWindowDimensions();
   if (items.length === 0) return null;
+  const cardWidth = getContentCarouselCardWidth(viewportWidth);
+  const cardHeight = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -144,24 +156,34 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
-        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
+        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
       >
         {items.map((item) => (
           <Pressable
             key={item.id}
             onPress={() => onPress(item.id)}
-            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
+            style={({ pressed }) => [styles.card, { width: cardWidth, opacity: pressed ? 0.85 : 1 }]}
           >
-            <View style={styles.thumbWrap}>
+            <View style={[styles.thumbWrap, { width: cardWidth, height: cardHeight }]}>
               {item.image != null ? (
-                <Image source={item.image} style={styles.thumb} resizeMode="cover" />
+                <Image
+                  source={item.image}
+                  style={[styles.thumb, { width: cardWidth, height: cardHeight }]}
+                  resizeMode="cover"
+                />
               ) : (
-                <View style={[styles.thumb, styles.thumbFallback]}>
+                <View
+                  style={[
+                    styles.thumb,
+                    styles.thumbFallback,
+                    { width: cardWidth, height: cardHeight },
+                  ]}
+                >
                   <Feather name="music" size={32} color="#F9F9F9" />
                 </View>
               )}
             </View>
-            <View style={styles.cardTitleWrap}>
+            <View style={[styles.cardTitleWrap, { width: cardWidth }]}>
               <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
             </View>
           </Pressable>
