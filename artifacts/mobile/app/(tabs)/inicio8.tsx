@@ -2107,27 +2107,6 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={{ marginTop: INICIO2_SECTION_GAP, marginBottom: INICIO2_SECTION_GAP }}>
-            <InicioMoodRecommendations
-              selectedMoods={selectedMoods}
-              moodRecommended={moodRecommended}
-              isPremium={isPremium}
-              cardBg={recommendationSurfaceBg}
-              showTitle
-              showDivider={false}
-              moodTopOffset={0}
-              titleSize={19}
-              titleSpacing={17}
-              maxItems={5}
-              onOpenMoodPicker={() => setMoodSheetVisible(true)}
-              onClearMood={() => setSelectedMoods([])}
-              onRefreshRecommendations={() => setRecoOffset((n) => n + 1)}
-              onPlaySession={playSession}
-              openCategory={openCategory}
-            />
-          </View>
-        )}
-        {isInicio2 && (
           <ResonadoresSection
             marginTop={0}
             marginBottom={INICIO2_SECTION_GAP}
