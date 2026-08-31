@@ -28,7 +28,7 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-meditaciones.png")}
-          style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
+          style={{ width: horizontal ? 11 : 22, height: horizontal ? 11 : 22 }}
           contentFit="contain"
           tintColor={color}
         />
@@ -37,7 +37,7 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-sesiones.png")}
-          style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
+          style={{ width: horizontal ? 15 : 26, height: horizontal ? 15 : 26 }}
           contentFit="contain"
           tintColor={color}
         />
@@ -46,7 +46,7 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-musica.png")}
-          style={{ width: horizontal ? 18 : 26, height: horizontal ? 18 : 26 }}
+          style={{ width: horizontal ? 15 : 26, height: horizontal ? 15 : 26 }}
           contentFit="contain"
           tintColor={color}
         />
@@ -55,7 +55,7 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-luna.png")}
-          style={{ width: horizontal ? 14 : 22, height: horizontal ? 14 : 22 }}
+          style={{ width: horizontal ? 11 : 22, height: horizontal ? 11 : 22 }}
           contentFit="contain"
           tintColor={color ?? CATEGORY_ICON_COLOR}
         />
@@ -64,7 +64,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="leaf"
-          size={horizontal ? 18 : 24}
+          size={horizontal ? 15 : 24}
           color={color ?? category.color}
         />
       );
@@ -72,7 +72,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="book-open-page-variant"
-          size={horizontal ? 17 : 24}
+          size={horizontal ? 14 : 24}
           color={color ?? category.color}
         />
       );
@@ -80,7 +80,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="message-text-outline"
-          size={horizontal ? 17 : 24}
+          size={horizontal ? 14 : 24}
           color={color ?? category.color}
         />
       );
@@ -88,7 +88,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="tune-variant"
-          size={horizontal ? 18 : 24}
+          size={horizontal ? 15 : 24}
           color={color ?? category.color}
         />
       );
@@ -96,7 +96,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="cube-outline"
-          size={horizontal ? 18 : 29}
+          size={horizontal ? 15 : 29}
           color={color ?? category.color}
         />
       );
@@ -300,9 +300,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   horizontalIconCircle: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
+    height: 25,
+    width: 25,
+    borderRadius: 12.5,
   },
   label: {
     fontSize: 15,
