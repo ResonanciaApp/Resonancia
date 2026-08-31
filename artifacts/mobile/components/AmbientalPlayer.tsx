@@ -249,6 +249,8 @@ export function AmbientalPlayer({
       onRequestClose={confirmExit}
     >
       <StatusBar hidden />
+      {/* Prevents white Modal background flashing before slide-in starts */}
+      <View style={styles.darkBacking} />
       <Animated.View
         style={[styles.root, { transform: [{ translateY: slideAnim }] }]}
       >
@@ -395,6 +397,10 @@ const GHOST_BORDER = "rgba(255,255,255,0.30)";
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  darkBacking: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#060A0F",
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
