@@ -21,6 +21,7 @@ import {
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -127,13 +128,13 @@ export function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           return (
-            <Pressable
+            <PressScale
               key={s.id}
               onPress={() => {
                 if (locked) { router.push("/membresia" as never); return; }
                 onPress(s);
               }}
-              style={({ pressed }) => [styles.card, cardStyle, { opacity: pressed ? 0.85 : 1 }]}
+              style={[styles.card, cardStyle]}
             >
               <View style={[styles.thumbWrap, thumbStyle]}>
                 <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
@@ -180,7 +181,7 @@ export function SessionCarousel({
                   ) : null}
                 </>
               )}
-            </Pressable>
+            </PressScale>
           );
         })}
       </ScrollView>

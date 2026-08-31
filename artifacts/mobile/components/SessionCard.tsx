@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
-  Pressable,
   StyleProp,
   StyleSheet,
   Text,
@@ -26,6 +25,7 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
+import { PressScale } from "@/components/PressScale";
 
 type Props = {
   session: Session;
@@ -112,17 +112,16 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
 
   if (horizontal) {
     return (
-      <Pressable
+      <PressScale
         onPress={handlePress}
         onLongPress={onLongPress}
-        style={({ pressed }) => [
+        style={[
           styles.hRow,
           {
             height: Math.max(thumbHeight, 62),
             backgroundColor: cardBg ?? "transparent",
             borderWidth: 0,
             borderColor: "transparent",
-            opacity: pressed ? 0.8 : 1,
           },
         ]}
       >
@@ -154,17 +153,17 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             </View>
           )}
         </View>
-      </Pressable>
+      </PressScale>
     );
   }
 
   return (
-    <Pressable
+    <PressScale
       onPress={handlePress}
       onLongPress={onLongPress}
-      style={({ pressed }) => [
+      style={[
         styles.card,
-        { width, opacity: pressed ? 0.85 : 1 },
+        { width },
         style,
       ]}
     >
@@ -217,7 +216,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           )}
         </>
       )}
-    </Pressable>
+    </PressScale>
   );
 }
 
