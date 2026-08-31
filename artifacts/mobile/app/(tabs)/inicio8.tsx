@@ -740,7 +740,7 @@ function Inicio2HeroSlider({
             testID="inicio2-open-drawer"
           >
             <Text style={styles.inicio2HeroGreetingName}>
-              Buenas tardes, {displayName}.
+              Buenas tardes, {displayName}
             </Text>
           </Pressable>
         </View>
@@ -2433,7 +2433,7 @@ const styles = StyleSheet.create({
   inicio2HeroGreetingName: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "700",
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
