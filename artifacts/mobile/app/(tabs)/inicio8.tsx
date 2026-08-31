@@ -780,8 +780,6 @@ function Inicio2HeroSlider({
     zoom,
     driftX,
     parallaxY,
-    foregroundParallaxY,
-    heroCopyY,
     imageScale,
   } = useMemo(() => {
     const nextZoom = slideDrift.interpolate({
@@ -800,13 +798,6 @@ function Inicio2HeroSlider({
       outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
       extrapolate: "clamp",
     });
-    const nextForegroundParallaxY = scrollY.interpolate({
-      inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-      // Durante el tirón conserva una fracción del desplazamiento visible:
-      // acompaña el estiramiento sin quedar pegado al contenido.
-      outputRange: [-INICIO2_HERO_HEIGHT * 0.78, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-      extrapolate: "clamp",
-    });
     const nextPullScale = scrollY.interpolate({
       inputRange: [-INICIO2_HERO_HEIGHT, 0],
       // El hero se mantiene anclado arriba mientras el panel sí acompaña el
@@ -820,8 +811,6 @@ function Inicio2HeroSlider({
       zoom: nextZoom,
       driftX: nextDriftX,
       parallaxY: nextParallaxY,
-      foregroundParallaxY: nextForegroundParallaxY,
-      heroCopyY: Animated.add(nextForegroundParallaxY, 15),
       imageScale: Animated.multiply(nextZoom, nextPullScale),
     };
   }, [scrollY, slideDrift]);
@@ -949,9 +938,9 @@ function Inicio2HeroSlider({
         </Pressable>
       </Animated.View>
 
-      <Animated.View
+      <View
         pointerEvents="box-none"
-        style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
+        style={[styles.inicio2HeroCopy, { transform: [{ translateY: 15 }] }]}
       >
         {INICIO2_SLIDES[activeIndex].categoryId ? (
           <View style={styles.inicio2HeroCategory}>
@@ -976,10 +965,10 @@ function Inicio2HeroSlider({
             {INICIO2_SLIDES[activeIndex].actionLabel}
           </Text>
         </Pressable>
-      </Animated.View>
+      </View>
 
-      <Animated.View
-        style={[styles.inicio2HeroControls, { transform: [{ translateY: foregroundParallaxY }] }]}
+      <View
+        style={styles.inicio2HeroControls}
         accessibilityRole="tablist"
       >
         {INICIO2_SLIDES.map((slide, index) => {
@@ -996,7 +985,7 @@ function Inicio2HeroSlider({
             />
           );
         })}
-      </Animated.View>
+      </View>
     </View>
   );
 }
