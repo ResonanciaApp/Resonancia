@@ -812,50 +812,58 @@ function Inicio2HeroSlider({
       testID="inicio2-hero-slider"
       accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
     >
-      {INICIO2_SLIDES.map((slide, index) => (
-        <Animated.View
-          key={slide.id}
-          pointerEvents="none"
-          style={[
-            styles.inicio2HeroImageLayer,
-            {
-              opacity: slideTransition
-                ? index === slideTransition.from || index === slideTransition.to ? 1 : 0
-                : index === activeIndex ? 1 : 0,
-              zIndex: slideTransition
-                ? index === slideTransition.to ? 2 : 1
-                : index === activeIndex ? 1 : 0,
-              transform: [
-                { translateX: slidePositions[index] },
-                { translateY: parallaxY },
-              ],
-            },
-          ]}
-        >
+      {INICIO2_SLIDES.map((slide, index) => {
+        const isVisible = slideTransition
+          ? index === slideTransition.from || index === slideTransition.to
+          : index === activeIndex;
+
+        return (
           <Animated.View
+            key={slide.id}
+            pointerEvents="none"
             style={[
-              StyleSheet.absoluteFill,
-              { transform: [{ scale: imageScale }, { translateX: driftX }] },
+              styles.inicio2HeroImageLayer,
+              {
+                opacity: isVisible ? 1 : 0,
+                zIndex: slideTransition
+                  ? index === slideTransition.to ? 2 : 1
+                  : index === activeIndex ? 1 : 0,
+                transform: [
+                  { translateX: slidePositions[index] },
+                  { translateY: parallaxY },
+                ],
+              },
             ]}
           >
-            <Image
-              source={slide.image}
-              resizeMode="cover"
-              onLoad={() => handleSlideLoad(index)}
-              onError={(error) => handleSlideError(index, error)}
-              style={styles.inicio2HeroImage}
-            />
-            {/* El overlay pertenece a cada slide para que el desplazamiento,
-                parallax y estiramiento no puedan separarlo de la imagen. */}
-            <LinearGradient
-              colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
-              locations={[0, 0.48, 1]}
-              style={styles.inicio2HeroImage}
-              pointerEvents="none"
-            />
+            <Animated.View
+              style={[
+                StyleSheet.absoluteFill,
+                // Las imágenes ocultas permanecen montadas y precargadas, pero
+                // no consumen GPU siguiendo la respiración y el overscroll.
+                isVisible && {
+                  transform: [{ scale: imageScale }, { translateX: driftX }],
+                },
+              ]}
+            >
+              <Image
+                source={slide.image}
+                resizeMode="cover"
+                onLoad={() => handleSlideLoad(index)}
+                onError={(error) => handleSlideError(index, error)}
+                style={styles.inicio2HeroImage}
+              />
+              {/* El overlay pertenece a cada slide para que el desplazamiento,
+                  parallax y estiramiento no puedan separarlo de la imagen. */}
+              <LinearGradient
+                colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
+                locations={[0, 0.48, 1]}
+                style={styles.inicio2HeroImage}
+                pointerEvents="none"
+              />
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      ))}
+        );
+      })}
 
       <Animated.View
         pointerEvents="box-none"
