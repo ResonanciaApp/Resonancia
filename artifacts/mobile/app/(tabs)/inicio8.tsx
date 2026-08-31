@@ -1341,14 +1341,12 @@ function Inicio2HeroSliderRebuilt({
 
 function Inicio2HeroStatic({
   topInset,
-  scrollY,
   currentStreak,
   giftScale,
   onOpenDrawer,
   onOpenProfile,
 }: {
   topInset: number;
-  scrollY: SharedValue<number>;
   currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
@@ -1356,29 +1354,6 @@ function Inicio2HeroStatic({
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
-  const heroScrollStyle = useAnimatedStyle(() => {
-    const y = scrollY.value;
-    return {
-      transform: [{ translateY: y < 0 ? Math.max(-INICIO2_HERO_HEIGHT, y) : 0 }],
-    };
-  });
-  const heroImageStretchStyle = useAnimatedStyle(() => ({
-    transformOrigin: "top center",
-    transform: [{
-      scaleY: 1 + Math.min(
-        0.22,
-        Math.max(0, (-scrollY.value / INICIO2_HERO_HEIGHT) * 0.35),
-      ),
-    }],
-  }));
-  const heroCopyScrollStyle = useAnimatedStyle(() => {
-    const y = scrollY.value;
-    return {
-      transform: [{
-        translateY: (y < 0 ? Math.max(-INICIO2_HERO_HEIGHT, y) : 0) + 15,
-      }],
-    };
-  });
   const displayName =
     username
     || clerkUser?.firstName
@@ -1394,18 +1369,10 @@ function Inicio2HeroStatic({
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
-      <RAnimated.View
+      <View
         pointerEvents="none"
-        style={[StyleSheet.absoluteFill, heroScrollStyle]}
+        style={[StyleSheet.absoluteFill, styles.inicio2HeroSliderClip]}
       >
-        <RAnimated.View
-          pointerEvents="none"
-          style={[
-            StyleSheet.absoluteFill,
-            styles.inicio2HeroSliderClip,
-            heroImageStretchStyle,
-          ]}
-        >
         <Image
           source={require("@/assets/images/inicio2-mistico-1.jpg")}
           resizeMode="cover"
@@ -1420,15 +1387,13 @@ function Inicio2HeroStatic({
           locations={[0, 0.48, 1]}
           style={styles.inicio2HeroImage}
         />
-        </RAnimated.View>
-      </RAnimated.View>
+      </View>
 
-      <RAnimated.View
+      <View
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 },
-          heroScrollStyle,
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
@@ -1495,11 +1460,11 @@ function Inicio2HeroStatic({
             </View>
           </Animated.View>
         </Pressable>
-      </RAnimated.View>
+      </View>
 
-      <RAnimated.View
+      <View
         pointerEvents="box-none"
-        style={[styles.inicio2HeroCopy, heroCopyScrollStyle]}
+        style={[styles.inicio2HeroCopy, { transform: [{ translateY: 15 }] }]}
       >
         <Text style={styles.inicio2HeroTitle}>
           Aprendamos a conectar con lo esencial
@@ -1516,7 +1481,7 @@ function Inicio2HeroStatic({
         >
           <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
         </Pressable>
-      </RAnimated.View>
+      </View>
     </View>
   );
 }
@@ -2453,7 +2418,6 @@ export default function HomeScreen2({
           <>
             <Inicio2HeroStatic
               topInset={topPad}
-              scrollY={inicio2ScrollY}
               currentStreak={currentStreakDisplay}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
