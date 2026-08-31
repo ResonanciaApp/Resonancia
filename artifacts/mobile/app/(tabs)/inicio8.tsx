@@ -776,44 +776,26 @@ function Inicio2HeroSlider({
     [finishHorizontalGesture, isHorizontalSwipeIntent, setSlideFromSwipe],
   );
 
-  const {
-    zoom,
-    driftX,
-    parallaxY,
-    imageScale,
-  } = useMemo(() => {
-    const nextZoom = slideDrift.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 1.035],
-    });
-    const nextDriftX = slideDrift.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, -6],
-    });
-    // El hero se mueve con el scroll normal, pero a menor velocidad. En
-    // overscroll el desplazamiento compensa el movimiento del ScrollView para
-    // que la imagen siga anclada al borde superior mientras se estira.
-    const nextParallaxY = scrollY.interpolate({
-      inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-      outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-      extrapolate: "clamp",
-    });
-    const nextPullScale = scrollY.interpolate({
-      inputRange: [-INICIO2_HERO_HEIGHT, 0],
-      // El hero se mantiene anclado arriba mientras el panel sí acompaña el
-      // rebote del ScrollView. La escala debe recuperar también esa distancia,
-      // no solo dar una sensación leve de zoom.
-      outputRange: [2.9, 1],
-      extrapolate: "clamp",
-    });
-
-    return {
-      zoom: nextZoom,
-      driftX: nextDriftX,
-      parallaxY: nextParallaxY,
-      imageScale: Animated.multiply(nextZoom, nextPullScale),
-    };
-  }, [scrollY, slideDrift]);
+  const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
+  const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
+  // El hero se mueve con el scroll normal, pero a menor velocidad. En
+  // overscroll el desplazamiento compensa el movimiento del ScrollView para
+  // que la imagen siga anclada al borde superior mientras se estira.
+  const parallaxY = scrollY.interpolate({
+    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+    outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
+    extrapolate: "clamp",
+  });
+  const heroCopyY = Animated.add(parallaxY, 15);
+  const pullScale = scrollY.interpolate({
+    inputRange: [-INICIO2_HERO_HEIGHT, 0],
+    // El hero se mantiene anclado arriba mientras el panel sí acompaña el
+    // rebote del ScrollView. La escala debe recuperar también esa distancia,
+    // no solo dar una sensación leve de zoom.
+    outputRange: [2.9, 1],
+    extrapolate: "clamp",
+  });
+  const imageScale = Animated.multiply(zoom, pullScale);
   const displayName =
     username ||
     clerkUser?.firstName ||
@@ -938,9 +920,9 @@ function Inicio2HeroSlider({
         </Pressable>
       </Animated.View>
 
-      <View
+      <Animated.View
         pointerEvents="box-none"
-        style={[styles.inicio2HeroCopy, { transform: [{ translateY: 15 }] }]}
+        style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
       >
         {INICIO2_SLIDES[activeIndex].categoryId ? (
           <View style={styles.inicio2HeroCategory}>
@@ -965,10 +947,10 @@ function Inicio2HeroSlider({
             {INICIO2_SLIDES[activeIndex].actionLabel}
           </Text>
         </Pressable>
-      </View>
+      </Animated.View>
 
-      <View
-        style={styles.inicio2HeroControls}
+      <Animated.View
+        style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
         accessibilityRole="tablist"
       >
         {INICIO2_SLIDES.map((slide, index) => {
@@ -985,7 +967,7 @@ function Inicio2HeroSlider({
             />
           );
         })}
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -993,12 +975,10 @@ function Inicio2HeroSlider({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
-  borderColor,
   onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
-  borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
   return (
@@ -1010,7 +990,6 @@ function InicioEmotionWidget({
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
         { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
-        borderColor ? { borderWidth: 2, borderColor } : null,
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -1088,9 +1067,7 @@ export default function HomeScreen2({
       ? "#1A2453"
       : activeSceneId === "indigo"
         ? "#212033"
-        : activeSceneId === "indigo2"
-          ? "#101014"
-          : "#3B2A47";
+        : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2468,7 +2445,6 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
-        borderColor={activeSceneId === "indigo2" ? "rgba(255,255,255,0.10)" : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
