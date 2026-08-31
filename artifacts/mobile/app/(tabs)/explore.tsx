@@ -123,7 +123,13 @@ function ChakraCarousel() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function ExploreScreen({ screenTitle = "Descubrir" }: { screenTitle?: string }) {
+export function ExploreScreen({
+  screenTitle = "Descubrir",
+  categoryVisualVariant = "default",
+}: {
+  screenTitle?: string;
+  categoryVisualVariant?: "default" | "watercolor";
+}) {
   const { openCategory } = useCategoryOverlay();
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
@@ -403,6 +409,7 @@ export function ExploreScreen({ screenTitle = "Descubrir" }: { screenTitle?: str
             marginBottom={0}
             hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
             horizontal
+            visualVariant={categoryVisualVariant}
           />
         </View>
 

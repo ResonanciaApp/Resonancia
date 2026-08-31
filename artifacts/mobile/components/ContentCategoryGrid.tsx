@@ -16,6 +16,18 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
+const WATERCOLOR_CARD_SIZE = 154;
+
+const WATERCOLOR_CATEGORY_IMAGES: Partial<
+  Record<ContentCategoryDefinition["id"], number>
+> = {
+  "meditaciones-guiadas": require("@/assets/images/discover2-category-meditaciones.jpg"),
+  "sonidos-ancestrales": require("@/assets/images/discover2-category-sonoterapia.jpg"),
+  "musica-sonidos": require("@/assets/images/discover2-category-musica.jpg"),
+  ambientales: require("@/assets/images/discover2-category-ambientales.jpg"),
+  historias: require("@/assets/images/discover2-category-historias.jpg"),
+  charlas: require("@/assets/images/discover2-category-charlas.jpg"),
+};
 
 function renderCategoryIcon(
   category: ContentCategoryDefinition,
@@ -112,11 +124,13 @@ export function ContentCategoryGrid({
   marginBottom = SECTION_GAP - 20,
   hiddenIds = [],
   horizontal = false,
+  visualVariant = "default",
 }: {
   marginTop?: number;
   marginBottom?: number;
   hiddenIds?: readonly string[];
   horizontal?: boolean;
+  visualVariant?: "default" | "watercolor";
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
@@ -136,6 +150,9 @@ export function ContentCategoryGrid({
         {CONTENT_CATEGORIES
           .filter((category) => !hiddenIds.includes(category.id))
           .map((category, index) => {
+          const watercolorImage = WATERCOLOR_CATEGORY_IMAGES[category.id];
+          const isWatercolorCard =
+            horizontal && visualVariant === "watercolor" && watercolorImage !== undefined;
           const radius = 27;
           const corners = [
             {
@@ -189,7 +206,9 @@ export function ContentCategoryGrid({
                 style={({ pressed }) => [
                   styles.card,
                   horizontal
-                    ? [
+                    ? isWatercolorCard
+                      ? styles.watercolorCard
+                      : [
                         styles.horizontalCard,
                         { width: category.horizontalWidth },
                         (category.id === "sonidos-ancestrales" || category.id === "musica-sonidos") &&
@@ -201,19 +220,33 @@ export function ContentCategoryGrid({
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-                <View
-                  style={[
-                    styles.iconWrap,
-                    horizontal && styles.horizontalIconCircle,
-                    horizontal && {
-                      backgroundColor: category.cardColor,
-                    },
-                  ]}
-                >
-                  {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
-                </View>
-                <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
+                {isWatercolorCard ? (
+                  <>
+                    <ExpoImage
+                      source={watercolorImage}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      transition={180}
+                    />
+                    <Text style={styles.watercolorLabel}>{category.label}</Text>
+                  </>
+                ) : (
+                  <>
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
+                    <View
+                      style={[
+                        styles.iconWrap,
+                        horizontal && styles.horizontalIconCircle,
+                        horizontal && {
+                          backgroundColor: category.cardColor,
+                        },
+                      ]}
+                    >
+                      {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
+                    </View>
+                    <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
+                  </>
+                )}
               </Pressable>
             );
           })}
@@ -282,6 +315,28 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 0,
     paddingHorizontal: 12,
+  },
+  watercolorCard: {
+    width: WATERCOLOR_CARD_SIZE,
+    height: WATERCOLOR_CARD_SIZE,
+    borderRadius: 22,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+  },
+  watercolorLabel: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
+    marginTop: 14,
+    marginLeft: 14,
+    maxWidth: WATERCOLOR_CARD_SIZE - 28,
+    textShadowColor: "rgba(0,0,0,0.85)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
   },
   horizontalSmallRadiusCard: {
     borderRadius: 23,

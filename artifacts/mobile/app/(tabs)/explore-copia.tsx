@@ -1,5 +1,10 @@
 import { ExploreScreen } from "./explore";
 
 export default function ExploreCopyRoute() {
-  return <ExploreScreen screenTitle="Descubrir 2" />;
+  return (
+    <ExploreScreen
+      screenTitle="Descubrir 2"
+      categoryVisualVariant="watercolor"
+    />
+  );
 }
