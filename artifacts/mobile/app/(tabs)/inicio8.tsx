@@ -1096,7 +1096,9 @@ export default function HomeScreen2({
       ? "#1A2453"
       : activeSceneId === "indigo"
         ? "#212033"
-        : "#3B2A47";
+        : activeSceneId === "indigo2"
+          ? "#101014"
+          : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
