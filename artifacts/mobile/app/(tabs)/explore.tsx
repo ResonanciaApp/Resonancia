@@ -405,7 +405,7 @@ export function ExploreScreen({
             </Pressable>
           </View>
           <ContentCategoryGrid
-            marginTop={4}
+            marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
             marginBottom={0}
             hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
             horizontal
