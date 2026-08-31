@@ -12,6 +12,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
@@ -105,6 +106,7 @@ export function RecommendedForYouSection({
   marginBottom = 0,
 }: Props) {
   const { width } = useWindowDimensions();
+  const { theme } = useSceneTheme();
   const [activeCategoryId, setActiveCategoryId] = useState(
     DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
   );
@@ -144,6 +146,12 @@ export function RecommendedForYouSection({
   if (!hasRecommendations) return null;
 
   const discoverCardWidth = Math.round((width - HORIZONTAL_PAD * 2) / 1.85);
+  const dailyRecommendationsBorder =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   return (
     <View
@@ -174,8 +182,8 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${category.id}`}
               style={({ pressed }) => [
                 styles.tab,
+                { borderColor: dailyRecommendationsBorder },
                 selected && {
-                  borderColor: category.cardColor,
                   backgroundColor: category.cardColor,
                 },
                 { opacity: pressed ? 0.78 : 1 },
@@ -239,8 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 17,
     borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.42)",
+    borderWidth: 2,
     backgroundColor: "transparent",
   },
   tabText: {
