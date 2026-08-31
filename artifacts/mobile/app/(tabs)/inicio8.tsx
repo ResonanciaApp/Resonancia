@@ -16,7 +16,6 @@ import {
   FlatList,
   Keyboard,
   Modal,
-  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -33,6 +32,7 @@ import RAnimated, {
   runOnJS,
   type SharedValue,
   useAnimatedProps,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -202,38 +202,6 @@ const DURATION_SLOTS = [
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
-
-type Inicio2GestureIntent = "horizontal" | "vertical" | null;
-
-const INICIO2_GESTURE_MIN_DISTANCE = 12;
-const INICIO2_VERTICAL_DOWN_RATIO = 1.65;
-const INICIO2_HORIZONTAL_COMPONENT_RATIO = 0.55;
-
-/**
- * Resolve the hero's intent before either the carousel or the parent
- * ScrollView commits to the gesture. A downward drag must be noticeably more
- * vertical than horizontal to keep the pull-to-zoom interaction; a diagonal
- * with a meaningful horizontal component belongs to the carousel.
- */
-function getInicio2GestureIntent(dx: number, dy: number): Inicio2GestureIntent {
-  const absDx = Math.abs(dx);
-  const absDy = Math.abs(dy);
-
-  if (Math.hypot(absDx, absDy) < INICIO2_GESTURE_MIN_DISTANCE) {
-    return null;
-  }
-
-  const isClearlyDownward = dy > 0 && absDy > absDx * INICIO2_VERTICAL_DOWN_RATIO;
-  if (isClearlyDownward) return "vertical";
-
-  if (absDx >= absDy * INICIO2_HORIZONTAL_COMPONENT_RATIO) {
-    return "horizontal";
-  }
-
-  // Let the ScrollView handle a clearly vertical upward drag as well as
-  // small movements that have not established an axis yet.
-  return null;
-}
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -499,6 +467,48 @@ function AnimatedNavTabRow({
   );
 }
 
+function Inicio2HeroSlideLayer({
+  active,
+  direction,
+  revealDirection,
+  horizontalDirection,
+  horizontalDrag,
+  children,
+}: {
+  active: boolean;
+  direction: -1 | 1;
+  revealDirection: -1 | 0 | 1;
+  horizontalDirection: SharedValue<number>;
+  horizontalDrag: SharedValue<number>;
+  children: React.ReactNode;
+}) {
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity:
+      active
+      || (revealDirection !== 0 && horizontalDirection.value === revealDirection)
+        ? 1
+        : 0,
+    transform: [{
+      translateX: active
+        ? horizontalDrag.value
+        : direction * width + horizontalDrag.value,
+    }],
+  }), [active, direction, revealDirection]);
+
+  return (
+    <RAnimated.View
+      pointerEvents="none"
+      style={[
+        styles.inicio2HeroImageLayer,
+        { zIndex: active ? 1 : 2 },
+        animatedStyle,
+      ]}
+    >
+      {children}
+    </RAnimated.View>
+  );
+}
+
 function Inicio2HeroSlider({
   topInset,
   focused,
@@ -507,45 +517,50 @@ function Inicio2HeroSlider({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
-  onHorizontalGestureActiveChange,
 }: {
   topInset: number;
   focused: boolean;
-  scrollY: Animated.Value;
+  scrollY: SharedValue<number>;
   currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
-  onHorizontalGestureActiveChange: (active: boolean) => void;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexSV = useSharedValue(0);
   const activeIndexRef = useRef(0);
   const desiredIndexRef = useRef(0);
   const pendingIndexRef = useRef<number | null>(null);
   const focusedRef = useRef(focused);
-  const loadedSlidesRef = useRef(INICIO2_SLIDES.map(() => false));
+  // Son assets locales empaquetados: no necesitan una capa oculta para
+  // "precargarse". Metro ya conoce los cuatro y solo componemos los relevantes.
+  const loadedSlidesRef = useRef(INICIO2_SLIDES.map(() => true));
   const [slideTransition, setSlideTransition] = useState<{
     from: number;
     to: number;
+    direction: 1 | -1;
   } | null>(null);
-  const slidePositions = useRef(
-    INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 0 : width)),
-  ).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
   const slideProgress = useSharedValue(0);
   const horizontalGestureActiveRef = useRef(false);
   const [horizontalGestureActive, setHorizontalGestureActiveState] = useState(false);
-  const dragAdjacentIndexRef = useRef<number | null>(null);
-  const [dragAdjacentIndex, setDragAdjacentIndex] = useState<number | null>(null);
+  const horizontalDrag = useSharedValue(0);
+  const horizontalDirection = useSharedValue(0);
 
   const setHorizontalGestureActive = useCallback((active: boolean) => {
     if (horizontalGestureActiveRef.current === active) return;
     horizontalGestureActiveRef.current = active;
     setHorizontalGestureActiveState(active);
-    onHorizontalGestureActiveChange(active);
-  }, [onHorizontalGestureActiveChange]);
+  }, []);
+
+  const commitSlideTransition = useCallback((nextIndex: number) => {
+    activeIndexSV.value = nextIndex;
+    horizontalDrag.value = 0;
+    horizontalDirection.value = 0;
+    setSlideTransition(null);
+  }, [activeIndexSV, horizontalDirection, horizontalDrag]);
 
   const transitionToSlide = useCallback((nextIndex: number, continueFromDrag = false) => {
     if (!focusedRef.current) {
@@ -567,48 +582,34 @@ function Inicio2HeroSlider({
     const direction: 1 | -1 =
       forwardDistance > 0 && forwardDistance <= INICIO2_SLIDES.length / 2 ? 1 : -1;
     activeIndexRef.current = nextIndex;
+    activeIndexSV.value = nextIndex;
     slideDrift.stopAnimation();
     slideDrift.setValue(0);
     cancelAnimation(slideProgress);
     slideProgress.value = 0;
-    slidePositions.forEach((position, index) => {
-      position.stopAnimation();
-      if (!continueFromDrag) {
-        position.setValue(
-          index === fromIndex ? 0 : index === nextIndex ? direction * width : width,
-        );
-      }
-    });
-    dragAdjacentIndexRef.current = null;
-    setDragAdjacentIndex(null);
-    setSlideTransition({ from: fromIndex, to: nextIndex });
+    setSlideTransition({ from: fromIndex, to: nextIndex, direction });
     setActiveIndex(nextIndex);
-
-    Animated.parallel([
-      Animated.timing(slidePositions[fromIndex], {
-        toValue: -direction * width,
-        duration: 420,
-        easing: RNEasing.out(RNEasing.cubic),
-        useNativeDriver: ND,
-      }),
-      Animated.timing(slidePositions[nextIndex], {
-        toValue: 0,
-        duration: 420,
-        easing: RNEasing.out(RNEasing.cubic),
-        useNativeDriver: ND,
-      }),
-    ]).start(({ finished }) => {
-      if (!finished) return;
-      slidePositions.forEach((position, index) => {
-        position.setValue(index === nextIndex ? 0 : width);
-      });
-      setSlideTransition(null);
-    });
-  }, [slideDrift, slidePositions]);
+    horizontalDirection.value = direction;
+    if (!continueFromDrag) horizontalDrag.value = 0;
+    horizontalDrag.value = withTiming(
+      -direction * width,
+      {
+        duration: continueFromDrag ? 320 : 420,
+        easing: Easing.out(Easing.cubic),
+      },
+      (finished) => {
+        if (finished) runOnJS(commitSlideTransition)(nextIndex);
+      },
+    );
+  }, [activeIndexSV, commitSlideTransition, horizontalDirection, horizontalDrag, slideDrift, slideProgress]);
 
   const setSlide = useCallback((nextIndex: number) => {
     const normalized = (nextIndex + INICIO2_SLIDES.length) % INICIO2_SLIDES.length;
     desiredIndexRef.current = normalized;
+    if (slideTransition) {
+      pendingIndexRef.current = normalized;
+      return;
+    }
     if (normalized === activeIndexRef.current) {
       pendingIndexRef.current = null;
       return;
@@ -620,26 +621,16 @@ function Inicio2HeroSlider({
     }
 
     transitionToSlide(normalized);
-  }, [transitionToSlide]);
+  }, [slideTransition, transitionToSlide]);
 
   const bounceAtEdge = useCallback((direction: 1 | -1) => {
-    const activePosition = slidePositions[activeIndexRef.current];
-    activePosition.stopAnimation();
-    Animated.sequence([
-      Animated.timing(activePosition, {
-        toValue: direction * 34,
-        duration: 130,
-        easing: RNEasing.out(RNEasing.cubic),
-        useNativeDriver: ND,
-      }),
-      Animated.spring(activePosition, {
-        toValue: 0,
-        friction: 7,
-        tension: 120,
-        useNativeDriver: ND,
-      }),
-    ]).start();
-  }, [slidePositions]);
+    horizontalDirection.value = direction;
+    horizontalDrag.value = withSpring(direction * 34, {}, () => {
+      horizontalDrag.value = withSpring(0, {}, () => {
+        horizontalDirection.value = 0;
+      });
+    });
+  }, [horizontalDirection, horizontalDrag]);
 
   const setSlideFromSwipe = useCallback((direction: 1 | -1) => {
     const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
@@ -699,22 +690,36 @@ function Inicio2HeroSlider({
     return () => clearTimeout(autoplayTimer);
   }, [activeIndex, focused, horizontalGestureActive, setSlide]);
 
+  useEffect(() => {
+    if (slideTransition) return;
+    const pendingIndex = pendingIndexRef.current;
+    if (pendingIndex === activeIndexRef.current) {
+      pendingIndexRef.current = null;
+      return;
+    }
+    if (
+      pendingIndex !== null
+      && pendingIndex !== activeIndexRef.current
+      && loadedSlidesRef.current[pendingIndex]
+      && focusedRef.current
+    ) {
+      transitionToSlide(pendingIndex);
+    }
+  }, [activeIndex, slideTransition, transitionToSlide]);
+
   useEffect(() => () => {
-    slidePositions.forEach((position) => position.stopAnimation());
     cancelAnimation(slideProgress);
-  }, [slidePositions]);
+    cancelAnimation(horizontalDrag);
+  }, [horizontalDrag, slideProgress]);
 
   useEffect(() => {
     focusedRef.current = focused;
 
     if (!focused) {
       setHorizontalGestureActive(false);
-      slidePositions.forEach((position, index) => {
-        position.stopAnimation();
-        position.setValue(index === activeIndexRef.current ? 0 : width);
-      });
-      dragAdjacentIndexRef.current = null;
-      setDragAdjacentIndex(null);
+      horizontalDrag.value = 0;
+      horizontalDirection.value = 0;
+      activeIndexSV.value = activeIndexRef.current;
       setSlideTransition(null);
       return;
     }
@@ -727,7 +732,7 @@ function Inicio2HeroSlider({
     ) {
       transitionToSlide(pendingIndex);
     }
-  }, [focused, setHorizontalGestureActive, slidePositions, transitionToSlide]);
+  }, [activeIndexSV, focused, horizontalDirection, horizontalDrag, setHorizontalGestureActive, transitionToSlide]);
 
   useEffect(() => {
     if (!focused) {
@@ -752,135 +757,49 @@ function Inicio2HeroSlider({
     };
   }, [activeIndex, focused, slideDrift]);
 
-  const isHorizontalSwipeIntent = useCallback((dx: number, dy: number) => {
-    const intent = getInicio2GestureIntent(dx, dy);
-    if (intent === "horizontal") {
-      // Prevent the parent ScrollView from taking over once a diagonal has
-      // enough horizontal travel to be a slide gesture.
-      setHorizontalGestureActive(true);
-      return true;
+  const finishHorizontalGesture = useCallback((dx: number) => {
+    if (Math.abs(dx) >= 36) {
+      const direction: 1 | -1 = dx < 0 ? 1 : -1;
+      const nextIndex = activeIndexRef.current + direction;
+      if (nextIndex >= 0 && nextIndex < INICIO2_SLIDES.length && loadedSlidesRef.current[nextIndex]) {
+        transitionToSlide(nextIndex, true);
+      } else {
+        horizontalDrag.value = withSpring(0);
+        setSlideFromSwipe(direction);
+      }
+    } else {
+      horizontalDrag.value = withSpring(0);
     }
-    return false;
-  }, [setHorizontalGestureActive]);
-
-  const finishHorizontalGesture = useCallback(() => {
     setHorizontalGestureActive(false);
-  }, [setHorizontalGestureActive]);
+  }, [horizontalDrag, setHorizontalGestureActive, setSlideFromSwipe, transitionToSlide]);
 
-  const updateHorizontalDrag = useCallback((dx: number) => {
-    const fromIndex = activeIndexRef.current;
-    const direction: 1 | -1 = dx < 0 ? 1 : -1;
-    const nextIndex = fromIndex + direction;
-
-    if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
-      const previousAdjacent = dragAdjacentIndexRef.current;
-      if (previousAdjacent !== null) {
-        slidePositions[previousAdjacent].stopAnimation();
-        slidePositions[previousAdjacent].setValue(width);
-        dragAdjacentIndexRef.current = null;
-        setDragAdjacentIndex(null);
-      }
-      slidePositions[fromIndex].setValue(0);
-      return;
-    }
-
-    const previousAdjacent = dragAdjacentIndexRef.current;
-    if (previousAdjacent !== nextIndex) {
-      if (previousAdjacent !== null) {
-        slidePositions[previousAdjacent].stopAnimation();
-        slidePositions[previousAdjacent].setValue(width);
-      }
-      dragAdjacentIndexRef.current = nextIndex;
-      setDragAdjacentIndex(nextIndex);
-    }
-
-    const clampedDx = Math.max(-width, Math.min(width, dx));
-    slidePositions[fromIndex].setValue(clampedDx);
-    slidePositions[nextIndex].setValue(direction * width + clampedDx);
-  }, [slidePositions]);
-
-  const settleHorizontalDrag = useCallback(() => {
-    const fromIndex = activeIndexRef.current;
-    const adjacentIndex = dragAdjacentIndexRef.current;
-    const animations = [
-      Animated.spring(slidePositions[fromIndex], {
-        toValue: 0,
-        friction: 9,
-        tension: 110,
-        useNativeDriver: ND,
+  const horizontalGesture = useMemo(
+    () => Gesture.Pan()
+      .enabled(slideTransition === null)
+      .activeOffsetX([-12, 12])
+      .failOffsetY([-10, 10])
+      .onStart(() => {
+        runOnJS(setHorizontalGestureActive)(true);
+      })
+      .onUpdate((event) => {
+        const direction = event.translationX < 0 ? 1 : -1;
+        const nextIndex = activeIndexSV.value + direction;
+        horizontalDirection.value = direction;
+        horizontalDrag.value =
+          nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length
+            ? event.translationX * 0.18
+            : Math.max(-width, Math.min(width, event.translationX));
+      })
+      .onEnd((event) => {
+        runOnJS(finishHorizontalGesture)(event.translationX);
+      })
+      .onFinalize((_event, success) => {
+        if (!success) {
+          horizontalDrag.value = withSpring(0);
+          runOnJS(setHorizontalGestureActive)(false);
+        }
       }),
-    ];
-
-    if (adjacentIndex !== null) {
-      const direction: 1 | -1 = adjacentIndex > fromIndex ? 1 : -1;
-      animations.push(
-        Animated.spring(slidePositions[adjacentIndex], {
-          toValue: direction * width,
-          friction: 9,
-          tension: 110,
-          useNativeDriver: ND,
-        }),
-      );
-    }
-
-    Animated.parallel(animations).start(() => {
-      if (adjacentIndex !== null) {
-        slidePositions[adjacentIndex].setValue(width);
-      }
-      dragAdjacentIndexRef.current = null;
-      setDragAdjacentIndex(null);
-    });
-  }, [slidePositions]);
-
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponderCapture: (_event, gesture) =>
-          isHorizontalSwipeIntent(gesture.dx, gesture.dy),
-        onMoveShouldSetPanResponder: (_event, gesture) =>
-          isHorizontalSwipeIntent(gesture.dx, gesture.dy),
-        onPanResponderTerminationRequest: () => false,
-        onPanResponderMove: (_event, gesture) => {
-          if (horizontalGestureActiveRef.current) {
-            updateHorizontalDrag(gesture.dx);
-          }
-        },
-        onPanResponderRelease: (_event, gesture) => {
-          if (horizontalGestureActiveRef.current && Math.abs(gesture.dx) >= 36) {
-            const direction: 1 | -1 = gesture.dx < 0 ? 1 : -1;
-            const nextIndex = activeIndexRef.current + direction;
-            const canContinueDrag =
-              dragAdjacentIndexRef.current === nextIndex
-              && loadedSlidesRef.current[nextIndex];
-
-            if (canContinueDrag) {
-              transitionToSlide(nextIndex, true);
-            } else if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
-              dragAdjacentIndexRef.current = null;
-              setDragAdjacentIndex(null);
-              setSlideFromSwipe(direction);
-            } else {
-              settleHorizontalDrag();
-              setSlideFromSwipe(direction);
-            }
-          } else {
-            settleHorizontalDrag();
-          }
-          finishHorizontalGesture();
-        },
-        onPanResponderTerminate: () => {
-          settleHorizontalDrag();
-          finishHorizontalGesture();
-        },
-      }),
-    [
-      finishHorizontalGesture,
-      isHorizontalSwipeIntent,
-      setSlideFromSwipe,
-      settleHorizontalDrag,
-      transitionToSlide,
-      updateHorizontalDrag,
-    ],
+    [activeIndexSV, finishHorizontalGesture, horizontalDirection, horizontalDrag, setHorizontalGestureActive, slideTransition],
   );
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
@@ -888,18 +807,27 @@ function Inicio2HeroSlider({
   // El hero se mueve con el scroll normal, pero a menor velocidad. En
   // overscroll el desplazamiento compensa el movimiento del ScrollView para
   // que la imagen siga anclada al borde superior mientras se estira.
-  const parallaxY = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-    outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-    extrapolate: "clamp",
+  const heroScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    const translateY = y < 0
+      ? Math.max(-INICIO2_HERO_HEIGHT, y)
+      : y <= INICIO2_SCROLL_START_THRESHOLD
+        ? 0
+        : Math.min(INICIO2_HERO_HEIGHT * 0.38, (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38);
+    return { transform: [{ translateY }] };
   });
-  const heroCopyY = Animated.add(parallaxY, 15);
-  const pullScale = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0],
-    outputRange: [1.35, 1],
-    extrapolate: "clamp",
+  const heroImageScrollStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + Math.min(0.35, Math.max(0, -scrollY.value / INICIO2_HERO_HEIGHT * 0.35)) }],
+  }));
+  const heroCopyScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    const parallax = y < 0
+      ? Math.max(-INICIO2_HERO_HEIGHT, y)
+      : y <= INICIO2_SCROLL_START_THRESHOLD
+        ? 0
+        : Math.min(INICIO2_HERO_HEIGHT * 0.38, (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38);
+    return { transform: [{ translateY: parallax + 15 }] };
   });
-  const imageScale = Animated.multiply(zoom, pullScale);
   const displayName =
     username ||
     clerkUser?.firstName ||
@@ -910,40 +838,35 @@ function Inicio2HeroSlider({
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
-    <View
-      {...panResponder.panHandlers}
-      style={styles.inicio2Hero}
-      testID="inicio2-hero-slider"
-      accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
-    >
-      {INICIO2_SLIDES.map((slide, index) => (
-        <Animated.View
+    <GestureDetector gesture={horizontalGesture}>
+    <View style={styles.inicio2Hero} testID="inicio2-hero-slider" accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}>
+      {INICIO2_SLIDES.map((slide, index) => {
+        const isRelevant = index === activeIndex
+          || index === activeIndex - 1
+          || index === activeIndex + 1
+          || slideTransition?.from === index
+          || slideTransition?.to === index;
+        if (!isRelevant) return null;
+        const direction: -1 | 1 = slideTransition?.to === index
+          ? slideTransition.direction
+          : index < activeIndex ? -1 : 1;
+        const revealDirection: -1 | 0 | 1 =
+          slideTransition && index !== slideTransition.to ? 0 : direction;
+        return (
+        <Inicio2HeroSlideLayer
           key={slide.id}
-          pointerEvents="none"
-          style={[
-            styles.inicio2HeroImageLayer,
-            {
-              opacity: slideTransition
-                ? index === slideTransition.from || index === slideTransition.to ? 1 : 0
-                : dragAdjacentIndex !== null
-                  ? index === activeIndex || index === dragAdjacentIndex ? 1 : 0
-                  : index === activeIndex ? 1 : 0,
-              zIndex: slideTransition
-                ? index === slideTransition.to ? 2 : 1
-                : dragAdjacentIndex !== null
-                  ? index === dragAdjacentIndex ? 2 : index === activeIndex ? 1 : 0
-                  : index === activeIndex ? 1 : 0,
-              transform: [
-                { translateX: slidePositions[index] },
-                { translateY: parallaxY },
-              ],
-            },
-          ]}
+          active={index === (slideTransition?.from ?? activeIndex)}
+          direction={direction}
+          revealDirection={revealDirection}
+          horizontalDirection={horizontalDirection}
+          horizontalDrag={horizontalDrag}
         >
+          <RAnimated.View style={[StyleSheet.absoluteFill, heroScrollStyle]}>
+          <RAnimated.View style={[StyleSheet.absoluteFill, heroImageScrollStyle]}>
           <Animated.View
             style={[
               StyleSheet.absoluteFill,
-              { transform: [{ scale: imageScale }, { translateX: driftX }] },
+              { transform: [{ scale: zoom }, { translateX: driftX }] },
             ]}
           >
             <Image
@@ -962,14 +885,17 @@ function Inicio2HeroSlider({
               pointerEvents="none"
             />
           </Animated.View>
-        </Animated.View>
-      ))}
+          </RAnimated.View>
+          </RAnimated.View>
+        </Inicio2HeroSlideLayer>
+      )})}
 
-      <Animated.View
+      <RAnimated.View
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
-          { paddingTop: topInset + 8, transform: [{ translateY: parallaxY }] },
+          { paddingTop: topInset + 8 },
+          heroScrollStyle,
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
@@ -1026,11 +952,11 @@ function Inicio2HeroSlider({
             </View>
           </Animated.View>
         </Pressable>
-      </Animated.View>
+      </RAnimated.View>
 
-      <Animated.View
+      <RAnimated.View
         pointerEvents="box-none"
-        style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
+        style={[styles.inicio2HeroCopy, heroCopyScrollStyle]}
       >
         {INICIO2_SLIDES[activeIndex].categoryId ? (
           <View style={styles.inicio2HeroCategory}>
@@ -1055,10 +981,10 @@ function Inicio2HeroSlider({
             {INICIO2_SLIDES[activeIndex].actionLabel}
           </Text>
         </Pressable>
-      </Animated.View>
+      </RAnimated.View>
 
-      <Animated.View
-        style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
+      <RAnimated.View
+        style={[styles.inicio2HeroControls, heroScrollStyle]}
         accessibilityRole="tablist"
       >
         {INICIO2_SLIDES.map((slide, index) => {
@@ -1075,8 +1001,9 @@ function Inicio2HeroSlider({
             />
           );
         })}
-      </Animated.View>
+      </RAnimated.View>
     </View>
+    </GestureDetector>
   );
 }
 
@@ -1647,11 +1574,9 @@ export default function HomeScreen2({
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
-  const inicio2ScrollY = useRef(new Animated.Value(0)).current;
-  const [inicio2ScrollEnabled, setInicio2ScrollEnabled] = useState(true);
-  const handleInicio2HorizontalGesture = useCallback((active: boolean) => {
-    setInicio2ScrollEnabled(!active);
-  }, []);
+  const inicio2ScrollY = useSharedValue(0);
+  const inicio2StickyThreshold = useSharedValue(-1);
+  const inicio2BorderThreshold = useSharedValue(-1);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -1771,17 +1696,31 @@ export default function HomeScreen2({
     },
     [updateStickyActive, backdropAnim],
   );
-  const handleInicio2Scroll = useMemo(
-    () =>
-      Animated.event(
-        [{ nativeEvent: { contentOffset: { y: inicio2ScrollY } } }],
-        {
-          useNativeDriver: ND,
-          listener: handleMainScroll,
-        },
-      ),
-    [handleMainScroll, inicio2ScrollY],
-  );
+  const handleInicio2ThresholdCross = useCallback((y: number) => {
+    scrollYRef.current = y;
+    updateStickyActive();
+  }, [updateStickyActive]);
+  const handleInicio2Scroll = useAnimatedScrollHandler({
+    onScroll: (
+      event,
+      context: { beyondStickyThreshold?: boolean; beyondBorderThreshold?: boolean },
+    ) => {
+      const y = event.contentOffset.y;
+      inicio2ScrollY.value = y;
+      const beyondStickyThreshold =
+        inicio2StickyThreshold.value >= 0 && y >= inicio2StickyThreshold.value;
+      const beyondBorderThreshold =
+        inicio2BorderThreshold.value >= 0 && y >= inicio2BorderThreshold.value;
+      if (
+        context.beyondStickyThreshold !== beyondStickyThreshold
+        || context.beyondBorderThreshold !== beyondBorderThreshold
+      ) {
+        context.beyondStickyThreshold = beyondStickyThreshold;
+        context.beyondBorderThreshold = beyondBorderThreshold;
+        runOnJS(handleInicio2ThresholdCross)(y);
+      }
+    },
+  });
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -1971,19 +1910,28 @@ export default function HomeScreen2({
       </View>
       )}
 
-      <Animated.ScrollView
+      <RAnimated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        scrollEnabled={!isInicio2 || inicio2ScrollEnabled}
         onScroll={isInicio2 ? handleInicio2Scroll : handleMainScroll}
         scrollEventThrottle={16}
         onLayout={(e) => {
           scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          const scrollable = scrollContentHeightRef.current - e.nativeEvent.layout.height;
+          inicio2StickyThreshold.value =
+            scrollable > 0 ? scrollable * STICKY_ACTIVE_THRESHOLD : -1;
+          inicio2BorderThreshold.value =
+            scrollable > 0 ? scrollable * HEADER_BORDER_THRESHOLD : -1;
           updateStickyActive();
         }}
         onContentSizeChange={(_w, h) => {
           scrollContentHeightRef.current = h;
+          const scrollable = h - scrollLayoutHeightRef.current;
+          inicio2StickyThreshold.value =
+            scrollable > 0 ? scrollable * STICKY_ACTIVE_THRESHOLD : -1;
+          inicio2BorderThreshold.value =
+            scrollable > 0 ? scrollable * HEADER_BORDER_THRESHOLD : -1;
           updateStickyActive();
         }}
       >
@@ -1998,7 +1946,6 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
               onOpenProfile={() => router.push("/(tabs)/profile" as never)}
-              onHorizontalGestureActiveChange={handleInicio2HorizontalGesture}
             />
           </>
         ) : showAnimatedScene ? (
@@ -2543,7 +2490,7 @@ export default function HomeScreen2({
         {isInicio2 && <AlmaCommunitySection />}
 
         </View>
-      </Animated.ScrollView>
+      </RAnimated.ScrollView>
 
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
