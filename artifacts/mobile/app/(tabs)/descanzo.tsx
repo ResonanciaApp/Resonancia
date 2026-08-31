@@ -31,6 +31,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -401,6 +402,8 @@ export default function DescansoScreen() {
     history,
   } = usePlayer();
   const { openCategory } = useCategoryOverlay();
+  const { openForSession } = useAmbientalDuration();
+  const { isPremium } = usePremium();
 
   /** Lógica de tres estados para tocar una sesión de Dormir
    *  (idéntica a SessionCard.tsx handlePress):
@@ -411,6 +414,11 @@ export default function DescansoScreen() {
   const DESCANSO_SKIP_DETAIL_CATS = ["sonidos-ancestrales", "musica-sonidos"];
   const handleSessionTap = useCallback(
     (s: Parameters<typeof playSession>[0]) => {
+      if (s.isPremium && !isPremium) {
+        router.push("/membresia" as never);
+        return;
+      }
+      if (openForSession(s)) return;
       if (s.skipMiniPlayer) {
         if (currentSession?.id !== s.id) playSession(s);
         return;
@@ -426,10 +434,9 @@ export default function DescansoScreen() {
       openCategory(`/session/${s.id}`);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentSession, openCategory, playSession],
+    [currentSession, isPremium, openCategory, openForSession, playSession],
   );
 
-  const { isPremium } = usePremium();
   const backOverride = useBackOverride();
 
   const tabBarH = 68 + Math.max(8, bottomPad - 10);

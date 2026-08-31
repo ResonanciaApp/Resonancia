@@ -28,6 +28,7 @@ import { PLAYLISTS } from "@/data/playlists";
 import { CHAKRAS, isChakraTag } from "@/data/chakras";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -141,6 +142,7 @@ export function ExploreScreen({
   collapseCategoryHeader?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
+  const { openForSession } = useAmbientalDuration();
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
@@ -334,6 +336,7 @@ export function ExploreScreen({
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
     if (locked) { router.push("/membresia" as never); return; }
+    if (openForSession(s)) return;
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     openCategory(`/session/${s.id}`);

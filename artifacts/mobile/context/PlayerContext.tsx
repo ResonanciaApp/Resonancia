@@ -1470,6 +1470,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // sesión / temporizador de sueño. Sin auto-apagado ni barra de progreso.
       const infinite = !Number.isFinite(minutes);
       const totalSeconds = infinite ? Infinity : minutes * 60;
+      clearSleepInterval();
+      if (infinite) {
+        sleepEndTimeRef.current = null;
+        setSleepTimerRemaining(null);
+      } else {
+        sleepEndTimeRef.current = Date.now() + totalSeconds * 1000;
+        setSleepTimerRemaining(totalSeconds);
+      }
       const sessionOverride: Session = infinite
         ? { ...session, durationLabel: "∞" }
         : {
@@ -1583,6 +1591,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 if (infinite) return next; // loop infinito: sin auto-apagado ni progreso
                 if (next >= totalSeconds) {
                   clearSim();
+                  clearSleepInterval();
+                  sleepEndTimeRef.current = null;
+                  setSleepTimerRemaining(null);
                   teardownPlayback();
                   teardownLoopCrossfade();
                   loopModeRef.current = false;
@@ -1633,6 +1644,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 const sId = currentSessionRef.current?.id;
                 if (next >= totalSeconds) {
                   clearSim();
+                  clearSleepInterval();
+                  sleepEndTimeRef.current = null;
+                  setSleepTimerRemaining(null);
                   teardownPlayback();
                   loopModeRef.current = false;
                   hasRealAudioRef.current = false;

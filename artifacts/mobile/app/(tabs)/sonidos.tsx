@@ -20,6 +20,7 @@ import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -62,6 +63,7 @@ export default function SonidosScreen() {
   const { isPremium } = usePremium();
   const { version } = useCatalog();
   const { openCategory } = useCategoryOverlay();
+  const { openForSession } = useAmbientalDuration();
   const {
     currentSession,
     history,
@@ -128,6 +130,11 @@ export default function SonidosScreen() {
   }, [allIds, history]);
 
   const openSession = useCallback((session: Session) => {
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia" as never);
+      return;
+    }
+    if (openForSession(session)) return;
     const playWithQueue = () => {
       if (currentSession?.id !== session.id) playSessionInPlaylist(session, allIds);
     };
@@ -145,7 +152,14 @@ export default function SonidosScreen() {
       return;
     }
     openCategory(`/session/${session.id}`);
-  }, [allIds, currentSession?.id, openCategory, playSessionInPlaylist]);
+  }, [
+    allIds,
+    currentSession?.id,
+    isPremium,
+    openCategory,
+    openForSession,
+    playSessionInPlaylist,
+  ]);
 
   const searchItems = useMemo(
     () => allSessions.map((session) => ({

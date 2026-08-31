@@ -15,6 +15,7 @@ import {
 
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -113,6 +114,7 @@ export function SessionCarousel({
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const { openForSession } = useAmbientalDuration();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const requestedCardWidth = cardWidth ?? getContentCarouselCardWidth(viewportWidth);
@@ -175,6 +177,7 @@ export function SessionCarousel({
               key={s.id}
               onPress={() => {
                 if (locked) { router.push("/membresia" as never); return; }
+                if (openForSession(s)) return;
                 onPress(s);
               }}
               style={[styles.card, cardStyle]}

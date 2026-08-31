@@ -68,6 +68,7 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 // voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { TEMAS } from "@/data/temas";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
@@ -1567,6 +1568,7 @@ export default function HomeScreen2({
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openCategory } = useCategoryOverlay();
+  const { openForSession } = useAmbientalDuration();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -1686,6 +1688,11 @@ export default function HomeScreen2({
 
   const handleRecommendedSessionPress = useCallback(
     (session: Session) => {
+      if (session.isPremium && !isPremium) {
+        router.push("/membresia" as never);
+        return;
+      }
+      if (openForSession(session)) return;
       if (session.skipMiniPlayer) {
         playSession(session);
         return;
@@ -1697,7 +1704,7 @@ export default function HomeScreen2({
       }
       openCategory(`/session/${session.id}`);
     },
-    [openCategory, playSession],
+    [isPremium, openCategory, openForSession, playSession],
   );
 
   function handleIntentionPress() {
@@ -1991,11 +1998,12 @@ export default function HomeScreen2({
       router.push("/membresia" as never);
       return;
     }
+    if (openForSession(continueSession)) return;
     playSession(continueSession);
     if (!continueSession.skipMiniPlayer) {
       router.push("/player" as never);
     }
-  }, [continueLocked, continueSession, playSession]);
+  }, [continueLocked, continueSession, openForSession, playSession]);
 
   // Tus playlist — playlists del usuario, foto de la primera sesión
   const playlistItems = React.useMemo(() =>
@@ -2255,6 +2263,11 @@ export default function HomeScreen2({
   const handleSelectSearchResult = useCallback(
     (s: Session) => {
       closeSearch();
+      if (s.isPremium && !isPremium) {
+        router.push("/membresia" as never);
+        return;
+      }
+      if (openForSession(s)) return;
       if (s.skipMiniPlayer) {
         playSession(s);
         return;
@@ -2266,7 +2279,7 @@ export default function HomeScreen2({
       }
       openCategory(`/session/${s.id}`);
     },
-    [closeSearch, playSession],
+    [closeSearch, isPremium, openCategory, openForSession, playSession],
   );
 
   return (
@@ -4140,6 +4153,7 @@ function InicioMoodRecommendations({
   onPlaySession,
   openCategory,
 }: InicioMoodRecommendationsProps) {
+  const { openForSession } = useAmbientalDuration();
   return (
     <>
       {/* ── ESTADO DE ÁNIMO ── */}
@@ -4237,6 +4251,7 @@ function InicioMoodRecommendations({
                   router.push("/membresia" as never);
                   return;
                 }
+                if (openForSession(session)) return;
                 if (session.skipMiniPlayer) {
                   onPlaySession(session);
                   return;

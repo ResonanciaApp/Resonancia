@@ -24,6 +24,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
@@ -130,6 +131,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const { version } = useCatalog();
   const { activeSceneId, theme } = useSceneTheme();
   const { playSession } = usePlayer();
+  const { openForSession } = useAmbientalDuration();
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
   const categoryOverlay = useCategoryOverlayOptional();
@@ -193,6 +195,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       router.push("/membresia" as never);
       return;
     }
+    if (openForSession(session)) return;
     if (session.skipMiniPlayer) {
       playSession(session);
       return;

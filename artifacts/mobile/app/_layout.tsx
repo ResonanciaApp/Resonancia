@@ -51,6 +51,7 @@ import { MilestoneCelebration } from "@/components/MilestoneCelebration";
 import { StreakCelebrationProvider } from "@/context/StreakCelebrationContext";
 import { StreakCelebrationFlow } from "@/components/StreakCelebrationFlow";
 import { PlayerProvider } from "@/context/PlayerContext";
+import { AmbientalDurationProvider } from "@/context/AmbientalDurationContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
 import { IntencionDiariaProvider } from "@/context/IntencionDiariaContext";
@@ -540,12 +541,14 @@ export default function RootLayout() {
                           <RachaProvider>
                           <IntencionDiariaProvider>
                             <ThemedGestureRoot>
-                              <StatusBar hidden />
-                              <KeyboardProvider>
-                                <RootLayoutNav />
-                              </KeyboardProvider>
-                              <SceneThemeTransitionOverlay />
-                              <StreakCelebrationFlow />
+                              <AmbientalDurationProvider>
+                                <StatusBar hidden />
+                                <KeyboardProvider>
+                                  <RootLayoutNav />
+                                </KeyboardProvider>
+                                <SceneThemeTransitionOverlay />
+                                <StreakCelebrationFlow />
+                              </AmbientalDurationProvider>
                             </ThemedGestureRoot>
                           </IntencionDiariaProvider>
                           </RachaProvider>

@@ -20,6 +20,7 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import {
@@ -98,9 +99,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const { theme } = useSceneTheme();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  const { openForSession } = useAmbientalDuration();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
+    if (openForSession(session)) return;
     if (overridePress) { overridePress(); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
     const SKIP_DETAIL_CATS = ["sonidos-ancestrales", "musica-sonidos"];
