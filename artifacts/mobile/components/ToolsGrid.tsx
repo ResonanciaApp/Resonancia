@@ -13,7 +13,6 @@ import {
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
-import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -26,7 +25,6 @@ const TOOLS = [
   { id: "biblioteca", label: "Biblioteca", icon: "book-open-variant", color: "#8ED9FF" },
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
   { id: "videos", label: "Videos", icon: "video-outline", color: "#D5A4E8" },
-  { id: "geometrix", label: "Geometrix", icon: "cube-outline", color: "#C4C8D4" },
   { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy", color: "#C8A6FF" },
   { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
 ] as const;
@@ -112,7 +110,6 @@ export function ToolsGrid({
   const { activeSceneId } = useSceneTheme();
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
-  const { openGeometrix } = useGeometrixPanel();
   const { openOverlay } = useDrawer();
 
   const pillBackground = activeSceneId === "tibet"
@@ -134,9 +131,6 @@ export function ToolsGrid({
       case "videos":
         openCategory("/videos");
         break;
-      case "geometrix":
-        openGeometrix();
-        break;
       case "respiracion":
         openCategory("/respiracion");
         break;
@@ -144,7 +138,7 @@ export function ToolsGrid({
         openOverlay("/diario");
         break;
     }
-  }, [openCategory, openMixer, openGeometrix, openOverlay]);
+  }, [openCategory, openMixer, openOverlay]);
 
   return (
     <ScrollView

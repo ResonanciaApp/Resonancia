@@ -65,7 +65,6 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 // voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
@@ -1602,7 +1601,6 @@ export default function HomeScreen2({
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
-  const { openGeometrix } = useGeometrixPanel();
   const { openCategory } = useCategoryOverlay();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
@@ -1868,7 +1866,7 @@ export default function HomeScreen2({
   const [progresoVisible, setProgresoVisible] = useState(false);
   const { rachaEnabled } = useRacha();
   const { intencionDiariaEnabled, escenasAnimadasEnabled } = useIntencionDiaria();
-  const showAnimatedScene = !intencionDiariaEnabled && escenasAnimadasEnabled;
+  const showAnimatedScene = !isInicio2 && !intencionDiariaEnabled && escenasAnimadasEnabled;
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -3015,7 +3013,7 @@ export default function HomeScreen2({
 
 
       <EscenasAnimSheet
-        visible={animSheetOpen}
+        visible={!isInicio2 && animSheetOpen}
         scenes={activeScenes}
         activeSceneId={headerSceneId}
         onSelect={handleAnimSceneSelect}
@@ -3040,7 +3038,7 @@ export default function HomeScreen2({
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
       {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
-      {headerScene && immersiveRendered && tabFocused && (
+      {!isInicio2 && headerScene && immersiveRendered && tabFocused && (
         <Animated.View
           style={[StyleSheet.absoluteFill, { opacity: immersiveAnim, justifyContent: "center" }]}
           pointerEvents={immersive ? "box-none" : "none"}
