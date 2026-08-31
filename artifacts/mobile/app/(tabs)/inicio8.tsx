@@ -1004,10 +1004,12 @@ function Inicio2HeroSlider({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
+  borderColor,
   onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
+  borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
   return (
@@ -1019,6 +1021,7 @@ function InicioEmotionWidget({
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
         { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
+        borderColor ? { borderWidth: 2, borderColor } : null,
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -2476,6 +2479,7 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
+        borderColor={activeSceneId === "indigo2" ? "rgba(255,255,255,0.10)" : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
