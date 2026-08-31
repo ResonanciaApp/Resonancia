@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import {
+  Animated,
   Pressable,
   ScrollView,
   StyleProp,
@@ -31,6 +32,76 @@ const TOOLS = [
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];
+type Tool = (typeof TOOLS)[number];
+
+function ToolCard({
+  tool,
+  foregroundColor,
+  pillBackground,
+  onPress,
+}: {
+  tool: Tool;
+  foregroundColor: string;
+  pillBackground: string;
+  onPress: (id: ToolId) => void;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      testID={`tool-${tool.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`Abrir ${tool.label}`}
+      onPress={() => onPress(tool.id)}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
+      <Animated.View
+        style={[
+          styles.card,
+          tool.id === "favoritos" && styles.firstCard,
+          tool.id === "diario" && styles.lastCard,
+          {
+            backgroundColor: pillBackground,
+            borderWidth: 0,
+            transform: [{ scale }],
+          },
+        ]}
+      >
+        <MaterialCommunityIcons
+          name={tool.icon}
+          size={22}
+          color="#F9F9F9"
+        />
+        <Text
+          style={[styles.label, { color: foregroundColor }]}
+          numberOfLines={1}
+        >
+          {tool.label}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 export function ToolsGrid({
   style,
@@ -84,35 +155,13 @@ export function ToolsGrid({
       testID="tools-grid"
     >
       {TOOLS.map((tool) => (
-        <Pressable
+        <ToolCard
           key={tool.id}
-          testID={`tool-${tool.id}`}
-          accessibilityRole="button"
-          accessibilityLabel={`Abrir ${tool.label}`}
-          onPress={() => handlePress(tool.id)}
-          style={({ pressed }) => [
-            styles.card,
-            tool.id === "favoritos" && styles.firstCard,
-            tool.id === "diario" && styles.lastCard,
-            {
-              backgroundColor: pillBackground,
-              borderWidth: 0,
-              opacity: pressed ? 0.75 : 1,
-            },
-          ]}
-        >
-          <MaterialCommunityIcons
-            name={tool.icon}
-            size={22}
-            color="#F9F9F9"
-          />
-          <Text
-            style={[styles.label, { color: colors.foreground }]}
-            numberOfLines={1}
-          >
-            {tool.label}
-          </Text>
-        </Pressable>
+          tool={tool}
+          foregroundColor={colors.foreground}
+          pillBackground={pillBackground}
+          onPress={handlePress}
+        />
       ))}
     </ScrollView>
   );
