@@ -282,8 +282,8 @@ export function AmbientalPlayer({
             </View>
           </View>
 
-          {/* Center: countdown + controls */}
-          <View style={styles.center} pointerEvents="box-none">
+          {/* Countdown — true center of screen */}
+          <View style={styles.countdownContainer} pointerEvents="none">
             <Text
               style={styles.countdown}
               accessibilityRole="timer"
@@ -292,52 +292,59 @@ export function AmbientalPlayer({
             >
               {formatCountdown(countdown)}
             </Text>
+          </View>
 
-            <View style={styles.controls}>
-              {/* Play / Pause */}
-              <Pressable
-                onPress={handlePlayPause}
-                disabled={isLoading || !currentSession}
-                style={({ pressed }) => [
-                  styles.ghostPillLarge,
-                  pressed && styles.buttonPressed,
-                  (isLoading || !currentSession) && styles.buttonDisabled,
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel={isPlaying ? "Pausar" : "Reproducir"}
-                testID="ambiental-player-play-pause"
-              >
-                {isPlaying ? (
-                  <Svg width={33} height={33} viewBox="0 0 46 46">
-                    <Rect x="8"  y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
-                    <Rect x="27" y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
-                  </Svg>
-                ) : (
-                  <Svg width={33} height={33} viewBox="0 0 46 46">
-                    <Path
-                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill="#FFFFFF"
-                    />
-                  </Svg>
-                )}
-              </Pressable>
-
-              {/* Stop */}
-              <Pressable
-                onPress={confirmExit}
-                style={({ pressed }) => [
-                  styles.ghostPillLarge,
-                  pressed && styles.buttonPressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel="Detener sesión"
-                testID="ambiental-player-stop"
-              >
-                <Svg width={31} height={31} viewBox="0 0 24 24">
-                  <Rect x="4" y="4" width="16" height="16" rx="1.5" fill="#FFFFFF" />
+          {/* Controls — anchored toward the bottom */}
+          <View
+            style={[
+              styles.controlsContainer,
+              { bottom: Math.max(insets.bottom, 24) + 64 },
+            ]}
+            pointerEvents="box-none"
+          >
+            {/* Play / Pause */}
+            <Pressable
+              onPress={handlePlayPause}
+              disabled={isLoading || !currentSession}
+              style={({ pressed }) => [
+                styles.ghostPillLarge,
+                pressed && styles.buttonPressed,
+                (isLoading || !currentSession) && styles.buttonDisabled,
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={isPlaying ? "Pausar" : "Reproducir"}
+              testID="ambiental-player-play-pause"
+            >
+              {isPlaying ? (
+                <Svg width={33} height={33} viewBox="0 0 46 46">
+                  <Rect x="8"  y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
+                  <Rect x="27" y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
                 </Svg>
-              </Pressable>
-            </View>
+              ) : (
+                <Svg width={33} height={33} viewBox="0 0 46 46">
+                  <Path
+                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                    fill="#FFFFFF"
+                  />
+                </Svg>
+              )}
+            </Pressable>
+
+            {/* Stop */}
+            <Pressable
+              onPress={confirmExit}
+              style={({ pressed }) => [
+                styles.ghostPillLarge,
+                pressed && styles.buttonPressed,
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Detener sesión"
+              testID="ambiental-player-stop"
+            >
+              <Svg width={31} height={31} viewBox="0 0 24 24">
+                <Rect x="4" y="4" width="16" height="16" rx="1.5" fill="#FFFFFF" />
+              </Svg>
+            </Pressable>
           </View>
         </Animated.View>
       </LinearGradient>
@@ -379,11 +386,14 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GHOST_BORDER,
   },
-  // Large ghost pill — play/stop (83×83)
+  // Large ghost pill — play/stop (98×98) asymmetric radius
   ghostPillLarge: {
-    width: 83,
-    height: 83,
-    borderRadius: 42,
+    width: 98,
+    height: 98,
+    borderTopLeftRadius: 49,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 49,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: GHOST_BG,
@@ -415,11 +425,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 10,
   },
-  center: {
-    flex: 1,
+  countdownContainer: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24,
   },
   countdown: {
     color: "#FFFFFF",
@@ -429,10 +438,13 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontVariant: ["tabular-nums"],
   },
-  controls: {
-    marginTop: 92,
+  controlsContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 22,
   },
   buttonPressed: {
