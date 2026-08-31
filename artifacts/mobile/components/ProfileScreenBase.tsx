@@ -114,11 +114,11 @@ function ProfileHeaderAurora() {
     >
       <Defs>
         <RadialGradient id="profile-header-violet-left" cx="0%" cy="0%" r="100%">
-          <Stop offset="0%" stopColor="#B875E8" stopOpacity={0.42} />
+          <Stop offset="0%" stopColor="#B875E8" stopOpacity={0.28} />
           <Stop offset="100%" stopColor="#7D43B5" stopOpacity={0} />
         </RadialGradient>
         <RadialGradient id="profile-header-purple-right" cx="100%" cy="0%" r="100%">
-          <Stop offset="0%" stopColor="#8E62D2" stopOpacity={0.38} />
+          <Stop offset="0%" stopColor="#8E62D2" stopOpacity={0.25} />
           <Stop offset="100%" stopColor="#5D328F" stopOpacity={0} />
         </RadialGradient>
       </Defs>
@@ -968,15 +968,15 @@ export function ProfileScreenBase({
         {dedicated && (
           <View pointerEvents="none" style={styles.profileHeaderGlass}>
             <BlurView
-              intensity={32}
+              intensity={24}
               tint="dark"
               style={StyleSheet.absoluteFill}
             />
             <ProfileHeaderAurora />
             <LinearGradient
               colors={[
-                "rgba(92,48,132,0.42)",
-                "rgba(87,47,125,0.22)",
+                "rgba(92,48,132,0.28)",
+                "rgba(87,47,125,0.14)",
                 "rgba(76,42,110,0)",
               ]}
               locations={[0, 0.55, 1]}
@@ -1752,7 +1752,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 45,
+    height: 68,
     overflow: "hidden",
   },
   stickyHeaderBorder: {
