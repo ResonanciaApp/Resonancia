@@ -217,36 +217,48 @@ export function ContentCategoryGrid({
                         category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
                     : corners[index] ?? { borderRadius: radius },
-                  { opacity: pressed ? 0.75 : 1 },
+                  isWatercolorCard
+                    ? { transform: [{ scale: pressed ? 0.96 : 1 }] }
+                    : { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                {isWatercolorCard ? (
-                  <>
-                    <ExpoImage
-                      source={watercolorImage}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      transition={180}
-                    />
-                    <Text style={styles.watercolorLabel}>{category.label}</Text>
-                  </>
-                ) : (
-                  <>
-                    <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
-                    <View
-                      style={[
-                        styles.iconWrap,
-                        horizontal && styles.horizontalIconCircle,
-                        horizontal && {
-                          backgroundColor: category.cardColor,
-                        },
-                      ]}
-                    >
-                      {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
-                    </View>
-                    <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
-                  </>
-                )}
+                {({ pressed }) =>
+                  isWatercolorCard ? (
+                    <>
+                      <ExpoImage
+                        source={watercolorImage}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                        transition={180}
+                      />
+                      <View
+                        pointerEvents="none"
+                        style={[
+                          StyleSheet.absoluteFill,
+                          styles.watercolorOverlay,
+                          pressed && styles.watercolorOverlayPressed,
+                        ]}
+                      />
+                      <Text style={styles.watercolorLabel}>{category.label}</Text>
+                    </>
+                  ) : (
+                    <>
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
+                      <View
+                        style={[
+                          styles.iconWrap,
+                          horizontal && styles.horizontalIconCircle,
+                          horizontal && {
+                            backgroundColor: category.cardColor,
+                          },
+                        ]}
+                      >
+                        {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
+                      </View>
+                      <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
+                    </>
+                  )
+                }
               </Pressable>
             );
           })}
@@ -330,6 +342,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     alignItems: "flex-start",
     justifyContent: "flex-start",
+  },
+  watercolorOverlay: {
+    backgroundColor: "rgba(0,0,0,0.16)",
+  },
+  watercolorOverlayPressed: {
+    backgroundColor: "transparent",
   },
   watercolorLabel: {
     color: "#FFFFFF",
