@@ -1108,18 +1108,14 @@ function Inicio2HeroSliderRebuilt({
     const y = scrollY.value;
     const translateY = y < 0
       ? Math.max(-INICIO2_HERO_HEIGHT, y)
-      : y <= INICIO2_SCROLL_START_THRESHOLD
-        ? 0
-        : Math.min(
-          INICIO2_HERO_HEIGHT * 0.38,
-          (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38,
-        );
+      : 0;
     return { transform: [{ translateY }] };
   });
-  const heroImageScrollStyle = useAnimatedStyle(() => ({
+  const heroImageStretchStyle = useAnimatedStyle(() => ({
+    transformOrigin: "top center",
     transform: [{
-      scale: 1 + Math.min(
-        0.35,
+      scaleY: 1 + Math.min(
+        0.22,
         Math.max(0, (-scrollY.value / INICIO2_HERO_HEIGHT) * 0.35),
       ),
     }],
@@ -1128,12 +1124,7 @@ function Inicio2HeroSliderRebuilt({
     const y = scrollY.value;
     const translateY = y < 0
       ? Math.max(-INICIO2_HERO_HEIGHT, y)
-      : y <= INICIO2_SCROLL_START_THRESHOLD
-        ? 0
-        : Math.min(
-          INICIO2_HERO_HEIGHT * 0.38,
-          (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38,
-        );
+      : 0;
     return { transform: [{ translateY: translateY + 15 }] };
   });
 
@@ -1166,7 +1157,11 @@ function Inicio2HeroSliderRebuilt({
       >
         <RAnimated.View
           pointerEvents="box-none"
-          style={[StyleSheet.absoluteFill, heroImageScrollStyle]}
+          style={[
+            StyleSheet.absoluteFill,
+            styles.inicio2HeroSliderClip,
+            heroImageStretchStyle,
+          ]}
         >
           <ScrollView
             ref={sliderRef}
@@ -2934,6 +2929,9 @@ const styles = StyleSheet.create({
   },
   inicio2HeroImageLayer: {
     ...StyleSheet.absoluteFillObject,
+  },
+  inicio2HeroSliderClip: {
+    overflow: "hidden",
   },
   inicio2HeroImage: {
     ...StyleSheet.absoluteFillObject,
