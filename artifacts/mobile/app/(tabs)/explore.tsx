@@ -294,6 +294,7 @@ export function ExploreScreen({
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
   const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
+  const [categoryTabsInteractive, setCategoryTabsInteractive] = React.useState(false);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
@@ -309,7 +310,7 @@ export function ExploreScreen({
     outputRange: [0, -8],
     extrapolate: "clamp",
   });
-  const categoryTabsBorderOpacity = exploreScrollY.interpolate({
+  const categoryTabsOpacity = exploreScrollY.interpolate({
     inputRange: [12, 118],
     outputRange: [0, 1],
     extrapolate: "clamp",
@@ -317,6 +318,10 @@ export function ExploreScreen({
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
+    const shouldEnableCategoryTabs = scrollY > 12;
+    setCategoryTabsInteractive((current) =>
+      current === shouldEnableCategoryTabs ? current : shouldEnableCategoryTabs,
+    );
     if (shouldCompact !== titleCompactRef.current) {
       titleCompactRef.current = shouldCompact;
       Animated.timing(titleCompactAnim, {
@@ -428,33 +433,47 @@ export function ExploreScreen({
             </Pressable>
           </View>
           {collapseCategoryHeader && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.categoryTabsScroll}
-              contentContainerStyle={styles.categoryTabsContent}
+            <Animated.View
+              pointerEvents={categoryTabsInteractive ? "auto" : "none"}
+              style={{
+                opacity: categoryTabsOpacity,
+                transform: [
+                  {
+                    translateY: categoryTabsOpacity.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [4, 0],
+                    }),
+                  },
+                ],
+              }}
             >
-              {DISCOVER_CONTENT_CATEGORIES.map((category) => (
-                <Pressable
-                  key={category.id}
-                  onPress={() => openCategory(`/category/${category.id}`)}
-                  style={({ pressed }) => [
-                    styles.categoryTextTab,
-                    { opacity: pressed ? 0.72 : 1 },
-                  ]}
-                >
-                  <Animated.View
-                    pointerEvents="none"
-                    style={[
-                      StyleSheet.absoluteFill,
-                      styles.categoryTextTabBorder,
-                      { opacity: categoryTabsBorderOpacity },
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryTabsScroll}
+                contentContainerStyle={styles.categoryTabsContent}
+              >
+                {DISCOVER_CONTENT_CATEGORIES.map((category) => (
+                  <Pressable
+                    key={category.id}
+                    onPress={() => openCategory(`/category/${category.id}`)}
+                    style={({ pressed }) => [
+                      styles.categoryTextTab,
+                      { opacity: pressed ? 0.72 : 1 },
                     ]}
-                  />
-                  <Text style={styles.categoryTextTabLabel}>{category.label}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
+                  >
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        StyleSheet.absoluteFill,
+                        styles.categoryTextTabBorder,
+                      ]}
+                    />
+                    <Text style={styles.categoryTextTabLabel}>{category.label}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </Animated.View>
           )}
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
