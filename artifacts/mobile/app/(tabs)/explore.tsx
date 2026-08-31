@@ -301,24 +301,24 @@ export function ExploreScreen({
     outputRange: [1, 0],
   });
   const categoryImagesOpacity = exploreScrollY.interpolate({
-    inputRange: [12, 130],
+    inputRange: [88, 132],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
   const categoryImagesTranslateY = exploreScrollY.interpolate({
-    inputRange: [12, 130],
+    inputRange: [88, 132],
     outputRange: [0, -8],
     extrapolate: "clamp",
   });
   const categoryTabsOpacity = exploreScrollY.interpolate({
-    inputRange: [12, 118],
+    inputRange: [126, 142],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
-    const shouldEnableCategoryTabs = scrollY > 12;
+    const shouldEnableCategoryTabs = scrollY > 126;
     setCategoryTabsInteractive((current) =>
       current === shouldEnableCategoryTabs ? current : shouldEnableCategoryTabs,
     );
@@ -435,17 +435,21 @@ export function ExploreScreen({
           {collapseCategoryHeader && (
             <Animated.View
               pointerEvents={categoryTabsInteractive ? "auto" : "none"}
-              style={{
-                opacity: categoryTabsOpacity,
-                transform: [
-                  {
-                    translateY: categoryTabsOpacity.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [4, 0],
-                    }),
-                  },
-                ],
-              }}
+              style={[
+                styles.categoryTabsOverlay,
+                {
+                  backgroundColor: activeTheme.gradient[0] as string,
+                  opacity: categoryTabsOpacity,
+                  transform: [
+                    {
+                      translateY: categoryTabsOpacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [4, 0],
+                      }),
+                    },
+                  ],
+                },
+              ]}
             >
               <ScrollView
                 horizontal
@@ -503,6 +507,7 @@ export function ExploreScreen({
           {collapseCategoryHeader && (
             <Animated.View
               style={{
+                marginTop: 9,
                 opacity: categoryImagesOpacity,
                 transform: [{ translateY: categoryImagesTranslateY }],
               }}
@@ -619,8 +624,14 @@ const styles = StyleSheet.create({
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   categoryTabsScroll: {
-    marginTop: 2,
     flexGrow: 0,
+  },
+  categoryTabsOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: -44,
+    paddingBottom: 4,
   },
   categoryTabsContent: {
     paddingHorizontal: H_PAD,

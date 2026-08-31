@@ -16,7 +16,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const WATERCOLOR_CARD_SIZE = 154;
+const WATERCOLOR_CARD_SIZE = 131;
 
 const WATERCOLOR_CATEGORY_IMAGES: Partial<
   Record<ContentCategoryDefinition["id"], number>
@@ -262,7 +262,10 @@ export function ContentCategoryGrid({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalContent}
+          contentContainerStyle={[
+            styles.horizontalContent,
+            visualVariant === "watercolor" && styles.watercolorHorizontalContent,
+          ]}
         >
           {categoryCards}
         </ScrollView>
@@ -296,6 +299,9 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 5,
   },
+  watercolorHorizontalContent: {
+    gap: 12,
+  },
   card: {
     width: "48%",
     paddingVertical: 18,
@@ -319,7 +325,7 @@ const styles = StyleSheet.create({
   watercolorCard: {
     width: WATERCOLOR_CARD_SIZE,
     height: WATERCOLOR_CARD_SIZE,
-    borderRadius: 22,
+    borderRadius: 19,
     paddingVertical: 0,
     paddingHorizontal: 0,
     alignItems: "flex-start",
@@ -328,12 +334,12 @@ const styles = StyleSheet.create({
   watercolorLabel: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 17,
-    lineHeight: 22,
+    fontSize: 14.5,
+    lineHeight: 19,
     fontWeight: "700",
-    marginTop: 14,
-    marginLeft: 14,
-    maxWidth: WATERCOLOR_CARD_SIZE - 28,
+    marginTop: 12,
+    marginLeft: 12,
+    maxWidth: WATERCOLOR_CARD_SIZE - 24,
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
