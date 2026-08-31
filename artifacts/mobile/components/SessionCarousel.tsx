@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React from "react";
 import {
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -158,7 +158,7 @@ export function SessionCarousel({
                 {isAmbiental ? (
                   <>
                     <Image
-                      source={s.image as number}
+                      source={s.image}
                       style={[
                         styles.ambientalImage,
                         {
@@ -169,7 +169,8 @@ export function SessionCarousel({
                           top: (ch - ambientalImageSize) / 2,
                         },
                       ]}
-                      resizeMode="cover"
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
                     />
                     <SessionCategoryPill categoryId={s.categoryId} />
                     <Text
@@ -205,7 +206,7 @@ export function SessionCarousel({
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
                     style={styles.star}
-                    resizeMode="contain"
+                    contentFit="contain"
                   />
                 )}
               </View>
@@ -268,7 +269,8 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
                 <Image
                   source={item.image}
                   style={[styles.thumb, { width: cardWidth, height: cardHeight }]}
-                  resizeMode="cover"
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
                 />
               ) : (
                 <View
