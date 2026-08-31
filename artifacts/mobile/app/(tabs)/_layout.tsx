@@ -164,6 +164,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const { hidden, showMenu } = useTabBarVisibility();
   const { activeSceneId, theme } = useSceneTheme();
+  const indigoMode = activeSceneId === "indigo";
   const indigo2Mode = activeSceneId === "indigo2";
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
@@ -292,6 +293,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               pointerEvents="none"
               style={[
                 styles.slidingPill,
+                indigoMode && styles.slidingPillIndigo,
                 indigo2Mode && styles.slidingPillIndigo2,
                 {
                   width: tabWidth + 3,
@@ -657,7 +659,10 @@ const styles = StyleSheet.create({
     backgroundColor: GHOST_PILL_BG,
   },
   slidingPillIndigo2: {
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.10)",
+  },
+  slidingPillIndigo: {
+    backgroundColor: "rgba(42,40,64,0.70)",
   },
   mezcladorHandle: {
     position: "absolute",
