@@ -1027,8 +1027,6 @@ function Inicio2HeroSliderRebuilt({
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const sliderRef = useRef<ScrollView>(null);
-  const sliderWidthRef = useRef(width);
-  const [sliderWidth, setSliderWidth] = useState(width);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
   const [dragging, setDragging] = useState(false);
@@ -1037,10 +1035,7 @@ function Inicio2HeroSliderRebuilt({
 
   const selectSlide = useCallback((index: number, animated = true) => {
     const boundedIndex = Math.max(0, Math.min(INICIO2_SLIDES.length - 1, index));
-    sliderRef.current?.scrollTo({
-      x: boundedIndex * sliderWidthRef.current,
-      animated,
-    });
+    sliderRef.current?.scrollTo({ x: boundedIndex * width, animated });
     if (!animated) {
       activeIndexRef.current = boundedIndex;
       setActiveIndex(boundedIndex);
@@ -1102,10 +1097,7 @@ function Inicio2HeroSliderRebuilt({
   const finishNativeSlide = useCallback((x: number) => {
     const nextIndex = Math.max(
       0,
-      Math.min(
-        INICIO2_SLIDES.length - 1,
-        Math.round(x / Math.max(1, sliderWidthRef.current)),
-      ),
+      Math.min(INICIO2_SLIDES.length - 1, Math.round(x / width)),
     );
     activeIndexRef.current = nextIndex;
     setActiveIndex(nextIndex);
@@ -1170,13 +1162,6 @@ function Inicio2HeroSliderRebuilt({
             styles.inicio2HeroSliderClip,
             heroImageStretchStyle,
           ]}
-          onLayout={(event) => {
-            const measuredWidth = event.nativeEvent.layout.width;
-            if (measuredWidth > 0 && measuredWidth !== sliderWidthRef.current) {
-              sliderWidthRef.current = measuredWidth;
-              setSliderWidth(measuredWidth);
-            }
-          }}
         >
           <ScrollView
             ref={sliderRef}
@@ -1198,12 +1183,10 @@ function Inicio2HeroSliderRebuilt({
               finishNativeSlide(event.nativeEvent.contentOffset.x)
             }
             style={StyleSheet.absoluteFill}
+            contentContainerStyle={{ width: width * INICIO2_SLIDES.length }}
           >
             {INICIO2_SLIDES.map((slide) => (
-              <View
-                key={slide.id}
-                style={{ width: sliderWidth, height: INICIO2_HERO_HEIGHT }}
-              >
+              <View key={slide.id} style={{ width, height: INICIO2_HERO_HEIGHT }}>
                 <Animated.View
                   style={[
                     StyleSheet.absoluteFill,
