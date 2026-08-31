@@ -650,7 +650,6 @@ function Inicio2HeroSlider({
     clerkUser?.username ||
     "Explorador";
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
-  const greeting = new Date().getHours() < 12 ? "¡Buenos días!" : "¡Buenas tardes!";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
@@ -740,10 +739,9 @@ function Inicio2HeroSlider({
             accessibilityLabel="Abrir menú de perfil"
             testID="inicio2-open-drawer"
           >
-            <Text style={styles.inicio2HeroGreetingName} numberOfLines={1}>
-              {displayName}
+            <Text style={styles.inicio2HeroGreetingName}>
+              Buenas tardes, {displayName}.
             </Text>
-            <Text style={styles.inicio2HeroGreetingTime}>{greeting}</Text>
           </Pressable>
         </View>
 
@@ -2430,22 +2428,13 @@ const styles = StyleSheet.create({
   inicio2HeroGreeting: {
     minWidth: 0,
     marginLeft: 10,
-    gap: 1,
+    width: width * 0.6,
   },
   inicio2HeroGreetingName: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
-    textShadowColor: "rgba(0,0,0,0.65)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  inicio2HeroGreetingTime: {
-    color: "rgba(255,255,255,0.9)",
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "500",
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
@@ -2512,9 +2501,9 @@ const styles = StyleSheet.create({
   },
   inicio2HeroTitle: {
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 22,
     fontWeight: "800",
-    lineHeight: 33,
+    lineHeight: 28,
     color: "#FFFFFF",
     textAlign: "left",
     textShadowColor: "rgba(0,0,0,0.62)",
