@@ -975,10 +975,14 @@ function Inicio2HeroSlider({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
+  borderColor,
+  borderWidth = 0,
   onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
+  borderColor?: string;
+  borderWidth?: number;
   onOpenMoodPicker: () => void;
 }) {
   return (
@@ -989,7 +993,14 @@ function InicioEmotionWidget({
       testID="inicio-add-emotion"
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
-        { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
+        {
+          right: 18,
+          bottom,
+          backgroundColor,
+          borderColor,
+          borderWidth,
+          opacity: pressed ? 0.82 : 1,
+        },
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -1062,12 +1073,15 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
+  const isIndigo2Theme = activeSceneId === "indigo2";
   const emotionWidgetBackground =
     activeSceneId === "tibet"
       ? "#1A2453"
       : activeSceneId === "indigo"
         ? "#212033"
-        : "#3B2A47";
+        : isIndigo2Theme
+          ? activeTheme.solid
+          : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2445,6 +2459,8 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
+        borderColor={isIndigo2Theme ? "rgba(255,255,255,0.10)" : undefined}
+        borderWidth={isIndigo2Theme ? 2 : 0}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
