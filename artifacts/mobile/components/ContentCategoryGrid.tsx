@@ -217,6 +217,7 @@ export function ContentCategoryGrid({
                         category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
                     : corners[index] ?? { borderRadius: radius },
+                  isWatercolorCard && { borderColor: catBlockBg },
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
@@ -326,6 +327,7 @@ const styles = StyleSheet.create({
     width: WATERCOLOR_CARD_SIZE,
     height: WATERCOLOR_CARD_SIZE,
     borderRadius: 19,
+    borderWidth: 1.5,
     paddingVertical: 0,
     paddingHorizontal: 0,
     alignItems: "flex-start",
