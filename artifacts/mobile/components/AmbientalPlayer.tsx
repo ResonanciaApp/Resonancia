@@ -236,6 +236,11 @@ export function AmbientalPlayer({
     void pauseResume();
   }, [currentSession, isLoading, pauseResume]);
 
+  // Keep last non-null session so the image persists during the exit animation
+  const lastSessionRef = useRef<Session | null>(null);
+  if (session !== null) lastSessionRef.current = session;
+  const displaySession = session ?? lastSessionRef.current;
+
   const countdown = sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
 
   if (!rendered) return null;
@@ -252,10 +257,10 @@ export function AmbientalPlayer({
           style={StyleSheet.absoluteFill}
         />
 
-        {session?.image && (
+        {displaySession?.image && (
           <>
             <Image
-              source={session.image}
+              source={displaySession.image}
               style={StyleSheet.absoluteFill}
               resizeMode="cover"
               accessibilityIgnoresInvertColors
@@ -411,10 +416,7 @@ const styles = StyleSheet.create({
   ghostPillLarge: {
     width: 98,
     height: 98,
-    borderTopLeftRadius: 49,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 49,
+    borderRadius: 49,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: GHOST_BG,
