@@ -786,32 +786,10 @@ function Inicio2HeroSlider({
     outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
-  // En el rango normal de overscroll conserva el mismo anclaje y zoom. En un
-  // tirón extremo deja que la imagen acompañe parte del rebote para cubrir el
-  // panel sin exigir una textura escalada casi 3× al compositor.
-  const imageParallaxY = scrollY.interpolate({
-    inputRange: [
-      -INICIO2_HERO_HEIGHT,
-      -INICIO2_HERO_HEIGHT * 0.45,
-      0,
-      INICIO2_SCROLL_START_THRESHOLD,
-      INICIO2_HERO_HEIGHT,
-    ],
-    outputRange: [
-      -INICIO2_HERO_HEIGHT * 0.5,
-      -INICIO2_HERO_HEIGHT * 0.45,
-      0,
-      0,
-      INICIO2_HERO_HEIGHT * 0.38,
-    ],
-    extrapolate: "clamp",
-  });
   const heroCopyY = Animated.add(parallaxY, 15);
   const pullScale = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, -INICIO2_HERO_HEIGHT * 0.45, 0],
-    // Hasta el 45% de tirón mantiene la curva anterior (1.9× distancia/H).
-    // Después limita el área de composición y completa la cobertura con Y.
-    outputRange: [1.95, 1.855, 1],
+    inputRange: [-INICIO2_HERO_HEIGHT, 0],
+    outputRange: [1.35, 1],
     extrapolate: "clamp",
   });
   const imageScale = Animated.multiply(zoom, pullScale);
@@ -831,58 +809,50 @@ function Inicio2HeroSlider({
       testID="inicio2-hero-slider"
       accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
     >
-      {INICIO2_SLIDES.map((slide, index) => {
-        const isVisible = slideTransition
-          ? index === slideTransition.from || index === slideTransition.to
-          : index === activeIndex;
-
-        return (
+      {INICIO2_SLIDES.map((slide, index) => (
+        <Animated.View
+          key={slide.id}
+          pointerEvents="none"
+          style={[
+            styles.inicio2HeroImageLayer,
+            {
+              opacity: slideTransition
+                ? index === slideTransition.from || index === slideTransition.to ? 1 : 0
+                : index === activeIndex ? 1 : 0,
+              zIndex: slideTransition
+                ? index === slideTransition.to ? 2 : 1
+                : index === activeIndex ? 1 : 0,
+              transform: [
+                { translateX: slidePositions[index] },
+                { translateY: parallaxY },
+              ],
+            },
+          ]}
+        >
           <Animated.View
-            key={slide.id}
-            pointerEvents="none"
             style={[
-              styles.inicio2HeroImageLayer,
-              {
-                opacity: isVisible ? 1 : 0,
-                zIndex: slideTransition
-                  ? index === slideTransition.to ? 2 : 1
-                  : index === activeIndex ? 1 : 0,
-                transform: [
-                  { translateX: slidePositions[index] },
-                  { translateY: imageParallaxY },
-                ],
-              },
+              StyleSheet.absoluteFill,
+              { transform: [{ scale: imageScale }, { translateX: driftX }] },
             ]}
           >
-            <Animated.View
-              style={[
-                StyleSheet.absoluteFill,
-                // Las imágenes ocultas permanecen montadas y precargadas, pero
-                // no consumen GPU siguiendo la respiración y el overscroll.
-                isVisible && {
-                  transform: [{ scale: imageScale }, { translateX: driftX }],
-                },
-              ]}
-            >
-              <Image
-                source={slide.image}
-                resizeMode="cover"
-                onLoad={() => handleSlideLoad(index)}
-                onError={(error) => handleSlideError(index, error)}
-                style={styles.inicio2HeroImage}
-              />
-              {/* El overlay pertenece a cada slide para que el desplazamiento,
-                  parallax y estiramiento no puedan separarlo de la imagen. */}
-              <LinearGradient
-                colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
-                locations={[0, 0.48, 1]}
-                style={styles.inicio2HeroImage}
-                pointerEvents="none"
-              />
-            </Animated.View>
+            <Image
+              source={slide.image}
+              resizeMode="cover"
+              onLoad={() => handleSlideLoad(index)}
+              onError={(error) => handleSlideError(index, error)}
+              style={styles.inicio2HeroImage}
+            />
+            {/* El overlay pertenece a cada slide para que el desplazamiento,
+                parallax y estiramiento no puedan separarlo de la imagen. */}
+            <LinearGradient
+              colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
+              locations={[0, 0.48, 1]}
+              style={styles.inicio2HeroImage}
+              pointerEvents="none"
+            />
           </Animated.View>
-        );
-      })}
+        </Animated.View>
+      ))}
 
       <Animated.View
         pointerEvents="box-none"
@@ -1002,14 +972,10 @@ function Inicio2HeroSlider({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
-  borderColor,
-  borderWidth = 0,
   onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
-  borderColor?: string;
-  borderWidth?: number;
   onOpenMoodPicker: () => void;
 }) {
   return (
@@ -1020,14 +986,7 @@ function InicioEmotionWidget({
       testID="inicio-add-emotion"
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
-        {
-          right: 18,
-          bottom,
-          backgroundColor,
-          borderColor,
-          borderWidth,
-          opacity: pressed ? 0.82 : 1,
-        },
+        { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -1100,15 +1059,12 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
-  const isIndigo2Theme = activeSceneId === "indigo2";
   const emotionWidgetBackground =
     activeSceneId === "tibet"
       ? "#1A2453"
       : activeSceneId === "indigo"
         ? "#212033"
-        : isIndigo2Theme
-          ? activeTheme.solid
-          : "#3B2A47";
+        : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2059,18 +2015,13 @@ export default function HomeScreen2({
         <View
           style={[
             isInicio2 && styles.inicio2ContentPanel,
+            isInicio2 && {
+              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
+            },
           ]}
         >
         {isInicio2 && (
-          <View
-            pointerEvents="none"
-            style={[
-              styles.inicio2ContentGradientClip,
-              {
-                backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
-              },
-            ]}
-          >
+          <View pointerEvents="none" style={styles.inicio2ContentGradientClip}>
             <LinearGradient
               colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
               locations={activeTheme.gradientLocations}
@@ -2486,8 +2437,6 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
-        borderColor={isIndigo2Theme ? "rgba(255,255,255,0.10)" : undefined}
-        borderWidth={isIndigo2Theme ? 2 : 0}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
@@ -2584,8 +2533,6 @@ const styles = StyleSheet.create({
   },
   inicio2ContentGradientClip: {
     ...StyleSheet.absoluteFillObject,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     overflow: "hidden",
   },
   inicio2HeroImageLayer: {
