@@ -156,4 +156,3 @@
 - [Herramientas de Inicio](inicio-tools-layout.md) — Inicio 2 muestra Biblioteca primero y mantiene Geometrix seguido de Videos
 - [Flujo emocional local](mood-checkin-local.md) — primera fase guarda check-ins completos localmente; encuesta secuencial por emoción y recomendaciones con mapeo provisional
 - [Carruseles editoriales compactos](content-carousel-sizing.md) — en Dormir/Descubrir/Sonidos/categorías: gap 14 px; pill sube solo con título de 2 líneas
-- [Overscroll del hero sin lag](hero-overscroll-performance.md) — aislar la escala extrema de la capa que respira; visibilidad y escala del respaldo deben responder en el hilo nativo
