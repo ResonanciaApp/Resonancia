@@ -789,7 +789,10 @@ function Inicio2HeroSlider({
   const heroCopyY = Animated.add(parallaxY, 15);
   const pullScale = scrollY.interpolate({
     inputRange: [-INICIO2_HERO_HEIGHT, 0],
-    outputRange: [1.35, 1],
+    // El hero se mantiene anclado arriba mientras el panel sí acompaña el
+    // rebote del ScrollView. La escala debe recuperar también esa distancia,
+    // no solo dar una sensación leve de zoom.
+    outputRange: [2.9, 1],
     extrapolate: "clamp",
   });
   const imageScale = Animated.multiply(zoom, pullScale);
@@ -2015,13 +2018,18 @@ export default function HomeScreen2({
         <View
           style={[
             isInicio2 && styles.inicio2ContentPanel,
-            isInicio2 && {
-              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
-            },
           ]}
         >
         {isInicio2 && (
-          <View pointerEvents="none" style={styles.inicio2ContentGradientClip}>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.inicio2ContentGradientClip,
+              {
+                backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
+              },
+            ]}
+          >
             <LinearGradient
               colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
               locations={activeTheme.gradientLocations}
@@ -2533,6 +2541,8 @@ const styles = StyleSheet.create({
   },
   inicio2ContentGradientClip: {
     ...StyleSheet.absoluteFillObject,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     overflow: "hidden",
   },
   inicio2HeroImageLayer: {
