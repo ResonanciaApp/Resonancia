@@ -27,6 +27,7 @@ type Props = {
   metaText?: string;
   showCategoryPill?: boolean;
   categoryPillPlain?: boolean;
+  categoryPillOutlineColor?: string;
   showDurationBadge?: boolean;
   showChevron?: boolean;
   onActionsPress?: () => void;
@@ -41,6 +42,7 @@ export function SessionRow({
   metaText,
   showCategoryPill = false,
   categoryPillPlain = true,
+  categoryPillOutlineColor,
   showDurationBadge = false,
   showChevron = false,
   onActionsPress,
@@ -104,6 +106,7 @@ export function SessionRow({
                 categoryId={session.categoryId}
                 inline
                 plain={categoryPillPlain}
+                outlineColor={categoryPillOutlineColor}
               />
             </View>
           ) : (

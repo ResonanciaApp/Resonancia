@@ -63,11 +63,13 @@ export function SessionCategoryPill({
   inline = false,
   plain = false,
   textOnly = false,
+  outlineColor,
 }: {
   categoryId?: string;
   inline?: boolean;
   plain?: boolean;
   textOnly?: boolean;
+  outlineColor?: string;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -80,9 +82,11 @@ export function SessionCategoryPill({
         inline && styles.categoryPillInline,
         plain && styles.categoryPillPlain,
         textOnly && styles.categoryPillTextOnly,
+        outlineColor && styles.categoryPillOutlined,
+        outlineColor ? { borderColor: outlineColor } : null,
       ]}
     >
-      {!plain && <SessionBadgeGlass />}
+      {!plain && !outlineColor && <SessionBadgeGlass />}
       {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
       <Text style={[styles.categoryLabel, !plain && styles.categoryLabelCard]} numberOfLines={1}>
         {category.label.toUpperCase()}
@@ -206,6 +210,10 @@ const styles = StyleSheet.create({
   },
   categoryPillTextOnly: {
     gap: 0,
+  },
+  categoryPillOutlined: {
+    borderWidth: 2,
+    backgroundColor: "transparent",
   },
   categoryCircle: {
     width: 19,

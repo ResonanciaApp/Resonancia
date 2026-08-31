@@ -86,6 +86,7 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
               imageSize={84}
               showCategoryPill
               categoryPillPlain={false}
+              categoryPillOutlineColor={sleepTabSurface}
               showDurationBadge
               showChevron
               style={styles.row}
