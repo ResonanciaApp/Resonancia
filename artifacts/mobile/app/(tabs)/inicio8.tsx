@@ -536,14 +536,18 @@ function Inicio2HeroSlider({
   const slideDrift = useRef(new Animated.Value(0)).current;
   const slideProgress = useSharedValue(0);
   const horizontalGestureActiveRef = useRef(false);
+  const [horizontalGestureActive, setHorizontalGestureActiveState] = useState(false);
+  const dragAdjacentIndexRef = useRef<number | null>(null);
+  const [dragAdjacentIndex, setDragAdjacentIndex] = useState<number | null>(null);
 
   const setHorizontalGestureActive = useCallback((active: boolean) => {
     if (horizontalGestureActiveRef.current === active) return;
     horizontalGestureActiveRef.current = active;
+    setHorizontalGestureActiveState(active);
     onHorizontalGestureActiveChange(active);
   }, [onHorizontalGestureActiveChange]);
 
-  const transitionToSlide = useCallback((nextIndex: number) => {
+  const transitionToSlide = useCallback((nextIndex: number, continueFromDrag = false) => {
     if (!focusedRef.current) {
       pendingIndexRef.current = nextIndex;
       return;
@@ -569,10 +573,14 @@ function Inicio2HeroSlider({
     slideProgress.value = 0;
     slidePositions.forEach((position, index) => {
       position.stopAnimation();
-      position.setValue(
-        index === fromIndex ? 0 : index === nextIndex ? direction * width : width,
-      );
+      if (!continueFromDrag) {
+        position.setValue(
+          index === fromIndex ? 0 : index === nextIndex ? direction * width : width,
+        );
+      }
     });
+    dragAdjacentIndexRef.current = null;
+    setDragAdjacentIndex(null);
     setSlideTransition({ from: fromIndex, to: nextIndex });
     setActiveIndex(nextIndex);
 
@@ -667,7 +675,7 @@ function Inicio2HeroSlider({
     cancelAnimation(slideProgress);
     slideProgress.value = 0;
 
-    if (focused) {
+    if (focused && !horizontalGestureActive) {
       slideProgress.value = withTiming(1, {
         duration: INICIO2_AUTOPLAY_DURATION,
         easing: Easing.linear,
@@ -677,19 +685,19 @@ function Inicio2HeroSlider({
     return () => {
       cancelAnimation(slideProgress);
     };
-  }, [activeIndex, focused, slideProgress]);
+  }, [activeIndex, focused, horizontalGestureActive, slideProgress]);
 
   useEffect(() => {
-    if (!focused) return;
+    if (!focused || horizontalGestureActive) return;
 
     const autoplayTimer = setTimeout(() => {
-      if (focusedRef.current) {
+      if (focusedRef.current && !horizontalGestureActiveRef.current) {
         setSlide(activeIndexRef.current + 1);
       }
     }, INICIO2_AUTOPLAY_DURATION);
 
     return () => clearTimeout(autoplayTimer);
-  }, [activeIndex, focused, setSlide]);
+  }, [activeIndex, focused, horizontalGestureActive, setSlide]);
 
   useEffect(() => () => {
     slidePositions.forEach((position) => position.stopAnimation());
@@ -705,6 +713,8 @@ function Inicio2HeroSlider({
         position.stopAnimation();
         position.setValue(index === activeIndexRef.current ? 0 : width);
       });
+      dragAdjacentIndexRef.current = null;
+      setDragAdjacentIndex(null);
       setSlideTransition(null);
       return;
     }
@@ -757,6 +767,71 @@ function Inicio2HeroSlider({
     setHorizontalGestureActive(false);
   }, [setHorizontalGestureActive]);
 
+  const updateHorizontalDrag = useCallback((dx: number) => {
+    const fromIndex = activeIndexRef.current;
+    const direction: 1 | -1 = dx < 0 ? 1 : -1;
+    const nextIndex = fromIndex + direction;
+
+    if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
+      const previousAdjacent = dragAdjacentIndexRef.current;
+      if (previousAdjacent !== null) {
+        slidePositions[previousAdjacent].stopAnimation();
+        slidePositions[previousAdjacent].setValue(width);
+        dragAdjacentIndexRef.current = null;
+        setDragAdjacentIndex(null);
+      }
+      slidePositions[fromIndex].setValue(0);
+      return;
+    }
+
+    const previousAdjacent = dragAdjacentIndexRef.current;
+    if (previousAdjacent !== nextIndex) {
+      if (previousAdjacent !== null) {
+        slidePositions[previousAdjacent].stopAnimation();
+        slidePositions[previousAdjacent].setValue(width);
+      }
+      dragAdjacentIndexRef.current = nextIndex;
+      setDragAdjacentIndex(nextIndex);
+    }
+
+    const clampedDx = Math.max(-width, Math.min(width, dx));
+    slidePositions[fromIndex].setValue(clampedDx);
+    slidePositions[nextIndex].setValue(direction * width + clampedDx);
+  }, [slidePositions]);
+
+  const settleHorizontalDrag = useCallback(() => {
+    const fromIndex = activeIndexRef.current;
+    const adjacentIndex = dragAdjacentIndexRef.current;
+    const animations = [
+      Animated.spring(slidePositions[fromIndex], {
+        toValue: 0,
+        friction: 9,
+        tension: 110,
+        useNativeDriver: ND,
+      }),
+    ];
+
+    if (adjacentIndex !== null) {
+      const direction: 1 | -1 = adjacentIndex > fromIndex ? 1 : -1;
+      animations.push(
+        Animated.spring(slidePositions[adjacentIndex], {
+          toValue: direction * width,
+          friction: 9,
+          tension: 110,
+          useNativeDriver: ND,
+        }),
+      );
+    }
+
+    Animated.parallel(animations).start(() => {
+      if (adjacentIndex !== null) {
+        slidePositions[adjacentIndex].setValue(width);
+      }
+      dragAdjacentIndexRef.current = null;
+      setDragAdjacentIndex(null);
+    });
+  }, [slidePositions]);
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -765,15 +840,47 @@ function Inicio2HeroSlider({
         onMoveShouldSetPanResponder: (_event, gesture) =>
           isHorizontalSwipeIntent(gesture.dx, gesture.dy),
         onPanResponderTerminationRequest: () => false,
+        onPanResponderMove: (_event, gesture) => {
+          if (horizontalGestureActiveRef.current) {
+            updateHorizontalDrag(gesture.dx);
+          }
+        },
         onPanResponderRelease: (_event, gesture) => {
           if (horizontalGestureActiveRef.current && Math.abs(gesture.dx) >= 36) {
-            setSlideFromSwipe(gesture.dx < 0 ? 1 : -1);
+            const direction: 1 | -1 = gesture.dx < 0 ? 1 : -1;
+            const nextIndex = activeIndexRef.current + direction;
+            const canContinueDrag =
+              dragAdjacentIndexRef.current === nextIndex
+              && loadedSlidesRef.current[nextIndex];
+
+            if (canContinueDrag) {
+              transitionToSlide(nextIndex, true);
+            } else if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
+              dragAdjacentIndexRef.current = null;
+              setDragAdjacentIndex(null);
+              setSlideFromSwipe(direction);
+            } else {
+              settleHorizontalDrag();
+              setSlideFromSwipe(direction);
+            }
+          } else {
+            settleHorizontalDrag();
           }
           finishHorizontalGesture();
         },
-        onPanResponderTerminate: finishHorizontalGesture,
+        onPanResponderTerminate: () => {
+          settleHorizontalDrag();
+          finishHorizontalGesture();
+        },
       }),
-    [finishHorizontalGesture, isHorizontalSwipeIntent, setSlideFromSwipe],
+    [
+      finishHorizontalGesture,
+      isHorizontalSwipeIntent,
+      setSlideFromSwipe,
+      settleHorizontalDrag,
+      transitionToSlide,
+      updateHorizontalDrag,
+    ],
   );
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
@@ -818,10 +925,14 @@ function Inicio2HeroSlider({
             {
               opacity: slideTransition
                 ? index === slideTransition.from || index === slideTransition.to ? 1 : 0
-                : index === activeIndex ? 1 : 0,
+                : dragAdjacentIndex !== null
+                  ? index === activeIndex || index === dragAdjacentIndex ? 1 : 0
+                  : index === activeIndex ? 1 : 0,
               zIndex: slideTransition
                 ? index === slideTransition.to ? 2 : 1
-                : index === activeIndex ? 1 : 0,
+                : dragAdjacentIndex !== null
+                  ? index === dragAdjacentIndex ? 2 : index === activeIndex ? 1 : 0
+                  : index === activeIndex ? 1 : 0,
               transform: [
                 { translateX: slidePositions[index] },
                 { translateY: parallaxY },
@@ -2517,7 +2628,9 @@ const styles = StyleSheet.create({
   inicio2Hero: {
     height: INICIO2_HERO_HEIGHT,
     width: "100%",
-    overflow: "visible",
+    overflow: "hidden",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     backgroundColor: "#060A0F",
   },
   inicio2ContentPanel: {
