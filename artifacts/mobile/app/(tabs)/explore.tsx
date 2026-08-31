@@ -123,7 +123,7 @@ function ChakraCarousel() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function ExploreScreen() {
+export function ExploreScreen({ screenTitle = "Descubrir" }: { screenTitle?: string }) {
   const { openCategory } = useCategoryOverlay();
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
@@ -376,13 +376,13 @@ export default function ExploreScreen() {
         >
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
-              Descubrir
+              {screenTitle}
             </Animated.Text>
             <Animated.View
               pointerEvents="none"
               style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
             >
-              <Text style={styles.compactPageTitle}>Descubrir</Text>
+              <Text style={styles.compactPageTitle}>{screenTitle}</Text>
             </Animated.View>
             <Pressable
               onPress={() => setSearchVisible(true)}
@@ -392,7 +392,7 @@ export default function ExploreScreen() {
                 activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Buscar en Descubrir"
+              accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
             >
               <Feather name="search" size={24} color="#F9F9F9" />
@@ -485,7 +485,7 @@ export default function ExploreScreen() {
         visible={searchVisible}
         onClose={() => setSearchVisible(false)}
         items={discoverSearchItems}
-        placeholder="Buscar en Descubrir..."
+        placeholder={`Buscar en ${screenTitle}...`}
         emptyTitle="Encuentra algo para ti"
         emptySubtitle="Busca sesiones, voces guía, artistas o temas"
         onSelect={(item) => {
@@ -496,6 +496,10 @@ export default function ExploreScreen() {
 
     </View>
   );
+}
+
+export default function ExploreRoute() {
+  return <ExploreScreen />;
 }
 
 const styles = StyleSheet.create({
