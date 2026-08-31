@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import {
   Alert,
@@ -27,6 +28,8 @@ import type { Session } from "@/data/sessions";
 
 const FADE_DURATION = 450;
 const AUTO_HIDE_DELAY = 4000;
+const SLIDE_DURATION = 500;
+const SLIDE_OFFSET = 900; // safely off-screen for any device
 
 type Props = {
   visible: boolean;
@@ -60,12 +63,11 @@ export function AmbientalPlayer({
     stop,
   } = usePlayer();
 
-  const matchedSessionRef = useRef(false);
-  const ownsPlaybackRef = useRef(false);
-  const currentSessionIdRef = useRef<string | null>(null);
-  currentSessionIdRef.current = currentSession?.id ?? null;
+  // ── Slide-in/out animation ────────────────────────────────────────────────
+  const [rendered, setRendered] = useState(false);
+  const slideAnim = useRef(new Animated.Value(SLIDE_OFFSET)).current;
 
-  // ── UI visibility animation ───────────────────────────────────────────────
+  // ── UI auto-hide animation ────────────────────────────────────────────────
   const uiOpacity = useRef(new Animated.Value(1)).current;
   const uiVisibleRef = useRef(true);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,37 +97,63 @@ export function AmbientalPlayer({
       toValue: 1,
       duration: FADE_DURATION,
       useNativeDriver: true,
-    }).start(() => {
-      scheduleHide();
-    });
+    }).start(() => scheduleHide());
   }, [uiOpacity, scheduleHide]);
 
   const handleScreenTap = useCallback(() => {
     if (!uiVisibleRef.current) {
       showUI();
     } else {
-      // Reset auto-hide timer on any tap while visible
       scheduleHide();
     }
   }, [showUI, scheduleHide]);
 
-  // Start / reset auto-hide when modal becomes visible
+  // ── Slide lifecycle ───────────────────────────────────────────────────────
   useEffect(() => {
     if (visible) {
+      // Reset UI opacity state
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
-      scheduleHide();
+      clearHideTimer();
+
+      setRendered(true);
+      slideAnim.stopAnimation();
+      slideAnim.setValue(SLIDE_OFFSET);
+
+      requestAnimationFrame(() => {
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: SLIDE_DURATION,
+          useNativeDriver: true,
+        }).start(({ finished }) => {
+          if (finished) scheduleHide();
+        });
+      });
     } else {
       clearHideTimer();
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
+
+      if (!rendered) return;
+      slideAnim.stopAnimation();
+      Animated.timing(slideAnim, {
+        toValue: SLIDE_OFFSET,
+        duration: SLIDE_DURATION,
+        useNativeDriver: true,
+      }).start(() => {
+        setRendered(false);
+        slideAnim.setValue(SLIDE_OFFSET);
+      });
     }
-    return () => {
-      clearHideTimer();
-    };
-  }, [visible, clearHideTimer, scheduleHide, uiOpacity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
   // ── Session ownership tracking ────────────────────────────────────────────
+  const matchedSessionRef = useRef(false);
+  const ownsPlaybackRef = useRef(false);
+  const currentSessionIdRef = useRef<string | null>(null);
+  currentSessionIdRef.current = currentSession?.id ?? null;
+
   useEffect(() => {
     if (!visible) {
       matchedSessionRef.current = false;
@@ -210,20 +238,26 @@ export function AmbientalPlayer({
   const countdown =
     sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
 
+  if (!rendered) return null;
+
   return (
     <Modal
-      visible={visible}
-      animationType="slide"
+      visible={rendered}
+      animationType="none"
       presentationStyle="fullScreen"
       statusBarTranslucent
       onRequestClose={confirmExit}
     >
       <StatusBar hidden />
-      <LinearGradient
-        colors={theme.gradient}
-        locations={theme.gradientLocations}
-        style={styles.root}
+      <Animated.View
+        style={[styles.root, { transform: [{ translateY: slideAnim }] }]}
       >
+        <LinearGradient
+          colors={theme.gradient}
+          locations={theme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+        />
+
         {/* Background image */}
         {session?.image && (
           <>
@@ -243,7 +277,10 @@ export function AmbientalPlayer({
         </TouchableWithoutFeedback>
 
         {/* All interactive UI fades together */}
-        <Animated.View style={[styles.uiLayer, { opacity: uiOpacity }]} pointerEvents="box-none">
+        <Animated.View
+          style={[styles.uiLayer, { opacity: uiOpacity }]}
+          pointerEvents="box-none"
+        >
           {/* Header row */}
           <View style={[styles.header, { top: Math.max(insets.top, 18) + 4 }]}>
             <Pressable
@@ -347,7 +384,7 @@ export function AmbientalPlayer({
             </Pressable>
           </View>
         </Animated.View>
-      </LinearGradient>
+      </Animated.View>
     </Modal>
   );
 }

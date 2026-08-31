@@ -141,13 +141,13 @@ export function AmbientalDurationSheet({
         Animated.parallel([
           Animated.spring(sheetY, {
             toValue: 0,
-            tension: 38,
-            friction: 7,
+            tension: 55,
+            friction: 8,
             useNativeDriver: true,
           }),
           Animated.timing(backdropOpacity, {
             toValue: 0.62,
-            duration: 380,
+            duration: 500,
             useNativeDriver: true,
           }),
         ]).start();
@@ -160,12 +160,12 @@ export function AmbientalDurationSheet({
     Animated.parallel([
       Animated.timing(sheetY, {
         toValue: SHEET_HEIGHT + 80,
-        duration: 240,
+        duration: 500,
         useNativeDriver: true,
       }),
       Animated.timing(backdropOpacity, {
         toValue: 0,
-        duration: 180,
+        duration: 460,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -459,15 +459,16 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 3,
     backgroundColor: "rgba(255,255,255,0.24)",
-    marginTop: 12,
-    marginBottom: 16,
+    marginTop: 18,
+    marginBottom: 10,
   },
   title: {
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 16,
+    marginTop: 10,
+    marginBottom: 10,
   },
   contentArea: {
     minHeight: 110,
@@ -560,7 +561,7 @@ const styles = StyleSheet.create({
   startButton: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderRadius: 30,
     marginTop: 26,
     overflow: "hidden",
