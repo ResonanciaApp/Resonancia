@@ -37,7 +37,6 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
-import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -294,7 +293,6 @@ export function ExploreScreen({
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
   const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
-  const [categoryTabsInteractive, setCategoryTabsInteractive] = React.useState(false);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
@@ -310,18 +308,13 @@ export function ExploreScreen({
     outputRange: [0, -8],
     extrapolate: "clamp",
   });
-  const categoryTabsOpacity = exploreScrollY.interpolate({
-    inputRange: [126, 142],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
+  const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.95],
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
-    const shouldEnableCategoryTabs = scrollY > 126;
-    setCategoryTabsInteractive((current) =>
-      current === shouldEnableCategoryTabs ? current : shouldEnableCategoryTabs,
-    );
     if (shouldCompact !== titleCompactRef.current) {
       titleCompactRef.current = shouldCompact;
       Animated.timing(titleCompactAnim, {
@@ -406,6 +399,27 @@ export function ExploreScreen({
             },
           ]}
         >
+          {collapseCategoryHeader && (
+            <>
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFill,
+                  {
+                    backgroundColor: activeTheme.gradient[0] as string,
+                    opacity: stickyHeaderSurfaceOpacity,
+                  },
+                ]}
+              />
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.stickyHeaderBorder,
+                  { opacity: titleCompactAnim },
+                ]}
+              />
+            </>
+          )}
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
               {screenTitle}
@@ -432,53 +446,6 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
-          {collapseCategoryHeader && (
-            <Animated.View
-              pointerEvents={categoryTabsInteractive ? "auto" : "none"}
-              style={[
-                styles.categoryTabsOverlay,
-                {
-                  backgroundColor: activeTheme.gradient[0] as string,
-                  opacity: categoryTabsOpacity,
-                  transform: [
-                    {
-                      translateY: categoryTabsOpacity.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [4, 0],
-                      }),
-                    },
-                  ],
-                },
-              ]}
-            >
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.categoryTabsScroll}
-                contentContainerStyle={styles.categoryTabsContent}
-              >
-                {DISCOVER_CONTENT_CATEGORIES.map((category) => (
-                  <Pressable
-                    key={category.id}
-                    onPress={() => openCategory(`/category/${category.id}`)}
-                    style={({ pressed }) => [
-                      styles.categoryTextTab,
-                      { opacity: pressed ? 0.72 : 1 },
-                    ]}
-                  >
-                    <View
-                      pointerEvents="none"
-                      style={[
-                        StyleSheet.absoluteFill,
-                        styles.categoryTextTabBorder,
-                      ]}
-                    />
-                    <Text style={styles.categoryTextTabLabel}>{category.label}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </Animated.View>
-          )}
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
@@ -514,13 +481,14 @@ export function ExploreScreen({
             >
               <ContentCategoryGrid
                 marginTop={14}
-                marginBottom={36}
+                marginBottom={20}
                 hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
                 horizontal
                 visualVariant={categoryVisualVariant}
               />
             </Animated.View>
           )}
+          {collapseCategoryHeader && <View style={styles.categoryCarouselDivider} />}
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
@@ -531,7 +499,7 @@ export function ExploreScreen({
                 isPremium={isPremium}
                 onPress={(s) => handleSessionPress(s)}
                 style={{
-                  marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 7 : 0,
+                  marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 25 : 0,
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
                 }}
@@ -623,38 +591,18 @@ const styles = StyleSheet.create({
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
-  categoryTabsScroll: {
-    flexGrow: 0,
-  },
-  categoryTabsOverlay: {
+  stickyHeaderBorder: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: -44,
-    paddingBottom: 4,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
-  categoryTabsContent: {
-    paddingHorizontal: H_PAD,
-    paddingVertical: 4,
-    gap: 8,
-  },
-  categoryTextTab: {
-    position: "relative",
-    minHeight: 36,
-    paddingHorizontal: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  categoryTextTabBorder: {
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.8)",
-  },
-  categoryTextTabLabel: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
+  categoryCarouselDivider: {
+    height: 1,
+    marginHorizontal: H_PAD,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
   headerSearchButton: {
     width: 40,
