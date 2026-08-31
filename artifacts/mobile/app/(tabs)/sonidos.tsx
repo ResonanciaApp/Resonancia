@@ -244,6 +244,7 @@ export default function SonidosScreen() {
                 cardWidth={CARD_W}
                 titleSize={19}
                 showCardMetadata
+                showAuthor={false}
               />
             )}
             {collections.map((collection) => (
@@ -257,6 +258,7 @@ export default function SonidosScreen() {
                 cardWidth={CARD_W}
                 titleSize={19}
                 showCardMetadata
+                showAuthor={false}
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}

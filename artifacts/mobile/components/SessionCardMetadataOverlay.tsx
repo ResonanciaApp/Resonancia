@@ -116,9 +116,11 @@ type Props = {
   title: string;
   authorName?: string;
   authorAvatar?: ImageSourcePropType;
+  showAuthor?: boolean;
   titleFontSize?: number;
   showDuration?: boolean;
   durationBottom?: number;
+  metaBottom?: number;
 };
 
 export function SessionCardMetadataOverlay({
@@ -127,10 +129,12 @@ export function SessionCardMetadataOverlay({
   title,
   authorName,
   authorAvatar,
+  showAuthor = true,
   titleFontSize,
   showDuration = true,
   // Deja un poco más de aire cuando el título ocupa dos líneas.
   durationBottom = 70,
+  metaBottom = 15,
 }: Props) {
   return (
     <>
@@ -149,7 +153,7 @@ export function SessionCardMetadataOverlay({
           showClock
         />
       )}
-      <View pointerEvents="none" style={[styles.meta, authorAvatar ? styles.metaWithAvatar : null]}>
+      <View pointerEvents="none" style={[styles.meta, { bottom: metaBottom }, authorAvatar ? styles.metaWithAvatar : null]}>
         {authorAvatar ? (
           <Image source={authorAvatar} style={styles.authorAvatar} resizeMode="cover" />
         ) : null}
@@ -163,7 +167,7 @@ export function SessionCardMetadataOverlay({
           >
             {title}
           </Text>
-          {authorName ? (
+          {showAuthor && authorName ? (
             <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
           ) : null}
         </View>

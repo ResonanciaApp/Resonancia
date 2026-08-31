@@ -1,10 +1,10 @@
 ---
 name: Carruseles editoriales compactos
-description: Regla visual global para el tamaño de cards en carruseles de contenido.
+description: Regla visual para las cards de Dormir, Descubrir, Sonidos y categorías.
 ---
 
-Los carruseles editoriales de sesiones, contenido destacado, Resonadores, Encuentros y portadas usan cards con 85% de la altura anterior. El ancho debe permitir ver dos cards completas y 25 px de la tercera, conservando el espaciado entre cards.
+En Dormir, Descubrir, Sonidos y las categorías dedicadas/dinámicas, las cards usan 85% de la altura anterior. El ancho es 1.05× el cálculo de dos cards completas más 10% de la tercera. Estas cards no muestran autor; el título y la pill de minutos se ubican más abajo para compensar.
 
-**Why:** El usuario pidió aumentar la densidad de exploración y dejar una señal visual clara de que el carrusel continúa.
+**Why:** El usuario quiso mantener alta densidad, reducir todavía más la porción visible de la tercera card y simplificar la jerarquía eliminando el autor.
 
-**How to apply:** Usar la métrica compartida de carruseles para nuevas filas de contenido. No aplicar esta regla a chips, tabs, selectores, miniaturas del miniplayer ni a carruseles funcionales de Geometrix o del mezclador.
+**How to apply:** Usar este modo solo en las pantallas indicadas y sus categorías. No extenderlo a Inicio, Resonadores, chips, tabs, miniaturas del miniplayer ni carruseles funcionales de Geometrix o del mezclador.

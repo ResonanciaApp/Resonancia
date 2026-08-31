@@ -1,5 +1,6 @@
 export const CONTENT_CAROUSEL_GAP = 16;
 export const CONTENT_CAROUSEL_NEXT_RATIO = 0.1;
+export const CONTENT_CAROUSEL_SIZE_SCALE = 1.05;
 export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85;
 
 /**
@@ -16,5 +17,5 @@ export function getContentCarouselCardWidth(
       - CONTENT_CAROUSEL_GAP * 2)
       / (2 + CONTENT_CAROUSEL_NEXT_RATIO),
   );
-  return Math.max(120, baseWidth);
+  return Math.max(120, Math.round(baseWidth * CONTENT_CAROUSEL_SIZE_SCALE));
 }

@@ -51,6 +51,7 @@ type SessionCarouselProps = {
   onViewAll?: () => void;
   viewAllColor?: string;
   showCardMetadata?: boolean;
+  showAuthor?: boolean;
   showHeader?: boolean;
 };
 
@@ -73,6 +74,7 @@ export function SessionCarousel({
   onViewAll,
   viewAllColor,
   showCardMetadata = false,
+  showAuthor = true,
   showHeader = true,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -140,14 +142,17 @@ export function SessionCarousel({
                     categoryId={s.categoryId}
                     durationLabel={s.durationLabel}
                     title={s.title}
-                    authorName={authorName}
+                    authorName={showAuthor ? authorName : undefined}
+                    showAuthor={showAuthor}
+                    durationBottom={showAuthor ? 70 : 52}
+                    metaBottom={showAuthor ? 15 : 10}
                   />
                 ) : (
                   <>
                     {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
                     <SessionDurationBadge
                       label={s.durationLabel}
-                      style={styles.durBadge}
+                      style={[styles.durBadge, !showAuthor && styles.durBadgeLower]}
                       textStyle={styles.durText}
                     />
                   </>
@@ -162,8 +167,8 @@ export function SessionCarousel({
               </View>
               {!showCardMetadata && (
                 <>
-                  <Text style={[styles.cardTitle, { marginTop: titleOffset ?? 10 }]} numberOfLines={2}>{s.title}</Text>
-                  {authorName ? (
+                  <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 14) }]} numberOfLines={2}>{s.title}</Text>
+                  {showAuthor && authorName ? (
                     <Text
                       style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
                       numberOfLines={1}
@@ -284,6 +289,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 3,
+  },
+  durBadgeLower: {
+    bottom: 4,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
   cardTitleWrap: {

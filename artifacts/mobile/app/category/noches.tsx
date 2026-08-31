@@ -133,7 +133,9 @@ function CategoryCard({
             categoryId={session.categoryId}
             durationLabel={session.durationLabel}
             title={session.title}
-            authorName={author}
+            showAuthor={false}
+            durationBottom={52}
+            metaBottom={10}
           />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
@@ -152,7 +154,6 @@ function CategoryCard({
         <View style={ac.hContent}>
           <Text style={ac.hDuration}>{session.durationLabel}</Text>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
-          {!!author && <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>}
         </View>
       </Pressable>
     );
@@ -167,7 +168,9 @@ function CategoryCard({
           categoryId={session.categoryId}
           durationLabel={session.durationLabel}
           title={session.title}
-          authorName={author}
+          showAuthor={false}
+          durationBottom={52}
+          metaBottom={10}
         />
         {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
       </View>
@@ -320,6 +323,7 @@ export default function NochesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
+              showAuthor={false}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -335,6 +339,7 @@ export default function NochesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
+              showAuthor={false}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -357,6 +362,7 @@ export default function NochesScreen() {
                   cardWidth={RECENT_CARD_W}
                   titleSize={19}
                   showCardMetadata
+                  showAuthor={false}
                   onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
                 />
                 {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}

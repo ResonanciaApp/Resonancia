@@ -573,6 +573,7 @@ export default function DescansoScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
+              showAuthor={false}
             />
           )}
           {sleepCollections.map((collection) => (
@@ -586,6 +587,7 @@ export default function DescansoScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
+              showAuthor={false}
               onViewAll={() => openCategory(`/sleep-tag/${collection.id}`)}
             />
           ))}

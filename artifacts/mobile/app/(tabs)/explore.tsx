@@ -430,6 +430,7 @@ export default function ExploreScreen() {
               cardWidth={SQCARD_W}
               titleSize={19}
               showCardMetadata
+              showAuthor={false}
               onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
             />
           ))}

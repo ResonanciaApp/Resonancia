@@ -136,9 +136,9 @@ const fcStyles = StyleSheet.create({
   card:    { width: FEATURED_CARD_W },
   imgWrap: { width: FEATURED_CARD_W, height: FEATURED_CARD_H, borderRadius: 14, overflow: "hidden" },
   img:     { width: FEATURED_CARD_W, height: FEATURED_CARD_H },
-  durPill: { position: "absolute", bottom: 8, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  durPill: { position: "absolute", bottom: 4, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   dur:     { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
-  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 10 },
+  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 14 },
   lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
 });
 
@@ -461,6 +461,7 @@ export default function MananasScreen() {
                     onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                     style={{ marginTop: 24, marginBottom: 0 }}
                     cardWidth={RECENT_CARD_W}
+                    showAuthor={false}
                   />
                 )}
                 {filteredSessions.length === 0 ? (

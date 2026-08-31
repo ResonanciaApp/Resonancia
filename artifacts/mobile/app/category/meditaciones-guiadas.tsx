@@ -190,7 +190,9 @@ function CategoryCard({
             categoryId={session.categoryId}
             durationLabel={session.durationLabel}
             title={session.title}
-            authorName={author}
+            showAuthor={false}
+            durationBottom={52}
+            metaBottom={10}
           />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
@@ -209,11 +211,6 @@ function CategoryCard({
         <View style={ac.hContent}>
           <Text style={ac.hDuration}>{session.durationLabel}</Text>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
-          {!!author&&(
-            <View style={ac.hAuthorRow}>
-              <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>
-            </View>
-          )}
         </View>
       </Pressable>
     );
@@ -226,7 +223,9 @@ function CategoryCard({
           categoryId={session.categoryId}
           durationLabel={session.durationLabel}
           title={session.title}
-          authorName={author}
+          showAuthor={false}
+          durationBottom={52}
+          metaBottom={10}
         />
         {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
       </View>
@@ -395,6 +394,7 @@ export default function MeditacionesGuiadasScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={18}
               showCardMetadata
+              showAuthor={false}
             />
           </>
         )}
@@ -409,6 +409,7 @@ export default function MeditacionesGuiadasScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={18}
               showCardMetadata
+              showAuthor={false}
             />
           </>
         )}
@@ -430,6 +431,7 @@ export default function MeditacionesGuiadasScreen() {
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   showCardMetadata
+                  showAuthor={false}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
               </React.Fragment>
