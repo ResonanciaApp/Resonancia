@@ -501,7 +501,7 @@ export function ExploreScreen({
               </Text>
               <ContentCategoryGrid
                 marginTop={0}
-                marginBottom={20}
+                marginBottom={SECTION_GAP}
                 hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
                 horizontal
                 visualVariant={categoryVisualVariant}
