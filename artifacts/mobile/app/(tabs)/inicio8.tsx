@@ -1007,6 +1007,344 @@ function Inicio2HeroSlider({
   );
 }
 
+function Inicio2HeroSliderRebuilt({
+  topInset,
+  focused,
+  scrollY,
+  currentStreak,
+  giftScale,
+  onOpenDrawer,
+  onOpenProfile,
+}: {
+  topInset: number;
+  focused: boolean;
+  scrollY: SharedValue<number>;
+  currentStreak: number;
+  giftScale: Animated.Value;
+  onOpenDrawer: () => void;
+  onOpenProfile: () => void;
+}) {
+  const { user: clerkUser } = useUser();
+  const { username, photoUri } = useUserProfile();
+  const sliderRef = useRef<ScrollView>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(0);
+  const [dragging, setDragging] = useState(false);
+  const slideDrift = useRef(new Animated.Value(0)).current;
+  const slideProgress = useSharedValue(0);
+
+  const selectSlide = useCallback((index: number, animated = true) => {
+    const boundedIndex = Math.max(0, Math.min(INICIO2_SLIDES.length - 1, index));
+    sliderRef.current?.scrollTo({ x: boundedIndex * width, animated });
+    if (!animated) {
+      activeIndexRef.current = boundedIndex;
+      setActiveIndex(boundedIndex);
+    }
+  }, []);
+
+  useEffect(() => {
+    cancelAnimation(slideProgress);
+    slideProgress.value = 0;
+    if (focused && !dragging) {
+      slideProgress.value = withTiming(1, {
+        duration: INICIO2_AUTOPLAY_DURATION,
+        easing: Easing.linear,
+      });
+    }
+    return () => cancelAnimation(slideProgress);
+  }, [activeIndex, dragging, focused, slideProgress]);
+
+  useEffect(() => {
+    if (!focused || dragging) return;
+    const timer = setTimeout(() => {
+      const nextIndex = (activeIndexRef.current + 1) % INICIO2_SLIDES.length;
+      selectSlide(nextIndex, nextIndex !== 0);
+    }, INICIO2_AUTOPLAY_DURATION);
+    return () => clearTimeout(timer);
+  }, [activeIndex, dragging, focused, selectSlide]);
+
+  useEffect(() => {
+    if (!focused) {
+      slideDrift.stopAnimation();
+      slideDrift.setValue(0);
+      return;
+    }
+    slideDrift.setValue(0);
+    const breath = Animated.loop(
+      Animated.sequence([
+        Animated.timing(slideDrift, {
+          toValue: 1,
+          duration: 11_000,
+          easing: RNEasing.inOut(RNEasing.sin),
+          useNativeDriver: ND,
+        }),
+        Animated.timing(slideDrift, {
+          toValue: 0,
+          duration: 11_000,
+          easing: RNEasing.inOut(RNEasing.sin),
+          useNativeDriver: ND,
+        }),
+      ]),
+    );
+    breath.start();
+    return () => {
+      breath.stop();
+      slideDrift.stopAnimation();
+      slideDrift.setValue(0);
+    };
+  }, [activeIndex, focused, slideDrift]);
+
+  const finishNativeSlide = useCallback((x: number) => {
+    const nextIndex = Math.max(
+      0,
+      Math.min(INICIO2_SLIDES.length - 1, Math.round(x / width)),
+    );
+    activeIndexRef.current = nextIndex;
+    setActiveIndex(nextIndex);
+    setDragging(false);
+  }, []);
+
+  const heroScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    const translateY = y < 0
+      ? Math.max(-INICIO2_HERO_HEIGHT, y)
+      : y <= INICIO2_SCROLL_START_THRESHOLD
+        ? 0
+        : Math.min(
+          INICIO2_HERO_HEIGHT * 0.38,
+          (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38,
+        );
+    return { transform: [{ translateY }] };
+  });
+  const heroImageScrollStyle = useAnimatedStyle(() => ({
+    transform: [{
+      scale: 1 + Math.min(
+        0.35,
+        Math.max(0, (-scrollY.value / INICIO2_HERO_HEIGHT) * 0.35),
+      ),
+    }],
+  }));
+  const heroCopyScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    const translateY = y < 0
+      ? Math.max(-INICIO2_HERO_HEIGHT, y)
+      : y <= INICIO2_SCROLL_START_THRESHOLD
+        ? 0
+        : Math.min(
+          INICIO2_HERO_HEIGHT * 0.38,
+          (y - INICIO2_SCROLL_START_THRESHOLD) * 0.38,
+        );
+    return { transform: [{ translateY: translateY + 15 }] };
+  });
+
+  const zoom = slideDrift.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.035],
+  });
+  const driftX = slideDrift.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -6],
+  });
+  const displayName =
+    username
+    || clerkUser?.firstName
+    || clerkUser?.fullName
+    || clerkUser?.username
+    || "Explorador";
+  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
+  const initial = displayName.charAt(0).toUpperCase();
+
+  return (
+    <View
+      style={styles.inicio2Hero}
+      testID="inicio2-hero-slider"
+      accessibilityLabel={`Diapositiva ${activeIndex + 1} de ${INICIO2_SLIDES.length}`}
+    >
+      <RAnimated.View
+        pointerEvents="box-none"
+        style={[StyleSheet.absoluteFill, heroScrollStyle]}
+      >
+        <RAnimated.View
+          pointerEvents="box-none"
+          style={[StyleSheet.absoluteFill, heroImageScrollStyle]}
+        >
+          <ScrollView
+            ref={sliderRef}
+            horizontal
+            pagingEnabled
+            bounces={false}
+            showsHorizontalScrollIndicator={false}
+            directionalLockEnabled
+            disableIntervalMomentum
+            scrollEventThrottle={16}
+            decelerationRate="fast"
+            onScrollBeginDrag={() => setDragging(true)}
+            onScrollEndDrag={(event) => {
+              if (!event.nativeEvent.velocity?.x) {
+                finishNativeSlide(event.nativeEvent.contentOffset.x);
+              }
+            }}
+            onMomentumScrollEnd={(event) =>
+              finishNativeSlide(event.nativeEvent.contentOffset.x)
+            }
+            style={StyleSheet.absoluteFill}
+            contentContainerStyle={{ width: width * INICIO2_SLIDES.length }}
+          >
+            {INICIO2_SLIDES.map((slide) => (
+              <View key={slide.id} style={{ width, height: INICIO2_HERO_HEIGHT }}>
+                <Animated.View
+                  style={[
+                    StyleSheet.absoluteFill,
+                    { transform: [{ scale: zoom }, { translateX: driftX }] },
+                  ]}
+                >
+                  <Image
+                    source={slide.image}
+                    resizeMode="cover"
+                    style={styles.inicio2HeroImage}
+                  />
+                  <LinearGradient
+                    colors={[
+                      "rgba(2,5,12,0.42)",
+                      "rgba(2,5,12,0.02)",
+                      "rgba(2,5,12,0)",
+                    ]}
+                    locations={[0, 0.48, 1]}
+                    style={styles.inicio2HeroImage}
+                    pointerEvents="none"
+                  />
+                </Animated.View>
+              </View>
+            ))}
+          </ScrollView>
+        </RAnimated.View>
+      </RAnimated.View>
+
+      <RAnimated.View
+        pointerEvents="box-none"
+        style={[
+          styles.inicio2HeroActions,
+          { paddingTop: topInset + 8 },
+          heroScrollStyle,
+        ]}
+      >
+        <View style={styles.inicio2HeroProfileButton}>
+          <Pressable
+            onPress={() => router.push("/(tabs)/profile" as never)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir mi perfil"
+            testID="inicio2-open-profile"
+          >
+            {displayPhoto ? (
+              <ExpoImage
+                source={{ uri: displayPhoto }}
+                style={styles.inicio2HeroAvatar}
+                contentFit="cover"
+              />
+            ) : (
+              <View style={styles.inicio2HeroAvatarFallback}>
+                <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={onOpenDrawer}
+            hitSlop={8}
+            style={styles.inicio2HeroGreeting}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú de perfil"
+            testID="inicio2-open-drawer"
+          >
+            <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+            <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+          </Pressable>
+        </View>
+
+        <Pressable
+          onPress={onOpenProfile}
+          onPressIn={() =>
+            Animated.spring(giftScale, {
+              toValue: 0.84,
+              speed: 30,
+              bounciness: 0,
+              useNativeDriver: ND,
+            }).start()
+          }
+          onPressOut={() =>
+            Animated.spring(giftScale, {
+              toValue: 1,
+              speed: 8,
+              bounciness: 16,
+              useNativeDriver: ND,
+            }).start()
+          }
+          hitSlop={12}
+          style={styles.inicio2HeroLotusButton}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile"
+        >
+          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+            <View style={styles.inicio2HeroLotusContent}>
+              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </RAnimated.View>
+
+      <RAnimated.View
+        pointerEvents="box-none"
+        style={[styles.inicio2HeroCopy, heroCopyScrollStyle]}
+      >
+        {INICIO2_SLIDES[activeIndex].categoryId ? (
+          <View style={styles.inicio2HeroCategory}>
+            <SessionCategoryPill
+              categoryId={INICIO2_SLIDES[activeIndex].categoryId}
+              inline
+            />
+          </View>
+        ) : null}
+        <Text style={styles.inicio2HeroTitle}>
+          {INICIO2_SLIDES[activeIndex].title}
+        </Text>
+        <Pressable
+          onPress={() => {}}
+          style={({ pressed }) => [
+            styles.inicio2HeroActionButton,
+            { opacity: pressed ? 0.82 : 1 },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={INICIO2_SLIDES[activeIndex].actionLabel}
+          testID={`inicio2-slide-action-${activeIndex + 1}`}
+        >
+          <Text style={styles.inicio2HeroActionButtonText}>
+            {INICIO2_SLIDES[activeIndex].actionLabel}
+          </Text>
+        </Pressable>
+      </RAnimated.View>
+
+      <RAnimated.View
+        style={[styles.inicio2HeroControls, heroScrollStyle]}
+        accessibilityRole="tablist"
+      >
+        {INICIO2_SLIDES.map((slide, index) => (
+          <Inicio2HeroControl
+            key={slide.id}
+            active={index === activeIndex}
+            progress={slideProgress}
+            onPress={() => selectSlide(index)}
+            accessibilityState={{ selected: index === activeIndex }}
+            accessibilityLabel={`Ver diapositiva ${index + 1}`}
+            testID={`inicio2-slide-control-${index + 1}`}
+          />
+        ))}
+      </RAnimated.View>
+    </View>
+  );
+}
+
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
@@ -1938,7 +2276,7 @@ export default function HomeScreen2({
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
         {isInicio2 ? (
           <>
-            <Inicio2HeroSlider
+            <Inicio2HeroSliderRebuilt
               topInset={topPad}
               focused={tabFocused}
               scrollY={inicio2ScrollY}
