@@ -739,8 +739,11 @@ function Inicio2HeroSlider({
             accessibilityLabel="Abrir menú de perfil"
             testID="inicio2-open-drawer"
           >
+            <Text style={styles.inicio2HeroGreetingLabel}>
+              Buenas tardes
+            </Text>
             <Text style={styles.inicio2HeroGreetingName}>
-              Buenas tardes, {displayName}
+              {displayName}
             </Text>
           </Pressable>
         </View>
@@ -2428,12 +2431,24 @@ const styles = StyleSheet.create({
   inicio2HeroGreeting: {
     minWidth: 0,
     marginLeft: 10,
+    gap: 1,
     width: width * 0.6,
+  },
+  inicio2HeroGreetingLabel: {
+    color: "rgba(255,255,255,0.82)",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "500",
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   inicio2HeroGreetingName: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 18,
+    lineHeight: 23,
     fontWeight: "700",
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
