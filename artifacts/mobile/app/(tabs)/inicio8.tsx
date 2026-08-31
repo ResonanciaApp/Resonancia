@@ -786,13 +786,32 @@ function Inicio2HeroSlider({
     outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
+  // En el rango normal de overscroll conserva el mismo anclaje y zoom. En un
+  // tirón extremo deja que la imagen acompañe parte del rebote para cubrir el
+  // panel sin exigir una textura escalada casi 3× al compositor.
+  const imageParallaxY = scrollY.interpolate({
+    inputRange: [
+      -INICIO2_HERO_HEIGHT,
+      -INICIO2_HERO_HEIGHT * 0.45,
+      0,
+      INICIO2_SCROLL_START_THRESHOLD,
+      INICIO2_HERO_HEIGHT,
+    ],
+    outputRange: [
+      -INICIO2_HERO_HEIGHT * 0.5,
+      -INICIO2_HERO_HEIGHT * 0.45,
+      0,
+      0,
+      INICIO2_HERO_HEIGHT * 0.38,
+    ],
+    extrapolate: "clamp",
+  });
   const heroCopyY = Animated.add(parallaxY, 15);
   const pullScale = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0],
-    // El hero se mantiene anclado arriba mientras el panel sí acompaña el
-    // rebote del ScrollView. La escala debe recuperar también esa distancia,
-    // no solo dar una sensación leve de zoom.
-    outputRange: [2.9, 1],
+    inputRange: [-INICIO2_HERO_HEIGHT, -INICIO2_HERO_HEIGHT * 0.45, 0],
+    // Hasta el 45% de tirón mantiene la curva anterior (1.9× distancia/H).
+    // Después limita el área de composición y completa la cobertura con Y.
+    outputRange: [1.95, 1.855, 1],
     extrapolate: "clamp",
   });
   const imageScale = Animated.multiply(zoom, pullScale);
@@ -830,7 +849,7 @@ function Inicio2HeroSlider({
                   : index === activeIndex ? 1 : 0,
                 transform: [
                   { translateX: slidePositions[index] },
-                  { translateY: parallaxY },
+                  { translateY: imageParallaxY },
                 ],
               },
             ]}
