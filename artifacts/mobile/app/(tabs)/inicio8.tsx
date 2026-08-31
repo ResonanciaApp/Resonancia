@@ -1907,7 +1907,6 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
-            viewAllColor="#985DD4"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
@@ -1993,7 +1992,6 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllColor="#985DD4"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
