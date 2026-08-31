@@ -37,6 +37,7 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -291,15 +292,36 @@ export function ExploreScreen({
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
+  const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
+  const [categoryTabsInteractive, setCategoryTabsInteractive] = React.useState(false);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
   });
+  const categoryImagesOpacity = exploreScrollY.interpolate({
+    inputRange: [88, 132],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const categoryImagesTranslateY = exploreScrollY.interpolate({
+    inputRange: [88, 132],
+    outputRange: [0, -8],
+    extrapolate: "clamp",
+  });
+  const categoryTabsOpacity = exploreScrollY.interpolate({
+    inputRange: [126, 142],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
+    const shouldEnableCategoryTabs = scrollY > 126;
+    setCategoryTabsInteractive((current) =>
+      current === shouldEnableCategoryTabs ? current : shouldEnableCategoryTabs,
+    );
     if (shouldCompact !== titleCompactRef.current) {
       titleCompactRef.current = shouldCompact;
       Animated.timing(titleCompactAnim, {
@@ -376,15 +398,14 @@ export function ExploreScreen({
 
       <View style={styles.contentShift}>
         {/* ── Header sticky desde el inicio — título + accesos ── */}
-        {!collapseCategoryHeader && (
-          <View
-            style={[
-              styles.fixedHeader,
-              {
-                paddingTop: topPad + 2,
-              },
-            ]}
-          >
+        <View
+          style={[
+            styles.fixedHeader,
+            {
+              paddingTop: topPad + 2,
+            },
+          ]}
+        >
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
               {screenTitle}
@@ -411,6 +432,54 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
+          {collapseCategoryHeader && (
+            <Animated.View
+              pointerEvents={categoryTabsInteractive ? "auto" : "none"}
+              style={[
+                styles.categoryTabsOverlay,
+                {
+                  backgroundColor: activeTheme.gradient[0] as string,
+                  opacity: categoryTabsOpacity,
+                  transform: [
+                    {
+                      translateY: categoryTabsOpacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [4, 0],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryTabsScroll}
+                contentContainerStyle={styles.categoryTabsContent}
+              >
+                {DISCOVER_CONTENT_CATEGORIES.map((category) => (
+                  <Pressable
+                    key={category.id}
+                    onPress={() => openCategory(`/category/${category.id}`)}
+                    style={({ pressed }) => [
+                      styles.categoryTextTab,
+                      { opacity: pressed ? 0.72 : 1 },
+                    ]}
+                  >
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        StyleSheet.absoluteFill,
+                        styles.categoryTextTabBorder,
+                      ]}
+                    />
+                    <Text style={styles.categoryTextTabLabel}>{category.label}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </Animated.View>
+          )}
+          {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
               marginBottom={0}
@@ -418,38 +487,31 @@ export function ExploreScreen({
               horizontal
               visualVariant={categoryVisualVariant}
             />
-          </View>
-        )}
+          )}
+        </View>
 
         <Animated.ScrollView
           style={styles.scroll}
           contentContainerStyle={{ paddingTop: 22, paddingBottom: 160 + bottomPad }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          onScroll={collapseCategoryHeader ? undefined : handleExploreScroll}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
+            {
+              useNativeDriver: true,
+              listener: handleExploreScroll,
+            },
+          )}
           scrollEventThrottle={16}
         >
           {collapseCategoryHeader && (
-            <>
-              <View style={{ paddingTop: topPad + 2 }}>
-                <View style={styles.titleRow}>
-                  <Text style={styles.pageTitle}>{screenTitle}</Text>
-                  <Pressable
-                    onPress={() => setSearchVisible(true)}
-                    hitSlop={10}
-                    style={[
-                      styles.headerSearchButton,
-                      activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Buscar en ${screenTitle}`}
-                    testID="discover-search-button"
-                  >
-                    <Feather name="search" size={24} color="#F9F9F9" />
-                  </Pressable>
-                </View>
-              </View>
-              <View style={{ marginTop: -41 }}>
+            <Animated.View
+              style={{
+                marginTop: -41,
+                opacity: categoryImagesOpacity,
+                transform: [{ translateY: categoryImagesTranslateY }],
+              }}
+            >
               <ContentCategoryGrid
                 marginTop={14}
                 marginBottom={36}
@@ -457,8 +519,7 @@ export function ExploreScreen({
                 horizontal
                 visualVariant={categoryVisualVariant}
               />
-              </View>
-            </>
+            </Animated.View>
           )}
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
@@ -562,6 +623,39 @@ const styles = StyleSheet.create({
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
+  categoryTabsScroll: {
+    flexGrow: 0,
+  },
+  categoryTabsOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: -44,
+    paddingBottom: 4,
+  },
+  categoryTabsContent: {
+    paddingHorizontal: H_PAD,
+    paddingVertical: 4,
+    gap: 8,
+  },
+  categoryTextTab: {
+    position: "relative",
+    minHeight: 36,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  categoryTextTabBorder: {
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.8)",
+  },
+  categoryTextTabLabel: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+  },
   headerSearchButton: {
     width: 40,
     height: 40,
