@@ -41,7 +41,7 @@ import {
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
-const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_H = Math.round(187 * CONTENT_CAROUSEL_HEIGHT_SCALE);
 const ICON_COLOR = "#f4c993";

@@ -24,14 +24,13 @@ import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 
 const H_PAD   = 14;
 const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
-const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const ICON_COLOR = "#C87BB5";
 const GOLD    = "#F9F9F9";
@@ -80,7 +79,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   const { theme: chipTheme } = useSceneTheme();
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { borderColor: getSceneTabSurface(chipTheme.id) }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (chipTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
         : <LinearGradient colors={["rgb(218,212,236)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
@@ -508,8 +507,8 @@ const styles = StyleSheet.create({
   chipRowWrapper: { position: "relative" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 2 },
-  chipSel: {},
+  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+  chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "400" },
 

@@ -28,7 +28,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
@@ -38,7 +37,7 @@ import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
-const RECENT_CARD_W = Math.round((width - H_PAD * 2) / 1.85);
+const RECENT_CARD_W = getContentCarouselCardWidth(width, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(width, H_PAD);
 const GOLD  = "#F9F9F9";
 
@@ -153,7 +152,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const contentColor = "#F4F4F4";
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, { borderColor: getSceneTabSurface(theme.id) }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && <LinearGradient colors={["#8C4912", "#7A3C0A"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Feather name={(icon ?? "grid") as never} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
@@ -778,13 +777,13 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 2 },
+   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
-   chipSel: {},
+   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },

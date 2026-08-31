@@ -31,10 +31,11 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
-const CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();

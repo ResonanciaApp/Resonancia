@@ -11,7 +11,6 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
 
 type Props = {
   sessions: Session[];
@@ -54,7 +53,12 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
-  const sleepTabSurface = getSceneTabSurface(theme.id);
+  const sleepTabSurface =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   if (recommendations.length < 3) return null;
 

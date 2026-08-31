@@ -24,7 +24,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
@@ -32,7 +32,7 @@ import { getSessionsByCategory, type Session } from "@/data/sessions";
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 20) / 2;
-const CAROUSEL_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const CAROUSEL_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -64,7 +64,6 @@ function Chip({
         styles.chip,
         theme.id === "tibet" && styles.chipTibet,
         theme.id === "indigo" && styles.chipIndigo,
-        { borderColor: getSceneTabSurface(theme.id) },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -470,7 +469,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.05)",
-     borderWidth: 2,
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },

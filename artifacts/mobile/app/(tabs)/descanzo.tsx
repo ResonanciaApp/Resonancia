@@ -35,7 +35,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -111,7 +111,6 @@ function SleepPill({
           styles.sleepPill,
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
-          { borderColor: getSceneTabSurface(theme.id) },
           sel && styles.sleepPillSel,
         ]}
       >
@@ -132,7 +131,7 @@ function SleepPill({
 const H_PAD = 14;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
-const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
@@ -951,7 +950,6 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 2,
   },
   sleepPillHighlight: {
     backgroundColor: "rgba(255,255,255,0.05)",
@@ -959,7 +957,7 @@ const styles = StyleSheet.create({
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   sleepPillInactive: { backgroundColor: "#2B2944" },
-  sleepPillSel: {},
+  sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 15,

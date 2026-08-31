@@ -105,7 +105,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
 import { AUDIO_MAP } from "@/config/audio-map";
@@ -4206,7 +4205,7 @@ export default function GeometrixScreen() {
                 <Pressable
                   key={c.id}
                   onPress={() => setActiveCategory(c.id)}
-                  style={[styles.catChip, sceneTheme.id === "indigo" ? styles.catChipIndigo : null, { borderColor: getSceneTabSurface(sceneTheme.id) }]}
+                  style={[styles.catChip, sceneTheme.id === "indigo" ? styles.catChipIndigo : null, on ? styles.catChipOn : null]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`Filtrar geometrías: ${c.label}`}
@@ -6785,7 +6784,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.05)",
-     borderWidth: 2,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  catChipOn: {
+    borderWidth: 0,
   },
   catChipIndigo: {
     backgroundColor: "rgba(42,40,64,0.65)",

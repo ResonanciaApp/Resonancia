@@ -12,6 +12,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const CATEGORY_ID = "charlas";
 const HORIZONTAL_PAD = 14;
@@ -64,7 +65,7 @@ export function ExpandConsciousnessSection({
     return filtered.slice(0, CARDS_PER_TAB);
   }, [activeTab, sessions]);
 
-  const discoverCardWidth = Math.round((width - HORIZONTAL_PAD * 2) / 1.85);
+  const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
 
   return (
     <View

@@ -32,7 +32,6 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
 import {
   type MixSound,
   type SoundCategoryId,
@@ -195,7 +194,7 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, theme.id === "indigo" && styles.pillTabIndigo, { borderColor: getSceneTabSurface(theme.id) }, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, theme.id === "indigo" && styles.pillTabIndigo, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
     >
       {/* Fondo seleccionado */}
       {sel && (
@@ -1103,7 +1102,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 2,
+    borderWidth: 0,
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillTabIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },

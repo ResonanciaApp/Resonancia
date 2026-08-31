@@ -1,10 +1,10 @@
 export const CONTENT_CAROUSEL_GAP = 16;
-export const CONTENT_CAROUSEL_PEEK = 25;
+export const CONTENT_CAROUSEL_NEXT_RATIO = 0.9;
 export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85;
 
 /**
- * Ancho de las cards de contenido para mostrar dos completas y 25 px de la
- * tercera dentro del ancho útil de la pantalla.
+ * Ancho de las cards de contenido para mostrar una completa y el 90% de la
+ * siguiente dentro del ancho útil de la pantalla.
  */
 export function getContentCarouselCardWidth(
   viewportWidth: number,
@@ -15,8 +15,8 @@ export function getContentCarouselCardWidth(
     Math.round(
       (viewportWidth
         - horizontalPadding * 2
-        - CONTENT_CAROUSEL_GAP
-        - CONTENT_CAROUSEL_PEEK) / 2,
+        - CONTENT_CAROUSEL_GAP)
+        / (1 + CONTENT_CAROUSEL_NEXT_RATIO),
     ),
   );
 }

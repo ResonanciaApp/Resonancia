@@ -36,6 +36,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -43,7 +44,7 @@ const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
-const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
+const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },

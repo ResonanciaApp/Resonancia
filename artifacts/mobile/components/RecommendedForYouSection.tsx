@@ -13,7 +13,7 @@ import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getSceneTabSurface } from "@/utils/scene-tab";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
@@ -146,8 +146,13 @@ export function RecommendedForYouSection({
 
   if (!hasRecommendations) return null;
 
-  const discoverCardWidth = Math.round((width - HORIZONTAL_PAD * 2) / 1.85);
-  const dailyRecommendationsBorder = getSceneTabSurface(theme.id);
+  const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
+  const dailyRecommendationsBorder =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   return (
     <View
