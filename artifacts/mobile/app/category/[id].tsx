@@ -24,6 +24,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getSceneTabSurface } from "@/utils/scene-tab";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
@@ -63,6 +64,7 @@ function Chip({
         styles.chip,
         theme.id === "tibet" && styles.chipTibet,
         theme.id === "indigo" && styles.chipIndigo,
+        { borderColor: getSceneTabSurface(theme.id) },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -468,6 +470,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.05)",
+     borderWidth: 2,
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },

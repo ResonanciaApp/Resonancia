@@ -28,6 +28,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getSceneTabSurface } from "@/utils/scene-tab";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
 
@@ -100,7 +101,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const contentColor = "#F4F4F4";
 
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
+    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, { borderColor: getSceneTabSurface(theme.id) }, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
       {sel && <LinearGradient colors={["#307E91", "#1A5863"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Feather name={(icon ?? "grid") as never} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
@@ -645,13 +646,13 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
+   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 2 },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
-  chipSel: { borderWidth: 0 },
+   chipSel: {},
   chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },

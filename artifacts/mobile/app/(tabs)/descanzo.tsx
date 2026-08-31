@@ -35,6 +35,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { getSceneTabSurface } from "@/utils/scene-tab";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -110,6 +111,7 @@ function SleepPill({
           styles.sleepPill,
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
+          { borderColor: getSceneTabSurface(theme.id) },
           sel && styles.sleepPillSel,
         ]}
       >
@@ -949,6 +951,7 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 2,
   },
   sleepPillHighlight: {
     backgroundColor: "rgba(255,255,255,0.05)",
@@ -956,7 +959,7 @@ const styles = StyleSheet.create({
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   sleepPillInactive: { backgroundColor: "#2B2944" },
-  sleepPillSel: { borderWidth: 0 },
+  sleepPillSel: {},
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 15,

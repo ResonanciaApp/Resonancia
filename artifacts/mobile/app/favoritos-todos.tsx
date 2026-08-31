@@ -26,6 +26,7 @@ import { getSessionById, type Session } from "@/data/sessions";
 import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
+import { getSceneTabSurface } from "@/utils/scene-tab";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
@@ -66,6 +67,7 @@ function FavPill({
         styles.pill,
         theme.id === "tibet" && styles.pillTibet,
         theme.id === "indigo" && styles.pillIndigo,
+        { borderColor: getSceneTabSurface(theme.id) },
         sel && styles.pillSel,
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -320,10 +322,10 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 0,
+    borderWidth: 2,
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillSel: { borderWidth: 0 },
+  pillSel: {},
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",

@@ -55,6 +55,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { getSceneTabSurface } from "@/utils/scene-tab";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -66,9 +67,7 @@ const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
 function getLibraryTabSurface(sceneId: string): string {
-  if (sceneId === "tibet") return "rgba(0,0,0,0.15)";
-  if (sceneId === "indigo") return "rgba(42,40,64,0.65)";
-  return "rgba(255,255,255,0.05)";
+  return getSceneTabSurface(sceneId);
 }
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
@@ -161,7 +160,7 @@ function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.Com
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
+       style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, { borderColor: getSceneTabSurface(theme.id) }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && (
         <LinearGradient
@@ -2162,11 +2161,12 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 2,
     justifyContent: "center",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  chipSel: { borderWidth: 0 },
+  chipSel: {},
   chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
