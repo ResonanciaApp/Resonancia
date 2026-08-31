@@ -500,7 +500,12 @@ export function ExploreScreen({
                 isPremium={isPremium}
                 onPress={(s) => handleSessionPress(s)}
                 style={{
-                  marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 25 : 0,
+                  marginTop:
+                    carousel.label.trim().toLowerCase() === "para la ansiedad"
+                      ? collapseCategoryHeader
+                        ? 35
+                        : 7
+                      : 0,
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
                 }}
