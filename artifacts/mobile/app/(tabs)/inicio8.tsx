@@ -1340,6 +1340,188 @@ function Inicio2HeroSliderRebuilt({
   );
 }
 
+function Inicio2HeroStatic({
+  topInset,
+  scrollY,
+  currentStreak,
+  giftScale,
+  onOpenDrawer,
+  onOpenProfile,
+}: {
+  topInset: number;
+  scrollY: SharedValue<number>;
+  currentStreak: number;
+  giftScale: Animated.Value;
+  onOpenDrawer: () => void;
+  onOpenProfile: () => void;
+}) {
+  const { user: clerkUser } = useUser();
+  const { username, photoUri } = useUserProfile();
+  const heroScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    return {
+      transform: [{ translateY: y < 0 ? Math.max(-INICIO2_HERO_HEIGHT, y) : 0 }],
+    };
+  });
+  const heroImageStretchStyle = useAnimatedStyle(() => ({
+    transformOrigin: "top center",
+    transform: [{
+      scaleY: 1 + Math.min(
+        0.22,
+        Math.max(0, (-scrollY.value / INICIO2_HERO_HEIGHT) * 0.35),
+      ),
+    }],
+  }));
+  const heroCopyScrollStyle = useAnimatedStyle(() => {
+    const y = scrollY.value;
+    return {
+      transform: [{
+        translateY: (y < 0 ? Math.max(-INICIO2_HERO_HEIGHT, y) : 0) + 15,
+      }],
+    };
+  });
+  const displayName =
+    username
+    || clerkUser?.firstName
+    || clerkUser?.fullName
+    || clerkUser?.username
+    || "Explorador";
+  const displayPhoto = photoUri || clerkUser?.imageUrl || null;
+  const initial = displayName.charAt(0).toUpperCase();
+
+  return (
+    <View
+      style={styles.inicio2Hero}
+      testID="inicio2-hero-static"
+      accessibilityLabel="Contenido destacado"
+    >
+      <RAnimated.View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, heroScrollStyle]}
+      >
+        <RAnimated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            styles.inicio2HeroSliderClip,
+            heroImageStretchStyle,
+          ]}
+        >
+        <Image
+          source={require("@/assets/images/inicio2-mistico-1.jpg")}
+          resizeMode="cover"
+          style={styles.inicio2HeroImage}
+        />
+        <LinearGradient
+          colors={[
+            "rgba(2,5,12,0.42)",
+            "rgba(2,5,12,0.02)",
+            "rgba(2,5,12,0)",
+          ]}
+          locations={[0, 0.48, 1]}
+          style={styles.inicio2HeroImage}
+        />
+        </RAnimated.View>
+      </RAnimated.View>
+
+      <RAnimated.View
+        pointerEvents="box-none"
+        style={[
+          styles.inicio2HeroActions,
+          { paddingTop: topInset + 8 },
+          heroScrollStyle,
+        ]}
+      >
+        <View style={styles.inicio2HeroProfileButton}>
+          <Pressable
+            onPress={() => router.push("/(tabs)/profile" as never)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir mi perfil"
+            testID="inicio2-open-profile"
+          >
+            {displayPhoto ? (
+              <ExpoImage
+                source={{ uri: displayPhoto }}
+                style={styles.inicio2HeroAvatar}
+                contentFit="cover"
+              />
+            ) : (
+              <View style={styles.inicio2HeroAvatarFallback}>
+                <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={onOpenDrawer}
+            hitSlop={8}
+            style={styles.inicio2HeroGreeting}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú de perfil"
+            testID="inicio2-open-drawer"
+          >
+            <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+            <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+          </Pressable>
+        </View>
+
+        <Pressable
+          onPress={onOpenProfile}
+          onPressIn={() =>
+            Animated.spring(giftScale, {
+              toValue: 0.84,
+              speed: 30,
+              bounciness: 0,
+              useNativeDriver: ND,
+            }).start()
+          }
+          onPressOut={() =>
+            Animated.spring(giftScale, {
+              toValue: 1,
+              speed: 8,
+              bounciness: 16,
+              useNativeDriver: ND,
+            }).start()
+          }
+          hitSlop={12}
+          style={styles.inicio2HeroLotusButton}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile"
+        >
+          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+            <View style={styles.inicio2HeroLotusContent}>
+              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </RAnimated.View>
+
+      <RAnimated.View
+        pointerEvents="box-none"
+        style={[styles.inicio2HeroCopy, heroCopyScrollStyle]}
+      >
+        <Text style={styles.inicio2HeroTitle}>
+          Aprendamos a conectar con lo esencial
+        </Text>
+        <Pressable
+          onPress={() => {}}
+          style={({ pressed }) => [
+            styles.inicio2HeroActionButton,
+            { opacity: pressed ? 0.82 : 1 },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Descubrir"
+          testID="inicio2-hero-action"
+        >
+          <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
+        </Pressable>
+      </RAnimated.View>
+    </View>
+  );
+}
+
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
@@ -2271,9 +2453,8 @@ export default function HomeScreen2({
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
         {isInicio2 ? (
           <>
-            <Inicio2HeroSliderRebuilt
+            <Inicio2HeroStatic
               topInset={topPad}
-              focused={tabFocused}
               scrollY={inicio2ScrollY}
               currentStreak={currentStreakDisplay}
               giftScale={giftScaleAnim}
