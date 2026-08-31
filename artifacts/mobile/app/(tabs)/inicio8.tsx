@@ -786,7 +786,14 @@ function Inicio2HeroSlider({
     outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
     extrapolate: "clamp",
   });
-  const heroCopyY = Animated.add(parallaxY, 15);
+  const foregroundParallaxY = scrollY.interpolate({
+    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+    // Durante el tirón conserva una fracción del desplazamiento visible:
+    // acompaña el estiramiento sin quedar pegado al contenido.
+    outputRange: [-INICIO2_HERO_HEIGHT * 0.78, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
+    extrapolate: "clamp",
+  });
+  const heroCopyY = Animated.add(foregroundParallaxY, 15);
   const pullScale = scrollY.interpolate({
     inputRange: [-INICIO2_HERO_HEIGHT, 0],
     // El hero se mantiene anclado arriba mientras el panel sí acompaña el
@@ -950,7 +957,7 @@ function Inicio2HeroSlider({
       </Animated.View>
 
       <Animated.View
-        style={[styles.inicio2HeroControls, { transform: [{ translateY: parallaxY }] }]}
+        style={[styles.inicio2HeroControls, { transform: [{ translateY: foregroundParallaxY }] }]}
         accessibilityRole="tablist"
       >
         {INICIO2_SLIDES.map((slide, index) => {
