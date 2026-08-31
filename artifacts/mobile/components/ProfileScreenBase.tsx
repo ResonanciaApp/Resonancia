@@ -6,7 +6,6 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
 import { router, useFocusEffect, useNavigation } from "expo-router";
@@ -33,7 +32,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
-import Svg, { Defs, Ellipse, RadialGradient, Stop } from "react-native-svg";
 
 import {
   useGetMe,
@@ -103,44 +101,6 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
-
-function ProfileHeaderAurora() {
-  return (
-    <Svg
-      width="100%"
-      height="100%"
-      style={StyleSheet.absoluteFill}
-      pointerEvents="none"
-    >
-      <Defs>
-        <RadialGradient id="profile-header-violet-left" cx="0%" cy="0%" r="100%">
-          <Stop offset="0%" stopColor="#B875E8" stopOpacity={0.28} />
-          <Stop offset="100%" stopColor="#7D43B5" stopOpacity={0} />
-        </RadialGradient>
-        <RadialGradient id="profile-header-purple-right" cx="100%" cy="0%" r="100%">
-          <Stop offset="0%" stopColor="#8E62D2" stopOpacity={0.25} />
-          <Stop offset="100%" stopColor="#5D328F" stopOpacity={0} />
-        </RadialGradient>
-      </Defs>
-      <Ellipse
-        cx="18%"
-        cy="0%"
-        rx="58%"
-        ry="105%"
-        fill="url(#profile-header-violet-left)"
-      />
-      <Ellipse
-        cx="84%"
-        cy="4%"
-        rx="60%"
-        ry="110%"
-        fill="url(#profile-header-purple-right)"
-      />
-    </Svg>
-  );
-}
-
-
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
 function BgGlyph({
@@ -965,25 +925,6 @@ export function ProfileScreenBase({
           },
         ]}
       >
-        {dedicated && (
-          <View pointerEvents="none" style={styles.profileHeaderGlass}>
-            <BlurView
-              intensity={24}
-              tint="dark"
-              style={StyleSheet.absoluteFill}
-            />
-            <ProfileHeaderAurora />
-            <LinearGradient
-              colors={[
-                "rgba(92,48,132,0.28)",
-                "rgba(87,47,125,0.14)",
-                "rgba(76,42,110,0)",
-              ]}
-              locations={[0, 0.55, 1]}
-              style={StyleSheet.absoluteFill}
-            />
-          </View>
-        )}
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={[
           styles.stickyHeaderRow,
