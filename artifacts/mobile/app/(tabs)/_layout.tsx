@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     backgroundColor: GHOST_PILL_BG,
   },
   slidingPillIndigo2: {
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   mezcladorHandle: {
     position: "absolute",
