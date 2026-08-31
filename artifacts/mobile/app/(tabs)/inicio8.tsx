@@ -614,6 +614,37 @@ function Inicio2HeroSlider({
     transitionToSlide(normalized);
   }, [transitionToSlide]);
 
+  const bounceAtEdge = useCallback((direction: 1 | -1) => {
+    const activePosition = slidePositions[activeIndexRef.current];
+    activePosition.stopAnimation();
+    Animated.sequence([
+      Animated.timing(activePosition, {
+        toValue: direction * 34,
+        duration: 130,
+        easing: RNEasing.out(RNEasing.cubic),
+        useNativeDriver: ND,
+      }),
+      Animated.spring(activePosition, {
+        toValue: 0,
+        friction: 7,
+        tension: 120,
+        useNativeDriver: ND,
+      }),
+    ]).start();
+  }, [slidePositions]);
+
+  const setSlideFromSwipe = useCallback((direction: 1 | -1) => {
+    const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
+    const nextIndex = baseIndex + direction;
+    if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
+      pendingIndexRef.current = null;
+      desiredIndexRef.current = activeIndexRef.current;
+      bounceAtEdge(direction);
+      return;
+    }
+    setSlide(nextIndex);
+  }, [bounceAtEdge, setSlide]);
+
   const handleSlideLoad = useCallback((index: number) => {
     loadedSlidesRef.current[index] = true;
     if (pendingIndexRef.current === index && focusedRef.current) {
@@ -736,14 +767,13 @@ function Inicio2HeroSlider({
         onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_event, gesture) => {
           if (horizontalGestureActiveRef.current && Math.abs(gesture.dx) >= 36) {
-            const baseIndex = pendingIndexRef.current ?? desiredIndexRef.current;
-            setSlide(baseIndex + (gesture.dx < 0 ? 1 : -1));
+            setSlideFromSwipe(gesture.dx < 0 ? 1 : -1);
           }
           finishHorizontalGesture();
         },
         onPanResponderTerminate: finishHorizontalGesture,
       }),
-    [finishHorizontalGesture, isHorizontalSwipeIntent, setSlide],
+    [finishHorizontalGesture, isHorizontalSwipeIntent, setSlideFromSwipe],
   );
 
   const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
