@@ -976,7 +976,7 @@ export function ProfileScreenBase({
             </Animated.View>
           )}
           {dedicated ? (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.profileSettingsWrap}>
               <Pressable hitSlop={8} onPress={() => router.push("/configuraciones")}>
                 <Feather name="settings" size={23} color="#FBFBFB" />
               </Pressable>
@@ -1729,6 +1729,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   stickyTitleDedicated: { fontSize: 31, textAlign: "left", marginLeft: 0, transform: [{ translateY: 6 }] },
+  profileSettingsWrap: { flexDirection: "row", alignItems: "center", transform: [{ translateY: 6 }] },
   compactTitleOverlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
