@@ -308,12 +308,12 @@ export function AmbientalPlayer({
                 testID="ambiental-player-play-pause"
               >
                 {isPlaying ? (
-                  <Svg width={30} height={30} viewBox="0 0 46 46">
+                  <Svg width={33} height={33} viewBox="0 0 46 46">
                     <Rect x="8"  y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
                     <Rect x="27" y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
                   </Svg>
                 ) : (
-                  <Svg width={30} height={30} viewBox="0 0 46 46">
+                  <Svg width={33} height={33} viewBox="0 0 46 46">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
                       fill="#FFFFFF"
@@ -333,7 +333,7 @@ export function AmbientalPlayer({
                 accessibilityLabel="Detener sesión"
                 testID="ambiental-player-stop"
               >
-                <Svg width={28} height={28} viewBox="0 0 24 24">
+                <Svg width={31} height={31} viewBox="0 0 24 24">
                   <Rect x="4" y="4" width="16" height="16" rx="1.5" fill="#FFFFFF" />
                 </Svg>
               </Pressable>
@@ -379,11 +379,11 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GHOST_BORDER,
   },
-  // Large ghost pill — play/stop (78×78)
+  // Large ghost pill — play/stop (83×83)
   ghostPillLarge: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
+    width: 83,
+    height: 83,
+    borderRadius: 42,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: GHOST_BG,
