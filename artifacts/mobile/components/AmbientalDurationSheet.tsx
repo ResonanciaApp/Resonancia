@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
@@ -104,6 +105,7 @@ export function AmbientalDurationSheet({
   onStart,
 }: Props) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const [rendered, setRendered] = useState(visible);
   const [customMode, setCustomMode] = useState(false);
@@ -229,7 +231,7 @@ export function AmbientalDurationSheet({
           <Animated.View
             style={[
               StyleSheet.absoluteFill,
-              { backgroundColor: colors.background, opacity: backdropOpacity },
+              { backgroundColor: "#000000", opacity: backdropOpacity },
             ]}
           />
         </Pressable>
@@ -238,7 +240,9 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              backgroundColor: colors.card,
+              // `colors.card` es translúcido en la paleta global. El sheet
+              // necesita una superficie opaca del mismo tema que Inicio.
+              backgroundColor: theme.gradient[0],
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
@@ -407,6 +411,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
+    overflow: "hidden",
+    zIndex: 2,
+    elevation: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.28,
+    shadowRadius: 18,
   },
   handle: {
     alignSelf: "center",
