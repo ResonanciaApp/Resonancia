@@ -639,7 +639,7 @@ function Inicio2HeroSlider({
     if (nextIndex < 0 || nextIndex >= INICIO2_SLIDES.length) {
       pendingIndexRef.current = null;
       desiredIndexRef.current = activeIndexRef.current;
-      bounceAtEdge(direction);
+      bounceAtEdge(direction === 1 ? -1 : 1);
       return;
     }
     setSlide(nextIndex);
