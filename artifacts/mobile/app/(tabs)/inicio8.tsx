@@ -2628,14 +2628,13 @@ const styles = StyleSheet.create({
   inicio2Hero: {
     height: INICIO2_HERO_HEIGHT,
     width: "100%",
-    overflow: "hidden",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    overflow: "visible",
     backgroundColor: "#060A0F",
   },
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
+    marginTop: -1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
