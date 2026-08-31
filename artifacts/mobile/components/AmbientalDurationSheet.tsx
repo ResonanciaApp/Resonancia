@@ -23,6 +23,16 @@ const MAX_CUSTOM_HOURS = 8;
 const MINUTES = Array.from({ length: 60 }, (_, index) => index);
 const HOURS = Array.from({ length: MAX_CUSTOM_HOURS + 1 }, (_, index) => index);
 
+function darkenHex(color: string, amount: number) {
+  const hex = color.replace("#", "");
+  if (!/^[\da-f]{6}$/i.test(hex)) return color;
+  const factor = Math.max(0, Math.min(1, 1 - amount));
+  const channels = [0, 2, 4].map((offset) =>
+    Math.round(parseInt(hex.slice(offset, offset + 2), 16) * factor),
+  );
+  return `#${channels.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
+
 type WheelPickerProps = {
   values: number[];
   selectedValue: number;
@@ -178,6 +188,8 @@ export function AmbientalDurationSheet({
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
   const canStart = selectedMinutes > 0;
+  const sleepTabSurface = theme.gradient[0];
+  const selectedSleepTabSurface = darkenHex(sleepTabSurface, 0.6);
 
   const enterCustomMode = () => {
     setCustomMode(true);
@@ -277,10 +289,10 @@ export function AmbientalDurationSheet({
                         styles.preset,
                         {
                           backgroundColor: selected
-                            ? colors.primary
-                            : colors.muted,
+                            ? selectedSleepTabSurface
+                            : sleepTabSurface,
                           borderColor: selected
-                            ? colors.foreground
+                            ? "#F9F9F9"
                             : "transparent",
                         },
                       ]}
@@ -294,8 +306,8 @@ export function AmbientalDurationSheet({
                           styles.presetValue,
                           {
                             color: selected
-                              ? colors.background
-                              : colors.foreground,
+                              ? "#F9F9F9"
+                              : "#F4F4F4",
                           },
                         ]}
                       >
@@ -306,8 +318,8 @@ export function AmbientalDurationSheet({
                           styles.presetUnit,
                           {
                             color: selected
-                              ? colors.background
-                              : colors.mutedForeground,
+                              ? "#F9F9F9"
+                              : "#F4F4F4",
                           },
                         ]}
                       >
@@ -320,13 +332,13 @@ export function AmbientalDurationSheet({
                   onPress={enterCustomMode}
                   style={[
                     styles.preset,
-                    { backgroundColor: colors.muted, borderColor: "transparent" },
+                    { backgroundColor: sleepTabSurface, borderColor: "transparent" },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel="Elegir una duración personalizada"
                   testID="ambiental-duration-custom"
                 >
-                  <Feather name="plus" size={34} color={colors.foreground} />
+                  <Feather name="plus" size={34} color="#F4F4F4" />
                 </Pressable>
               </View>
             </Animated.View>
@@ -446,6 +458,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    transform: [{ translateY: 25 }],
   },
   preset: {
     width: 72,
@@ -521,7 +534,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 39,
   },
   startButtonText: {
     fontFamily: "Manrope",
