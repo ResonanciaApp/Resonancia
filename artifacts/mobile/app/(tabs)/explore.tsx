@@ -507,7 +507,7 @@ export function ExploreScreen({
           {collapseCategoryHeader && (
             <Animated.View
               style={{
-                marginTop: -21,
+                marginTop: -41,
                 opacity: categoryImagesOpacity,
                 transform: [{ translateY: categoryImagesTranslateY }],
               }}
