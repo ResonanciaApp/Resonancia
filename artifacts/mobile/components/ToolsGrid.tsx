@@ -92,6 +92,8 @@ export function ToolsGrid({
           onPress={() => handlePress(tool.id)}
           style={({ pressed }) => [
             styles.card,
+            tool.id === "favoritos" && styles.firstCard,
+            tool.id === "diario" && styles.lastCard,
             {
               backgroundColor: pillBackground,
               borderWidth: 0,
@@ -129,10 +131,18 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 27,
+    borderRadius: 13,
     height: 46,
     gap: 12,
     paddingHorizontal: 16,
+  },
+  firstCard: {
+    borderTopLeftRadius: 100,
+    borderBottomLeftRadius: 100,
+  },
+  lastCard: {
+    borderTopRightRadius: 100,
+    borderBottomRightRadius: 100,
   },
   label: {
     fontFamily: "Manrope",

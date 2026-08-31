@@ -7,4 +7,4 @@ La fila horizontal de herramientas de Inicio 2 no lleva título propio y aparece
 
 **Why:** El usuario pidió que los accesos principales (Geometrix, Mezclador, Diario, etc.) estén disponibles antes del contenido escuchado, con una presentación más directa.
 
-**How to apply:** Mantener la sección exclusiva de Inicio 2, sin encabezado “Herramientas”, y no cambiar por esto la distribución de accesos de Mi perfil ni la navegación del menú.
+**How to apply:** Mantener la sección exclusiva de Inicio 2, sin encabezado “Herramientas”, y no cambiar por esto la distribución de accesos de Mi perfil ni la navegación del menú. La fila usa radios de 13 px; Favoritos conserva sus esquinas izquierdas totalmente redondeadas y Diario las derechas.
