@@ -1,6 +1,14 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { AmbientalDurationSheet } from "@/components/AmbientalDurationSheet";
+import { AmbientalPlayer } from "@/components/AmbientalPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import type { Session } from "@/data/sessions";
@@ -18,6 +26,12 @@ export function AmbientalDurationProvider({
   children: React.ReactNode;
 }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [activeSession, setActiveSession] = useState<Session | null>(null);
+  const [activeMinutes, setActiveMinutes] = useState(0);
+  const pendingPlaybackRef = useRef<{
+    session: Session;
+    minutes: number;
+  } | null>(null);
   const { isPremium } = usePremium();
   const { playSessionWithDuration } = usePlayer();
 
@@ -36,11 +50,29 @@ export function AmbientalDurationProvider({
       const selectedSession = session;
       setSession(null);
       if (selectedSession) {
+        pendingPlaybackRef.current = {
+          session: selectedSession,
+          minutes,
+        };
         void playSessionWithDuration(selectedSession, minutes);
       }
     },
     [playSessionWithDuration, session],
   );
+
+  const handleSheetDismissed = useCallback(() => {
+    const pending = pendingPlaybackRef.current;
+    if (!pending) return;
+    pendingPlaybackRef.current = null;
+    setActiveSession(pending.session);
+    setActiveMinutes(pending.minutes);
+  }, []);
+
+  const closePlayer = useCallback(() => {
+    pendingPlaybackRef.current = null;
+    setActiveSession(null);
+    setActiveMinutes(0);
+  }, []);
 
   const value = useMemo(() => ({ openForSession }), [openForSession]);
 
@@ -52,7 +84,14 @@ export function AmbientalDurationProvider({
         sessionTitle={session?.title}
         isPremium={isPremium}
         onClose={close}
+        onDismissed={handleSheetDismissed}
         onStart={start}
+      />
+      <AmbientalPlayer
+        visible={activeSession !== null}
+        session={activeSession}
+        initialMinutes={activeMinutes}
+        onClose={closePlayer}
       />
     </AmbientalDurationContext.Provider>
   );

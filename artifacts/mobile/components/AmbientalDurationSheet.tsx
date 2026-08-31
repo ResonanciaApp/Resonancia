@@ -97,6 +97,7 @@ type Props = {
   sessionTitle?: string;
   isPremium: boolean;
   onClose: () => void;
+  onDismissed?: () => void;
   onStart: (minutes: number) => void;
 };
 
@@ -105,6 +106,7 @@ export function AmbientalDurationSheet({
   sessionTitle,
   isPremium,
   onClose,
+  onDismissed,
   onStart,
 }: Props) {
   const colors = useColors();
@@ -165,13 +167,17 @@ export function AmbientalDurationSheet({
         duration: 180,
         useNativeDriver: true,
       }),
-    ]).start(() => setRendered(false));
+    ]).start(() => {
+      setRendered(false);
+      requestAnimationFrame(() => onDismissed?.());
+    });
   }, [
     visible,
     sheetY,
     backdropOpacity,
     presetsOpacity,
     customOpacity,
+    onDismissed,
   ]);
 
   const minuteValues = useMemo(

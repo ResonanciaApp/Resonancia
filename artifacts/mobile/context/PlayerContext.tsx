@@ -1594,6 +1594,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   clearSleepInterval();
                   sleepEndTimeRef.current = null;
                   setSleepTimerRemaining(null);
+                  statCompletedRef.current = true;
                   teardownPlayback();
                   teardownLoopCrossfade();
                   loopModeRef.current = false;
@@ -1647,6 +1648,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   clearSleepInterval();
                   sleepEndTimeRef.current = null;
                   setSleepTimerRemaining(null);
+                  statCompletedRef.current = true;
                   teardownPlayback();
                   loopModeRef.current = false;
                   hasRealAudioRef.current = false;
