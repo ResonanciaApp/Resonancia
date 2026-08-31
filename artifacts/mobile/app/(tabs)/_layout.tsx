@@ -38,6 +38,7 @@ import { CategoryOverlay } from "@/components/CategoryOverlay";
 
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#A9A9C3";
+const INDIGO2_COLOR  = "#C9C8DE";
 const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
 
@@ -85,11 +86,13 @@ function TabItem({
   isFocused,
   onPress,
   tibetMode = false,
+  indigo2Mode = false,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
   tibetMode?: boolean;
+  indigo2Mode?: boolean;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -100,8 +103,8 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
-  const inactiveCol = tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
+  const activeCol   = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -160,6 +163,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const { hidden, showMenu } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
+  const indigo2Mode = activeSceneId === "indigo2";
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -271,7 +275,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
+        style={[styles.bar, indigo2Mode && styles.barIndigo2, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
       >
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
@@ -322,6 +326,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 isFocused={isFocused}
                 onPress={onPress}
                 tibetMode={activeSceneId === "tibet"}
+                indigo2Mode={indigo2Mode}
               />
             );
           })}
@@ -586,6 +591,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     // elevation rompe el blur dimezis en Android (capa separada → no captura el fondo)
     ...(Platform.OS === "android" ? {} : { elevation: 25 }),
+  },
+  barIndigo2: {
+    backgroundColor: "#101014",
   },
   row: {
     flex: 1,
