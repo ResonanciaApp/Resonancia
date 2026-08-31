@@ -246,7 +246,7 @@ function CategoryCard({
             showAuthor={false}
             durationBottom={52}
             metaBottom={20}
-            metaLeft={14}
+            metaLeft={18}
           />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
@@ -280,7 +280,7 @@ function CategoryCard({
           showAuthor={false}
           durationBottom={52}
           metaBottom={20}
-          metaLeft={14}
+          metaLeft={18}
         />
         {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
       </View>
@@ -296,7 +296,7 @@ const ac = StyleSheet.create({
   hContent:{ flex:1, justifyContent:"center", gap:2 },
   hDuration:{ fontFamily: "Manrope", fontSize:11, fontWeight:"400", color:MUTED },
   hDurLabel:{ fontFamily: "Manrope", position:"absolute", bottom:6, left:8, fontSize:13, fontWeight:"700", color:"#fff", textShadowColor:"rgba(0,0,0,0.85)", textShadowOffset:{width:0,height:1}, textShadowRadius:4 },
-  hTitle:   { fontFamily: "Manrope", fontSize:13, fontWeight:"600", color:TEXT, lineHeight:18, marginLeft:4 },
+  hTitle:   { fontFamily: "Manrope", fontSize:13, fontWeight:"600", color:TEXT, lineHeight:18, marginLeft:8 },
   hAuthor:  { fontFamily: "Manrope", fontSize:11, color:MUTED, flex:1 },
   hAuthorRow:{ flexDirection:"row", alignItems:"center", gap:6, marginTop:1 },
   hAuthorAvatar:{ width:20, height:20, borderRadius:10 },

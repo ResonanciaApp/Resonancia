@@ -146,7 +146,7 @@ export function SessionCarousel({
                     showAuthor={showAuthor}
                     durationBottom={showAuthor ? 70 : 52}
                     metaBottom={showAuthor ? 15 : 20}
-                    metaLeft={showAuthor ? 10 : 14}
+                    metaLeft={showAuthor ? 10 : 18}
                   />
                 ) : (
                   <>
@@ -168,7 +168,7 @@ export function SessionCarousel({
               </View>
               {!showCardMetadata && (
                 <>
-                  <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 4), marginLeft: showAuthor ? 0 : 4 }]} numberOfLines={2}>{s.title}</Text>
+                  <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 4), marginLeft: showAuthor ? 0 : 8 }]} numberOfLines={2}>{s.title}</Text>
                   {showAuthor && authorName ? (
                     <Text
                       style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}

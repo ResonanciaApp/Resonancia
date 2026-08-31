@@ -138,7 +138,7 @@ const fcStyles = StyleSheet.create({
   img:     { width: FEATURED_CARD_W, height: FEATURED_CARD_H },
   durPill: { position: "absolute", bottom: 4, left: 8, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
   dur:     { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
-  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 4, marginLeft: 4 },
+  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 4, marginLeft: 8 },
   lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
 });
 

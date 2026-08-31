@@ -187,7 +187,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             showAuthor={showAuthor}
             durationBottom={showAuthor ? 70 : 52}
             metaBottom={showAuthor ? 15 : 20}
-            metaLeft={showAuthor ? 10 : 14}
+            metaLeft={showAuthor ? 10 : 18}
             showDuration={showDuration}
           />
         ) : showDuration ? (
