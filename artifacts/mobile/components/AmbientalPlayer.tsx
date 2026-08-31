@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useRef } from "react";
 import {
   Alert,
+  Image,
   Modal,
   Pressable,
   StatusBar,
@@ -134,6 +135,12 @@ export function AmbientalPlayer({
 
   const countdown =
     sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
+  const sleepTabSurface =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   return (
     <Modal
@@ -149,6 +156,20 @@ export function AmbientalPlayer({
         locations={theme.gradientLocations}
         style={styles.root}
       >
+        {session?.image && (
+          <>
+            <Image
+              source={session.image}
+              style={StyleSheet.absoluteFill}
+              resizeMode="cover"
+              accessibilityIgnoresInvertColors
+            />
+            <View
+              pointerEvents="none"
+              style={styles.imageOverlay}
+            />
+          </>
+        )}
         <View
           style={[
             styles.header,
@@ -159,6 +180,7 @@ export function AmbientalPlayer({
             onPress={confirmExit}
             style={({ pressed }) => [
               styles.headerButton,
+              { backgroundColor: sleepTabSurface },
               pressed && styles.buttonPressed,
             ]}
             accessibilityRole="button"
@@ -171,7 +193,7 @@ export function AmbientalPlayer({
           <Text style={styles.headerTitle}>Contador</Text>
 
           <View
-            style={styles.headerButton}
+            style={[styles.headerButton, { backgroundColor: sleepTabSurface }]}
             accessible={false}
             importantForAccessibility="no"
             accessibilityLabel={
@@ -207,6 +229,7 @@ export function AmbientalPlayer({
               disabled={isLoading || !currentSession}
               style={({ pressed }) => [
                 styles.controlButton,
+                { backgroundColor: sleepTabSurface },
                 pressed && styles.buttonPressed,
                 (isLoading || !currentSession) && styles.buttonDisabled,
               ]}
@@ -247,6 +270,7 @@ export function AmbientalPlayer({
               onPress={confirmExit}
               style={({ pressed }) => [
                 styles.controlButton,
+                { backgroundColor: sleepTabSurface },
                 pressed && styles.buttonPressed,
               ]}
               accessibilityRole="button"
@@ -274,6 +298,10 @@ export function AmbientalPlayer({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.42)",
   },
   header: {
     position: "absolute",
