@@ -1,14 +1,20 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Alert,
+  Animated,
   Image,
   Modal,
   Pressable,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,6 +24,9 @@ import { useNotifications } from "@/context/NotificationsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import type { Session } from "@/data/sessions";
+
+const FADE_DURATION = 450;
+const AUTO_HIDE_DELAY = 4000;
 
 type Props = {
   visible: boolean;
@@ -50,11 +59,73 @@ export function AmbientalPlayer({
     sleepTimerRemaining,
     stop,
   } = usePlayer();
+
   const matchedSessionRef = useRef(false);
   const ownsPlaybackRef = useRef(false);
   const currentSessionIdRef = useRef<string | null>(null);
   currentSessionIdRef.current = currentSession?.id ?? null;
 
+  // ── UI visibility animation ───────────────────────────────────────────────
+  const uiOpacity = useRef(new Animated.Value(1)).current;
+  const uiVisibleRef = useRef(true);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearHideTimer = useCallback(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleHide = useCallback(() => {
+    clearHideTimer();
+    hideTimerRef.current = setTimeout(() => {
+      uiVisibleRef.current = false;
+      Animated.timing(uiOpacity, {
+        toValue: 0,
+        duration: FADE_DURATION,
+        useNativeDriver: true,
+      }).start();
+    }, AUTO_HIDE_DELAY);
+  }, [clearHideTimer, uiOpacity]);
+
+  const showUI = useCallback(() => {
+    uiVisibleRef.current = true;
+    Animated.timing(uiOpacity, {
+      toValue: 1,
+      duration: FADE_DURATION,
+      useNativeDriver: true,
+    }).start(() => {
+      scheduleHide();
+    });
+  }, [uiOpacity, scheduleHide]);
+
+  const handleScreenTap = useCallback(() => {
+    if (!uiVisibleRef.current) {
+      showUI();
+    } else {
+      // Reset auto-hide timer on any tap while visible
+      scheduleHide();
+    }
+  }, [showUI, scheduleHide]);
+
+  // Start / reset auto-hide when modal becomes visible
+  useEffect(() => {
+    if (visible) {
+      uiOpacity.setValue(1);
+      uiVisibleRef.current = true;
+      scheduleHide();
+    } else {
+      clearHideTimer();
+      uiOpacity.setValue(1);
+      uiVisibleRef.current = true;
+    }
+    return () => {
+      clearHideTimer();
+    };
+  }, [visible, clearHideTimer, scheduleHide, uiOpacity]);
+
+  // ── Session ownership tracking ────────────────────────────────────────────
   useEffect(() => {
     if (!visible) {
       matchedSessionRef.current = false;
@@ -99,7 +170,9 @@ export function AmbientalPlayer({
     visible,
   ]);
 
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const confirmExit = useCallback(() => {
+    clearHideTimer();
     const ownerSessionId = session?.id ?? null;
     Alert.alert(
       "¿Estás seguro/a de que quieres salir?",
@@ -123,10 +196,11 @@ export function AmbientalPlayer({
         {
           text: "No",
           style: "cancel",
+          onPress: scheduleHide,
         },
       ],
     );
-  }, [onClose, session?.id, stop]);
+  }, [clearHideTimer, onClose, scheduleHide, session?.id, stop]);
 
   const handlePlayPause = useCallback(() => {
     if (!currentSession || isLoading) return;
@@ -135,12 +209,6 @@ export function AmbientalPlayer({
 
   const countdown =
     sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
-  const sleepTabSurface =
-    theme.id === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
-        ? "rgba(42,40,64,0.65)"
-        : "rgba(255,255,255,0.05)";
 
   return (
     <Modal
@@ -156,6 +224,7 @@ export function AmbientalPlayer({
         locations={theme.gradientLocations}
         style={styles.root}
       >
+        {/* Background image */}
         {session?.image && (
           <>
             <Image
@@ -164,136 +233,120 @@ export function AmbientalPlayer({
               resizeMode="cover"
               accessibilityIgnoresInvertColors
             />
-            <View
-              pointerEvents="none"
-              style={styles.imageOverlay}
-            />
+            <View pointerEvents="none" style={styles.imageOverlay} />
           </>
         )}
-        <View
-          style={[
-            styles.header,
-            { top: Math.max(insets.top, 18) + 4 },
-          ]}
-        >
-          <Pressable
-            onPress={confirmExit}
-            style={({ pressed }) => [
-              styles.headerButton,
-              { backgroundColor: sleepTabSurface },
-              pressed && styles.buttonPressed,
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Cerrar reproductor"
-            hitSlop={8}
-          >
-            <Feather name="x" size={24} color="#FFFFFF" />
-          </Pressable>
 
-          <Text style={styles.headerTitle}>Contador</Text>
+        {/* Tap-anywhere to show/hide UI */}
+        <TouchableWithoutFeedback onPress={handleScreenTap} accessible={false}>
+          <View style={StyleSheet.absoluteFill} />
+        </TouchableWithoutFeedback>
 
-          <View
-            style={[styles.headerButton, { backgroundColor: sleepTabSurface }]}
-            accessible={false}
-            importantForAccessibility="no"
-            accessibilityLabel={
-              unreadCount > 0
-                ? `${unreadCount} notificaciones sin leer`
-                : "Notificaciones"
-            }
-          >
-            <Ionicons name="notifications" size={22} color="#FFFFFF" />
-            {unreadCount > 0 && (
-              <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        <View style={styles.center}>
-          <Text
-            style={styles.countdown}
-            accessibilityRole="timer"
-            accessibilityLabel={`${formatCountdown(countdown)} restantes`}
-            testID="ambiental-player-countdown"
-          >
-            {formatCountdown(countdown)}
-          </Text>
-
-          <View style={styles.controls}>
-            <Pressable
-              onPress={handlePlayPause}
-              disabled={isLoading || !currentSession}
-              style={({ pressed }) => [
-                styles.controlButton,
-                { backgroundColor: sleepTabSurface },
-                pressed && styles.buttonPressed,
-                (isLoading || !currentSession) && styles.buttonDisabled,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={isPlaying ? "Pausar" : "Reproducir"}
-              testID="ambiental-player-play-pause"
-            >
-              {isPlaying ? (
-                <Svg width={30} height={30} viewBox="0 0 46 46">
-                  <Rect
-                    x="8"
-                    y="6"
-                    width="11"
-                    height="34"
-                    rx="4"
-                    fill="#FFFFFF"
-                  />
-                  <Rect
-                    x="27"
-                    y="6"
-                    width="11"
-                    height="34"
-                    rx="4"
-                    fill="#FFFFFF"
-                  />
-                </Svg>
-              ) : (
-                <Svg width={30} height={30} viewBox="0 0 46 46">
-                  <Path
-                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                    fill="#FFFFFF"
-                  />
-                </Svg>
-              )}
-            </Pressable>
-
+        {/* All interactive UI fades together */}
+        <Animated.View style={[styles.uiLayer, { opacity: uiOpacity }]} pointerEvents="box-none">
+          {/* Header row */}
+          <View style={[styles.header, { top: Math.max(insets.top, 18) + 4 }]}>
             <Pressable
               onPress={confirmExit}
               style={({ pressed }) => [
-                styles.controlButton,
-                { backgroundColor: sleepTabSurface },
+                styles.ghostPill,
                 pressed && styles.buttonPressed,
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Detener sesión"
-              testID="ambiental-player-stop"
+              accessibilityLabel="Cerrar reproductor"
+              hitSlop={8}
             >
-              <Svg width={29} height={29} viewBox="0 0 24 24">
-                <Rect
-                  x="4"
-                  y="4"
-                  width="16"
-                  height="16"
-                  rx="1.5"
-                  fill="#FFFFFF"
-                />
-              </Svg>
+              <Feather name="x" size={22} color="#FFFFFF" />
             </Pressable>
+
+            <Text style={styles.headerTitle}>Contador</Text>
+
+            <View
+              style={styles.ghostPill}
+              accessible={false}
+              importantForAccessibility="no"
+              accessibilityLabel={
+                unreadCount > 0
+                  ? `${unreadCount} notificaciones sin leer`
+                  : "Notificaciones"
+              }
+            >
+              <Ionicons name="notifications" size={20} color="#FFFFFF" />
+              {unreadCount > 0 && (
+                <View style={styles.notificationBadge}>
+                  <Text style={styles.notificationBadgeText}>
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
+
+          {/* Center: countdown + controls */}
+          <View style={styles.center} pointerEvents="box-none">
+            <Text
+              style={styles.countdown}
+              accessibilityRole="timer"
+              accessibilityLabel={`${formatCountdown(countdown)} restantes`}
+              testID="ambiental-player-countdown"
+            >
+              {formatCountdown(countdown)}
+            </Text>
+
+            <View style={styles.controls}>
+              {/* Play / Pause */}
+              <Pressable
+                onPress={handlePlayPause}
+                disabled={isLoading || !currentSession}
+                style={({ pressed }) => [
+                  styles.ghostPillLarge,
+                  pressed && styles.buttonPressed,
+                  (isLoading || !currentSession) && styles.buttonDisabled,
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={isPlaying ? "Pausar" : "Reproducir"}
+                testID="ambiental-player-play-pause"
+              >
+                {isPlaying ? (
+                  <Svg width={30} height={30} viewBox="0 0 46 46">
+                    <Rect x="8"  y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
+                    <Rect x="27" y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
+                  </Svg>
+                ) : (
+                  <Svg width={30} height={30} viewBox="0 0 46 46">
+                    <Path
+                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                      fill="#FFFFFF"
+                    />
+                  </Svg>
+                )}
+              </Pressable>
+
+              {/* Stop */}
+              <Pressable
+                onPress={confirmExit}
+                style={({ pressed }) => [
+                  styles.ghostPillLarge,
+                  pressed && styles.buttonPressed,
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Detener sesión"
+                testID="ambiental-player-stop"
+              >
+                <Svg width={28} height={28} viewBox="0 0 24 24">
+                  <Rect x="4" y="4" width="16" height="16" rx="1.5" fill="#FFFFFF" />
+                </Svg>
+              </Pressable>
+            </View>
+          </View>
+        </Animated.View>
       </LinearGradient>
     </Modal>
   );
 }
+
+const GHOST_BG = "rgba(255,255,255,0.18)";
+const GHOST_BORDER = "rgba(255,255,255,0.30)";
 
 const styles = StyleSheet.create({
   root: {
@@ -302,6 +355,9 @@ const styles = StyleSheet.create({
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.42)",
+  },
+  uiLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
   header: {
     position: "absolute",
@@ -312,15 +368,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerButton: {
+  // Small ghost pill — header buttons (44×44)
+  ghostPill: {
     width: 44,
     height: 44,
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: GHOST_BG,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.14)",
+    borderColor: GHOST_BORDER,
+  },
+  // Large ghost pill — play/stop (78×78)
+  ghostPillLarge: {
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: GHOST_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GHOST_BORDER,
   },
   headerTitle: {
     color: "#FFFFFF",
@@ -366,16 +434,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 22,
-  },
-  controlButton: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.14)",
   },
   buttonPressed: {
     opacity: 0.72,
