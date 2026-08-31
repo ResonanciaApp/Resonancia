@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
-  featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
+  featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },

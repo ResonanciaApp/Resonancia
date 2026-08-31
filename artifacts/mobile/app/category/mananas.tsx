@@ -445,7 +445,7 @@ export default function MananasScreen() {
                       Contenido destacado
                     </Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14, paddingBottom: 4 }}>
+                      contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 13, paddingBottom: 4 }}>
                       {filteredSessions.filter((s) => s.isFeaturedCategory).map((s) => (
                         <FeaturedCard key={`feat-${s.id}`} session={s} />
                       ))}

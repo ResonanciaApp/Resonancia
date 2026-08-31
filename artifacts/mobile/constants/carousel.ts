@@ -1,7 +1,7 @@
-export const CONTENT_CAROUSEL_GAP = 16;
+export const CONTENT_CAROUSEL_GAP = 13;
 export const CONTENT_CAROUSEL_NEXT_RATIO = 0.1;
 export const CONTENT_CAROUSEL_SIZE_SCALE = 1.05;
-export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85;
+export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85 * 1.15;
 
 /**
  * Ancho de las cards de contenido para mostrar dos completas y el 10% de la
