@@ -18,7 +18,7 @@ import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import Svg, { Path } from "react-native-svg";
 
-const SHEET_HEIGHT = 340;
+const SHEET_HEIGHT = 320;
 const WHEEL_ROW_HEIGHT = 44;
 const WHEEL_HEIGHT = 132;
 const PRESETS = [5, 10, 20] as const;
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 3,
     backgroundColor: "rgba(255,255,255,0.24)",
-    marginTop: 33,
+    marginTop: 53,
     marginBottom: 10,
   },
   title: {
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 30,
     marginBottom: 10,
   },
   contentArea: {
