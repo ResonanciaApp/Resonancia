@@ -28,7 +28,7 @@ import type { Session } from "@/data/sessions";
 
 const FADE_DURATION = 450;
 const AUTO_HIDE_DELAY = 4000;
-const SLIDE_DURATION = 500;
+const SLIDE_DURATION = 400;
 const SLIDE_OFFSET = 900; // safely off-screen for any device
 
 type Props = {
