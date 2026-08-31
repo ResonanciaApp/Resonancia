@@ -293,6 +293,7 @@ export function ExploreScreen({
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
   const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
+  const [fixedHeaderHeight, setFixedHeaderHeight] = React.useState(0);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
@@ -310,7 +311,7 @@ export function ExploreScreen({
   });
   const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 0.95],
+    outputRange: [0, 0.9],
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -394,10 +395,16 @@ export function ExploreScreen({
         <View
           style={[
             styles.fixedHeader,
+            collapseCategoryHeader && styles.overlayHeader,
             {
               paddingTop: topPad + 2,
             },
           ]}
+          onLayout={
+            collapseCategoryHeader
+              ? (event) => setFixedHeaderHeight(event.nativeEvent.layout.height)
+              : undefined
+          }
         >
           {collapseCategoryHeader && (
             <>
@@ -409,13 +416,6 @@ export function ExploreScreen({
                     backgroundColor: activeTheme.gradient[0] as string,
                     opacity: stickyHeaderSurfaceOpacity,
                   },
-                ]}
-              />
-              <Animated.View
-                pointerEvents="none"
-                style={[
-                  styles.stickyHeaderBorder,
-                  { opacity: titleCompactAnim },
                 ]}
               />
             </>
@@ -459,7 +459,10 @@ export function ExploreScreen({
 
         <Animated.ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingTop: 22, paddingBottom: 160 + bottomPad }}
+          contentContainerStyle={{
+            paddingTop: collapseCategoryHeader ? fixedHeaderHeight + 22 : 22,
+            paddingBottom: 160 + bottomPad,
+          }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScroll={Animated.event(
@@ -488,8 +491,6 @@ export function ExploreScreen({
               />
             </Animated.View>
           )}
-          {collapseCategoryHeader && <View style={styles.categoryCarouselDivider} />}
-
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
             <View key={carousel.slug}>
@@ -588,22 +589,15 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
+  overlayHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+  },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
-  stickyHeaderBorder: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
-  categoryCarouselDivider: {
-    height: 1,
-    marginHorizontal: H_PAD,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
   headerSearchButton: {
     width: 40,
     height: 40,
