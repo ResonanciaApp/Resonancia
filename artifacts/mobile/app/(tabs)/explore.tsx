@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import {
   Dimensions,
   Animated,
-  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -38,6 +37,7 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -292,15 +292,27 @@ export function ExploreScreen({
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
-  const stickySectionAnim = React.useRef(new Animated.Value(1)).current;
+  const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
-  const sectionLayoutsRef = React.useRef(new Map<string, { title: string; y: number }>());
-  const activeStickyTitleRef = React.useRef("");
-  const [activeStickyTitle, setActiveStickyTitle] = React.useState("");
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
+  });
+  const categoryImagesOpacity = exploreScrollY.interpolate({
+    inputRange: [12, 130],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const categoryImagesTranslateY = exploreScrollY.interpolate({
+    inputRange: [12, 130],
+    outputRange: [0, -8],
+    extrapolate: "clamp",
+  });
+  const categoryTabsBorderOpacity = exploreScrollY.interpolate({
+    inputRange: [12, 118],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -313,45 +325,7 @@ export function ExploreScreen({
         useNativeDriver: true,
       }).start();
     }
-
-    if (!collapseCategoryHeader) return;
-    let nextTitle = "";
-    const sectionThreshold = scrollY + 52;
-    const orderedSections = Array.from(sectionLayoutsRef.current.values()).sort(
-      (a, b) => a.y - b.y,
-    );
-    for (const section of orderedSections) {
-      if (section.y > sectionThreshold) break;
-      nextTitle = section.title;
-    }
-    if (nextTitle !== activeStickyTitleRef.current) {
-      activeStickyTitleRef.current = nextTitle;
-      stickySectionAnim.stopAnimation();
-      Animated.timing(stickySectionAnim, {
-        toValue: 0,
-        duration: 110,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        if (!finished) return;
-        setActiveStickyTitle(nextTitle);
-        Animated.timing(stickySectionAnim, {
-          toValue: 1,
-          duration: 180,
-          useNativeDriver: true,
-        }).start();
-      });
-    }
-  }, [collapseCategoryHeader, stickySectionAnim, titleCompactAnim]);
-
-  const registerStickySection = React.useCallback(
-    (key: string, title: string, event: LayoutChangeEvent) => {
-      sectionLayoutsRef.current.set(key, {
-        title,
-        y: event.nativeEvent.layout.y,
-      });
-    },
-    [],
-  );
+  }, [titleCompactAnim]);
 
 
   function handleSessionPress(s: Session) {
@@ -433,23 +407,10 @@ export function ExploreScreen({
             </Animated.Text>
             <Animated.View
               pointerEvents="none"
-              style={[
-                styles.compactTitleOverlay,
-                {
-                  opacity: Animated.multiply(compactTitleOpacity, stickySectionAnim),
-                  transform: [
-                    {
-                      translateY: stickySectionAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [3, 0],
-                      }),
-                    },
-                  ],
-                },
-              ]}
+              style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
             >
               <Text style={styles.compactPageTitle} numberOfLines={1}>
-                {activeStickyTitle || screenTitle}
+                {screenTitle}
               </Text>
             </Animated.View>
             <Pressable
@@ -466,6 +427,35 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
+          {collapseCategoryHeader && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.categoryTabsScroll}
+              contentContainerStyle={styles.categoryTabsContent}
+            >
+              {DISCOVER_CONTENT_CATEGORIES.map((category) => (
+                <Pressable
+                  key={category.id}
+                  onPress={() => openCategory(`/category/${category.id}`)}
+                  style={({ pressed }) => [
+                    styles.categoryTextTab,
+                    { opacity: pressed ? 0.72 : 1 },
+                  ]}
+                >
+                  <Animated.View
+                    pointerEvents="none"
+                    style={[
+                      StyleSheet.absoluteFill,
+                      styles.categoryTextTabBorder,
+                      { opacity: categoryTabsBorderOpacity },
+                    ]}
+                  />
+                  <Text style={styles.categoryTextTabLabel}>{category.label}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          )}
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
@@ -482,27 +472,35 @@ export function ExploreScreen({
           contentContainerStyle={{ paddingTop: 22, paddingBottom: 160 + bottomPad }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          onScroll={handleExploreScroll}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
+            {
+              useNativeDriver: true,
+              listener: handleExploreScroll,
+            },
+          )}
           scrollEventThrottle={16}
         >
           {collapseCategoryHeader && (
-            <ContentCategoryGrid
-              marginTop={14}
-              marginBottom={36}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              horizontal
-              visualVariant={categoryVisualVariant}
-            />
+            <Animated.View
+              style={{
+                opacity: categoryImagesOpacity,
+                transform: [{ translateY: categoryImagesTranslateY }],
+              }}
+            >
+              <ContentCategoryGrid
+                marginTop={14}
+                marginBottom={36}
+                hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+                horizontal
+                visualVariant={categoryVisualVariant}
+              />
+            </Animated.View>
           )}
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
-            <View
-              key={carousel.slug}
-              onLayout={(event) =>
-                registerStickySection(carousel.slug, carousel.label, event)
-              }
-            >
+            <View key={carousel.slug}>
               <SessionCarousel
                 title={carousel.label}
                 sessions={carousel.sessions}
@@ -523,11 +521,7 @@ export function ExploreScreen({
           ))}
 
           {/* ── Chakras ── */}
-          <View
-            onLayout={(event) =>
-              registerStickySection("__chakras__", "Armoniza tus chakras", event)
-            }
-          >
+          <View>
             <ChakraCarousel />
           </View>
 
@@ -605,6 +599,33 @@ const styles = StyleSheet.create({
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
+  categoryTabsScroll: {
+    marginTop: 2,
+    flexGrow: 0,
+  },
+  categoryTabsContent: {
+    paddingHorizontal: H_PAD,
+    paddingVertical: 4,
+    gap: 8,
+  },
+  categoryTextTab: {
+    position: "relative",
+    minHeight: 36,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  categoryTextTabBorder: {
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.8)",
+  },
+  categoryTextTabLabel: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+  },
   headerSearchButton: {
     width: 40,
     height: 40,
