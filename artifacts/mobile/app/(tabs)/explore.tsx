@@ -313,16 +313,6 @@ export function ExploreScreen({
     inputRange: [0, 1],
     outputRange: [1, 0],
   });
-  const categoryImagesOpacity = exploreScrollY.interpolate({
-    inputRange: [88, 132],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
-  const categoryImagesTranslateY = exploreScrollY.interpolate({
-    inputRange: [88, 132],
-    outputRange: [0, -8],
-    extrapolate: "clamp",
-  });
   const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 0.9],
@@ -489,13 +479,7 @@ export function ExploreScreen({
           scrollEventThrottle={16}
         >
           {collapseCategoryHeader && (
-            <Animated.View
-              style={{
-                marginTop: -21,
-                opacity: categoryImagesOpacity,
-                transform: [{ translateY: categoryImagesTranslateY }],
-              }}
-            >
+            <View style={{ marginTop: -21 }}>
               <Text style={[styles.sectionTitle, styles.categoryCarouselTitle]}>
                 Explora por categoría
               </Text>
@@ -506,7 +490,7 @@ export function ExploreScreen({
                 horizontal
                 visualVariant={categoryVisualVariant}
               />
-            </Animated.View>
+            </View>
           )}
           {collapseCategoryHeader && (
             <View style={styles.durationSection}>
