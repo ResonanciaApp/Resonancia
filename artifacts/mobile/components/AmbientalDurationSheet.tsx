@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -13,7 +14,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+import Svg, { Path } from "react-native-svg";
 
 const SHEET_HEIGHT = 390;
 const WHEEL_ROW_HEIGHT = 44;
@@ -190,6 +193,7 @@ export function AmbientalDurationSheet({
   const canStart = selectedMinutes > 0;
   const sleepTabSurface = theme.gradient[0];
   const selectedSleepTabSurface = darkenHex(sleepTabSurface, 0.6);
+  const listenButtonColors = getListenNowButtonColors(theme.id === "indigo");
 
   const enterCustomMode = () => {
     setCustomMode(true);
@@ -372,7 +376,6 @@ export function AmbientalDurationSheet({
             style={({ pressed }) => [
               styles.startButton,
               {
-                backgroundColor: colors.primary,
                 opacity: !canStart ? 0.45 : pressed ? 0.78 : 1,
               },
             ]}
@@ -380,9 +383,23 @@ export function AmbientalDurationSheet({
             accessibilityLabel={`Empezar sesión de ${selectedMinutes} minutos`}
             testID="ambiental-duration-start"
           >
-            <Text style={[styles.startButtonText, { color: colors.background }]}>
-              Empezar sesión
-            </Text>
+            <View style={styles.startButtonFill}>
+              <LinearGradient
+                colors={listenButtonColors}
+                start={{ x: 0, y: 0 }}
+                end={theme.id === "indigo" ? { x: 1, y: 0 } : { x: 0, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+            </View>
+            <View style={styles.startButtonContent}>
+              <Svg width={21} height={21} viewBox="0 0 48 48">
+                <Path
+                  d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                  fill="#FFFFFF"
+                />
+              </Svg>
+              <Text style={styles.startButtonText}>Empezar sesión</Text>
+            </View>
           </Pressable>
 
           {customMode && (
@@ -530,16 +547,34 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   startButton: {
-    height: 58,
-    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 10,
+    borderRadius: 30,
     marginTop: 39,
+    overflow: "hidden",
+    shadowColor: "#8769e9",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  startButtonFill: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+  startButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   startButtonText: {
     fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "800",
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    color: "#FFFFFF",
   },
   cancelButton: {
     height: 54,
