@@ -2914,6 +2914,7 @@ const styles = StyleSheet.create({
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
+    elevation: 2,
     marginTop: -1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -2926,6 +2927,8 @@ const styles = StyleSheet.create({
   inicio2ContentGradientClip: {
     ...StyleSheet.absoluteFillObject,
     overflow: "hidden",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   inicio2HeroImageLayer: {
     ...StyleSheet.absoluteFillObject,
