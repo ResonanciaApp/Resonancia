@@ -113,7 +113,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorName  = authorObj.name;
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
-  const isAmbiental = cardVariant === "ambiental";
+  const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
   const ambientalCardBackground =
     theme.id === "indigo"
       ? "rgba(42,40,64,0.65)"
@@ -197,6 +197,15 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             : undefined,
         ]}
       >
+        {!isAmbiental && (
+          <Image
+            source={session.image}
+            style={styles.cardImage}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+        )}
         {isAmbiental ? (
           <>
             <Image

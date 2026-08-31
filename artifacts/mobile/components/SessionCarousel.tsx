@@ -6,6 +6,8 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  type ImageStyle,
+  type StyleProp,
   Text,
   useWindowDimensions,
   View,
@@ -32,6 +34,34 @@ import {
 const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
+
+type CarouselImageProps = {
+  source: import("react-native").ImageSourcePropType;
+  style: StyleProp<ImageStyle>;
+  contentFit?: "cover" | "contain";
+};
+
+function CarouselImage({ source, style, contentFit = "cover" }: CarouselImageProps) {
+  const [failed, setFailed] = React.useState(false);
+
+  if (failed) {
+    return (
+      <View style={[style, styles.thumbFallback]}>
+        <Feather name="image" size={24} color="#F9F9F9" />
+      </View>
+    );
+  }
+
+  return (
+    <Image
+      source={source}
+      style={style}
+      contentFit={contentFit}
+      cachePolicy="memory-disk"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
@@ -99,7 +129,7 @@ export function SessionCarousel({
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
-  const isAmbiental = cardVariant === "ambiental";
+  const forceAmbientalVariant = cardVariant === "ambiental";
   const ambientalCardBackground =
     theme.id === "indigo"
       ? "rgba(42,40,64,0.65)"
@@ -139,6 +169,7 @@ export function SessionCarousel({
           const locked = !!s.isPremium && !isPremium;
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
+          const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
           return (
             <PressScale
               key={s.id}
@@ -155,9 +186,12 @@ export function SessionCarousel({
                   isAmbiental && { backgroundColor: ambientalCardBackground },
                 ]}
               >
+                {!isAmbiental && (
+                  <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
+                )}
                 {isAmbiental ? (
                   <>
-                    <Image
+                    <CarouselImage
                       source={s.image}
                       style={[
                         styles.ambientalImage,
@@ -169,8 +203,6 @@ export function SessionCarousel({
                           top: (ch - ambientalImageSize) / 2,
                         },
                       ]}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
                     />
                     <SessionCategoryPill categoryId={s.categoryId} />
                     <Text
@@ -266,11 +298,9 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
           >
             <View style={[styles.thumbWrap, { width: cardWidth, height: cardHeight }]}>
               {item.image != null ? (
-                <Image
+                <CarouselImage
                   source={item.image}
                   style={[styles.thumb, { width: cardWidth, height: cardHeight }]}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
                 />
               ) : (
                 <View
