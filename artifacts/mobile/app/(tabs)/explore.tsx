@@ -49,7 +49,7 @@ const DURATION_SLOTS = [
   { label: "30 min", displayLabel: "30 Minutos" },
   { label: "60 min", displayLabel: "60 Minutos" },
 ] as const;
-const DURATION_PILL_WIDTH = 112;
+const DURATION_PILL_WIDTH = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -523,6 +523,8 @@ export function ExploreScreen({
                     <Text
                       style={styles.durationPillText}
                       numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.7}
                     >
                       {slot.displayLabel}
                     </Text>
@@ -676,7 +678,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     minWidth: 80,
-    width: DURATION_PILL_WIDTH,
     height: 42,
     overflow: "hidden",
     alignItems: "center",
@@ -685,7 +686,7 @@ const styles = StyleSheet.create({
   durationPillSurface: { borderRadius: 10 },
   durationPillText: {
     fontFamily: "Manrope",
-    fontSize: 23,
+    fontSize: 16,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
