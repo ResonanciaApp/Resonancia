@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
   durationPillSurface: { borderRadius: 10 },
   durationPillText: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 21,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
