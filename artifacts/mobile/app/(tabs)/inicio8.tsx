@@ -50,6 +50,7 @@ import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
+import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
@@ -120,7 +121,8 @@ const INICIO2_SLIDES = [
     id: "templo",
     image: require("@/assets/images/inicio2-mistico-1.jpg"),
     destination: null,
-    title: "Inspiraciones",
+    title: "Aprendamos a conectar con lo esencial",
+    categoryId: undefined,
     description: "Un mensaje directo a tu corazón",
     actionLabel: "Descubrir",
   },
@@ -128,7 +130,8 @@ const INICIO2_SLIDES = [
     id: "lago",
     image: require("@/assets/images/inicio2-mistico-2.jpg"),
     destination: null,
-    title: "Viaje al interior",
+    title: "Un viaje al interior del cosmos",
+    categoryId: "meditaciones-guiadas",
     description: "Sesión destacada de la semana",
     actionLabel: "Escuchar",
   },
@@ -136,7 +139,8 @@ const INICIO2_SLIDES = [
     id: "arco",
     image: require("@/assets/images/inicio2-mistico-3.jpg"),
     destination: null,
-    title: "La ansiedad",
+    title: "Descubriendo sonidos nuevos",
+    categoryId: "charlas",
     description: "Una reflexión de Nicolás",
     actionLabel: "Meditar",
   },
@@ -144,7 +148,8 @@ const INICIO2_SLIDES = [
     id: "oceano",
     image: require("@/assets/images/inicio2-mistico-4.jpg"),
     destination: null,
-    title: "Mezcla Destacada",
+    title: "El pequeño saltamontes",
+    categoryId: "historias",
     description: "Composición ganadora de primera semana de agosto.",
     actionLabel: "Escuchar",
   },
@@ -765,6 +770,14 @@ function Inicio2HeroSlider({
         pointerEvents="box-none"
         style={[styles.inicio2HeroCopy, { transform: [{ translateY: heroCopyY }] }]}
       >
+        {INICIO2_SLIDES[activeIndex].categoryId ? (
+          <View style={styles.inicio2HeroCategory}>
+            <SessionCategoryPill
+              categoryId={INICIO2_SLIDES[activeIndex].categoryId}
+              inline
+            />
+          </View>
+        ) : null}
         <Text style={styles.inicio2HeroTitle}>{INICIO2_SLIDES[activeIndex].title}</Text>
         <Pressable
           onPress={() => {}}
@@ -2508,6 +2521,9 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
     transform: [{ translateY: 6 }],
+  },
+  inicio2HeroCategory: {
+    marginBottom: 10,
   },
   inicio2HeroActionButton: {
     marginTop: 20,
