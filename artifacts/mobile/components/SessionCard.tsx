@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   hTitle: {
     fontFamily: "Manrope",
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     lineHeight: 21,
     marginBottom: 3,
   },

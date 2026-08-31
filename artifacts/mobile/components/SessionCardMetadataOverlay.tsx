@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     top: 8,
     left: 8,
     maxWidth: "78%",
-    minHeight: 27,
+    minHeight: 25,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
@@ -252,11 +252,11 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontFamily: "Manrope",
     fontSize: 10,
-    fontWeight: "700",
+    fontWeight: "800",
     color: "#FFFFFF",
   },
   categoryLabelCard: {
-    fontWeight: "800",
+    fontWeight: "900",
   },
   durationBadge: {
     position: "absolute",
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Manrope",
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: "600",
     lineHeight: 18,
     color: "#FFFFFF",
   },

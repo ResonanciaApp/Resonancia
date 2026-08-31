@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#FFFFFF",
     lineHeight: 17,
   },

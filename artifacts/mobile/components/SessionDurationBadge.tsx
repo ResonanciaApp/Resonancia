@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import { Feather } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   Platform,
@@ -24,12 +24,14 @@ type Props = {
  * behind it, so the badge never inherits the old burgundy color.
  */
 export function SessionDurationBadge({ label, style, textStyle, showClock = false }: Props) {
+  const displayLabel = label.replace(/\bmin\b/gi, "Min");
+
   return (
     <View pointerEvents="none" style={[styles.root, style, styles.rounded]}>
       <SessionBadgeGlass />
       <View style={styles.content}>
-        {showClock && <Feather name="clock" size={11} color="#F9F9F9" />}
-        <Text style={[styles.text, textStyle]}>{label}</Text>
+        {showClock && <MaterialCommunityIcons name="clock" size={12} color="#F9F9F9" />}
+        <Text style={[styles.text, textStyle]}>{displayLabel}</Text>
       </View>
     </View>
   );
