@@ -776,45 +776,67 @@ function Inicio2HeroSlider({
     [finishHorizontalGesture, isHorizontalSwipeIntent, setSlideFromSwipe],
   );
 
-  const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
-  const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
-  // El hero se mueve con el scroll normal, pero a menor velocidad. En
-  // overscroll el desplazamiento compensa el movimiento del ScrollView para
-  // que la imagen siga anclada al borde superior mientras se estira.
-  const parallaxY = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-    outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-    extrapolate: "clamp",
-  });
-  // En el rango normal de overscroll conserva el mismo anclaje y zoom. En un
-  // tirón extremo deja que la imagen acompañe parte del rebote para cubrir el
-  // panel sin exigir una textura escalada casi 3× al compositor.
-  const imageParallaxY = scrollY.interpolate({
-    inputRange: [
-      -INICIO2_HERO_HEIGHT,
-      -INICIO2_HERO_HEIGHT * 0.45,
-      0,
-      INICIO2_SCROLL_START_THRESHOLD,
-      INICIO2_HERO_HEIGHT,
-    ],
-    outputRange: [
-      -INICIO2_HERO_HEIGHT * 0.5,
-      -INICIO2_HERO_HEIGHT * 0.45,
-      0,
-      0,
-      INICIO2_HERO_HEIGHT * 0.38,
-    ],
-    extrapolate: "clamp",
-  });
-  const heroCopyY = Animated.add(parallaxY, 15);
-  const pullScale = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, -INICIO2_HERO_HEIGHT * 0.45, 0],
-    // Hasta el 45% de tirón mantiene la curva anterior (1.9× distancia/H).
-    // Después limita el área de composición y completa la cobertura con Y.
-    outputRange: [1.95, 1.855, 1],
-    extrapolate: "clamp",
-  });
-  const imageScale = Animated.multiply(zoom, pullScale);
+  // Mantener estable el grafo Animated evita crear nodos nativos nuevos con
+  // cada cambio de slide/autoplay. Las cuatro capas comparten estos nodos.
+  const {
+    driftX,
+    parallaxY,
+    imageParallaxY,
+    heroCopyY,
+    imageScale,
+  } = useMemo(() => {
+    const zoomNode = slideDrift.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.035],
+    });
+    const driftXNode = slideDrift.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, -6],
+    });
+    // El hero se mueve con el scroll normal, pero a menor velocidad. En
+    // overscroll el desplazamiento compensa el movimiento del ScrollView para
+    // que la imagen siga anclada al borde superior mientras se estira.
+    const parallaxYNode = scrollY.interpolate({
+      inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+      outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
+      extrapolate: "clamp",
+    });
+    // En el rango normal de overscroll conserva el mismo anclaje y zoom. En un
+    // tirón extremo deja que la imagen acompañe parte del rebote para cubrir el
+    // panel sin exigir una textura escalada casi 3× al compositor.
+    const imageParallaxYNode = scrollY.interpolate({
+      inputRange: [
+        -INICIO2_HERO_HEIGHT,
+        -INICIO2_HERO_HEIGHT * 0.45,
+        0,
+        INICIO2_SCROLL_START_THRESHOLD,
+        INICIO2_HERO_HEIGHT,
+      ],
+      outputRange: [
+        -INICIO2_HERO_HEIGHT * 0.5,
+        -INICIO2_HERO_HEIGHT * 0.45,
+        0,
+        0,
+        INICIO2_HERO_HEIGHT * 0.38,
+      ],
+      extrapolate: "clamp",
+    });
+    const pullScaleNode = scrollY.interpolate({
+      inputRange: [-INICIO2_HERO_HEIGHT, -INICIO2_HERO_HEIGHT * 0.45, 0],
+      // Hasta el 45% de tirón mantiene la curva anterior (1.9× distancia/H).
+      // Después limita el área de composición y completa la cobertura con Y.
+      outputRange: [1.95, 1.855, 1],
+      extrapolate: "clamp",
+    });
+
+    return {
+      driftX: driftXNode,
+      parallaxY: parallaxYNode,
+      imageParallaxY: imageParallaxYNode,
+      heroCopyY: Animated.add(parallaxYNode, 15),
+      imageScale: Animated.multiply(zoomNode, pullScaleNode),
+    };
+  }, [scrollY, slideDrift]);
   const displayName =
     username ||
     clerkUser?.firstName ||
@@ -857,11 +879,9 @@ function Inicio2HeroSlider({
             <Animated.View
               style={[
                 StyleSheet.absoluteFill,
-                // Las imágenes ocultas permanecen montadas y precargadas, pero
-                // no consumen GPU siguiendo la respiración y el overscroll.
-                isVisible && {
-                  transform: [{ scale: imageScale }, { translateX: driftX }],
-                },
+                // La transformación queda conectada incluso mientras la capa
+                // está oculta: así el swipe nunca revela un frame sin escala.
+                { transform: [{ scale: imageScale }, { translateX: driftX }] },
               ]}
             >
               <Image
