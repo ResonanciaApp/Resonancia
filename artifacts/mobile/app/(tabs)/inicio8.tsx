@@ -776,33 +776,55 @@ function Inicio2HeroSlider({
     [finishHorizontalGesture, isHorizontalSwipeIntent, setSlideFromSwipe],
   );
 
-  const zoom = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] });
-  const driftX = slideDrift.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
-  // El hero se mueve con el scroll normal, pero a menor velocidad. En
-  // overscroll el desplazamiento compensa el movimiento del ScrollView para
-  // que la imagen siga anclada al borde superior mientras se estira.
-  const parallaxY = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-    outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-    extrapolate: "clamp",
-  });
-  const foregroundParallaxY = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
-    // Durante el tirón conserva una fracción del desplazamiento visible:
-    // acompaña el estiramiento sin quedar pegado al contenido.
-    outputRange: [-INICIO2_HERO_HEIGHT * 0.78, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
-    extrapolate: "clamp",
-  });
-  const heroCopyY = Animated.add(foregroundParallaxY, 15);
-  const pullScale = scrollY.interpolate({
-    inputRange: [-INICIO2_HERO_HEIGHT, 0],
-    // El hero se mantiene anclado arriba mientras el panel sí acompaña el
-    // rebote del ScrollView. La escala debe recuperar también esa distancia,
-    // no solo dar una sensación leve de zoom.
-    outputRange: [2.9, 1],
-    extrapolate: "clamp",
-  });
-  const imageScale = Animated.multiply(zoom, pullScale);
+  const {
+    zoom,
+    driftX,
+    parallaxY,
+    foregroundParallaxY,
+    heroCopyY,
+    imageScale,
+  } = useMemo(() => {
+    const nextZoom = slideDrift.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.035],
+    });
+    const nextDriftX = slideDrift.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, -6],
+    });
+    // El hero se mueve con el scroll normal, pero a menor velocidad. En
+    // overscroll el desplazamiento compensa el movimiento del ScrollView para
+    // que la imagen siga anclada al borde superior mientras se estira.
+    const nextParallaxY = scrollY.interpolate({
+      inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+      outputRange: [-INICIO2_HERO_HEIGHT, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
+      extrapolate: "clamp",
+    });
+    const nextForegroundParallaxY = scrollY.interpolate({
+      inputRange: [-INICIO2_HERO_HEIGHT, 0, INICIO2_SCROLL_START_THRESHOLD, INICIO2_HERO_HEIGHT],
+      // Durante el tirón conserva una fracción del desplazamiento visible:
+      // acompaña el estiramiento sin quedar pegado al contenido.
+      outputRange: [-INICIO2_HERO_HEIGHT * 0.78, 0, 0, INICIO2_HERO_HEIGHT * 0.38],
+      extrapolate: "clamp",
+    });
+    const nextPullScale = scrollY.interpolate({
+      inputRange: [-INICIO2_HERO_HEIGHT, 0],
+      // El hero se mantiene anclado arriba mientras el panel sí acompaña el
+      // rebote del ScrollView. La escala debe recuperar también esa distancia,
+      // no solo dar una sensación leve de zoom.
+      outputRange: [2.9, 1],
+      extrapolate: "clamp",
+    });
+
+    return {
+      zoom: nextZoom,
+      driftX: nextDriftX,
+      parallaxY: nextParallaxY,
+      foregroundParallaxY: nextForegroundParallaxY,
+      heroCopyY: Animated.add(nextForegroundParallaxY, 15),
+      imageScale: Animated.multiply(nextZoom, nextPullScale),
+    };
+  }, [scrollY, slideDrift]);
   const displayName =
     username ||
     clerkUser?.firstName ||
