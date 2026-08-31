@@ -5,6 +5,7 @@ export default function ExploreCopyRoute() {
     <ExploreScreen
       screenTitle="Descubrir"
       categoryVisualVariant="watercolor"
+      collapseCategoryHeader
     />
   );
 }

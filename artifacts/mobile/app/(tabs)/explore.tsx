@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import {
   Dimensions,
   Animated,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -126,9 +127,11 @@ function ChakraCarousel() {
 export function ExploreScreen({
   screenTitle = "Descubrir",
   categoryVisualVariant = "default",
+  collapseCategoryHeader = false,
 }: {
   screenTitle?: string;
   categoryVisualVariant?: "default" | "watercolor";
+  collapseCategoryHeader?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
   const colors   = useColors();
@@ -289,22 +292,66 @@ export function ExploreScreen({
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
+  const stickySectionAnim = React.useRef(new Animated.Value(1)).current;
   const titleCompactRef = React.useRef(false);
+  const sectionLayoutsRef = React.useRef(new Map<string, { title: string; y: number }>());
+  const activeStickyTitleRef = React.useRef("");
+  const [activeStickyTitle, setActiveStickyTitle] = React.useState("");
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
-    const shouldCompact = event.nativeEvent.contentOffset.y > 8;
-    if (shouldCompact === titleCompactRef.current) return;
-    titleCompactRef.current = shouldCompact;
-    Animated.timing(titleCompactAnim, {
-      toValue: shouldCompact ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [titleCompactAnim]);
+    const scrollY = event.nativeEvent.contentOffset.y;
+    const shouldCompact = scrollY > 8;
+    if (shouldCompact !== titleCompactRef.current) {
+      titleCompactRef.current = shouldCompact;
+      Animated.timing(titleCompactAnim, {
+        toValue: shouldCompact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    if (!collapseCategoryHeader) return;
+    let nextTitle = "";
+    const sectionThreshold = scrollY + 52;
+    const orderedSections = Array.from(sectionLayoutsRef.current.values()).sort(
+      (a, b) => a.y - b.y,
+    );
+    for (const section of orderedSections) {
+      if (section.y > sectionThreshold) break;
+      nextTitle = section.title;
+    }
+    if (nextTitle !== activeStickyTitleRef.current) {
+      activeStickyTitleRef.current = nextTitle;
+      stickySectionAnim.stopAnimation();
+      Animated.timing(stickySectionAnim, {
+        toValue: 0,
+        duration: 110,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (!finished) return;
+        setActiveStickyTitle(nextTitle);
+        Animated.timing(stickySectionAnim, {
+          toValue: 1,
+          duration: 180,
+          useNativeDriver: true,
+        }).start();
+      });
+    }
+  }, [collapseCategoryHeader, stickySectionAnim, titleCompactAnim]);
+
+  const registerStickySection = React.useCallback(
+    (key: string, title: string, event: LayoutChangeEvent) => {
+      sectionLayoutsRef.current.set(key, {
+        title,
+        y: event.nativeEvent.layout.y,
+      });
+    },
+    [],
+  );
 
 
   function handleSessionPress(s: Session) {
@@ -386,9 +433,24 @@ export function ExploreScreen({
             </Animated.Text>
             <Animated.View
               pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
+              style={[
+                styles.compactTitleOverlay,
+                {
+                  opacity: Animated.multiply(compactTitleOpacity, stickySectionAnim),
+                  transform: [
+                    {
+                      translateY: stickySectionAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [3, 0],
+                      }),
+                    },
+                  ],
+                },
+              ]}
             >
-              <Text style={styles.compactPageTitle}>{screenTitle}</Text>
+              <Text style={styles.compactPageTitle} numberOfLines={1}>
+                {activeStickyTitle || screenTitle}
+              </Text>
             </Animated.View>
             <Pressable
               onPress={() => setSearchVisible(true)}
@@ -404,13 +466,15 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
-          <ContentCategoryGrid
-            marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
-            marginBottom={0}
-            hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-            horizontal
-            visualVariant={categoryVisualVariant}
-          />
+          {!collapseCategoryHeader && (
+            <ContentCategoryGrid
+              marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant={categoryVisualVariant}
+            />
+          )}
         </View>
 
         <Animated.ScrollView
@@ -421,29 +485,51 @@ export function ExploreScreen({
           onScroll={handleExploreScroll}
           scrollEventThrottle={16}
         >
+          {collapseCategoryHeader && (
+            <ContentCategoryGrid
+              marginTop={14}
+              marginBottom={36}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant={categoryVisualVariant}
+            />
+          )}
+
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
-            <SessionCarousel
+            <View
               key={carousel.slug}
-              title={carousel.label}
-              sessions={carousel.sessions}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionPress(s)}
-              style={{
-                marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 7 : 0,
-                marginBottom: SECTION_GAP,
-                paddingHorizontal: H_PAD,
-              }}
-              cardWidth={SQCARD_W}
-              titleSize={19}
-              showCardMetadata
-              showAuthor={false}
-              onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
-            />
+              onLayout={(event) =>
+                registerStickySection(carousel.slug, carousel.label, event)
+              }
+            >
+              <SessionCarousel
+                title={carousel.label}
+                sessions={carousel.sessions}
+                isPremium={isPremium}
+                onPress={(s) => handleSessionPress(s)}
+                style={{
+                  marginTop: carousel.label.trim().toLowerCase() === "para la ansiedad" ? 7 : 0,
+                  marginBottom: SECTION_GAP,
+                  paddingHorizontal: H_PAD,
+                }}
+                cardWidth={SQCARD_W}
+                titleSize={19}
+                showCardMetadata
+                showAuthor={false}
+                onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
+              />
+            </View>
           ))}
 
           {/* ── Chakras ── */}
-          <ChakraCarousel />
+          <View
+            onLayout={(event) =>
+              registerStickySection("__chakras__", "Armoniza tus chakras", event)
+            }
+          >
+            <ChakraCarousel />
+          </View>
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
