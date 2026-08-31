@@ -242,6 +242,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
                 titleSize={18}
                 showCardMetadata
                 showAuthor={false}
+                cardVariant={id === "ambientales" ? "ambiental" : undefined}
               />
             );
           })}
@@ -261,6 +262,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             showAuthor={false}
             showAuthorAvatar={false}
             overridePress={() => handleSessionPress(session)}
+            cardVariant={id === "ambientales" ? "ambiental" : undefined}
           />
         ))}
       </View>

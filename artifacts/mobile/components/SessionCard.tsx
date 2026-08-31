@@ -19,10 +19,12 @@ import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCategoryPill,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
 import { PressScale } from "@/components/PressScale";
@@ -51,6 +53,7 @@ type Props = {
   overridePress?: () => void;
   /** Shows a white border around the thumbnail to mark this as the currently loaded session */
   playing?: boolean;
+  cardVariant?: "ambiental";
 };
 
 function PlayingDot() {
@@ -88,10 +91,11 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, titleFontSize, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
@@ -109,6 +113,17 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorName  = authorObj.name;
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
+  const isAmbiental = cardVariant === "ambiental";
+  const ambientalCardBackground =
+    theme.id === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : theme.id === "indigo2"
+        ? "rgba(255,255,255,0.05)"
+        : colors.card;
+  const ambientalImageSize = Math.round(width * 0.72);
+  const ambientalCardHeight = Math.round(
+    (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
+  );
 
   if (horizontal) {
     return (
@@ -171,13 +186,44 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style={[
           styles.imageContainer,
           { borderRadius: colors.radius - 4 },
-          showCardMetadata
+            isAmbiental
+              ? {
+                  height: ambientalCardHeight,
+                  aspectRatio: undefined,
+                  backgroundColor: ambientalCardBackground,
+                }
+              : showCardMetadata
             ? { height: (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }
             : undefined,
         ]}
       >
-        <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-        {showCardMetadata ? (
+        {isAmbiental ? (
+          <>
+            <Image
+              source={session.image}
+              style={[
+                styles.ambientalImage,
+                {
+                  width: ambientalImageSize,
+                  height: ambientalImageSize,
+                  borderRadius: ambientalImageSize / 2,
+                  left: (width - ambientalImageSize) / 2,
+                  top: (ambientalCardHeight - ambientalImageSize) / 2,
+                },
+              ]}
+              contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
+            />
+            <SessionCategoryPill categoryId={session.categoryId} />
+            <Text
+              style={[styles.ambientalTitle, { color: colors.foreground }]}
+              numberOfLines={2}
+            >
+              {session.title}
+            </Text>
+          </>
+        ) : showCardMetadata ? (
           <SessionCardMetadataOverlay
             categoryId={session.categoryId}
             durationLabel={session.durationLabel}
@@ -199,7 +245,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         ) : null}
         {locked && <LockStar />}
       </View>
-      {!showCardMetadata && (
+      {!showCardMetadata && !isAmbiental && (
         <>
           <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
@@ -234,6 +280,20 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: "100%",
+  },
+  ambientalImage: {
+    position: "absolute",
+    overflow: "hidden",
+  },
+  ambientalTitle: {
+    position: "absolute",
+    left: 18,
+    right: 14,
+    bottom: 16,
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    lineHeight: 21,
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,

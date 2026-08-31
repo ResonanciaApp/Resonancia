@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -54,6 +55,7 @@ type SessionCarouselProps = {
   showCardMetadata?: boolean;
   showAuthor?: boolean;
   showHeader?: boolean;
+  cardVariant?: "ambiental";
 };
 
 export function SessionCarousel({
@@ -77,8 +79,10 @@ export function SessionCarousel({
   showCardMetadata = false,
   showAuthor = true,
   showHeader = true,
+  cardVariant,
 }: SessionCarouselProps) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const requestedCardWidth = cardWidth ?? getContentCarouselCardWidth(viewportWidth);
@@ -95,6 +99,14 @@ export function SessionCarousel({
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
+  const isAmbiental = cardVariant === "ambiental";
+  const ambientalCardBackground =
+    theme.id === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : theme.id === "indigo2"
+        ? "rgba(255,255,255,0.05)"
+        : colors.card;
+  const ambientalImageSize = Math.round(cw * 0.72);
   return (
     <View style={[styles.section, style]}>
       {showHeader && (onViewAll ? (
@@ -136,9 +148,38 @@ export function SessionCarousel({
               }}
               style={[styles.card, cardStyle]}
             >
-              <View style={[styles.thumbWrap, thumbStyle]}>
-                <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
-                {showCardMetadata ? (
+              <View
+                style={[
+                  styles.thumbWrap,
+                  thumbStyle,
+                  isAmbiental && { backgroundColor: ambientalCardBackground },
+                ]}
+              >
+                {isAmbiental ? (
+                  <>
+                    <Image
+                      source={s.image as number}
+                      style={[
+                        styles.ambientalImage,
+                        {
+                          width: ambientalImageSize,
+                          height: ambientalImageSize,
+                          borderRadius: ambientalImageSize / 2,
+                          left: (cw - ambientalImageSize) / 2,
+                          top: (ch - ambientalImageSize) / 2,
+                        },
+                      ]}
+                      resizeMode="cover"
+                    />
+                    <SessionCategoryPill categoryId={s.categoryId} />
+                    <Text
+                      style={[styles.ambientalTitle, { color: colors.foreground }]}
+                      numberOfLines={2}
+                    >
+                      {s.title}
+                    </Text>
+                  </>
+                ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
                     categoryId={s.categoryId}
                     durationLabel={s.durationLabel}
@@ -168,7 +209,7 @@ export function SessionCarousel({
                   />
                 )}
               </View>
-              {!showCardMetadata && (
+              {!showCardMetadata && !isAmbiental && (
                 <>
                   <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 4), marginLeft: showAuthor ? 0 : 8 }]} numberOfLines={2}>{s.title}</Text>
                   {showAuthor && authorName ? (
@@ -277,6 +318,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   thumb: { width: CARD_W, height: CARD_W },
+  ambientalImage: {
+    position: "absolute",
+    overflow: "hidden",
+  },
+  ambientalTitle: {
+    position: "absolute",
+    left: 18,
+    right: 14,
+    bottom: 16,
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    lineHeight: 21,
+  },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
     position: "absolute",
