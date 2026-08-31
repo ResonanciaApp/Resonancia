@@ -1,10 +1,9 @@
 export const CONTENT_CAROUSEL_GAP = 16;
-export const CONTENT_CAROUSEL_NEXT_RATIO = 0.9;
-export const CONTENT_CAROUSEL_SIZE_SCALE = 1.1;
+export const CONTENT_CAROUSEL_NEXT_RATIO = 0.1;
 export const CONTENT_CAROUSEL_HEIGHT_SCALE = 0.85;
 
 /**
- * Ancho de las cards de contenido para mostrar una completa y el 90% de la
+ * Ancho de las cards de contenido para mostrar dos completas y el 10% de la
  * siguiente dentro del ancho útil de la pantalla.
  */
 export function getContentCarouselCardWidth(
@@ -14,8 +13,8 @@ export function getContentCarouselCardWidth(
   const baseWidth = Math.round(
     (viewportWidth
       - horizontalPadding * 2
-      - CONTENT_CAROUSEL_GAP)
-      / (1 + CONTENT_CAROUSEL_NEXT_RATIO),
+      - CONTENT_CAROUSEL_GAP * 2)
+      / (2 + CONTENT_CAROUSEL_NEXT_RATIO),
   );
-  return Math.max(120, Math.round(baseWidth * CONTENT_CAROUSEL_SIZE_SCALE));
+  return Math.max(120, baseWidth);
 }
