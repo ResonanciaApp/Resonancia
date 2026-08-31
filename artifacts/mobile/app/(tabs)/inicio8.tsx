@@ -28,8 +28,11 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
+  cancelAnimation,
   Easing,
   runOnJS,
+  type SharedValue,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -37,6 +40,7 @@ import RAnimated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Svg, { Circle as SvgCircle } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
@@ -154,6 +158,14 @@ const INICIO2_SLIDES = [
     actionLabel: "Escuchar",
   },
 ] as const;
+const INICIO2_AUTOPLAY_DURATION = 6_000;
+const INICIO2_CONTROL_SIZE = 11;
+const INICIO2_CONTROL_STROKE_WIDTH = 3;
+const INICIO2_CONTROL_RADIUS =
+  (INICIO2_CONTROL_SIZE - INICIO2_CONTROL_STROKE_WIDTH) / 2;
+const INICIO2_CONTROL_CIRCUMFERENCE =
+  2 * Math.PI * INICIO2_CONTROL_RADIUS;
+const INICIO2_PROGRESS_COLOR = "#8260B5";
 
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
@@ -304,6 +316,77 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
   );
 }
 
+const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
+
+function Inicio2HeroControl({
+  active,
+  progress,
+  onPress,
+  accessibilityState,
+  accessibilityLabel,
+  testID,
+}: {
+  active: boolean;
+  progress: SharedValue<number>;
+  onPress: () => void;
+  accessibilityState: { selected: boolean };
+  accessibilityLabel: string;
+  testID: string;
+}) {
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset:
+      INICIO2_CONTROL_CIRCUMFERENCE * (1 - progress.value),
+  }));
+
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={8}
+      style={styles.inicio2HeroControl}
+      accessibilityRole="tab"
+      accessibilityState={accessibilityState}
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
+    >
+      {active ? (
+        <Svg
+          width={INICIO2_CONTROL_SIZE}
+          height={INICIO2_CONTROL_SIZE}
+          viewBox={`0 0 ${INICIO2_CONTROL_SIZE} ${INICIO2_CONTROL_SIZE}`}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        >
+          <SvgCircle
+            cx={INICIO2_CONTROL_SIZE / 2}
+            cy={INICIO2_CONTROL_SIZE / 2}
+            r={INICIO2_CONTROL_RADIUS}
+            fill="#F9F9F9"
+            fillOpacity={0.95}
+            stroke="rgba(255,255,255,0.42)"
+            strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
+          />
+          <Inicio2AnimatedCircle
+            cx={INICIO2_CONTROL_SIZE / 2}
+            cy={INICIO2_CONTROL_SIZE / 2}
+            r={INICIO2_CONTROL_RADIUS}
+            fill="none"
+            stroke={INICIO2_PROGRESS_COLOR}
+            strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
+            strokeDasharray={`${INICIO2_CONTROL_CIRCUMFERENCE} ${INICIO2_CONTROL_CIRCUMFERENCE}`}
+            strokeDashoffset={INICIO2_CONTROL_CIRCUMFERENCE}
+            strokeLinecap="round"
+            rotation={-90}
+            origin={`${INICIO2_CONTROL_SIZE / 2}, ${INICIO2_CONTROL_SIZE / 2}`}
+            animatedProps={animatedProps}
+          />
+        </Svg>
+      ) : (
+        <View style={styles.inicio2HeroControlDot} />
+      )}
+    </Pressable>
+  );
+}
+
 // ── Fila de tabs animada (fade + desplazamiento, como en Biblioteca) ─────────
 const NAV_CHIP_ANIM_DURATION = 600;
 const NAV_CLOSE_SLOT = 38; // ancho de la X (30) + gap (8)
@@ -449,6 +532,7 @@ function Inicio2HeroSlider({
     INICIO2_SLIDES.map((_, index) => new Animated.Value(index === 0 ? 0 : width)),
   ).current;
   const slideDrift = useRef(new Animated.Value(0)).current;
+  const slideProgress = useSharedValue(0);
   const horizontalGestureActiveRef = useRef(false);
 
   const setHorizontalGestureActive = useCallback((active: boolean) => {
@@ -479,6 +563,8 @@ function Inicio2HeroSlider({
     activeIndexRef.current = nextIndex;
     slideDrift.stopAnimation();
     slideDrift.setValue(0);
+    cancelAnimation(slideProgress);
+    slideProgress.value = 0;
     slidePositions.forEach((position, index) => {
       position.stopAnimation();
       position.setValue(
@@ -541,8 +627,40 @@ function Inicio2HeroSlider({
     }
   }, []);
 
+  // El ciclo comienza de nuevo tanto al enfocar el hero como al cambiar de
+  // diapositiva. Reanimated mantiene el anillo en el UI thread y la misma
+  // duración se usa para el temporizador de autoplay.
+  useEffect(() => {
+    cancelAnimation(slideProgress);
+    slideProgress.value = 0;
+
+    if (focused) {
+      slideProgress.value = withTiming(1, {
+        duration: INICIO2_AUTOPLAY_DURATION,
+        easing: Easing.linear,
+      });
+    }
+
+    return () => {
+      cancelAnimation(slideProgress);
+    };
+  }, [activeIndex, focused, slideProgress]);
+
+  useEffect(() => {
+    if (!focused) return;
+
+    const autoplayTimer = setTimeout(() => {
+      if (focusedRef.current) {
+        setSlide(activeIndexRef.current + 1);
+      }
+    }, INICIO2_AUTOPLAY_DURATION);
+
+    return () => clearTimeout(autoplayTimer);
+  }, [activeIndex, focused, setSlide]);
+
   useEffect(() => () => {
     slidePositions.forEach((position) => position.stopAnimation());
+    cancelAnimation(slideProgress);
   }, [slidePositions]);
 
   useEffect(() => {
@@ -803,12 +921,11 @@ function Inicio2HeroSlider({
         {INICIO2_SLIDES.map((slide, index) => {
           const active = index === activeIndex;
           return (
-            <Pressable
+            <Inicio2HeroControl
               key={slide.id}
+              active={active}
+              progress={slideProgress}
               onPress={() => setSlide(index)}
-              hitSlop={8}
-              style={[styles.inicio2HeroControl, active && styles.inicio2HeroControlActive]}
-              accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               accessibilityLabel={`Ver diapositiva ${index + 1}`}
               testID={`inicio2-slide-control-${index + 1}`}
@@ -2571,13 +2688,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   inicio2HeroControl: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "rgba(255,255,255,0.42)",
+    width: 11,
+    height: 11,
+    borderRadius: 5.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  inicio2HeroControlActive: {
-    backgroundColor: "#F9F9F9",
+  inicio2HeroControlDot: {
+    width: 11,
+    height: 11,
+    borderRadius: 5.5,
+    backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
