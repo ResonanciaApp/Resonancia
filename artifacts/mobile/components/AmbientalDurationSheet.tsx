@@ -26,16 +26,6 @@ const MAX_CUSTOM_HOURS = 8;
 const MINUTES = Array.from({ length: 60 }, (_, index) => index);
 const HOURS = Array.from({ length: MAX_CUSTOM_HOURS + 1 }, (_, index) => index);
 
-function darkenHex(color: string, amount: number) {
-  const hex = color.replace("#", "");
-  if (!/^[\da-f]{6}$/i.test(hex)) return color;
-  const factor = Math.max(0, Math.min(1, 1 - amount));
-  const channels = [0, 2, 4].map((offset) =>
-    Math.round(parseInt(hex.slice(offset, offset + 2), 16) * factor),
-  );
-  return `#${channels.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
-}
-
 type WheelPickerProps = {
   values: number[];
   selectedValue: number;
@@ -191,8 +181,12 @@ export function AmbientalDurationSheet({
   const customTotalMinutes = customHours * 60 + customMinutes;
   const selectedMinutes = customMode ? customTotalMinutes : selectedPreset;
   const canStart = selectedMinutes > 0;
-  const sleepTabSurface = theme.gradient[0];
-  const selectedSleepTabSurface = darkenHex(sleepTabSurface, 0.6);
+  const sleepTabSurface =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
   const listenButtonColors = getListenNowButtonColors(theme.id === "indigo");
 
   const enterCustomMode = () => {
@@ -292,9 +286,7 @@ export function AmbientalDurationSheet({
                       style={[
                         styles.preset,
                         {
-                          backgroundColor: selected
-                            ? selectedSleepTabSurface
-                            : sleepTabSurface,
+                          backgroundColor: sleepTabSurface,
                           borderColor: selected
                             ? "#F9F9F9"
                             : "transparent",
@@ -305,6 +297,12 @@ export function AmbientalDurationSheet({
                       accessibilityLabel={`${minutes} minutos`}
                       testID={`ambiental-duration-${minutes}`}
                     >
+                      {selected && (
+                        <View
+                          pointerEvents="none"
+                          style={styles.selectedPresetOverlay}
+                        />
+                      )}
                       <Text
                         style={[
                           styles.presetValue,
@@ -484,6 +482,12 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  selectedPresetOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#000000",
+    opacity: 0.6,
+    borderRadius: 36,
   },
   presetValue: {
     fontFamily: "Manrope",
