@@ -186,7 +186,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             authorName={showAuthor ? authorName : undefined}
             showAuthor={showAuthor}
             durationBottom={showAuthor ? 70 : 52}
-            metaBottom={showAuthor ? 15 : 10}
+            metaBottom={showAuthor ? 15 : 20}
+            metaLeft={showAuthor ? 10 : 14}
             showDuration={showDuration}
           />
         ) : showDuration ? (

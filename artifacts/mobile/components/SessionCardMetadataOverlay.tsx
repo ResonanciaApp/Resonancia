@@ -121,6 +121,7 @@ type Props = {
   showDuration?: boolean;
   durationBottom?: number;
   metaBottom?: number;
+  metaLeft?: number;
 };
 
 export function SessionCardMetadataOverlay({
@@ -135,7 +136,11 @@ export function SessionCardMetadataOverlay({
   // Deja un poco más de aire cuando el título ocupa dos líneas.
   durationBottom = 70,
   metaBottom = 15,
+  metaLeft = 10,
 }: Props) {
+  const [isTwoLineTitle, setIsTwoLineTitle] = React.useState(false);
+  const effectiveDurationBottom = isTwoLineTitle ? durationBottom + 18 : durationBottom;
+
   return (
     <>
       <LinearGradient
@@ -148,12 +153,12 @@ export function SessionCardMetadataOverlay({
       {showDuration && (
         <SessionDurationBadge
           label={durationLabel}
-          style={[styles.durationBadge, { bottom: durationBottom }]}
+          style={[styles.durationBadge, { bottom: effectiveDurationBottom }]}
           textStyle={styles.durationText}
           showClock
         />
       )}
-      <View pointerEvents="none" style={[styles.meta, { bottom: metaBottom }, authorAvatar ? styles.metaWithAvatar : null]}>
+      <View pointerEvents="none" style={[styles.meta, { bottom: metaBottom, left: metaLeft }, authorAvatar ? styles.metaWithAvatar : null]}>
         {authorAvatar ? (
           <Image source={authorAvatar} style={styles.authorAvatar} resizeMode="cover" />
         ) : null}
@@ -164,6 +169,13 @@ export function SessionCardMetadataOverlay({
               titleFontSize ? { fontSize: titleFontSize, lineHeight: titleFontSize + 4 } : null,
             ]}
             numberOfLines={2}
+            onTextLayout={(event) => {
+              const lineCount = event.nativeEvent.lines?.length ?? 1;
+              setIsTwoLineTitle((previous) => {
+                const next = lineCount > 1;
+                return previous === next ? previous : next;
+              });
+            }}
           >
             {title}
           </Text>
