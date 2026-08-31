@@ -165,7 +165,7 @@ const INICIO2_CONTROL_RADIUS =
   (INICIO2_CONTROL_SIZE - INICIO2_CONTROL_STROKE_WIDTH) / 2;
 const INICIO2_CONTROL_CIRCUMFERENCE =
   2 * Math.PI * INICIO2_CONTROL_RADIUS;
-const INICIO2_PROGRESS_COLOR = "#8260B5";
+const INICIO2_PROGRESS_COLOR = "#FFFFFF";
 
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
@@ -337,13 +337,6 @@ function Inicio2HeroControl({
     strokeDashoffset:
       INICIO2_CONTROL_CIRCUMFERENCE * (1 - progress.value),
   }));
-  const pulseStyle = useAnimatedStyle(() => {
-    const pulse = Math.sin(progress.value * Math.PI);
-    return {
-      opacity: 0.12 + pulse * 0.38,
-      transform: [{ scale: 0.82 + pulse * 0.62 }],
-    };
-  });
 
   return (
     <Pressable
@@ -357,10 +350,6 @@ function Inicio2HeroControl({
     >
       {active ? (
         <>
-          <RAnimated.View
-            pointerEvents="none"
-            style={[styles.inicio2HeroControlHalo, pulseStyle]}
-          />
           <Svg
             width={INICIO2_CONTROL_SIZE}
             height={INICIO2_CONTROL_SIZE}
@@ -2712,13 +2701,6 @@ const styles = StyleSheet.create({
     height: INICIO2_CONTROL_SIZE,
     borderRadius: INICIO2_CONTROL_SIZE / 2,
     backgroundColor: "rgba(255,255,255,0.42)",
-  },
-  inicio2HeroControlHalo: {
-    position: "absolute",
-    width: INICIO2_CONTROL_SIZE,
-    height: INICIO2_CONTROL_SIZE,
-    borderRadius: INICIO2_CONTROL_SIZE / 2,
-    backgroundColor: INICIO2_PROGRESS_COLOR,
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
