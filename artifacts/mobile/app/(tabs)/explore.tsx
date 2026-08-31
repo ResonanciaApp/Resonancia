@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   durationSection: { marginBottom: SECTION_GAP },
-  durationSectionTitle: { fontSize: 22, marginBottom: 17, paddingHorizontal: H_PAD },
+  durationSectionTitle: { marginBottom: 17, paddingHorizontal: H_PAD },
   durationPillRow: {
     flexDirection: "row",
     paddingLeft: H_PAD,
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
   durationPillSurface: { borderRadius: 10 },
   durationPillText: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
