@@ -165,8 +165,6 @@ const INICIO2_CONTROL_RADIUS =
   (INICIO2_CONTROL_SIZE - INICIO2_CONTROL_STROKE_WIDTH) / 2;
 const INICIO2_CONTROL_CIRCUMFERENCE =
   2 * Math.PI * INICIO2_CONTROL_RADIUS;
-const INICIO2_DOT_COLOR = "#8260B5";
-const INICIO2_INACTIVE_DOT_COLOR = "rgba(130,96,181,0.55)";
 const INICIO2_PROGRESS_COLOR = "#FFFFFF";
 
 const VIDEO_REG_W = 200;
@@ -363,8 +361,9 @@ function Inicio2HeroControl({
               cx={INICIO2_CONTROL_SIZE / 2}
               cy={INICIO2_CONTROL_SIZE / 2}
               r={INICIO2_CONTROL_RADIUS}
-              fill={INICIO2_DOT_COLOR}
-              stroke={INICIO2_DOT_COLOR}
+              fill="#F9F9F9"
+              fillOpacity={0.95}
+              stroke="rgba(255,255,255,0.42)"
               strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
             />
             <Inicio2AnimatedCircle
@@ -2701,7 +2700,7 @@ const styles = StyleSheet.create({
     width: INICIO2_CONTROL_SIZE,
     height: INICIO2_CONTROL_SIZE,
     borderRadius: INICIO2_CONTROL_SIZE / 2,
-    backgroundColor: INICIO2_INACTIVE_DOT_COLOR,
+    backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
