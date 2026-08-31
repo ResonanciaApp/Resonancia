@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
 import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
 import { useGeometrixPanel, GEOMETRIX_PANEL_W } from "@/context/GeometrixPanelContext";
@@ -23,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
@@ -38,7 +40,9 @@ import { CategoryOverlay } from "@/components/CategoryOverlay";
 
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#A9A9C3";
-const INDIGO2_COLOR  = "#C9C8DE";
+const INDIGO2_ACTIVE_COLOR = "#F9F9F9";
+const INDIGO2_INACTIVE_COLOR = "#A2A2B1";
+const INDIGO2_SELECTED_GRADIENT = getListenNowButtonColors(true);
 const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
 
@@ -103,8 +107,8 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
-  const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
+  const activeCol   = indigo2Mode ? INDIGO2_ACTIVE_COLOR : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const inactiveCol = indigo2Mode ? INDIGO2_INACTIVE_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -292,7 +296,16 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                   transform: [{ translateX: pillX }],
                 },
               ]}
-            />
+            >
+              {indigo2Mode && (
+                <LinearGradient
+                  colors={INDIGO2_SELECTED_GRADIENT}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFillObject}
+                />
+              )}
+            </Animated.View>
           )}
 
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -652,6 +665,7 @@ const styles = StyleSheet.create({
     left: 5,
     borderRadius: 28,
     backgroundColor: GHOST_PILL_BG,
+    overflow: "hidden",
   },
   mezcladorHandle: {
     position: "absolute",
