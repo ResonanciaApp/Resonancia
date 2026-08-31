@@ -33,6 +33,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Svg, { Defs, Ellipse, RadialGradient, Stop } from "react-native-svg";
 
 import {
   useGetMe,
@@ -101,6 +102,42 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 
 function isoDow(d: Date): number {
   return (d.getDay() + 6) % 7;
+}
+
+function ProfileHeaderAurora() {
+  return (
+    <Svg
+      width="100%"
+      height="100%"
+      style={StyleSheet.absoluteFill}
+      pointerEvents="none"
+    >
+      <Defs>
+        <RadialGradient id="profile-header-violet-left" cx="0%" cy="0%" r="100%">
+          <Stop offset="0%" stopColor="#B875E8" stopOpacity={0.42} />
+          <Stop offset="100%" stopColor="#7D43B5" stopOpacity={0} />
+        </RadialGradient>
+        <RadialGradient id="profile-header-purple-right" cx="100%" cy="0%" r="100%">
+          <Stop offset="0%" stopColor="#8E62D2" stopOpacity={0.38} />
+          <Stop offset="100%" stopColor="#5D328F" stopOpacity={0} />
+        </RadialGradient>
+      </Defs>
+      <Ellipse
+        cx="18%"
+        cy="0%"
+        rx="58%"
+        ry="105%"
+        fill="url(#profile-header-violet-left)"
+      />
+      <Ellipse
+        cx="84%"
+        cy="4%"
+        rx="60%"
+        ry="110%"
+        fill="url(#profile-header-purple-right)"
+      />
+    </Svg>
+  );
 }
 
 
@@ -928,6 +965,25 @@ export function ProfileScreenBase({
           },
         ]}
       >
+        {dedicated && (
+          <View pointerEvents="none" style={styles.profileHeaderGlass}>
+            <BlurView
+              intensity={32}
+              tint="dark"
+              style={StyleSheet.absoluteFill}
+            />
+            <ProfileHeaderAurora />
+            <LinearGradient
+              colors={[
+                "rgba(92,48,132,0.42)",
+                "rgba(87,47,125,0.22)",
+                "rgba(76,42,110,0)",
+              ]}
+              locations={[0, 0.55, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </View>
+        )}
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={[
           styles.stickyHeaderRow,
@@ -1235,29 +1291,30 @@ export function ProfileScreenBase({
               onPress={() => router.push("/notificaciones-practica" as never)}
               accessibilityRole="button"
               accessibilityLabel="Abrir Notificaciones"
-              style={({ pressed }) => [
-                styles.profileNotificationRow,
-                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
-              ]}
-            >
-              <View style={styles.profileNotificationIcon}>
-                <Feather name="bell" size={19} color={colors.foreground} />
-              </View>
-              <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
-                Notificaciones
-              </Text>
-              <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-            </Pressable>
+               style={({ pressed }) => [
+                 styles.profileNotificationRow,
+                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
+               ]}
+             >
+               <View style={styles.profileNotificationIcon}>
+                 <Feather name="bell" size={19} color={colors.foreground} />
+               </View>
+               <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
+                 Notificaciones
+               </Text>
+               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+             </Pressable>
 
-            <Pressable
-              onPress={() => Alert.alert("Descargas", "La descarga estará disponible próximamente.")}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Descargas"
-              testID="profile-downloads-row"
-              style={({ pressed }) => [
-                styles.profileNotificationRow,
-                { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
-              ]}
+             <Pressable
+               onPress={() => Alert.alert("Descargas", "La descarga estará disponible próximamente.")}
+               accessibilityRole="button"
+               accessibilityLabel="Abrir Descargas"
+               testID="profile-downloads-row"
+               style={({ pressed }) => [
+                 styles.profileNotificationRow,
+                 styles.profileDownloadsRow,
+                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
+               ]}
             >
               <View style={styles.profileNotificationIcon}>
                 <Feather name="download" size={19} color={colors.foreground} />
@@ -1690,6 +1747,14 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "transparent",
   },
+  profileHeaderGlass: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 45,
+    overflow: "hidden",
+  },
   stickyHeaderBorder: {
     position: "absolute",
     left: 0,
@@ -2107,6 +2172,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     marginTop: 16,
+    marginBottom: 0,
+  },
+  profileDownloadsRow: {
     marginBottom: 24,
   },
   profileNotificationIcon: {
