@@ -503,7 +503,6 @@ function Inicio2HeroSlider({
   topInset,
   focused,
   scrollY,
-  overscrolling,
   currentStreak,
   giftScale,
   onOpenDrawer,
@@ -513,7 +512,6 @@ function Inicio2HeroSlider({
   topInset: number;
   focused: boolean;
   scrollY: Animated.Value;
-  overscrolling: boolean;
   currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
@@ -816,6 +814,11 @@ function Inicio2HeroSlider({
     outputRange: [1.95, 1.855, 1],
     extrapolate: "clamp",
   });
+  const overscrollLayerOpacity = scrollY.interpolate({
+    inputRange: [-1, -0.01, 0],
+    outputRange: [1, 1, 0],
+    extrapolate: "clamp",
+  });
   const displayName =
     username ||
     clerkUser?.firstName ||
@@ -885,43 +888,40 @@ function Inicio2HeroSlider({
         );
       })}
 
-      {overscrolling && (
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.inicio2HeroImageLayer,
+          {
+            zIndex: 3,
+            opacity: overscrollLayerOpacity,
+            transform: [{ translateY: imageParallaxY }],
+          },
+        ]}
+      >
         <Animated.View
-          pointerEvents="none"
           style={[
-            styles.inicio2HeroImageLayer,
+            StyleSheet.absoluteFill,
             {
-              zIndex: 3,
-              transform: [{ translateY: imageParallaxY }],
+              // Esta capa responde solo al scroll nativo. No se conecta a la
+              // respiración continua para que no genere carga GPU en reposo.
+              transform: [{ scale: pullScale }],
             },
           ]}
         >
-          <Animated.View
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                transform: [
-                  { scale: pullScale },
-                  { scale: zoom },
-                  { translateX: driftX },
-                ],
-              },
-            ]}
-          >
-            <Image
-              source={INICIO2_SLIDES[activeIndex].image}
-              resizeMode="cover"
-              style={styles.inicio2HeroImage}
-            />
-            <LinearGradient
-              colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
-              locations={[0, 0.48, 1]}
-              style={styles.inicio2HeroImage}
-              pointerEvents="none"
-            />
-          </Animated.View>
+          <Image
+            source={INICIO2_SLIDES[activeIndex].image}
+            resizeMode="cover"
+            style={styles.inicio2HeroImage}
+          />
+          <LinearGradient
+            colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
+            locations={[0, 0.48, 1]}
+            style={styles.inicio2HeroImage}
+            pointerEvents="none"
+          />
         </Animated.View>
-      )}
+      </Animated.View>
 
       <Animated.View
         pointerEvents="box-none"
@@ -1620,8 +1620,6 @@ export default function HomeScreen2({
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
   const inicio2ScrollY = useRef(new Animated.Value(0)).current;
-  const inicio2OverscrollingRef = useRef(false);
-  const [inicio2Overscrolling, setInicio2Overscrolling] = useState(false);
   const [inicio2ScrollEnabled, setInicio2ScrollEnabled] = useState(true);
   const handleInicio2HorizontalGesture = useCallback((active: boolean) => {
     setInicio2ScrollEnabled(!active);
@@ -1741,20 +1739,9 @@ export default function HomeScreen2({
 
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
-      backdropAnim.setValue(Math.max(0, 1 - y / 280));
+      backdropAnim.setValue(Math.min(1, Math.max(0, 1 - y / 280)));
     },
     [updateStickyActive, backdropAnim],
-  );
-  const handleInicio2ScrollListener = useCallback(
-    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-      handleMainScroll(e);
-      const nextOverscrolling = e.nativeEvent.contentOffset.y < -1;
-      if (nextOverscrolling !== inicio2OverscrollingRef.current) {
-        inicio2OverscrollingRef.current = nextOverscrolling;
-        setInicio2Overscrolling(nextOverscrolling);
-      }
-    },
-    [handleMainScroll],
   );
   const handleInicio2Scroll = useMemo(
     () =>
@@ -1762,10 +1749,10 @@ export default function HomeScreen2({
         [{ nativeEvent: { contentOffset: { y: inicio2ScrollY } } }],
         {
           useNativeDriver: ND,
-          listener: handleInicio2ScrollListener,
+          listener: handleMainScroll,
         },
       ),
-    [handleInicio2ScrollListener, inicio2ScrollY],
+    [handleMainScroll, inicio2ScrollY],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -1979,7 +1966,6 @@ export default function HomeScreen2({
               topInset={topPad}
               focused={tabFocused}
               scrollY={inicio2ScrollY}
-              overscrolling={inicio2Overscrolling}
               currentStreak={currentStreakDisplay}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
