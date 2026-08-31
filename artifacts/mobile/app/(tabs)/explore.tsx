@@ -42,6 +42,14 @@ const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
+const DURATION_SLOTS = [
+  { label: "5 min", displayLabel: "5 Minutos" },
+  { label: "10 min", displayLabel: "10 Minutos" },
+  { label: "20 min", displayLabel: "20 Minutos" },
+  { label: "30 min", displayLabel: "30 Minutos" },
+  { label: "60 min", displayLabel: "60 Minutos" },
+] as const;
+const DURATION_PILL_WIDTH = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -144,6 +152,12 @@ export function ExploreScreen({
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const durationPillBg =
+    activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "tibet"
+        ? "rgba(0,0,0,0.15)"
+        : "rgba(255,255,255,0.05)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -477,19 +491,63 @@ export function ExploreScreen({
           {collapseCategoryHeader && (
             <Animated.View
               style={{
-                marginTop: -41,
+                marginTop: -21,
                 opacity: categoryImagesOpacity,
                 transform: [{ translateY: categoryImagesTranslateY }],
               }}
             >
+              <Text style={[styles.sectionTitle, styles.categoryCarouselTitle]}>
+                Explora por categoría
+              </Text>
               <ContentCategoryGrid
-                marginTop={14}
+                marginTop={0}
                 marginBottom={20}
                 hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
                 horizontal
                 visualVariant={categoryVisualVariant}
               />
             </Animated.View>
+          )}
+          {collapseCategoryHeader && (
+            <View style={styles.durationSection}>
+              <Text style={[styles.sectionTitle, styles.durationSectionTitle]}>
+                Explora según tu tiempo
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.durationPillRow}
+              >
+                {DURATION_SLOTS.map((slot) => (
+                  <Pressable
+                    key={slot.label}
+                    onPress={() =>
+                      openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                    }
+                    style={({ pressed }) => [
+                      styles.durationPill,
+                      { opacity: pressed ? 0.75 : 1 },
+                    ]}
+                  >
+                    <View
+                      style={[
+                        StyleSheet.absoluteFill,
+                        styles.durationPillSurface,
+                        { backgroundColor: durationPillBg },
+                      ]}
+                    />
+                    <Text
+                      style={styles.durationPillText}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.7}
+                    >
+                      {slot.displayLabel}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
           )}
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
@@ -622,6 +680,35 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
+  durationSection: { marginBottom: SECTION_GAP },
+  durationSectionTitle: { marginBottom: 17, paddingHorizontal: H_PAD },
+  durationPillRow: {
+    flexDirection: "row",
+    paddingLeft: H_PAD,
+    paddingRight: DURATION_PILL_WIDTH * 0.3,
+    gap: 6,
+    paddingBottom: 2,
+  },
+  durationPill: {
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    minWidth: 80,
+    width: DURATION_PILL_WIDTH,
+    height: 42,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durationPillSurface: { borderRadius: 10 },
+  durationPillText: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    marginTop: -3,
+  },
   // Playlists para ti
   ritualGrid: {
     flexDirection: "row",
