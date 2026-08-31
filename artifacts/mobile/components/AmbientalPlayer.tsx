@@ -9,8 +9,8 @@ import React, {
 import {
   Alert,
   Animated,
+  BackHandler,
   Image,
-  Modal,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -29,7 +29,7 @@ import type { Session } from "@/data/sessions";
 const FADE_DURATION = 450;
 const AUTO_HIDE_DELAY = 4000;
 const SLIDE_DURATION = 400;
-const SLIDE_OFFSET = 900; // safely off-screen for any device
+const SLIDE_OFFSET = 900;
 
 type Props = {
   visible: boolean;
@@ -111,15 +111,12 @@ export function AmbientalPlayer({
   // ── Slide lifecycle ───────────────────────────────────────────────────────
   useEffect(() => {
     if (visible) {
-      // Reset UI opacity state
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
       clearHideTimer();
-
       setRendered(true);
       slideAnim.stopAnimation();
       slideAnim.setValue(SLIDE_OFFSET);
-
       requestAnimationFrame(() => {
         Animated.timing(slideAnim, {
           toValue: 0,
@@ -133,7 +130,6 @@ export function AmbientalPlayer({
       clearHideTimer();
       uiOpacity.setValue(1);
       uiVisibleRef.current = true;
-
       if (!rendered) return;
       slideAnim.stopAnimation();
       Animated.timing(slideAnim, {
@@ -170,18 +166,15 @@ export function AmbientalPlayer({
 
   useEffect(() => {
     if (!visible || !matchedSessionRef.current) return;
-
     const sessionChanged =
       currentSession === null || currentSession.id !== session?.id;
     const timerFinished =
       sleepTimerRemaining === null && !isPlaying && !isLoading;
-
     if (sessionChanged) {
       ownsPlaybackRef.current = false;
       onClose();
       return;
     }
-
     if (timerFinished) {
       ownsPlaybackRef.current = false;
       void stop();
@@ -198,7 +191,9 @@ export function AmbientalPlayer({
     visible,
   ]);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+  // ── Android back button ───────────────────────────────────────────────────
+  const confirmExitRef = useRef<() => void>(() => undefined);
+
   const confirmExit = useCallback(() => {
     clearHideTimer();
     const ownerSessionId = session?.id ?? null;
@@ -215,42 +210,39 @@ export function AmbientalPlayer({
               ownerSessionId !== null &&
               currentSessionIdRef.current === ownerSessionId;
             ownsPlaybackRef.current = false;
-            if (stillOwnsPlayback) {
-              void stop();
-            }
+            if (stillOwnsPlayback) void stop();
             onClose();
           },
         },
-        {
-          text: "No",
-          style: "cancel",
-          onPress: scheduleHide,
-        },
+        { text: "No", style: "cancel", onPress: scheduleHide },
       ],
     );
   }, [clearHideTimer, onClose, scheduleHide, session?.id, stop]);
 
+  confirmExitRef.current = confirmExit;
+
+  useEffect(() => {
+    if (!rendered) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      confirmExitRef.current();
+      return true;
+    });
+    return () => sub.remove();
+  }, [rendered]);
+
+  // ── Render ────────────────────────────────────────────────────────────────
   const handlePlayPause = useCallback(() => {
     if (!currentSession || isLoading) return;
     void pauseResume();
   }, [currentSession, isLoading, pauseResume]);
 
-  const countdown =
-    sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
+  const countdown = sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
 
   if (!rendered) return null;
 
   return (
-    <Modal
-      visible={rendered}
-      animationType="none"
-      presentationStyle="fullScreen"
-      statusBarTranslucent
-      onRequestClose={confirmExit}
-    >
-      <StatusBar hidden />
-      {/* Prevents white Modal background flashing before slide-in starts */}
-      <View style={styles.darkBacking} />
+    <View style={styles.overlay} pointerEvents="box-none">
+      <StatusBar hidden={visible} />
       <Animated.View
         style={[styles.root, { transform: [{ translateY: slideAnim }] }]}
       >
@@ -260,7 +252,6 @@ export function AmbientalPlayer({
           style={StyleSheet.absoluteFill}
         />
 
-        {/* Background image */}
         {session?.image && (
           <>
             <Image
@@ -273,17 +264,14 @@ export function AmbientalPlayer({
           </>
         )}
 
-        {/* Tap-anywhere to show/hide UI */}
         <TouchableWithoutFeedback onPress={handleScreenTap} accessible={false}>
           <View style={StyleSheet.absoluteFill} />
         </TouchableWithoutFeedback>
 
-        {/* All interactive UI fades together */}
         <Animated.View
           style={[styles.uiLayer, { opacity: uiOpacity }]}
           pointerEvents="box-none"
         >
-          {/* Header row */}
           <View style={[styles.header, { top: Math.max(insets.top, 18) + 4 }]}>
             <Pressable
               onPress={confirmExit}
@@ -304,11 +292,6 @@ export function AmbientalPlayer({
               style={styles.ghostPill}
               accessible={false}
               importantForAccessibility="no"
-              accessibilityLabel={
-                unreadCount > 0
-                  ? `${unreadCount} notificaciones sin leer`
-                  : "Notificaciones"
-              }
             >
               <Ionicons name="notifications" size={20} color="#FFFFFF" />
               {unreadCount > 0 && (
@@ -321,7 +304,6 @@ export function AmbientalPlayer({
             </View>
           </View>
 
-          {/* Countdown — true center of screen */}
           <View style={styles.countdownContainer} pointerEvents="none">
             <Text
               style={styles.countdown}
@@ -333,7 +315,6 @@ export function AmbientalPlayer({
             </Text>
           </View>
 
-          {/* Controls — anchored toward the bottom */}
           <View
             style={[
               styles.controlsContainer,
@@ -341,7 +322,6 @@ export function AmbientalPlayer({
             ]}
             pointerEvents="box-none"
           >
-            {/* Play / Pause */}
             <Pressable
               onPress={handlePlayPause}
               disabled={isLoading || !currentSession}
@@ -369,7 +349,6 @@ export function AmbientalPlayer({
               )}
             </Pressable>
 
-            {/* Stop */}
             <Pressable
               onPress={confirmExit}
               style={({ pressed }) => [
@@ -387,7 +366,7 @@ export function AmbientalPlayer({
           </View>
         </Animated.View>
       </Animated.View>
-    </Modal>
+    </View>
   );
 }
 
@@ -395,12 +374,13 @@ const GHOST_BG = "rgba(255,255,255,0.18)";
 const GHOST_BORDER = "rgba(255,255,255,0.30)";
 
 const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    elevation: 99,
+  },
   root: {
     flex: 1,
-  },
-  darkBacking: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#060A0F",
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -418,7 +398,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  // Small ghost pill — header buttons (44×44)
   ghostPill: {
     width: 44,
     height: 44,
@@ -429,7 +408,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GHOST_BORDER,
   },
-  // Large ghost pill — play/stop (98×98) asymmetric radius
   ghostPillLarge: {
     width: 98,
     height: 98,
