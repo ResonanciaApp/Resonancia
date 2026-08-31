@@ -18,7 +18,7 @@ import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import Svg, { Path } from "react-native-svg";
 
-const SHEET_HEIGHT = 390;
+const SHEET_HEIGHT = 355;
 const WHEEL_ROW_HEIGHT = 44;
 const WHEEL_HEIGHT = 132;
 const PRESETS = [5, 10, 20] as const;
@@ -139,14 +139,15 @@ export function AmbientalDurationSheet({
       customOpacity.setValue(0);
       requestAnimationFrame(() => {
         Animated.parallel([
-          Animated.timing(sheetY, {
+          Animated.spring(sheetY, {
             toValue: 0,
-            duration: 300,
+            tension: 38,
+            friction: 7,
             useNativeDriver: true,
           }),
           Animated.timing(backdropOpacity, {
             toValue: 0.62,
-            duration: 260,
+            duration: 380,
             useNativeDriver: true,
           }),
         ]).start();
@@ -459,14 +460,14 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: "rgba(255,255,255,0.24)",
     marginTop: 12,
-    marginBottom: 22,
+    marginBottom: 16,
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 23,
+    fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 22,
+    marginBottom: 16,
   },
   contentArea: {
     minHeight: 110,
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    transform: [{ translateY: 25 }],
+    transform: [{ translateY: 18 }],
   },
   preset: {
     width: 72,
@@ -561,7 +562,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    marginTop: 39,
+    marginTop: 26,
     overflow: "hidden",
     shadowColor: "#8769e9",
     shadowOffset: { width: 0, height: 4 },
