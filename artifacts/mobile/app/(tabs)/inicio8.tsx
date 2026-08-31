@@ -159,7 +159,7 @@ const INICIO2_SLIDES = [
   },
 ] as const;
 const INICIO2_AUTOPLAY_DURATION = 6_000;
-const INICIO2_CONTROL_SIZE = 11;
+const INICIO2_CONTROL_SIZE = 18;
 const INICIO2_CONTROL_STROKE_WIDTH = 3;
 const INICIO2_CONTROL_RADIUS =
   (INICIO2_CONTROL_SIZE - INICIO2_CONTROL_STROKE_WIDTH) / 2;
@@ -337,6 +337,13 @@ function Inicio2HeroControl({
     strokeDashoffset:
       INICIO2_CONTROL_CIRCUMFERENCE * (1 - progress.value),
   }));
+  const pulseStyle = useAnimatedStyle(() => {
+    const pulse = Math.sin(progress.value * Math.PI);
+    return {
+      opacity: 0.12 + pulse * 0.38,
+      transform: [{ scale: 0.82 + pulse * 0.62 }],
+    };
+  });
 
   return (
     <Pressable
@@ -349,37 +356,43 @@ function Inicio2HeroControl({
       testID={testID}
     >
       {active ? (
-        <Svg
-          width={INICIO2_CONTROL_SIZE}
-          height={INICIO2_CONTROL_SIZE}
-          viewBox={`0 0 ${INICIO2_CONTROL_SIZE} ${INICIO2_CONTROL_SIZE}`}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        >
-          <SvgCircle
-            cx={INICIO2_CONTROL_SIZE / 2}
-            cy={INICIO2_CONTROL_SIZE / 2}
-            r={INICIO2_CONTROL_RADIUS}
-            fill="#F9F9F9"
-            fillOpacity={0.95}
-            stroke="rgba(255,255,255,0.42)"
-            strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
+        <>
+          <RAnimated.View
+            pointerEvents="none"
+            style={[styles.inicio2HeroControlHalo, pulseStyle]}
           />
-          <Inicio2AnimatedCircle
-            cx={INICIO2_CONTROL_SIZE / 2}
-            cy={INICIO2_CONTROL_SIZE / 2}
-            r={INICIO2_CONTROL_RADIUS}
-            fill="none"
-            stroke={INICIO2_PROGRESS_COLOR}
-            strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
-            strokeDasharray={`${INICIO2_CONTROL_CIRCUMFERENCE} ${INICIO2_CONTROL_CIRCUMFERENCE}`}
-            strokeDashoffset={INICIO2_CONTROL_CIRCUMFERENCE}
-            strokeLinecap="round"
-            rotation={-90}
-            origin={`${INICIO2_CONTROL_SIZE / 2}, ${INICIO2_CONTROL_SIZE / 2}`}
-            animatedProps={animatedProps}
-          />
-        </Svg>
+          <Svg
+            width={INICIO2_CONTROL_SIZE}
+            height={INICIO2_CONTROL_SIZE}
+            viewBox={`0 0 ${INICIO2_CONTROL_SIZE} ${INICIO2_CONTROL_SIZE}`}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          >
+            <SvgCircle
+              cx={INICIO2_CONTROL_SIZE / 2}
+              cy={INICIO2_CONTROL_SIZE / 2}
+              r={INICIO2_CONTROL_RADIUS}
+              fill="#F9F9F9"
+              fillOpacity={0.95}
+              stroke="rgba(255,255,255,0.42)"
+              strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
+            />
+            <Inicio2AnimatedCircle
+              cx={INICIO2_CONTROL_SIZE / 2}
+              cy={INICIO2_CONTROL_SIZE / 2}
+              r={INICIO2_CONTROL_RADIUS}
+              fill="none"
+              stroke={INICIO2_PROGRESS_COLOR}
+              strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
+              strokeDasharray={`${INICIO2_CONTROL_CIRCUMFERENCE} ${INICIO2_CONTROL_CIRCUMFERENCE}`}
+              strokeDashoffset={INICIO2_CONTROL_CIRCUMFERENCE}
+              strokeLinecap="round"
+              rotation={-90}
+              origin={`${INICIO2_CONTROL_SIZE / 2}, ${INICIO2_CONTROL_SIZE / 2}`}
+              animatedProps={animatedProps}
+            />
+          </Svg>
+        </>
       ) : (
         <View style={styles.inicio2HeroControlDot} />
       )}
@@ -2685,20 +2698,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    gap: 8,
+    gap: 10,
   },
   inicio2HeroControl: {
-    width: 11,
-    height: 11,
-    borderRadius: 5.5,
+    width: INICIO2_CONTROL_SIZE,
+    height: INICIO2_CONTROL_SIZE,
+    borderRadius: INICIO2_CONTROL_SIZE / 2,
     alignItems: "center",
     justifyContent: "center",
   },
   inicio2HeroControlDot: {
-    width: 11,
-    height: 11,
-    borderRadius: 5.5,
+    width: INICIO2_CONTROL_SIZE,
+    height: INICIO2_CONTROL_SIZE,
+    borderRadius: INICIO2_CONTROL_SIZE / 2,
     backgroundColor: "rgba(255,255,255,0.42)",
+  },
+  inicio2HeroControlHalo: {
+    position: "absolute",
+    width: INICIO2_CONTROL_SIZE,
+    height: INICIO2_CONTROL_SIZE,
+    borderRadius: INICIO2_CONTROL_SIZE / 2,
+    backgroundColor: INICIO2_PROGRESS_COLOR,
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {
