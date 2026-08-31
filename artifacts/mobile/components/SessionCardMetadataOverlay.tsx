@@ -64,12 +64,14 @@ export function SessionCategoryPill({
   plain = false,
   textOnly = false,
   outlineColor,
+  leftInset,
 }: {
   categoryId?: string;
   inline?: boolean;
   plain?: boolean;
   textOnly?: boolean;
   outlineColor?: string;
+  leftInset?: number;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -84,6 +86,7 @@ export function SessionCategoryPill({
         textOnly && styles.categoryPillTextOnly,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
+        leftInset !== undefined ? { left: leftInset } : null,
       ]}
     >
       {!plain && !outlineColor && <SessionBadgeGlass />}
@@ -122,6 +125,7 @@ type Props = {
   durationBottom?: number;
   metaBottom?: number;
   metaLeft?: number;
+  contentLeft?: number;
 };
 
 export function SessionCardMetadataOverlay({
@@ -137,6 +141,7 @@ export function SessionCardMetadataOverlay({
   durationBottom = 70,
   metaBottom = 15,
   metaLeft = 10,
+  contentLeft = 8,
 }: Props) {
   const [isTwoLineTitle, setIsTwoLineTitle] = React.useState(false);
   const effectiveDurationBottom = isTwoLineTitle ? durationBottom + 18 : durationBottom;
@@ -149,11 +154,11 @@ export function SessionCardMetadataOverlay({
         locations={[0, 0.42, 1]}
         style={styles.bottomGradient}
       />
-      <SessionCategoryPill categoryId={categoryId} />
+      <SessionCategoryPill categoryId={categoryId} leftInset={contentLeft} />
       {showDuration && (
         <SessionDurationBadge
           label={durationLabel}
-          style={[styles.durationBadge, { bottom: effectiveDurationBottom }]}
+          style={[styles.durationBadge, { bottom: effectiveDurationBottom, left: contentLeft }]}
           textStyle={styles.durationText}
           showClock
         />

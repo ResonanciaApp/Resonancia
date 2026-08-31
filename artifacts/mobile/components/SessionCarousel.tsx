@@ -147,6 +147,7 @@ export function SessionCarousel({
                     durationBottom={showAuthor ? 70 : 52}
                     metaBottom={showAuthor ? 15 : 20}
                     metaLeft={showAuthor ? 10 : 18}
+                    contentLeft={showAuthor ? 8 : 18}
                   />
                 ) : (
                   <>

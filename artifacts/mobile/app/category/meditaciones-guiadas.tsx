@@ -194,6 +194,7 @@ function CategoryCard({
             durationBottom={52}
             metaBottom={20}
             metaLeft={18}
+            contentLeft={18}
           />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
@@ -228,6 +229,7 @@ function CategoryCard({
           durationBottom={52}
           metaBottom={20}
           metaLeft={18}
+          contentLeft={18}
         />
         {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
       </View>
