@@ -93,11 +93,11 @@ function ToolCard({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color="#F9F9F9"
+            color="#FFFFFF"
           />
         </Animated.View>
         <Text
-          style={[styles.label, { color: foregroundColor }]}
+          style={[styles.label, { color: isPressed ? "#FFFFFF" : foregroundColor }]}
           numberOfLines={1}
         >
           {tool.label}

@@ -37,7 +37,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const ACTIVE_COLOR   = WIDGET_GREEN_SOLID;
+const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "#A9A9C3";
 const INDIGO2_COLOR  = "#C9C8DE";
 const GRAD_END       = "#F9F9F9";
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
   slidingPill: {
     position: "absolute",
     // Píldora horizontal de 57px centrada verticalmente en el bar
-    top: (PILL_H - 57) / 2 - 1,
+    top: (PILL_H - 57) / 2 - 2,
     height: 57,
     // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
     left: 5,
