@@ -33,4 +33,27 @@ const colors = {
 
 export const WIDGET_GREEN_SOLID = "#298B73";
 
+export const MEMBERSHIP_AURORA = {
+  background: "#111B2B",
+  panel: "rgba(20,31,46,0.78)",
+  panelMuted: "rgba(20,31,46,0.72)",
+  text: "#F7F2E8",
+  textSoft: "#D4DDDA",
+  textMuted: "#AAB9BE",
+  teal: "#91D2C7",
+  tealGlow: "rgba(29,166,145,0.28)",
+  premium: {
+    accent: "#E7B95C",
+    soft: "#FFF1BF",
+    border: "rgba(231,185,92,0.55)",
+    glow: "rgba(231,185,92,0.18)",
+  },
+  plus: {
+    accent: "#C9A6FF",
+    soft: "#EADCFF",
+    border: "rgba(183,132,255,0.7)",
+    glow: "rgba(133,83,218,0.22)",
+  },
+} as const;
+
 export default colors;
