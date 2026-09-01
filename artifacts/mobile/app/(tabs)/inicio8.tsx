@@ -97,7 +97,6 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
-import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -106,14 +105,6 @@ import {
 
 const { width, height } = Dimensions.get("window");
 
-// Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
-// estado por defecto al entrar a la app).
-const TODOS_TAB_ID = "todos";
-const NAV_TABS = [
-  { id: "meditaciones",  label: "Meditaciones",   cats: ["meditaciones-guiadas"] },
-  { id: "sesiones",      label: "Sonoterapia",  cats: ["sonidos-ancestrales"] },
-  { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
-];
 const GRID_GAP = 12;
 const GRID_PAD = 14;
 const INICIO2_SECTION_GAP = 53;
@@ -233,68 +224,6 @@ function BlinkingCursor({ color }: { color: string }) {
   );
 }
 
-
-function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; label: string; icon?: number; iconSel?: number; onPress: () => void }) {
-  const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  const { activeSceneId: chipSceneId } = useSceneTheme();
-  useEffect(() => {
-    Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
-  }, [sel]);
-
-  if (icon) {
-    const chipBg = chipSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.07)";
-    return (
-      <Pressable
-        onPress={onPress}
-        style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
-      >
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: chipBg, borderRadius: 999, borderWidth: chipSceneId === "indigo" ? 0 : 2, borderColor: "rgba(255,255,255,0.1)" }]} />
-        <View style={styles.headerTabIconImg}>
-          <Image source={icon} style={[styles.headerTabIconImg, { position: "absolute" }]} resizeMode="contain" />
-          {iconSel && (
-            <Animated.Image
-              source={iconSel}
-              style={[styles.headerTabIconImg, { position: "absolute", opacity: selOpacity }]}
-              resizeMode="contain"
-            />
-          )}
-        </View>
-      </Pressable>
-    );
-  }
-
-  const isIndigo2 = chipSceneId === "indigo2";
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
-    >
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { opacity: selOpacity },
-        ]}
-      >
-        <LinearGradient
-          colors={["#349556", "#067D74"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      </Animated.View>
-      <Text
-        style={[
-          styles.headerTabText,
-          sel && (isIndigo2 ? { color: "#FFFFFF" } : styles.headerTabTextActive),
-        ]}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
-
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
 function Inicio2HeroControl({
@@ -365,116 +294,6 @@ function Inicio2HeroControl({
         <View style={styles.inicio2HeroControlDot} />
       )}
     </Pressable>
-  );
-}
-
-// ── Fila de tabs animada (fade + desplazamiento, como en Biblioteca) ─────────
-const NAV_CHIP_ANIM_DURATION = 600;
-const NAV_CLOSE_SLOT = 38; // ancho de la X (30) + gap (8)
-
-function AnimatedNavTabRow({
-  tabs,
-  activeTab,
-  onSelect,
-  onClear,
-}: {
-  tabs: { id: string; label: string; icon?: number; iconSel?: number }[];
-  activeTab: string | null;
-  onSelect: (id: string) => void;
-  onClear: () => void;
-}) {
-  const progress = useRef(new Animated.Value(activeTab && activeTab !== TODOS_TAB_ID ? 1 : 0)).current;
-  const offsetsRef = useRef<Record<string, number>>({});
-  const scrollXRef = useRef(0);
-  const [displayTab, setDisplayTab] = useState<string | null>(activeTab);
-  const [colorTab, setColorTab] = useState<string | null>(activeTab);
-  const [targetTranslate, setTargetTranslate] = useState(0);
-
-  const filtered = displayTab !== null && displayTab !== TODOS_TAB_ID;
-
-  const animate = (toValue: number, onDone?: () => void) => {
-    Animated.timing(progress, {
-      toValue,
-      duration: NAV_CHIP_ANIM_DURATION,
-      easing: RNEasing.inOut(RNEasing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) onDone?.();
-    });
-  };
-
-  const handleSelect = (id: string) => {
-    if (id === TODOS_TAB_ID) {
-      setColorTab(TODOS_TAB_ID);
-      setDisplayTab(TODOS_TAB_ID);
-      animate(0);
-      requestAnimationFrame(() => onSelect(TODOS_TAB_ID));
-      return;
-    }
-    const off = offsetsRef.current[id] ?? 0;
-    const visualLeft = off - scrollXRef.current;
-    setTargetTranslate(NAV_CLOSE_SLOT - visualLeft);
-    setDisplayTab(id);
-    setColorTab(id);
-    // Fuerza una transición 0→1 completa incluso si ya había un tab
-    // seleccionado (progress ya estaba en 1): sin esto, saltar directo de
-    // un tab a otro no mostraba animación.
-    progress.setValue(0);
-    animate(1);
-    // onSelect dispara el filtrado de todo el feed (trabajo pesado en el
-    // padre). Se difiere un frame para que la animación arranque primero;
-    // si no, el re-render pesado del mismo tick "traga" los primeros
-    // frames y el chip parece saltar sin animar.
-    requestAnimationFrame(() => onSelect(id));
-  };
-
-  const handleClear = () => {
-    setColorTab(TODOS_TAB_ID);
-    animate(0, () => setDisplayTab(TODOS_TAB_ID));
-    requestAnimationFrame(() => onClear());
-  };
-
-  useEffect(() => () => progress.stopAnimation(), [progress]);
-
-  return (
-    <View style={styles.navAnimWrap}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={!filtered}
-        scrollEventThrottle={16}
-        onScroll={(e) => {
-          scrollXRef.current = e.nativeEvent.contentOffset.x;
-        }}
-        style={styles.headerTabs}
-        contentContainerStyle={styles.headerTabsContent}
-      >
-        {tabs.map((t) => {
-          return (
-            <View
-              key={t.id}
-              onLayout={(e) => {
-                offsetsRef.current[t.id] = e.nativeEvent.layout.x;
-              }}
-            >
-              <NavTabChip
-                sel={colorTab === t.id}
-                label={t.label}
-                icon={t.icon}
-                iconSel={t.iconSel}
-                onPress={() => {
-                  if (displayTab === t.id) {
-                    if (t.id !== TODOS_TAB_ID) handleClear();
-                    return;
-                  }
-                  handleSelect(t.id);
-                }}
-              />
-            </View>
-          );
-        })}
-      </ScrollView>
-    </View>
   );
 }
 
@@ -1658,7 +1477,6 @@ export default function HomeScreen2({
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
-  const [moodRecommendationGeneration, setMoodRecommendationGeneration] = useState(0);
   const [immersive, setImmersive] = useState(false);
   const [immersiveRendered, setImmersiveRendered] = useState(false);
   const { requestHide, showMenu } = useTabBarVisibility();
@@ -1711,29 +1529,7 @@ export default function HomeScreen2({
       .map((moodId) => getMoodById(moodId))
       .filter((mood): mood is Mood => Boolean(mood));
     setSelectedMoods(nextMoods);
-    setMoodRecommendationGeneration((generation) => generation + 1);
   }
-
-  const handleRecommendedSessionPress = useCallback(
-    (session: Session) => {
-      if (session.isPremium && !isPremium) {
-        router.push("/membresia" as never);
-        return;
-      }
-      if (openForSession(session)) return;
-      if (session.skipMiniPlayer) {
-        playSession(session);
-        return;
-      }
-      if (session.skipDetail) {
-        playSession(session);
-        router.push("/player" as never);
-        return;
-      }
-      openCategory(`/session/${session.id}`);
-    },
-    [isPremium, openCategory, openForSession, playSession],
-  );
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
@@ -1855,51 +1651,12 @@ export default function HomeScreen2({
   const { version: catalogVersion, status: catalogStatus } = useCatalog();
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
   const [recoOffset, setRecoOffset] = useState(0);
 
-  // Sub-filtros de Sesiones
-  const [sesionesOpen,    setSesionesOpen]    = useState(false);
-  const [sesionesVisible, setSesionesVisible] = useState(false);
-  const [sesAncestral,    setSesAncestral]    = useState(false);
-  const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
   const { rachaEnabled } = useRacha();
   const { intencionDiariaEnabled, escenasAnimadasEnabled } = useIntencionDiaria();
   const showAnimatedScene = !isInicio2 && !intencionDiariaEnabled && escenasAnimadasEnabled;
-  const spacerWidthSV  = useSharedValue(0);
-  const pillOpacitySV  = useSharedValue(0);
-  const pillTranslateSV = useSharedValue(20);
-  const spacerAnimStyle = useAnimatedStyle(() => ({ width: spacerWidthSV.value }));
-  const pillAnimStyle   = useAnimatedStyle(() => ({
-    opacity:   pillOpacitySV.value,
-    transform: [{ translateX: pillTranslateSV.value }],
-  }));
-
-  useEffect(() => {
-    const easeOut = { duration: 200, easing: Easing.out(Easing.quad) };
-    if (sesionesOpen) {
-      spacerWidthSV.value   = 0;
-      pillOpacitySV.value   = 0;
-      pillTranslateSV.value = 20;
-      setSesionesVisible(true);
-      spacerWidthSV.value   = withTiming(188, easeOut);
-      pillOpacitySV.value   = withDelay(80, withTiming(1, { duration: 160 }));
-      pillTranslateSV.value = withDelay(80, withTiming(0, { duration: 180, easing: Easing.out(Easing.quad) }));
-    } else {
-      pillOpacitySV.value   = withTiming(0, { duration: 110 });
-      pillTranslateSV.value = withTiming(20, { duration: 130, easing: Easing.in(Easing.quad) });
-      spacerWidthSV.value   = withDelay(80, withTiming(0, { duration: 160 }, (finished) => {
-        if (finished) runOnJS(setSesionesVisible)(false);
-      }));
-    }
-  }, [sesionesOpen]);
-
-  const updateSesFilter = (anc: boolean, med: boolean) => {
-    if (anc && !med)  setActiveFilter(["sonidos-ancestrales"]);
-    else if (!anc && med) setActiveFilter(["meditaciones-guiadas"]);
-    else              setActiveFilter(NAV_TABS[1].cats);
-  };
 
   // Sesiones para "Recomendado para ti" / "Para tu estado de ánimo"
   const RECO_CATS = ["meditaciones-guiadas", "sonidos-ancestrales", "musica-sonidos"];
@@ -1923,21 +1680,6 @@ export default function HomeScreen2({
     }
     return shuffled.slice(0, 5);
   }, [selectedMoods, catalogVersion, recoOffset]);
-
-  // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
-  const recommendedSessions = React.useMemo<Session[]>(() => {
-    const historyIds = new Set(history.map((h) => h.sessionId));
-    const pool = SESSIONS.filter((s) => !historyIds.has(s.id));
-    const seed = new Date().toDateString();
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
-    const shuffled = [...pool];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.abs(hash ^ (i * 2654435761)) % (i + 1);
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, 10);
-  }, [history, catalogVersion]);
 
   // Recomendaciones diarias — selección estable durante el día local.
   // No depende del historial: escuchar una sesión no cambia las otras
@@ -2057,16 +1799,7 @@ export default function HomeScreen2({
     [presets],
   );
 
-  // ── Filtros por categoría ─────────────────────────────────────────────────
-  const filteredRecommended = React.useMemo(() => {
-    if (!activeFilter) return recommendedSessions;
-    return recommendedSessions.filter((s) => activeFilter.includes(s.categoryId));
-  }, [recommendedSessions, activeFilter]);
-
-  const filteredListened = React.useMemo(() => {
-    if (!activeFilter) return listenedRecently;
-    return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
-  }, [listenedRecently, activeFilter]);
+  const filteredListened = listenedRecently;
 
   // Favoritos — sesiones marcadas como favoritas, en orden de guardado (más reciente primero)
   const favoriteSessions = React.useMemo<Session[]>(() => {
@@ -2095,12 +1828,6 @@ export default function HomeScreen2({
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
-
-  // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
-  //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
-  const LOTUS_SHIFT_DISTANCE = 45 + 15; // ancho del universeBtn + gap del headerTopRow
-  const lotusFadeAnim = useRef(new Animated.Value(1)).current;
-  const tabsShiftAnim = useRef(new Animated.Value(0)).current;
 
   // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
@@ -2632,14 +2359,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <ContentCategoryGrid
-            marginTop={0}
-            marginBottom={INICIO2_SECTION_GAP}
-            hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-            horizontal
-          />
-        )}
-        {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
             description="Contenido que has escuchado recientemente"
@@ -2801,14 +2520,22 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <RecommendedForYouSection
-            selectedMoods={selectedMoods}
-            generation={moodRecommendationGeneration}
-            catalogStatus={catalogStatus}
-            catalogVersion={catalogVersion}
-            isPremium={isPremium}
-            onPress={handleRecommendedSessionPress}
-          />
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
+              ]}
+            >
+              Explora por contenido
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+            />
+          </View>
         )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
