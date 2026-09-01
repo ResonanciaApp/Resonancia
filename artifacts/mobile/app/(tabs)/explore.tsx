@@ -452,6 +452,7 @@ export function ExploreScreen({
                   { backgroundColor: activeTheme.gradient[0] as string },
                 ]}
               />
+              <View pointerEvents="none" style={styles.stickyHeaderDivider} />
             </Animated.View>
           )}
           <View style={styles.titleRow}>
@@ -631,7 +632,15 @@ const styles = StyleSheet.create({
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   stickyHeaderGlass: { overflow: "hidden" },
-  stickyHeaderTint: { opacity: 0.78 },
+  stickyHeaderTint: { opacity: 0.85 },
+  stickyHeaderDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
   overlayHeader: {
     position: "absolute",
     top: 0,
