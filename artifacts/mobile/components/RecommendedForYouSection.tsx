@@ -198,7 +198,7 @@ export function RecommendedForYouSection({
           cardWidth={discoverCardWidth}
           showCardMetadata
           showAuthor={false}
-          showCollectionBelow
+           showImageCategoryPill
           showHeader={false}
         />
       ) : (
