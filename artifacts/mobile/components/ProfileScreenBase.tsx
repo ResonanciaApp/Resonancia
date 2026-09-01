@@ -108,7 +108,7 @@ function isoDow(d: Date): number {
 const MEMBERSHIP_PLANS = [
   {
     id: "premium",
-    name: "Premium",
+    name: "Tu Premium",
     eyebrow: "Tu práctica, sin límites",
     icon: "star" as const,
     colors: MEMBERSHIP_AURORA.premium,
@@ -120,7 +120,7 @@ const MEMBERSHIP_PLANS = [
   },
   {
     id: "plus",
-    name: "Premium Plus",
+    name: "Desbloquea Premium Plus",
     eyebrow: "Lleva tu experiencia al siguiente nivel",
     icon: "diamond" as const,
     colors: MEMBERSHIP_AURORA.plus,
@@ -143,19 +143,6 @@ function ProfileMembershipModules() {
 
   return (
     <View style={styles.membershipSection}>
-      <View style={styles.membershipSectionHeading}>
-        <View>
-          <Text style={styles.membershipEyebrow}>RESONANCIA</Text>
-          <Text style={styles.membershipSectionTitle}>Tu membresía</Text>
-        </View>
-        <View style={styles.membershipWaves}>
-          <MaterialCommunityIcons name="waves" size={19} color={MEMBERSHIP_AURORA.teal} />
-        </View>
-      </View>
-      <Text style={styles.membershipIntro}>
-        Un espacio para volver a ti, con prácticas que acompañan cada momento.
-      </Text>
-
       {MEMBERSHIP_PLANS.map((plan) => {
         const isOpen = expandedPlan === plan.id;
         const isPremium = plan.id === "premium";
@@ -2181,46 +2168,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 17,
   },
-  membershipSectionHeading: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-    paddingHorizontal: 2,
-  },
-  membershipEyebrow: {
-    fontFamily: "Manrope",
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 2.4,
-    color: MEMBERSHIP_AURORA.teal,
-    marginBottom: 3,
-  },
-  membershipSectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 22,
-    fontWeight: "700",
-    letterSpacing: -0.3,
-    color: MEMBERSHIP_AURORA.text,
-  },
-  membershipWaves: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(109,207,192,0.4)",
-    backgroundColor: "rgba(23,59,67,0.7)",
-  },
-  membershipIntro: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 19,
-    color: MEMBERSHIP_AURORA.textMuted,
-    maxWidth: 315,
-    marginBottom: 13,
-  },
   membershipCard: {
     borderRadius: 22,
     borderWidth: 1,
@@ -2277,7 +2224,7 @@ const styles = StyleSheet.create({
   },
   membershipPlanName: {
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "600",
     letterSpacing: -0.5,
   },

@@ -1,5 +1,4 @@
 - [Null-stub rompía scroll horizontal Android](tablet-horizontal-scroll-bug.md) — RESUELTO: el null-stub de specs_DEPRECATED en metro.config anulaba AndroidHorizontalScrollContentView; excepciones obligatorias listadas en el topic
-- [eas-cli spawn sin NODE_PATH](eas-cli-node-path.md) — "expo cli config --json exited 1" silencioso en eas build = falta NODE_PATH del shim pnpm; copiarlo del .bin/expo; APK 8-ago nació rota (AnyTypeCache)
 - [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
 - [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
 - [SceneAnimationInline focus gate](scene-animation-inline-focus.md) — SceneAnimationInline necesita prop paused={!tabFocused}; sin él los withRepeat de cada capa corren 60fps en todas las tabs siempre
@@ -17,7 +16,6 @@
 - [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
 - [session image shared pool](session-images-shared-pool.md) — session-N.jpg es pool decorativo compartido (grupos usan imageIdx); al borrar sesión, repuntar refs in-place, no quitar entradas
 - [SacredBackground solid + category colors](sacred-background-gradient.md) — fondos planos sólidos (Calm); SacredBackground solid por defecto, null sin solidColor → muestra root bg de cada pantalla; cada categoría conserva su color
-- [Expo Router fullscreen player](expo-fullscreen-modal.md) — fullScreenModal + StatusBar hidden + botones flotantes absolute (sin navBar) para que decoraciones lleguen al borde
 - [Mi Música mixer](mi-musica-mixer.md) — mezclador ambiente: sonidos se activan con slot SOUND_MAP; premium gating de presets se sanea en la pantalla (context es premium-agnóstico)
 - [MixerSheet al guardar](mixer-sheet-fade.md) — guardar cierra solo el popup, conserva “Tu mezcla”, pausa sin vaciar sonidos y confirma con toast; el fade global queda solo para cierres reales
 - [Player play-generation token](player-play-generation.md) — mainPlayerGenRef sella la generación en replace(); listener descarta eventos nativos stale con early-exit; switchingRef queda como belt-and-suspenders (no es el guard principal); first-tick-skip eliminado
@@ -128,7 +126,6 @@
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
 - [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
-- [Dev client http = assets corruptos](dev-client-http-assets-corrupt.md) — URL del túnel sin https → fuentes/imágenes llegan como HTML y quedan cacheadas; tofu solo en ese dispositivo; fix = borrar caché + reconectar con https
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
 - [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
 - [useStreak hook unificado](usestreak-unified.md) — hook único (server+fallback local) para racha; TODOS los componentes importan de hooks/useStreak; NO llamar compute* directamente excepto StreakCelebrationContext (necesita tiempo real vía lastLocalStat)
