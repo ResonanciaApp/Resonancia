@@ -183,7 +183,7 @@ function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string
                 )}
               </View>
               <View style={styles.membershipCardCopy}>
-                <Text style={[styles.membershipPlanName, { color: plan.colors.soft }]}>
+                <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
                   {plan.name}
                 </Text>
                 <Text style={styles.membershipPlanEyebrow}>{plan.eyebrow}</Text>
@@ -2148,7 +2148,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   membershipSection: {
-    marginTop: 15,
+    marginTop: -20,
     marginBottom: 17,
   },
   membershipCard: {
