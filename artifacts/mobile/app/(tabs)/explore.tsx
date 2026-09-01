@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState, useMemo } from "react";
 import {
@@ -34,7 +34,6 @@ import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
@@ -45,14 +44,6 @@ const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
-const DURATION_SLOTS = [
-  { label: "5 min", displayLabel: "5 Minutos" },
-  { label: "10 min", displayLabel: "10 Minutos" },
-  { label: "20 min", displayLabel: "20 Minutos" },
-  { label: "30 min", displayLabel: "30 Minutos" },
-  { label: "60 min", displayLabel: "60 Minutos" },
-] as const;
-const DURATION_PILL_WIDTH = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -94,6 +85,33 @@ function getSessionAuthor(s: Session): string {
   return getArtist(s.artistId).name;
 }
 
+function DiscoverPill({
+  label,
+  sceneId,
+  onPress,
+}: {
+  label: string;
+  sceneId: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      testID={`discover-carousel-tab-${label}`}
+      style={({ pressed }) => [
+        styles.discoverPill,
+        sceneId === "tibet" && styles.discoverPillTibet,
+        sceneId === "indigo" && styles.discoverPillIndigo,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      <Text style={styles.discoverPillText} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function ExploreScreen({
@@ -116,12 +134,6 @@ export function ExploreScreen({
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const durationPillBg =
-    activeSceneId === "indigo"
-      ? "rgba(42,40,64,0.65)"
-      : activeSceneId === "tibet"
-        ? "rgba(0,0,0,0.15)"
-        : "rgba(255,255,255,0.05)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -431,14 +443,26 @@ export function ExploreScreen({
             </Pressable>
           </View>
 
-          {!collapseCategoryHeader && (
-            <ContentCategoryGrid
-              marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              horizontal
-              visualVariant={categoryVisualVariant}
-            />
+          {themeCarousels.length > 0 && (
+            <View style={styles.discoverTabsHeader}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.discoverTabs}
+                contentContainerStyle={styles.discoverTabsContent}
+              >
+                {themeCarousels.map((carousel) => (
+                  <DiscoverPill
+                    key={carousel.slug}
+                    label={carousel.label}
+                    sceneId={activeSceneId}
+                    onPress={() =>
+                      openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
+                    }
+                  />
+                ))}
+              </ScrollView>
+            </View>
           )}
         </View>
 
@@ -459,58 +483,6 @@ export function ExploreScreen({
           )}
           scrollEventThrottle={16}
         >
-          {collapseCategoryHeader && (
-            <View style={{ marginTop: -21 }}>
-              <ContentCategoryGrid
-                marginTop={0}
-                marginBottom={SECTION_GAP}
-                hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-                horizontal
-                visualVariant={categoryVisualVariant}
-              />
-            </View>
-          )}
-          {false && collapseCategoryHeader && (
-            <View style={styles.durationSection}>
-              <Text style={[styles.sectionTitle, styles.durationSectionTitle]}>
-                Explora según tu tiempo
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.durationPillRow}
-              >
-                {DURATION_SLOTS.map((slot) => (
-                  <Pressable
-                    key={slot.label}
-                    onPress={() =>
-                      openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                    }
-                    style={({ pressed }) => [
-                      styles.durationPill,
-                      { opacity: pressed ? 0.75 : 1 },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        StyleSheet.absoluteFill,
-                        styles.durationPillSurface,
-                        { backgroundColor: durationPillBg },
-                      ]}
-                    />
-                    <Text
-                      style={styles.durationPillText}
-                      numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.7}
-                    >
-                      {slot.displayLabel}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </View>
-          )}
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
             <View key={carousel.slug}>
@@ -626,6 +598,40 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+  discoverTabsHeader: {
+    marginTop: 9,
+    paddingBottom: 15,
+  },
+  discoverTabs: {
+    marginBottom: 0,
+  },
+  discoverTabsContent: {
+    paddingHorizontal: H_PAD,
+    gap: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  discoverPill: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
+  discoverPillTibet: {
+    backgroundColor: "rgba(0,0,0,0.15)",
+  },
+  discoverPillIndigo: {
+    backgroundColor: "rgba(42,40,64,0.65)",
+  },
+  discoverPillText: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#F4F4F4",
+  },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
@@ -649,33 +655,6 @@ const styles = StyleSheet.create({
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
-  durationSection: { marginBottom: SECTION_GAP },
-  durationSectionTitle: { marginBottom: 17, paddingHorizontal: H_PAD },
-  durationPillRow: {
-    flexDirection: "row",
-    paddingLeft: H_PAD,
-    paddingRight: DURATION_PILL_WIDTH * 0.3,
-    gap: 6,
-    paddingBottom: 2,
-  },
-  durationPill: {
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    minWidth: 80,
-    height: 42,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  durationPillSurface: { borderRadius: 10 },
-  durationPillText: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#FBFBFB",
-    letterSpacing: 0.2,
-    marginTop: -3,
-  },
   // Playlists para ti
   ritualGrid: {
     flexDirection: "row",

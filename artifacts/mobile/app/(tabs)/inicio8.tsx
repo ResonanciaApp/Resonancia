@@ -98,6 +98,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2628,6 +2629,14 @@ export default function HomeScreen2({
             sessions={dailyRecommendations}
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD }}
+          />
+        )}
+        {isInicio2 && (
+          <ContentCategoryGrid
+            marginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+            hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+            horizontal
           />
         )}
         {isInicio2 && (
