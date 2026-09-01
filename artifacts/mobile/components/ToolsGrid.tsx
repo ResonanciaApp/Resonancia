@@ -83,7 +83,7 @@ function ToolCard({
           tool.id === "biblioteca" && styles.firstCard,
           tool.id === "diario" && styles.lastCard,
           {
-            backgroundColor: pillBackground,
+            backgroundColor: isPressed ? WIDGET_GREEN_SOLID : pillBackground,
             borderWidth: 0,
             transform: [{ scale }],
           },
@@ -93,11 +93,11 @@ function ToolCard({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color={isPressed ? WIDGET_GREEN_SOLID : "#F9F9F9"}
+            color="#F9F9F9"
           />
         </Animated.View>
         <Text
-          style={[styles.label, { color: isPressed ? WIDGET_GREEN_SOLID : foregroundColor }]}
+          style={[styles.label, { color: foregroundColor }]}
           numberOfLines={1}
         >
           {tool.label}
