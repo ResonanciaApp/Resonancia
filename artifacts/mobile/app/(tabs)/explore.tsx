@@ -501,6 +501,13 @@ export function ExploreScreen({
                   />
                 ))}
               </ScrollView>
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.discoverTabsDivider,
+                  { opacity: stickyHeaderSurfaceOpacity },
+                ]}
+              />
             </View>
           )}
         </View>
@@ -649,8 +656,17 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
   },
   discoverTabsHeader: {
+    position: "relative",
     marginTop: 9,
     paddingBottom: 15,
+  },
+  discoverTabsDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "#FFFFFF",
   },
   discoverTabs: {
     marginBottom: 0,
