@@ -275,7 +275,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          { opacity: selOpacity, backgroundColor: isIndigo2 ? "rgba(255,255,255,0.50)" : undefined },
+          { opacity: selOpacity, backgroundColor: isIndigo2 ? "rgba(255,255,255,0.10)" : undefined },
         ]}
       >
         {!isIndigo2 && (
