@@ -389,7 +389,7 @@ export default function MusicaSonidosScreen() {
               titleSpacing={17}
               squareCards
               cardAuthorColor="#acaac2"
-              showImageCategoryPill
+              showMetaBelow
             />
           </>
         )}

@@ -558,6 +558,9 @@ export function ExploreScreen({
                         title={featuredHoy.title}
                         authorName={heroAuthorName}
                         showAuthor
+                        showCategoryPill={false}
+                        showDuration={false}
+                        showMetaBelow
                         titleFontSize={18}
                         durationBottom={76}
                         metaBottom={16}

@@ -462,6 +462,7 @@ export default function MananasScreen() {
                     style={{ marginTop: 24, marginBottom: 0 }}
                     cardWidth={RECENT_CARD_W}
                     showAuthor={false}
+                    showMetaBelow
                   />
                 )}
                 {filteredSessions.length === 0 ? (

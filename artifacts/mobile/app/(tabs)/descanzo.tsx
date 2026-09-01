@@ -586,7 +586,7 @@ export default function DescansoScreen() {
               titleSpacing={17}
               squareCards
               cardAuthorColor="#acaac2"
-              showImageCategoryPill
+              showMetaBelow
             />
           )}
           {sleepCollections.map((collection) => (

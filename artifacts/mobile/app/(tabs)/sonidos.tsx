@@ -266,7 +266,7 @@ export default function SonidosScreen() {
                 titleSpacing={17}
                 squareCards
                 cardAuthorColor="#acaac2"
-                showImageCategoryPill
+                showMetaBelow
               />
             )}
             {collections.map((collection) => (
