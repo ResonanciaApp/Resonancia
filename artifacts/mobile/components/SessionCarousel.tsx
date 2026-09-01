@@ -86,6 +86,7 @@ type SessionCarouselProps = {
   showCardMetadata?: boolean;
   showAuthor?: boolean;
   showCollectionBelow?: boolean;
+  durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
 };
@@ -111,6 +112,7 @@ export function SessionCarousel({
   showCardMetadata = false,
   showAuthor = true,
   showCollectionBelow = false,
+  durationLift = 0,
   showHeader = true,
   cardVariant,
 }: SessionCarouselProps) {
@@ -210,7 +212,9 @@ export function SessionCarousel({
                         },
                       ]}
                     />
-                    {!showCollectionBelow && <SessionCategoryPill categoryId={s.categoryId} />}
+                    {(showImageCategoryPill || !showCollectionBelow) && (
+                      <SessionCategoryPill categoryId={s.categoryId} />
+                    )}
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
@@ -219,19 +223,23 @@ export function SessionCarousel({
                     title={s.title}
                     authorName={showAuthor && !showCollectionBelow ? authorName : undefined}
                     showAuthor={showAuthor && !showCollectionBelow}
-                    showCategoryPill={!showCollectionBelow}
+                    showCategoryPill={showImageCategoryPill || !showCollectionBelow}
                     showCategoryBelow={showCollectionBelow}
-                    durationBottom={hasSecondaryMeta ? 70 : 52}
+                    durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
                     metaBottom={hasSecondaryMeta ? 15 : 20}
                     metaLeft={hasSecondaryMeta ? 10 : 18}
                     contentLeft={hasSecondaryMeta ? 8 : 18}
                   />
                 ) : (
                   <>
-                    {showImageCategoryPill && !showCollectionBelow && <SessionCategoryPill categoryId={s.categoryId} />}
+                    {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
                     <SessionDurationBadge
                       label={s.durationLabel}
-                      style={[styles.durBadge, !showAuthor && styles.durBadgeLower]}
+                      style={[
+                        styles.durBadge,
+                        !showAuthor && styles.durBadgeLower,
+                        { bottom: (showAuthor ? 8 : 4) + durationLift },
+                      ]}
                       textStyle={styles.durText}
                     />
                   </>

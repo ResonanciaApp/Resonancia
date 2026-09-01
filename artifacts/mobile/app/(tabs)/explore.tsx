@@ -551,14 +551,12 @@ export function ExploreScreen({
                     const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
                     const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
                     const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                    const heroPhoto = guide?.photo ?? artist?.photo ?? undefined;
                     return (
                       <SessionCardMetadataOverlay
                         categoryId={featuredHoy.categoryId}
                         durationLabel={featuredHoy.durationLabel}
                         title={featuredHoy.title}
                         authorName={heroAuthorName}
-                        authorAvatar={heroPhoto}
                         showAuthor
                         titleFontSize={18}
                         durationBottom={76}

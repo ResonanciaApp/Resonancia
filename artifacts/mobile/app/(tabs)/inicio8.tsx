@@ -2649,6 +2649,8 @@ export default function HomeScreen2({
             cardAuthorColor="#acaac2"
             showAuthor={false}
             showCollectionBelow
+            showImageCategoryPill
+            durationLift={6}
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2736,6 +2738,8 @@ export default function HomeScreen2({
             cardAuthorColor="#acaac2"
             showAuthor={false}
             showCollectionBelow
+            showImageCategoryPill
+            durationLift={6}
           />
         )}
         {isInicio2 && (
@@ -2904,6 +2908,8 @@ export default function HomeScreen2({
             showCardMetadata
             showAuthor={false}
             showCollectionBelow
+            showImageCategoryPill
+            durationLift={6}
           />
         )}
 
@@ -2921,6 +2927,8 @@ export default function HomeScreen2({
             showCardMetadata
             showAuthor={false}
             showCollectionBelow
+            showImageCategoryPill
+            durationLift={6}
           />
         )}
 
@@ -2940,6 +2948,8 @@ export default function HomeScreen2({
             showCardMetadata
             showAuthor={false}
             showCollectionBelow
+            showImageCategoryPill
+            durationLift={6}
           />
         )}
 
