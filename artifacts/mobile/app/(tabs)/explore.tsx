@@ -338,7 +338,7 @@ export function ExploreScreen({
   });
   const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 0.9],
+    outputRange: [0, 0.96],
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -628,6 +628,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+    paddingBottom: 7,
   },
   discoverTabsHeader: {
     marginTop: 9,
