@@ -2644,11 +2644,10 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
-            viewAllColor="#067D74"
+            viewAllColor={colors.accent}
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
-            showCollectionBelow
             showImageCategoryPill
             durationLift={6}
           />
@@ -2733,11 +2732,10 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllColor="#067D74"
+            viewAllColor={colors.accent}
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
-            showCollectionBelow
             showImageCategoryPill
             durationLift={6}
           />
@@ -2907,7 +2905,6 @@ export default function HomeScreen2({
             titleSize={20}
             showCardMetadata
             showAuthor={false}
-            showCollectionBelow
             showImageCategoryPill
             durationLift={6}
           />
@@ -2926,7 +2923,6 @@ export default function HomeScreen2({
             titleSize={20}
             showCardMetadata
             showAuthor={false}
-            showCollectionBelow
             showImageCategoryPill
             durationLift={6}
           />
@@ -2944,10 +2940,9 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllColor="#067D74"
+            viewAllColor={colors.accent}
             showCardMetadata
             showAuthor={false}
-            showCollectionBelow
             showImageCategoryPill
             durationLift={6}
           />
