@@ -176,6 +176,7 @@ export function RecommendedForYouSection({
                 styles.tab,
                 selected && {
                   backgroundColor: category.cardColor,
+                   borderColor: "rgba(255,255,255,0.8)",
                 },
                 { opacity: pressed ? 0.78 : 1 },
               ]}
@@ -238,7 +239,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 17,
     borderRadius: 22,
-    borderWidth: 0,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
     backgroundColor: "transparent",
   },
   tabText: {
