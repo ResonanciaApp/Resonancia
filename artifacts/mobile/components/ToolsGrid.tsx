@@ -44,22 +44,35 @@ function ToolCard({
   onPress: (id: ToolId) => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
+  const iconTintOpacity = useRef(new Animated.Value(0)).current;
 
   const handlePressIn = () => {
     scale.stopAnimation();
+    iconTintOpacity.stopAnimation();
     Animated.timing(scale, {
       toValue: 0.97,
       duration: 90,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(iconTintOpacity, {
+      toValue: 1,
+      duration: 180,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOut = () => {
     scale.stopAnimation();
+    iconTintOpacity.stopAnimation();
     Animated.spring(scale, {
       toValue: 1,
       tension: 180,
       friction: 14,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(iconTintOpacity, {
+      toValue: 0,
+      duration: 220,
       useNativeDriver: true,
     }).start();
   };
@@ -85,11 +98,20 @@ function ToolCard({
           },
         ]}
       >
-        <MaterialCommunityIcons
-          name={tool.icon}
-          size={22}
-          color="#F9F9F9"
-        />
+        <Animated.View style={styles.iconWrap}>
+          <MaterialCommunityIcons
+            name={tool.icon}
+            size={22}
+            color="#F9F9F9"
+          />
+          <Animated.View pointerEvents="none" style={[styles.iconTint, { opacity: iconTintOpacity }]}>
+            <MaterialCommunityIcons
+              name={tool.icon}
+              size={22}
+              color="#067D74"
+            />
+          </Animated.View>
+        </Animated.View>
         <Text
           style={[styles.label, { color: foregroundColor }]}
           numberOfLines={1}
@@ -178,6 +200,14 @@ const styles = StyleSheet.create({
     height: 46,
     gap: 12,
     paddingHorizontal: 16,
+  },
+  iconWrap: {
+    width: 22,
+    height: 22,
+    position: "relative",
+  },
+  iconTint: {
+    ...StyleSheet.absoluteFillObject,
   },
   firstCard: {
     borderTopLeftRadius: 100,
