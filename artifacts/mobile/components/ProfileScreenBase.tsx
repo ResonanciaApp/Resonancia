@@ -1112,7 +1112,7 @@ export function ProfileScreenBase({
                 {
                   backgroundColor: resourceBlockBackground,
                   borderWidth: 0,
-                  marginBottom: 0,
+                  marginBottom: 15,
                 },
               ]}
             >
@@ -1140,9 +1140,17 @@ export function ProfileScreenBase({
                 todayIndex={todayIndex}
                 idPrefix="profile-streak"
               />
+            </View>
 
-              <View style={[styles.streakDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
-
+            <View
+              style={[
+                styles.personalStatsSection,
+                {
+                  backgroundColor: resourceBlockBackground,
+                  borderWidth: 0,
+                },
+              ]}
+            >
               <View style={styles.personalStatsHeader}>
                 <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
                   Estadísticas personales
@@ -2073,7 +2081,12 @@ const styles = StyleSheet.create({
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
   streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  streakDivider: { height: 1, marginTop: 18, marginBottom: 16 },
+  personalStatsSection: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+  },
   personalStatsHeader: { gap: 7 },
   personalStatsTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   statsFilterTrigger: {
