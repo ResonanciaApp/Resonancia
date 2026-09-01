@@ -288,6 +288,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               pointerEvents="none"
               style={[
                 styles.slidingPill,
+                indigo2Mode && { backgroundColor: "rgba(255,255,255,0.50)" },
                 {
                   width: tabWidth + 3,
                   transform: [{ translateX: pillX }],

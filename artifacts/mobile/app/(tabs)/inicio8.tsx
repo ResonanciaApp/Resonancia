@@ -1525,7 +1525,7 @@ function InicioEmotionWidget({
           bottom,
           backgroundColor,
           opacity: pressed ? 0.82 : 1,
-          borderWidth: borderColor ? 1 : 0,
+          borderWidth: borderColor ? 2 : 0,
           borderColor: borderColor ?? "transparent",
         },
       ]}
