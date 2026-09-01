@@ -1119,7 +1119,7 @@ export function ProfileScreenBase({
               <View style={styles.streakHeadingRow}>
                 <View style={styles.streakHeadingMain}>
                   <View style={styles.streakLotusIcon}>
-                    <MaterialCommunityIcons name="spa" size={44} color="#F9F9F9" />
+                    <MaterialCommunityIcons name="spa" size={52} color="#ECECEC" />
                   </View>
                   <View style={styles.streakHeadingCopy}>
                     <View style={styles.streakTitleRow}>
@@ -1139,6 +1139,7 @@ export function ProfileScreenBase({
                 activeFlags={weekFlags}
                 todayIndex={todayIndex}
                 idPrefix="profile-streak"
+                daysMarginTop={4}
               />
             </View>
 
@@ -2070,14 +2071,14 @@ const styles = StyleSheet.create({
   },
   streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 16 },
   streakLotusIcon: {
-    width: 44,
-    height: 44,
+    width: 52,
+    height: 52,
     alignItems: "center",
     justifyContent: "center",
   },
   streakHeadingCopy: { flex: 1, gap: 1 },
   streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2 },
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
   streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },

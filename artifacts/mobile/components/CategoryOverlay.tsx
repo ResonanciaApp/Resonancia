@@ -68,7 +68,10 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
     if (m[1] === "mezcla") return { node: <LazyMezcla id={id} />, eager: false };
     if (m[1] === "tema") return { node: <LazyTema id={id} />, eager: false };
     if (m[1] === "chakra") return { node: <LazyChakra id={id} />, eager: false };
-    if (m[1] === "tag") return { node: <LazyTag id={id} />, eager: false };
+    // TagScreen resuelve tanto params de Expo Router como props del overlay y
+    // realiza su propia decodificación. Conservar aquí el segmento codificado
+    // evita un segundo decodeURIComponent que crashea con slugs que contienen %.
+    if (m[1] === "tag") return { node: <LazyTag id={m[2]} />, eager: false };
     if (m[1] === "sleep-tag") return { node: <LazySleepTag id={id} />, eager: false };
     if (m[1] === "sound-tag") return { node: <LazySoundTag id={id} />, eager: false };
   }

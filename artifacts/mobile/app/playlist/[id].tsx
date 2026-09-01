@@ -45,14 +45,16 @@ import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 const DEFAULT_PANEL_BG = "transparent";
-const PLAYLIST_PLAY_GRADIENT = ["#784576", "#50326E"] as const;
-const PLAYLIST_CONTROL_BG = "#50326E";
+const PLAYLIST_CONTROL_BG = WIDGET_GREEN_SOLID;
 const PLAYLIST_CARD_BG = "rgba(42,40,64,0.65)";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
@@ -353,15 +355,12 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
           <View style={styles.pillsRow}>
             {/* Play / Pause */}
             <Pressable
-              style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.85 : 1 }]}
+              style={({ pressed }) => [
+                styles.pill,
+                { backgroundColor: PLAYLIST_CONTROL_BG, opacity: pressed ? 0.85 : 1 },
+              ]}
               onPress={handleTogglePlay}
             >
-              <LinearGradient
-                colors={PLAYLIST_PLAY_GRADIENT}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={StyleSheet.absoluteFill}
-              />
               <Feather
                 name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
                 size={16}
@@ -627,13 +626,28 @@ function PlaylistSessionRow({
       </Pressable>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
+        <View style={styles.rowCategory}>
+          <SessionCategoryPill
+            categoryId={session.categoryId}
+            inline
+            plain={false}
+            outlineColor={PLAYLIST_CARD_BG}
+          />
+        </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={[styles.rowName, isActive && { color: "#F9F9F9" }]} numberOfLines={2}>
             {session.title}
           </Text>
           {isActive && isPlaying && <EqualizerBars color="#F9F9F9" size="sm" />}
         </View>
-        <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
+        <View style={styles.rowBottomMeta}>
+          <Text style={styles.rowMeta} numberOfLines={1}>{author}</Text>
+          <SessionDurationBadge
+            label={session.durationLabel}
+            style={styles.rowDurationBadge}
+            textStyle={styles.rowDurationText}
+          />
+        </View>
       </Pressable>
       <Pressable onPress={onRemove} hitSlop={10} style={styles.removeBtn}>
         <Feather name="x" size={16} color={MUTED} />
@@ -652,8 +666,23 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
       <Image source={session.image as never} style={styles.thumb}
         placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
       <View style={{ flex: 1 }}>
+        <View style={styles.rowCategory}>
+          <SessionCategoryPill
+            categoryId={session.categoryId}
+            inline
+            plain={false}
+            outlineColor={PLAYLIST_CARD_BG}
+          />
+        </View>
         <Text style={styles.rowName} numberOfLines={2}>{session.title}</Text>
-        <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
+        <View style={styles.rowBottomMeta}>
+          <Text style={styles.rowMeta} numberOfLines={1}>{author}</Text>
+          <SessionDurationBadge
+            label={session.durationLabel}
+            style={styles.rowDurationBadge}
+            textStyle={styles.rowDurationText}
+          />
+        </View>
       </View>
       <Pressable onPress={onAdd} hitSlop={10} style={styles.addIconBtn}>
         <Feather name="plus" size={20} color={MUTED} />
@@ -826,9 +855,19 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
-  thumb: { width: 88, height: 88, borderRadius: 8 },
+  thumb: { width: 96, height: 96, borderRadius: 8 },
   rowName: { fontFamily: "Manrope", color: "#f9f9f9", fontSize: 13, fontWeight: "600", lineHeight: 18 },
-  rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
+  rowCategory: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
+  rowBottomMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+    marginTop: 5,
+  },
+  rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, flex: 1 },
+  rowDurationBadge: { flexShrink: 0 },
+  rowDurationText: { fontSize: 11 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },

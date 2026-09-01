@@ -67,13 +67,15 @@ const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP + INSET;
 export function SonicStreakDays({
   activeFlags,
   todayIndex,
+  daysMarginTop = 0,
 }: {
   activeFlags: boolean[];
   todayIndex: number;
   idPrefix?: string;
+  daysMarginTop?: number;
 }) {
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, daysMarginTop ? { marginTop: daysMarginTop } : undefined]}>
       {DAY_LABELS.map((label, i) => {
         const met = activeFlags[i];
         const isToday = i === todayIndex;
