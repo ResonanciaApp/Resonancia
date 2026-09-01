@@ -526,7 +526,7 @@ export function ExploreScreen({
         >
           {/* ── Para este momento ── */}
           {featuredHoy && (
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 4 }]}>
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -6 }]}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
               <Pressable
                 onPress={() => handleSessionPress(featuredHoy)}

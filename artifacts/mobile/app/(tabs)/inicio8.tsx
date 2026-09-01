@@ -289,7 +289,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
       <Text
         style={[
           styles.headerTabText,
-          sel && (isIndigo2 ? { color: "#F9F9F9" } : styles.headerTabTextActive),
+          sel && (isIndigo2 ? { color: "#FFFFFF" } : styles.headerTabTextActive),
         ]}
       >
         {label}

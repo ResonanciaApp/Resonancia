@@ -104,7 +104,7 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const activeCol   = indigo2Mode ? "#FFFFFF" : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
   const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
