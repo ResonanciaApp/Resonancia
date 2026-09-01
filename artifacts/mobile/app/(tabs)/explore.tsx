@@ -22,11 +22,12 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
+import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
-import { CHAKRAS, isChakraTag } from "@/data/chakras";
+import { isChakraTag } from "@/data/chakras";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -35,12 +36,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import {
-  ContentCategoryGrid,
-  WATERCOLOR_CARD_GAP,
-  WATERCOLOR_CARD_RADIUS,
-  WATERCOLOR_CARD_SIZE,
-} from "@/components/ContentCategoryGrid";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
@@ -98,42 +94,6 @@ function getDailyRecommendations(count = 5, offset = 0): Session[] {
 function getSessionAuthor(s: Session): string {
   if (s.guideId) return getGuide(s.guideId).name;
   return getArtist(s.artistId).name;
-}
-
-function ChakraCarousel() {
-  const { openCategory } = useCategoryOverlay();
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Armoniza tus chakras</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -H_PAD }}
-        contentContainerStyle={styles.chakraCarouselContent}
-      >
-        {CHAKRAS.map((chakra) => (
-          <Pressable
-            key={chakra.id}
-            onPress={() => openCategory(`/chakra/${chakra.id}`)}
-            style={({ pressed }) => [styles.chakraCard, { opacity: pressed ? 0.82 : 1 }]}
-          >
-            <View style={styles.chakraImageWrap}>
-              <Image
-                source={chakra.image}
-                style={styles.chakraImage}
-                contentFit="cover"
-                placeholder={BLUR_PLACEHOLDER}
-                transition={IMAGE_TRANSITION}
-              />
-            </View>
-            <Text style={styles.chakraName} numberOfLines={1}>
-              {chakra.name}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
-  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -656,9 +616,6 @@ export function ExploreScreen({
             </View>
           ))}
 
-          {/* ── Chakras — inmediatamente antes de Encuentros Resonadores ── */}
-          <ChakraCarousel />
-
           {/* ── Resonadores — última sección de Descubrir ── */}
           <EncuentrosResonadoresSection
             marginTop={0}
@@ -860,32 +817,6 @@ const styles = StyleSheet.create({
   },
   sqCard: {
     width: SQCARD_W,
-  },
-  chakraCard: {
-    width: WATERCOLOR_CARD_SIZE,
-  },
-  chakraCarouselContent: {
-    paddingHorizontal: H_PAD,
-    gap: WATERCOLOR_CARD_GAP,
-    paddingBottom: 4,
-  },
-  chakraImageWrap: {
-    width: WATERCOLOR_CARD_SIZE,
-    height: WATERCOLOR_CARD_SIZE,
-    borderRadius: WATERCOLOR_CARD_RADIUS,
-    overflow: "hidden",
-    marginBottom: 10,
-  },
-  chakraImage: {
-    width: "100%",
-    height: "100%",
-  },
-  chakraName: {
-    fontFamily: "Manrope",
-    fontSize: 14.5,
-    fontWeight: "700",
-    lineHeight: 19,
-    color: "#FBFBFB",
   },
   sqImageWrap: {
     width: SQCARD_W,

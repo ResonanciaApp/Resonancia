@@ -98,6 +98,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
+import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2772,6 +2773,7 @@ export default function HomeScreen2({
             </ScrollView>
           </View>
         )}
+        {isInicio2 && <ChakraCarouselSection />}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
