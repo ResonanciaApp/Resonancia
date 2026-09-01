@@ -2648,8 +2648,7 @@ export default function HomeScreen2({
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
-            showImageCategoryPill
-            durationLift={6}
+            showMetaBelow
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2736,8 +2735,7 @@ export default function HomeScreen2({
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
-            showImageCategoryPill
-            durationLift={6}
+            showMetaBelow
           />
         )}
         {isInicio2 && (
@@ -2905,8 +2903,7 @@ export default function HomeScreen2({
             titleSize={20}
             showCardMetadata
             showAuthor={false}
-            showImageCategoryPill
-            durationLift={6}
+            showMetaBelow
           />
         )}
 
@@ -2923,8 +2920,7 @@ export default function HomeScreen2({
             titleSize={20}
             showCardMetadata
             showAuthor={false}
-            showImageCategoryPill
-            durationLift={6}
+            showMetaBelow
           />
         )}
 
@@ -2943,8 +2939,7 @@ export default function HomeScreen2({
             viewAllColor={colors.accent}
             showCardMetadata
             showAuthor={false}
-            showImageCategoryPill
-            durationLift={6}
+            showMetaBelow
           />
         )}
 

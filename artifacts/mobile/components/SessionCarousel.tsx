@@ -86,6 +86,7 @@ type SessionCarouselProps = {
   showCardMetadata?: boolean;
   showAuthor?: boolean;
   showCollectionBelow?: boolean;
+  showMetaBelow?: boolean;
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
@@ -112,6 +113,7 @@ export function SessionCarousel({
   showCardMetadata = false,
   showAuthor = true,
   showCollectionBelow = false,
+  showMetaBelow = false,
   durationLift = 0,
   showHeader = true,
   cardVariant,
@@ -176,7 +178,8 @@ export function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
-          const hasSecondaryMeta = showCollectionBelow || (showAuthor && Boolean(authorName));
+          const hasSecondaryMeta =
+            showMetaBelow || showCollectionBelow || (showAuthor && Boolean(authorName));
           return (
             <PressScale
               key={s.id}
@@ -212,7 +215,7 @@ export function SessionCarousel({
                         },
                       ]}
                     />
-                    {(showImageCategoryPill || !showCollectionBelow) && (
+                    {!showMetaBelow && (showImageCategoryPill || !showCollectionBelow) && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
                   </>
@@ -223,8 +226,9 @@ export function SessionCarousel({
                     title={s.title}
                     authorName={showAuthor && !showCollectionBelow ? authorName : undefined}
                     showAuthor={showAuthor && !showCollectionBelow}
-                    showCategoryPill={showImageCategoryPill || !showCollectionBelow}
-                    showCategoryBelow={showCollectionBelow}
+                    showCategoryPill={!showMetaBelow && (showImageCategoryPill || !showCollectionBelow)}
+                    showCategoryBelow={showMetaBelow || showCollectionBelow}
+                    showDuration={!showMetaBelow}
                     durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
                     metaBottom={hasSecondaryMeta ? 15 : 20}
                     metaLeft={hasSecondaryMeta ? 10 : 18}
@@ -232,16 +236,20 @@ export function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
-                    <SessionDurationBadge
-                      label={s.durationLabel}
-                      style={[
-                        styles.durBadge,
-                        !showAuthor && styles.durBadgeLower,
-                        { bottom: (showAuthor ? 8 : 4) + durationLift },
-                      ]}
-                      textStyle={styles.durText}
-                    />
+                    {!showMetaBelow && showImageCategoryPill && (
+                      <SessionCategoryPill categoryId={s.categoryId} />
+                    )}
+                    {!showMetaBelow && (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[
+                          styles.durBadge,
+                          !showAuthor && styles.durBadgeLower,
+                          { bottom: (showAuthor ? 8 : 4) + durationLift },
+                        ]}
+                        textStyle={styles.durText}
+                      />
+                    )}
                   </>
                 )}
                 {locked && (
@@ -266,7 +274,14 @@ export function SessionCarousel({
                   >
                     {s.title}
                   </Text>
-                  {showCollectionBelow && s.categoryLabel ? (
+                  {showMetaBelow ? (
+                    <Text
+                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      numberOfLines={1}
+                    >
+                      {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
+                    </Text>
+                  ) : showCollectionBelow && s.categoryLabel ? (
                     <Text
                       style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
                       numberOfLines={1}
