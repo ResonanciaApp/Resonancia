@@ -43,7 +43,6 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, { Circle as SvgCircle } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
@@ -2467,6 +2466,25 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
+          <SessionCarousel
+            title="Recientes"
+            sessions={recentSessions}
+            isPremium={isPremium}
+            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            titleOffset={10}
+            cardWidth={INICIO2_SESSION_CARD_W}
+            allowOversizedCardWidth
+            titleSize={19}
+            titleSpacing={17}
+            viewAllColor={colors.accent}
+            squareCards
+            cardAuthorColor="#acaac2"
+            showAuthor={false}
+            showMetaBelow
+          />
+        )}
+        {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
               Explora según tu tiempo
@@ -2730,13 +2748,10 @@ export default function HomeScreen2({
           </View>
         )}
 
-        {!isInicio2 && <AlmaCommunitySection />}
         {/* ── 10. BANNER PREMIUM ── */}
         <View style={{ marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
           <PremiumBanner />
         </View>
-
-        {isInicio2 && <AlmaCommunitySection />}
 
         </View>
       </RAnimated.ScrollView>
