@@ -194,7 +194,8 @@ export function AmbientalDurationSheet({
       : theme.id === "indigo"
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
-  const listenButtonColors = getListenNowButtonColors(theme.id === "indigo");
+  const isIndigoPlayButton = theme.id === "indigo" || theme.id === "indigo2";
+  const listenButtonColors = getListenNowButtonColors(isIndigoPlayButton);
 
   const enterCustomMode = () => {
     setCustomMode(true);
@@ -392,7 +393,7 @@ export function AmbientalDurationSheet({
               <LinearGradient
                 colors={listenButtonColors}
                 start={{ x: 0, y: 0 }}
-                end={theme.id === "indigo" ? { x: 1, y: 0 } : { x: 0, y: 1 }}
+                end={isIndigoPlayButton ? { x: 1, y: 0 } : { x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
               />
             </View>

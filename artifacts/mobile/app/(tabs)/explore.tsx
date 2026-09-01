@@ -36,6 +36,8 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
@@ -653,6 +655,17 @@ export function ExploreScreen({
           <View>
             <ChakraCarousel />
           </View>
+
+          {/* ── Resonadores — última sección de Descubrir ── */}
+          <EncuentrosResonadoresSection
+            marginTop={0}
+            marginBottom={SECTION_GAP}
+            titleMarginTop={0}
+          />
+          <ResonadoresSection
+            marginTop={0}
+            marginBottom={SECTION_GAP}
+          />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (

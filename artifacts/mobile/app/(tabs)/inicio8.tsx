@@ -96,8 +96,6 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
-import { ResonadoresSection } from "@/components/ResonadoresSection";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
@@ -2793,19 +2791,6 @@ export default function HomeScreen2({
             catalogVersion={catalogVersion}
             isPremium={isPremium}
             onPress={handleRecommendedSessionPress}
-          />
-        )}
-        {isInicio2 && (
-          <EncuentrosResonadoresSection
-            marginTop={INICIO2_SECTION_GAP}
-            marginBottom={INICIO2_SECTION_GAP}
-            titleMarginTop={0}
-          />
-        )}
-        {isInicio2 && (
-          <ResonadoresSection
-            marginTop={0}
-            marginBottom={INICIO2_SECTION_GAP}
           />
         )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
