@@ -9,10 +9,7 @@ import { getSessionById } from "@/data/sessions";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
-import {
-  WIDGET_GREEN_BOTTOM,
-  WIDGET_GREEN_TOP,
-} from "@/constants/colors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
 const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -157,11 +154,11 @@ function DayCell({
           !(embedded && isFuture) && dayFill && { backgroundColor: dayFill },
           showCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: WIDGET_GREEN_BOTTOM,
+            borderColor: WIDGET_GREEN_SOLID,
           },
           embedded && isToday && !showCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: WIDGET_GREEN_TOP,
+            borderColor: WIDGET_GREEN_SOLID,
             borderStyle: "dotted",
           },
           showLegacySelectedOutline && {
@@ -550,7 +547,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     minHeight: 48,
     borderRadius: 2,
-    backgroundColor: WIDGET_GREEN_BOTTOM,
+    backgroundColor: WIDGET_GREEN_SOLID,
   },
   embeddedEntryCopy: {
     flex: 1,

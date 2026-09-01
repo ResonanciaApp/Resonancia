@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { usePollingInterval } from "@/hooks/usePollingInterval";
 import { router } from "expo-router";
 import React from "react";
@@ -18,6 +17,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const PREVIEW_COUNT = 10;
 
@@ -75,15 +75,12 @@ export function AlmaCommunitySection() {
           onPress={() => router.push("/mensajes-del-alma" as never)}
           style={({ pressed }) => [
             styles.composeTap,
-            { opacity: pressed ? 0.75 : 1 },
+            {
+              backgroundColor: WIDGET_GREEN_SOLID,
+              opacity: pressed ? 0.75 : 1,
+            },
           ]}
         >
-          <LinearGradient
-            colors={["#349556", "#067D74"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
           <Text style={styles.composeChipText}>Publicar</Text>
         </Pressable>
       )}

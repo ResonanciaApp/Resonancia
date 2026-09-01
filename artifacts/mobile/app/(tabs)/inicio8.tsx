@@ -86,6 +86,7 @@ import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { ProgresoModal } from "@/components/ProgresoModal";
@@ -1348,13 +1349,7 @@ function InicioEmotionWidget({
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={styles.inicio2HeroEmotionAdd}>
-        <LinearGradient
-          colors={["#349556", "#067D74"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: WIDGET_GREEN_SOLID }]}>
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>

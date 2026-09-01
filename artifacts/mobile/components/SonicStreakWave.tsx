@@ -1,23 +1,16 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { computeWeekFlags } from "@/utils/stats";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, {
   Circle,
-  Defs,
   G,
-  LinearGradient as SvgGradient,
   Path,
-  Stop,
 } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
-import {
-  WIDGET_GREEN_BOTTOM,
-  WIDGET_GREEN_TOP,
-} from "@/constants/colors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 const RING_SIZE    = 79;
@@ -74,46 +67,29 @@ const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP + INSET;
 export function SonicStreakDays({
   activeFlags,
   todayIndex,
-  idPrefix = "swsg",
 }: {
   activeFlags: boolean[];
   todayIndex: number;
   idPrefix?: string;
 }) {
-  const borderColor0 = WIDGET_GREEN_TOP;
-  const borderColor1 = WIDGET_GREEN_BOTTOM;
-
   return (
     <View style={styles.row}>
       {DAY_LABELS.map((label, i) => {
         const met = activeFlags[i];
         const isToday = i === todayIndex;
-        const gradientId = `${idPrefix}-${i}`;
         return (
           <View key={i} style={styles.dayCol}>
             {met ? (
               <View style={styles.circleGradientBorder}>
                 <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Defs>
-                    <SvgGradient id={gradientId} x1="0.5" y1="0" x2="0.5" y2="1">
-                      <Stop offset="0" stopColor={borderColor0} stopOpacity="1" />
-                      <Stop offset="1" stopColor={borderColor1} stopOpacity="1" />
-                    </SvgGradient>
-                  </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
             ) : isToday ? (
               <View style={styles.circleGradientBorder}>
                 <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Defs>
-                    <SvgGradient id={gradientId} x1="0.5" y1="0" x2="0.5" y2="1">
-                      <Stop offset="0" stopColor={borderColor0} stopOpacity="1" />
-                      <Stop offset="1" stopColor={borderColor1} stopOpacity="1" />
-                    </SvgGradient>
-                  </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#${gradientId})`} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
               </View>
             ) : (

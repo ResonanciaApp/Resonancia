@@ -33,6 +33,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { startOfWeek, dayKey } from "@/utils/stats";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   visible: boolean;
@@ -49,7 +50,7 @@ const GOLD = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
 const CARD_BG = "rgba(255,255,255,0.10)";
-const PURPLE = "#8B5CF6";
+const MOOD_GREEN = WIDGET_GREEN_SOLID;
 
 function getRecommendations(moodIds: MoodId[]): Session[] {
   const selectedMoods = moodIds
@@ -524,14 +525,6 @@ function PrimaryButton({
         { opacity: pressed ? 0.86 : 1 },
       ]}
     >
-      {!disabled && (
-        <LinearGradient
-          colors={["#784576", "#50326E"]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
       <Text style={[styles.continueButtonText, disabled && styles.continueButtonTextDisabled]}>
         {label}
       </Text>
@@ -634,8 +627,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   moodCardSelected: {
-    borderColor: PURPLE,
-    backgroundColor: "rgba(139,92,246,0.22)",
+    borderColor: MOOD_GREEN,
+    backgroundColor: "rgba(41,139,115,0.22)",
   },
   moodEmoji: {
     fontSize: 28,
@@ -664,7 +657,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: PURPLE,
+    backgroundColor: MOOD_GREEN,
   },
   continueButtonDisabled: {
     backgroundColor: "rgba(238,238,242,0.82)",
@@ -687,9 +680,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 8,
     marginBottom: 18,
-    backgroundColor: "rgba(139,92,246,0.18)",
+    backgroundColor: "rgba(41,139,115,0.18)",
     borderWidth: 1,
-    borderColor: "rgba(139,92,246,0.48)",
+    borderColor: "rgba(41,139,115,0.48)",
   },
   activeMoodEmoji: {
     fontSize: 20,
@@ -717,7 +710,7 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255,255,255,0.16)",
   },
   optionRowSelected: {
-    backgroundColor: "rgba(139,92,246,0.25)",
+    backgroundColor: "rgba(41,139,115,0.25)",
   },
   radio: {
     width: 26,
@@ -729,13 +722,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   radioSelected: {
-    borderColor: "#D7B4FF",
+    borderColor: MOOD_GREEN,
   },
   radioDot: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: "#D7B4FF",
+    backgroundColor: MOOD_GREEN,
   },
   optionText: {
     flex: 1,
@@ -844,7 +837,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 13,
-    backgroundColor: "#704DD0",
+    backgroundColor: MOOD_GREEN,
   },
   diaryIcon: {
     width: 44,
@@ -880,7 +873,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.94)",
-    color: "#5C417E",
+    color: MOOD_GREEN,
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",

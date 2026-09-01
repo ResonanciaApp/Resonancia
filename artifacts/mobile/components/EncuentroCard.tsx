@@ -7,11 +7,11 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   encuentro: Encuentro;
@@ -80,14 +80,11 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
         {/* Botón calendario */}
         <Pressable
           onPress={onCalendarPress}
-          style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [
+            styles.calBtn,
+            { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.8 : 1 },
+          ]}
         >
-          <LinearGradient
-            colors={["#784576", "#50326E"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={StyleSheet.absoluteFill}
-          />
           <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginLeft: 8 }} />
         </Pressable>

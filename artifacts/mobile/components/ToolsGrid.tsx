@@ -16,6 +16,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const PILLS_PAD = 19;
 const PILLS_GAP = 8;
@@ -92,7 +93,7 @@ function ToolCard({
           tool.id === "favoritos" && styles.firstCard,
           tool.id === "diario" && styles.lastCard,
           {
-            backgroundColor: pillBackground,
+            backgroundColor: tool.id === "diario" ? WIDGET_GREEN_SOLID : pillBackground,
             borderWidth: 0,
             transform: [{ scale }],
           },
@@ -108,7 +109,7 @@ function ToolCard({
             <MaterialCommunityIcons
               name={tool.icon}
               size={22}
-              color="#067D74"
+              color={WIDGET_GREEN_SOLID}
             />
           </Animated.View>
         </Animated.View>

@@ -27,10 +27,11 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const MAX_CHARS = 369;
 const GRADIENT: [string, string] = ["#1C3545", "#0E2232"];
-const ACCENT = "#3AACB8";
+const ACCENT = WIDGET_GREEN_SOLID;
 const BODY_FG = "#FFFFFF";
 const BODY_MUTED = "rgba(160,200,220,0.65)";
 
