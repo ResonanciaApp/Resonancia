@@ -175,7 +175,6 @@ export function RecommendedForYouSection({
               style={({ pressed }) => [
                 styles.tab,
                 selected && {
-                  backgroundColor: category.cardColor,
                    borderColor: "rgba(255,255,255,0.8)",
                 },
                 { opacity: pressed ? 0.78 : 1 },
