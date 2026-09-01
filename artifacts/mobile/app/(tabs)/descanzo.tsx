@@ -37,6 +37,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -50,27 +51,27 @@ function SleepPill({
 }) {
   const { theme } = useSceneTheme();
   const scale = useRef(new Animated.Value(1)).current;
-  const highlightOpacity = useRef(new Animated.Value(0)).current;
+  const [isPressed, setIsPressed] = useState(false);
   const pressCancelledRef = useRef(false);
 
   const animatePress = useCallback((pressed: boolean) => {
     scale.stopAnimation();
-    highlightOpacity.stopAnimation();
-    Animated.parallel([
+    setIsPressed(pressed);
+    if (pressed) {
       Animated.timing(scale, {
-        toValue: pressed ? 1.13 : 1,
-        duration: pressed ? DURATION.BUTTON_PRESS : DURATION.BUTTON_RELEASE,
-        easing: easeOutCubic,
+        toValue: 0.97,
+        duration: 90,
         useNativeDriver: true,
-      }),
-      Animated.timing(highlightOpacity, {
-        toValue: pressed ? 1 : 0,
-        duration: pressed ? DURATION.BUTTON_PRESS : DURATION.BUTTON_RELEASE,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [highlightOpacity, scale]);
+      }).start();
+      return;
+    }
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  }, [scale]);
 
   const cancelPress = useCallback(() => {
     pressCancelledRef.current = true;
@@ -113,17 +114,14 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
           sel && styles.sleepPillSel,
+          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
         ]}
       >
-        {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-        <MaterialCommunityIcons name={icon} size={22} color="#F4F4F4" />
-        <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
+        {sel && !isPressed && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+        <MaterialCommunityIcons name={icon} size={22} color="#FFFFFF" />
+        <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel, isPressed && { color: "#FFFFFF" }]} numberOfLines={1}>
           {label}
         </Text>
-        <Animated.View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, styles.sleepPillHighlight, { opacity: highlightOpacity }]}
-        />
       </Pressable>
     </Animated.View>
   );
@@ -964,9 +962,6 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
-  },
-  sleepPillHighlight: {
     backgroundColor: "rgba(255,255,255,0.05)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },

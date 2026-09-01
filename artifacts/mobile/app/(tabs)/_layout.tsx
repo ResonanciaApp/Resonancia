@@ -107,38 +107,9 @@ function TabItem({
 
   const activeCol   = ACTIVE_COLOR;
   const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
-  const hasPressFeedback = route.name === "sonidos"
-    || route.name === "descanzo"
-    || route.name === "explore"
-    || route.name === "explore-copia";
-  const pressScale = useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = useState(false);
-
-  const handlePressIn = () => {
-    if (!hasPressFeedback) return;
-    setIsPressed(true);
-    pressScale.stopAnimation();
-    Animated.timing(pressScale, {
-      toValue: 0.97,
-      duration: 90,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    if (!hasPressFeedback) return;
-    setIsPressed(false);
-    pressScale.stopAnimation();
-    Animated.spring(pressScale, {
-      toValue: 1,
-      tension: 180,
-      friction: 14,
-      useNativeDriver: true,
-    }).start();
-  };
 
   const makeIcon = useCallback((active: boolean) => {
-    const color  = isPressed ? ACTIVE_COLOR : active ? activeCol : inactiveCol;
+    const color  = active ? activeCol : inactiveCol;
     // El icono conserva su forma base al seleccionar el tab: solo cambia el
     // tintado de forma inmediata. La animación que permanece es la del
     // indicador/píldora de selección.
@@ -155,33 +126,25 @@ function TabItem({
     ) : (
       <Feather name={conf.featherIcon as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     );
-  }, [conf, iconSize, isIOS, tOffset, activeCol, inactiveCol, isPressed]);
+  }, [conf, iconSize, isIOS, tOffset, activeCol, inactiveCol]);
 
   return (
     <Pressable
       onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
       style={styles.tab}
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <Animated.View
-        style={[
-          styles.pillWrap,
-          isPressed && styles.tabPressed,
-          { transform: [{ scale: pressScale }] },
-        ]}
-      >
+      <View style={styles.pillWrap}>
         <View style={{ width: iconSize, height: ICON_SIZE, alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
         </View>
         <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
-          <Text style={[styles.label, { color: isPressed ? ACTIVE_COLOR : isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
-      </Animated.View>
+      </View>
     </Pressable>
   );
 }
@@ -663,10 +626,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 0,
     width: "100%",
-  },
-  tabPressed: {
-    backgroundColor: WIDGET_GREEN_SOLID,
-    borderRadius: 999,
   },
   iconGlow: {
     shadowColor: "#FFFFFF",

@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Dimensions,
   Animated,
@@ -39,6 +39,7 @@ import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadores
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -95,20 +96,50 @@ function DiscoverPill({
   sceneId: string;
   onPress: () => void;
 }) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <Pressable
       onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       testID={`discover-carousel-tab-${label}`}
-      style={({ pressed }) => [
-        styles.discoverPill,
-        sceneId === "tibet" && styles.discoverPillTibet,
-        sceneId === "indigo" && styles.discoverPillIndigo,
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
     >
-      <Text style={styles.discoverPillText} numberOfLines={1}>
-        {label}
-      </Text>
+      <Animated.View
+        style={[
+          styles.discoverPill,
+          sceneId === "tibet" && styles.discoverPillTibet,
+          sceneId === "indigo" && styles.discoverPillIndigo,
+          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
+          { transform: [{ scale }] },
+        ]}
+      >
+        <Text style={[styles.discoverPillText, isPressed && { color: "#FFFFFF" }]} numberOfLines={1}>
+          {label}
+        </Text>
+      </Animated.View>
     </Pressable>
   );
 }

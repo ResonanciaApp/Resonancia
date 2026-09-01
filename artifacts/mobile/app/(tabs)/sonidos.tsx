@@ -32,6 +32,7 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
@@ -44,18 +45,48 @@ const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
+  const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.pill,
-        theme.id === "tibet" && styles.pillTibet,
-        theme.id === "indigo" && styles.pillIndigo,
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
     >
-      <Feather name={icon as never} size={22} color="#F4F4F4" />
-      <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
+      <Animated.View
+        style={[
+          styles.pill,
+          theme.id === "tibet" && styles.pillTibet,
+          theme.id === "indigo" && styles.pillIndigo,
+          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
+          { transform: [{ scale }] },
+        ]}
+      >
+        <Feather name={icon as never} size={22} color="#FFFFFF" />
+        <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
+      </Animated.View>
     </Pressable>
   );
 }
