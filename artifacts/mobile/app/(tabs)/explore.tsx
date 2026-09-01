@@ -34,6 +34,7 @@ import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
@@ -443,6 +444,16 @@ export function ExploreScreen({
             </Pressable>
           </View>
 
+          {!collapseCategoryHeader && (
+            <ContentCategoryGrid
+              marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant={categoryVisualVariant}
+            />
+          )}
+
           {themeCarousels.length > 0 && (
             <View style={styles.discoverTabsHeader}>
               <ScrollView
@@ -483,6 +494,18 @@ export function ExploreScreen({
           )}
           scrollEventThrottle={16}
         >
+          {collapseCategoryHeader && (
+            <View style={{ marginTop: -21 }}>
+              <ContentCategoryGrid
+                marginTop={0}
+                marginBottom={SECTION_GAP}
+                hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+                horizontal
+                visualVariant={categoryVisualVariant}
+              />
+            </View>
+          )}
+
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel) => (
             <View key={carousel.slug}>
