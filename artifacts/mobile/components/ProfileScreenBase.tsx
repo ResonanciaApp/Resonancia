@@ -225,16 +225,15 @@ function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string
                 style={[
                   styles.membershipIcon,
                   {
-                    borderColor: plan.colors.border,
                     backgroundColor: "transparent",
                     shadowColor: plan.colors.glow,
                   },
                 ]}
               >
                 {isPremium ? (
-                  <Feather name="star" size={27} color={plan.colors.accent} />
+                  <MaterialCommunityIcons name="star" size={23} color={plan.colors.accent} />
                 ) : (
-                  <MaterialCommunityIcons name="diamond-stone" size={27} color={plan.colors.accent} />
+                  <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
                 )}
               </View>
               <View style={styles.membershipCardCopy}>
@@ -2208,7 +2207,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
+    borderWidth: 0,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 18,
@@ -2220,7 +2219,7 @@ const styles = StyleSheet.create({
   },
   membershipPlanName: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "600",
     letterSpacing: -0.5,
   },
