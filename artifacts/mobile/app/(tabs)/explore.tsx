@@ -35,6 +35,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
@@ -434,18 +435,16 @@ export function ExploreScreen({
           }
         >
           {collapseCategoryHeader && (
-            <>
-              <Animated.View
-                pointerEvents="none"
-                style={[
-                  StyleSheet.absoluteFill,
-                  {
-                    backgroundColor: activeTheme.gradient[0] as string,
-                    opacity: stickyHeaderSurfaceOpacity,
-                  },
-                ]}
-              />
-            </>
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                styles.stickyHeaderGlass,
+                { opacity: stickyHeaderSurfaceOpacity },
+              ]}
+            >
+              <SessionBadgeGlass />
+            </Animated.View>
           )}
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
@@ -623,6 +622,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
+  stickyHeaderGlass: { overflow: "hidden" },
   overlayHeader: {
     position: "absolute",
     top: 0,
