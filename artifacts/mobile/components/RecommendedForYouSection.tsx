@@ -197,6 +197,7 @@ export function RecommendedForYouSection({
           style={styles.carousel}
           cardWidth={discoverCardWidth}
           showCardMetadata
+          showAuthor={false}
           showHeader={false}
         />
       ) : (
