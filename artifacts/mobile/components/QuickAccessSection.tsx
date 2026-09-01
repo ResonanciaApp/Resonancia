@@ -65,6 +65,7 @@ export function QuickAccessSection({
   includeExtras = false,
   replaceLibraryWithVideos = false,
   profileLayout = false,
+  accessIds,
   showTitle = true,
   title = "Mis accesos",
   showCardBorders = true,
@@ -75,6 +76,7 @@ export function QuickAccessSection({
   includeExtras?: boolean;
   replaceLibraryWithVideos?: boolean;
   profileLayout?: boolean;
+  accessIds?: AccessId[];
   showTitle?: boolean;
   title?: string;
   showCardBorders?: boolean;
@@ -124,11 +126,19 @@ export function QuickAccessSection({
     : replaceLibraryWithVideos
       ? ACCESS_CARDS_WITH_VIDEOS
       : ACCESS_CARDS_WITH_EXTRAS;
+  const allAccessCards = [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS];
+  const visibleAccessCards = accessIds
+    ? accessIds
+        .map((id) => allAccessCards.find((access) => access.id === id))
+        .filter((access): access is (typeof allAccessCards)[number] => Boolean(access))
+    : includeExtras
+      ? accessCards
+      : ACCESS_CARDS;
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
       {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>}
       <View style={styles.accessRow}>
-        {(includeExtras ? accessCards : ACCESS_CARDS).map((access) => (
+        {visibleAccessCards.map((access) => (
           <Pressable
             key={access.id}
             testID={`access-${access.id}`}

@@ -97,6 +97,8 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2518,6 +2520,13 @@ export default function HomeScreen2({
             </ScrollView>
           </View>
         )}
+        {isInicio2 && (
+          <QuickAccessSection
+            accessIds={["history", "favorites", "downloads"]}
+            showTitle={false}
+            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+          />
+        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2556,6 +2565,7 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && <AhoraEnResonanciaSection />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
