@@ -461,9 +461,6 @@ export function ExploreScreen({
         >
           {collapseCategoryHeader && (
             <View style={{ marginTop: -21 }}>
-              <Text style={[styles.sectionTitle, styles.categoryCarouselTitle]}>
-                Explora por categoría
-              </Text>
               <ContentCategoryGrid
                 marginTop={0}
                 marginBottom={SECTION_GAP}
