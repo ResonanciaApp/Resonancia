@@ -572,7 +572,7 @@ export default function DescansoScreen() {
           onScroll={handleScroll}
         >
         <View style={{ marginTop: -3 }}>
-          {recentInDescanso.length > 0 && (
+          {false && recentInDescanso.length > 0 && (
             <SessionCarousel
               title="Sesiones recientes"
               sessions={recentInDescanso}

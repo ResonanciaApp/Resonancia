@@ -252,7 +252,7 @@ export default function SonidosScreen() {
           </View>
         ) : (
           <>
-            {recent.length > 0 && (
+            {false && recent.length > 0 && (
               <SessionCarousel
                 title="Sesiones recientes"
                 sessions={recent}

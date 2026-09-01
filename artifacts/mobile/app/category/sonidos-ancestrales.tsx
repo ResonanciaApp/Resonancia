@@ -493,7 +493,7 @@ export default function SonidosAncestalesScreen() {
             </ScrollView>
           </>
         )}
-        {activeTab === null && recentInCategory.length > 0 && (
+        {false && activeTab === null && recentInCategory.length > 0 && (
           <>
             <SessionCarousel
               title="Sesiones recientes"
