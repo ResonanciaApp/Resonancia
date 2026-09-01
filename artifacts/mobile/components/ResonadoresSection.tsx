@@ -67,7 +67,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
             <Text numberOfLines={2} style={styles.name}>
               {resonador.name}
             </Text>
-            <Text numberOfLines={1} style={styles.subtype}>
+            <Text numberOfLines={1} style={[styles.subtype, { color: colors.primary }]}>
               {resonador.subtipo}
             </Text>
           </Pressable>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-    color: "#acaac2",
+    color: "#F9F9F9",
     textAlign: "center",
     lineHeight: 19,
   },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "600",
-    color: "#F4F4F4",
+    color: "#BE9650",
     textAlign: "center",
     lineHeight: 14,
     overflow: "hidden",
