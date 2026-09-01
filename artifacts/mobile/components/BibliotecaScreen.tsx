@@ -55,6 +55,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -161,16 +162,15 @@ function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.Com
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [
+        styles.chip,
+        theme.id === "tibet" && styles.chipTibet,
+        theme.id === "indigo" && styles.chipIndigo,
+        sel && styles.chipSel,
+        sel && { backgroundColor: WIDGET_GREEN_SOLID },
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
     >
-      {sel && (
-        <LinearGradient
-          colors={["#784576", "#50326E"]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
       <Feather name={icon} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
         {label}

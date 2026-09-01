@@ -195,6 +195,73 @@ type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
+function DurationExplorePill({
+  label,
+  backgroundColor,
+  onPress,
+  compact = false,
+}: {
+  label: string;
+  backgroundColor: string;
+  onPress: () => void;
+  compact?: boolean;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={styles.durationPillPressable}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <Animated.View
+        style={[
+          styles.durPill,
+          compact && styles.inicio2DurPill,
+          {
+            backgroundColor: isPressed ? WIDGET_GREEN_SOLID : backgroundColor,
+            transform: [{ scale }],
+          },
+        ]}
+      >
+        <Text
+          style={styles.durPillText}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+        >
+          {label}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
   const h = hex.replace("#", "");
@@ -2492,25 +2559,13 @@ export default function HomeScreen2({
               contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
             >
               {DURATION_SLOTS.map((slot) => (
-                <Pressable
+                <DurationExplorePill
                   key={slot.label}
                   onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                  style={({ pressed }) => [
-                    styles.durPill,
-                    styles.inicio2DurPill,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 10, backgroundColor: durationPillBg }]} />
-                  <Text
-                    style={styles.durPillText}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                  >
-                    {slot.displayLabel}
-                  </Text>
-                </Pressable>
+                  label={slot.displayLabel}
+                  backgroundColor={durationPillBg}
+                  compact
+                />
               ))}
             </ScrollView>
           </View>
@@ -2630,24 +2685,12 @@ export default function HomeScreen2({
             contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
           >
             {DURATION_SLOTS.map((slot) => (
-              <Pressable
+              <DurationExplorePill
                 key={slot.label}
                 onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                style={({ pressed }) => [
-                  styles.durPill,
-                  { opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: durationPillBg }]} />
-                <Text
-                  style={styles.durPillText}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.7}
-                >
-                  {slot.label}
-                </Text>
-              </Pressable>
+                label={slot.label}
+                backgroundColor={durationPillBg}
+              />
             ))}
           </ScrollView>
           </View>
@@ -3904,6 +3947,9 @@ const styles = StyleSheet.create({
     paddingRight: DUR_PILL_W * 0.3,
     gap: 6,
     paddingBottom: 2,
+  },
+  durationPillPressable: {
+    borderRadius: 20,
   },
   durPill: {
     borderRadius: 20,

@@ -131,6 +131,61 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
+function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={() => router.push("/membresia")}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={styles.membershipActionPressable}
+      accessibilityRole="button"
+      accessibilityLabel={isPremium ? "Gestionar Premium" : "Desbloquear Premium Plus"}
+    >
+      <Animated.View
+        style={[
+          styles.membershipManageButton,
+          { transform: [{ scale }] },
+        ]}
+      >
+        <LinearGradient
+          colors={
+            isPremium
+              ? ["#D9A940", "#F2D581", "#C88E2B"]
+              : ["#9D70E8", "#D7B9FF", "#8051D3"]
+          }
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <Text style={styles.membershipManageText}>
+          {isPremium ? "Gestionar Premium" : "Desbloquear"}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string }) {
   const [expandedPlan, setExpandedPlan] = useState<string | null>("premium");
 
@@ -208,29 +263,7 @@ function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string
                     <Text style={styles.membershipBenefitText}>{benefit}</Text>
                   </View>
                 ))}
-                <Pressable
-                  onPress={() => router.push("/membresia")}
-                  style={({ pressed }) => [
-                    styles.membershipManageButton,
-                    { opacity: pressed ? 0.78 : 1 },
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel={isPremium ? "Gestionar Premium" : "Desbloquear Premium Plus"}
-                >
-                  <LinearGradient
-                    colors={
-                      isPremium
-                        ? ["#D9A940", "#F2D581", "#C88E2B"]
-                        : ["#9D70E8", "#D7B9FF", "#8051D3"]
-                    }
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.membershipManageText}>
-                    {isPremium ? "Gestionar Premium" : "Desbloquear"}
-                  </Text>
-                </Pressable>
+                <MembershipActionButton isPremium={isPremium} />
               </View>
             )}
           </View>
@@ -2227,6 +2260,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 5,
+  },
+  membershipActionPressable: {
+    borderRadius: 12,
   },
   membershipManageText: {
     fontFamily: "Manrope",

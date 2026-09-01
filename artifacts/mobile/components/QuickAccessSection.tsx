@@ -1,8 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   Pressable,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const GRID_PAD = 14;
 const GRID_GAP = 7;
@@ -61,6 +63,105 @@ type AccessId =
   | (typeof ACCESS_CARDS)[number]["id"]
   | (typeof EXTRA_ACCESS_CARDS)[number]["id"]
   | (typeof ACCESS_CARDS_WITH_VIDEOS)[number]["id"];
+
+type AccessCardItem =
+  | (typeof ACCESS_CARDS)[number]
+  | (typeof EXTRA_ACCESS_CARDS)[number]
+  | (typeof ACCESS_CARDS_WITH_VIDEOS)[number];
+
+function QuickAccessCard({
+  access,
+  width,
+  cardBackground,
+  cardOpacity,
+  showCardBorders,
+  horizontal,
+  profile,
+  profileWide,
+  foregroundColor,
+  onPress,
+}: {
+  access: AccessCardItem;
+  width: number;
+  cardBackground: string;
+  cardOpacity: number;
+  showCardBorders: boolean;
+  horizontal: boolean;
+  profile: boolean;
+  profileWide: boolean;
+  foregroundColor: string;
+  onPress: () => void;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    scale.stopAnimation();
+    Animated.timing(scale, {
+      toValue: 0.97,
+      duration: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    scale.stopAnimation();
+    Animated.spring(scale, {
+      toValue: 1,
+      tension: 180,
+      friction: 14,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      testID={`access-${access.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`Abrir ${access.label}`}
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={styles.pressable}
+    >
+      <Animated.View
+        style={[
+          styles.card,
+          horizontal && styles.horizontalCard,
+          profile && styles.profileCard,
+          profileWide && styles.profileWideCard,
+          {
+            width,
+            backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
+            borderWidth: showCardBorders ? 1 : 0,
+            opacity: isPressed ? cardOpacity * 0.75 : cardOpacity,
+            transform: [{ scale }],
+          },
+        ]}
+      >
+        <MaterialCommunityIcons
+          name={access.icon}
+          size={22}
+          color={isPressed ? "#FFFFFF" : foregroundColor}
+        />
+        <Text
+          style={[
+            styles.label,
+            horizontal && styles.horizontalLabel,
+            profile && styles.profileLabel,
+            profileWide && styles.profileWideLabel,
+            { color: isPressed ? "#FFFFFF" : foregroundColor },
+          ]}
+          numberOfLines={1}
+        >
+          {access.label}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 export function QuickAccessSection({
   includeExtras = false,
@@ -148,53 +249,29 @@ export function QuickAccessSection({
       {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>}
       <View style={[styles.accessRow, { gap: cardGap }]}>
         {visibleAccessCards.map((access) => (
-          <Pressable
+          <QuickAccessCard
             key={access.id}
-            testID={`access-${access.id}`}
-            accessibilityRole="button"
-            accessibilityLabel={`Abrir ${access.label}`}
-            onPress={() => handlePress(access.id)}
-            style={({ pressed }) => [
-              styles.card,
-              horizontalIds?.includes(access.id) && styles.horizontalCard,
-              profileLayout && styles.profileCard,
+            access={access}
+            width={
               profileLayout && access.id !== "saved" && access.id !== "library" &&
-                access.id !== "favorites" &&
-                access.id !== "history" && styles.profileWideCard,
-              {
-                width: profileLayout && access.id !== "saved" && access.id !== "library" &&
-                  access.id !== "favorites" &&
-                  access.id !== "history"
+              access.id !== "favorites" && access.id !== "history"
+                ? profileWideCardWidth
+                : horizontalIds?.includes(access.id)
                   ? profileWideCardWidth
-                  : horizontalIds?.includes(access.id)
-                    ? profileWideCardWidth
-                    : cardWidth,
-                backgroundColor: cardBackground,
-                borderWidth: showCardBorders ? 1 : 0,
-                opacity: pressed ? cardOpacity * 0.75 : cardOpacity,
-              },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name={access.icon}
-              size={22}
-              color={colors.foreground}
-            />
-            <Text
-              style={[
-                styles.label,
-                horizontalIds?.includes(access.id) && styles.horizontalLabel,
-                profileLayout && styles.profileLabel,
-                profileLayout && access.id !== "saved" && access.id !== "library" &&
-                  access.id !== "favorites" &&
-                  access.id !== "history" && styles.profileWideLabel,
-                { color: colors.foreground },
-              ]}
-              numberOfLines={1}
-            >
-              {access.label}
-            </Text>
-          </Pressable>
+                  : cardWidth
+            }
+            cardBackground={cardBackground}
+            cardOpacity={cardOpacity}
+            showCardBorders={showCardBorders}
+            horizontal={horizontalIds?.includes(access.id) ?? false}
+            profile={profileLayout}
+            profileWide={
+              profileLayout && access.id !== "saved" && access.id !== "library" &&
+              access.id !== "favorites" && access.id !== "history"
+            }
+            foregroundColor={colors.foreground}
+            onPress={() => handlePress(access.id)}
+          />
         ))}
       </View>
     </View>
@@ -205,6 +282,9 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 35,
     marginBottom: 35,
+  },
+  pressable: {
+    borderRadius: 16,
   },
   title: {
     marginBottom: 16,
