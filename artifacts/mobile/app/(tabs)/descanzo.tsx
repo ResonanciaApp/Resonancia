@@ -36,7 +36,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -132,7 +132,12 @@ function SleepPill({
 const H_PAD = 14;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
-const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
+// Igual que "Sesiones recientes" de Inicio 2: 2 cards completas + 10 px
+// de la tercera, considerando el padding y gap del SessionCarousel.
+const RECENT_CARD_W = Math.max(
+  120,
+  Math.round((W - H_PAD - CONTENT_CAROUSEL_GAP * 2 - 10) / 2),
+);
 const SOUND_CARD_W  = 120;
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
@@ -578,9 +583,13 @@ export default function DescansoScreen() {
               onPress={(s) => handleSessionTap(s)}
               style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
+              allowOversizedCardWidth
               titleSize={19}
-              showCardMetadata
-              showAuthor={false}
+              titleOffset={10}
+              titleSpacing={17}
+              squareCards
+              cardAuthorColor="#acaac2"
+              showImageCategoryPill
             />
           )}
           {sleepCollections.map((collection) => (
