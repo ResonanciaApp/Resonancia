@@ -431,33 +431,6 @@ export function ExploreScreen({
             </Pressable>
           </View>
 
-          {/* ── Barra de búsqueda inline ── */}
-          <Pressable
-            style={styles.searchWrap}
-            onPress={() => setSearchVisible(true)}
-            accessibilityRole="search"
-            accessibilityLabel={`Buscar en ${screenTitle}`}
-          >
-            <View
-              style={[
-                styles.searchBox,
-                {
-                  backgroundColor: "rgba(0,0,0,0.20)",
-                  borderColor: "rgba(255,255,255,0.80)",
-                },
-              ]}
-              pointerEvents="none"
-            >
-              <Feather name="search" size={16} color="#F9F9F9" />
-              <Text
-                style={[styles.searchInput, { color: "rgba(249,249,249,0.65)", flex: 1 }]}
-                numberOfLines={1}
-              >
-                Título, voz guía, artista o tema
-              </Text>
-            </View>
-          </Pressable>
-
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
@@ -486,61 +459,6 @@ export function ExploreScreen({
           )}
           scrollEventThrottle={16}
         >
-          {/* ── Para este momento ── */}
-          {featuredHoy && (
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -6 }]}>
-              <Text style={styles.sectionTitle}>Para este momento</Text>
-              <Pressable
-                onPress={() => handleSessionPress(featuredHoy)}
-                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-                accessibilityRole="button"
-                accessibilityLabel={featuredHoy.title}
-              >
-                <View style={styles.heroImageContainer}>
-                  <Image
-                    source={featuredHoy.image as number}
-                    style={styles.heroImage}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                </View>
-                {(() => {
-                  const heroAuthor = featuredHoy.guideId
-                    ? getGuide(featuredHoy.guideId)
-                    : featuredHoy.artistId
-                      ? getArtist(featuredHoy.artistId)
-                      : getGuide();
-                  const heroMeta = [featuredHoy.categoryLabel, featuredHoy.durationLabel]
-                    .filter(Boolean)
-                    .join(" · ");
-                  return (
-                    <View style={styles.heroMeta}>
-                      <Image
-                        source={heroAuthor.photo}
-                        style={styles.heroAuthorAvatar}
-                        contentFit="cover"
-                      />
-                      <View style={styles.heroTextBlock}>
-                        {!!heroMeta && (
-                          <Text style={styles.heroMetaLabel} numberOfLines={1}>
-                            {heroMeta}
-                          </Text>
-                        )}
-                        <Text style={styles.heroTitle} numberOfLines={2}>
-                          {featuredHoy.title}
-                        </Text>
-                        <Text style={styles.heroAuthor} numberOfLines={1}>
-                          {heroAuthor.name}
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })()}
-              </Pressable>
-            </View>
-          )}
-
           {collapseCategoryHeader && (
             <View style={{ marginTop: -21 }}>
               <Text style={[styles.sectionTitle, styles.categoryCarouselTitle]}>
@@ -555,7 +473,7 @@ export function ExploreScreen({
               />
             </View>
           )}
-          {collapseCategoryHeader && (
+          {false && collapseCategoryHeader && (
             <View style={styles.durationSection}>
               <Text style={[styles.sectionTitle, styles.durationSectionTitle]}>
                 Explora según tu tiempo
