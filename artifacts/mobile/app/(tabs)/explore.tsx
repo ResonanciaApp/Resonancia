@@ -44,7 +44,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
-const COLLAPSED_FIRST_CAROUSEL_GAP = 28;
+const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
