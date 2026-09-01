@@ -168,11 +168,11 @@ const INICIO2_PROGRESS_COLOR = "#FFFFFF";
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
-// Inicio 2: 1 card completa + 85% de la siguiente.
+// Inicio 2: 2 cards completas + 10 px de la tercera.
 const INICIO2_SESSION_CARD_W = Math.max(
   120,
   Math.round(
-    (width - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 1.85,
+    (width - GRID_PAD - CONTENT_CAROUSEL_GAP * 2 - 10) / 2,
   ),
 );
 const INICIO2_SCROLL_START_THRESHOLD = 8;
@@ -2642,7 +2642,7 @@ export default function HomeScreen2({
             onViewAll={() => router.push("/historial" as never)}
             squareCards
             cardAuthorColor="#acaac2"
-            showImageCategoryPill
+            showCategoryCaption
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2727,7 +2727,7 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             squareCards
             cardAuthorColor="#acaac2"
-            showImageCategoryPill
+            showCategoryCaption
           />
         )}
         {isInicio2 && (

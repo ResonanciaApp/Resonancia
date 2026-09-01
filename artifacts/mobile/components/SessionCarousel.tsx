@@ -81,6 +81,7 @@ type SessionCarouselProps = {
   squareCards?: boolean;
   cardAuthorColor?: string;
   showImageCategoryPill?: boolean;
+  showCategoryCaption?: boolean;
   onViewAll?: () => void;
   viewAllColor?: string;
   showCardMetadata?: boolean;
@@ -105,6 +106,7 @@ export function SessionCarousel({
   squareCards = false,
   cardAuthorColor,
   showImageCategoryPill = false,
+  showCategoryCaption = false,
   onViewAll,
   viewAllColor,
   showCardMetadata = false,
@@ -207,7 +209,9 @@ export function SessionCarousel({
                         },
                       ]}
                     />
-                    <SessionCategoryPill categoryId={s.categoryId} />
+                    {!showCategoryCaption && (
+                      <SessionCategoryPill categoryId={s.categoryId} />
+                    )}
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
@@ -223,7 +227,9 @@ export function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
+                    {showImageCategoryPill && !showCategoryCaption && (
+                      <SessionCategoryPill categoryId={s.categoryId} />
+                    )}
                     <SessionDurationBadge
                       label={s.durationLabel}
                       style={[styles.durBadge, !showAuthor && styles.durBadgeLower]}
@@ -239,9 +245,32 @@ export function SessionCarousel({
                   />
                 )}
               </View>
+              {!showCardMetadata && showCategoryCaption && (
+                <View style={styles.categoryCaption}>
+                  <SessionCategoryPill
+                    categoryId={s.categoryId}
+                    inline
+                    plain
+                    textOnly
+                  />
+                </View>
+              )}
               {!showCardMetadata && (
                 <>
-                  <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 4), marginLeft: showAuthor ? 0 : 8 }]} numberOfLines={2}>{s.title}</Text>
+                  <Text
+                    style={[
+                      styles.cardTitle,
+                      {
+                        marginTop: showCategoryCaption
+                          ? 0
+                          : titleOffset ?? (showAuthor ? 10 : 4),
+                        marginLeft: showAuthor ? 0 : 8,
+                      },
+                    ]}
+                    numberOfLines={2}
+                  >
+                    {s.title}
+                  </Text>
                   {showAuthor && authorName ? (
                     <Text
                       style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
@@ -340,6 +369,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: { width: CARD_W },
+  categoryCaption: {
+    marginTop: 8,
+    marginBottom: 3,
+    minHeight: 12,
+  },
   thumbWrap: {
     width: CARD_W,
     height: CARD_W,

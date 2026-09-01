@@ -34,7 +34,12 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import {
+  ContentCategoryGrid,
+  WATERCOLOR_CARD_GAP,
+  WATERCOLOR_CARD_RADIUS,
+  WATERCOLOR_CARD_SIZE,
+} from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
@@ -103,7 +108,7 @@ function ChakraCarousel() {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -H_PAD }}
-        contentContainerStyle={styles.carouselContent}
+        contentContainerStyle={styles.chakraCarouselContent}
       >
         {CHAKRAS.map((chakra) => (
           <Pressable
@@ -111,7 +116,7 @@ function ChakraCarousel() {
             onPress={() => openCategory(`/chakra/${chakra.id}`)}
             style={({ pressed }) => [styles.chakraCard, { opacity: pressed ? 0.82 : 1 }]}
           >
-            <View style={[styles.chakraImageWrap, { backgroundColor: `${chakra.color}22` }]}>
+            <View style={styles.chakraImageWrap}>
               <Image
                 source={chakra.image}
                 style={styles.chakraImage}
@@ -122,9 +127,6 @@ function ChakraCarousel() {
             </View>
             <Text style={styles.chakraName} numberOfLines={1}>
               {chakra.name}
-            </Text>
-            <Text style={styles.chakraDescription} numberOfLines={1}>
-              {chakra.description}
             </Text>
           </Pressable>
         ))}
@@ -527,6 +529,7 @@ export function ExploreScreen({
           scrollEventThrottle={16}
         >
           {/* ── Para este momento ── */}
+          {!collapseCategoryHeader && <ChakraCarousel />}
           {featuredHoy && (
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -6 }]}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
@@ -583,6 +586,7 @@ export function ExploreScreen({
               />
             </View>
           )}
+          {collapseCategoryHeader && <ChakraCarousel />}
           {collapseCategoryHeader && (
             <View style={styles.durationSection}>
               <Text style={[styles.sectionTitle, styles.durationSectionTitle]}>
@@ -650,11 +654,6 @@ export function ExploreScreen({
               />
             </View>
           ))}
-
-          {/* ── Chakras ── */}
-          <View>
-            <ChakraCarousel />
-          </View>
 
           {/* ── Resonadores — última sección de Descubrir ── */}
           <EncuentrosResonadoresSection
@@ -859,12 +858,17 @@ const styles = StyleSheet.create({
     width: SQCARD_W,
   },
   chakraCard: {
-    width: SQCARD_W,
+    width: WATERCOLOR_CARD_SIZE,
+  },
+  chakraCarouselContent: {
+    paddingHorizontal: H_PAD,
+    gap: WATERCOLOR_CARD_GAP,
+    paddingBottom: 4,
   },
   chakraImageWrap: {
-    width: SQCARD_W,
-    height: SQCARD_W,
-    borderRadius: 15,
+    width: WATERCOLOR_CARD_SIZE,
+    height: WATERCOLOR_CARD_SIZE,
+    borderRadius: WATERCOLOR_CARD_RADIUS,
     overflow: "hidden",
     marginBottom: 10,
   },
@@ -874,18 +878,10 @@ const styles = StyleSheet.create({
   },
   chakraName: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14.5,
     fontWeight: "700",
-    lineHeight: 20,
+    lineHeight: 19,
     color: "#FBFBFB",
-    marginBottom: 7,
-  },
-  chakraDescription: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.60)",
   },
   sqImageWrap: {
     width: SQCARD_W,

@@ -16,7 +16,9 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const WATERCOLOR_CARD_SIZE = 131;
+export const WATERCOLOR_CARD_SIZE = 131;
+export const WATERCOLOR_CARD_RADIUS = 19;
+export const WATERCOLOR_CARD_GAP = 12;
 
 const WATERCOLOR_CATEGORY_IMAGES: Partial<
   Record<ContentCategoryDefinition["id"], number>
@@ -312,7 +314,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   watercolorHorizontalContent: {
-    gap: 12,
+    gap: WATERCOLOR_CARD_GAP,
   },
   card: {
     width: "48%",
@@ -337,7 +339,7 @@ const styles = StyleSheet.create({
   watercolorCard: {
     width: WATERCOLOR_CARD_SIZE,
     height: WATERCOLOR_CARD_SIZE,
-    borderRadius: 19,
+    borderRadius: WATERCOLOR_CARD_RADIUS,
     paddingVertical: 0,
     paddingHorizontal: 0,
     alignItems: "flex-start",
