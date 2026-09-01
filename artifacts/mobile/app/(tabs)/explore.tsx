@@ -444,6 +444,14 @@ export function ExploreScreen({
               ]}
             >
               <SessionBadgeGlass />
+              <View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFill,
+                  styles.stickyHeaderTint,
+                  { backgroundColor: activeTheme.gradient[0] as string },
+                ]}
+              />
             </Animated.View>
           )}
           <View style={styles.titleRow}>
@@ -623,6 +631,7 @@ const styles = StyleSheet.create({
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   stickyHeaderGlass: { overflow: "hidden" },
+  stickyHeaderTint: { opacity: 0.38 },
   overlayHeader: {
     position: "absolute",
     top: 0,
