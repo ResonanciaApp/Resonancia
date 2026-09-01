@@ -431,6 +431,33 @@ export function ExploreScreen({
             </Pressable>
           </View>
 
+          {/* ── Barra de búsqueda inline ── */}
+          <Pressable
+            style={styles.searchWrap}
+            onPress={() => setSearchVisible(true)}
+            accessibilityRole="search"
+            accessibilityLabel={`Buscar en ${screenTitle}`}
+          >
+            <View
+              style={[
+                styles.searchBox,
+                {
+                  backgroundColor: "rgba(0,0,0,0.20)",
+                  borderColor: "rgba(255,255,255,0.80)",
+                },
+              ]}
+              pointerEvents="none"
+            >
+              <Feather name="search" size={16} color="#F9F9F9" />
+              <Text
+                style={[styles.searchInput, { color: "rgba(249,249,249,0.65)", flex: 1 }]}
+                numberOfLines={1}
+              >
+                Título, voz guía, artista o tema
+              </Text>
+            </View>
+          </Pressable>
+
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
@@ -698,6 +725,9 @@ const styles = StyleSheet.create({
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
+  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
+  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
+  searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
