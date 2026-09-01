@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   stickyHeaderGlass: { overflow: "hidden" },
-  stickyHeaderTint: { opacity: 0.38 },
+  stickyHeaderTint: { opacity: 0.58 },
   overlayHeader: {
     position: "absolute",
     top: 0,
