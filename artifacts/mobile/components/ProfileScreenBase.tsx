@@ -1119,7 +1119,7 @@ export function ProfileScreenBase({
               <View style={styles.streakHeadingRow}>
                 <View style={styles.streakHeadingMain}>
                   <View style={styles.streakLotusIcon}>
-                    <MaterialCommunityIcons name="spa" size={39} color="#F9F9F9" />
+                    <MaterialCommunityIcons name="spa" size={44} color="#F9F9F9" />
                   </View>
                   <View style={styles.streakHeadingCopy}>
                     <View style={styles.streakTitleRow}>
@@ -2068,10 +2068,10 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 18,
   },
-  streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
+  streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 16 },
   streakLotusIcon: {
-    width: 34,
-    height: 38,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
   },

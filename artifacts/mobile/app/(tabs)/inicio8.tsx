@@ -118,7 +118,7 @@ const INICIO2_HERO_HEIGHT = Math.round(Math.min(465, Math.max(401, width * 0.92 
 const INICIO2_SLIDES = [
   {
     id: "templo",
-    image: require("@/assets/images/inicio2-mistico-1.jpg"),
+    image: require("@/assets/images/casadelcuenco-hero-04.jpg"),
     destination: null,
     title: "Aprendamos a conectar con lo esencial",
     categoryId: undefined,

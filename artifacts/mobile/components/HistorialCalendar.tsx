@@ -455,7 +455,7 @@ export function HistorialCalendar({
 }
 
 const styles = StyleSheet.create({
-  embeddedCalendar: { marginTop: 16 },
+  embeddedCalendar: { marginTop: 0 },
   sectionHeader: { marginBottom: 14 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   calendarCard: {
