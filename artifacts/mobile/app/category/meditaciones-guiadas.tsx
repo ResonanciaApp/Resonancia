@@ -32,6 +32,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -309,7 +310,7 @@ export default function MeditacionesGuiadasScreen() {
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
-      duration: 350,
+      duration: 300,
       useNativeDriver: true,
     }).start();
   }, [stickyActive]);
@@ -532,7 +533,8 @@ export default function MeditacionesGuiadasScreen() {
       </Modal>
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -573,7 +575,6 @@ export default function MeditacionesGuiadasScreen() {
         <View style={{ marginTop: 19 }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} />
         </View>
-        <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
     </View>
@@ -588,7 +589,6 @@ const styles = StyleSheet.create({
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center", backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
-  stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },

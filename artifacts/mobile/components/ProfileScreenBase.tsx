@@ -68,6 +68,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import {
   gradientColors,
   type GeoSettings,
@@ -1089,7 +1090,18 @@ export function ProfileScreenBase({
           },
         ]}
       >
-        <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
+        {dedicated && (
+          <StickyHeaderSurface
+            opacity={profileTitleCompactAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 0.96],
+            })}
+            tint={activeTheme.gradient[0] as string}
+          />
+        )}
+        {!dedicated && (
+          <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
+        )}
         <View style={[
           styles.stickyHeaderRow,
           !dedicated && !asTab && { paddingTop: 25 },

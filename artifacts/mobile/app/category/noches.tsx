@@ -26,6 +26,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 
 const H_PAD   = 14;
 const { width: W } = Dimensions.get("window");
@@ -242,7 +243,7 @@ export default function NochesScreen() {
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
-      duration: 350,
+      duration: 300,
       useNativeDriver: true,
     }).start();
   }, [stickyActive]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -480,9 +481,10 @@ export default function NochesScreen() {
 
       {/* ── Sticky header ── */}
       <Animated.View
-        style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]}
+        style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
+        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>

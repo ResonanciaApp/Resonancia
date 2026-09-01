@@ -35,7 +35,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
@@ -436,25 +436,7 @@ export function ExploreScreen({
           }
         >
           {collapseCategoryHeader && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFill,
-                styles.stickyHeaderGlass,
-                { opacity: stickyHeaderSurfaceOpacity },
-              ]}
-            >
-              <SessionBadgeGlass />
-              <View
-                pointerEvents="none"
-                style={[
-                  StyleSheet.absoluteFill,
-                  styles.stickyHeaderTint,
-                  { backgroundColor: activeTheme.gradient[0] as string },
-                ]}
-              />
-              <View pointerEvents="none" style={styles.stickyHeaderDivider} />
-            </Animated.View>
+            <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={activeTheme.gradient[0] as string} />
           )}
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
@@ -639,7 +621,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: 2,
+    height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   overlayHeader: {

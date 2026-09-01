@@ -34,6 +34,7 @@ import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
@@ -186,6 +187,23 @@ export default function MananasScreen() {
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyActiveRef = useRef(false);
+  const [stickyActive, setStickyActive] = useState(false);
+  const handleScroll = (event: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const active = !selectedTag && event.nativeEvent.contentOffset.y > 8;
+    if (active !== stickyActiveRef.current) {
+      stickyActiveRef.current = active;
+      setStickyActive(active);
+      Animated.timing(stickyHeaderOpacity, { toValue: active ? 1 : 0, duration: 300, useNativeDriver: true }).start();
+    }
+  };
+  useEffect(() => {
+    if (!selectedTag || !stickyActiveRef.current) return;
+    stickyActiveRef.current = false;
+    setStickyActive(false);
+    Animated.timing(stickyHeaderOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start();
+  }, [selectedTag, stickyHeaderOpacity]);
 
   const indicatorAnim = useRef(new Animated.Value(0)).current;
   const [indicatorWidth, setIndicatorWidth] = useState(0);
@@ -277,6 +295,8 @@ export default function MananasScreen() {
         contentContainerStyle={{ paddingBottom: 40 + bottomPad }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
       >
         {/* ════════════════════════════════════
             VISTA LISTA DE SUBCATEGORÍAS
@@ -546,6 +566,15 @@ export default function MananasScreen() {
           </>
         )}
       </ScrollView>
+      <Animated.View
+        pointerEvents={!selectedTag && stickyActive ? "auto" : "none"}
+        style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
+      >
+        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <Text style={[styles.stickyTitle, { color: colors.foreground }]}>Mañanas</Text>
+        <View style={styles.stickySpacer} />
+      </Animated.View>
 
       <SessionActionsSheet
         session={actionsSession}
@@ -559,6 +588,9 @@ export default function MananasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  stickySpacer: { width: 45 },
 
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
   backBtn: {

@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -210,25 +210,7 @@ export default function SonidosScreen() {
           style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              styles.stickyHeaderGlass,
-              { opacity: stickyHeaderSurfaceOpacity },
-            ]}
-          >
-            <SessionBadgeGlass />
-            <View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFill,
-                styles.stickyHeaderTint,
-                { backgroundColor: theme.gradient[0] as string },
-              ]}
-            />
-            <View pointerEvents="none" style={styles.stickyHeaderDivider} />
-          </Animated.View>
+          <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={theme.gradient[0] as string} />
           <View style={styles.titleRow}>
             <Animated.Text
               style={[
@@ -432,7 +414,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: 2,
+    height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   pillText: {

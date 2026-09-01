@@ -1,8 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -26,6 +27,7 @@ import { getSessionById, type Session } from "@/data/sessions";
 import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
@@ -108,6 +110,16 @@ export default function FavoritosTodosScreen() {
     : "rgba(255,255,255,0.12)";
 
   const [activeTab, setActiveTab] = useState<FavTabId>("sesiones");
+  const titleProgress = useRef(new Animated.Value(0)).current;
+  const compactRef = useRef(false);
+  const stickySurfaceOpacity = titleProgress.interpolate({ inputRange: [0, 1], outputRange: [0, 0.96] });
+  const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const compact = event.nativeEvent.contentOffset.y > 8;
+    if (compact !== compactRef.current) {
+      compactRef.current = compact;
+      Animated.timing(titleProgress, { toValue: compact ? 1 : 0, duration: 300, useNativeDriver: true }).start();
+    }
+  }, [titleProgress]);
 
   // Misma regla que la lista plana de Biblioteca: sesiones dentro de una
   // carpeta de Favoritos no aparecen en la lista plana.
@@ -147,6 +159,7 @@ export default function FavoritosTodosScreen() {
 
       <View style={styles.contentShift}>
         <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+          <StickyHeaderSurface opacity={stickySurfaceOpacity} tint={sceneTheme.gradient[0] as string} />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -166,7 +179,10 @@ export default function FavoritosTodosScreen() {
                 </View>
               )}
             </Pressable>
-            <Text style={[styles.stickyTitleLibraryTab, { color: colors.foreground }]}>Mis favoritos</Text>
+            <Animated.Text style={[styles.largeTitle, { color: colors.foreground, opacity: titleProgress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>Mis favoritos</Animated.Text>
+            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: titleProgress }]}>
+              <Text style={[styles.compactTitle, { color: colors.foreground }]}>Mis favoritos</Text>
+            </Animated.View>
           </View>
 
           <View style={styles.embeddedTabsHeader}>
@@ -193,6 +209,8 @@ export default function FavoritosTodosScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 25 }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={handleScroll}
         >
           {/* Grilla */}
           {activeTab === "videos" ? (
@@ -260,6 +278,7 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
+    overflow: "hidden",
   },
   stickyHeaderRow: {
     position: "relative",
@@ -301,6 +320,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 0,
   },
+  largeTitle: { fontFamily: "Manrope", fontSize: 30, lineHeight: 36, fontWeight: "700", letterSpacing: 0.3, textAlign: "left", flex: 1 },
+  compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
+  compactTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,

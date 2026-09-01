@@ -30,6 +30,7 @@ import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -154,7 +155,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
-      duration: 350,
+      duration: 300,
       useNativeDriver: true,
     }).start();
   }, [stickyActive, stickyHeaderOpacity]);
@@ -330,6 +331,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
+        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -373,7 +375,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             onSelect={setActiveTab}
           />
         </View>
-        <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
       <ContextSearchModal
@@ -527,10 +528,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   stickyChipsArea: { width: "100%", marginTop: 19 },
-  stickyTabsDivider: {
-    width: W,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    marginTop: 8,
-  },
 });

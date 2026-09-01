@@ -36,6 +36,7 @@ import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -423,7 +424,7 @@ export default function SonidosAncestalesScreen() {
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
-      duration: 350,
+      duration: 300,
       useNativeDriver: true,
     }).start();
   }, [stickyActive]);
@@ -632,7 +633,8 @@ export default function SonidosAncestalesScreen() {
       </ScrollView>
 
       {/* ── Sticky header ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -673,7 +675,6 @@ export default function SonidosAncestalesScreen() {
         <View style={{ marginTop: 19 }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} />
         </View>
-        <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sonoterapia..." />
@@ -712,7 +713,6 @@ const styles = StyleSheet.create({
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center", backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
-  stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
