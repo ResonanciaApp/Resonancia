@@ -76,7 +76,6 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { useSubscription } from "@/lib/revenuecat";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -132,9 +131,8 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
-function ProfileMembershipModules() {
+function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string }) {
   const [expandedPlan, setExpandedPlan] = useState<string | null>("premium");
-  const { isSubscribed } = useSubscription();
 
   const togglePlan = (planId: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -153,30 +151,11 @@ function ProfileMembershipModules() {
             style={[
               styles.membershipCard,
               {
-                borderColor: isOpen ? plan.colors.border : "rgba(145,177,180,0.23)",
+                backgroundColor,
                 shadowColor: isOpen ? plan.colors.glow : "#030B14",
               },
             ]}
           >
-            <LinearGradient
-              colors={
-                isOpen
-                  ? [plan.colors.glow, "rgba(22,35,51,0.82)"]
-                  : [MEMBERSHIP_AURORA.panelMuted, MEMBERSHIP_AURORA.panelMuted]
-              }
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-            {isPremium && (
-              <View style={styles.membershipActiveBadge}>
-                <Text style={styles.membershipActiveBadgeText}>
-                  {isSubscribed ? "Activo" : "Disponible"}
-                </Text>
-              </View>
-            )}
-
             <Pressable
               onPress={() => togglePlan(plan.id)}
               style={({ pressed }) => [
@@ -192,7 +171,7 @@ function ProfileMembershipModules() {
                   styles.membershipIcon,
                   {
                     borderColor: plan.colors.border,
-                    backgroundColor: plan.colors.glow,
+                    backgroundColor: "transparent",
                     shadowColor: plan.colors.glow,
                   },
                 ]}
@@ -229,25 +208,29 @@ function ProfileMembershipModules() {
                     <Text style={styles.membershipBenefitText}>{benefit}</Text>
                   </View>
                 ))}
-                {isPremium && (
-                  <Pressable
-                    onPress={() => router.push("/membresia")}
-                    style={({ pressed }) => [
-                      styles.membershipManageButton,
-                      { opacity: pressed ? 0.78 : 1 },
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel="Gestionar Premium"
-                  >
-                    <LinearGradient
-                      colors={["#D9A940", "#F2D581", "#C88E2B"]}
-                      start={{ x: 0, y: 0.5 }}
-                      end={{ x: 1, y: 0.5 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <Text style={styles.membershipManageText}>Gestionar Premium</Text>
-                  </Pressable>
-                )}
+                <Pressable
+                  onPress={() => router.push("/membresia")}
+                  style={({ pressed }) => [
+                    styles.membershipManageButton,
+                    { opacity: pressed ? 0.78 : 1 },
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={isPremium ? "Gestionar Premium" : "Desbloquear Premium Plus"}
+                >
+                  <LinearGradient
+                    colors={
+                      isPremium
+                        ? ["#D9A940", "#F2D581", "#C88E2B"]
+                        : ["#9D70E8", "#D7B9FF", "#8051D3"]
+                    }
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <Text style={styles.membershipManageText}>
+                    {isPremium ? "Gestionar Premium" : "Desbloquear"}
+                  </Text>
+                </Pressable>
               </View>
             )}
           </View>
@@ -1254,7 +1237,7 @@ export function ProfileScreenBase({
           </View>
         </View>
 
-          <ProfileMembershipModules />
+          <ProfileMembershipModules backgroundColor={resourceBlockBackground} />
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
@@ -2170,33 +2153,13 @@ const styles = StyleSheet.create({
   },
   membershipCard: {
     borderRadius: 22,
-    borderWidth: 1,
+    borderWidth: 0,
     overflow: "hidden",
     marginBottom: 12,
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.25,
     shadowRadius: 26,
     elevation: 4,
-  },
-  membershipActiveBadge: {
-    position: "absolute",
-    right: 15,
-    top: 12,
-    zIndex: 1,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(231,185,92,0.35)",
-    backgroundColor: "rgba(231,185,92,0.1)",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  membershipActiveBadgeText: {
-    fontFamily: "Manrope",
-    fontSize: 9,
-    fontWeight: "700",
-    letterSpacing: 1.3,
-    textTransform: "uppercase",
-    color: "#F1CD78",
   },
   membershipCardHeader: {
     minHeight: 86,

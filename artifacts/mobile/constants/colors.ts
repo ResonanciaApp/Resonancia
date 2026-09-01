@@ -34,14 +34,8 @@ const colors = {
 export const WIDGET_GREEN_SOLID = "#298B73";
 
 export const MEMBERSHIP_AURORA = {
-  background: "#111B2B",
-  panel: "rgba(20,31,46,0.78)",
-  panelMuted: "rgba(20,31,46,0.72)",
-  text: "#F7F2E8",
   textSoft: "#D4DDDA",
   textMuted: "#AAB9BE",
-  teal: "#91D2C7",
-  tealGlow: "rgba(29,166,145,0.28)",
   premium: {
     accent: "#E7B95C",
     soft: "#FFF1BF",
