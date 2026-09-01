@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -14,8 +13,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
-import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import Svg, { Path } from "react-native-svg";
 
 const SHEET_HEIGHT = 340;
@@ -194,9 +193,6 @@ export function AmbientalDurationSheet({
       : theme.id === "indigo"
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
-  const isIndigoPlayButton = theme.id === "indigo" || theme.id === "indigo2";
-  const listenButtonColors = getListenNowButtonColors(isIndigoPlayButton);
-
   const enterCustomMode = () => {
     setCustomMode(true);
     Animated.parallel([
@@ -389,14 +385,12 @@ export function AmbientalDurationSheet({
             accessibilityLabel={`Empezar sesión de ${selectedMinutes} minutos`}
             testID="ambiental-duration-start"
           >
-            <View style={styles.startButtonFill}>
-              <LinearGradient
-                colors={listenButtonColors}
-                start={{ x: 0, y: 0 }}
-                end={isIndigoPlayButton ? { x: 1, y: 0 } : { x: 0, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-            </View>
+            <View
+              style={[
+                styles.startButtonFill,
+                { backgroundColor: WIDGET_GREEN_SOLID },
+              ]}
+            />
             <View style={styles.startButtonContent}>
               <Svg width={21} height={21} viewBox="0 0 48 48">
                 <Path
