@@ -12,7 +12,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -84,7 +83,6 @@ type SessionCarouselProps = {
   showImageCategoryPill?: boolean;
   onViewAll?: () => void;
   viewAllColor?: string;
-  viewAllGradient?: boolean;
   showCardMetadata?: boolean;
   showAuthor?: boolean;
   showHeader?: boolean;
@@ -109,7 +107,6 @@ export function SessionCarousel({
   showImageCategoryPill = false,
   onViewAll,
   viewAllColor,
-  viewAllGradient = false,
   showCardMetadata = false,
   showAuthor = true,
   showHeader = true,
@@ -148,25 +145,9 @@ export function SessionCarousel({
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
-              {viewAllGradient ? (
-                <Pressable
-                  onPress={onViewAll}
-                  hitSlop={8}
-                  style={({ pressed }) => [styles.viewAllButton, { opacity: pressed ? 0.76 : 1 }]}
-                >
-                  <LinearGradient
-                    colors={["#349556", "#067D74"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.viewAllButtonText}>Ver todos</Text>
-                </Pressable>
-              ) : (
-                <Pressable onPress={onViewAll} hitSlop={8}>
-                  <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllColor ?? colors.primary }}>Ver todos</Text>
-                </Pressable>
-              )}
+              <Pressable onPress={onViewAll} hitSlop={8}>
+                <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllColor ?? colors.primary }}>Ver todos</Text>
+              </Pressable>
           </View>
           {description && (
             <Text style={[styles.sectionDescription, { color: "#acaac2" }]}>{description}</Text>
@@ -368,21 +349,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 20,
-  },
-  viewAllButton: {
-    minHeight: 30,
-    paddingHorizontal: 11,
-    paddingVertical: 6,
-    borderRadius: 12,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  viewAllButtonText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#F9F9F9",
   },
   card: { width: CARD_W },
   thumbWrap: {

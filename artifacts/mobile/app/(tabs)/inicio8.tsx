@@ -2644,7 +2644,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
-            viewAllGradient
+            viewAllColor="#067D74"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
@@ -2730,7 +2730,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllGradient
+            viewAllColor="#067D74"
             squareCards
             cardAuthorColor="#acaac2"
             showImageCategoryPill
@@ -2775,15 +2775,7 @@ export default function HomeScreen2({
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <View style={styles.inicioViewAllButton}>
-                  <LinearGradient
-                    colors={["#349556", "#067D74"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.inicioViewAllButtonText}>Ver todos</Text>
-                </View>
+                <Text style={styles.inicioViewAllText}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
@@ -2818,15 +2810,7 @@ export default function HomeScreen2({
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <View style={styles.inicioViewAllButton}>
-                  <LinearGradient
-                    colors={["#349556", "#067D74"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.inicioViewAllButtonText}>Ver todas</Text>
-                </View>
+                <Text style={styles.inicioViewAllText}>Ver todas</Text>
               </Pressable>
             </View>
             <LiveSessionCard
@@ -2946,7 +2930,7 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllGradient
+            viewAllColor="#067D74"
             showCardMetadata
           />
         )}
@@ -3241,20 +3225,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     transform: [{ translateY: 2 }],
   },
-  inicioViewAllButton: {
-    minHeight: 30,
-    paddingHorizontal: 11,
-    paddingVertical: 6,
-    borderRadius: 12,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inicioViewAllButtonText: {
-    color: "#F9F9F9",
+  inicioViewAllText: {
+    color: "#067D74",
     fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "600",
   },
   inicio2HeroCopy: {
     ...StyleSheet.absoluteFillObject,
