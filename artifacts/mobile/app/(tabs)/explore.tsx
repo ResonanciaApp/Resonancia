@@ -495,7 +495,7 @@ export function ExploreScreen({
                     carousel.label.trim().toLowerCase() === "para la ansiedad"
                       ? collapseCategoryHeader
                         ? 0
-                        : 7
+                        : SECTION_GAP
                       : 0,
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
