@@ -2534,6 +2534,7 @@ export default function HomeScreen2({
               marginBottom={0}
               hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
               horizontal
+              visualVariant="watercolor"
             />
           </View>
         )}
