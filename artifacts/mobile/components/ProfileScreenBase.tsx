@@ -186,7 +186,7 @@ function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
   );
 }
 
-function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string }) {
+function ProfileMembershipModules() {
   const [expandedPlan, setExpandedPlan] = useState<string | null>("premium");
 
   const togglePlan = (planId: string) => {
@@ -196,76 +196,70 @@ function ProfileMembershipModules({ backgroundColor }: { backgroundColor: string
 
   return (
     <View style={styles.membershipSection}>
-      {MEMBERSHIP_PLANS.map((plan) => {
+      {MEMBERSHIP_PLANS.map((plan, index) => {
         const isOpen = expandedPlan === plan.id;
         const isPremium = plan.id === "premium";
 
         return (
-          <View
-            key={plan.id}
-            style={[
-              styles.membershipCard,
-              {
-                backgroundColor,
-                shadowColor: isOpen ? plan.colors.glow : "#030B14",
-              },
-            ]}
-          >
-            <Pressable
-              onPress={() => togglePlan(plan.id)}
-              style={({ pressed }) => [
-                styles.membershipCardHeader,
-                { opacity: pressed ? 0.78 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={`${plan.name}. ${isOpen ? "Contraer" : "Expandir"} beneficios`}
-              accessibilityState={{ expanded: isOpen }}
-            >
-              <View
-                style={[
-                  styles.membershipIcon,
-                  {
-                    backgroundColor: "transparent",
-                    shadowColor: plan.colors.glow,
-                  },
+          <React.Fragment key={plan.id}>
+            {index > 0 && <View style={styles.membershipSectionDivider} />}
+            <View style={styles.membershipCard}>
+              <Pressable
+                onPress={() => togglePlan(plan.id)}
+                style={({ pressed }) => [
+                  styles.membershipCardHeader,
+                  { opacity: pressed ? 0.78 : 1 },
                 ]}
+                accessibilityRole="button"
+                accessibilityLabel={`${plan.name}. ${isOpen ? "Contraer" : "Expandir"} beneficios`}
+                accessibilityState={{ expanded: isOpen }}
               >
-                {isPremium ? (
-                  <MaterialCommunityIcons name="star" size={23} color={plan.colors.accent} />
-                ) : (
-                  <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
-                )}
-              </View>
-              <View style={styles.membershipCardCopy}>
-                <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
-                  {plan.name}
-                </Text>
-                <Text style={styles.membershipPlanEyebrow}>{plan.eyebrow}</Text>
-              </View>
-              <Feather
-                name="chevron-down"
-                size={19}
-                color={plan.colors.accent}
-                style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
-              />
-            </Pressable>
+                <View
+                  style={[
+                    styles.membershipIcon,
+                    {
+                      backgroundColor: "transparent",
+                      shadowColor: plan.colors.glow,
+                    },
+                  ]}
+                >
+                  {isPremium ? (
+                    <MaterialCommunityIcons name="star" size={23} color={plan.colors.accent} />
+                  ) : (
+                    <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
+                  )}
+                </View>
+                <View style={styles.membershipCardCopy}>
+                  <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
+                    {plan.name}
+                  </Text>
+                  <Text style={styles.membershipPlanEyebrow}>{plan.eyebrow}</Text>
+                </View>
+                <Feather
+                  name="chevron-down"
+                  size={19}
+                  color={plan.colors.accent}
+                  style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
+                />
+              </Pressable>
 
-            {isOpen && (
-              <View
-                style={styles.membershipBenefits}
-                accessibilityLabel={`Beneficios de ${plan.name}`}
-              >
-                <View style={styles.membershipBenefitsDivider} />
-                {plan.benefits.map((benefit) => (
-                  <View key={benefit} style={styles.membershipBenefitRow}>
-                    <Feather name="check" size={15} color={plan.colors.accent} />
-                    <Text style={styles.membershipBenefitText}>{benefit}</Text>
-                  </View>
-                ))}
-                <MembershipActionButton isPremium={isPremium} />
-              </View>
-            )}
-          </View>
+              {isOpen && (
+                <View
+                  style={styles.membershipBenefits}
+                  accessibilityLabel={`Beneficios de ${plan.name}`}
+                >
+                  <View style={styles.membershipBenefitsDivider} />
+                  {plan.benefits.map((benefit) => (
+                    <View key={benefit} style={styles.membershipBenefitRow}>
+                      <Feather name="check" size={15} color={plan.colors.accent} />
+                      <Text style={styles.membershipBenefitText}>{benefit}</Text>
+                    </View>
+                  ))}
+                  <MembershipActionButton isPremium={isPremium} />
+                </View>
+              )}
+            </View>
+          </React.Fragment>
         );
       })}
     </View>
@@ -1267,9 +1261,9 @@ export function ProfileScreenBase({
               </Pressable>
             </View>
           </View>
+          <View style={styles.profileCardDivider} />
+          <ProfileMembershipModules />
         </View>
-
-          <ProfileMembershipModules backgroundColor={resourceBlockBackground} />
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
@@ -2163,14 +2157,20 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 24,
-    padding: 24,
-    paddingLeft: 24,
+    paddingTop: 24,
+    paddingBottom: 24,
     alignItems: "stretch",
     overflow: "hidden",
     marginBottom: 32,
-    gap: 6,
+    gap: 0,
   },
-  profileIdentityRow: { flexDirection: "row", alignItems: "center", width: "100%", gap: 16 },
+  profileIdentityRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    gap: 16,
+    paddingHorizontal: 24,
+  },
   profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
   profileChevronButton: {
@@ -2180,18 +2180,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   membershipSection: {
-    marginTop: -20,
-    marginBottom: 17,
+    marginTop: 0,
+    marginBottom: 0,
   },
   membershipCard: {
-    borderRadius: 22,
-    borderWidth: 0,
     overflow: "hidden",
-    marginBottom: 12,
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 26,
-    elevation: 4,
+    backgroundColor: "transparent",
+  },
+  profileCardDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    marginTop: 20,
+    marginBottom: 4,
+  },
+  membershipSectionDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   membershipCardHeader: {
     minHeight: 86,
@@ -2216,6 +2222,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
     flex: 1,
     paddingRight: 3,
+    transform: [{ translateX: -8 }],
   },
   membershipPlanName: {
     fontFamily: "Manrope",
@@ -2238,6 +2245,7 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
     marginBottom: 11,
+    marginHorizontal: -15,
   },
   membershipBenefitRow: {
     flexDirection: "row",
