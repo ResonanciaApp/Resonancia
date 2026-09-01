@@ -516,20 +516,20 @@ export function ExploreScreen({
                     .join(" · ");
                   return (
                     <View style={styles.heroMeta}>
-                      {!!heroMeta && (
-                        <Text style={styles.heroMetaLabel} numberOfLines={1}>
-                          {heroMeta}
+                      <Image
+                        source={heroAuthor.photo}
+                        style={styles.heroAuthorAvatar}
+                        contentFit="cover"
+                      />
+                      <View style={styles.heroTextBlock}>
+                        {!!heroMeta && (
+                          <Text style={styles.heroMetaLabel} numberOfLines={1}>
+                            {heroMeta}
+                          </Text>
+                        )}
+                        <Text style={styles.heroTitle} numberOfLines={2}>
+                          {featuredHoy.title}
                         </Text>
-                      )}
-                      <Text style={styles.heroTitle} numberOfLines={2}>
-                        {featuredHoy.title}
-                      </Text>
-                      <View style={styles.heroAuthorRow}>
-                        <Image
-                          source={heroAuthor.photo}
-                          style={styles.heroAuthorAvatar}
-                          contentFit="cover"
-                        />
                         <Text style={styles.heroAuthor} numberOfLines={1}>
                           {heroAuthor.name}
                         </Text>
@@ -862,8 +862,16 @@ const styles = StyleSheet.create({
   },
   heroImage: { width: "100%", height: "100%" },
   heroMeta: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    gap: 12,
     marginTop: 12,
     paddingHorizontal: 2,
+  },
+  heroTextBlock: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: "center",
   },
   heroMetaLabel: {
     fontFamily: "Manrope",
@@ -883,17 +891,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#c2c2c2",
     flexShrink: 1,
-  },
-  heroAuthorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginTop: 3,
+    marginTop: 4,
   },
   heroAuthorAvatar: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 76,
+    minHeight: 76,
+    alignSelf: "stretch",
+    borderRadius: 12,
+    flexShrink: 0,
   },
 
   // Hero: Vuelve a ti
