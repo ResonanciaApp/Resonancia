@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   horizontalCard: {
     flexDirection: "row",
     height: 56,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     gap: 10,
     paddingHorizontal: 16,
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   horizontalLabel: {
-    textAlign: "left",
+    textAlign: "center",
     fontSize: 14,
   },
   profileLabel: {
