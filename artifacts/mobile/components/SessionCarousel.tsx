@@ -208,12 +208,6 @@ export function SessionCarousel({
                       ]}
                     />
                     <SessionCategoryPill categoryId={s.categoryId} />
-                    <Text
-                      style={[styles.ambientalTitle, { color: colors.foreground }]}
-                      numberOfLines={2}
-                    >
-                      {s.title}
-                    </Text>
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
@@ -245,7 +239,7 @@ export function SessionCarousel({
                   />
                 )}
               </View>
-              {!showCardMetadata && !isAmbiental && (
+              {!showCardMetadata && (
                 <>
                   <Text style={[styles.cardTitle, { marginTop: titleOffset ?? (showAuthor ? 10 : 4), marginLeft: showAuthor ? 0 : 8 }]} numberOfLines={2}>{s.title}</Text>
                   {showAuthor && authorName ? (

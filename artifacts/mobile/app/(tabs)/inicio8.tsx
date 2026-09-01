@@ -265,19 +265,33 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     );
   }
 
+  const isIndigo2 = chipSceneId === "indigo2";
+
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
-        <LinearGradient
-          colors={[colors.primary, colors.primary]}
-          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          { opacity: selOpacity, backgroundColor: isIndigo2 ? "rgba(255,255,255,0.50)" : undefined },
+        ]}
+      >
+        {!isIndigo2 && (
+          <LinearGradient
+            colors={[colors.primary, colors.primary]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
       </Animated.View>
-      <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+      <Text
+        style={[
+          styles.headerTabText,
+          sel && (isIndigo2 ? { color: "#F9F9F9" } : styles.headerTabTextActive),
+        ]}
+      >
         {label}
       </Text>
     </Pressable>
@@ -1490,10 +1504,12 @@ function Inicio2HeroStatic({
 function InicioEmotionWidget({
   bottom,
   backgroundColor,
+  borderColor,
   onOpenMoodPicker,
 }: {
   bottom: number;
   backgroundColor: string;
+  borderColor?: string;
   onOpenMoodPicker: () => void;
 }) {
   return (
@@ -1504,7 +1520,14 @@ function InicioEmotionWidget({
       testID="inicio-add-emotion"
       style={({ pressed }) => [
         styles.inicio2HeroEmotionWidget,
-        { right: 18, bottom, backgroundColor, opacity: pressed ? 0.82 : 1 },
+        {
+          right: 18,
+          bottom,
+          backgroundColor,
+          opacity: pressed ? 0.82 : 1,
+          borderWidth: borderColor ? 1 : 0,
+          borderColor: borderColor ?? "transparent",
+        },
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
@@ -1582,7 +1605,9 @@ export default function HomeScreen2({
       ? "#1A2453"
       : activeSceneId === "indigo"
         ? "#212033"
-        : "#3B2A47";
+        : activeSceneId === "indigo2"
+          ? "#101014"
+          : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
@@ -2984,6 +3009,7 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
+        borderColor={activeSceneId === "indigo2" ? "rgba(255,255,255,0.10)" : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
@@ -3690,7 +3716,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "850" as any,
-    color: "#FBFBFB",
+    color: "#F4F4F4",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {

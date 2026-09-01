@@ -21,7 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
@@ -36,7 +36,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
@@ -54,6 +54,7 @@ const DURATION_PILL_WIDTH = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
+const HERO_HEIGHT = 270;
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -274,6 +275,8 @@ export function ExploreScreen({
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
     { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 30 }), staleTime: 5 * 60_000 } },
@@ -285,6 +288,19 @@ export function ExploreScreen({
       .filter((s): s is Session => !!s && s.categoryId === "meditaciones-guiadas")
       .slice(0, 10);
   }, [popularData, catalogVersion]);
+
+  const featuredHoy = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const discoverSearchItems = React.useMemo(
     () =>
@@ -453,6 +469,33 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
+          {/* ── Barra de búsqueda inline ── */}
+          <Pressable
+            style={styles.searchWrap}
+            onPress={() => setSearchVisible(true)}
+            accessibilityRole="search"
+            accessibilityLabel={`Buscar en ${screenTitle}`}
+          >
+            <View
+              style={[
+                styles.searchBox,
+                {
+                  backgroundColor: "rgba(0,0,0,0.20)",
+                  borderColor: "rgba(255,255,255,0.30)",
+                },
+              ]}
+              pointerEvents="none"
+            >
+              <Feather name="search" size={16} color="#F9F9F9" />
+              <Text
+                style={[styles.searchInput, { color: "rgba(249,249,249,0.65)", flex: 1 }]}
+                numberOfLines={1}
+              >
+                Título, voz guía, artista o tema
+              </Text>
+            </View>
+          </Pressable>
+
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
               marginTop={categoryVisualVariant === "watercolor" ? 14 : 4}
@@ -481,6 +524,49 @@ export function ExploreScreen({
           )}
           scrollEventThrottle={16}
         >
+          {/* ── Para este momento ── */}
+          {featuredHoy && (
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 4 }]}>
+              <Text style={styles.sectionTitle}>Para este momento</Text>
+              <Pressable
+                onPress={() => handleSessionPress(featuredHoy)}
+                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+                accessibilityRole="button"
+                accessibilityLabel={featuredHoy.title}
+              >
+                <View style={styles.heroImageContainer}>
+                  <Image
+                    source={featuredHoy.image as number}
+                    style={styles.heroImage}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                  />
+                </View>
+                {(() => {
+                  const guide  = featuredHoy.guideId  ? getGuide(featuredHoy.guideId)   : undefined;
+                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
+                  const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const heroPhoto      = guide?.photo ?? artist?.photo ?? null;
+                  return (
+                    <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
+                      {heroPhoto && (
+                        <Image source={heroPhoto} style={styles.heroAvatar} contentFit="cover" />
+                      )}
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.heroAuthor} numberOfLines={1}>
+                          {featuredHoy.categoryLabel}{featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
+                        </Text>
+                        <Text style={styles.heroTitle} numberOfLines={2}>{featuredHoy.title}</Text>
+                        <Text style={styles.heroAuthor} numberOfLines={1}>{heroAuthorName}</Text>
+                      </View>
+                    </View>
+                  );
+                })()}
+              </Pressable>
+            </View>
+          )}
+
           {collapseCategoryHeader && (
             <View style={{ marginTop: -21 }}>
               <Text style={[styles.sectionTitle, styles.categoryCarouselTitle]}>
@@ -815,6 +901,18 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 3,
   },
+
+  // Hero — Para este momento
+  heroImageContainer: {
+    width: "100%",
+    height: HERO_HEIGHT,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  heroImage: { width: "100%", height: "100%" },
+  heroTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#FBFBFB", marginBottom: 4 },
+  heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#c2c2c2", marginTop: 2 },
+  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
 
   // Hero: Vuelve a ti
   introHeroContainer: {

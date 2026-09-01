@@ -228,12 +228,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               transition={IMAGE_TRANSITION}
             />
             <SessionCategoryPill categoryId={session.categoryId} />
-            <Text
-              style={[styles.ambientalTitle, { color: colors.foreground }]}
-              numberOfLines={2}
-            >
-              {session.title}
-            </Text>
           </>
         ) : showCardMetadata ? (
           <SessionCardMetadataOverlay
@@ -257,7 +251,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         ) : null}
         {locked && <LockStar />}
       </View>
-      {!showCardMetadata && !isAmbiental && (
+      {!showCardMetadata && (
         <>
           <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
