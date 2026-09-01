@@ -27,6 +27,7 @@ const ACCESS_CARDS = [
 const EXTRA_ACCESS_CARDS = [
   { id: "downloads", label: "Descargas", icon: "download-outline", route: "" },
   { id: "sessions", label: "Sesiones", icon: "calendar-outline", route: "/mis-sesiones" },
+  { id: "encounters", label: "Encuentros", icon: "account-group-outline", route: "/explore" },
   { id: "library", label: "Biblioteca", icon: "book-open-variant", route: "__biblioteca_overlay" },
 ] as const;
 
@@ -66,6 +67,8 @@ export function QuickAccessSection({
   replaceLibraryWithVideos = false,
   profileLayout = false,
   accessIds,
+  horizontalIds,
+  cardGap = GRID_GAP,
   showTitle = true,
   title = "Mis accesos",
   showCardBorders = true,
@@ -77,6 +80,8 @@ export function QuickAccessSection({
   replaceLibraryWithVideos?: boolean;
   profileLayout?: boolean;
   accessIds?: AccessId[];
+  horizontalIds?: AccessId[];
+  cardGap?: number;
   showTitle?: boolean;
   title?: string;
   showCardBorders?: boolean;
@@ -89,8 +94,8 @@ export function QuickAccessSection({
   const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
-  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP * 2) / 3));
-  const profileWideCardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - GRID_GAP) / 2));
+  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - cardGap * 2) / 3));
+  const profileWideCardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - cardGap) / 2));
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -112,6 +117,10 @@ export function QuickAccessSection({
     }
     if (id === "videos") {
       openCategory("/videos");
+      return;
+    }
+    if (id === "encounters") {
+      openCategory(access.route);
       return;
     }
     if (id === "saved") {
@@ -137,7 +146,7 @@ export function QuickAccessSection({
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
       {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>}
-      <View style={styles.accessRow}>
+      <View style={[styles.accessRow, { gap: cardGap }]}>
         {visibleAccessCards.map((access) => (
           <Pressable
             key={access.id}
@@ -147,6 +156,7 @@ export function QuickAccessSection({
             onPress={() => handlePress(access.id)}
             style={({ pressed }) => [
               styles.card,
+              horizontalIds?.includes(access.id) && styles.horizontalCard,
               profileLayout && styles.profileCard,
               profileLayout && access.id !== "saved" && access.id !== "library" &&
                 access.id !== "favorites" &&
@@ -154,7 +164,11 @@ export function QuickAccessSection({
               {
                 width: profileLayout && access.id !== "saved" && access.id !== "library" &&
                   access.id !== "favorites" &&
-                  access.id !== "history" ? profileWideCardWidth : cardWidth,
+                  access.id !== "history"
+                  ? profileWideCardWidth
+                  : horizontalIds?.includes(access.id)
+                    ? profileWideCardWidth
+                    : cardWidth,
                 backgroundColor: cardBackground,
                 borderWidth: showCardBorders ? 1 : 0,
                 opacity: pressed ? cardOpacity * 0.75 : cardOpacity,
@@ -169,6 +183,7 @@ export function QuickAccessSection({
             <Text
               style={[
                 styles.label,
+                horizontalIds?.includes(access.id) && styles.horizontalLabel,
                 profileLayout && styles.profileLabel,
                 profileLayout && access.id !== "saved" && access.id !== "library" &&
                   access.id !== "favorites" &&
@@ -214,6 +229,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     paddingHorizontal: 8,
   },
+  horizontalCard: {
+    flexDirection: "row",
+    height: 56,
+    justifyContent: "flex-start",
+    gap: 10,
+    paddingHorizontal: 16,
+  },
   profileCard: {
     // La primera fila conserva el formato compacto de tres accesos.
   },
@@ -229,6 +251,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
+  },
+  horizontalLabel: {
+    textAlign: "left",
+    fontSize: 14,
   },
   profileLabel: {
     fontSize: 15,

@@ -2522,8 +2522,11 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <QuickAccessSection
-            accessIds={["history", "favorites", "downloads"]}
-            showTitle={false}
+            title="Tu contenido"
+            accessIds={["history", "favorites", "downloads", "sessions", "encounters"]}
+            horizontalIds={["sessions", "encounters"]}
+            cardGap={10}
+            showCardBorders={false}
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
