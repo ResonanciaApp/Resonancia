@@ -85,6 +85,7 @@ type SessionCarouselProps = {
   viewAllColor?: string;
   showCardMetadata?: boolean;
   showAuthor?: boolean;
+  showCollectionBelow?: boolean;
   showHeader?: boolean;
   cardVariant?: "ambiental";
 };
@@ -109,6 +110,7 @@ export function SessionCarousel({
   viewAllColor,
   showCardMetadata = false,
   showAuthor = true,
+  showCollectionBelow = false,
   showHeader = true,
   cardVariant,
 }: SessionCarouselProps) {
@@ -172,6 +174,7 @@ export function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
+          const hasSecondaryMeta = showCollectionBelow || (showAuthor && Boolean(authorName));
           return (
             <PressScale
               key={s.id}
@@ -207,23 +210,25 @@ export function SessionCarousel({
                         },
                       ]}
                     />
-                    <SessionCategoryPill categoryId={s.categoryId} />
+                    {!showCollectionBelow && <SessionCategoryPill categoryId={s.categoryId} />}
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
                     categoryId={s.categoryId}
                     durationLabel={s.durationLabel}
                     title={s.title}
-                    authorName={showAuthor ? authorName : undefined}
-                    showAuthor={showAuthor}
-                    durationBottom={showAuthor ? 70 : 52}
-                    metaBottom={showAuthor ? 15 : 20}
-                    metaLeft={showAuthor ? 10 : 18}
-                    contentLeft={showAuthor ? 8 : 18}
+                    authorName={showAuthor && !showCollectionBelow ? authorName : undefined}
+                    showAuthor={showAuthor && !showCollectionBelow}
+                    showCategoryPill={!showCollectionBelow}
+                    showCategoryBelow={showCollectionBelow}
+                    durationBottom={hasSecondaryMeta ? 70 : 52}
+                    metaBottom={hasSecondaryMeta ? 15 : 20}
+                    metaLeft={hasSecondaryMeta ? 10 : 18}
+                    contentLeft={hasSecondaryMeta ? 8 : 18}
                   />
                 ) : (
                   <>
-                    {showImageCategoryPill && <SessionCategoryPill categoryId={s.categoryId} />}
+                    {showImageCategoryPill && !showCollectionBelow && <SessionCategoryPill categoryId={s.categoryId} />}
                     <SessionDurationBadge
                       label={s.durationLabel}
                       style={[styles.durBadge, !showAuthor && styles.durBadgeLower]}
@@ -245,15 +250,22 @@ export function SessionCarousel({
                     style={[
                       styles.cardTitle,
                       {
-                        marginTop: titleOffset ?? (showAuthor ? 10 : 4),
-                        marginLeft: showAuthor ? 0 : 8,
+                         marginTop: titleOffset ?? (hasSecondaryMeta ? 10 : 4),
+                         marginLeft: hasSecondaryMeta ? 0 : 8,
                       },
                     ]}
                     numberOfLines={2}
                   >
                     {s.title}
                   </Text>
-                  {showAuthor && authorName ? (
+                  {showCollectionBelow && s.categoryLabel ? (
+                    <Text
+                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      numberOfLines={1}
+                    >
+                      {s.categoryLabel}
+                    </Text>
+                  ) : showAuthor && authorName ? (
                     <Text
                       style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
                       numberOfLines={1}

@@ -2647,7 +2647,8 @@ export default function HomeScreen2({
             viewAllColor="#067D74"
             squareCards
             cardAuthorColor="#acaac2"
-            showImageCategoryPill
+            showAuthor={false}
+            showCollectionBelow
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2733,7 +2734,8 @@ export default function HomeScreen2({
             viewAllColor="#067D74"
             squareCards
             cardAuthorColor="#acaac2"
-            showImageCategoryPill
+            showAuthor={false}
+            showCollectionBelow
           />
         )}
         {isInicio2 && (
@@ -2900,6 +2902,8 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             showCardMetadata
+            showAuthor={false}
+            showCollectionBelow
           />
         )}
 
@@ -2915,6 +2919,8 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             showCardMetadata
+            showAuthor={false}
+            showCollectionBelow
           />
         )}
 
@@ -2932,6 +2938,8 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             viewAllColor="#067D74"
             showCardMetadata
+            showAuthor={false}
+            showCollectionBelow
           />
         )}
 

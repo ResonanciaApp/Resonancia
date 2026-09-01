@@ -21,6 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -546,27 +547,28 @@ export function ExploreScreen({
                     placeholder={BLUR_PLACEHOLDER}
                     transition={IMAGE_TRANSITION}
                   />
+                  {(() => {
+                    const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
+                    const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
+                    const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                    const heroPhoto = guide?.photo ?? artist?.photo ?? undefined;
+                    return (
+                      <SessionCardMetadataOverlay
+                        categoryId={featuredHoy.categoryId}
+                        durationLabel={featuredHoy.durationLabel}
+                        title={featuredHoy.title}
+                        authorName={heroAuthorName}
+                        authorAvatar={heroPhoto}
+                        showAuthor
+                        titleFontSize={18}
+                        durationBottom={76}
+                        metaBottom={16}
+                        metaLeft={14}
+                        contentLeft={12}
+                      />
+                    );
+                  })()}
                 </View>
-                {(() => {
-                  const guide  = featuredHoy.guideId  ? getGuide(featuredHoy.guideId)   : undefined;
-                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
-                  const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                  const heroPhoto      = guide?.photo ?? artist?.photo ?? null;
-                  return (
-                    <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
-                      {heroPhoto && (
-                        <Image source={heroPhoto} style={styles.heroAvatar} contentFit="cover" />
-                      )}
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.heroAuthor} numberOfLines={1}>
-                          {featuredHoy.categoryLabel}{featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
-                        </Text>
-                        <Text style={styles.heroTitle} numberOfLines={2}>{featuredHoy.title}</Text>
-                        <Text style={styles.heroAuthor} numberOfLines={1}>{heroAuthorName}</Text>
-                      </View>
-                    </View>
-                  );
-                })()}
               </Pressable>
             </View>
           )}
@@ -920,9 +922,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
-  heroTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#FBFBFB", marginBottom: 4 },
-  heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#c2c2c2", marginTop: 2 },
-  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
 
   // Hero: Vuelve a ti
   introHeroContainer: {

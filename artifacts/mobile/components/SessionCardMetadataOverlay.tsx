@@ -129,6 +129,8 @@ type Props = {
   authorName?: string;
   authorAvatar?: ImageSourcePropType;
   showAuthor?: boolean;
+  showCategoryPill?: boolean;
+  showCategoryBelow?: boolean;
   titleFontSize?: number;
   showDuration?: boolean;
   durationBottom?: number;
@@ -144,6 +146,8 @@ export function SessionCardMetadataOverlay({
   authorName,
   authorAvatar,
   showAuthor = true,
+  showCategoryPill = true,
+  showCategoryBelow = false,
   titleFontSize,
   showDuration = true,
   // Deja un poco más de aire cuando el título ocupa dos líneas.
@@ -154,6 +158,7 @@ export function SessionCardMetadataOverlay({
 }: Props) {
   const [isTwoLineTitle, setIsTwoLineTitle] = React.useState(false);
   const effectiveDurationBottom = isTwoLineTitle ? durationBottom + 18 : durationBottom;
+  const categoryLabel = categoryId ? CATEGORY_PILL_META[categoryId]?.label : undefined;
 
   return (
     <>
@@ -163,7 +168,9 @@ export function SessionCardMetadataOverlay({
         locations={[0, 0.42, 1]}
         style={styles.bottomGradient}
       />
-      <SessionCategoryPill categoryId={categoryId} leftInset={contentLeft} />
+      {showCategoryPill && (
+        <SessionCategoryPill categoryId={categoryId} leftInset={contentLeft} />
+      )}
       {showDuration && (
         <SessionDurationBadge
           label={durationLabel}
@@ -193,7 +200,9 @@ export function SessionCardMetadataOverlay({
           >
             {title}
           </Text>
-          {showAuthor && authorName ? (
+          {showCategoryBelow && categoryLabel ? (
+            <Text style={styles.author} numberOfLines={1}>{categoryLabel}</Text>
+          ) : showAuthor && authorName ? (
             <Text style={styles.author} numberOfLines={1}>{authorName}</Text>
           ) : null}
         </View>
