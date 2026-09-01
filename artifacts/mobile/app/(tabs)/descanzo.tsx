@@ -28,7 +28,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -360,13 +360,11 @@ export default function DescansoScreen() {
     inputRange: [0, 1],
     outputRange: [1, 0],
   });
+  const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.96],
+  });
 
-  // ── Borde del sticky header (tabs): se activa recién a partir de 1% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.01;
-  const headerBorderActiveRef = useRef(false);
-  const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
   const handleScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
     const shouldCompact = y > 8;
@@ -378,18 +376,7 @@ export default function DescansoScreen() {
         useNativeDriver: true,
       }).start();
     }
-    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-    const progress = scrollable > 0 ? y / scrollable : 0;
-    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-    if (shouldShowBorder !== headerBorderActiveRef.current) {
-      headerBorderActiveRef.current = shouldShowBorder;
-      Animated.timing(headerBorderAnim, {
-        toValue: shouldShowBorder ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [headerBorderAnim, titleCompactAnim]);
+  }, [titleCompactAnim]);
 
   const {
     currentSession,
@@ -517,6 +504,25 @@ export default function DescansoScreen() {
           style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFill,
+              styles.stickyHeaderGlass,
+              { opacity: stickyHeaderSurfaceOpacity },
+            ]}
+          >
+            <SessionBadgeGlass />
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                styles.stickyHeaderTint,
+                { backgroundColor: bgGradient[0] as string },
+              ]}
+            />
+            <View pointerEvents="none" style={styles.stickyHeaderDivider} />
+          </Animated.View>
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
               Dormir
@@ -553,7 +559,6 @@ export default function DescansoScreen() {
               ))}
             </ScrollView>
           </View>
-          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
         </View>
 
         <ScrollView
@@ -561,12 +566,6 @@ export default function DescansoScreen() {
           contentContainerStyle={{ paddingTop: fixedHeaderHeight, paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          onLayout={(e) => {
-            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(_w, h) => {
-            scrollContentHeightRef.current = h;
-          }}
           onScroll={handleScroll}
         >
         <View style={{ marginTop: -3 }}>
@@ -963,11 +962,13 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   sleepPillInactive: { backgroundColor: "#2B2944" },
-  sleepPillSel: { borderWidth: 0 },
+  sleepPillSel: {},
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 15,
@@ -984,6 +985,21 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
+    overflow: "hidden",
+  },
+  stickyHeaderGlass: {
+    overflow: "hidden",
+  },
+  stickyHeaderTint: {
+    opacity: 0.85,
+  },
+  stickyHeaderDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   titleRow: {
     position: "relative",
@@ -1009,14 +1025,6 @@ const styles = StyleSheet.create({
   sleepTabsHeader: {
     marginTop: 9,
     paddingBottom: 15,
-  },
-  stickyTabsBorder: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
   },
 
   /* Hero */

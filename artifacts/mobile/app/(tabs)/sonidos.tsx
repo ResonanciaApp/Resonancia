@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -110,10 +111,11 @@ export default function SonidosScreen() {
   const indigoSurface = theme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
-  const headerBorderActiveRef = useRef(false);
-  const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
+  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
+  const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.96],
+  });
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
@@ -128,17 +130,7 @@ export default function SonidosScreen() {
         useNativeDriver: true,
       }).start();
     }
-    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-    const showBorder = scrollable > 0 && y / scrollable >= 0.01;
-    if (showBorder !== headerBorderActiveRef.current) {
-      headerBorderActiveRef.current = showBorder;
-      Animated.timing(headerBorderAnim, {
-        toValue: showBorder ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [headerBorderAnim, titleProgress]);
+  }, [titleProgress]);
 
   const collections = useMemo(
     () =>
@@ -213,7 +205,29 @@ export default function SonidosScreen() {
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+        <View
+          style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
+          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
+        >
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFill,
+              styles.stickyHeaderGlass,
+              { opacity: stickyHeaderSurfaceOpacity },
+            ]}
+          >
+            <SessionBadgeGlass />
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                styles.stickyHeaderTint,
+                { backgroundColor: theme.gradient[0] as string },
+              ]}
+            />
+            <View pointerEvents="none" style={styles.stickyHeaderDivider} />
+          </Animated.View>
           <View style={styles.titleRow}>
             <Animated.Text
               style={[
@@ -256,20 +270,13 @@ export default function SonidosScreen() {
               ))}
             </ScrollView>
           </View>
-          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
         </View>
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          contentContainerStyle={{ paddingTop: fixedHeaderHeight, paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          onLayout={(event) => {
-            scrollLayoutHeightRef.current = event.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(_width, height) => {
-            scrollContentHeightRef.current = height;
-          }}
           onScroll={handleScroll}
         >
         <View style={[styles.contentStart, { marginTop: -3 }]}>
@@ -341,6 +348,10 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   fixedHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     zIndex: 20,
     backgroundColor: "transparent",
   },
@@ -404,17 +415,24 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  stickyTabsBorder: {
+  stickyHeaderGlass: {
+    overflow: "hidden",
+  },
+  stickyHeaderTint: {
+    opacity: 0.85,
+  },
+  stickyHeaderDivider: {
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   pillText: {
     fontFamily: "Manrope",
