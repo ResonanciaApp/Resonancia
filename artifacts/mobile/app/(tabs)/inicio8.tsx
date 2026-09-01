@@ -2646,8 +2646,8 @@ export default function HomeScreen2({
             onViewAll={() => router.push("/historial" as never)}
             viewAllColor="#067D74"
             squareCards
-            showCardMetadata
-            showAuthor={false}
+            cardAuthorColor="#acaac2"
+            showImageCategoryPill
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2732,8 +2732,8 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             viewAllColor="#067D74"
             squareCards
-            showCardMetadata
-            showAuthor={false}
+            cardAuthorColor="#acaac2"
+            showImageCategoryPill
           />
         )}
         {isInicio2 && (
@@ -2900,7 +2900,6 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             showCardMetadata
-            showAuthor={false}
           />
         )}
 
@@ -2916,7 +2915,6 @@ export default function HomeScreen2({
             cardWidth={RECENT_CARD_W}
             titleSize={20}
             showCardMetadata
-            showAuthor={false}
           />
         )}
 
@@ -2934,7 +2932,6 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             viewAllColor="#067D74"
             showCardMetadata
-            showAuthor={false}
           />
         )}
 
