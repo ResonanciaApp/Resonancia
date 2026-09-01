@@ -186,32 +186,23 @@ const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
-  const isAmbientales = tab.id === "ambientales";
-  const fgColor = sel
-    ? (isAmbientales || theme.id === "indigo" ? "#F9F9F9" : "#0D0A1E")
-    : "#FBFBFB";
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.pillTab, theme.id === "tibet" && styles.pillTabTibet, theme.id === "indigo" && styles.pillTabIndigo, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [
+        styles.pillTab,
+        theme.id === "tibet" && styles.pillTabTibet,
+        theme.id === "indigo" && styles.pillTabIndigo,
+        sel && {
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.8)",
+        },
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
     >
-      {/* Fondo seleccionado */}
-      {sel && (
-        <LinearGradient
-          colors={isAmbientales
-            ? ["#357849", "#23522F"]
-            : theme.id === "indigo"
-              ? ["#784576", "#50326E"]
-              : ["#FFFFFF", "#F5F5F5"]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
-        />
-      )}
-
       {/* Texto */}
-      <Text style={[styles.pillTabLabel, { color: fgColor }]}>
+      <Text style={styles.pillTabLabel}>
         {tab.label}
       </Text>
     </Pressable>
