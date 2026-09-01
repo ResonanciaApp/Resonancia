@@ -89,11 +89,15 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 
 function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()=>void }) {
   const { theme } = useSceneTheme();
+  const selectedBorderColor = theme.id === "indigo2"
+    ? "rgba(255,255,255,0.8)"
+    : theme.id === "indigo"
+      ? "rgba(120,69,118,0.8)"
+      : "transparent";
 
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && <LinearGradient colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-      <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
+    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && { borderColor: selectedBorderColor }, {opacity:pressed?0.7:1}]}>
+      <Text style={styles.chipText}>{label}</Text>
     </Pressable>
   );
 }
@@ -264,7 +268,7 @@ export default function MeditacionesGuiadasScreen() {
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { version } = useCatalog();
   const { activeSceneId, theme } = useSceneTheme();
-  const { history, playSession, favorites } = usePlayer();
+  const { history, playSession } = usePlayer();
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
   const profileSectionBackground = activeSceneId === "tibet"
@@ -328,16 +332,6 @@ export default function MeditacionesGuiadasScreen() {
     return result;
   }, [history, activeTab, allTabSessions]);
 
-  const favoritesInCategory = useMemo(() => {
-    const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
-    const result: Session[] = [];
-    for (const id of favorites) {
-      const s = getSessionById(id);
-      if (s && s.categoryId === "meditaciones-guiadas" && (tabIds === null || tabIds.has(s.id))) result.push(s);
-    }
-    return result;
-  }, [favorites, activeTab, allTabSessions]);
-
   const [shuffledSessions, setShuffledSessions] = useState<typeof allTabSessions>([]);
   useEffect(()=>{
     const arr = [...allTabSessions];
@@ -393,21 +387,6 @@ export default function MeditacionesGuiadasScreen() {
               squareCards
               cardAuthorColor="#acaac2"
               showImageCategoryPill
-            />
-          </>
-        )}
-        {activeTab === null && favoritesInCategory.length > 0 && (
-          <>
-            <SessionCarousel
-              title="Favoritos"
-              sessions={favoritesInCategory}
-              isPremium={isPremium}
-              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-               style={{ marginTop: 53, marginBottom: 0 }}
-              cardWidth={RECENT_CARD_W}
-              titleSize={18}
-              showCardMetadata
-              showAuthor={false}
             />
           </>
         )}
@@ -641,7 +620,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 },
+   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 2, borderColor: "transparent" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipBorder: {},

@@ -38,24 +38,21 @@ const CAROUSEL_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-const CATEGORY_TAB_GRADIENTS: Record<string, [string, string]> = {
-  ambientales: ["#357849", "#23522F"],
-  historias: ["#8F227F", "#691E5E"],
-  charlas: ["#953732", "#78221E"],
-};
-
 function Chip({
   label,
   selected,
-  selectedColors,
   onPress,
 }: {
   label: string;
   selected: boolean;
-  selectedColors: [string, string];
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
+  const selectedBorderColor = theme.id === "indigo2"
+    ? "rgba(255,255,255,0.8)"
+    : theme.id === "indigo"
+      ? "rgba(120,69,118,0.8)"
+      : "transparent";
 
   return (
     <Pressable
@@ -64,17 +61,10 @@ function Chip({
         styles.chip,
         theme.id === "tibet" && styles.chipTibet,
         theme.id === "indigo" && styles.chipIndigo,
+        selected && { borderColor: selectedBorderColor },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
-      {selected && (
-        <LinearGradient
-          colors={selectedColors}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
       <Text style={styles.chipText}>{label}</Text>
     </Pressable>
   );
@@ -83,12 +73,10 @@ function Chip({
 function ChipRow({
   tabs,
   activeTab,
-  selectedColors,
   onSelect,
 }: {
   tabs: string[];
   activeTab: string | null;
-  selectedColors: [string, string];
   onSelect: (tab: string | null) => void;
 }) {
   return (
@@ -104,7 +92,6 @@ function ChipRow({
             key={tab}
             label={tab}
             selected={activeTab === tab}
-            selectedColors={selectedColors}
             onPress={() => onSelect(activeTab === tab ? null : tab)}
           />
         ))}
@@ -177,7 +164,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
     : activeSceneId === "indigo"
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
-  const selectedColors = CATEGORY_TAB_GRADIENTS[id] ?? ["#307E91", "#1A5863"];
   const title = category?.title ?? "Categoría";
 
   const goBack = backOverride ?? (() => router.back());
@@ -324,7 +310,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           <ChipRow
             tabs={tabs}
             activeTab={activeTab}
-            selectedColors={selectedColors}
             onSelect={setActiveTab}
           />
         </View>
@@ -385,7 +370,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           <ChipRow
             tabs={tabs}
             activeTab={activeTab}
-            selectedColors={selectedColors}
             onSelect={setActiveTab}
           />
         </View>
@@ -464,6 +448,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 27,
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
     flexDirection: "row",
     gap: 12,
     alignItems: "center",

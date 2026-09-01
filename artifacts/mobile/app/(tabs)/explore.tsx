@@ -485,7 +485,7 @@ export function ExploreScreen({
                 styles.searchBox,
                 {
                   backgroundColor: "rgba(0,0,0,0.20)",
-                  borderColor: "rgba(255,255,255,0.30)",
+                  borderColor: "rgba(255,255,255,0.80)",
                 },
               ]}
               pointerEvents="none"
