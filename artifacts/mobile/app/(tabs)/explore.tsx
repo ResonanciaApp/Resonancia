@@ -44,6 +44,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
+const COLLAPSED_FIRST_CAROUSEL_GAP = 28;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -494,7 +495,7 @@ export function ExploreScreen({
                   marginTop:
                     carousel.label.trim().toLowerCase() === "para la ansiedad"
                       ? collapseCategoryHeader
-                        ? 0
+                        ? COLLAPSED_FIRST_CAROUSEL_GAP
                         : SECTION_GAP
                       : 0,
                   marginBottom: SECTION_GAP,
