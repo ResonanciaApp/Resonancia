@@ -1607,888 +1607,1036 @@ id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
 type = "audio"
 title = "Pad Mi Mayor + Chau Gong La2"
+logical_id = "8e78b9d3-270f-4f62-b29e-1a7c48d2105d"
 
 [[outputs]]
 id = "wetHSCI9rAVQySxatZDy-"
 uri = "file://artifacts/mobile/assets/audio/sesion_cuencos_mix.mp3"
 type = "audio"
 title = "Mix Cuencos — 3 minutos completos"
+logical_id = "30362f49-3684-4dac-b0bc-f04d30115782"
 
 [[outputs]]
 id = "j8rjFkdYppFltRV8JhkFV"
 uri = "file://artifacts/mobile/assets/audio/gong90cm.mp3"
 type = "audio"
 title = "Gong 90cm — golpe de maza (62 Hz, 50s decay)"
+logical_id = "43197cc0-3e7d-407c-9c09-ca0fc1e3851d"
 
 [[outputs]]
 id = "PuMZUnnqoyoTFZFFbIxi7"
 uri = "file://attached_assets/generated_audio/mi_voz_prueba.mp3"
 type = "audio"
 title = "Mi Voz Clonada — Prueba RESONANCIA"
+logical_id = "f8c63aec-586f-4824-9398-83e3fbcc4ebe"
 
 [[outputs]]
 id = "snBqQiLEK3UqJBBb6Rp0_"
 uri = "file://attached_assets/generated_audio/meditacion_voz_profunda.mp3"
 type = "audio"
 title = "Meditación — Voz Profunda y Meditativa"
+logical_id = "b252cb16-df26-4983-9f2b-8c5953fccc8a"
 
 [[outputs]]
 id = "kUi_vp_EyR3KbTti6AmNz"
 uri = "file://attached_assets/generated_audio/meditacion_bella.mp3"
 type = "audio"
 title = "Opción A — Bella (cálida, profesional)"
+logical_id = "02fcc8db-44a1-4fc6-93c3-90f32b7f1d69"
 
 [[outputs]]
 id = "U6T0G7L-JXxiBKjvpOSE2"
 uri = "file://attached_assets/generated_audio/meditacion_sarah.mp3"
 type = "audio"
 title = "Opción B — Sarah (madura, reconfortante)"
+logical_id = "d9f93354-e89c-491e-9fed-880185de1bc4"
 
 [[outputs]]
 id = "TxYiHFux0itAC_fZjmBRt"
 uri = "file://artifacts/mobile/assets/audio/pajaros_ambiente.mp3"
 type = "audio"
 title = "pajaros_ambiente"
+logical_id = "1c626f40-0034-40cc-9ebd-dcd7cbdaad68"
 
 [[outputs]]
 id = "E5y0wD6-a5XPoKd_AAOzO"
 uri = "file://attached_assets/generated_audio/om_mani_padme_hum.mp3"
 type = "audio"
 title = "Om Mani Padme Hum — Pad · Voz Tibetana · Melodía"
+logical_id = "acb0470d-4fde-434c-b4ec-8225d2001c3d"
 
 [[outputs]]
 id = "8EmymekbqaX_8L1uvce14"
 uri = "file://attached_assets/co_1_1779554092766_D5.WAV"
 type = "audio"
 title = "co_1_1779554092766_D5.WAV"
+logical_id = "adbbab00-59c0-4aa7-9469-ff5b22e8cfaf"
 
 [[outputs]]
 id = "bFzLDDujir9MMPqCX1O4w"
 uri = "file://attached_assets/Re5 - 602 hz.WAV"
 type = "audio"
 title = "Re5 - 602 hz.WAV"
+logical_id = "564f7b4e-7393-4bb5-a90e-826396951337"
 
 [[outputs]]
 id = "NMsCE4liHzLpbMqQITJTH"
 uri = "file://artifacts/mobile/assets/audio/pad_la.mp3"
 type = "audio"
 title = "pad_la_cosmos"
+logical_id = "914818c3-4e21-488c-9d9e-565e231ed463"
 
 [[outputs]]
 id = "Sn_4n06dZg55Ld15d-3PP"
 uri = "file://artifacts/mobile/assets/audio/pad_sol_sostenido_extraterrestre.mp3"
 type = "audio"
 title = "Viaje Fibonacci — Luz → Night Psy → Renacimiento (v4)"
+logical_id = "659ca612-60f8-486a-91a4-948e3dfc875a"
 
 [[outputs]]
 id = "8MlaUjWLoCB9NTjz8cbkO"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional.mp3"
 type = "audio"
 title = "Goa Trance — Viaje Interdimensional (7 min)"
+logical_id = "f60f867c-a27f-4539-a324-0f48e4685faf"
 
 [[outputs]]
 id = "HCx6ttdlKJYZJOON-DO1S"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_viaje_interdimensional_HD.mp3"
 type = "audio"
 title = "Goa Trance HD — Viaje Interdimensional (MP3 192kbps)"
+logical_id = "8aad082f-ef36-42a8-a75b-8470d6dfd285"
 
 [[outputs]]
 id = "e7L2pGUGcEeDtyzKQveP1"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_continuacion.mp3"
 type = "audio"
 title = "Goa Trance Continuación (2 min, standalone)"
+logical_id = "f51887a0-19ba-4132-a028-ff8a21913005"
 
 [[outputs]]
 id = "Gzzb-KmS4R0yF0nJmlQKA"
 uri = "file://artifacts/mobile/assets/audio/goa_trance_dj_mix.mp3"
 type = "audio"
 title = "DJ Mix — Transición Goa Trance → Continuación (2:15)"
+logical_id = "24939f25-1d84-4a9e-a278-0c61e8efd8e3"
 
 [[outputs]]
 id = "aS8JIuF0TupzgVoWsLToD"
 uri = "file://artifacts/mobile/assets/audio/pad_fa_sostenido_dorian_handpan.mp3"
 type = "audio"
 title = "3. Pad Fa# Dorian — Handpan + Flauta Nativa + Om"
+logical_id = "56f63f5a-2aa3-42ab-ba70-af433650fb33"
 
 [[outputs]]
 id = "MkXnFpMklCRNPLSE1c4ge"
 uri = "file://artifacts/mobile/assets/audio/pad_re_menor_cuencos_tibetanos.mp3"
 type = "audio"
 title = "1. Pad Re menor — Cuencos Tibetanos + Om"
+logical_id = "6d3f92de-4d8e-4192-a286-505345770986"
 
 [[outputs]]
 id = "89yeY6jAXEf96frkvSAYs"
 uri = "file://artifacts/mobile/assets/audio/pad_la_frigio_sitar_tabla.mp3"
 type = "audio"
 title = "2. Pad La Frigio Dominante — Sitar + Tabla + Om"
+logical_id = "abf04e5a-e3e6-420f-ac72-8f5fb38ba6c6"
 
 [[outputs]]
 id = "hb8fKN6XDGBdKa-V8PPqe"
 uri = "file://artifacts/mobile/assets/audio/pad_do_sostenido_locrian_campanas.mp3"
 type = "audio"
 title = "5. Pad Do# Locrian — Campanas de Catedral + Susurros + Om"
+logical_id = "b1f94589-bd77-4a31-8fe3-cf407796342b"
 
 [[outputs]]
 id = "U3iCopQw2PAGtgotSjOGR"
 uri = "file://artifacts/mobile/assets/audio/pad_mi_armonico_chelos_truenos.mp3"
 type = "audio"
 title = "4. Pad Mi menor armónico — Chelos + Truenos + Om"
+logical_id = "6a367da8-7be1-462c-a070-0273a8ddce39"
 
 [[outputs]]
 id = "MUBOJRMQBGyKdaJSSGa9B"
 uri = "file://artifacts/mobile/assets/audio/gael_extraterrestres_gatos.mp3"
 type = "audio"
 title = "GAEL — Humanos Extraterrestres con Gatos Cósmicos"
+logical_id = "830b6bf4-f750-4888-a611-a7d24e279bdb"
 
 [[outputs]]
 id = "MT2SqDppHzm5q8Z1ZoRWW"
 uri = "file://artifacts/mobile/assets/audio/voz_galactica_mistica.mp3"
 type = "audio"
 title = "Voz Galáctica Mística — Interdimensional"
+logical_id = "328cb3c4-1c12-427f-b358-ea1a457ea33b"
 
 [[outputs]]
 id = "TdplbkXXWPaWtmp6dL0HV"
 uri = "file://artifacts/mobile/assets/audio/voz_1_ser_galactico_etereo.mp3"
 type = "audio"
 title = "1. Ser Galáctico Etéreo — voz celestial brillante"
+logical_id = "f399903e-2618-4253-ad53-b8ac3605edae"
 
 [[outputs]]
 id = "3a-QgCRYSVHmyNaCbFM84"
 uri = "file://artifacts/mobile/assets/audio/voz_2_ente_interdimensional.mp3"
 type = "audio"
 title = "2. Ente Interdimensional — phaser y movimiento dimensional"
+logical_id = "6d737df4-6341-4742-86d2-f5ae4c9e478a"
 
 [[outputs]]
 id = "Trcwvcq9ZamoCpm1qJrB2"
 uri = "file://artifacts/mobile/assets/audio/voz_3_espiritu_ancestral.mp3"
 type = "audio"
 title = "3. Espíritu Ancestral — monástico profundo con octavas"
+logical_id = "eb732af5-be9e-4243-8fff-e874bb771f0a"
 
 [[outputs]]
 id = "mqAJKttWEpi9uBV88a9uI"
 uri = "file://artifacts/mobile/assets/audio/voz_4_smaug_desolador.mp3"
 type = "audio"
 title = "4. 🐉 SMAUG EL DESOLADOR — dragón en su caverna"
+logical_id = "e51a84de-2307-4561-98c4-82f692c02aed"
 
 [[outputs]]
 id = "zB8tzfUAPEE0VHqep29tF"
 uri = "file://artifacts/mobile/assets/audio/voz_5_oraculo_cosmico.mp3"
 type = "audio"
 title = "5. Oráculo Cósmico — susurros y cristales"
+logical_id = "0b06a1e3-0076-459f-a193-6e6467fe5413"
 
 [[outputs]]
 id = "A7KGTGONOt6acmPx5n9zN"
 uri = "file://artifacts/mobile/assets/audio/voz_ser_celestial_divino.mp3"
 type = "audio"
 title = "Voz Ser Celestial Divino — Consciencia Cósmica Ancestral"
+logical_id = "43c955cd-d846-456b-be00-80fff72e6e22"
 
 [[outputs]]
 id = "NYOaE1SIgk2XGFP7M1LKF"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_1_sabio_ancestral.mp3"
 type = "audio"
 title = "1. Sabio Ancestral — cálido y profundo"
+logical_id = "0591cdbe-8145-4257-9bab-24fc8eedd4e6"
 
 [[outputs]]
 id = "VMgpNYp_5e2nV11pkdm8D"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_2_guia_celestial.mp3"
 type = "audio"
 title = "2. Guía Celestial — brillante con aire sutil"
+logical_id = "de2bd9a9-fe51-4b73-87ff-9e6c5fc6bcab"
 
 [[outputs]]
 id = "AwfKAqryEiKsoCJ6mv9FS"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_3_maestro_zen.mp3"
 type = "audio"
 title = "3. Maestro Zen — voz natural, presencia cálida"
+logical_id = "5556aa8c-4cb8-4951-8981-05ac60c3b171"
 
 [[outputs]]
 id = "0WUVFhuMmudoMFOBga505"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_4_voz_del_templo.mp3"
 type = "audio"
 title = "4. Voz del Templo — profundidad sagrada"
+logical_id = "bc002939-b877-4e61-807e-31dc069b74ee"
 
 [[outputs]]
 id = "CIpXQ9nSeYFZichRY72B6"
 uri = "file://artifacts/mobile/assets/audio/voz_sutil_5_susurro_cosmico.mp3"
 type = "audio"
 title = "5. Susurro Cósmico — íntimo y cercano"
+logical_id = "5cbe912e-0252-4ffa-8ca5-2e245e0a84f2"
 
 [[outputs]]
 id = "sGDzBFioMU0D69ufpysd9"
 uri = "file://artifacts/mobile/assets/audio/voz_limpia_profesional.mp3"
 type = "audio"
 title = "Voz limpia — sin ruido de fondo"
+logical_id = "ad5a4f40-147d-457f-968d-9609af3b0396"
 
 [[outputs]]
 id = "D4rBuoxW-nLEWnqe6Y-J5"
 uri = "file://artifacts/mobile/assets/audio/canto_sagrado_la.mp3"
 type = "audio"
 title = "Canto Sagrado — en La (-3 semitonos)"
+logical_id = "079e19d7-b2a7-4eb4-b8c2-20012ec45a21"
 
 [[outputs]]
 id = "Wbs9AgXpdqxWVNrx-Ylff"
 uri = "file://artifacts/mobile/assets/audio/canto_cosmico_mi.mp3"
 type = "audio"
 title = "Canto Cósmico — en Mi (-7 semitonos + coro)"
+logical_id = "d7908687-9897-44af-9a2d-1de54d340f05"
 
 [[outputs]]
 id = "F_Uyy8RMpCTCamiRqupqw"
 uri = "file://attached_assets/dripping-leaves-30min.mp3"
 type = "audio"
 title = "Dripping Leaves — 30 min (loop sin corte)"
+logical_id = "8bfa3eb5-71d4-419d-87e9-ff82ac6f6dee"
 
 [[outputs]]
 id = "5Fputq5-ieZVvz96xclbg"
 uri = "file://artifacts/mobile/assets/audio/prueba_voz_generada.mp3"
 type = "audio"
 title = "Prueba — Tu voz generada con ElevenLabs"
+logical_id = "1fb8f711-c915-4cb2-95f7-7eb73aaaa32a"
 
 [[outputs]]
 id = "m5ReEEXuiVeJnMcfUJs-k"
 uri = "file://artifacts/mobile/assets/audio/meditacion_respiracion.mp3"
 type = "audio"
 title = "Meditación — voz más grave y acento más neutro"
+logical_id = "b91820eb-998a-4992-a9be-85d1e7bdfbe6"
 
 [[outputs]]
 id = "50-sNW2-E2OeyeRvB2U-_"
 uri = "file://attached_assets/earth_50_cm.mp3"
 type = "audio"
 title = "Gong Earth — 50 cm (simulado)"
+logical_id = "cb194307-9bc7-42be-8994-4d9f1f4637eb"
 
 [[outputs]]
 id = "uPiQmaZfhohh2DqnuhF-1"
 uri = "file://attached_assets/earth_55_cm.mp3"
 type = "audio"
 title = "Gong Earth — 55 cm"
+logical_id = "a469f100-58b9-4ed5-a8ff-c6445c397f27"
 
 [[outputs]]
 id = "KsU7bHE44MQfl5C01Yqa-"
 uri = "file://attached_assets/earth_60_cm.mp3"
 type = "audio"
 title = "Gong Earth — 60 cm"
+logical_id = "fe80cf3c-a666-4c58-99e4-856216f22d0b"
 
 [[outputs]]
 id = "1NnxFeXX6ogVk3_H0zQ-I"
 uri = "file://attached_assets/earth_65_cm.mp3"
 type = "audio"
 title = "Gong Earth — 65 cm"
+logical_id = "848dad64-7d16-45c6-899b-9b9eb08f50e9"
 
 [[outputs]]
 id = "WUZzuz1JPPJ-T6NKyfFBr"
 uri = "file://attached_assets/earth_70_cm.mp3"
 type = "audio"
 title = "Gong Earth — 70 cm"
+logical_id = "1fce6f0f-8099-4e49-83f3-880a46077ef6"
 
 [[outputs]]
 id = "IoHgSx1Yf8YFkhkoxihg6"
 uri = "file://attached_assets/earth_75_cm.mp3"
 type = "audio"
 title = "Gong Earth — 75 cm"
+logical_id = "b8a154a4-4b7c-4060-80aa-b7ce19644090"
 
 [[outputs]]
 id = "ZgZ69EWID547Rnyyq9McV"
 uri = "file://attached_assets/earth_80_cm.mp3"
 type = "audio"
 title = "Gong Earth — 80 cm"
+logical_id = "fcabd9d3-4445-4b2d-bd41-8007f2342378"
 
 [[outputs]]
 id = "YwAEuAjHL3uqFjLq2dymd"
 uri = "file://attached_assets/symphonic_45_cm.mp3"
 type = "audio"
 title = "Symphonic — 45 cm"
+logical_id = "dfffce3f-279f-4a2d-b576-6c2a610f09e6"
 
 [[outputs]]
 id = "sfM4lCeDS6Vf6k6ABUng6"
 uri = "file://attached_assets/symphonic_55_cm.mp3"
 type = "audio"
 title = "Symphonic — 55 cm"
+logical_id = "5a8c9f39-c0b6-4037-afa3-f92876861428"
 
 [[outputs]]
 id = "k-DHfK3kM9z03vOyf_Ian"
 uri = "file://attached_assets/symphonic_60_cm.mp3"
 type = "audio"
 title = "Symphonic — 60 cm"
+logical_id = "73e59bbd-f6be-4a45-9eee-f6a87e1f45f8"
 
 [[outputs]]
 id = "Z2_Ed1NYaAb_K6W5WPxbI"
 uri = "file://attached_assets/symphonic_65_cm.mp3"
 type = "audio"
 title = "Symphonic — 65 cm"
+logical_id = "4dd58877-abed-4a61-a00c-dbbf45a895ae"
 
 [[outputs]]
 id = "RxTGVGUA8gZw_2eq-sqTt"
 uri = "file://attached_assets/symphonic_70_cm.mp3"
 type = "audio"
 title = "Symphonic — 70 cm"
+logical_id = "b6e860ca-ee2d-4b60-b352-c66e4f76777f"
 
 [[outputs]]
 id = "oEWz_dh6z_eJk3-j7Vc5f"
 uri = "file://attached_assets/symphonic_75_cm.mp3"
 type = "audio"
 title = "Symphonic — 75 cm"
+logical_id = "7aceb2a4-627c-488d-8723-df2690878013"
 
 [[outputs]]
 id = "CMIfEzpz7WYGyvQVhyMTL"
 uri = "file://attached_assets/symphonic_80_cm.mp3"
 type = "audio"
 title = "Symphonic — 80 cm"
+logical_id = "a4911cb1-f9ff-4d1b-a424-21a2d4afce15"
 
 [[outputs]]
 id = "4LXfRy_zFnbI6OfW3vEVN"
 uri = "file://attached_assets/symphonic_85_cm.mp3"
 type = "audio"
 title = "Symphonic — 85 cm"
+logical_id = "c435737f-24f5-4284-8fd1-f90fb764b7b0"
 
 [[outputs]]
 id = "sSTkOiCPuvog8W5DRI50j"
 uri = "file://attached_assets/symphonic_95_cm.mp3"
 type = "audio"
 title = "Symphonic — 95 cm"
+logical_id = "fda1d1d9-4587-4485-a5c3-8873039f68f4"
 
 [[outputs]]
 id = "77o2KDNIEZWLiirzdIMX7"
 uri = "file://attached_assets/symphonic_100_cm.mp3"
 type = "audio"
 title = "Symphonic — 100 cm"
+logical_id = "bbda2179-9cd4-4532-b6ec-68b7d0414ec2"
 
 [[outputs]]
 id = "6BtH65jh1wPBT8LYinvph"
 uri = "file://attached_assets/symphonic_50_cm.mp3"
 type = "audio"
 title = "Symphonic — 50 cm"
+logical_id = "eaaa4935-7247-4665-a1d0-0058dc5a895a"
 
 [[outputs]]
 id = "uuyIDmu6XoemWpzWWgu-K"
 uri = "file://attached_assets/cosmic_pad_gsharp_10min.mp3"
 type = "audio"
 title = "Pad Cósmico en Sol# — 10 min"
+logical_id = "27b5f660-8dc1-4501-b0be-dfbdcdec5678"
 
 [[outputs]]
 id = "QD4CcgY_Hg4Ucw0p9fNLt"
 uri = "file://attached_assets/relax_organico_natural_10min.mp3"
 type = "audio"
 title = "1. Orgánico y Natural — 10 min"
+logical_id = "b50ce46b-9070-4fab-8323-40825db71766"
 
 [[outputs]]
 id = "CrIAA4Zgy9xp-o60aCnGv"
 uri = "file://attached_assets/relax_profundo_hipnotico_10min.mp3"
 type = "audio"
 title = "2. Profundo e Hipnótico — 10 min"
+logical_id = "92d04af3-bdc1-4160-874f-d004ac263b31"
 
 [[outputs]]
 id = "yHaBsRhpOAsK6ukvulsyc"
 uri = "file://attached_assets/relax_luminoso_angelical_10min.mp3"
 type = "audio"
 title = "3. Luminoso y Angelical — 10 min"
+logical_id = "5f9ac0d7-6298-4298-9a03-ba426bf799f6"
 
 [[outputs]]
 id = "lhgUzL10kixywN-B3L0G2"
 uri = "file://attached_assets/relax_viaje_interestelar_10min.mp3"
 type = "audio"
 title = "4. Viaje Interestelar — 10 min"
+logical_id = "631a99bb-4e9e-47d8-b806-678a3bf51fec"
 
 [[outputs]]
 id = "rqVMCZRq5qqDPUm80p5fM"
 uri = "file://attached_assets/relax_mistico_espiritual_10min.mp3"
 type = "audio"
 title = "5. Místico y Espiritual — 10 min"
+logical_id = "a81d3e7c-e1c2-4d91-bc82-82ee40bdd97a"
 
 [[outputs]]
 id = "a3PXjWQc5UjdiMEEWzs6J"
 uri = "file://attached_assets/relax_sueno_profundo_10min.mp3"
 type = "audio"
 title = "6. Sueño Profundo — 10 min"
+logical_id = "4c273d7a-5030-403d-b79d-73b654535778"
 
 [[outputs]]
 id = "1JhucoVkhRJne2Oor0MpB"
 uri = "file://COSTOS-Y-VIDEOS-BUNNY.md"
 type = "text"
 title = "Costos de almacenamiento y plan Bunny.net"
+logical_id = "eae98314-ee2b-4729-84a7-f0a0a0f47f22"
 
 [[outputs]]
 id = "3vxrtgcpYt95l9Eg_tLLj"
 uri = "file://artifacts/mobile/assets/audio/mixer/oceano.mp3"
 type = "audio"
 title = "ocean loop"
+logical_id = "5d889ee3-48e7-41c8-915e-04b734893a5f"
 
 [[outputs]]
 id = "UVqMClzSVoWvZGjYn1mbH"
 uri = "file://artifacts/mobile/assets/audio/mixer/lluvia.mp3"
 type = "audio"
 title = "rain loop"
+logical_id = "addf8032-8d24-488b-8e8a-37d0c1ebab12"
 
 [[outputs]]
 id = "emkD84kyC2eF1BirIEgSI"
 uri = "file://artifacts/mobile/assets/audio/mixer/viento.mp3"
 type = "audio"
 title = "wind loop"
+logical_id = "f7b5edb1-d8da-4490-bf3b-b211039ca758"
 
 [[outputs]]
 id = "XMB90E7P0axkKA8BXpe30"
 uri = "file://artifacts/mobile/assets/audio/mixer/ruido_blanco.mp3"
 type = "audio"
 title = "white noise loop"
+logical_id = "aee2d203-81ec-459d-869d-6b72e154e100"
 
 [[outputs]]
 id = "oy2ecJNHYzYAS5TW_hHRO"
 uri = "file://artifacts/mobile/assets/audio/mixer/cuencos.mp3"
 type = "audio"
 title = "singing bowls loop"
+logical_id = "f788b99e-b726-49e7-aaef-569556c0ffdd"
 
 [[outputs]]
 id = "SNg-jJofgIkEHWdJvyc7Y"
 uri = "file://.local/outputs/Sound-Sanctuary.pdf"
 type = "pdf"
 title = "Sound Sanctuary.pdf"
+logical_id = "cacc6092-ee1a-4dbb-a057-788684bd8dbb"
 
 [[outputs]]
 id = "9YDgK0AFxJ3tutbpJ_mRs"
 uri = "file://attached_assets/screenshots/5427b858-8852-4aed-954b-cd80d9fa4b6b-00-cbe31mq0gv12_riker_replit_dev_mockup_preview_guardados_TabsGuardados.png"
 type = "image"
 title = "Guardados — diseño con 3 tabs"
+logical_id = "52db0ad0-5922-4e0f-a3cb-1eadf8db8fa3"
 
 [[outputs]]
 id = "C21M9y_l6-aiuyhXq3UZj"
 uri = "file://docs/formato-audio-decision.docx"
 type = "word_document"
 title = "Decisión de formato de audio — RESONANCIA"
+logical_id = "33774d0a-6cf4-49a3-a601-9a2f11881cfe"
 
 [[outputs]]
 id = "NbRSH27jWH8cIzsZxXHqW"
 uri = "file://attached_assets/keyboard-icon.svg"
 type = "image"
 title = "Teclado MIDI — sliders corregidos"
+logical_id = "7f41c26a-9d37-4dc9-871c-c0b5186b8733"
 
 [[outputs]]
 id = "4ltgovu6d8PBa0gbAROBA"
 uri = "file://attached_assets/bird-icon.svg"
 type = "image"
 title = "Pájaro — icono SVG"
+logical_id = "c5b462f9-151d-4d1e-869e-3534258f1783"
 
 [[outputs]]
 id = "y9L2wBOwIMTLMVWRbeYfj"
 uri = "file://screenshots/geometrias-ref.jpg"
 type = "image"
 title = "Geometrix — Referencia de geometrías"
+logical_id = "00eb53f6-9c33-4ae9-8c04-a57f5e2a4820"
 
 [[outputs]]
 id = "HBLq0S1c3VioK1LGLDkR9"
 uri = "file://geometrix-geometrias.zip"
 type = "unspecified"
 title = "Geometrix — 44 geometrías SVG"
+logical_id = "ff3df7f2-58c7-4f3d-ad08-f85acffeb025"
 
 [[outputs]]
 id = "L3OObIaDI-cDZuZ9Ungkk"
 uri = "file://exports/guia-productor.pptx"
 type = "slides"
 title = "Guía para el Productor — 3 slides (PPTX)"
+logical_id = "6c8b94d6-09d9-4b2e-bf92-03ba2e34af07"
 
 [[outputs]]
 id = "33CNHPrJ1AytiEIlNPmVS"
 uri = "file://exports/guia-productor.pdf"
 type = "pdf"
 title = "Guía para el Productor (PDF)"
+logical_id = "979dbb17-7dd3-4a29-9138-e66e939fc3ac"
 
 [[outputs]]
 id = "UYS5ix3mSBP1F8YhsI1V1"
 uri = "file://exports/cierre-tienda/1-cuenco-resonante.jpg"
 type = "image"
 title = "1 — Cuenco Resonante"
+logical_id = "717ded05-f393-44ef-bf40-168e1a042619"
 
 [[outputs]]
 id = "HSqB3BXqZBk5DNZcDYCq-"
 uri = "file://exports/cierre-tienda/2-mandala-sagrada.jpg"
 type = "image"
 title = "2 — Mandala Sagrada"
+logical_id = "609a7fd7-f908-4756-92ec-08604f0b3332"
 
 [[outputs]]
 id = "qtvApefYZOGFpMVPvo56Y"
 uri = "file://exports/cierre-tienda/3-eclipse-dorado.jpg"
 type = "image"
 title = "3 — Eclipse Dorado"
+logical_id = "3b2d048e-5e3e-499d-8462-d161a5576731"
 
 [[outputs]]
 id = "a0UgwLV5YaxGgf7yXiTY_"
 uri = "file://exports/cierre-tienda/4-constelacion-final.jpg"
 type = "image"
 title = "4 — Constelación Final"
+logical_id = "4cba791c-f590-4a4d-b1c1-929de9b6ab62"
 
 [[outputs]]
 id = "ugc_EBW4piIhfLYpcA_VH"
 uri = "file://exports/cierre-tienda/5-niebla-ascendente.jpg"
 type = "image"
 title = "5 — Niebla Ascendente"
+logical_id = "03f9ccaf-0c34-4357-8499-85d74b82dffb"
 
 [[outputs]]
 id = "ioQIEfmmGRLaPmNPZ4bgg"
 uri = "file://exports/cierre-tienda/6-marco-ritual.jpg"
 type = "image"
 title = "6 — Marco Ritual"
+logical_id = "68ff5f51-018c-43f5-bc25-afb55fe24292"
 
 [[outputs]]
 id = "NPVFt5VeGzCIx9_xsYFXZ"
 uri = "file://exports/cierre-tienda-wide/1-cuenco-resonante.jpg"
 type = "image"
 title = "1 — Cuenco Resonante (1920×720)"
+logical_id = "07a30dbe-6d3e-4a69-90f2-8d3e1ce02e29"
 
 [[outputs]]
 id = "YCTEZPMKYKJihDG9a4DsH"
 uri = "file://exports/cierre-tienda-wide/2-mandala-sagrada.jpg"
 type = "image"
 title = "2 — Mandala Sagrada (1920×720)"
+logical_id = "2ceb29ff-1973-4ef8-a306-8d61d54eda9d"
 
 [[outputs]]
 id = "pwcuDrAdFBFKQdCEV_81H"
 uri = "file://exports/cierre-tienda-wide/3-eclipse-dorado.jpg"
 type = "image"
 title = "3 — Eclipse Dorado (1920×720)"
+logical_id = "6b45cb94-a973-4c0b-b42f-d7f58a8a3e18"
 
 [[outputs]]
 id = "4WyMkmmHm5KFGt9ApS1GQ"
 uri = "file://exports/cierre-tienda-wide/4-constelacion-final.jpg"
 type = "image"
 title = "4 — Constelación Final (1920×720)"
+logical_id = "ce527c78-c34d-45f9-85d8-4f501ee97060"
 
 [[outputs]]
 id = "-4hf2REApEMB-uAJqdIxP"
 uri = "file://exports/cierre-tienda-wide/5-niebla-ascendente.jpg"
 type = "image"
 title = "5 — Niebla Ascendente (1920×720)"
+logical_id = "c858f05c-8b6c-4642-8bbf-2c369046ca0e"
 
 [[outputs]]
 id = "cGuLpzdIszJ313adYHiSF"
 uri = "file://exports/cierre-tienda-wide/6-marco-ritual.jpg"
 type = "image"
 title = "6 — Marco Ritual (1920×720)"
+logical_id = "38cb7588-acfa-4fde-b9d5-139c0427b85d"
 
 [[outputs]]
 id = "JW5ot7pC7esHhSeyfSI7e"
 uri = "file://mobile-build.tar.gz"
 type = "unspecified"
 title = "Proyecto mobile (sin node_modules)"
+logical_id = "2975ad8c-9fdd-4020-8bed-3fcb4289da5d"
 
 [[outputs]]
 id = "bSxrW5WxqddvRwTEO5-Mr"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_1.png"
 type = "image"
 title = "Thumbnail 1 — Melodía Calma"
+logical_id = "72a52d5d-e4c7-4ee2-969c-36ecd7f3bf01"
 
 [[outputs]]
 id = "ij794wkObVDwGlzneflI0"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_2.png"
 type = "image"
 title = "Thumbnail 2 — Melodía Calma 2"
+logical_id = "4035e9d4-c4fb-4cb3-8775-bd04d7056db2"
 
 [[outputs]]
 id = "C4EZMK92Kq_eglg7k799A"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_3.png"
 type = "image"
 title = "Thumbnail 3 — Drone C"
+logical_id = "6f9fe6bd-d924-484b-9b51-9c7d5afca4da"
 
 [[outputs]]
 id = "vMtkGLl-eXpWS7UVmhomV"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_4.png"
 type = "image"
 title = "Thumbnail 4 — Beat Calma"
+logical_id = "c9c250b2-f2e3-41b3-8da3-da0310f0118e"
 
 [[outputs]]
 id = "lkV80nLe1qcmLwB1lnR_f"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_5.png"
 type = "image"
 title = "Thumbnail 5 — Arpegio Calma"
+logical_id = "37f5cdef-3b67-4194-a858-ffc6ff29ce61"
 
 [[outputs]]
 id = "7VIqbs9fgCa1y-ZbA1NW5"
 uri = "file://.local/outputs/Decisiones-de-Lanzamiento.pdf"
 type = "pdf"
 title = "Decisiones de Lanzamiento (PDF)"
+logical_id = "4da99653-1a0a-4246-ba1c-7c8689f1acbe"
 
 [[outputs]]
 id = "HldHil9WSUVknSrBLLCX3"
 uri = "file://attached_assets/sagrados-opciones.png"
 type = "image"
 title = "Opciones de header — Sagrados"
+logical_id = "909f1a84-e268-4179-85e1-8626773fc711"
 
 [[outputs]]
 id = "jO4oS2M-tRJwID3ypYJA4"
 uri = "file://attached_assets/sagrados-dorados.png"
 type = "image"
 title = "4 opciones doradas — Sagrados"
+logical_id = "4dd5b2c0-d7c0-46a8-8dd3-24076d95f2e7"
 
 [[outputs]]
 id = "4LUFrJMIfIJPuKzkzIhp3"
 uri = "file://pagos-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Guía de Pagos"
+logical_id = "66e174cc-1e4b-49ae-be14-c074ae71a885"
 
 [[outputs]]
 id = "FITTYlFlb_1kRhAqWU3pQ"
 uri = "file://daily-eas-rebuild.pdf"
 type = "pdf"
 title = "Daily.co SDK — Recordatorio de Activación"
+logical_id = "4db648d3-55a8-4767-858c-edda832e56dd"
 
 [[outputs]]
 id = "sAGQnquk3WsXgN7S2sJQl"
 uri = "file://.local/outputs/RESONANCIA---Invitaci-n.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación.pdf"
+logical_id = "874df95d-2ec4-4a77-8d55-d20bbec5b49d"
 
 [[outputs]]
 id = "gvry8HaLw1iSWkUHVwu1C"
 uri = "file://.local/outputs/RESONANCIA-Plantilla-Test.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (PDF de prueba)"
+logical_id = "c4ecd1d6-5523-4cdb-97bd-111f76e4bcaa"
 
 [[outputs]]
 id = "EORLTutoMljgGF6dGTQZo"
 uri = "file://.local/outputs/RESONANCIA-Plantilla-v3.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (PDF sin líneas)"
+logical_id = "e97e5aea-1e59-47fb-9a6d-cad00b647aab"
 
 [[outputs]]
 id = "wh5wv_mOkck67jXTdcGO0"
 uri = "file://.local/outputs/RESONANCIA-Plantilla-final.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (degradado en pantalla, limpio en PDF)"
+logical_id = "2ec37f31-8893-4a1f-8564-4bb367ae0904"
 
 [[outputs]]
 id = "Sx4Nhg4j0Cin93kVIw41S"
 uri = "file://.local/outputs/RESONANCIA-Invitacion.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (PDF)"
+logical_id = "ad68c1a8-8e2d-4992-8e95-669140119d2a"
 
 [[outputs]]
 id = "fVjfdnLYYZbNtMpdhsQJN"
 uri = "file://screenshots/resonancia-expansion-slide12.jpg"
 type = "image"
 title = "Slide 12 — La expansión está recién comenzando"
+logical_id = "3bdae9ed-a073-4ff1-a26f-8b9bf29d292c"
 
 [[outputs]]
 id = "D9pXodi22kYHItYTCATuh"
 uri = "file://artifacts/mobile/assets/images/avatar-fundador.png"
 type = "image"
 title = "Avatar fundador"
+logical_id = "b0baeaa1-0633-4546-8bc3-5c7d2a4dc094"
 
 [[outputs]]
 id = "TS7MXvw_I-0wiPy5yGxZ-"
 uri = "file://attached_assets/stock_images/everest_peak_1.jpg"
 type = "image"
 title = "Mount Everest snow-capped peak landscape"
+logical_id = "57ad1d2d-5cfb-43af-bf56-570373fc52cc"
 
 [[outputs]]
 id = "Utccr5Ium8rgEfX5RlxC4"
 uri = "file://attached_assets/stock_images/everest_peak_2.jpg"
 type = "image"
 title = "Mount Everest snow-capped peak landscape"
+logical_id = "ad09ed36-99b8-4569-8e27-f2cef94e9650"
 
 [[outputs]]
 id = "p_2OtEiLi3EE6urvLiBZU"
 uri = "file://attached_assets/stock_images/everest_peak_3.jpg"
 type = "image"
 title = "Mount Everest snow-capped peak landscape"
+logical_id = "7e853ac3-444a-42e0-9e94-a0b5791b08b5"
 
 [[outputs]]
 id = "Z0Ov3Qh4xuELdPrGGe-zu"
 uri = "file://artifacts/mobile/assets/audio/fuego_solar_ambiente.mp3"
 type = "audio"
 title = "fuego solar ambiente"
+logical_id = "3dc50c25-c06a-47b3-83ab-ef90da246650"
 
 [[outputs]]
 id = "29M4u0bYqrpdspjGtZFqP"
 uri = "file://artifacts/mobile/assets/audio/musgo_ambiente.mp3"
 type = "audio"
 title = "musgo ambiente"
+logical_id = "354f51ed-9b88-4022-a0e9-4534dc78967b"
 
 [[outputs]]
 id = "Z8boj8gGMSOFuaHJlNkPU"
 uri = "file://artifacts/mobile/assets/audio/zafiro_ambiente.mp3"
 type = "audio"
 title = "zafiro ambiente"
+logical_id = "ec994377-f325-45e7-9b82-3bb39e48dff6"
 
 [[outputs]]
 id = "k9W7kmpPr8FSbPpzXl-Yi"
 uri = "file://artifacts/mobile/assets/audio/orquidea_ambiente.mp3"
 type = "audio"
 title = "orquidea ambiente"
+logical_id = "c7bc332b-5c88-4dd7-9d41-0121e4ff2b87"
 
 [[outputs]]
 id = "Gay-JABDX6abXp0MoIDfc"
 uri = "file://artifacts/mobile/assets/audio/nebulosa_ambiente.mp3"
 type = "audio"
 title = "nebulosa ambiente"
+logical_id = "8c6f1a42-d85f-4cc7-b02b-e89af83f73df"
 
 [[outputs]]
 id = "w2Ypf-UBCTU98WU13SQiT"
 uri = "file://artifacts/mobile/assets/audio/vino_tinto_ambiente.mp3"
 type = "audio"
 title = "vino tinto ambiente"
+logical_id = "3cd8992b-9cc3-4bfc-94fd-b2e6aaa1fd42"
 
 [[outputs]]
 id = "HTpfwXlk5UyAkD_Z-xDJB"
 uri = "file://attached_assets/vino-tinto-generated.png"
 type = "image"
 title = "Header Vino Tinto — Santuario Tibetano"
+logical_id = "9fcc01a9-6e7c-4b1f-a2f6-31543dbb2c8c"
 
 [[outputs]]
 id = "161NXKIg4NaqCY_J84aMI"
 uri = "file://attached_assets/vino-opt1.png"
 type = "image"
 title = "Opción 1 — Bodega con vela y copa"
+logical_id = "e48a74f8-b1e7-45e9-9d9c-d0f1398c2179"
 
 [[outputs]]
 id = "4qRkoPXmn-arPvhRLbV7k"
 uri = "file://attached_assets/vino-opt2.png"
 type = "image"
 title = "Opción 2 — Copa de vino primer plano"
+logical_id = "6b3811b1-56e8-4df9-8965-c5214fa67761"
 
 [[outputs]]
 id = "_A7Ma6n1Ykq4kf6mruQjE"
 uri = "file://attached_assets/vino-opt3.png"
 type = "image"
 title = "Opción 3 — Vela en madera oscura"
+logical_id = "7003a64b-ff94-4eaa-b0e5-05312b212a61"
 
 [[outputs]]
 id = "utbCKA_bpNYVzKOvT6T3n"
 uri = "file://attached_assets/vino-opt4.png"
 type = "image"
 title = "Opción 4 — Líquido abstracto carmesí"
+logical_id = "541d7be1-7773-4e38-882a-f4881645e6cd"
 
 [[outputs]]
 id = "UdUGzG1vt0KBVycGUJogQ"
 uri = "file://attached_assets/vino-opt5.png"
 type = "image"
 title = "Opción 5 — Uvas en roble con candela"
+logical_id = "6530be25-252f-49fa-8af1-f7371abba3fa"
 
 [[outputs]]
 id = "WxJ0vq7Op4-GZcMGEDuoo"
 uri = "file://attached_assets/tibet-opt1.png"
 type = "image"
 title = "Opción 1 — Cuenco con incienso en altar"
+logical_id = "98d20893-d16d-4c80-bc70-978b49dbc5a7"
 
 [[outputs]]
 id = "hcALWfoqTYSsNWB8f0cQi"
 uri = "file://attached_assets/tibet-opt2.png"
 type = "image"
 title = "Opción 2 — Cuenco bronce primer plano"
+logical_id = "528776f9-2cae-475b-add1-f7735e3468a7"
 
 [[outputs]]
 id = "yS9Sd8Sz6kITOAOmm55AN"
 uri = "file://attached_assets/tibet-opt3.png"
 type = "image"
 title = "Opción 3 — Inciensos en templo oscuro"
+logical_id = "81c23fdf-8f00-4a65-a516-e4c22f51ae16"
 
 [[outputs]]
 id = "1JMBhD2xw9tGUausGOWZJ"
 uri = "file://attached_assets/tibet-opt4.png"
 type = "image"
 title = "Opción 4 — Cuenco con flores y cristales"
+logical_id = "2e5d8092-34cc-421c-978a-82a1ce05bd64"
 
 [[outputs]]
 id = "C8sIBcHFPp74LGyVaIveQ"
 uri = "file://attached_assets/tibet-opt5.png"
 type = "image"
 title = "Opción 5 — Humo de incienso abstracto"
+logical_id = "f5d4f9f7-7a64-4b99-a9b1-1e49a39f4b25"
 
 [[outputs]]
 id = "EVve8JP85LHSuGcWT7hQl"
 uri = "file://attached_assets/tib-01.png"
 type = "image"
 title = "01 — Altar con cuencos y thangkas"
+logical_id = "cbf39362-14a9-45ce-b850-4607c363467b"
 
 [[outputs]]
 id = "q57mFAHfNUMJuJwkma7Of"
 uri = "file://attached_assets/tib-02.png"
 type = "image"
 title = "02 — Cuencos sobre alfombra roja"
+logical_id = "48f554ae-2b47-40e1-83fa-6bbc6d9d0e44"
 
 [[outputs]]
 id = "TC98rcdCNqGI4v5qAjsxs"
 uri = "file://attached_assets/tib-03.png"
 type = "image"
 title = "03 — Santuario con lámparas de mantequilla"
+logical_id = "50645247-1a19-465d-a588-486c2bae4d74"
 
 [[outputs]]
 id = "1eLoA2LyCeeudnziPw-UH"
 uri = "file://attached_assets/tib-04.png"
 type = "image"
 title = "04 — Sala de sanación sonica, paredes ocre"
+logical_id = "20fd3b3f-dea5-416d-bedb-7912dbcbf03f"
 
 [[outputs]]
 id = "B4BeUYUK7s97KgtYHao0C"
 uri = "file://attached_assets/tib-05.png"
 type = "image"
 title = "05 — Altar monasterio, tela carmesi"
+logical_id = "c5da27a7-0342-4572-935e-787a8f2aed6c"
 
 [[outputs]]
 id = "Qwpf3M2rvRS66qbFDCBiZ"
 uri = "file://attached_assets/tib-06.png"
 type = "image"
 title = "06 — Círculo de cuencos desde arriba"
+logical_id = "624f6139-eb47-4d47-8aba-f869a8bd4879"
 
 [[outputs]]
 id = "OEOMeautz-QM-8boDNehm"
 uri = "file://attached_assets/tib-07.png"
 type = "image"
 title = "07 — Filas de cuencos con banderas de oraciones"
+logical_id = "9209779a-1914-4aca-b060-8b2f57db4193"
 
 [[outputs]]
 id = "Vx6aPLm1wbydP8ljSacNL"
 uri = "file://attached_assets/tib-08.png"
 type = "image"
 title = "08 — Cuencos en estantes, paredes con mandalas"
+logical_id = "375edad4-7717-4fba-8738-78758c7676ab"
 
 [[outputs]]
 id = "qR1I6iOfkZ7uQcCvCKeN4"
 uri = "file://attached_assets/tib-09.png"
 type = "image"
 title = "09 — Vista baja, santuario de piedra"
+logical_id = "ff97e5b1-7d0b-4344-b53b-c2c06bdbbf2b"
 
 [[outputs]]
 id = "PqDG3jpB0WCnorW7wECs0"
 uri = "file://attached_assets/tib-10.png"
 type = "image"
 title = "10 — Espacio de meditación con seda roja"
+logical_id = "828aa1de-c84b-42bc-8fd3-659c82b49a2a"
 
 [[outputs]]
 id = "FKPDVkNensY9H8nM4sI0s"
 uri = "file://.local/outputs/RESONANCIA-Decisiones-Lanzamiento.pdf"
 type = "pdf"
 title = "RESONANCIA — Decisiones de Lanzamiento (PDF, diapositivas 9–16)"
+logical_id = "18dab453-214e-47b4-8b08-e7d95f171a59"
 
 [[outputs]]
 id = "sTv5UDnaneLSjXtks6ptc"
 uri = "file://.local/outputs/RESONANCIA-Pitch-Pulso4.pdf"
 type = "pdf"
 title = "RESONANCIA — Pitch Pulso 4 (PDF)"
+logical_id = "5c5b4ec8-f53e-4e3c-a8bc-dbe70cf762b7"
 
 [[outputs]]
 id = "GsCARqSSaN_g6-VGgjPuJ"
 uri = "file://.local/outputs/RESONANCIA-Pitch-Inversionistas.pdf"
 type = "pdf"
 title = "RESONANCIA — Pitch Inversionistas (PDF)"
+logical_id = "7793846f-bf07-46c4-88d2-aa6beeaf5894"
 
 [[outputs]]
 id = "MJ0TubshM6zrH5Y9mIv7S"
 uri = "file://.local/outputs/RESONANCIA-Inversion-Slides4y5.pdf"
 type = "pdf"
 title = "RESONANCIA — Inversión · Slides 4 y 5 (PDF)"
+logical_id = "0b8e3530-6e8b-44a7-bbb0-4529d401e930"
 
 [[outputs]]
 id = "voab9ZgvucTMVKOVCBTgw"
 uri = "file://artifacts/mobile/assets/images/chakra-silhouette.png"
 type = "image"
 title = "Silueta meditando (fondo transparente)"
+logical_id = "b10b2dd0-f1b2-40dd-9076-f1412a6cbcff"
 
 [[outputs]]
 id = "B_mSqUVoQTdQCjE4sxhxX"
 uri = "file://.local/outputs/RESONANCIA---Invitaci-n-Resonadores.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación Resonadores.pdf"
+logical_id = "8e46c152-5872-46e9-8480-4004eab9e317"
 
 [[outputs]]
 id = "WuZrOOfb6Nb6sd8U1XAMd"
 uri = "file://.local/outputs/RESONANCIA---Pitch-Inversionistas.pdf"
 type = "pdf"
 title = "RESONANCIA — Pitch Inversionistas.pdf"
+logical_id = "2ee5a2b0-bcc3-4080-b058-ce623f8302e9"
 
 [[outputs]]
 id = "Bb8H5oCEzhSIaIPQzrVn_"
@@ -2496,6 +2644,8 @@ uri = "file://docs/informe-respuesta-auditoria-2026-08.html"
 type = "text"
 title = "Respuesta a la Auditoría Técnica — RESONANCIA"
 description = "Informe que contrasta cada hallazgo de la auditoría de Sparkpath con el trabajo realizado, verificado contra el código actual."
+logical_id = "34b4ac5c-4136-47be-8bc7-3b4e6c361f6f"
+content_type = "text/html"
 
 [[outputs]]
 id = "wmSl9MZcPBhaiQfxn5ONo"
@@ -2503,6 +2653,7 @@ uri = "file://docs/Informe-Respuesta-Auditoria-RESONANCIA.pdf"
 type = "pdf"
 title = "Informe-Respuesta-Auditoria-RESONANCIA.pdf"
 description = "13/15 resueltos · 0 parciales · 2 pendientes (submission)"
+logical_id = "d7bbee0e-56bd-4147-8b4f-6bb680cab783"
 
 [[outputs]]
 id = "qJk-xUiym_b3sIn07Cgce"
@@ -2510,6 +2661,7 @@ uri = "file://.agents/outputs/informe-estado-lanzamiento-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Informe de estado y lanzamiento"
 description = "Informe ejecutivo de 8 páginas para Casa del Cuenco: estado del producto, evidencia técnica, semáforo, bloqueadores críticos y hoja de ruta hacia App Store y Google Play."
+logical_id = "9532ce77-26c9-4c25-a862-536c79a0da56"
 
 [[outputs]]
 id = "0wJ3N-ZT_D2s2hrqRY6a0"
@@ -2517,6 +2669,7 @@ uri = "file://.agents/outputs/dossier-tecnico-arquitectura-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Dossier técnico de arquitectura"
 description = "Informe técnico integral de 17 páginas para Casa del Cuenco: arquitectura mobile, audio, API, PostgreSQL, seguridad, sincronización, administración, integraciones, distribución, capacidad, riesgos y glosario."
+logical_id = "41ecaedd-48f5-4d59-b004-05f8a2c7cc19"
 
 [[outputs]]
 id = "ot0jTUsKzXIzDdJQe144G"
@@ -2524,6 +2677,7 @@ uri = "file://.agents/outputs/updated-reports/Respuesta_a_la_Auditoria_Tecnica_A
 type = "pdf"
 title = "Respuesta a la Auditoría Técnica — actualizada"
 description = "Informe de 5 páginas actualizado con el cierre editorial de audio, preflight y barrera de calidad móvil."
+logical_id = "8891d324-fdac-4f98-b6d9-3c62c88e614e"
 
 [[outputs]]
 id = "DPBq51wXE-KzoA7gp1WG3"
@@ -2531,6 +2685,7 @@ uri = "file://.agents/outputs/updated-reports/Informe_de_Lanzamiento_Actualizado
 type = "pdf"
 title = "Estado de lanzamiento — actualizado"
 description = "Informe ejecutivo de 8 páginas con semáforo y hoja de ruta revisados tras las tareas 219–222."
+logical_id = "77f5097a-f568-4111-8990-ab4f4c2ebafe"
 
 [[outputs]]
 id = "tj5WanqPw9RJIBMfgfI9t"
@@ -2538,6 +2693,7 @@ uri = "file://attached_assets/Respuesta_Auditoria_21ago2026.pdf"
 type = "pdf"
 title = "Respuesta Auditoría — 21 ago 2026"
 description = "Cambio de sesión: PARCIAL → RESUELTO. Contadores: 12 resueltos, 1 parcial, 3 pendientes."
+logical_id = "e7850149-b7ae-42d6-b7c9-1348736c853d"
 
 [[outputs]]
 id = "yCYx_CP6St7kzxnZL-O0H"
@@ -2545,6 +2701,7 @@ uri = "file://attached_assets/Informe_Estado_21ago2026.pdf"
 type = "pdf"
 title = "Informe de Estado — 21 ago 2026"
 description = "Informe técnico actualizado post-tarea #195."
+logical_id = "e7aae0d7-c676-4cc7-aa1e-e068cb787ccc"
 
 [[outputs]]
 id = "MoffRkpRkK9yHd0ppKakR"
@@ -2552,6 +2709,7 @@ uri = "file://attached_assets/Informe_Maestro_Transicion_y_Certificacion_RESONAN
 type = "pdf"
 title = "RESONANCIA — Informe maestro de transición y certificación"
 description = "Paquete de entrega para que una empresa ejecute el cierre, las pruebas y la certificación de release."
+logical_id = "10dd189b-47d6-49a5-8b2d-ff8fea6bb59a"
 
 [[outputs]]
 id = "lf4ZGfo6ZdYGOTGejtV6Z"
@@ -2559,6 +2717,7 @@ uri = "file://attached_assets/Informe_Diagnostico_Tecnico_Geometrix_RESONANCIA_2
 type = "pdf"
 title = "Diagnóstico técnico del motor animado Geometrix"
 description = "Informe profesional de 12 páginas con arquitectura, hallazgos confirmados y probables, matriz de diagnóstico, protocolo de perfilado y plan de remediación P0/P1/P2."
+logical_id = "6d121260-9718-483b-a8be-88c9afbe0f7e"
 
 [[outputs]]
 id = "3MQcGuv7wqHQVg1WATaNx"
@@ -2566,6 +2725,7 @@ uri = "file://docs/informe-ejecutivo-arquitectura-resonancia.pdf"
 type = "pdf"
 title = "Informe ejecutivo de arquitectura — RESONANCIA"
 description = "PDF ejecutivo de 21 páginas: stack, arquitectura móvil, API, base de datos, audio, animación, Geometrix, seguridad operativa y guía de incorporación."
+logical_id = "6680025c-118b-493d-a5bd-e6a27c0f2083"
 
 [[outputs]]
 id = "qHs7NarRhJXGE2JgRdDx0"
@@ -2573,3 +2733,74 @@ uri = "file://docs/informe-ejecutivo-arquitectura-resonancia.md"
 type = "text"
 title = "Fuente editable del informe"
 description = "Versión Markdown mantenible del informe técnico para futuras actualizaciones."
+logical_id = "793a6634-9874-4b5f-9dc2-a01cd14c4f27"
+
+[[outputs]]
+id = "-TKMDuEJtF_81771Tu2cb"
+uri = "file://attached_assets/generated_images/casadelcuenco-hero-01.jpg"
+type = "image"
+title = "Casa del Cuenco — Hero 01"
+description = "Cuenco tibetano en penumbra"
+logical_id = "bca0b6f1-e2eb-4a18-b406-1e8cddae2462"
+content_hash = "sha256:c9f16728155eaaa56fa128ae584ec2557fc563b935038baf698b1e6ab5559466"
+size = 129685
+mtime_ms = 1788274248557
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/bca0b6f1-e2eb-4a18-b406-1e8cddae2462/95d62ac1-46e1-4c0b-9436-f7c8c37b8db4"
+storage_version_token = "1788274253238200"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "2wS7pFXgE5lNkh0Wx76rP"
+uri = "file://attached_assets/generated_images/casadelcuenco-hero-02.jpg"
+type = "image"
+title = "Casa del Cuenco — Hero 02"
+description = "Altar tibetano sobrio"
+logical_id = "350481e1-0ef8-4ae2-b4e1-43eafe35e7ee"
+content_hash = "sha256:2fc3943a86c3554a0e35cfa0f861ce8309fb5d4f63a0286ceac81bec88facc6a"
+size = 109397
+mtime_ms = 1788274251469
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/350481e1-0ef8-4ae2-b4e1-43eafe35e7ee/c1cc0a98-b67e-488d-b62e-926b7963f060"
+storage_version_token = "1788274254105797"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "M74M6IAk_Ed67s4t2OKVH"
+uri = "file://attached_assets/generated_images/casadelcuenco-hero-03.jpg"
+type = "image"
+title = "Casa del Cuenco — Hero 03"
+description = "Geometría dorada contenida"
+logical_id = "92fc1242-e7c0-438a-a578-7da8e1fd7916"
+content_hash = "sha256:b188ea5a3a0fd03bbd3958bd8af80f8d9a7348e5f2da160165cadc3204aee380"
+size = 116654
+mtime_ms = 1788274244577
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/92fc1242-e7c0-438a-a578-7da8e1fd7916/3198b7ed-dfb9-49d2-914e-8f99b57cf538"
+storage_version_token = "1788274254735390"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "HGNqSZ2kVJepT0VS50p3t"
+uri = "file://attached_assets/generated_images/casadelcuenco-hero-04.jpg"
+type = "image"
+title = "Casa del Cuenco — Hero 04"
+description = "Cuenco frente al monasterio"
+logical_id = "279d12fa-480d-4736-807a-bec32d995e6d"
+content_hash = "sha256:40d3459da77028e952a98cebcea329ae9d8c1c52766644ed8a956206f7d7172a"
+size = 91719
+mtime_ms = 1788274252601
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/279d12fa-480d-4736-807a-bec32d995e6d/ec8a66f7-2a27-45d4-8abc-0d9daa232b62"
+storage_version_token = "1788274255432895"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "RdJtanxYoYfflzjvxjbJ3"
+uri = "file://attached_assets/generated_images/casadelcuenco-hero-05.jpg"
+type = "image"
+title = "Casa del Cuenco — Hero 05"
+description = "Cuenco y humo dorado"
+logical_id = "ac8e329d-3ac3-4f4a-b409-0f6156d1a8fd"
+content_hash = "sha256:f8f15e8d4e29859d5d667ecfa045be110720725fcb5223b774659c015e5afa46"
+size = 82900
+mtime_ms = 1788274244749
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ac8e329d-3ac3-4f4a-b409-0f6156d1a8fd/bab25573-b124-4f6b-adfe-621b499b1848"
+storage_version_token = "1788274256158671"
+content_type = "image/jpeg"
