@@ -74,7 +74,8 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
     <Pressable
       onPress={onPress}
       onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      onTouchEnd={handlePressOut}
+      onTouchCancel={handlePressOut}
     >
       <Animated.View
         style={[

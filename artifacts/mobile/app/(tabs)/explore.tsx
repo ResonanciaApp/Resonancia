@@ -125,7 +125,8 @@ function DiscoverPill({
     <Pressable
       onPress={onPress}
       onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      onTouchEnd={handlePressOut}
+      onTouchCancel={handlePressOut}
       testID={`discover-carousel-tab-${label}`}
     >
       <Animated.View

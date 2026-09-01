@@ -75,6 +75,14 @@ function SleepPill({
 
   const cancelPress = useCallback(() => {
     pressCancelledRef.current = true;
+  }, []);
+
+  const finishPress = useCallback(() => {
+    animatePress(false);
+  }, [animatePress]);
+
+  const cancelTouch = useCallback(() => {
+    pressCancelledRef.current = true;
     animatePress(false);
   }, [animatePress]);
 
@@ -87,8 +95,8 @@ function SleepPill({
       onMoveShouldSetPanResponder: (_, gesture) =>
         gesture.dy > SLEEP_PILL_CANCEL_DISTANCE && gesture.dy > Math.abs(gesture.dx),
       onPanResponderGrant: cancelPress,
-      onPanResponderRelease: cancelPress,
-      onPanResponderTerminate: cancelPress,
+      onPanResponderRelease: finishPress,
+      onPanResponderTerminate: cancelTouch,
     }),
   ).current;
 
@@ -103,8 +111,8 @@ function SleepPill({
           pressCancelledRef.current = false;
           animatePress(true);
         }}
-        onPressOut={() => animatePress(false)}
-        onTouchCancel={cancelPress}
+        onTouchEnd={finishPress}
+        onTouchCancel={cancelTouch}
         onPress={() => {
           if (pressCancelledRef.current) return;
           onPress();
