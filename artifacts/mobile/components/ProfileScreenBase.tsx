@@ -2085,7 +2085,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 15,
   },
   personalStatsHeader: { gap: 7 },
   personalStatsTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
