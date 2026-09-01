@@ -2642,7 +2642,7 @@ export default function HomeScreen2({
             onViewAll={() => router.push("/historial" as never)}
             squareCards
             cardAuthorColor="#acaac2"
-            showCategoryCaption
+            showImageCategoryPill
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
@@ -2727,7 +2727,7 @@ export default function HomeScreen2({
             onViewAll={() => openCategory("/favoritos-todos")}
             squareCards
             cardAuthorColor="#acaac2"
-            showCategoryCaption
+            showImageCategoryPill
           />
         )}
         {isInicio2 && (
