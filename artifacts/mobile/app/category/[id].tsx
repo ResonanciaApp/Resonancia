@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -45,13 +46,11 @@ const CATEGORY_TAB_GRADIENTS: Record<string, [string, string]> = {
 
 function Chip({
   label,
-  icon,
   selected,
   selectedColors,
   onPress,
 }: {
   label: string;
-  icon?: React.ComponentProps<typeof Feather>["name"];
   selected: boolean;
   selectedColors: [string, string];
   onPress: () => void;
@@ -76,7 +75,6 @@ function Chip({
           style={StyleSheet.absoluteFill}
         />
       )}
-      <Feather name={icon ?? "tag"} size={22} color="#F4F4F4" />
       <Text style={styles.chipText}>{label}</Text>
     </Pressable>
   );
@@ -101,13 +99,6 @@ function ChipRow({
         style={styles.chipRow}
         contentContainerStyle={styles.chipRowContent}
       >
-        <Chip
-          label="Todos"
-          icon="grid"
-          selected={activeTab === null}
-          selectedColors={selectedColors}
-          onPress={() => onSelect(null)}
-        />
         {tabs.map((tab) => (
           <Chip
             key={tab}
@@ -310,9 +301,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           >
             <Feather name="chevron-left" size={26} color={TEXT} />
           </Pressable>
-          <Text style={styles.pageTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
-            {title}
-          </Text>
+           <CategoryScreenHeader categoryId={id} title={title} description={category?.subtitle} />
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}

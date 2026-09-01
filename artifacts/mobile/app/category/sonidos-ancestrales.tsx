@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
+import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { TimerSheet } from "@/components/TimerSheet";
@@ -65,24 +66,6 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
     </Svg>
   );
 }
-
-// Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
-const TAG_ICONS: Record<string, string> = {
-  "cuencos tibetanos":  "disc",
-  "cuencos de cuarzo":  "disc",
-  "mix de cuencos":     "disc",
-  "cuencos y gongs":    "target",
-  "gongs":              "target",
-  "campanas":           "bell",
-  "full instrumentos":  "music",
-  "vientos":            "wind",
-  "cantos":             "mic",
-  "percusión":          "zap",
-  "selva":              "feather",
-  "tambor":             "zap",
-  "didgeridoo":         "wind",
-  "flauta":             "wind",
-};
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -148,28 +131,25 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
   return <Animated.View style={{ opacity }}>{children}</Animated.View>;
 }
 
-function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
+function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   const { theme } = useSceneTheme();
-  const contentColor = "#F4F4F4";
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && <LinearGradient colors={["#8C4912", "#7A3C0A"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-      <Feather name={(icon ?? "grid") as never} size={22} color={contentColor} />
       <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]}>{label}</Text>
     </Pressable>
   );
 }
 
-function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string; icon?: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab|null)=>void }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Todos" icon="grid" sel={activeTab === null} onPress={onClear} />
         {tabs.map((t) => (
-          <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
-            onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
+          <Chip key={t.id} label={t.label} sel={activeTab === t.id}
+            onPress={() => onSelect(activeTab === t.id ? null : t.id)} />
         ))}
       </ScrollView>
     </View>
@@ -411,7 +391,7 @@ export default function SonidosAncestalesScreen() {
   const TABS = useMemo(() => {
     const ancestralSessions = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
     const uniqueTags = [...new Set(ancestralSessions.map((s) => s.ancestralTag).filter(Boolean))] as string[];
-    return uniqueTags.map((tag) => ({ id: tag, label: tag, icon: TAG_ICONS[tag.toLowerCase()] }));
+    return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
@@ -641,9 +621,7 @@ export default function SonidosAncestalesScreen() {
           >
             <Feather name="chevron-left" size={26} color={TEXT} />
           </Pressable>
-          <Text style={styles.pageTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
-            Sonoterapia
-          </Text>
+           <CategoryScreenHeader categoryId="sonidos-ancestrales" />
           <Pressable
             onPress={() => setSearchVisible(true)}
             hitSlop={10}
@@ -664,7 +642,6 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
-            onClear={() => setActiveTab(null)}
           />
         </View>
 
@@ -715,7 +692,7 @@ export default function SonidosAncestalesScreen() {
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
         <View style={{ marginTop: 19 }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} />
         </View>
         <View style={styles.stickyTabsDivider} />
       </Animated.View>

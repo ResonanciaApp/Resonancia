@@ -98,16 +98,25 @@ export function SessionCategoryPill({
   );
 }
 
-export function SessionCategoryIcon({ categoryId, style }: { categoryId?: string; style?: object }) {
+export function SessionCategoryIcon({
+  categoryId,
+  style,
+  size = 19,
+}: {
+  categoryId?: string;
+  style?: object;
+  size?: number;
+}) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
+  const iconSize = Math.round(size * 0.63);
 
   return (
-    <View style={[styles.categoryCircle, style, { backgroundColor: category.color }]}>
+    <View style={[styles.categoryCircle, { width: size, height: size, borderRadius: size / 2 }, style, { backgroundColor: category.color }]}>
       {category.materialIcon ? (
-        <MaterialCommunityIcons name={category.materialIcon} size={12} color="#FFFFFF" />
+        <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
       ) : category.icon ? (
-        <Image source={category.icon} style={styles.categoryIcon} resizeMode="contain" />
+        <Image source={category.icon} style={[styles.categoryIcon, { width: iconSize, height: iconSize }]} resizeMode="contain" />
       ) : null}
     </View>
   );
@@ -246,7 +255,7 @@ const styles = StyleSheet.create({
   categoryIcon: {
     width: 12,
     height: 12,
-    tintColor: "#FFFFFF",
+    tintColor: "#F9F9F9",
   },
   categoryLabel: {
     flexShrink: 1,
