@@ -570,7 +570,7 @@ export default function MananasScreen() {
         pointerEvents={!selectedTag && stickyActive ? "auto" : "none"}
         style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
       >
-        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={[styles.stickyTitle, { color: colors.foreground }]}>Mañanas</Text>
         <View style={styles.stickySpacer} />

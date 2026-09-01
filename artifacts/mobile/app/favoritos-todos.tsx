@@ -57,9 +57,8 @@ function FavPill({
             : tabId === "charlas" ? ["#953732", "#78221E"]
               : theme.id === "indigo" ? ["#784576", "#50326E"]
                 : ["#FFFFFF", "#F5F5F5"];
-  const isDarkSelectedText = ["meditaciones", "sesiones", "musica", "videos"].includes(tabId) && theme.id !== "indigo";
-  const contentColor = sel && isDarkSelectedText ? "#0D0A1E" : "#F4F4F4";
-  const selectedTextColor = sel && isDarkSelectedText ? "#0D0A1E" : "#F4F4F4";
+  const contentColor = sel ? "#F9F9F9" : "#F4F4F4";
+  const selectedTextColor = sel ? "#F9F9F9" : "#F4F4F4";
 
   return (
     <Pressable
@@ -158,7 +157,7 @@ export default function FavoritosTodosScreen() {
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
           <StickyHeaderSurface opacity={stickySurfaceOpacity} tint={sceneTheme.gradient[0] as string} />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
@@ -286,6 +285,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 19,
+    paddingTop: 7,
     paddingBottom: 10,
   },
   libraryTabHeaderRow: {
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 0,
   },
-  largeTitle: { fontFamily: "Manrope", fontSize: 30, lineHeight: 36, fontWeight: "700", letterSpacing: 0.3, textAlign: "left", flex: 1 },
+  largeTitle: { fontFamily: "Manrope", fontSize: 30, lineHeight: 36, fontWeight: "800", letterSpacing: 0.3, textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }], flex: 1 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   embeddedTabsHeader: {
@@ -342,7 +342,8 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillSel: { borderWidth: 0 },

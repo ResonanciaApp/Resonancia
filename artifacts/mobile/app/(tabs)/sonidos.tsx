@@ -403,20 +403,6 @@ const styles = StyleSheet.create({
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
-  stickyHeaderGlass: {
-    overflow: "hidden",
-  },
-  stickyHeaderTint: {
-    opacity: 0.85,
-  },
-  stickyHeaderDivider: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
   pillText: {
     fontFamily: "Manrope",
     fontSize: 15,

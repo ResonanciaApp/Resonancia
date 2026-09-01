@@ -484,7 +484,7 @@ export default function NochesScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.06)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },

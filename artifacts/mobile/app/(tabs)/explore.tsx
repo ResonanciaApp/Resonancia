@@ -614,16 +614,6 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
-  stickyHeaderGlass: { overflow: "hidden" },
-  stickyHeaderTint: { opacity: 0.85 },
-  stickyHeaderDivider: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
   overlayHeader: {
     position: "absolute",
     top: 0,

@@ -62,7 +62,7 @@ function Chip({
         styles.chip,
         theme.id === "tibet" && styles.chipTibet,
         theme.id === "indigo" && styles.chipIndigo,
-        selected && { borderColor: selectedBorderColor },
+        selected && { borderWidth: 2, borderColor: selectedBorderColor },
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -326,12 +326,11 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           {
             paddingTop: topPad + 8,
             opacity: stickyHeaderOpacity,
-            backgroundColor: theme.gradient[0] as string,
           },
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <StickyHeaderSurface opacity={1} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -449,8 +448,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 27,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "transparent",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     flexDirection: "row",
     gap: 12,
     alignItems: "center",
