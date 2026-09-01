@@ -31,4 +31,8 @@ const colors = {
   radius: 22,
 };
 
+export const WIDGET_GREEN_TOP = "#349556";
+export const WIDGET_GREEN_BOTTOM = "#067D74";
+export const WIDGET_GREEN_GRADIENT = [WIDGET_GREEN_TOP, WIDGET_GREEN_BOTTOM] as const;
+
 export default colors;

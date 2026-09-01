@@ -14,6 +14,10 @@ import Svg, {
 } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
+import {
+  WIDGET_GREEN_BOTTOM,
+  WIDGET_GREEN_TOP,
+} from "@/constants/colors";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 const RING_SIZE    = 79;
@@ -76,8 +80,8 @@ export function SonicStreakDays({
   todayIndex: number;
   idPrefix?: string;
 }) {
-  const borderColor0 = "#CF5FCB";
-  const borderColor1 = "#985DD4";
+  const borderColor0 = WIDGET_GREEN_TOP;
+  const borderColor1 = WIDGET_GREEN_BOTTOM;
 
   return (
     <View style={styles.row}>

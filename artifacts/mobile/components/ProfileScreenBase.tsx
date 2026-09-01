@@ -74,6 +74,10 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
+import {
+  WIDGET_GREEN_BOTTOM,
+  WIDGET_GREEN_TOP,
+} from "@/constants/colors";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1185,7 +1189,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <MaterialCommunityIcons name="spa" size={22} color="#985DD4" />
+                      <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_TOP} />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
@@ -1199,7 +1203,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={20} color="#985DD4" />
+                      <Feather name="clock" size={20} color={WIDGET_GREEN_BOTTOM} />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {personalStats.completedSessions}
@@ -1213,7 +1217,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatMetricRow}>
                     <View style={styles.personalStatIcon}>
-                      <Feather name="flag" size={20} color="#985DD4" />
+                      <Feather name="flag" size={20} color={WIDGET_GREEN_TOP} />
                     </View>
                     <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                       {maxStreak} {maxStreak === 1 ? "día" : "días"}
