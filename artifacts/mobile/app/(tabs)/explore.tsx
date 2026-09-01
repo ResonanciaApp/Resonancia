@@ -529,7 +529,6 @@ export function ExploreScreen({
           scrollEventThrottle={16}
         >
           {/* ── Para este momento ── */}
-          {!collapseCategoryHeader && <ChakraCarousel />}
           {featuredHoy && (
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -6 }]}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
@@ -586,7 +585,6 @@ export function ExploreScreen({
               />
             </View>
           )}
-          {collapseCategoryHeader && <ChakraCarousel />}
           {collapseCategoryHeader && (
             <View style={styles.durationSection}>
               <Text style={[styles.sectionTitle, styles.durationSectionTitle]}>
@@ -654,6 +652,9 @@ export function ExploreScreen({
               />
             </View>
           ))}
+
+          {/* ── Chakras — inmediatamente antes de Encuentros Resonadores ── */}
+          <ChakraCarousel />
 
           {/* ── Resonadores — última sección de Descubrir ── */}
           <EncuentrosResonadoresSection
