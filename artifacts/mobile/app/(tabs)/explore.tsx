@@ -21,7 +21,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SessionCardMetadataOverlay } from "@/components/SessionCardMetadataOverlay";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
@@ -507,29 +506,30 @@ export function ExploreScreen({
                     placeholder={BLUR_PLACEHOLDER}
                     transition={IMAGE_TRANSITION}
                   />
-                  {(() => {
-                    const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
-                    const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
-                    const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                    return (
-                      <SessionCardMetadataOverlay
-                        categoryId={featuredHoy.categoryId}
-                        durationLabel={featuredHoy.durationLabel}
-                        title={featuredHoy.title}
-                        authorName={heroAuthorName}
-                        showAuthor
-                        showCategoryPill={false}
-                        showDuration={false}
-                        showMetaBelow
-                        titleFontSize={18}
-                        durationBottom={76}
-                        metaBottom={16}
-                        metaLeft={14}
-                        contentLeft={12}
-                      />
-                    );
-                  })()}
                 </View>
+                {(() => {
+                  const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
+                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
+                  const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const heroMeta = [featuredHoy.categoryLabel, featuredHoy.durationLabel]
+                    .filter(Boolean)
+                    .join(" · ");
+                  return (
+                    <View style={styles.heroMeta}>
+                      {!!heroMeta && (
+                        <Text style={styles.heroMetaLabel} numberOfLines={1}>
+                          {heroMeta}
+                        </Text>
+                      )}
+                      <Text style={styles.heroTitle} numberOfLines={2}>
+                        {featuredHoy.title}
+                      </Text>
+                      <Text style={styles.heroAuthor} numberOfLines={1}>
+                        {heroAuthorName}
+                      </Text>
+                    </View>
+                  );
+                })()}
               </Pressable>
             </View>
           )}
@@ -854,6 +854,29 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
+  heroMeta: {
+    marginTop: 12,
+    paddingHorizontal: 2,
+  },
+  heroMetaLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    color: "#c2c2c2",
+    marginBottom: 4,
+  },
+  heroTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 24,
+    color: "#FBFBFB",
+  },
+  heroAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    color: "#c2c2c2",
+    marginTop: 2,
+  },
 
   // Hero: Vuelve a ti
   introHeroContainer: {
