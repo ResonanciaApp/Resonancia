@@ -51,7 +51,7 @@ function Chip({
   const selectedBorderColor = theme.id === "indigo2"
     ? "rgba(255,255,255,0.8)"
     : theme.id === "indigo"
-      ? "rgba(120,69,118,0.8)"
+      ? "rgba(255,255,255,0.8)"
       : "transparent";
 
   return (
