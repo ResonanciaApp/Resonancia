@@ -35,12 +35,13 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const ACTIVE_COLOR   = "#298B73";
+const ACTIVE_COLOR   = WIDGET_GREEN_SOLID;
 const INACTIVE_COLOR = "#A9A9C3";
 const INDIGO2_COLOR  = "#C9C8DE";
 const GRAD_END       = "#F9F9F9";
-const GHOST_PILL_BG  = "rgba(42,40,64,0.65)";
+const GHOST_PILL_BG  = "rgba(43,41,66,0.65)";
 
 const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
