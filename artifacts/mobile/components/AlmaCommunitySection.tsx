@@ -79,9 +79,9 @@ export function AlmaCommunitySection() {
           ]}
         >
           <LinearGradient
-            colors={["#784576", "#50326E"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
+            colors={["#349556", "#067D74"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
           <Text style={styles.composeChipText}>Publicar</Text>

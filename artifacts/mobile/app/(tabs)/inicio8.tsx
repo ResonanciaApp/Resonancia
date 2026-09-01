@@ -236,7 +236,6 @@ function BlinkingCursor({ color }: { color: string }) {
 function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; label: string; icon?: number; iconSel?: number; onPress: () => void }) {
   const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
   const { activeSceneId: chipSceneId } = useSceneTheme();
-  const colors = useColors();
   useEffect(() => {
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
@@ -273,16 +272,15 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          { opacity: selOpacity, backgroundColor: isIndigo2 ? "rgba(255,255,255,0.10)" : undefined },
+          { opacity: selOpacity },
         ]}
       >
-        {!isIndigo2 && (
-          <LinearGradient
-            colors={[colors.primary, colors.primary]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        )}
+        <LinearGradient
+          colors={["#349556", "#067D74"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
       </Animated.View>
       <Text
         style={[
@@ -1530,6 +1528,12 @@ function InicioEmotionWidget({
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
       <View style={styles.inicio2HeroEmotionAdd}>
+        <LinearGradient
+          colors={["#349556", "#067D74"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -3207,9 +3211,10 @@ const styles = StyleSheet.create({
     width: 31,
     height: 31,
     borderRadius: 16,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#50326E",
+    backgroundColor: "transparent",
   },
   inicio2HeroEmotionAddText: {
     color: "#FFFFFF",
