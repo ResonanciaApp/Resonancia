@@ -36,7 +36,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
+import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -134,10 +134,7 @@ const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 // Igual que "Sesiones recientes" de Inicio 2: 2 cards completas + 10 px
 // de la tercera, considerando el padding y gap del SessionCarousel.
-const RECENT_CARD_W = Math.max(
-  120,
-  Math.round((W - H_PAD - CONTENT_CAROUSEL_GAP * 2 - 10) / 2),
-);
+const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */

@@ -10,6 +10,7 @@ import {
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
+  getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -37,7 +38,7 @@ import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
-const RECENT_CARD_W = getContentCarouselCardWidth(width, H_PAD);
+const RECENT_CARD_W = getTwoCardCarouselCardWidth(width, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(width, H_PAD);
 const GOLD  = "#F9F9F9";
 
@@ -527,9 +528,13 @@ export default function SonidosAncestalesScreen() {
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                style={{ marginTop: 33, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
-              showCardMetadata
-              showAuthor={false}
+              allowOversizedCardWidth
+              titleSize={19}
+              titleOffset={10}
+              titleSpacing={17}
+              squareCards
+              cardAuthorColor="#acaac2"
+              showImageCategoryPill
             />
           </>
         )}

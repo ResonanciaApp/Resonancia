@@ -98,7 +98,10 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
-import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
+import {
+  CONTENT_CAROUSEL_GAP,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 
 const { width, height } = Dimensions.get("window");
 
@@ -170,10 +173,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 // Inicio 2: 2 cards completas + 10 px de la tercera.
 const INICIO2_SESSION_CARD_W = Math.max(
-  120,
-  Math.round(
-    (width - GRID_PAD - CONTENT_CAROUSEL_GAP * 2 - 10) / 2,
-  ),
+  getTwoCardCarouselCardWidth(width, GRID_PAD),
 );
 const INICIO2_SCROLL_START_THRESHOLD = 8;
 

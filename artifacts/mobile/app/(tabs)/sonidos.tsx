@@ -32,11 +32,15 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
-import { getContentCarouselCardWidth } from "@/constants/carousel";
+import {
+  getContentCarouselCardWidth,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
+const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
@@ -255,10 +259,14 @@ export default function SonidosScreen() {
                 isPremium={isPremium}
                 onPress={openSession}
                 style={[styles.carousel, styles.recentCarousel]}
-                cardWidth={CARD_W}
+                cardWidth={RECENT_CARD_W}
+                allowOversizedCardWidth
                 titleSize={19}
-                showCardMetadata
-                showAuthor={false}
+                titleOffset={10}
+                titleSpacing={17}
+                squareCards
+                cardAuthorColor="#acaac2"
+                showImageCategoryPill
               />
             )}
             {collections.map((collection) => (

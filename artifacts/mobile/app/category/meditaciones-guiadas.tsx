@@ -8,6 +8,7 @@ import {
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
+  getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -34,7 +35,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - 20) / 2;
-const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
+const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
@@ -396,9 +397,13 @@ export default function MeditacionesGuiadasScreen() {
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                style={{ marginTop: 33, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
-              showCardMetadata
-              showAuthor={false}
+              allowOversizedCardWidth
+              titleSize={19}
+              titleOffset={10}
+              titleSpacing={17}
+              squareCards
+              cardAuthorColor="#acaac2"
+              showImageCategoryPill
             />
           </>
         )}
