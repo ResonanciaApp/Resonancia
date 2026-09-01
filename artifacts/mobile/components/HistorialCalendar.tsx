@@ -54,6 +54,7 @@ function FavoriteHeartButton({
   onToggle: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePress = () => {
     onToggle();
@@ -74,10 +75,15 @@ function FavoriteHeartButton({
   };
 
   return (
-    <Pressable onPress={handlePress} hitSlop={12}>
+    <Pressable
+      onPress={handlePress}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+      hitSlop={12}
+    >
       <Animated.View style={{ transform: [{ scale }] }}>
-        {favorited ? (
-          <Ionicons name="heart" size={20} color="rgba(255,255,255,0.95)" />
+        {favorited || isPressed ? (
+          <Ionicons name="heart" size={20} color={WIDGET_GREEN_SOLID} />
         ) : (
           <Ionicons name="heart-outline" size={20} color="rgba(255,255,255,0.9)" />
         )}
@@ -129,12 +135,10 @@ function DayCell({
     if (isToday || isSelected || hasCompleted) bounce();
   };
 
-  const dayFill = embedded
-    ? !hasCompleted && isSelected
+  const dayFill = isToday
+    ? WIDGET_GREEN_SOLID
+    : embedded && !hasCompleted && isSelected
       ? "rgba(255,255,255,0.16)"
-      : undefined
-    : isToday
-      ? color
       : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
   const showCompletedBorder = embedded && hasCompleted;
@@ -174,8 +178,8 @@ function DayCell({
             {
               color: embedded && isFuture
                 ? "rgba(255,255,255,0.24)"
-                : !embedded && isToday
-                  ? "#1B060F"
+                : isToday
+                  ? "#FFFFFF"
                   : color,
             },
           ]}

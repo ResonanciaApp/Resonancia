@@ -516,7 +516,7 @@ export default function DescansoScreen() {
 
       <View style={styles.contentShift}>
         <View
-          style={[styles.fixedHeader, { paddingTop: topPad + 2, backgroundColor: bgGradient[0] }]}
+          style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
           <View style={styles.titleRow}>

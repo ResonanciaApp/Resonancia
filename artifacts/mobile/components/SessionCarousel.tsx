@@ -218,6 +218,12 @@ export function SessionCarousel({
                     {!showMetaBelow && (showImageCategoryPill || !showCollectionBelow) && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
+                    <Text
+                      style={[styles.ambientalTitle, { color: colors.foreground }]}
+                      numberOfLines={2}
+                    >
+                      {s.title}
+                    </Text>
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
