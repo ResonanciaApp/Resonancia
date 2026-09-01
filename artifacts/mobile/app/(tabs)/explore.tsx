@@ -32,7 +32,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
-import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
@@ -110,10 +109,8 @@ export function ExploreScreen({
   const { openForSession } = useAmbientalDuration();
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
-  const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
-  const [query, setQuery] = useState("");
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayer();
@@ -433,32 +430,6 @@ export function ExploreScreen({
               <Feather name="search" size={24} color="#F9F9F9" />
             </Pressable>
           </View>
-          {/* ── Barra de búsqueda inline ── */}
-          <Pressable
-            style={styles.searchWrap}
-            onPress={() => setSearchVisible(true)}
-            accessibilityRole="search"
-            accessibilityLabel={`Buscar en ${screenTitle}`}
-          >
-            <View
-              style={[
-                styles.searchBox,
-                {
-                  backgroundColor: "rgba(0,0,0,0.20)",
-                  borderColor: "rgba(255,255,255,0.80)",
-                },
-              ]}
-              pointerEvents="none"
-            >
-              <Feather name="search" size={16} color="#F9F9F9" />
-              <Text
-                style={[styles.searchInput, { color: "rgba(249,249,249,0.65)", flex: 1 }]}
-                numberOfLines={1}
-              >
-                Título, voz guía, artista o tema
-              </Text>
-            </View>
-          </Pressable>
 
           {!collapseCategoryHeader && (
             <ContentCategoryGrid
@@ -508,9 +479,11 @@ export function ExploreScreen({
                   />
                 </View>
                 {(() => {
-                  const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
-                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
-                  const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const heroAuthor = featuredHoy.guideId
+                    ? getGuide(featuredHoy.guideId)
+                    : featuredHoy.artistId
+                      ? getArtist(featuredHoy.artistId)
+                      : getGuide();
                   const heroMeta = [featuredHoy.categoryLabel, featuredHoy.durationLabel]
                     .filter(Boolean)
                     .join(" · ");
@@ -524,9 +497,16 @@ export function ExploreScreen({
                       <Text style={styles.heroTitle} numberOfLines={2}>
                         {featuredHoy.title}
                       </Text>
-                      <Text style={styles.heroAuthor} numberOfLines={1}>
-                        {heroAuthorName}
-                      </Text>
+                      <View style={styles.heroAuthorRow}>
+                        <Image
+                          source={heroAuthor.photo}
+                          style={styles.heroAuthorAvatar}
+                          contentFit="cover"
+                        />
+                        <Text style={styles.heroAuthor} numberOfLines={1}>
+                          {heroAuthor.name}
+                        </Text>
+                      </View>
                     </View>
                   );
                 })()}
@@ -718,9 +698,6 @@ const styles = StyleSheet.create({
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
-  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
-  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
-  searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
@@ -875,7 +852,18 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     color: "#c2c2c2",
-    marginTop: 2,
+    flexShrink: 1,
+  },
+  heroAuthorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 3,
+  },
+  heroAuthorAvatar: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
   },
 
   // Hero: Vuelve a ti

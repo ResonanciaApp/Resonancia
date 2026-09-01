@@ -2779,7 +2779,7 @@ export default function HomeScreen2({
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={styles.inicioViewAllText}>Ver todos</Text>
+                <Text style={[styles.inicioViewAllText, { color: colors.accent }]}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
