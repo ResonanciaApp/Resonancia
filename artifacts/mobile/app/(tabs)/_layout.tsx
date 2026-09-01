@@ -36,7 +36,7 @@ import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 
-const ACTIVE_COLOR   = "#F9F9F9";
+const ACTIVE_COLOR   = "#298B73";
 const INACTIVE_COLOR = "#A9A9C3";
 const INDIGO2_COLOR  = "#C9C8DE";
 const GRAD_END       = "#F9F9F9";
@@ -104,13 +104,16 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = indigo2Mode ? "#FFFFFF" : tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const activeCol   = ACTIVE_COLOR;
   const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
-    const sfName = active ? conf.sfIconFill : conf.sfIcon;
-    const mciName = active ? conf.mciIconFill : conf.mciIcon;
+    // El icono conserva su forma base al seleccionar el tab: solo cambia el
+    // tintado de forma inmediata. La animación que permanece es la del
+    // indicador/píldora de selección.
+    const sfName = conf.sfIcon;
+    const mciName = conf.mciIcon;
     return conf.emoji ? (
       <Text style={{ fontSize: 22, lineHeight: 26, transform: tOffset }}>{conf.emoji}</Text>
     ) : conf.image ? (

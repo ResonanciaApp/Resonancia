@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Animated,
   Pressable,
@@ -22,7 +22,6 @@ const PILLS_PAD = 19;
 const PILLS_GAP = 8;
 
 const TOOLS = [
-  { id: "favoritos", label: "Favoritos", icon: "heart-outline", color: "#F29BB7" },
   { id: "biblioteca", label: "Biblioteca", icon: "book-open-variant", color: "#8ED9FF" },
   { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
   { id: "videos", label: "Videos", icon: "video-outline", color: "#D5A4E8" },
@@ -45,35 +44,25 @@ function ToolCard({
   onPress: (id: ToolId) => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
-  const iconTintOpacity = useRef(new Animated.Value(0)).current;
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
+    setIsPressed(true);
     scale.stopAnimation();
-    iconTintOpacity.stopAnimation();
     Animated.timing(scale, {
       toValue: 0.97,
       duration: 90,
       useNativeDriver: true,
     }).start();
-    Animated.timing(iconTintOpacity, {
-      toValue: 1,
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
   };
 
   const handlePressOut = () => {
+    setIsPressed(false);
     scale.stopAnimation();
-    iconTintOpacity.stopAnimation();
     Animated.spring(scale, {
       toValue: 1,
       tension: 180,
       friction: 14,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(iconTintOpacity, {
-      toValue: 0,
-      duration: 220,
       useNativeDriver: true,
     }).start();
   };
@@ -86,14 +75,15 @@ function ToolCard({
       onPress={() => onPress(tool.id)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      style={styles.pressable}
     >
       <Animated.View
         style={[
           styles.card,
-          tool.id === "favoritos" && styles.firstCard,
+          tool.id === "biblioteca" && styles.firstCard,
           tool.id === "diario" && styles.lastCard,
           {
-            backgroundColor: tool.id === "diario" ? WIDGET_GREEN_SOLID : pillBackground,
+            backgroundColor: pillBackground,
             borderWidth: 0,
             transform: [{ scale }],
           },
@@ -103,18 +93,11 @@ function ToolCard({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color="#F9F9F9"
+            color={isPressed ? WIDGET_GREEN_SOLID : "#F9F9F9"}
           />
-          <Animated.View pointerEvents="none" style={[styles.iconTint, { opacity: iconTintOpacity }]}>
-            <MaterialCommunityIcons
-              name={tool.icon}
-              size={22}
-              color={WIDGET_GREEN_SOLID}
-            />
-          </Animated.View>
         </Animated.View>
         <Text
-          style={[styles.label, { color: foregroundColor }]}
+          style={[styles.label, { color: isPressed ? WIDGET_GREEN_SOLID : foregroundColor }]}
           numberOfLines={1}
         >
           {tool.label}
@@ -142,9 +125,6 @@ export function ToolsGrid({
       : "rgba(255,255,255,0.05)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
-      case "favoritos":
-        openCategory("/favoritos-todos");
-        break;
       case "biblioteca":
         router.push("/(tabs)/biblioteca" as never);
         break;
@@ -202,13 +182,13 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
   },
+  pressable: {
+    borderRadius: 13,
+  },
   iconWrap: {
     width: 22,
     height: 22,
     position: "relative",
-  },
-  iconTint: {
-    ...StyleSheet.absoluteFillObject,
   },
   firstCard: {
     borderTopLeftRadius: 100,
