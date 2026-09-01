@@ -574,7 +574,7 @@ export default function DescansoScreen() {
         <View style={{ marginTop: -3 }}>
           {recentInDescanso.length > 0 && (
             <SessionCarousel
-              title="Escuchadas recientemente"
+              title="Sesiones recientes"
               sessions={recentInDescanso}
               isPremium={isPremium}
               onPress={(s) => handleSessionTap(s)}

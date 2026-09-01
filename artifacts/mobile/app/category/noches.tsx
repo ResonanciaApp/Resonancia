@@ -319,7 +319,7 @@ export default function NochesScreen() {
         {activeTab === null && recentInCategory.length > 0 && (
           <>
             <SessionCarousel
-              title="Escuchadas recientemente"
+              title="Sesiones recientes"
               sessions={recentInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}

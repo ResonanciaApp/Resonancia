@@ -2902,7 +2902,7 @@ export default function HomeScreen2({
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         {!isInicio2 && (
           <SessionCarousel
-            title="Escuchadas recientemente"
+            title="Sesiones recientes"
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}

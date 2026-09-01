@@ -254,7 +254,7 @@ export default function SonidosScreen() {
           <>
             {recent.length > 0 && (
               <SessionCarousel
-                title="Escuchadas recientemente"
+                title="Sesiones recientes"
                 sessions={recent}
                 isPremium={isPremium}
                 onPress={openSession}

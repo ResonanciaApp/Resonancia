@@ -391,7 +391,7 @@ export default function MeditacionesGuiadasScreen() {
         {activeTab === null && recentInCategory.length > 0 && (
           <>
             <SessionCarousel
-              title="Escuchadas recientemente"
+              title="Sesiones recientes"
               sessions={recentInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
