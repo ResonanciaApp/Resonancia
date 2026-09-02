@@ -37,6 +37,7 @@ function ActivityRow({
   dateKey,
   itemCount,
   neutralBackground,
+  ticketBackground,
   orderSV,
   draggingId,
   dragOriginSlot,
@@ -49,6 +50,7 @@ function ActivityRow({
   dateKey: string;
   itemCount: number;
   neutralBackground: string;
+  ticketBackground: string;
   orderSV: SharedValue<string[]>;
   draggingId: SharedValue<string>;
   dragOriginSlot: SharedValue<number>;
@@ -163,6 +165,7 @@ function ActivityRow({
     >
       <GestureDetector gesture={pan}>
         <Reanimated.View style={[styles.activityCard, completionStyle]}>
+          <Feather name="more-vertical" size={18} color={ROUTINE_HANDLE_COLOR} />
           <View style={styles.activityCopy}>
             <Text style={[styles.activityCategory, { color: colors.accent }]} numberOfLines={1}>
               {activity.category}
@@ -205,7 +208,7 @@ function ActivityRow({
             style={({ pressed }) => [
               styles.checkButton,
               {
-                backgroundColor: colors.accent,
+                backgroundColor: ticketBackground,
                 opacity: pressed ? 0.58 : 1,
               },
             ]}
@@ -220,7 +223,7 @@ function ActivityRow({
 
 export function MiRutinaSection({ style }: Props) {
   const colors = useColors();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const todayKey = useDayRollover();
   const {
     activities,
@@ -360,6 +363,7 @@ export function MiRutinaSection({ style }: Props) {
               dateKey={dateKey}
               itemCount={todayActivities.length}
               neutralBackground={neutralCardBackground}
+              ticketBackground={theme.gradient[0]}
               orderSV={orderSV}
               draggingId={draggingId}
               dragOriginSlot={dragOriginSlot}
@@ -462,6 +466,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: "row",
     alignItems: "center",
+    gap: 10,
     paddingLeft: 15,
     paddingRight: 11,
   },
