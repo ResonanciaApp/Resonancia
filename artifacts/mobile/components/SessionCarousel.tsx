@@ -146,7 +146,7 @@ export function SessionCarousel({
         ? "rgba(255,255,255,0.05)"
         : colors.card;
   const ambientalImageSize = Math.round(cw * 0.72);
-  const viewAllAccent = theme.id === "indigo2"
+  const viewAllAccent = theme.id === "indigo" || theme.id === "indigo2"
     ? WIDGET_GREEN_SOLID
     : (viewAllColor ?? colors.accent);
   const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";

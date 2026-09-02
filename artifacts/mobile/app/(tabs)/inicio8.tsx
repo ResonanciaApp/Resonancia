@@ -1481,7 +1481,10 @@ export default function HomeScreen2({
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const carouselViewAllColor = activeSceneId === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent;
+  const carouselViewAllColor =
+    activeSceneId === "indigo" || activeSceneId === "indigo2"
+      ? WIDGET_GREEN_SOLID
+      : colors.accent;
   // La tab bar flotante usa la misma separación inferior que su propio layout.
   // El widget queda 25 px por encima de la parte superior de esa barra.
   const tabBarBottomOffset =

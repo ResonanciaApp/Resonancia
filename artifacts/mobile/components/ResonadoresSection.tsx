@@ -33,7 +33,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           onPress={() => router.push("/equipo" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={[styles.viewAll, { color: theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent }]}>Ver todos</Text>
+          <Text style={[styles.viewAll, { color: theme.id === "indigo" || theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent }]}>Ver todos</Text>
         </Pressable>
       </View>
       <ScrollView
