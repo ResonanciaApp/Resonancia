@@ -42,9 +42,11 @@ import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
+import { GhostPill } from "@/components/GhostPill";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
-const PLAYER_ACTION_BACKGROUND = "rgba(255,255,255,0.10)";
+const BLACK_GHOST_TINT = "rgba(0,0,0,0.45)";
+const PLAY_BUTTON_BACKGROUND = "rgba(255,255,255,0.07)";
 const PLAYER_ACTION_BORDER = "rgba(255,255,255,0.18)";
 
 function CircleActionButton({
@@ -375,15 +377,17 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
       {/* ── Fila superior de acciones ─────────────────────────────────────── */}
       <View style={[styles.topActionRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
-        <CircleActionButton
-          label="Volver"
-          testID="session-detail-back-button"
-          onPress={goBack}
-        >
-          <Feather name="chevron-left" size={23} color={colors.foreground} />
-        </CircleActionButton>
+        <GhostPill style={styles.blackGhostCircle}>
+          <CircleActionButton
+            label="Volver"
+            testID="session-detail-back-button"
+            onPress={goBack}
+          >
+            <Feather name="chevron-left" size={23} color={colors.foreground} />
+          </CircleActionButton>
+        </GhostPill>
 
-        <View style={styles.topActionGroup}>
+        <GhostPill style={styles.blackGhostGroup}>
           <CircleActionButton
             label="Descargar"
             testID="session-detail-download-button"
@@ -409,14 +413,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           >
             <Feather name="share-2" size={19} color={colors.foreground} />
           </CircleActionButton>
-          <CircleActionButton
-            label="Más opciones"
-            testID="session-detail-more-button"
-            onPress={() => setActionsSheetOpen(true)}
-          >
-            <Feather name="more-horizontal" size={20} color={colors.foreground} />
-          </CircleActionButton>
-        </View>
+        </GhostPill>
       </View>
 
       <Animated.ScrollView
@@ -801,10 +798,17 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     zIndex: 4,
   },
-  topActionGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
+  blackGhostCircle: {
+    width: 40,
+    height: 40,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    backgroundColor: BLACK_GHOST_TINT,
+  },
+  blackGhostGroup: {
+    paddingHorizontal: 2,
+    paddingVertical: 2,
+    backgroundColor: BLACK_GHOST_TINT,
   },
   circleAction: {
     width: 40,
@@ -812,9 +816,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: PLAYER_ACTION_BACKGROUND,
-    borderWidth: 1,
-    borderColor: PLAYER_ACTION_BORDER,
+    backgroundColor: "transparent",
   },
   immersiveScroll: {
     flex: 1,
@@ -834,12 +836,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   immersivePlayButton: {
-    width: 93,
-    height: 93,
-    borderRadius: 46.5,
+    width: 97,
+    height: 97,
+    borderRadius: 48.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: PLAYER_ACTION_BACKGROUND,
+    backgroundColor: PLAY_BUTTON_BACKGROUND,
     borderWidth: 1,
     borderColor: PLAYER_ACTION_BORDER,
   },
