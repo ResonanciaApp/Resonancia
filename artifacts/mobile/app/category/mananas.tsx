@@ -458,10 +458,10 @@ export default function MananasScreen() {
 
             {/* ── Tab: Todos ── */}
             {activeTab === "Todos" && (
-              <View style={{ paddingTop: 14 }}>
+              <View style={{ paddingTop: 1 }}>
                 {filteredSessions.some((s) => s.isFeaturedCategory) && (
                   <>
-                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 24, marginTop: 0 }]}>
+                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 24, marginTop: 10 }]}>
                       Contenido destacado
                     </Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}

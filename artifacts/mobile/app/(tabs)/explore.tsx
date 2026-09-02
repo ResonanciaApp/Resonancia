@@ -546,9 +546,7 @@ export function ExploreScreen({
                 onPress={(s) => handleSessionPress(s)}
                 style={{
                   marginTop:
-                    carousel.slug === "para-la-ansiedad"
-                      ? -8
-                      : index === 0
+                    index === 0
                       ? collapseCategoryHeader
                         ? COLLAPSED_FIRST_CAROUSEL_GAP
                         : FIRST_DISCOVER_CAROUSEL_GAP
