@@ -327,6 +327,27 @@
         height: 88mm;
       }
 
+      .phone.has-shot {
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .phone-shot {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 5.5mm;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .phone-shot.mood-shot {
+        object-position: center bottom;
+      }
+
       .phone::before {
         position: absolute;
         top: 2mm;
@@ -713,14 +734,22 @@
 
       .creation-visual {
         position: relative;
-        flex: 0 0 88mm;
-        height: 93mm;
-        border: 1px solid rgba(41, 139, 115, 0.42);
-        border-radius: 4mm;
-        padding: 6mm;
-        background:
-          radial-gradient(circle at 52% 45%, rgba(41, 139, 115, 0.22), transparent 28%),
-          #151522;
+        flex: 0 0 60mm;
+        height: 125mm;
+        border: 1.5mm solid #2A293A;
+        border-radius: 7mm;
+        padding: 0;
+        overflow: hidden;
+        background: #151522;
+        box-shadow: 0 3mm 8mm rgba(0, 0, 0, 0.3);
+      }
+
+      .creation-shot {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
       }
 
       .shape {
@@ -863,6 +892,23 @@
         background: radial-gradient(circle at 65% 30%, #7BC9B2, #29594F 35%, #25243A 36%);
       }
 
+      .profile-phone {
+        flex: 0 0 28mm;
+        height: 60mm;
+        overflow: hidden;
+        border: 1mm solid #2A293A;
+        border-radius: 5mm;
+        background: #11111B;
+      }
+
+      .profile-phone img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
       .profile-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -996,15 +1042,8 @@
       </div>
 
       <div class="phone-layout">
-        <div class="phone large">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">¿Qué necesitas hoy?</div>
-          <div class="phone-subtitle">Encuentra una experiencia para acompañar este momento.</div>
-          <div class="phone-hero"></div>
-          <span class="phone-pill">Para ti</span>
-          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Calma profunda</strong><span>Meditación · 12 min</span></span></div>
-          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Atención presente</strong><span>Sonidos · 28 min</span></span></div>
-          <div class="phone-tabbar"><span class="active">Inicio</span><span>Explorar</span><span>Perfil</span></div>
+        <div class="phone large has-shot">
+          <img class="phone-shot" src="../../attached_assets/db3266d8-c3ed-4d85-b9c6-c2390d7f2ada_1788377067031.jpg" alt="Captura de Inicio de Resonancia">
         </div>
         <div class="mockup-caption">
           <strong>La app acompaña, no interrumpe.</strong>
@@ -1060,45 +1099,29 @@
 
       <div class="screen-grid">
         <article class="screen-card">
-          <div class="phone">
-            <div class="phone-top"><span>9:41</span><span>•••</span></div>
-            <div class="phone-title">Inicio</div>
-            <div class="phone-hero"></div>
-            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Para este momento</strong><span>Sesiones seleccionadas</span></span></div>
-            <div class="phone-tabbar"><span class="active">Inicio</span><span>Buscar</span></div>
+          <div class="phone has-shot">
+            <img class="phone-shot" src="../../attached_assets/db3266d8-c3ed-4d85-b9c6-c2390d7f2ada_1788377067031.jpg" alt="Captura de Inicio">
           </div>
           <div><h3>Inicio</h3><p>presenta el contenido más fresco y reciente de la plataforma, junto con novedades y contenidos destacados.</p></div>
         </article>
 
         <article class="screen-card">
-          <div class="phone">
-            <div class="phone-top"><span>9:41</span><span>•••</span></div>
-            <div class="phone-title">Descubrir</div>
-            <div class="phone-hero small"></div>
-            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Explorar categorías</strong><span>Ver todo el catálogo</span></span></div>
-            <div class="phone-tabbar"><span>Inicio</span><span class="active">Explorar</span></div>
+          <div class="phone has-shot">
+            <img class="phone-shot" src="../../attached_assets/42506306-7af2-4b68-b82d-3665b4f983ee_1788377067031.jpg" alt="Captura de Descubrir">
           </div>
           <div><h3>Descubrir</h3><p>permite explorar el catálogo mediante categorías, etiquetas, colecciones, carruseles y recomendaciones.</p></div>
         </article>
 
         <article class="screen-card">
-          <div class="phone">
-            <div class="phone-top"><span>9:41</span><span>•••</span></div>
-            <div class="phone-title">Dormir</div>
-            <div class="phone-hero"></div>
-            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Noche tranquila</strong><span>Historias · 32 min</span></span></div>
-            <div class="phone-tabbar"><span>Inicio</span><span class="active">Dormir</span></div>
+          <div class="phone has-shot">
+            <img class="phone-shot" src="../../attached_assets/d205c697-122a-46a3-8d8c-e0389f9f1b2b_1788377067031.jpg" alt="Captura de Dormir">
           </div>
           <div><h3>Dormir</h3><p>concentra contenidos seleccionados para acompañar el descanso y el sueño.</p></div>
         </article>
 
         <article class="screen-card">
-          <div class="phone">
-            <div class="phone-top"><span>9:41</span><span>•••</span></div>
-            <div class="phone-title">Sonidos</div>
-            <div class="phone-hero small"></div>
-            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Océano profundo</strong><span>Ambiental · 45 min</span></span></div>
-            <div class="phone-tabbar"><span>Inicio</span><span class="active">Sonidos</span></div>
+          <div class="phone has-shot">
+            <img class="phone-shot" src="../../attached_assets/38a6081f-0943-4254-b696-f4ec054e7e48_1788377067029.jpg" alt="Captura de Sonidos">
           </div>
           <div><h3>Sonidos</h3><p>permite explorar experiencias sonoras organizadas por diferentes tipos, temáticas y etiquetas.</p></div>
         </article>
@@ -1117,12 +1140,8 @@
       </div>
 
       <div class="tool-row">
-        <div class="phone compact">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">¿Cómo estás?</div>
-          <div class="mood-orbit">◌</div>
-          <span class="phone-pill">Elegir emoción</span>
-          <div class="phone-tabbar"><span class="active">Emoción</span><span>Inicio</span></div>
+        <div class="phone compact has-shot">
+          <img class="phone-shot mood-shot" src="../../attached_assets/db3266d8-c3ed-4d85-b9c6-c2390d7f2ada_1788377067031.jpg" alt="Widget de emoción en Inicio">
         </div>
         <div class="tool-copy">
           <h3>Emoción</h3>
@@ -1131,12 +1150,8 @@
       </div>
 
       <div class="tool-row">
-        <div class="phone compact">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">Tu mezcla</div>
-          <div class="phone-hero small"></div>
-          <div class="mixer-sliders"><div class="slider">Lluvia <i></i></div><div class="slider">Viento <i></i></div><div class="slider">Cuencos <i></i></div></div>
-          <div class="phone-tabbar"><span class="active">Crear</span><span>Guardar</span></div>
+        <div class="phone compact has-shot">
+          <img class="phone-shot" src="../../attached_assets/image_1788377144930.png" alt="Captura del Mezclador de Sonidos">
         </div>
         <div class="tool-copy">
           <h3>Mezclador</h3>
@@ -1145,12 +1160,8 @@
       </div>
 
       <div class="tool-row">
-        <div class="phone compact">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">Biblioteca</div>
-          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Favoritos</strong><span>24 sesiones</span></span></div>
-          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Mis mezclas</strong><span>8 experiencias</span></span></div>
-          <div class="phone-tabbar"><span class="active">Biblioteca</span><span>Inicio</span></div>
+        <div class="phone compact has-shot">
+          <img class="phone-shot" src="../../attached_assets/73b4be95-0d7a-4053-a121-af25ebf01c90_1788377067030.jpg" alt="Captura de Biblioteca">
         </div>
         <div class="tool-copy">
           <h3>Biblioteca</h3>
@@ -1181,26 +1192,16 @@
       </div>
 
       <div class="phone-layout">
-        <div class="phone">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">Descubrir</div>
-          <div class="phone-hero"></div>
-          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Calma profunda</strong><span>Sesión recomendada</span></span></div>
+        <div class="phone has-shot">
+          <img class="phone-shot" src="../../attached_assets/42506306-7af2-4b68-b82d-3665b4f983ee_1788377067031.jpg" alt="Captura de Descubrir">
         </div>
         <div class="flow-arrow">→</div>
-        <div class="phone">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">Calma profunda</div>
-          <div class="phone-hero small"></div>
-          <span class="phone-pill">Meditación · 12 min</span>
-          <div class="phone-card"><span class="phone-card-copy"><strong>Comenzar sesión</strong><span>Conocer detalles</span></span></div>
+        <div class="phone has-shot">
+          <img class="phone-shot" src="../../attached_assets/d205c697-122a-46a3-8d8c-e0389f9f1b2b_1788377067031.jpg" alt="Captura de Dormir">
         </div>
         <div class="flow-arrow">→</div>
-        <div class="phone">
-          <div class="phone-top"><span>9:41</span><span>•••</span></div>
-          <div class="phone-title">Reproduciendo</div>
-          <div class="phone-hero"></div>
-          <div class="phone-card"><span class="phone-card-copy"><strong>Calma profunda</strong><span>04:38 / 12:00</span></span></div>
+        <div class="phone has-shot">
+          <img class="phone-shot" src="../../attached_assets/38a6081f-0943-4254-b696-f4ec054e7e48_1788377067029.jpg" alt="Captura de Sonidos">
         </div>
       </div>
 
@@ -1218,20 +1219,16 @@
 
       <div class="section-intro">
         <h2>Crear una experiencia propia</h2>
-        <p class="section-lead">El Mezclador y Geometrix amplían la app desde el consumo hacia la creación personal.</p>
+        <p class="section-lead">El Mezclador amplía la app desde el consumo hacia la creación de experiencias sonoras personales.</p>
       </div>
 
       <div class="creation-layout">
         <div class="creation-visual">
-          <span class="creation-label">Geometrix / composición</span>
-          <span class="shape one"></span>
-          <span class="shape two"></span>
-          <span class="shape three"></span>
-          <span class="shape four"></span>
+            <img class="creation-shot" src="../../attached_assets/image_1788377144930.png" alt="Captura del Mezclador de Sonidos">
         </div>
         <div class="creation-copy">
-          <h3>Del sonido a la composición</h3>
-          <p>El usuario puede combinar capas de audio, modificar su intensidad y construir una atmósfera propia. La creación se guarda como una experiencia personal, no como una interacción desechable.</p>
+          <h3>Del sonido a la mezcla</h3>
+          <p>El usuario puede explorar una biblioteca organizada por categorías, elegir sonidos compatibles y combinarlos para construir una atmósfera propia. La mezcla puede guardarse como una experiencia personal y volver a utilizarse en distintos momentos.</p>
           <div class="layers">
             <div class="layer"><b></b> Lluvia · atmósfera</div>
             <div class="layer"><b></b> Cuencos · presencia</div>
@@ -1255,7 +1252,7 @@
         </article>
         <article class="card">
           <h3>Expresar</h3>
-          <p>Usar sonido y composición como una forma de conexión personal.</p>
+          <p>Usar sonido y mezcla como una forma de conexión personal.</p>
         </article>
       </div>
     </section>
@@ -1272,7 +1269,9 @@
       </div>
 
       <div class="profile-strip">
-        <div class="profile-avatar"></div>
+        <div class="profile-phone">
+          <img src="../../attached_assets/345aa9ea-2642-470b-8cfa-dec2b2f1b903_1788377067030.jpg" alt="Captura de Perfil y progreso">
+        </div>
         <div class="profile-stats">
           <div class="profile-stat"><strong>12</strong><span>sesiones</span></div>
           <div class="profile-stat"><strong>84</strong><span>minutos</span></div>
