@@ -1480,6 +1480,7 @@ export default function HomeScreen2({
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const carouselViewAllColor = activeSceneId === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent;
   // La tab bar flotante usa la misma separación inferior que su propio layout.
   // El widget queda 25 px por encima de la parte superior de esa barra.
   const tabBarBottomOffset =
@@ -2435,7 +2436,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => router.push("/historial" as never)}
-            viewAllColor={colors.accent}
+            viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
@@ -2522,7 +2523,7 @@ export default function HomeScreen2({
             titleSize={19}
             titleSpacing={17}
             onViewAll={() => openCategory("/favoritos-todos")}
-            viewAllColor={colors.accent}
+            viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
@@ -2541,7 +2542,7 @@ export default function HomeScreen2({
             allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
-            viewAllColor={colors.accent}
+            viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
             showAuthor={false}
@@ -2585,7 +2586,7 @@ export default function HomeScreen2({
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={[styles.inicioViewAllText, { color: colors.accent }]}>Ver todos</Text>
+                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
@@ -2630,7 +2631,7 @@ export default function HomeScreen2({
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={styles.inicioViewAllText}>Ver todas</Text>
+                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todas</Text>
               </Pressable>
             </View>
             <LiveSessionCard

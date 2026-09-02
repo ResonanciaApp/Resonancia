@@ -5,6 +5,8 @@ import { router } from "expo-router";
 
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
@@ -18,6 +20,7 @@ type Props = {
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = getContentCarouselCardWidth(screenWidth, 20);
   const photoSize = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
@@ -30,7 +33,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           onPress={() => router.push("/equipo" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={[styles.viewAll, { color: colors.primary }]}>Ver todos</Text>
+          <Text style={[styles.viewAll, { color: theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent }]}>Ver todos</Text>
         </Pressable>
       </View>
       <ScrollView
@@ -67,7 +70,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
             <Text numberOfLines={2} style={styles.name}>
               {resonador.name}
             </Text>
-            <Text numberOfLines={1} style={[styles.subtype, { color: colors.primary }]}>
+            <Text numberOfLines={1} style={[styles.subtype, { color: colors.accent }]}>
               {resonador.subtipo}
             </Text>
           </Pressable>

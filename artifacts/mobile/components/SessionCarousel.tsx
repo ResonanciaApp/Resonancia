@@ -31,6 +31,7 @@ import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const CARD_W = 150;
 const GRID_PAD = 14;
@@ -145,6 +146,10 @@ export function SessionCarousel({
         ? "rgba(255,255,255,0.05)"
         : colors.card;
   const ambientalImageSize = Math.round(cw * 0.72);
+  const viewAllAccent = theme.id === "indigo2"
+    ? WIDGET_GREEN_SOLID
+    : (viewAllColor ?? colors.accent);
+  const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
   return (
     <View style={[styles.section, style]}>
       {showHeader && (onViewAll ? (
@@ -152,17 +157,17 @@ export function SessionCarousel({
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: description ? 4 : 0 }]}>{title}</Text>
               <Pressable onPress={onViewAll} hitSlop={8}>
-                <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllColor ?? colors.primary }}>Ver todos</Text>
+                <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: viewAllAccent }}>Ver todos</Text>
               </Pressable>
           </View>
           {description && (
-            <Text style={[styles.sectionDescription, { color: "#acaac2" }]}>{description}</Text>
+            <Text style={[styles.sectionDescription, { color: sectionDescriptionColor }]}>{description}</Text>
           )}
         </View>
       ) : description ? (
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 4 }]}>{title}</Text>
-          <Text style={[styles.sectionDescription, { color: "#acaac2" }]}>{description}</Text>
+          <Text style={[styles.sectionDescription, { color: sectionDescriptionColor }]}>{description}</Text>
         </View>
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
@@ -282,21 +287,21 @@ export function SessionCarousel({
                   </Text>
                   {showMetaBelow ? (
                     <Text
-                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
                       numberOfLines={1}
                     >
                       {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
                   ) : showCollectionBelow && s.categoryLabel ? (
                     <Text
-                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
                       numberOfLines={1}
                     >
                       {s.categoryLabel}
                     </Text>
                   ) : showAuthor && authorName ? (
                     <Text
-                      style={[styles.cardAuthor, cardAuthorColor ? { color: cardAuthorColor } : null]}
+                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
                       numberOfLines={1}
                     >
                       {authorName}

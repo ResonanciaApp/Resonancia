@@ -156,7 +156,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
           </View>
           {showMetaBelow && (
-            <Text style={styles.hMetaBelow} numberOfLines={1}>
+            <Text style={[styles.hMetaBelow, theme.id === "indigo2" && { color: colors.accent }]} numberOfLines={1}>
               {[session.durationLabel, categoryLabel].filter(Boolean).join(" · ")}
             </Text>
           )}
@@ -165,7 +165,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               {showAuthorAvatar && (
                 <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
               )}
-              <Text style={[styles.hAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.hAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>
                 {authorName}
               </Text>
             </View>
@@ -261,7 +261,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               {showAuthorAvatar && (
                 <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
               )}
-              <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>
                 {authorName}
               </Text>
             </View>

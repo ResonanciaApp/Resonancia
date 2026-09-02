@@ -34,6 +34,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useAuth } from "@/context/AuthContext";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 
 import { Dimensions } from "react-native";
@@ -51,6 +52,7 @@ const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 export function CommunityMixesCarousel() {
   const { openCategory } = useCategoryOverlay();
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const { data } = useGetSharedMixes();
   const [cachedMixes, setCachedMixes] = useState<SharedMix[]>([]);
   const allMixes = data?.mixes ?? cachedMixes;
@@ -143,7 +145,7 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={[styles.verTodas, { color: colors.primary }]}>Ver todos</Text>
+          <Text style={[styles.verTodas, { color: theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.primary }]}>Ver todos</Text>
         </Pressable>
       </View>
 

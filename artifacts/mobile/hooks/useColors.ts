@@ -14,9 +14,10 @@ export function useColors() {
       ? (colors as Record<string, typeof colors.light>).dark
       : colors.light;
 
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const primary =
     activeSceneId === "tibet" || activeSceneId === "indigo" || activeSceneId === "indigo2" ? "#ACACC1" : palette.primary;
+  const accent = theme.accent ?? palette.accent;
 
-  return { ...palette, primary, radius: colors.radius };
+  return { ...palette, primary, accent, radius: colors.radius };
 }

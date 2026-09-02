@@ -1,6 +1,13 @@
 import React from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, Platform, StyleSheet, View } from "react-native";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
+
+const webBackdropBlur = Platform.OS === "web"
+  ? ({
+      backdropFilter: "blur(18px)",
+      WebkitBackdropFilter: "blur(18px)",
+    } as const)
+  : undefined;
 
 /** Non-interactive frosted surface used behind compact mobile headers. */
 export function StickyHeaderSurface({
@@ -11,7 +18,10 @@ export function StickyHeaderSurface({
   tint: string;
 }) {
   return (
-    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.surface, { opacity }]}>
+    <Animated.View
+      pointerEvents="none"
+      style={[StyleSheet.absoluteFill, styles.surface, webBackdropBlur, { opacity }]}
+    >
       <SessionBadgeGlass />
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.tint, { backgroundColor: tint }]} />
       <View pointerEvents="none" style={styles.divider} />

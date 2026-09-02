@@ -428,6 +428,7 @@ export function ProfileScreenBase({
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const profileScrollRef = useRef<ScrollView>(null);
+  const [profileStickyHeaderHeight, setProfileStickyHeaderHeight] = useState(0);
   const navigation = useNavigation();
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
@@ -1081,8 +1082,13 @@ export function ProfileScreenBase({
       <View style={styles.contentShift}>
       {/* ── Sticky header (estilo Calm) ── */}
       <View
+        onLayout={dedicated ? (event) => {
+          const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+          setProfileStickyHeaderHeight((current) => current === nextHeight ? current : nextHeight);
+        } : undefined}
         style={[
           styles.stickyHeader,
+          dedicated && styles.stickyHeaderDedicatedOverlay,
           {
             paddingTop: asTab ? topPad + 8 : topPad + 2,
           },
@@ -1092,7 +1098,7 @@ export function ProfileScreenBase({
           <StickyHeaderSurface
             opacity={profileTitleCompactAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, 0.96],
+              outputRange: [0, 0.88],
             })}
             tint={activeTheme.gradient[0] as string}
           />
@@ -1187,7 +1193,11 @@ export function ProfileScreenBase({
       <ScrollView
         ref={profileScrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 1, paddingHorizontal: 14 }}
+        contentContainerStyle={{
+          paddingBottom: 160 + bottomPad,
+          paddingTop: Math.max(profileStickyHeaderHeight, topPad + 56),
+          paddingHorizontal: 14,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
@@ -1882,6 +1892,14 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
+  },
+  stickyHeaderDedicatedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 30,
+    elevation: 30,
   },
   profileHeaderGlass: {
     position: "absolute",

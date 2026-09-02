@@ -67,7 +67,7 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
       <Text style={[styles.title, { color: colors.foreground }]}>
         Recomendaciones diarias
       </Text>
-      <Text style={[styles.date, { color: colors.mutedForeground }]}>
+      <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
         {formatDailyDate(dayKey)}
       </Text>
 

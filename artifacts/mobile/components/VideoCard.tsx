@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 
 type Props = {
@@ -49,6 +50,8 @@ export function VideoCard({
   onOptionsPress,
 }: Props) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
+  const secondaryTextColor = theme.id === "indigo2" ? colors.accent : colors.mutedForeground;
   const { isPremium } = usePremium();
   const locked = !!video.isPremium && !isPremium;
   const [thumbnailFailed, setThumbnailFailed] = useState(false);
@@ -99,13 +102,13 @@ export function VideoCard({
 
         <View style={styles.feedCaptionRow}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
-            <Text style={[styles.feedCaption, { color: colors.mutedForeground, flex: 0, marginRight: 0 }]} numberOfLines={1}>
+            <Text style={[styles.feedCaption, { color: secondaryTextColor, flex: 0, marginRight: 0 }]} numberOfLines={1}>
               {rating.toFixed(1)}
             </Text>
-            <Text style={[styles.feedCaption, { color: colors.mutedForeground, flex: 0, marginLeft: 2, marginRight: 0 }]} numberOfLines={1}>
+            <Text style={[styles.feedCaption, { color: secondaryTextColor, flex: 0, marginLeft: 2, marginRight: 0 }]} numberOfLines={1}>
               ★
             </Text>
-            <Text style={[styles.feedCaption, { color: colors.mutedForeground, marginLeft: 4, marginRight: 0 }]} numberOfLines={1}>
+            <Text style={[styles.feedCaption, { color: secondaryTextColor, marginLeft: 4, marginRight: 0 }]} numberOfLines={1}>
               {video.subtitle} · {video.durationLabel}
             </Text>
           </View>
@@ -123,7 +126,7 @@ export function VideoCard({
             {video.title}
           </Text>
           {video.author && (
-            <Text style={[styles.feedAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+            <Text style={[styles.feedAuthor, { color: secondaryTextColor }]} numberOfLines={1}>
               {video.author}
             </Text>
           )}
@@ -162,7 +165,7 @@ export function VideoCard({
             {video.title}
           </Text>
           <View style={styles.hMeta}>
-            <Text style={[styles.hDuration, { color: colors.mutedForeground }]}>
+            <Text style={[styles.hDuration, { color: secondaryTextColor }]}>
               {video.durationLabel}
             </Text>
           </View>
@@ -206,7 +209,7 @@ export function VideoCard({
         {video.title}
       </Text>
       {video.author && (
-        <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+        <Text style={[styles.cardAuthor, { color: secondaryTextColor }]} numberOfLines={1}>
           {video.author}
         </Text>
       )}

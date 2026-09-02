@@ -39,7 +39,7 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "#A9A9C3";
-const INDIGO2_COLOR  = "#C9C8DE";
+const INDIGO2_COLOR  = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(43,41,66,0.65)";
 
