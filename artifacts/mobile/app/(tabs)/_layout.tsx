@@ -44,7 +44,8 @@ const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(43,41,66,0.65)";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 68;   // altura del bloque de navegación, sin safe area
+const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 20;
 const MINI_PLAYER_MARGIN_H = 15;
 
 // Rutas que nunca aparecen en el menú inferior
@@ -282,7 +283,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { backgroundColor: tabBarBackground, height: barHeight, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
       >
         <View
-          style={[styles.row, isWeb && styles.rowWeb]}
+          style={[
+            styles.row,
+            isWeb && styles.rowWeb,
+            { transform: [{ translateY: TAB_CONTENT_OFFSET_Y }] },
+          ]}
           onLayout={onRowLayout}
         >
           {/* ── Ghost pill deslizante ── */}
@@ -593,7 +598,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 6,
     alignItems: "center",
-    overflow: "hidden",
+    overflow: "visible",
   },
   rowWeb: {
     width: "100%",
