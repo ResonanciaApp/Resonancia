@@ -2427,7 +2427,6 @@ export default function HomeScreen2({
             />
           </View>
         )}
-        {isInicio2 && <MiRutinaSection />}
         {isInicio2 && (
           <View
             style={[
@@ -2594,6 +2593,7 @@ export default function HomeScreen2({
             showMetaBelow
           />
         )}
+        {isInicio2 && <MiRutinaSection />}
         {isInicio2 && (
           <SessionCarousel
             title="Recientes"
