@@ -44,34 +44,45 @@ import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { GhostPill } from "@/components/GhostPill";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+
+const GHOST_BUTTON_BACKGROUND = "rgba(255,255,255,0.24)";
+const GHOST_BUTTON_BORDER = "rgba(255,255,255,0.9)";
+const GHOST_BUTTON_BLUR_INTENSITY = 55;
 
 function CircleActionButton({
   label,
   testID,
   onPress,
-  backgroundColor,
   children,
 }: {
   label: string;
   testID: string;
   onPress: () => void;
-  backgroundColor: string;
   children: React.ReactNode;
 }) {
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      testID={testID}
-      onPress={onPress}
-      hitSlop={6}
-      style={({ pressed }) => [
-        styles.circleAction,
-        { backgroundColor, opacity: pressed ? 0.78 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] },
-      ]}
-    >
-      {children}
-    </Pressable>
+    <GhostPill style={styles.circleActionPill}>
+      <BlurView
+        intensity={GHOST_BUTTON_BLUR_INTENSITY}
+        tint="light"
+        pointerEvents="none"
+        style={styles.ghostButtonBlur}
+      />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        testID={testID}
+        onPress={onPress}
+        hitSlop={6}
+        style={({ pressed }) => [
+          styles.circleAction,
+          { opacity: pressed ? 0.78 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] },
+        ]}
+      >
+        {children}
+      </Pressable>
+    </GhostPill>
   );
 }
 
@@ -96,7 +107,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   } = usePlayer();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
-  const { showMenu } = useTabBarVisibility();
+  const { requestHide, showMenu, setRevealHandleHidden } = useTabBarVisibility();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -104,8 +115,13 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const session = getSessionById(id ?? "");
 
   useEffect(() => {
-    showMenu();
-  }, [showMenu]);
+    setRevealHandleHidden(true);
+    requestHide();
+    return () => {
+      setRevealHandleHidden(false);
+      showMenu();
+    };
+  }, [requestHide, setRevealHandleHidden, showMenu]);
 
   if (!session) {
     return (
@@ -126,7 +142,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const sessionGradient: string[] = sceneTheme.id === "tibet"
     ? ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"]
     : [...sceneTheme.gradient];
-  const actionBackground = "rgba(0,0,0,0.3)";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -375,7 +390,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           label="Volver"
           testID="session-detail-back-button"
           onPress={goBack}
-          backgroundColor={actionBackground}
         >
           <Feather name="chevron-left" size={23} color={colors.foreground} />
         </CircleActionButton>
@@ -385,7 +399,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             label="Descargar"
             testID="session-detail-download-button"
             onPress={handleDownload}
-            backgroundColor={actionBackground}
           >
             <Feather name="download" size={19} color={colors.foreground} />
           </CircleActionButton>
@@ -393,7 +406,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             label={fav ? "Quitar de Me gusta" : "Me gusta"}
             testID="session-detail-favorite-button"
             onPress={handleFav}
-            backgroundColor={actionBackground}
           >
             <Ionicons
               name={fav ? "heart" : "heart-outline"}
@@ -405,7 +417,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             label="Compartir"
             testID="session-detail-share-button"
             onPress={handleShare}
-            backgroundColor={actionBackground}
           >
             <Feather name="share-2" size={19} color={colors.foreground} />
           </CircleActionButton>
@@ -413,7 +424,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             label="Más opciones"
             testID="session-detail-more-button"
             onPress={() => setActionsSheetOpen(true)}
-            backgroundColor={actionBackground}
           >
             <Feather name="more-horizontal" size={20} color={colors.foreground} />
           </CircleActionButton>
@@ -432,10 +442,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           <View style={styles.playArea}>
             <GhostPill style={styles.immersivePlayPill}>
               <BlurView
-                intensity={55}
+                intensity={GHOST_BUTTON_BLUR_INTENSITY}
                 tint="light"
                 pointerEvents="none"
-                style={styles.immersivePlayBlur}
+                style={styles.ghostButtonBlur}
               />
               <Pressable
                 accessibilityRole="button"
@@ -499,9 +509,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             )}
 
             <View style={styles.immersiveMetaRow}>
-              <Text style={[styles.immersiveDuration, { color: colors.foreground }]}>
-                {session.durationLabel}
-              </Text>
+              <SessionDurationBadge label={session.durationLabel} showClock />
             </View>
 
             {isPlaceholder && (
@@ -817,9 +825,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 7,
   },
-  circleAction: {
+  circleActionPill: {
     width: 40,
     height: 40,
+    borderRadius: 20,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    backgroundColor: GHOST_BUTTON_BACKGROUND,
+    borderWidth: 1,
+    borderColor: GHOST_BUTTON_BORDER,
+    overflow: "hidden",
+  },
+  circleAction: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
@@ -847,11 +867,12 @@ const styles = StyleSheet.create({
     borderRadius: 46.5,
     paddingHorizontal: 0,
     paddingVertical: 0,
-    backgroundColor: "rgba(255,255,255,0.24)",
+    backgroundColor: GHOST_BUTTON_BACKGROUND,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    borderColor: GHOST_BUTTON_BORDER,
+    overflow: "hidden",
   },
-  immersivePlayBlur: {
+  ghostButtonBlur: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 46.5,
   },
@@ -913,13 +934,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     marginTop: 9,
-  },
-  immersiveDuration: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: "500",
-    opacity: 0.78,
   },
   placeholderHint: {
     fontFamily: "Manrope",

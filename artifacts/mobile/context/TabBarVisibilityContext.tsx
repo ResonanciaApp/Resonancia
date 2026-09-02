@@ -13,6 +13,8 @@ type TabBarVisibility = {
   hidden: boolean;
   requestHide: () => void;
   showMenu: () => void;
+  revealHandleHidden: boolean;
+  setRevealHandleHidden: (hidden: boolean) => void;
   musicTheme: "claro" | "azul";
   setMusicTheme: (t: "claro" | "azul") => void;
   musicGradient: readonly [string, string, string];
@@ -26,6 +28,8 @@ const TabBarVisibilityContext = createContext<TabBarVisibility>({
   hidden: false,
   requestHide: () => {},
   showMenu: () => {},
+  revealHandleHidden: false,
+  setRevealHandleHidden: () => {},
   musicTheme: "claro",
   setMusicTheme: () => {},
   musicGradient: DEFAULT_GRADIENT,
@@ -40,6 +44,7 @@ export function TabBarVisibilityProvider({
   children: React.ReactNode;
 }) {
   const [hidden, setHidden] = useState(false);
+  const [revealHandleHidden, setRevealHandleHidden] = useState(false);
   const [musicTheme, setMusicTheme] = useState<"claro" | "azul">("claro");
   const [musicGradient, setMusicGradient] =
     useState<readonly [string, string, string]>(DEFAULT_GRADIENT);
@@ -47,8 +52,8 @@ export function TabBarVisibilityProvider({
   const requestHide = useCallback(() => setHidden(true), []);
   const showMenu = useCallback(() => setHidden(false), []);
   const value = useMemo(
-    () => ({ hidden, requestHide, showMenu, musicTheme, setMusicTheme, musicGradient, setMusicGradient, tabBarColors, setTabBarColors }),
-    [hidden, requestHide, showMenu, musicTheme, musicGradient, tabBarColors],
+    () => ({ hidden, requestHide, showMenu, revealHandleHidden, setRevealHandleHidden, musicTheme, setMusicTheme, musicGradient, setMusicGradient, tabBarColors, setTabBarColors }),
+    [hidden, requestHide, showMenu, revealHandleHidden, musicTheme, musicGradient, tabBarColors],
   );
   return (
     <TabBarVisibilityContext.Provider value={value}>

@@ -166,7 +166,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
-  const { hidden, showMenu } = useTabBarVisibility();
+  const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
   const indigo2Mode = activeSceneId === "indigo2";
   const translateY    = useRef(new Animated.Value(0)).current;
@@ -258,7 +258,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
     // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
     const panelOpen = isMixerOpen || isGeometrixOpen;
-    if (panelOpen || !tabBarHidden || librarySurface) {
+    if (panelOpen || !tabBarHidden || librarySurface || revealHandleHidden) {
       // Ocultar de inmediato (sin fade) para que no quede visible durante la
       // transición de cierre de los paneles.
       handleOpacity.stopAnimation();
@@ -275,7 +275,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         useNativeDriver: true,
       }).start();
     }
-  }, [tabBarHidden, librarySurface, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
+  }, [tabBarHidden, librarySurface, revealHandleHidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
 
   return (
     <>
@@ -340,7 +340,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       </Animated.View>
 
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
-      {state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
+      {!revealHandleHidden && state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
         <Animated.View
           pointerEvents={hidden && !librarySurface ? "auto" : "none"}
           style={{
