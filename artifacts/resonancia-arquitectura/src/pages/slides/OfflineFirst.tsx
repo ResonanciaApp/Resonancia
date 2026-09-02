@@ -9,16 +9,19 @@ export default function OfflineFirst() {
 
         <div className="side-label">Resumen</div>
         <div className="side-nav">
-          <div className="side-link">Una arquitectura móvil por capas</div>
-          <div className="side-link">Los motores que sostienen la experiencia</div>
-          <div className="side-link side-link-active">Offline-first, sincronizada y administrable</div>
+          <div className="side-link">01 Capas de arquitectura</div>
+          <div className="side-link">02 Motores principales</div>
+          <div className="side-link side-link-active">03 Offline-first</div>
+          <div className="side-link">04 Flujo de una sesión</div>
+          <div className="side-link">05 Contenido editorial</div>
+          <div className="side-link">06 Resiliencia</div>
         </div>
 
-        <div className="side-foot">03 / 03</div>
+        <div className="side-foot">03 / 06</div>
       </aside>
 
       <main className="main slide-main">
-        <div className="slide-kicker">03 / 03</div>
+        <div className="slide-kicker">03 / 06</div>
         <h1 className="slide-title">Offline-first, sincronizada y administrable</h1>
 
         <div className="sync-layout">

@@ -1,4 +1,4 @@
-export default function ArchitectureLayers() {
+export default function SessionFlow() {
   return (
     <div className="w-screen h-screen overflow-hidden relative deck-slide">
       <aside className="sidebar">
@@ -9,45 +9,45 @@ export default function ArchitectureLayers() {
 
         <div className="side-label">Resumen</div>
         <div className="side-nav">
-          <div className="side-link side-link-active">01 Capas de arquitectura</div>
+          <div className="side-link">01 Capas de arquitectura</div>
           <div className="side-link">02 Motores principales</div>
           <div className="side-link">03 Offline-first</div>
-          <div className="side-link">04 Flujo de una sesión</div>
+          <div className="side-link side-link-active">04 Flujo de una sesión</div>
           <div className="side-link">05 Contenido editorial</div>
           <div className="side-link">06 Resiliencia</div>
         </div>
 
-        <div className="side-foot">01 / 06</div>
+        <div className="side-foot">04 / 06</div>
       </aside>
 
       <main className="main slide-main">
-        <div className="slide-kicker">01 / 06</div>
-        <h1 className="slide-title">Una arquitectura móvil por capas</h1>
+        <div className="slide-kicker">04 / 06</div>
+        <h1 className="slide-title">Flujo end-to-end de una sesión</h1>
 
         <div className="architecture-list">
           <section className="architecture-row">
             <div className="card-index">01</div>
-            <p className="card-copy">- Mobile: Expo SDK 54 + React Native + Expo Router</p>
+            <p className="card-copy">- Usuario toca una sesión</p>
           </section>
 
           <section className="architecture-row">
             <div className="card-index">02</div>
-            <p className="card-copy">- Estado de producto: Context Providers para catálogo, auth, player, mixer y experiencia visual</p>
+            <p className="card-copy">- PlayerContext coordina cola, progreso, favoritos y sleep timer</p>
           </section>
 
           <section className="architecture-row">
             <div className="card-index">03</div>
-            <p className="card-copy">- Backend: Express 5 detrás de Clerk, con rutas de catálogo, actividad, comunidad y administración</p>
+            <p className="card-copy">- AudioBridge reserva el ownership único del audio</p>
           </section>
 
           <section className="architecture-row">
             <div className="card-index">04</div>
-            <p className="card-copy">- Datos: PostgreSQL + Drizzle ORM; contrato OpenAPI y clientes/hooks generados con Orval</p>
+            <p className="card-copy">- expo-audio reproduce sesiones; BpmAudioEngine ejecuta loops gapless</p>
           </section>
 
           <section className="architecture-row">
             <div className="card-index">05</div>
-            <p className="card-copy">- Archivos: Object Storage para audios, imágenes y videos; assets bundleados para lo esencial</p>
+            <p className="card-copy">- Reproducción en background alimenta estadísticas y sincronización</p>
           </section>
         </div>
       </main>

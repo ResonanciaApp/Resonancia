@@ -9,9 +9,12 @@ export default function ArchitectureCover() {
 
         <div className="side-label">Resumen</div>
         <div className="side-nav">
-          <div className="side-link side-link-active">Arquitectura de la app móvil</div>
-          <div className="side-link">Los motores que sostienen la experiencia</div>
-          <div className="side-link">Offline-first, sincronizada y administrable</div>
+          <div className="side-link side-link-active">01 Capas de arquitectura</div>
+          <div className="side-link">02 Motores principales</div>
+          <div className="side-link">03 Offline-first</div>
+          <div className="side-link">04 Flujo de una sesión</div>
+          <div className="side-link">05 Contenido editorial</div>
+          <div className="side-link">06 Resiliencia</div>
         </div>
 
         <div className="side-foot">Casa del Cuenco · 2026</div>
