@@ -27,6 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import {
   getSessionById,
+  getSessionsByCategory,
   getSessionsBySonidosTag,
   getSonidosVisibleSessions,
   type Session,
@@ -132,7 +133,9 @@ export default function SonidosScreen() {
     () =>
       SONIDOS_TAG_CARDS.map((tag) => ({
         ...tag,
-        sessions: getSessionsBySonidosTag(tag.label),
+        sessions: tag.label === "Todos los sonidos"
+          ? getSessionsByCategory("ambientales")
+          : getSessionsBySonidosTag(tag.label),
       })).filter((tag) => tag.sessions.length > 0),
     [version],
   );
