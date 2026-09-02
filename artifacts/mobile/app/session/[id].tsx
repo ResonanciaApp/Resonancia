@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
@@ -36,7 +37,6 @@ import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { hexToRgba } from "@/utils/color";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
@@ -96,7 +96,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   } = usePlayer();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
-  const { requestHide, showMenu } = useTabBarVisibility();
+  const { showMenu } = useTabBarVisibility();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -104,9 +104,8 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const session = getSessionById(id ?? "");
 
   useEffect(() => {
-    requestHide();
-    return showMenu;
-  }, [requestHide, showMenu]);
+    showMenu();
+  }, [showMenu]);
 
   if (!session) {
     return (
@@ -361,9 +360,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
         />
         <LinearGradient
           colors={[
-            "rgba(0,0,0,0.06)",
-            "rgba(0,0,0,0.16)",
-            "rgba(0,0,0,0.42)",
+            "rgba(0,0,0,0.14)",
+            "rgba(0,0,0,0.34)",
+            "rgba(0,0,0,0.68)",
           ]}
           locations={[0, 0.46, 1]}
           style={StyleSheet.absoluteFill}
@@ -432,6 +431,12 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
         <View style={styles.immersiveStage}>
           <View style={styles.playArea}>
             <GhostPill style={styles.immersivePlayPill}>
+              <BlurView
+                intensity={55}
+                tint="light"
+                pointerEvents="none"
+                style={styles.immersivePlayBlur}
+              />
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={
@@ -471,11 +476,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
           </View>
 
           <View style={styles.immersiveInfo}>
-            {!!session.categoryLabel && (
-              <Text style={[styles.immersiveCategory, { color: colors.foreground }]}>
-                {session.categoryLabel}
-              </Text>
-            )}
             <Text style={[styles.immersiveTitle, { color: colors.foreground }]}>{session.title}</Text>
 
             {!!session.description && (
@@ -499,14 +499,6 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             )}
 
             <View style={styles.immersiveMetaRow}>
-              {ratingStars > 0 && (
-                <View style={styles.ratingMeta}>
-                  <Text style={[styles.ratingMetaValue, { color: colors.foreground }]}>
-                    {ratingStars.toFixed(1)}
-                  </Text>
-                  <Text style={[styles.ratingMetaStar, { color: colors.foreground }]}>★</Text>
-                </View>
-              )}
               <Text style={[styles.immersiveDuration, { color: colors.foreground }]}>
                 {session.durationLabel}
               </Text>
@@ -850,20 +842,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   immersivePlayPill: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
+    width: 93,
+    height: 93,
+    borderRadius: 46.5,
     paddingHorizontal: 0,
     paddingVertical: 0,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.24)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.82)",
+    borderColor: "rgba(255,255,255,0.9)",
+  },
+  immersivePlayBlur: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 46.5,
   },
   immersivePlayButton: {
     flex: 1,
     width: "100%",
     height: "100%",
-    borderRadius: 44,
+    borderRadius: 46.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
@@ -873,21 +869,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     marginTop: 35,
   },
-  immersiveCategory: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 16,
-    fontWeight: "700",
-    letterSpacing: 2.2,
-    textAlign: "center",
-    textTransform: "uppercase",
-    opacity: 0.76,
-    marginBottom: 10,
-  },
   immersiveTitle: {
     fontFamily: "Manrope",
-    fontSize: 27,
-    lineHeight: 34,
+    fontSize: 33,
+    lineHeight: 40,
     fontWeight: "700",
     letterSpacing: -0.5,
     textAlign: "center",
@@ -928,23 +913,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     marginTop: 9,
-  },
-  ratingMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-  ratingMetaValue: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    opacity: 0.78,
-  },
-  ratingMetaStar: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 18,
-    opacity: 0.78,
   },
   immersiveDuration: {
     fontFamily: "Manrope",
