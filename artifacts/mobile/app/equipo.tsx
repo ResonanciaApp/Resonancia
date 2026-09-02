@@ -294,20 +294,6 @@ export default function EquipoScreen() {
             <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
             <Text style={[styles.titleSub, { transform: [{ translateY: 4 }] }]}>La esencia de Resonancia</Text>
           </View>
-          <Pressable
-            hitSlop={10}
-            onPress={() => router.push("/equipo-info" as never)}
-            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, transform: [{ translateX: 3 }] })}
-          >
-            <LinearGradient
-              colors={["#8260B5", "#5B427F"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.uneteBtn}
-            >
-              <Text style={styles.uneteBtnText}>Únete</Text>
-            </LinearGradient>
-          </Pressable>
         </View>
 
         <AnimatedFilterRow
@@ -351,26 +337,12 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 4,
   },
-  uneteBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: 1.5,
-    borderColor: "rgba(249,249,249,0.5)",
-  },
-  uneteBtnText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    letterSpacing: 0.4,
-  },
   title: {
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 20,
     fontWeight: "700",
     color: "#F9F9F9",
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   titleSub: {
     fontFamily: "Manrope",

@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
 
@@ -9,7 +9,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
-  getContentCarouselCardWidth,
 } from "@/constants/carousel";
 
 type Props = {
@@ -17,31 +16,33 @@ type Props = {
   marginBottom?: number;
 };
 
+const SECTION_PADDING = 14;
+const GRID_GAP = 10;
+
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { width: screenWidth } = useWindowDimensions();
-  const cardWidth = getContentCarouselCardWidth(screenWidth, 20);
-  const photoSize = Math.round(cardWidth * CONTENT_CAROUSEL_HEIGHT_SCALE);
+  const cardWidth = Math.floor(
+    (screenWidth - SECTION_PADDING * 2 - GRID_GAP * 2) / 3,
+  );
+  const photoSize = Math.round((cardWidth - 10) * CONTENT_CAROUSEL_HEIGHT_SCALE);
 
   return (
-    <View style={[styles.root, { marginTop, marginBottom }]}>
+    <View style={[styles.root, { marginTop, marginBottom, paddingHorizontal: SECTION_PADDING }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Los Resonadores</Text>
         <Pressable
           onPress={() => router.push("/equipo" as never)}
+          accessibilityRole="button"
+          accessibilityLabel="Ver todos los Resonadores"
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
           <Text style={[styles.viewAll, { color: theme.id === "indigo" || theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent }]}>Ver todos</Text>
         </Pressable>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.carousel}
-        contentContainerStyle={styles.carouselContent}
-      >
+      <View style={styles.grid}>
         {resonadores.map((resonador) => (
           <Pressable
             key={resonador.id}
@@ -75,7 +76,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
             </Text>
           </Pressable>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -85,14 +86,13 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
     marginBottom: 16,
   },
   title: {
     flex: 1,
     marginBottom: 0,
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: "700",
     color: "#F4F4F4",
   },
@@ -101,12 +101,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
-  carousel: {
-    marginTop: 8,
-  },
-  carouselContent: {
-    paddingHorizontal: 20,
-    gap: 15,
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: GRID_GAP,
+    rowGap: 18,
   },
   resonador: {
     alignItems: "center",
@@ -114,7 +113,7 @@ const styles = StyleSheet.create({
   photoFrame: {
     borderRadius: 15,
     overflow: "hidden",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   photo: {
   },
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#F9F9F9",
     textAlign: "center",
-    lineHeight: 19,
+    lineHeight: 18,
   },
   subtype: {
     marginTop: 2,
@@ -133,11 +132,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     backgroundColor: "transparent",
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "600",
     color: "#BE9650",
     textAlign: "center",
-    lineHeight: 14,
+    lineHeight: 13,
     overflow: "hidden",
   },
 });
