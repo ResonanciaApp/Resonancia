@@ -1,5 +1,4 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
@@ -43,12 +42,10 @@ import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
-import { GhostPill } from "@/components/GhostPill";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
-const GHOST_BUTTON_BACKGROUND = "rgba(255,255,255,0.24)";
-const GHOST_BUTTON_BORDER = "rgba(255,255,255,0.9)";
-const GHOST_BUTTON_BLUR_INTENSITY = 55;
+const PLAYER_ACTION_BACKGROUND = "rgba(255,255,255,0.10)";
+const PLAYER_ACTION_BORDER = "rgba(255,255,255,0.18)";
 
 function CircleActionButton({
   label,
@@ -62,27 +59,19 @@ function CircleActionButton({
   children: React.ReactNode;
 }) {
   return (
-    <GhostPill style={styles.circleActionPill}>
-      <BlurView
-        intensity={GHOST_BUTTON_BLUR_INTENSITY}
-        tint="light"
-        pointerEvents="none"
-        style={styles.ghostButtonBlur}
-      />
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        testID={testID}
-        onPress={onPress}
-        hitSlop={6}
-        style={({ pressed }) => [
-          styles.circleAction,
-          { opacity: pressed ? 0.78 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] },
-        ]}
-      >
-        {children}
-      </Pressable>
-    </GhostPill>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      testID={testID}
+      onPress={onPress}
+      hitSlop={6}
+      style={({ pressed }) => [
+        styles.circleAction,
+        { opacity: pressed ? 0.78 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] },
+      ]}
+    >
+      {children}
+    </Pressable>
   );
 }
 
@@ -440,49 +429,41 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       >
         <View style={styles.immersiveStage}>
           <View style={styles.playArea}>
-            <GhostPill style={styles.immersivePlayPill}>
-              <BlurView
-                intensity={GHOST_BUTTON_BLUR_INTENSITY}
-                tint="light"
-                pointerEvents="none"
-                style={styles.ghostButtonBlur}
-              />
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={
-                  isPlaceholder
-                    ? "Ver disponibilidad de la sesión"
-                    : isCurrentlyPlaying
-                      ? "Pausar sesión"
-                      : "Reproducir sesión"
-                }
-                accessibilityState={{
-                  busy: isLoading && isCurrentSession,
-                  disabled: isLoading && isCurrentSession,
-                }}
-                testID="session-detail-play-button"
-                onPress={handlePlayback}
-                disabled={isLoading && isCurrentSession}
-                style={({ pressed }) => [
-                  styles.immersivePlayButton,
-                  {
-                    opacity: isLoading && isCurrentSession ? 0.82 : pressed ? 0.82 : 1,
-                    transform: [{ scale: pressed ? 0.96 : 1 }],
-                  },
-                ]}
-              >
-                {isLoading && isCurrentSession ? (
-                  <ActivityIndicator size="small" color={colors.foreground} />
-                ) : (
-                  <Ionicons
-                    name={isCurrentlyPlaying ? "pause" : "play"}
-                    size={31}
-                    color={colors.foreground}
-                    style={!isCurrentlyPlaying ? { marginLeft: 3 } : undefined}
-                  />
-                )}
-              </Pressable>
-            </GhostPill>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                isPlaceholder
+                  ? "Ver disponibilidad de la sesión"
+                  : isCurrentlyPlaying
+                    ? "Pausar sesión"
+                    : "Reproducir sesión"
+              }
+              accessibilityState={{
+                busy: isLoading && isCurrentSession,
+                disabled: isLoading && isCurrentSession,
+              }}
+              testID="session-detail-play-button"
+              onPress={handlePlayback}
+              disabled={isLoading && isCurrentSession}
+              style={({ pressed }) => [
+                styles.immersivePlayButton,
+                {
+                  opacity: isLoading && isCurrentSession ? 0.82 : pressed ? 0.82 : 1,
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                },
+              ]}
+            >
+              {isLoading && isCurrentSession ? (
+                <ActivityIndicator size="small" color={colors.foreground} />
+              ) : (
+                <Ionicons
+                  name={isCurrentlyPlaying ? "pause" : "play"}
+                  size={31}
+                  color={colors.foreground}
+                  style={!isCurrentlyPlaying ? { marginLeft: 3 } : undefined}
+                />
+              )}
+            </Pressable>
           </View>
 
           <View style={styles.immersiveInfo}>
@@ -825,24 +806,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 7,
   },
-  circleActionPill: {
+  circleAction: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    backgroundColor: GHOST_BUTTON_BACKGROUND,
-    borderWidth: 1,
-    borderColor: GHOST_BUTTON_BORDER,
-    overflow: "hidden",
-  },
-  circleAction: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: PLAYER_ACTION_BACKGROUND,
+    borderWidth: 1,
+    borderColor: PLAYER_ACTION_BORDER,
   },
   immersiveScroll: {
     flex: 1,
@@ -861,29 +833,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  immersivePlayPill: {
+  immersivePlayButton: {
     width: 93,
     height: 93,
     borderRadius: 46.5,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    backgroundColor: GHOST_BUTTON_BACKGROUND,
-    borderWidth: 1,
-    borderColor: GHOST_BUTTON_BORDER,
-    overflow: "hidden",
-  },
-  ghostButtonBlur: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 46.5,
-  },
-  immersivePlayButton: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    borderRadius: 46.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent",
+    backgroundColor: PLAYER_ACTION_BACKGROUND,
+    borderWidth: 1,
+    borderColor: PLAYER_ACTION_BORDER,
   },
   immersiveInfo: {
     alignItems: "center",
