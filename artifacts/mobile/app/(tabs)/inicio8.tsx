@@ -99,6 +99,7 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -2600,6 +2601,13 @@ export default function HomeScreen2({
               ))}
             </ScrollView>
           </View>
+        )}
+        {isInicio2 && (
+          <EncuentrosResonadoresSection
+            marginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+            titleMarginTop={0}
+          />
         )}
         {isInicio2 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
