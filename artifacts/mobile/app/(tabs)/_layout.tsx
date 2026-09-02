@@ -42,8 +42,8 @@ const INDIGO2_COLOR  = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
-const TAB_CONTENT_OFFSET_Y = 10;
+const PILL_H         = 62;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 5;
 const MINI_PLAYER_MARGIN_H = 15;
 
 // Rutas que nunca aparecen en el menú inferior
