@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
@@ -151,6 +151,7 @@ type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tab
 
 function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
+  const pathname = usePathname();
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
   const { openMixer, isMixerOpen } = useMixerPanel();
@@ -171,7 +172,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
   const librarySurface = libOpen || isLibraryRoute;
-  const tabBarHidden = hidden || librarySurface;
+  const routeForcesHidden = pathname === "/player" || pathname.startsWith("/session/");
+  const tabBarHidden = hidden || librarySurface || routeForcesHidden;
   const libraryBarOffset = libraryParallax.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 56],
@@ -203,7 +205,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     // La pestañita NO debe aparecer cuando la barra se ocultó por el panel del
     // Mezclador o Geometrix (al cerrar el panel se veía un flash del chevron-up).
     const panelOpen = isMixerOpen || isGeometrixOpen;
-    if (panelOpen || !tabBarHidden || librarySurface || revealHandleHidden) {
+    if (panelOpen || !tabBarHidden || librarySurface || revealHandleHidden || routeForcesHidden) {
       // Ocultar de inmediato (sin fade) para que no quede visible durante la
       // transición de cierre de los paneles.
       handleOpacity.stopAnimation();
@@ -220,12 +222,22 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         useNativeDriver: true,
       }).start();
     }
-  }, [tabBarHidden, librarySurface, revealHandleHidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
+  }, [tabBarHidden, librarySurface, revealHandleHidden, routeForcesHidden, barHeight, translateY, handleOpacity, isMixerOpen, isGeometrixOpen]);
 
   return (
     <>
       <Animated.View
-        style={[styles.bar, { backgroundColor: tabBarBackground, height: barHeight, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
+        style={[
+          styles.bar,
+          {
+            backgroundColor: tabBarBackground,
+            height: barHeight,
+            transform: [
+              { translateX: libraryBarOffset },
+              { translateY: routeForcesHidden ? barHeight + 40 : translateY },
+            ],
+          },
+        ]}
       >
         <View
           style={[
@@ -273,7 +285,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       </Animated.View>
 
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
-      {!revealHandleHidden && state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
+      {!routeForcesHidden && !revealHandleHidden && state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
         <Animated.View
           pointerEvents={hidden && !librarySurface ? "auto" : "none"}
           style={{
