@@ -81,7 +81,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const { id: idParam, source } = useLocalSearchParams<{ id: string; source?: string }>();
   const id = idProp ?? idParam;
   const overlayBack = useBackOverride();
-  const goBack = () => (overlayBack ? overlayBack() : router.back());
+  const preserveTabBarHiddenRef = useRef(false);
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const {
@@ -99,6 +99,15 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
   const { requestHide, showMenu, setRevealHandleHidden } = useTabBarVisibility();
+  const revealTabBarBeforeLeaving = () => {
+    preserveTabBarHiddenRef.current = false;
+    setRevealHandleHidden(false);
+    showMenu();
+  };
+  const goBack = () => {
+    revealTabBarBeforeLeaving();
+    return overlayBack ? overlayBack() : router.back();
+  };
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -106,11 +115,17 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const session = getSessionById(id ?? "");
 
   useEffect(() => {
+    preserveTabBarHiddenRef.current = false;
     setRevealHandleHidden(true);
     requestHide();
     return () => {
-      setRevealHandleHidden(false);
-      showMenu();
+      // Al abrir el reproductor, este detalle puede desmontarse antes de que
+      // el usuario vuelva. Mantener el estado oculto evita que la tab bar
+      // aparezca al regresar desde /player.
+      if (!preserveTabBarHiddenRef.current) {
+        setRevealHandleHidden(false);
+        showMenu();
+      }
     };
   }, [requestHide, setRevealHandleHidden, showMenu]);
 
@@ -266,6 +281,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       playSession(session);
     }
     if (session.skipMiniPlayer) return;
+    preserveTabBarHiddenRef.current = true;
+    setRevealHandleHidden(true);
+    requestHide();
     router.push("/player" as never);
   };
 
@@ -476,7 +494,10 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
               <Pressable
                 accessibilityRole="link"
                 accessibilityLabel={`Ver perfil de ${authors[0].name}`}
-                onPress={() => router.push(authors[0].profilePath as never)}
+                onPress={() => {
+                  revealTabBarBeforeLeaving();
+                  router.push(authors[0].profilePath as never);
+                }}
                 style={({ pressed }) => [styles.immersiveAuthorButton, { opacity: pressed ? 0.7 : 1 }]}
               >
                 <Text style={[styles.immersiveAuthorPrefix, { color: colors.foreground }]}>Por </Text>
