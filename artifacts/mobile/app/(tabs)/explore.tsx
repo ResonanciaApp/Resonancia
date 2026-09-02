@@ -536,7 +536,7 @@ export function ExploreScreen({
           scrollEventThrottle={16}
         >
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
-          {themeCarousels.map((carousel) => (
+          {themeCarousels.map((carousel, index) => (
             <View key={carousel.slug}>
               <SessionCarousel
                 title={carousel.label}
@@ -545,7 +545,7 @@ export function ExploreScreen({
                 onPress={(s) => handleSessionPress(s)}
                 style={{
                   marginTop:
-                    carousel.label.trim().toLowerCase() === "para la ansiedad"
+                    index === 0
                       ? collapseCategoryHeader
                         ? COLLAPSED_FIRST_CAROUSEL_GAP
                         : SECTION_GAP - 20
