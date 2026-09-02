@@ -44,9 +44,8 @@ const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(43,41,66,0.65)";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 68;   // altura fija de la píldora flotante
-const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
-const TAB_BAR_LIFT   = 6;    // separación adicional solicitada con el borde inferior
+const PILL_H         = 68;   // altura del bloque de navegación, sin safe area
+const MINI_PLAYER_MARGIN_H = 15;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas", "explore"]);
@@ -161,14 +160,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { closeAllCategories } = useCategoryOverlay();
   const { libOpen, closeLib, libraryParallax } = useDrawer();
 
-  // 8 px de separación con el borde inferior de la pantalla
-  const barBottom = Math.max(3, pb - 10 - 5) - 1 + TAB_BAR_LIFT;
-  // Altura total que ocupa la píldora (para la animación de hide)
-  const barHeight = PILL_H + barBottom + 40;
+  // El bloque llega hasta el borde inferior e incluye el área segura.
+  const barHeight = PILL_H + pb;
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
+  const { brightMode } = useBrightness();
   const indigo2Mode = activeSceneId === "indigo2";
+  const tabBarBackground = brightMode ? applyBrightSat(theme.gradient[0]) : theme.gradient[0];
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -280,7 +279,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, indigo2Mode && styles.barIndigo2, { bottom: barBottom, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
+        style={[styles.bar, { backgroundColor: tabBarBackground, height: barHeight, transform: [{ translateX: libraryBarOffset }, { translateY }] }]}
       >
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
@@ -380,7 +379,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + Math.max(8, bottomPb - 10);
+  const tabBarHeight       = PILL_H + bottomPb;
   const { hidden }         = useTabBarVisibility();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
@@ -584,36 +583,20 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   bar: {
     position: "absolute",
-    left: PILL_MARGIN_H,
-    right: PILL_MARGIN_H,
-    height: PILL_H,
-    borderRadius: 999,
-    overflow: "visible",
-    backgroundColor: "#1a1a2c",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.07)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.38,
-    shadowRadius: 10,
-    // elevation rompe el blur dimezis en Android (capa separada → no captura el fondo)
-    ...(Platform.OS === "android" ? {} : { elevation: 25 }),
-  },
-  barIndigo2: {
-    backgroundColor: "#101014",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: "hidden",
   },
   row: {
-    flex: 1,
+    height: PILL_H,
     flexDirection: "row",
     paddingHorizontal: 6,
     alignItems: "center",
-    borderRadius: 999,
     overflow: "hidden",
   },
   rowWeb: {
-    maxWidth: 430,
     width: "100%",
-    alignSelf: "center",
   },
   tab: {
     flex: 1,
@@ -677,8 +660,8 @@ const styles = StyleSheet.create({
   },
   miniPlayerFloat: {
     position: "absolute",
-    left: PILL_MARGIN_H,
-    right: PILL_MARGIN_H,
+    left: MINI_PLAYER_MARGIN_H,
+    right: MINI_PLAYER_MARGIN_H,
     bottom: 29,
   },
   mixerPanel: {
