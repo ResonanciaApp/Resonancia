@@ -597,14 +597,14 @@ export default function DescansoScreen() {
               showMetaBelow
             />
           )}
-          {sleepCollections.map((collection) => (
+          {sleepCollections.map((collection, index) => (
             <SessionCarousel
               key={collection.id}
               title={collection.label}
               sessions={collection.sessions.slice(0, 5)}
               isPremium={isPremium}
               onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+              style={{ marginTop: index === 0 ? 33 : 53, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata

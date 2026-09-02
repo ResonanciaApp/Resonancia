@@ -293,14 +293,14 @@ export default function SonidosScreen() {
                 showMetaBelow
               />
             )}
-            {collections.map((collection) => (
+            {collections.map((collection, index) => (
               <SessionCarousel
                 key={collection.id}
                 title={collection.label}
                 sessions={collection.sessions.slice(0, 5)}
                 isPremium={isPremium}
                 onPress={openSession}
-                style={styles.carousel}
+                style={[styles.carousel, index === 0 && styles.firstCarousel]}
                 cardWidth={CARD_W}
                 titleSize={19}
                 showCardMetadata
@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     paddingHorizontal: H_PAD,
   },
+  firstCarousel: { marginTop: 33 },
   recentCarousel: { marginTop: 33 },
   empty: {
     marginHorizontal: H_PAD,

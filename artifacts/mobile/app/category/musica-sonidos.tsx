@@ -408,7 +408,7 @@ export default function MusicaSonidosScreen() {
                   sessions={preview}
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-                   style={{ marginTop: 53, marginBottom: 0 }}
+                   style={{ marginTop: idx === 0 ? 33 : 53, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   showCardMetadata

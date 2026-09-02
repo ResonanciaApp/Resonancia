@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "400" },
 
-  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 10 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
 

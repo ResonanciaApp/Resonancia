@@ -218,7 +218,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
                 isPremium={isPremium}
                 onPress={handleSessionPress}
                 onViewAll={tabSessions.length > 5 ? () => setActiveTab(tab) : undefined}
-                style={{ marginTop: index === 0 ? 33 : 53, marginBottom: 0 }}
+                style={{ marginTop: index === 0 ? 13 : 53, marginBottom: 0 }}
                 cardWidth={CAROUSEL_CARD_W}
                 allowOversizedCardWidth
                 titleSize={19}

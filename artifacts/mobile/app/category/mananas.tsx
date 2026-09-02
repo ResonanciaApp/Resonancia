@@ -458,7 +458,7 @@ export default function MananasScreen() {
 
             {/* ── Tab: Todos ── */}
             {activeTab === "Todos" && (
-              <View style={{ paddingTop: 21 }}>
+              <View style={{ paddingTop: 1 }}>
                 {filteredSessions.some((s) => s.isFeaturedCategory) && (
                   <>
                     <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 24, marginTop: 10 }]}>
@@ -506,7 +506,7 @@ export default function MananasScreen() {
 
             {/* ── Tab: Audios ── */}
             {activeTab === "Audios" && (
-              <View style={{ paddingTop: 21 }}>
+              <View style={{ paddingTop: 1 }}>
                 <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
                   Escuchado Recientemente
                 </Text>
