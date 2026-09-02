@@ -551,6 +551,9 @@ export function ExploreScreen({
                         ? COLLAPSED_FIRST_CAROUSEL_GAP
                         : FIRST_DISCOVER_CAROUSEL_GAP
                       : 0,
+                  ...(carousel.slug === "para-la-ansiedad"
+                    ? { transform: [{ translateY: -8 }] }
+                    : {}),
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
                 }}
