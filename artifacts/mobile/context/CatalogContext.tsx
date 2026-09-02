@@ -7,8 +7,8 @@
  * 1. Los datos bundleados ya son válidos al arrancar (paridad 1:1 con el seed).
  * 2. Al montar, se aplica el último snapshot cacheado en AsyncStorage (rápido,
  *    sin red).
- * 3. En paralelo se pide GET /catalog; al responder se hidrata in-place, se
- *    cachea y se incrementa `version` (los consumidores que lo usen refrescan).
+ * 3. En paralelo se pide GET /catalog; al responder se hidrata in-place como
+ *    snapshot autoritativo, se cachea y se incrementa `version`.
  *
  * No bloquea el render ni remonta el árbol: las pantallas importan SESSIONS /
  * CATEGORIES de forma síncrona y siguen funcionando con los datos bundleados;
@@ -40,7 +40,8 @@ import {
   type PlaylistSnapshot,
 } from "@/data/playlists";
 
-const CACHE_KEY = "cdc_catalog_snapshot_v1";
+// v3 invalida snapshots que todavía podían contener sesiones retiradas.
+const CACHE_KEY = "cdc_catalog_snapshot_v3";
 
 type CatalogStatus = "bundled" | "cached" | "remote";
 

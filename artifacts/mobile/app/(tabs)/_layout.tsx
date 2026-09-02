@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 10,
     letterSpacing: 0.3,
     fontWeight: "700",
   },

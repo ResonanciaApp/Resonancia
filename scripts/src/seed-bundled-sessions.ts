@@ -294,20 +294,6 @@ const SESSIONS = [
 
   // ── Música y Sonidos ────────────────────────────────────────────────────────
   {
-    id: "20",
-    title: "Sonidos de la Naturaleza",
-    subtitle: "Atmósfera Natural",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 10,
-    durationLabel: "10 min",
-    description: "Un paisaje sonoro envuelto en el pad cálido de Mi mayor. Cierra los ojos y habita el momento presente.",
-    benefits: ["Presencia plena", "Alivio de ansiedad", "Relajación instantánea", "Claridad mental"],
-    instruments: ["Pad Mi mayor", "Atmósfera natural"],
-    isNew: true,
-    sonidosTag: "Sonidos Naturaleza",
-  },
-  {
     id: "27",
     isPremium: true,
     title: "Riachuelo con Pájaros",

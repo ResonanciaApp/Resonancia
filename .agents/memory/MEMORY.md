@@ -155,3 +155,4 @@
 - [Carruseles editoriales compactos](content-carousel-sizing.md) — en Dormir/Descubrir/Sonidos/categorías: gap 14 px; pill sube solo con título de 2 líneas
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
 - [Membresía Aurora jade-gold](membership-aurora-jade.md) — dirección aprobada para módulos de Perfil: Premium dorado y Premium Plus morado sobre atmósfera azul verdosa
+- [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes

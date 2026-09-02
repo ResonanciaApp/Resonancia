@@ -2488,7 +2488,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   profileDownloadsRow: {
-    marginBottom: 24,
+    marginBottom: 0,
   },
   profileMilestonesRow: {
     marginBottom: 0,

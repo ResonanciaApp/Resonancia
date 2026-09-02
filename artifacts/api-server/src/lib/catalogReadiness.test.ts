@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getCatalogReadiness } from "./catalogReadiness";
 
 const session = {
-  id: "20",
+  id: "1",
   title: "Baño de cuencos",
   subtitle: "Sesión de prueba",
   categoryId: "sonidos-ancestrales",
@@ -24,7 +24,7 @@ describe("getCatalogReadiness", () => {
   it("acepta una sesión final con asset bundleado", () => {
     expect(
       getCatalogReadiness(session, [
-        { role: "base", url: null, assetKey: "bundle:20" },
+        { role: "base", url: null, assetKey: "bundle:1" },
       ]),
     ).toEqual({ ready: true, kind: "final" });
   });

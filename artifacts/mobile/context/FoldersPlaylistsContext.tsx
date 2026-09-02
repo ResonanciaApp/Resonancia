@@ -119,7 +119,7 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
     id: "default_para_empezar",
     name: "Para Empezar",
     description: "Una selección para tus primeros pasos en Resonancia.",
-    sessionIds: ["1", "25", "26", "20"],
+    sessionIds: ["1", "25", "26"],
     createdAt: new Date().toISOString(),
   },
   {

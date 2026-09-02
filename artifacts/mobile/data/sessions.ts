@@ -203,23 +203,6 @@ export const SESSIONS: Session[] = [
     isNew: true,
   },
   {
-    id: "20",
-    title: "Sonidos de la Naturaleza",
-    subtitle: "Atmósfera Natural",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 10,
-    durationLabel: "10 min",
-    description:
-      "Un paisaje sonoro envuelto en el pad cálido de Mi mayor. Cierra los ojos y habita el momento presente.",
-    benefits: ["Presencia plena", "Alivio de ansiedad", "Relajación instantánea", "Claridad mental"],
-    instruments: ["Pad Mi mayor", "Atmósfera natural"],
-    image: require("@/assets/images/sessions/session-20-musica-dark.jpg"),
-    audio: require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
-    isNew: true,
-    sonidosTag: "Sonidos Naturaleza",
-  },
-  {
     id: "24",
     isPremium: true,
     title: "Binaural Theta Nocturno",
@@ -1185,6 +1168,11 @@ export const SESSIONS: Session[] = [
   },
 ];
 
+// Identidad del catálogo incluido en el bundle. Se captura antes de aplicar
+// snapshots para distinguirlo de las sesiones que se agregan dinámicamente
+// desde el servidor y poder retirar estas últimas cuando dejan de publicarse.
+const BUNDLED_SESSION_IDS = new Set(SESSIONS.map((session) => session.id));
+
 export function getSessionsByCategory(categoryId: string): Session[] {
   return SESSIONS.filter((s) => s.categoryId === categoryId);
 }
@@ -1514,13 +1502,25 @@ function resolveObjectPath(path: string | null | undefined): string | undefined 
 }
 
 /**
- * Hidrata SESSIONS in-place con el snapshot del servidor (merge por id),
+ * Hidrata SESSIONS in-place con el snapshot autoritativo del servidor,
  * conservando `image` y `audio` bundleados.
  * Sesiones del servidor que no existen en el bundle se insertan al final
- * del array con los assets resueltos desde Object Storage.
+ * del array con los assets resueltos desde Object Storage. Las sesiones
+ * dinámicas ausentes del snapshot se retiran para reflejar bajas y cambios
+ * de estado (published → pending/rejected) sin reiniciar la aplicación.
  */
 export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   const byId = new Map(remote.map((s) => [s.id, s]));
+
+  // 0. Retirar sesiones agregadas por snapshots anteriores que ya no están
+  // publicadas. Nunca se eliminan aquí las sesiones incluidas en el bundle:
+  // esas siguen siendo el fallback offline.
+  for (let index = SESSIONS.length - 1; index >= 0; index -= 1) {
+    const session = SESSIONS[index];
+    if (!BUNDLED_SESSION_IDS.has(session.id) && !byId.has(session.id)) {
+      SESSIONS.splice(index, 1);
+    }
+  }
 
   // 1. Actualizar sesiones bundleadas in-place.
   for (const local of SESSIONS) {

@@ -48,7 +48,6 @@ const SESSION_COVER_MAP: Record<string, ReturnType<typeof require>> = {
   "7":  require("../assets/images/sessions/session-7.jpg"),
   "9":  require("../assets/images/sessions/session-9.jpg"),
   "10": require("../assets/images/sessions/session-10.jpg"),
-  "20": require("../assets/images/sessions/session-20.jpg"),
   "28": require("../assets/images/sessions/session-28.jpg"),
   "29": require("../assets/images/sessions/session-29.jpg"),
 };

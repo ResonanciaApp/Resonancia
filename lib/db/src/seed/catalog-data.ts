@@ -331,33 +331,6 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "descansoTags": ["Música para dormir"]
   },
   {
-    "id": "20",
-    "title": "Sonidos de la Naturaleza",
-    "subtitle": "Atmósfera Natural",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 10,
-    "durationLabel": "10 min",
-    "description": "Un paisaje sonoro envuelto en el pad cálido de Mi mayor. Cierra los ojos y habita el momento presente.",
-    "benefits": [
-      "Presencia plena",
-      "Alivio de ansiedad",
-      "Relajación instantánea",
-      "Claridad mental"
-    ],
-    "instruments": [
-      "Pad Mi mayor",
-      "Atmósfera natural"
-    ],
-    "imageKey": "session-20-musica-dark.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 8,
-    "sonidosTag": "Sonidos Naturaleza"
-  },
-  {
     "id": "23",
     "title": "Binaural Alpha 8Hz",
     "subtitle": "Ondas Cerebrales",

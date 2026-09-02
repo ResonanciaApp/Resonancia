@@ -4,7 +4,6 @@ import type { CatalogAudioFile, CatalogSession } from "@workspace/db";
 // El servidor no puede importar fuentes de un artifact fuera de su rootDir.
 const SERVER_BUNDLED_AUDIO_SESSION_IDS = new Set([
   "1",
-  "20",
   "28",
   "29",
   "30",

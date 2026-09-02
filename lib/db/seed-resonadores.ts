@@ -62,7 +62,7 @@ const SEED = [
     instagram: "https://instagram.com/kaiamara",
     linktree: "https://linktr.ee/kaiamara",
     donationUrl: "https://ko-fi.com/kaiamara",
-    sessionIds: ["20", "24", "25"],
+    sessionIds: ["24", "25"],
     projects: [
       { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },
     ],
