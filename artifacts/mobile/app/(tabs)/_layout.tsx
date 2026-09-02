@@ -11,7 +11,6 @@ import {
   Animated,
   Dimensions,
   Image,
-  LayoutChangeEvent,
   Platform,
   Pressable,
   StyleSheet,
@@ -41,11 +40,10 @@ const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "#A9A9C3";
 const INDIGO2_COLOR  = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
-const GHOST_PILL_BG  = "rgba(43,41,66,0.65)";
 
 const ICON_SIZE      = 27;
 const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
-const TAB_CONTENT_OFFSET_Y = 20;
+const TAB_CONTENT_OFFSET_Y = 10;
 const MINI_PLAYER_MARGIN_H = 15;
 
 // Rutas que nunca aparecen en el menú inferior
@@ -180,23 +178,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     extrapolate: "clamp",
   });
 
-  // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
-  const ROW_H_PAD = 6; // paddingHorizontal del row (debe coincidir con styles.row)
-
   const isRenderedTab = (name: string) => name in TAB_CONFIG && !HIDDEN_ROUTES.has(name);
 
-  const visibleCount = state.routes.filter((r: { name: string }) => isRenderedTab(r.name)).length;
-
   const currentIsRendered = isRenderedTab(state.routes[state.index]?.name ?? "");
-
-  const computeVisibleIndex = (routeIndex: number) => {
-    let idx = 0;
-    for (let i = 0; i < routeIndex; i++) {
-      if (isRenderedTab(state.routes[i].name)) idx++;
-    }
-    return idx;
-  };
 
   // Cuando el route actual es href:null (categorías, coleccion, etc.) el índice
   // del tabs navigator apunta a esa pantalla en lugar de al tab real — guardamos
@@ -206,46 +191,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
     lastRealRouteIndex.current = state.index;
   }
   const effectiveRouteIndex = currentIsRendered ? state.index : lastRealRouteIndex.current;
-
-  const visibleIndex = computeVisibleIndex(effectiveRouteIndex);
-
-  const [tabWidth, setTabWidth] = useState(0);
-  const pillX          = useRef(new Animated.Value(0)).current;
-  const initialPillSet = useRef(false);
-
-  const setPillPosition = useCallback(
-    (tw: number, vi: number, animate: boolean) => {
-      if (tw === 0) return;
-      const target = vi * tw;
-      if (!animate || !initialPillSet.current) {
-        pillX.setValue(target);
-        initialPillSet.current = true;
-      } else {
-        Animated.spring(pillX, {
-          toValue: target,
-          useNativeDriver: true,
-          damping: 22,
-          stiffness: 220,
-          mass: 0.9,
-        }).start();
-      }
-    },
-    [pillX],
-  );
-
-  useEffect(() => {
-    setPillPosition(tabWidth, visibleIndex, true);
-  }, [visibleIndex, tabWidth, setPillPosition]);
-
-  const onRowLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      // Descontar paddingHorizontal×2 para obtener el ancho real de cada tab
-      const tw = (e.nativeEvent.layout.width - ROW_H_PAD * 2) / visibleCount;
-      setTabWidth(tw);
-      setPillPosition(tw, visibleIndex, false);
-    },
-    [visibleCount, visibleIndex, setPillPosition],
-  );
   // ────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -288,23 +233,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             isWeb && styles.rowWeb,
             { transform: [{ translateY: TAB_CONTENT_OFFSET_Y }] },
           ]}
-          onLayout={onRowLayout}
         >
-          {/* ── Ghost pill deslizante ── */}
-          {tabWidth > 0 && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.slidingPill,
-                indigo2Mode && { backgroundColor: "rgba(255,255,255,0.10)" },
-                {
-                  width: tabWidth + 3,
-                  transform: [{ translateX: pillX }],
-                },
-              ]}
-            />
-          )}
-
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -637,16 +566,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     color: GRAD_END,
     fontWeight: "600",
-  },
-  slidingPill: {
-    position: "absolute",
-    // Píldora horizontal de 57px centrada verticalmente en el bar
-    top: (PILL_H - 57) / 2 - 2,
-    height: 57,
-    // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
-    left: 5,
-    borderRadius: 28,
-    backgroundColor: GHOST_PILL_BG,
   },
   mezcladorHandle: {
     position: "absolute",
