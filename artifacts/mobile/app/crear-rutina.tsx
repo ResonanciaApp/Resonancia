@@ -87,70 +87,55 @@ export default function CrearRutinaScreen() {
             accessibilityLabel="Cerrar creación de actividad"
             testID="crear-rutina-close"
             hitSlop={10}
-            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            style={({ pressed }) => [styles.headerSide, { opacity: pressed ? 0.6 : 1 }]}
           >
             <Feather name="x" size={25} color={colors.foreground} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Crear actividad</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]} pointerEvents="none">
+            Crear actividad
+          </Text>
           <Pressable
             onPress={save}
             disabled={!canSave}
             accessibilityRole="button"
             accessibilityLabel="Guardar actividad"
             testID="crear-rutina-save"
-            style={({ pressed }) => ({ opacity: !canSave ? 0.32 : pressed ? 0.65 : 1 })}
+            style={({ pressed }) => [
+              styles.headerSide,
+              styles.saveSide,
+              { opacity: !canSave ? 0.32 : pressed ? 0.65 : 1 },
+            ]}
           >
             <Text style={[styles.saveText, { color: WIDGET_GREEN_SOLID }]}>Guardar</Text>
           </Pressable>
         </View>
 
-        <View style={styles.intro}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Nombra tu actividad</Text>
-          <Text style={[styles.pageSubtitle, { color: colors.mutedForeground }]}>
-            Crea un pequeño espacio para aquello que quieres cuidar.
-          </Text>
-        </View>
-
         <TextInput
           value={title}
           onChangeText={setTitle}
-          placeholder="Ej. Respirar antes de empezar el día"
+          placeholder="Nombra tu actividad"
           placeholderTextColor={colors.mutedForeground}
-          style={[
-            styles.titleInput,
-            {
-              color: colors.foreground,
-              borderColor: title.trim() ? WIDGET_GREEN_SOLID : colors.border,
-              backgroundColor: colors.card,
-            },
-          ]}
+          style={[styles.titleInput, { color: colors.foreground }]}
           accessibilityLabel="Nombre de la actividad"
           testID="crear-rutina-title"
           returnKeyType="next"
           maxLength={80}
         />
 
-        <View style={styles.fieldBlock}>
-          <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Descripción <Text style={{ color: colors.mutedForeground }}>(opcional)</Text></Text>
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="¿Qué significa para ti?"
-            placeholderTextColor={colors.mutedForeground}
-            style={[
-              styles.descriptionInput,
-              { color: colors.foreground, borderColor: colors.border, backgroundColor: colors.card },
-            ]}
-            multiline
-            textAlignVertical="top"
-            accessibilityLabel="Descripción de la actividad"
-            testID="crear-rutina-description"
-            maxLength={180}
-          />
-        </View>
+        <TextInput
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Añadir una descripción (opcional)"
+          placeholderTextColor={colors.mutedForeground}
+          style={[styles.descriptionInput, { color: colors.foreground }]}
+          multiline
+          textAlignVertical="top"
+          accessibilityLabel="Descripción de la actividad"
+          testID="crear-rutina-description"
+          maxLength={180}
+        />
 
-        <View style={styles.fieldBlock}>
-          <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Repetición</Text>
+        <View style={styles.actionsBlock}>
           <Pressable
             onPress={() => {
               Keyboard.dismiss();
@@ -160,74 +145,62 @@ export default function CrearRutinaScreen() {
             accessibilityLabel={`Repetición: ${repeatLabel(repeatDays)}`}
             testID="crear-rutina-repeat"
             style={({ pressed }) => [
-              styles.repeatRow,
-              {
-                borderColor: repeatDays.length ? `${WIDGET_GREEN_SOLID}AA` : colors.border,
-                backgroundColor: colors.card,
-                opacity: pressed ? 0.78 : 1,
-              },
+              styles.simpleAction,
+              { opacity: pressed ? 0.68 : 1 },
             ]}
           >
-            <View style={styles.repeatIcon}>
-              <Feather name="repeat" size={18} color={WIDGET_GREEN_SOLID} />
-            </View>
-            <View style={styles.repeatCopy}>
-              <Text style={[styles.repeatTitle, { color: colors.foreground }]}>
-                {repeatLabel(repeatDays)}
-              </Text>
-              <Text style={[styles.repeatHint, { color: colors.mutedForeground }]}>
-                Elige los días en que quieres practicar
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+            <Feather name="repeat" size={19} color={WIDGET_GREEN_SOLID} />
+            <Text style={[styles.actionText, { color: WIDGET_GREEN_SOLID }]}>
+              {repeatLabel(repeatDays)}
+            </Text>
           </Pressable>
           {!repeatDays.length ? (
             <Text style={styles.validationText}>Selecciona al menos un día.</Text>
           ) : null}
+          <View
+            style={styles.simpleAction}
+            accessibilityState={{ disabled: true }}
+          >
+            <Feather name="plus-square" size={18} color={WIDGET_GREEN_SOLID} />
+            <Text style={[styles.actionText, { color: WIDGET_GREEN_SOLID }]}>
+              Adjuntar una práctica <Text style={styles.optionalText}>(opcional)</Text>
+            </Text>
+          </View>
         </View>
 
         <View style={styles.suggestionsBlock}>
-          <View style={styles.sectionHeadingRow}>
-            <View style={styles.sectionHeadingCopy}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Sugerencias</Text>
-              <Text style={[styles.sectionSubtitle, { color: colors.mutedForeground }]}>
-                Empieza con una idea y hazla tuya.
-              </Text>
-            </View>
-            <Feather name="compass" size={20} color={WIDGET_GREEN_SOLID} />
+          <View style={[styles.tabRail, { borderBottomColor: colors.border }]}>
+            <KeyboardAwareScrollViewCompat
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tabRow}
+              keyboardShouldPersistTaps="handled"
+            >
+              {ROUTINE_CATEGORY_TABS.map((tab) => {
+                const selected = tab === category;
+                return (
+                  <Pressable
+                    key={tab}
+                    onPress={() => setCategory(tab)}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected }}
+                    testID={`crear-rutina-tab-${tab}`}
+                    style={({ pressed }) => [
+                      styles.tab,
+                      {
+                        borderBottomColor: selected ? colors.foreground : "transparent",
+                        opacity: pressed ? 0.72 : 1,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.tabText, { color: selected ? colors.foreground : colors.mutedForeground }]}>
+                      {tab}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </KeyboardAwareScrollViewCompat>
           </View>
-
-          <KeyboardAwareScrollViewCompat
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tabRow}
-            keyboardShouldPersistTaps="handled"
-          >
-            {ROUTINE_CATEGORY_TABS.map((tab) => {
-              const selected = tab === category;
-              return (
-                <Pressable
-                  key={tab}
-                  onPress={() => setCategory(tab)}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected }}
-                  testID={`crear-rutina-tab-${tab}`}
-                  style={({ pressed }) => [
-                    styles.tab,
-                    {
-                      backgroundColor: selected ? WIDGET_GREEN_SOLID : "transparent",
-                      borderColor: selected ? WIDGET_GREEN_SOLID : colors.border,
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={[styles.tabText, { color: selected ? "#FFFFFF" : colors.mutedForeground }]}>
-                    {tab}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </KeyboardAwareScrollViewCompat>
 
           <View style={styles.suggestionList}>
             {suggestions.map((suggestion) => (
@@ -240,42 +213,17 @@ export default function CrearRutinaScreen() {
                 style={({ pressed }) => [
                   styles.suggestionRow,
                   {
-                    borderColor: colors.border,
                     backgroundColor: colors.card,
                     opacity: pressed ? 0.72 : 1,
                   },
                 ]}
               >
-                <View style={styles.suggestionIcon}>
-                  <Feather name="plus" size={17} color={WIDGET_GREEN_SOLID} />
-                </View>
                 <Text style={[styles.suggestionText, { color: colors.foreground }]}>{suggestion.title}</Text>
               </Pressable>
             ))}
           </View>
         </View>
 
-        <View style={styles.attachBlock}>
-          <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Práctica</Text>
-          <View
-            style={[
-              styles.attachRow,
-              { borderColor: colors.border, backgroundColor: colors.card, opacity: 0.55 },
-            ]}
-            accessibilityState={{ disabled: true }}
-          >
-            <View style={styles.attachIcon}>
-              <Feather name="paperclip" size={17} color={colors.mutedForeground} />
-            </View>
-            <View style={styles.repeatCopy}>
-              <Text style={[styles.repeatTitle, { color: colors.foreground }]}>Adjuntar una práctica</Text>
-              <Text style={[styles.repeatHint, { color: colors.mutedForeground }]}>
-                Próximamente podrás vincular una práctica de Resonancia.
-              </Text>
-            </View>
-            <Feather name="lock" size={15} color={colors.mutedForeground} />
-          </View>
-        </View>
       </KeyboardAwareScrollViewCompat>
 
       <Modal
@@ -369,93 +317,64 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    position: "relative",
+  },
+  headerSide: {
+    width: 72,
+  },
+  saveSide: {
+    alignItems: "flex-end",
   },
   headerTitle: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.2,
+    position: "absolute",
+    left: 72,
+    right: 72,
+    textAlign: "center",
   },
   saveText: {
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
   },
-  intro: {
-    marginTop: 35,
-    marginBottom: 19,
-  },
-  pageTitle: {
-    fontFamily: "Manrope",
-    fontSize: 28,
-    fontWeight: "700",
-    letterSpacing: -0.5,
-  },
-  pageSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 20,
-    marginTop: 7,
-    maxWidth: 320,
-  },
   titleInput: {
-    minHeight: 58,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 17,
+    marginTop: 47,
+    minHeight: 40,
+    paddingHorizontal: 0,
     fontFamily: "Manrope",
-    fontSize: 15,
-  },
-  fieldBlock: {
-    marginTop: 22,
-  },
-  fieldLabel: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    marginBottom: 9,
+    fontSize: 23,
+    fontWeight: "600",
   },
   descriptionInput: {
-    minHeight: 88,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    paddingTop: 15,
+    minHeight: 36,
+    paddingHorizontal: 0,
+    paddingTop: 4,
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
   },
-  repeatRow: {
-    minHeight: 69,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 13,
+  actionsBlock: {
+    marginTop: 31,
+    gap: 18,
+  },
+  simpleAction: {
+    minHeight: 22,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 11,
   },
-  repeatIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: `${WIDGET_GREEN_SOLID}18`,
-  },
-  repeatCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  repeatTitle: {
+  actionText: {
     fontFamily: "Manrope",
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: "600",
   },
-  repeatHint: {
-    fontFamily: "Manrope",
+  optionalText: {
     fontSize: 11,
-    lineHeight: 16,
-    marginTop: 2,
+    fontWeight: "400",
+    color: "rgba(41,139,115,0.72)",
   },
   validationText: {
     fontFamily: "Manrope",
@@ -464,86 +383,37 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   suggestionsBlock: {
-    marginTop: 31,
+    marginTop: 67,
   },
-  sectionHeadingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  sectionHeadingCopy: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  sectionSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    marginTop: 4,
+  tabRail: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tabRow: {
-    gap: 8,
-    paddingVertical: 16,
+    gap: 27,
     paddingRight: 22,
   },
   tab: {
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingHorizontal: 13,
-    paddingVertical: 8,
+    paddingTop: 0,
+    paddingBottom: 11,
+    borderBottomWidth: 2,
   },
   tabText: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
+    fontSize: 14,
   },
   suggestionList: {
     gap: 9,
   },
   suggestionRow: {
-    minHeight: 51,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 11,
-  },
-  suggestionIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 10,
+    minHeight: 60,
+    borderRadius: 13,
+    paddingHorizontal: 23,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: `${WIDGET_GREEN_SOLID}18`,
   },
   suggestionText: {
-    flex: 1,
     fontFamily: "Manrope",
-    fontSize: 14,
-  },
-  attachBlock: {
-    marginTop: 29,
-  },
-  attachRow: {
-    minHeight: 68,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 13,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  attachIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    fontSize: 16,
   },
   modalRoot: {
     flex: 1,
