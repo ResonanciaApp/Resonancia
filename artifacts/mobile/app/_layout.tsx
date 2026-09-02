@@ -55,6 +55,7 @@ import { AmbientalDurationProvider } from "@/context/AmbientalDurationContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
 import { IntencionDiariaProvider } from "@/context/IntencionDiariaContext";
+import { RutinaProvider } from "@/context/RutinaContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
@@ -362,6 +363,7 @@ function NavStack() {
         />
         <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="crear-rutina" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen
           name="diario-entrada"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
@@ -540,6 +542,7 @@ export default function RootLayout() {
                           <GeoUniverseProvider>
                           <RachaProvider>
                           <IntencionDiariaProvider>
+                           <RutinaProvider>
                             <ThemedGestureRoot>
                               <AmbientalDurationProvider>
                                 <StatusBar hidden />
@@ -550,6 +553,7 @@ export default function RootLayout() {
                                 <StreakCelebrationFlow />
                               </AmbientalDurationProvider>
                             </ThemedGestureRoot>
+                           </RutinaProvider>
                           </IntencionDiariaProvider>
                           </RachaProvider>
                           </GeoUniverseProvider>

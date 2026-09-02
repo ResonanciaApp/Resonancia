@@ -101,6 +101,7 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
+import { MiRutinaSection } from "@/components/MiRutinaSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2426,6 +2427,7 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {isInicio2 && <MiRutinaSection />}
         {isInicio2 && (
           <View
             style={[
