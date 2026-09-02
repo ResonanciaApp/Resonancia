@@ -42,18 +42,12 @@ const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
-const TAB_PRESSED_STYLE = {
-  backgroundColor: "rgba(255,255,255,0.14)",
-  borderColor: "rgba(255,255,255,0.3)",
-};
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
   const scale = useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
-    setIsPressed(true);
     scale.stopAnimation();
     Animated.timing(scale, {
       toValue: 0.97,
@@ -63,7 +57,6 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
   };
 
   const handlePressOut = () => {
-    setIsPressed(false);
     scale.stopAnimation();
     Animated.spring(scale, {
       toValue: 1,
@@ -85,7 +78,6 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
           styles.pill,
           theme.id === "tibet" && styles.pillTibet,
           theme.id === "indigo" && styles.pillIndigo,
-          isPressed && TAB_PRESSED_STYLE,
           { transform: [{ scale }] },
         ]}
       >

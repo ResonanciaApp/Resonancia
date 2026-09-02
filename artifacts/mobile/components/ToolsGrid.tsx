@@ -74,7 +74,8 @@ function ToolCard({
       accessibilityLabel={`Abrir ${tool.label}`}
       onPress={() => onPress(tool.id)}
       onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      onTouchEnd={handlePressOut}
+      onTouchCancel={handlePressOut}
       style={styles.pressable}
     >
       <Animated.View

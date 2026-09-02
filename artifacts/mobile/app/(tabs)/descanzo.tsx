@@ -39,10 +39,6 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
-const TAB_PRESSED_STYLE = {
-  backgroundColor: "rgba(255,255,255,0.14)",
-  borderColor: "rgba(255,255,255,0.3)",
-};
 
 function SleepPill({
   sel, label, icon, onPress,
@@ -54,12 +50,10 @@ function SleepPill({
 }) {
   const { theme } = useSceneTheme();
   const scale = useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = useState(false);
   const pressCancelledRef = useRef(false);
 
   const animatePress = useCallback((pressed: boolean) => {
     scale.stopAnimation();
-    setIsPressed(pressed);
     if (pressed) {
       Animated.timing(scale, {
         toValue: 0.97,
@@ -125,12 +119,11 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
           sel && styles.sleepPillSel,
-          isPressed && TAB_PRESSED_STYLE,
         ]}
       >
-        {sel && !isPressed && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+        {sel && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
         <MaterialCommunityIcons name={icon} size={22} color="#FFFFFF" />
-        <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel, isPressed && { color: "#FFFFFF" }]} numberOfLines={1}>
+        <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
           {label}
         </Text>
       </Pressable>

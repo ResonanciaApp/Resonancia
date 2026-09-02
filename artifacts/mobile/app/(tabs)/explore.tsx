@@ -50,10 +50,6 @@ const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const HERO_HEIGHT = 270;
-const TAB_PRESSED_STYLE = {
-  backgroundColor: "rgba(255,255,255,0.14)",
-  borderColor: "rgba(255,255,255,0.3)",
-};
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -134,10 +130,8 @@ function DiscoverPill({
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
-    setIsPressed(true);
     scale.stopAnimation();
     Animated.timing(scale, {
       toValue: 0.97,
@@ -147,7 +141,6 @@ function DiscoverPill({
   };
 
   const handlePressOut = () => {
-    setIsPressed(false);
     scale.stopAnimation();
     Animated.spring(scale, {
       toValue: 1,
@@ -170,12 +163,11 @@ function DiscoverPill({
           styles.discoverPill,
           sceneId === "tibet" && styles.discoverPillTibet,
           sceneId === "indigo" && styles.discoverPillIndigo,
-          isPressed && TAB_PRESSED_STYLE,
           { transform: [{ scale }] },
         ]}
       >
         <MaterialCommunityIcons name={icon} size={22} color="#FFFFFF" />
-        <Text style={[styles.discoverPillText, isPressed && { color: "#FFFFFF" }]} numberOfLines={1}>
+        <Text style={styles.discoverPillText} numberOfLines={1}>
           {label}
         </Text>
       </Animated.View>
