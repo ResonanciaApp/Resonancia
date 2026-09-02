@@ -84,7 +84,8 @@ function ToolCard({
           tool.id === "diario" && styles.lastCard,
           {
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : pillBackground,
-            borderWidth: 0,
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.07)",
             transform: [{ scale }],
           },
         ]}
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 13,
-    height: 46,
+    height: 52,
     gap: 12,
     paddingHorizontal: 16,
   },
