@@ -42,8 +42,9 @@ const INDIGO2_COLOR  = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 62;   // altura del bloque de navegación, sin safe area
-const TAB_CONTENT_OFFSET_Y = 5;
+const PILL_H         = 69;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 1;
+const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
 
 // Rutas que nunca aparecen en el menú inferior
@@ -67,7 +68,7 @@ const TAB_CONFIG: Record<
   }
 > = {
   inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  "inicio-copia": { label: "Inicio 2", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home" },
+  "inicio-copia": { label: "Inicio", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   "explore-copia": { label: "Descubrir", sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass", featherIcon: "search" },
   herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
@@ -137,7 +138,7 @@ function TabItem({
         <View style={{ width: iconSize, height: ICON_SIZE, alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
         </View>
-        <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
+        <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset + TAB_LABEL_OFFSET_Y }] }]}>
           <Text style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
             {conf.label}
           </Text>
@@ -401,7 +402,7 @@ function TabLayoutInner() {
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
         <Tabs.Screen name="inicio8"        options={{ title: "Inicio" }} />
-        <Tabs.Screen name="inicio-copia"   options={{ title: "Inicio 2" }} />
+        <Tabs.Screen name="inicio-copia"   options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="category/meditaciones-guiadas" options={{ href: null }} />
         <Tabs.Screen name="category/musica-sonidos"       options={{ href: null }} />
@@ -568,9 +569,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 9,
+    fontSize: 12,
     letterSpacing: 0.3,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   labelWrap: {
     width: "100%",

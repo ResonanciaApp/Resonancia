@@ -661,9 +661,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   discoverTabs: {
+    marginHorizontal: -H_PAD,
     marginBottom: 0,
   },
   discoverTabsContent: {
+    paddingLeft: H_PAD,
     paddingRight: H_PAD,
     gap: 8,
     flexDirection: "row",
