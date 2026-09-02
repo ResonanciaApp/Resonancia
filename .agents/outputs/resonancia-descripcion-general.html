@@ -10,12 +10,14 @@
       }
 
       :root {
-        --indigo-2: #0F0F15;
-        --indigo-surface: #1C1B28;
-        --indigo-soft: #25243A;
+        --indigo: #0F0F15;
+        --indigo-2: #151522;
+        --surface: #1C1B28;
+        --surface-2: #25243A;
         --teal: #298B73;
-        --teal-soft: #7BC9B2;
-        --text: #F9F9F9;
+        --teal-light: #7BC9B2;
+        --white: #F9F9F9;
+        --text: #ECEBF1;
         --muted: #B8B7C7;
         --dim: #77758B;
         --line: rgba(255, 255, 255, 0.13);
@@ -29,15 +31,11 @@
       body {
         margin: 0;
         padding: 0;
-        background: var(--indigo-2);
-        color: var(--text);
+        background: var(--indigo);
+        color: var(--white);
         font-family: Inter, "Segoe UI", Arial, sans-serif;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-      }
-
-      body {
-        counter-reset: page;
       }
 
       .page {
@@ -46,10 +44,10 @@
         height: 297mm;
         overflow: hidden;
         page-break-after: always;
-        padding: 22mm 19mm 17mm;
+        padding: 20mm 18mm 16mm;
         background:
-          radial-gradient(circle at 91% 7%, rgba(41, 139, 115, 0.13), transparent 24%),
-          linear-gradient(145deg, var(--indigo-2) 0%, #11121D 100%);
+          radial-gradient(circle at 91% 7%, rgba(41, 139, 115, 0.14), transparent 24%),
+          linear-gradient(145deg, var(--indigo) 0%, #11121D 100%);
       }
 
       .page:last-child {
@@ -58,8 +56,8 @@
 
       .page::after {
         position: absolute;
-        right: 19mm;
-        bottom: 9mm;
+        right: 18mm;
+        bottom: 8mm;
         color: var(--dim);
         content: attr(data-page);
         font-family: "Courier New", monospace;
@@ -67,79 +65,79 @@
         letter-spacing: 0.16em;
       }
 
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 3.5mm;
+        color: var(--white);
+        font-size: 10pt;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .brand-mark {
+        width: 6.5mm;
+        height: 6.5mm;
+        border-radius: 2mm;
+        background: var(--teal);
+        box-shadow: 0 0 0 2mm rgba(41, 139, 115, 0.14);
+      }
+
       .cover {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 25mm 22mm 18mm;
+        padding: 24mm 21mm 17mm;
       }
 
       .cover::before {
         position: absolute;
         top: 0;
         right: 0;
-        width: 47mm;
+        width: 48mm;
         height: 100%;
         background: linear-gradient(180deg, rgba(41, 139, 115, 0.18), transparent 48%, rgba(41, 139, 115, 0.05));
         content: "";
       }
 
-      .brand {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 4mm;
-        color: var(--text);
-        font-size: 11pt;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-      }
-
-      .brand-mark {
-        width: 7mm;
-        height: 7mm;
-        border-radius: 2mm;
-        background: var(--teal);
-        box-shadow: 0 0 0 2mm rgba(41, 139, 115, 0.14);
-      }
-
       .cover-content {
         position: relative;
-        max-width: 137mm;
+        max-width: 150mm;
         margin-top: -13mm;
       }
 
-      .eyebrow {
-        margin: 0 0 8mm;
-        color: var(--teal-soft);
+      .eyebrow,
+      .label {
+        margin: 0 0 7mm;
+        color: var(--teal-light);
         font-family: "Courier New", monospace;
-        font-size: 9pt;
+        font-size: 8.5pt;
         font-weight: 700;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.17em;
         text-transform: uppercase;
       }
 
       .cover h1 {
-        max-width: 125mm;
+        max-width: 132mm;
         margin: 0;
-        color: var(--text);
+        color: var(--white);
         font-size: 37pt;
         line-height: 0.99;
         letter-spacing: -0.055em;
       }
 
       .cover-subtitle {
-        max-width: 118mm;
+        max-width: 122mm;
         margin: 9mm 0 0;
         color: var(--muted);
-        font-size: 16pt;
-        line-height: 1.35;
+        font-size: 15.5pt;
+        line-height: 1.36;
       }
 
       .cover-rule {
         width: 45mm;
         height: 2mm;
-        margin-top: 14mm;
+        margin-top: 13mm;
         background: var(--teal);
       }
 
@@ -162,7 +160,7 @@
         align-items: end;
         justify-content: space-between;
         border-bottom: 1px solid var(--line);
-        padding-bottom: 5mm;
+        padding-bottom: 4.5mm;
       }
 
       .section-header .brand {
@@ -170,76 +168,293 @@
       }
 
       .section-number {
-        color: var(--teal-soft);
+        color: var(--teal-light);
         font-family: "Courier New", monospace;
-        font-size: 10pt;
+        font-size: 9.5pt;
         letter-spacing: 0.14em;
       }
 
       .section-intro {
-        margin: 13mm 0 11mm;
+        margin: 11mm 0 9mm;
       }
 
       .section-intro h2 {
-        max-width: 157mm;
+        max-width: 166mm;
         margin: 0;
-        color: var(--text);
-        font-size: 27pt;
-        line-height: 1.02;
+        color: var(--white);
+        font-size: 26pt;
+        line-height: 1.04;
         letter-spacing: -0.045em;
       }
 
       .section-lead {
-        max-width: 155mm;
-        margin: 6mm 0 0;
+        max-width: 158mm;
+        margin: 5mm 0 0;
         color: var(--muted);
-        font-size: 12pt;
-        line-height: 1.48;
-      }
-
-      p {
-        margin: 0;
+        font-size: 11.5pt;
+        line-height: 1.45;
       }
 
       .copy {
         color: var(--muted);
-        font-size: 11.5pt;
-        line-height: 1.48;
+        font-size: 11pt;
+        line-height: 1.46;
       }
 
       .copy + .copy {
         margin-top: 5mm;
       }
 
-      .label {
-        margin: 0 0 3mm;
-        color: var(--teal-soft);
-        font-family: "Courier New", monospace;
-        font-size: 8.5pt;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+      .accent-panel {
+        border-left: 2mm solid var(--teal);
+        padding: 5mm 0 5mm 7mm;
+        background: linear-gradient(90deg, rgba(41, 139, 115, 0.13), transparent);
+      }
+
+      .accent-panel .label {
+        margin-bottom: 3mm;
       }
 
       .tag-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 3mm;
-        margin: 7mm 0 8mm;
+        margin: 6mm 0 8mm;
       }
 
       .tag {
         border: 1px solid rgba(41, 139, 115, 0.45);
         border-radius: 2mm;
-        padding: 5mm 5mm 4.5mm;
+        padding: 4.5mm 5mm;
         background: rgba(41, 139, 115, 0.08);
-        color: var(--text);
-        font-size: 11.5pt;
+        color: var(--white);
+        font-size: 11pt;
         font-weight: 700;
       }
 
       .tag:last-child {
         grid-column: span 2;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4mm;
+        margin-top: 7mm;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 2mm;
+        padding: 5.5mm;
+        background: rgba(28, 27, 40, 0.84);
+      }
+
+      .card h3 {
+        margin: 0 0 2.5mm;
+        color: var(--white);
+        font-size: 13.5pt;
+        letter-spacing: -0.025em;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10.25pt;
+        line-height: 1.4;
+      }
+
+      .value-grid .card {
+        min-height: 36mm;
+        border-top: 2px solid var(--teal);
+      }
+
+      .moments {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3mm;
+        margin-top: 7mm;
+      }
+
+      .moment {
+        min-height: 28mm;
+        border: 1px solid var(--line);
+        border-radius: 2mm;
+        padding: 5mm;
+        background: rgba(28, 27, 40, 0.78);
+      }
+
+      .moment strong {
+        display: block;
+        margin-bottom: 2mm;
+        color: var(--teal-light);
+        font-size: 11pt;
+      }
+
+      .moment span {
+        color: var(--muted);
+        font-size: 9.5pt;
+        line-height: 1.35;
+      }
+
+      .phone-layout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 7mm;
+        margin-top: 8mm;
+      }
+
+      .phone {
+        position: relative;
+        flex: 0 0 auto;
+        width: 49mm;
+        height: 101mm;
+        border: 1.5mm solid #2A293A;
+        border-radius: 7mm;
+        padding: 5mm 3.5mm 3.5mm;
+        background: #11111B;
+        box-shadow: 0 3mm 8mm rgba(0, 0, 0, 0.3);
+      }
+
+      .phone.large {
+        width: 57mm;
+        height: 116mm;
+      }
+
+      .phone.compact {
+        width: 42mm;
+        height: 88mm;
+      }
+
+      .phone::before {
+        position: absolute;
+        top: 2mm;
+        left: 50%;
+        width: 14mm;
+        height: 1.2mm;
+        border-radius: 1mm;
+        background: #363547;
+        content: "";
+        transform: translateX(-50%);
+      }
+
+      .phone-top {
+        display: flex;
+        justify-content: space-between;
+        margin: 2mm 1mm 4mm;
+        color: var(--dim);
+        font-family: "Courier New", monospace;
+        font-size: 6.5pt;
+      }
+
+      .phone-title {
+        margin-bottom: 3mm;
+        color: var(--white);
+        font-size: 10pt;
+        font-weight: 700;
+      }
+
+      .phone-subtitle {
+        margin-bottom: 3mm;
+        color: var(--muted);
+        font-size: 6.7pt;
+        line-height: 1.35;
+      }
+
+      .phone-hero {
+        height: 28mm;
+        margin-bottom: 3mm;
+        border-radius: 3mm;
+        background:
+          radial-gradient(circle at 70% 25%, rgba(123, 201, 178, 0.7), transparent 18%),
+          linear-gradient(145deg, #1C4850, #25243A 52%, #17182A);
+      }
+
+      .phone-hero.small {
+        height: 18mm;
+      }
+
+      .phone-pill {
+        display: inline-block;
+        border: 1px solid rgba(123, 201, 178, 0.45);
+        border-radius: 5mm;
+        padding: 1.5mm 2.5mm;
+        color: var(--teal-light);
+        font-family: "Courier New", monospace;
+        font-size: 6pt;
+      }
+
+      .phone-card {
+        display: flex;
+        align-items: center;
+        gap: 2mm;
+        margin-top: 2.5mm;
+        border-radius: 2mm;
+        padding: 2.5mm;
+        background: #1C1B28;
+      }
+
+      .phone-thumb {
+        flex: 0 0 auto;
+        width: 9mm;
+        height: 9mm;
+        border-radius: 1.5mm;
+        background: linear-gradient(145deg, #315F71, #4D365E);
+      }
+
+      .phone-card-copy {
+        min-width: 0;
+      }
+
+      .phone-card-copy strong,
+      .phone-card-copy span {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .phone-card-copy strong {
+        color: var(--white);
+        font-size: 6.8pt;
+      }
+
+      .phone-card-copy span {
+        margin-top: 1mm;
+        color: var(--dim);
+        font-size: 5.8pt;
+      }
+
+      .phone-tabbar {
+        position: absolute;
+        right: 3.5mm;
+        bottom: 3.5mm;
+        left: 3.5mm;
+        display: flex;
+        justify-content: space-around;
+        border-top: 1px solid rgba(255, 255, 255, 0.09);
+        padding-top: 2mm;
+        color: var(--dim);
+        font-size: 5.8pt;
+      }
+
+      .phone-tabbar .active {
+        color: var(--teal-light);
+      }
+
+      .mockup-caption {
+        max-width: 49mm;
+        color: var(--muted);
+        font-size: 9.5pt;
+        line-height: 1.4;
+      }
+
+      .mockup-caption strong {
+        display: block;
+        margin-bottom: 2mm;
+        color: var(--teal-light);
+        font-size: 10.5pt;
       }
 
       .screen-grid {
@@ -249,54 +464,212 @@
         margin-top: 7mm;
       }
 
-      .screen-card,
-      .tool-card,
-      .user-card {
+      .screen-card {
+        display: flex;
+        align-items: center;
+        gap: 5mm;
+        min-height: 57mm;
         border: 1px solid var(--line);
         border-radius: 2mm;
-        padding: 6mm;
-        background: rgba(28, 27, 40, 0.84);
+        padding: 4mm;
+        background: rgba(28, 27, 40, 0.82);
       }
 
-      .screen-card h3,
-      .tool-card h3,
-      .user-card h3 {
-        margin: 0 0 3mm;
-        color: var(--text);
+      .screen-card .phone {
+        width: 29mm;
+        height: 57mm;
+        border-width: 0.9mm;
+        border-radius: 4mm;
+        padding: 3mm 2mm 2mm;
+      }
+
+      .screen-card .phone::before {
+        top: 1.2mm;
+        width: 8mm;
+        height: 0.8mm;
+      }
+
+      .screen-card .phone-top {
+        margin: 1.2mm 0 2mm;
+        font-size: 4pt;
+      }
+
+      .screen-card .phone-title {
+        margin-bottom: 2mm;
+        font-size: 6.2pt;
+      }
+
+      .screen-card .phone-hero {
+        height: 14mm;
+        margin-bottom: 2mm;
+      }
+
+      .screen-card .phone-card {
+        gap: 1mm;
+        margin-top: 1mm;
+        padding: 1.2mm;
+      }
+
+      .screen-card .phone-thumb {
+        width: 5mm;
+        height: 5mm;
+      }
+
+      .screen-card .phone-card-copy strong {
+        font-size: 4pt;
+      }
+
+      .screen-card .phone-card-copy span {
+        font-size: 3.5pt;
+      }
+
+      .screen-card .phone-tabbar {
+        right: 2mm;
+        bottom: 2mm;
+        left: 2mm;
+        font-size: 3.5pt;
+      }
+
+      .screen-card h3 {
+        margin: 0 0 2mm;
+        color: var(--white);
+        font-size: 12pt;
+      }
+
+      .screen-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 9.25pt;
+        line-height: 1.36;
+      }
+
+      .tool-row {
+        display: flex;
+        align-items: center;
+        gap: 7mm;
+        margin-top: 5mm;
+      }
+
+      .tool-row + .tool-row {
+        margin-top: 4mm;
+      }
+
+      .tool-row .phone {
+        width: 34mm;
+        height: 61mm;
+        border-width: 1mm;
+        border-radius: 5mm;
+        padding: 3.5mm 2.5mm 2.5mm;
+      }
+
+      .tool-row .phone::before {
+        top: 1.4mm;
+        width: 10mm;
+        height: 0.8mm;
+      }
+
+      .tool-row .phone-top {
+        margin: 1.2mm 0 2mm;
+        font-size: 4.5pt;
+      }
+
+      .tool-row .phone-title {
+        margin-bottom: 2mm;
+        font-size: 7.5pt;
+      }
+
+      .tool-row .phone-hero.small {
+        height: 13mm;
+      }
+
+      .tool-row .phone-pill {
+        padding: 1mm 1.5mm;
+        font-size: 4.5pt;
+      }
+
+      .tool-row .phone-card {
+        gap: 1mm;
+        margin-top: 1.5mm;
+        padding: 1.4mm;
+      }
+
+      .tool-row .phone-thumb {
+        width: 6mm;
+        height: 6mm;
+      }
+
+      .tool-row .phone-card-copy strong {
+        font-size: 4.8pt;
+      }
+
+      .tool-row .phone-card-copy span {
+        margin-top: 0.5mm;
+        font-size: 4pt;
+      }
+
+      .tool-row .phone-tabbar {
+        right: 2.5mm;
+        bottom: 2.5mm;
+        left: 2.5mm;
+        padding-top: 1.2mm;
+        font-size: 4pt;
+      }
+
+      .tool-copy {
+        flex: 1;
+      }
+
+      .tool-copy h3 {
+        margin: 0 0 2mm;
+        color: var(--teal-light);
         font-size: 14pt;
-        letter-spacing: -0.025em;
       }
 
-      .screen-card p,
-      .tool-card p,
-      .user-card p {
+      .tool-copy p {
+        margin: 0;
         color: var(--muted);
         font-size: 10.5pt;
         line-height: 1.42;
       }
 
-      .tools-intro {
-        margin-bottom: 7mm;
+      .mood-orbit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 17mm;
+        margin-top: 2mm;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(41, 139, 115, 0.46) 0 12%, rgba(41, 139, 115, 0.1) 13% 34%, transparent 35%);
+        color: var(--white);
+        font-size: 12pt;
       }
 
-      .tool-card {
-        margin-top: 4mm;
-        padding: 6mm 7mm;
+      .mixer-sliders {
+        margin-top: 3mm;
       }
 
-      .tool-card h3 {
-        color: var(--teal-soft);
+      .slider {
+        display: flex;
+        align-items: center;
+        gap: 2mm;
+        margin-top: 1.5mm;
+        color: var(--muted);
+        font-size: 4.8pt;
       }
 
-      .detail-block {
-        margin-top: 8mm;
+      .slider i {
+        display: block;
+        width: 20mm;
+        height: 0.9mm;
+        border-radius: 1mm;
+        background: linear-gradient(90deg, var(--teal) 0 62%, #343346 62%);
       }
 
       .flow {
         display: flex;
         align-items: stretch;
         gap: 0;
-        margin: 12mm 0 13mm;
+        margin: 11mm 0 12mm;
       }
 
       .flow-step {
@@ -307,8 +680,8 @@
         min-height: 19mm;
         border: 1px solid rgba(41, 139, 115, 0.45);
         background: rgba(41, 139, 115, 0.1);
-        color: var(--text);
-        font-size: 11pt;
+        color: var(--white);
+        font-size: 10.5pt;
         font-weight: 700;
         text-align: center;
       }
@@ -318,9 +691,9 @@
       }
 
       .flow-arrow {
-        color: var(--teal-soft);
+        color: var(--teal-light);
         font-family: "Courier New", monospace;
-        font-size: 15pt;
+        font-size: 14pt;
       }
 
       .flow-step:first-child {
@@ -331,47 +704,224 @@
         border-radius: 0 2mm 2mm 0;
       }
 
+      .creation-layout {
+        display: flex;
+        align-items: center;
+        gap: 9mm;
+        margin-top: 6mm;
+      }
+
+      .creation-visual {
+        position: relative;
+        flex: 0 0 88mm;
+        height: 93mm;
+        border: 1px solid rgba(41, 139, 115, 0.42);
+        border-radius: 4mm;
+        padding: 6mm;
+        background:
+          radial-gradient(circle at 52% 45%, rgba(41, 139, 115, 0.22), transparent 28%),
+          #151522;
+      }
+
+      .shape {
+        position: absolute;
+        border: 1px solid var(--teal-light);
+        opacity: 0.85;
+      }
+
+      .shape.one {
+        top: 19mm;
+        left: 31mm;
+        width: 27mm;
+        height: 27mm;
+        border-radius: 50%;
+        box-shadow: 0 0 0 7mm rgba(41, 139, 115, 0.12);
+      }
+
+      .shape.two {
+        top: 31mm;
+        left: 23mm;
+        width: 42mm;
+        height: 16mm;
+        border-radius: 50%;
+        transform: rotate(36deg);
+      }
+
+      .shape.three {
+        top: 25mm;
+        left: 42mm;
+        width: 21mm;
+        height: 44mm;
+        border-radius: 50%;
+        transform: rotate(-36deg);
+      }
+
+      .shape.four {
+        right: 11mm;
+        bottom: 15mm;
+        width: 15mm;
+        height: 15mm;
+        border-radius: 3mm;
+        background: rgba(123, 201, 178, 0.12);
+        transform: rotate(45deg);
+      }
+
+      .creation-label {
+        position: absolute;
+        top: 6mm;
+        left: 6mm;
+        color: var(--teal-light);
+        font-family: "Courier New", monospace;
+        font-size: 7.5pt;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .creation-copy {
+        flex: 1;
+      }
+
+      .creation-copy h3 {
+        margin: 0 0 3mm;
+        color: var(--white);
+        font-size: 17pt;
+      }
+
+      .creation-copy p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10.75pt;
+        line-height: 1.46;
+      }
+
+      .layers {
+        margin-top: 6mm;
+      }
+
+      .layer {
+        display: flex;
+        align-items: center;
+        gap: 3mm;
+        margin-top: 2.5mm;
+        border: 1px solid var(--line);
+        border-radius: 1.5mm;
+        padding: 2.5mm;
+        color: var(--muted);
+        font-size: 8.5pt;
+      }
+
+      .layer b {
+        width: 5mm;
+        height: 5mm;
+        border-radius: 50%;
+        background: var(--teal);
+      }
+
       .user-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 5mm;
-        margin-top: 9mm;
+        margin-top: 7mm;
       }
 
       .user-card {
         min-height: 65mm;
+        border: 1px solid var(--line);
+        border-radius: 2mm;
+        padding: 6mm;
+        background: rgba(28, 27, 40, 0.84);
       }
 
       .user-card h3 {
-        color: var(--teal-soft);
+        margin: 0 0 3mm;
+        color: var(--teal-light);
+        font-size: 15pt;
       }
 
-      .ecosystem-flow {
-        margin-top: 12mm;
+      .user-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10pt;
+        line-height: 1.42;
       }
 
-      .ecosystem-flow .flow-step {
-        min-height: 24mm;
+      .profile-strip {
+        display: flex;
+        align-items: center;
+        gap: 6mm;
+        margin-top: 7mm;
+        border: 1px solid rgba(41, 139, 115, 0.4);
+        border-radius: 2mm;
+        padding: 5mm;
+        background: rgba(41, 139, 115, 0.08);
+      }
+
+      .profile-avatar {
+        width: 18mm;
+        height: 18mm;
+        border-radius: 50%;
+        background: radial-gradient(circle at 65% 30%, #7BC9B2, #29594F 35%, #25243A 36%);
+      }
+
+      .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        flex: 1;
+        gap: 3mm;
+      }
+
+      .profile-stat strong,
+      .profile-stat span {
+        display: block;
+      }
+
+      .profile-stat strong {
+        color: var(--white);
         font-size: 13pt;
       }
 
-      .closing-copy {
-        max-width: 150mm;
-        margin-top: 11mm;
-        color: var(--muted);
-        font-size: 14pt;
-        line-height: 1.5;
+      .profile-stat span {
+        margin-top: 1mm;
+        color: var(--dim);
+        font-size: 7.5pt;
       }
 
-      .accent-panel {
-        border-left: 2mm solid var(--teal);
-        padding: 5mm 0 5mm 7mm;
-        background: linear-gradient(90deg, rgba(41, 139, 115, 0.12), transparent);
+      .pipeline {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 2mm;
+        margin-top: 8mm;
+      }
+
+      .pipeline-step {
+        min-height: 23mm;
+        border: 1px solid rgba(41, 139, 115, 0.35);
+        border-radius: 1.5mm;
+        padding: 3mm;
+        background: rgba(41, 139, 115, 0.08);
+        color: var(--teal-light);
+        font-family: "Courier New", monospace;
+        font-size: 7.25pt;
+        line-height: 1.3;
+        text-align: center;
+      }
+
+      .closing-copy {
+        max-width: 154mm;
+        margin-top: 9mm;
+        color: var(--muted);
+        font-size: 13pt;
+        line-height: 1.48;
+      }
+
+      .ecosystem-flow .flow-step {
+        min-height: 23mm;
+        font-size: 12pt;
       }
     </style>
   </head>
   <body>
-    <section class="page cover" data-page="01 / 08">
+    <section class="page cover" data-page="01 / 10">
       <div class="brand">
         <span class="brand-mark"></span>
         <span>resonancia</span>
@@ -390,10 +940,83 @@
       </div>
     </section>
 
-    <section class="page" data-page="02 / 08">
+    <section class="page" data-page="02 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">01 / 07</div>
+        <div class="section-number">01 / 09</div>
+      </header>
+
+      <div class="section-intro">
+        <h2>Qué es Resonancia</h2>
+        <p class="section-lead">Una aplicación de bienestar enfocada en meditación, música, sonidos, descanso y relajación, diseñada para acompañar al usuario en distintos momentos de su día.</p>
+      </div>
+
+      <div class="accent-panel">
+        <p class="copy">La App combina contenido curado, recomendaciones personalizadas, herramientas de creación y experiencias inmersivas, permitiendo que cada usuario descubra, escuche, organice y cree contenido de acuerdo con sus necesidades.</p>
+      </div>
+
+      <div class="card-grid value-grid">
+        <article class="card">
+          <h3>Descubrir</h3>
+          <p>Encontrar una sesión apropiada para el momento, la intención o el estado emocional del usuario.</p>
+        </article>
+        <article class="card">
+          <h3>Escuchar</h3>
+          <p>Acceder a experiencias sonoras diseñadas para acompañar concentración, calma, descanso y conexión.</p>
+        </article>
+        <article class="card">
+          <h3>Crear</h3>
+          <p>Combinar sonidos y construir experiencias propias a partir de una biblioteca mezclable.</p>
+        </article>
+        <article class="card">
+          <h3>Personalizar</h3>
+          <p>Organizar contenidos, guardar favoritos y recibir recomendaciones relacionadas con cada momento.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page" data-page="03 / 10">
+      <header class="section-header">
+        <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
+        <div class="section-number">02 / 09</div>
+      </header>
+
+      <div class="section-intro">
+        <h2>Una experiencia para distintos momentos</h2>
+        <p class="section-lead">Resonancia entra en la rutina del usuario como una capa sonora que se adapta a su intención, su energía y el momento del día.</p>
+      </div>
+
+      <div class="moments">
+        <div class="moment"><strong>Comenzar el día</strong><span>Elegir una atmósfera para activar la atención y definir una intención.</span></div>
+        <div class="moment"><strong>Hacer una pausa</strong><span>Encontrar calma y recuperar presencia durante la jornada.</span></div>
+        <div class="moment"><strong>Concentrarse</strong><span>Usar música o sonidos para acompañar una tarea.</span></div>
+        <div class="moment"><strong>Meditar</strong><span>Acceder a sesiones guiadas, reflexiones y prácticas.</span></div>
+        <div class="moment"><strong>Descansar</strong><span>Crear una transición sonora hacia el sueño y la relajación.</span></div>
+        <div class="moment"><strong>Crear una atmósfera</strong><span>Mezclar capas de audio y guardar una experiencia personal.</span></div>
+      </div>
+
+      <div class="phone-layout">
+        <div class="phone large">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">¿Qué necesitas hoy?</div>
+          <div class="phone-subtitle">Encuentra una experiencia para acompañar este momento.</div>
+          <div class="phone-hero"></div>
+          <span class="phone-pill">Para ti</span>
+          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Calma profunda</strong><span>Meditación · 12 min</span></span></div>
+          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Atención presente</strong><span>Sonidos · 28 min</span></span></div>
+          <div class="phone-tabbar"><span class="active">Inicio</span><span>Explorar</span><span>Perfil</span></div>
+        </div>
+        <div class="mockup-caption">
+          <strong>La app acompaña, no interrumpe.</strong>
+          La navegación y las recomendaciones parten del estado actual del usuario y lo llevan hacia una experiencia concreta.
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="04 / 10">
+      <header class="section-header">
+        <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
+        <div class="section-number">03 / 09</div>
       </header>
 
       <div class="section-intro">
@@ -413,13 +1036,21 @@
         <p class="copy">Cada sesión puede tener múltiples etiquetas, temáticas y atributos, que permiten clasificarla y relacionarla con diferentes necesidades del usuario.</p>
       </div>
 
-      <p class="copy detail-block">Estas etiquetas permiten que un mismo contenido pueda aparecer dinámicamente en diferentes secciones de la App según sus características y relevancia.</p>
+      <div class="flow">
+        <div class="flow-step">Sesión</div>
+        <div class="flow-step"><span class="flow-arrow">→</span></div>
+        <div class="flow-step">Etiquetas</div>
+        <div class="flow-step"><span class="flow-arrow">→</span></div>
+        <div class="flow-step">Secciones</div>
+      </div>
+
+      <p class="copy">Estas etiquetas permiten que un mismo contenido pueda aparecer dinámicamente en diferentes secciones de la App según sus características y relevancia.</p>
     </section>
 
-    <section class="page" data-page="03 / 08">
+    <section class="page" data-page="05 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">02 / 07</div>
+        <div class="section-number">04 / 09</div>
       </header>
 
       <div class="section-intro">
@@ -429,55 +1060,109 @@
 
       <div class="screen-grid">
         <article class="screen-card">
-          <h3>Inicio</h3>
-          <p>presenta el contenido más fresco y reciente de la plataforma, junto con novedades y contenidos destacados.</p>
+          <div class="phone">
+            <div class="phone-top"><span>9:41</span><span>•••</span></div>
+            <div class="phone-title">Inicio</div>
+            <div class="phone-hero"></div>
+            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Para este momento</strong><span>Sesiones seleccionadas</span></span></div>
+            <div class="phone-tabbar"><span class="active">Inicio</span><span>Buscar</span></div>
+          </div>
+          <div><h3>Inicio</h3><p>presenta el contenido más fresco y reciente de la plataforma, junto con novedades y contenidos destacados.</p></div>
         </article>
+
         <article class="screen-card">
-          <h3>Descubrir</h3>
-          <p>permite explorar el catálogo mediante categorías, etiquetas, colecciones, carruseles y recomendaciones.</p>
+          <div class="phone">
+            <div class="phone-top"><span>9:41</span><span>•••</span></div>
+            <div class="phone-title">Descubrir</div>
+            <div class="phone-hero small"></div>
+            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Explorar categorías</strong><span>Ver todo el catálogo</span></span></div>
+            <div class="phone-tabbar"><span>Inicio</span><span class="active">Explorar</span></div>
+          </div>
+          <div><h3>Descubrir</h3><p>permite explorar el catálogo mediante categorías, etiquetas, colecciones, carruseles y recomendaciones.</p></div>
         </article>
+
         <article class="screen-card">
-          <h3>Dormir</h3>
-          <p>concentra contenidos seleccionados para acompañar el descanso y el sueño.</p>
+          <div class="phone">
+            <div class="phone-top"><span>9:41</span><span>•••</span></div>
+            <div class="phone-title">Dormir</div>
+            <div class="phone-hero"></div>
+            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Noche tranquila</strong><span>Historias · 32 min</span></span></div>
+            <div class="phone-tabbar"><span>Inicio</span><span class="active">Dormir</span></div>
+          </div>
+          <div><h3>Dormir</h3><p>concentra contenidos seleccionados para acompañar el descanso y el sueño.</p></div>
         </article>
+
         <article class="screen-card">
-          <h3>Sonidos</h3>
-          <p>permite explorar experiencias sonoras organizadas por diferentes tipos, temáticas y etiquetas.</p>
+          <div class="phone">
+            <div class="phone-top"><span>9:41</span><span>•••</span></div>
+            <div class="phone-title">Sonidos</div>
+            <div class="phone-hero small"></div>
+            <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Océano profundo</strong><span>Ambiental · 45 min</span></span></div>
+            <div class="phone-tabbar"><span>Inicio</span><span class="active">Sonidos</span></div>
+          </div>
+          <div><h3>Sonidos</h3><p>permite explorar experiencias sonoras organizadas por diferentes tipos, temáticas y etiquetas.</p></div>
         </article>
       </div>
     </section>
 
-    <section class="page" data-page="04 / 08">
+    <section class="page" data-page="06 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">03 / 07</div>
+        <div class="section-number">05 / 09</div>
       </header>
 
       <div class="section-intro">
-        <h2>3. Herramientas principales</h2>
+        <h2>3. Herramientas y personalización</h2>
         <p class="section-lead">La App incorpora herramientas que permiten al usuario personalizar, crear y administrar su experiencia:</p>
       </div>
 
-      <article class="tool-card">
-        <h3>Emoción</h3>
-        <p>Permite indicar cómo se siente el usuario mediante diferentes emojis. A partir de su estado de ánimo, el sistema genera recomendaciones de sesiones relacionadas con ese momento.</p>
-      </article>
+      <div class="tool-row">
+        <div class="phone compact">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">¿Cómo estás?</div>
+          <div class="mood-orbit">◌</div>
+          <span class="phone-pill">Elegir emoción</span>
+          <div class="phone-tabbar"><span class="active">Emoción</span><span>Inicio</span></div>
+        </div>
+        <div class="tool-copy">
+          <h3>Emoción</h3>
+          <p>Permite indicar cómo se siente el usuario mediante diferentes emojis. A partir de su estado de ánimo, el sistema genera recomendaciones de sesiones relacionadas con ese momento.</p>
+        </div>
+      </div>
 
-      <article class="tool-card">
-        <h3>Mezclador</h3>
-        <p>Es una experiencia inmersiva donde el usuario puede acceder a una biblioteca de audios mezclables, combinarlos y crear sus propias experiencias sonoras personalizadas, que posteriormente puede guardar.</p>
-      </article>
+      <div class="tool-row">
+        <div class="phone compact">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">Tu mezcla</div>
+          <div class="phone-hero small"></div>
+          <div class="mixer-sliders"><div class="slider">Lluvia <i></i></div><div class="slider">Viento <i></i></div><div class="slider">Cuencos <i></i></div></div>
+          <div class="phone-tabbar"><span class="active">Crear</span><span>Guardar</span></div>
+        </div>
+        <div class="tool-copy">
+          <h3>Mezclador</h3>
+          <p>Es una experiencia inmersiva donde el usuario puede acceder a una biblioteca de audios mezclables, combinarlos y crear sus propias experiencias sonoras personalizadas, que posteriormente puede guardar.</p>
+        </div>
+      </div>
 
-      <article class="tool-card">
-        <h3>Biblioteca</h3>
-        <p>Es el espacio personal para organizar y acceder al contenido del usuario, incluyendo sus mezclas, playlists, favoritos, contenidos recientes e historial.</p>
-      </article>
+      <div class="tool-row">
+        <div class="phone compact">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">Biblioteca</div>
+          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Favoritos</strong><span>24 sesiones</span></span></div>
+          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Mis mezclas</strong><span>8 experiencias</span></span></div>
+          <div class="phone-tabbar"><span class="active">Biblioteca</span><span>Inicio</span></div>
+        </div>
+        <div class="tool-copy">
+          <h3>Biblioteca</h3>
+          <p>Es el espacio personal para organizar y acceder al contenido del usuario, incluyendo sus mezclas, playlists, favoritos, contenidos recientes e historial.</p>
+        </div>
+      </div>
     </section>
 
-    <section class="page" data-page="05 / 08">
+    <section class="page" data-page="07 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">04 / 07</div>
+        <div class="section-number">06 / 09</div>
       </header>
 
       <div class="section-intro">
@@ -495,39 +1180,107 @@
         <div class="flow-step">Reproducción</div>
       </div>
 
+      <div class="phone-layout">
+        <div class="phone">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">Descubrir</div>
+          <div class="phone-hero"></div>
+          <div class="phone-card"><span class="phone-thumb"></span><span class="phone-card-copy"><strong>Calma profunda</strong><span>Sesión recomendada</span></span></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="phone">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">Calma profunda</div>
+          <div class="phone-hero small"></div>
+          <span class="phone-pill">Meditación · 12 min</span>
+          <div class="phone-card"><span class="phone-card-copy"><strong>Comenzar sesión</strong><span>Conocer detalles</span></span></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="phone">
+          <div class="phone-top"><span>9:41</span><span>•••</span></div>
+          <div class="phone-title">Reproduciendo</div>
+          <div class="phone-hero"></div>
+          <div class="phone-card"><span class="phone-card-copy"><strong>Calma profunda</strong><span>04:38 / 12:00</span></span></div>
+        </div>
+      </div>
+
       <div class="accent-panel">
         <p class="label">Flujo principal de consumo</p>
-        <p class="copy">El flujo principal de consumo es:</p>
+        <p class="copy">Descubrimiento → Detalle → Reproducción</p>
       </div>
     </section>
 
-    <section class="page" data-page="06 / 08">
+    <section class="page" data-page="08 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">05 / 07</div>
+        <div class="section-number">07 / 09</div>
       </header>
 
       <div class="section-intro">
-        <h2>5. Perfil y progreso</h2>
+        <h2>Crear una experiencia propia</h2>
+        <p class="section-lead">El Mezclador y Geometrix amplían la app desde el consumo hacia la creación personal.</p>
       </div>
 
-      <div class="accent-panel">
-        <p class="copy">Cada usuario dispone de un perfil personal, donde puede consultar sus estadísticas, actividad, progreso y recompensas obtenidas por utilizar regularmente la App.</p>
+      <div class="creation-layout">
+        <div class="creation-visual">
+          <span class="creation-label">Geometrix / composición</span>
+          <span class="shape one"></span>
+          <span class="shape two"></span>
+          <span class="shape three"></span>
+          <span class="shape four"></span>
+        </div>
+        <div class="creation-copy">
+          <h3>Del sonido a la composición</h3>
+          <p>El usuario puede combinar capas de audio, modificar su intensidad y construir una atmósfera propia. La creación se guarda como una experiencia personal, no como una interacción desechable.</p>
+          <div class="layers">
+            <div class="layer"><b></b> Lluvia · atmósfera</div>
+            <div class="layer"><b></b> Cuencos · presencia</div>
+            <div class="layer"><b></b> Viento · profundidad</div>
+          </div>
+        </div>
       </div>
 
-      <p class="closing-copy">El sistema busca incentivar la constancia y generar una sensación de progreso y evolución personal.</p>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Mezclar</h3>
+          <p>Elegir sonidos, combinarlos y ajustar cada capa según la intención del momento.</p>
+        </article>
+        <article class="card">
+          <h3>Guardar</h3>
+          <p>Convertir una combinación temporal en una experiencia que puede volver a escucharse.</p>
+        </article>
+        <article class="card">
+          <h3>Explorar</h3>
+          <p>Descubrir nuevas posibilidades a partir de una biblioteca sonora curada.</p>
+        </article>
+        <article class="card">
+          <h3>Expresar</h3>
+          <p>Usar sonido y composición como una forma de conexión personal.</p>
+        </article>
+      </div>
     </section>
 
-    <section class="page" data-page="07 / 08">
+    <section class="page" data-page="09 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">06 / 07</div>
+        <div class="section-number">08 / 09</div>
       </header>
 
       <div class="section-intro">
-        <h2>6. Tipos de usuario</h2>
-        <p class="section-lead">La App contempla dos tipos principales de perfiles:</p>
+        <h2>5–6. Perfil, usuarios y Resonadores</h2>
+        <p class="section-lead">Cada usuario dispone de un perfil personal, donde puede consultar sus estadísticas, actividad, progreso y recompensas obtenidas por utilizar regularmente la App.</p>
       </div>
+
+      <div class="profile-strip">
+        <div class="profile-avatar"></div>
+        <div class="profile-stats">
+          <div class="profile-stat"><strong>12</strong><span>sesiones</span></div>
+          <div class="profile-stat"><strong>84</strong><span>minutos</span></div>
+          <div class="profile-stat"><strong>7</strong><span>días de racha</span></div>
+        </div>
+      </div>
+
+      <p class="copy" style="margin-top: 6mm;">El sistema busca incentivar la constancia y generar una sensación de progreso y evolución personal.</p>
 
       <div class="user-grid">
         <article class="user-card">
@@ -539,12 +1292,20 @@
           <p>Son creadores de contenido que aportan material original a la plataforma. Sus contenidos pasan por un proceso de curaduría, edición y adaptación realizado por nuestro equipo antes de ser publicados.</p>
         </article>
       </div>
+
+      <div class="pipeline">
+        <div class="pipeline-step">CREAR</div>
+        <div class="pipeline-step">CURAR</div>
+        <div class="pipeline-step">EDITAR</div>
+        <div class="pipeline-step">PUBLICAR</div>
+        <div class="pipeline-step">ACOMPAÑAR</div>
+      </div>
     </section>
 
-    <section class="page" data-page="08 / 08">
+    <section class="page" data-page="10 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">07 / 07</div>
+        <div class="section-number">09 / 09</div>
       </header>
 
       <div class="section-intro">
@@ -560,6 +1321,11 @@
         <div class="flow-step">CREAR</div>
         <div class="flow-step"><span class="flow-arrow">→</span></div>
         <div class="flow-step">PERSONALIZAR</div>
+      </div>
+
+      <div class="accent-panel">
+        <p class="label">La idea central</p>
+        <p class="copy">La experiencia no termina cuando el usuario reproduce una sesión: continúa cuando la guarda, la incorpora a su práctica, crea algo propio y vuelve a descubrir.</p>
       </div>
 
       <p class="closing-copy">El objetivo es que la App no sea solamente una biblioteca de audios, sino un ecosistema de bienestar sonoro, donde cada usuario pueda encontrar aquello que necesita en cada momento, crear sus propias experiencias y construir una práctica personal a lo largo del tiempo.</p>
