@@ -909,6 +909,228 @@
         object-position: center;
       }
 
+      .progress-layout {
+        display: flex;
+        align-items: stretch;
+        gap: 8mm;
+        margin-top: 7mm;
+      }
+
+      .progress-phone {
+        flex: 0 0 62mm;
+        height: 134mm;
+        overflow: hidden;
+        border: 1.5mm solid #2A293A;
+        border-radius: 7mm;
+        background: #11111B;
+        box-shadow: 0 3mm 8mm rgba(0, 0, 0, 0.3);
+      }
+
+      .progress-phone img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .progress-side {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .streak-callout {
+        border: 1px solid rgba(41, 139, 115, 0.56);
+        border-radius: 2mm;
+        padding: 5mm;
+        background: linear-gradient(145deg, rgba(41, 139, 115, 0.2), rgba(28, 27, 40, 0.75));
+      }
+
+      .streak-callout .label {
+        margin-bottom: 2mm;
+      }
+
+      .streak-value {
+        display: flex;
+        align-items: baseline;
+        gap: 2mm;
+        color: var(--white);
+      }
+
+      .streak-value strong {
+        font-size: 27pt;
+        letter-spacing: -0.06em;
+      }
+
+      .streak-value span {
+        color: var(--teal-light);
+        font-size: 10pt;
+        font-weight: 700;
+      }
+
+      .streak-callout p {
+        margin: 2mm 0 0;
+        color: var(--muted);
+        font-size: 9.25pt;
+        line-height: 1.38;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3mm;
+        margin-top: 4mm;
+      }
+
+      .metric-card {
+        border: 1px solid var(--line);
+        border-radius: 1.5mm;
+        padding: 3.5mm;
+        background: rgba(28, 27, 40, 0.84);
+      }
+
+      .metric-card strong,
+      .metric-card span {
+        display: block;
+      }
+
+      .metric-card strong {
+        color: var(--white);
+        font-size: 16pt;
+        letter-spacing: -0.04em;
+      }
+
+      .metric-card span {
+        margin-top: 1mm;
+        color: var(--dim);
+        font-size: 7.8pt;
+      }
+
+      .badges-panel {
+        margin-top: 5mm;
+        border-top: 1px solid var(--line);
+        padding-top: 4mm;
+      }
+
+      .badges-panel > .label {
+        margin-bottom: 3mm;
+      }
+
+      .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3mm;
+      }
+
+      .achievement {
+        display: flex;
+        align-items: center;
+        gap: 2.5mm;
+        min-height: 19mm;
+        border: 1px solid rgba(190, 150, 80, 0.34);
+        border-radius: 1.5mm;
+        padding: 2.5mm;
+        background: rgba(190, 150, 80, 0.08);
+      }
+
+      .achievement.locked {
+        border-color: var(--line);
+        background: rgba(28, 27, 40, 0.58);
+        opacity: 0.68;
+      }
+
+      .badge-mark {
+        display: grid;
+        flex: 0 0 10mm;
+        place-items: center;
+        width: 10mm;
+        height: 10mm;
+        border: 1px solid #D4B26A;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 28%, #F7DE9A, #BE9650 48%, #6E4D21 100%);
+        color: #30220D;
+        font-size: 14pt;
+        font-weight: 700;
+        box-shadow: 0 0 0 1.5mm rgba(190, 150, 80, 0.1);
+      }
+
+      .achievement.locked .badge-mark {
+        border-color: #666477;
+        background: #302F40;
+        color: #888699;
+        box-shadow: none;
+      }
+
+      .achievement strong,
+      .achievement span {
+        display: block;
+      }
+
+      .achievement strong {
+        color: var(--white);
+        font-size: 8.7pt;
+      }
+
+      .achievement span {
+        margin-top: 1mm;
+        color: var(--dim);
+        font-size: 7.1pt;
+      }
+
+      .resonator-layout {
+        display: flex;
+        justify-content: center;
+        gap: 8mm;
+        margin-top: 7mm;
+      }
+
+      .resonator-phone {
+        flex: 0 0 62mm;
+        height: 134mm;
+        overflow: hidden;
+        border: 1.5mm solid #2A293A;
+        border-radius: 7mm;
+        background: #11111B;
+        box-shadow: 0 3mm 8mm rgba(0, 0, 0, 0.3);
+      }
+
+      .resonator-phone img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .resonator-copy {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 5mm;
+        margin-top: 6mm;
+      }
+
+      .resonator-copy .accent-panel {
+        min-height: 38mm;
+      }
+
+      .role-list {
+        display: grid;
+        gap: 2.5mm;
+      }
+
+      .role-item {
+        border: 1px solid var(--line);
+        border-radius: 1.5mm;
+        padding: 3mm 4mm;
+        background: rgba(28, 27, 40, 0.84);
+        color: var(--muted);
+        font-size: 8.8pt;
+      }
+
+      .role-item b {
+        color: var(--teal-light);
+      }
+
       .profile-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -1260,74 +1482,95 @@
     <section class="page" data-page="09 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">08 / 09</div>
+        <div class="section-number">05 / 06</div>
       </header>
 
       <div class="section-intro">
-        <h2>5–6. Perfil, usuarios y Resonadores</h2>
-        <p class="section-lead">Cada usuario dispone de un perfil personal, donde puede consultar sus estadísticas, actividad, progreso y recompensas obtenidas por utilizar regularmente la App.</p>
+        <h2>5. Rachas, estadísticas y logros</h2>
+        <p class="section-lead">La práctica personal se vuelve visible: el usuario puede seguir su constancia, reconocer sus avances y recibir pequeñas recompensas por sostener el hábito.</p>
       </div>
 
-      <div class="profile-strip">
-        <div class="profile-phone">
+      <div class="progress-layout">
+        <div class="progress-phone">
           <img src="../../attached_assets/345aa9ea-2642-470b-8cfa-dec2b2f1b903_1788377067030.jpg" alt="Captura de Perfil y progreso">
         </div>
-        <div class="profile-stats">
-          <div class="profile-stat"><strong>12</strong><span>sesiones</span></div>
-          <div class="profile-stat"><strong>84</strong><span>minutos</span></div>
-          <div class="profile-stat"><strong>7</strong><span>días de racha</span></div>
+        <div class="progress-side">
+          <div class="streak-callout">
+            <p class="label">Constancia actual</p>
+            <div class="streak-value"><strong>7</strong><span>días de racha</span></div>
+            <p>La continuidad convierte cada escucha en una práctica que crece con el tiempo.</p>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-card"><strong>12</strong><span>sesiones completadas</span></div>
+            <div class="metric-card"><strong>84</strong><span>minutos de práctica</span></div>
+            <div class="metric-card"><strong>4</strong><span>días activos este mes</span></div>
+            <div class="metric-card"><strong>3</strong><span>categorías exploradas</span></div>
+          </div>
+
+          <div class="badges-panel">
+            <p class="label">Medallas y recompensas</p>
+            <div class="badge-grid">
+              <div class="achievement">
+                <div class="badge-mark">✦</div>
+                <div><strong>Primera escucha</strong><span>Desbloqueada</span></div>
+              </div>
+              <div class="achievement">
+                <div class="badge-mark">7</div>
+                <div><strong>Racha de 7 días</strong><span>Desbloqueada</span></div>
+              </div>
+              <div class="achievement">
+                <div class="badge-mark">◒</div>
+                <div><strong>Explorador sonoro</strong><span>3 categorías</span></div>
+              </div>
+              <div class="achievement locked">
+                <div class="badge-mark">21</div>
+                <div><strong>Próximo hito</strong><span>Racha de 21 días</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <p class="copy" style="margin-top: 6mm;">El sistema busca incentivar la constancia y generar una sensación de progreso y evolución personal.</p>
-
-      <div class="user-grid">
-        <article class="user-card">
-          <h3>Usuarios</h3>
-          <p>Personas que utilizan la plataforma para descubrir, escuchar, organizar y crear experiencias relacionadas con la meditación, música, sonidos, descanso y bienestar.</p>
-        </article>
-        <article class="user-card">
-          <h3>Resonadores</h3>
-          <p>Son creadores de contenido que aportan material original a la plataforma. Sus contenidos pasan por un proceso de curaduría, edición y adaptación realizado por nuestro equipo antes de ser publicados.</p>
-        </article>
-      </div>
-
-      <div class="pipeline">
-        <div class="pipeline-step">CREAR</div>
-        <div class="pipeline-step">CURAR</div>
-        <div class="pipeline-step">EDITAR</div>
-        <div class="pipeline-step">PUBLICAR</div>
-        <div class="pipeline-step">ACOMPAÑAR</div>
+      <div class="accent-panel" style="margin-top: 6mm;">
+        <p class="label">Más que una cifra</p>
+        <p class="copy">Las rachas y estadísticas convierten el bienestar en un recorrido reconocible: cada hito celebra una práctica sostenida, no una competencia.</p>
       </div>
     </section>
 
     <section class="page" data-page="10 / 10">
       <header class="section-header">
         <div class="brand"><span class="brand-mark"></span><span>resonancia</span></div>
-        <div class="section-number">09 / 09</div>
+        <div class="section-number">06 / 06</div>
       </header>
 
       <div class="section-intro">
-        <h2>7. Ecosistema de la experiencia</h2>
-        <p class="section-lead">En conjunto, la App está diseñada alrededor de cuatro acciones principales:</p>
+        <h2>6. Resonadores</h2>
+        <p class="section-lead">Personas, voces y saberes que dan profundidad a cada experiencia sonora dentro de Resonancia.</p>
       </div>
 
-      <div class="flow ecosystem-flow">
-        <div class="flow-step">DESCUBRIR</div>
-        <div class="flow-step"><span class="flow-arrow">→</span></div>
-        <div class="flow-step">ESCUCHAR</div>
-        <div class="flow-step"><span class="flow-arrow">→</span></div>
-        <div class="flow-step">CREAR</div>
-        <div class="flow-step"><span class="flow-arrow">→</span></div>
-        <div class="flow-step">PERSONALIZAR</div>
+      <div class="resonator-layout">
+        <div class="resonator-phone">
+          <img src="../../attached_assets/2796e328-a0fb-4301-8a9d-9131b2631900_1788377981741.jpg" alt="Catálogo de Resonadores">
+        </div>
+        <div class="resonator-phone">
+          <img src="../../attached_assets/5962f754-2e46-4ba5-aef9-9bf0f69832c9_1788377981741.jpg" alt="Perfil de Nicolás Blanch, Resonador Verificado">
+        </div>
       </div>
 
-      <div class="accent-panel">
-        <p class="label">La idea central</p>
-        <p class="copy">La experiencia no termina cuando el usuario reproduce una sesión: continúa cuando la guarda, la incorpora a su práctica, crea algo propio y vuelve a descubrir.</p>
+      <div class="resonator-copy">
+        <div class="accent-panel">
+          <p class="label">Quiénes son</p>
+          <p class="copy">Los Resonadores son creadores y especialistas que comparten su voz, conocimiento y sensibilidad para acompañar procesos de bienestar. Sus perfiles hacen visible el origen humano de cada sesión y construyen un puente de confianza con la comunidad.</p>
+        </div>
+        <div class="role-list">
+          <div class="role-item"><b>Sonoterapeutas</b> · cuencos, vibración y escucha profunda</div>
+          <div class="role-item"><b>Voces guía</b> · meditaciones y prácticas acompañadas</div>
+          <div class="role-item"><b>Músicos y productores</b> · paisajes sonoros originales</div>
+        </div>
       </div>
 
-      <p class="closing-copy">El objetivo es que la App no sea solamente una biblioteca de audios, sino un ecosistema de bienestar sonoro, donde cada usuario pueda encontrar aquello que necesita en cada momento, crear sus propias experiencias y construir una práctica personal a lo largo del tiempo.</p>
+      <p class="copy" style="margin-top: 5mm;">Cada Resonador aporta una identidad propia y contenidos seleccionados para que la experiencia sea cercana, diversa y profundamente humana.</p>
     </section>
   </body>
 </html>
