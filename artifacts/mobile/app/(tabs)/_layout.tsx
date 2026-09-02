@@ -42,8 +42,8 @@ const INDIGO2_COLOR  = "#F4F4F4";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 69;   // altura del bloque de navegación, sin safe area
-const TAB_CONTENT_OFFSET_Y = 1;
+const PILL_H         = 67;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 5;
 const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
 
@@ -76,7 +76,7 @@ const TAB_CONFIG: Record<
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
-  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", activeColor: "#F9F9F9" },
+  sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 30, activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
   profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
 };
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     letterSpacing: 0.3,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   labelWrap: {
     width: "100%",
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
   labelActive: {
     fontFamily: "Manrope",
     color: GRAD_END,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   mezcladorHandle: {
     position: "absolute",
