@@ -182,6 +182,7 @@ export default function CrearRutinaScreen() {
           <View style={styles.tabRail}>
             <KeyboardAwareScrollViewCompat
               horizontal
+              style={styles.tabScroller}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.tabRow}
               keyboardShouldPersistTaps="handled"
@@ -351,20 +352,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   titleInput: {
-    marginTop: 47,
+    marginTop: 35,
     minHeight: 40,
     paddingHorizontal: 0,
     fontFamily: "Manrope",
-    fontSize: 23,
+    fontSize: 21,
     fontWeight: "600",
   },
   descriptionInput: {
-    marginTop: 15,
+    marginTop: 10,
     minHeight: 36,
     paddingHorizontal: 0,
     paddingTop: 4,
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 20,
   },
   actionsBlock: {
@@ -379,7 +380,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
   },
   optionalText: {
@@ -398,7 +399,9 @@ const styles = StyleSheet.create({
   },
   tabRail: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: ROUTINE_MUTED,
+    borderBottomColor: "rgba(127,127,127,0.5)",
+  },
+  tabScroller: {
     marginHorizontal: -22,
   },
   tabRow: {
@@ -417,6 +420,7 @@ const styles = StyleSheet.create({
   },
   suggestionList: {
     gap: 9,
+    marginTop: 10,
   },
   suggestionRow: {
     minHeight: 60,
