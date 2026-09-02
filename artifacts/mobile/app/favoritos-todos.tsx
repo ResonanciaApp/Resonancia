@@ -28,10 +28,12 @@ import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { getListenNowButtonColors } from "@/components/GoldGradient";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
+const LISTEN_PURPLE_GRADIENT = getListenNowButtonColors(true);
 
 const FAV_TABS = [
   { id: "meditaciones", label: "Meditaciones", icon: "compass",     categoryId: "meditaciones-guiadas" },
@@ -50,7 +52,8 @@ function FavPill({
 }: { tabId: FavTabId; sel: boolean; label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
   const selectedColors: [string, string] =
-    tabId === "sesiones" ? ["#8C4912", "#7A3C0A"]
+    tabId === "meditaciones" || tabId === "videos" ? LISTEN_PURPLE_GRADIENT
+      : tabId === "sesiones" ? ["#8C4912", "#7A3C0A"]
       : tabId === "musica" ? ["#307E91", "#1A5863"]
         : tabId === "ambientales" ? ["#357849", "#23522F"]
           : tabId === "historias" ? ["#8F227F", "#691E5E"]
@@ -101,6 +104,7 @@ export default function FavoritosTodosScreen() {
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -157,7 +161,10 @@ export default function FavoritosTodosScreen() {
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+        <View
+          style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}
+          onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
+        >
           <StickyHeaderSurface opacity={stickySurfaceOpacity} tint={sceneTheme.gradient[0] as string} />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
@@ -206,7 +213,7 @@ export default function FavoritosTodosScreen() {
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 25 }}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: stickyHeaderHeight + 25 }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
@@ -275,7 +282,11 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -5 }],
   },
   stickyHeader: {
-    zIndex: 10,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
     backgroundColor: "transparent",
     overflow: "hidden",
   },
@@ -285,8 +296,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 19,
-    paddingTop: 7,
-    paddingBottom: 10,
+    paddingBottom: 12,
   },
   libraryTabHeaderRow: {
     minHeight: 48,
@@ -320,9 +330,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 0,
   },
-  largeTitle: { fontFamily: "Manrope", fontSize: 30, lineHeight: 36, fontWeight: "800", letterSpacing: 0.3, textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }], flex: 1 },
+  largeTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", flex: 1 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  compactTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  compactTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
