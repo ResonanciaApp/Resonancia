@@ -2424,6 +2424,25 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
+              ]}
+            >
+              Explora por contenido
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant="watercolor"
+            />
+          </View>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
             description="Contenido que has escuchado recientemente"
@@ -2608,25 +2627,6 @@ export default function HomeScreen2({
             marginBottom={INICIO2_SECTION_GAP}
             titleMarginTop={0}
           />
-        )}
-        {isInicio2 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
-              ]}
-            >
-              Explora por contenido
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              horizontal
-              visualVariant="watercolor"
-            />
-          </View>
         )}
         {isInicio2 && <AhoraEnResonanciaSection />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
