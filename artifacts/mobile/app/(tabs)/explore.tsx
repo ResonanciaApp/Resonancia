@@ -36,7 +36,6 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
@@ -566,12 +565,6 @@ export function ExploreScreen({
             </View>
           ))}
 
-          {/* ── Resonadores — última sección de Descubrir ── */}
-          <EncuentrosResonadoresSection
-            marginTop={0}
-            marginBottom={SECTION_GAP}
-            titleMarginTop={0}
-          />
           <ResonadoresSection
             marginTop={0}
             marginBottom={SECTION_GAP}
