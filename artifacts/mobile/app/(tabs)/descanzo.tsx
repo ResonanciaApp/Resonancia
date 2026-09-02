@@ -37,6 +37,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
 
@@ -608,12 +609,12 @@ export default function DescansoScreen() {
 
           <Pressable
             onPress={() => setAllVisible(true)}
-            style={({ pressed }) => [{
-              flexDirection: "row", alignItems: "center", justifyContent: "center",
-              paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1,
-            }]}
+            style={({ pressed }) => [
+              styles.allSessionsButton,
+              { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.75 : 1 },
+            ]}
           >
-            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>
+            <Text style={styles.allSessionsButtonText}>
               Todas las sesiones de Dormir
             </Text>
             <Feather name="chevron-right" size={16} color="#F9F9F9" />
@@ -841,6 +842,25 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 21,
     paddingHorizontal: H_PAD,
+  },
+  allSessionsButton: {
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+    overflow: "hidden",
+    paddingHorizontal: 28,
+    paddingVertical: 9,
+    gap: 6,
+    marginTop: 29,
+    marginBottom: 16,
+  },
+  allSessionsButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#F9F9F9",
   },
   soundImageWrap: {
     width: "100%",
