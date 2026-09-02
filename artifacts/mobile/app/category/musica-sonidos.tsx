@@ -27,7 +27,12 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
+import {
+  SESSIONS,
+  getSessionById,
+  sortSessionsNewestFirst,
+  type Session,
+} from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -54,8 +59,8 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
-  if (!tab) return all;
-  return all.filter((s) => s.soundTag === tab);
+  const filtered = tab ? all.filter((s) => s.soundTag === tab) : all;
+  return filtered.sort(sortSessionsNewestFirst);
 }
 
 

@@ -485,6 +485,34 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Colección de Sonidos inválida");
   });
+
+  it("convierte Frecuencias Astrales del campo singular en colección canónica", async () => {
+    authAs(adminUser);
+    const createRes = await request(app)
+      .post("/api/catalog/submissions")
+      .send({
+        title: "Frecuencia astral de prueba",
+        subtitle: "Paisaje de frecuencia",
+        categoryId: "musica-sonidos",
+        categoryLabel: "Música",
+        duration: 12,
+        description: "Contenido de prueba para validar la compatibilidad de etiquetas.",
+        benefits: [],
+        instruments: [],
+        isPlaceholder: true,
+        status: "draft",
+        audioFiles: [],
+        sonidosTag: "Frecuencias Astrales",
+        sonidosTags: [],
+      });
+
+    expect(createRes.status).toBe(201);
+    createdSessionIds.push(createRes.body.id);
+    expect(createRes.body.sonidosTags).toEqual([
+      "Todos los sonidos",
+      "Frecuencias Astrales",
+    ]);
+  });
 });
 
 // El pool de conexiones es compartido por todo el archivo; cerrarlo una sola

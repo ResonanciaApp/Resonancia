@@ -22,7 +22,11 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
-import { SESSIONS, getSessionById } from "@/data/sessions";
+import {
+  SESSIONS,
+  getSessionById,
+  sortSessionsNewestFirst,
+} from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
@@ -305,7 +309,7 @@ export function ExploreScreen({
         label: sec.label,
         sessions: SESSIONS.filter((s) =>
           (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
-        ),
+        ).sort(sortSessionsNewestFirst),
       }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 

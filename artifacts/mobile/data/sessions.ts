@@ -23,7 +23,12 @@ export type PodcastTag =
   | "Sobrenatural"
   | "Neurociencia";
 
-export type SonidosTag = "Sonidos Binaurales" | "Sonidos Naturaleza" | "Sonidos Atmosféricos" | "Sonidos Hipnóticos";
+export type SonidosTag =
+  | "Sonidos Binaurales"
+  | "Sonidos Naturaleza"
+  | "Sonidos Atmosféricos"
+  | "Sonidos Hipnóticos"
+  | "Frecuencias Astrales";
 
 export type AncestralTag =
   | "Cuencos Tibetanos"
@@ -1292,6 +1297,7 @@ const LEGACY_SONIDOS_TAG_MAP: Record<SonidosTag, SonidosCollectionTag[]> = {
   "Sonidos Naturaleza": ["Todos los sonidos", "Sonidos de naturaleza"],
   "Sonidos Atmosféricos": ["Todos los sonidos"],
   "Sonidos Hipnóticos": ["Todos los sonidos"],
+  "Frecuencias Astrales": ["Todos los sonidos", "Frecuencias Astrales"],
 };
 
 export function normalizeSonidosTags(
@@ -1305,7 +1311,8 @@ export function normalizeSonidosTags(
         result.add(tag as SonidosCollectionTag);
       }
     }
-  } else if (legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
+  }
+  if (result.size === 0 && legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
     for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag as SonidosTag]) {
       result.add(tag);
     }
@@ -1321,7 +1328,7 @@ export function getSessionSonidosTags(session: Session): SonidosCollectionTag[] 
 export function getSessionsBySonidosTag(tag: SonidosCollectionTag): Session[] {
   return SESSIONS
     .filter((session) => getSessionSonidosTags(session).includes(tag))
-    .sort(newestFirst);
+    .sort(sortSessionsNewestFirst);
 }
 
 export const SONIDOS_VISIBLE_TAGS: SonidosCollectionTag[] = SONIDOS_TAG_CARDS.map(
@@ -1386,7 +1393,7 @@ export function getSessionDescansoTags(session: Session): DescansoTag[] {
   return normalizeDescansoTags(session.descansoTags, session.descansoTag, session.sleepTag);
 }
 
-function newestFirst(a: Session, b: Session): number {
+export function sortSessionsNewestFirst(a: Session, b: Session): number {
   const parsedA = a.createdAt ? Date.parse(a.createdAt) : 0;
   const parsedB = b.createdAt ? Date.parse(b.createdAt) : 0;
   const aTime = Number.isFinite(parsedA) ? parsedA : 0;
@@ -1406,7 +1413,7 @@ function newestFirst(a: Session, b: Session): number {
 export function getSessionsByDescansoTag(tag: DescansoTag): Session[] {
   return SESSIONS
     .filter((s) => getSessionDescansoTags(s).includes(tag))
-    .sort(newestFirst);
+    .sort(sortSessionsNewestFirst);
 }
 
 /** Orden editorial canónico compartido por Dormir y la cola del reproductor. */

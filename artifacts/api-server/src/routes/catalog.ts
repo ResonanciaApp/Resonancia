@@ -54,19 +54,35 @@ const SONIDOS_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",
   "Sonidos binaurales",
+  "Frecuencias Astrales",
   "Música de enfoque",
   "Cantos medicinales",
   "Sonidos de lluvia",
   "Sonidos para Chakras",
 ] as const;
 const SONIDOS_TAG_SET = new Set<string>(SONIDOS_TAGS);
+const LEGACY_SONIDOS_TAG_MAP: Record<string, readonly string[]> = {
+  "Sonidos Binaurales": ["Sonidos binaurales"],
+  "Sonidos Naturaleza": ["Sonidos de naturaleza"],
+  "Sonidos Atmosféricos": ["Todos los sonidos"],
+  "Sonidos Hipnóticos": ["Todos los sonidos"],
+  "Frecuencias Astrales": ["Frecuencias Astrales"],
+};
 
 function hasInvalidDescansoTags(tags: string[] | undefined): boolean {
   return (tags ?? []).some((tag) => !DESCANSO_TAGS.has(tag));
 }
 
-function normalizeSonidosTags(tags: string[] | undefined): string[] {
+function normalizeSonidosTags(
+  tags: string[] | undefined,
+  legacySonidosTag?: string | null,
+): string[] {
   const selected = new Set((tags ?? []).filter((tag) => SONIDOS_TAG_SET.has(tag)));
+  if (selected.size === 0 && legacySonidosTag) {
+    for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag] ?? []) {
+      selected.add(tag);
+    }
+  }
   if (selected.size > 0) selected.add("Todos los sonidos");
   return SONIDOS_TAGS.filter((tag) => selected.has(tag));
 }
@@ -558,7 +574,7 @@ router.post(
           sabiduriaTag: body.sabiduriaTag ?? null,
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
-          sonidosTags: normalizeSonidosTags(body.sonidosTags),
+          sonidosTags: normalizeSonidosTags(body.sonidosTags, body.sonidosTag),
           descansoTag: null,
           descansoTags: body.descansoTags ?? [],
           themeTag: body.themeTag ?? null,
@@ -920,7 +936,7 @@ router.patch(
     if (data.podcastTag !== undefined) updates.podcastTag = data.podcastTag ?? null;
     if (data.sonidosTag !== undefined) updates.sonidosTag = data.sonidosTag ?? null;
     if (data.sonidosTags !== undefined) {
-      updates.sonidosTags = normalizeSonidosTags(data.sonidosTags);
+      updates.sonidosTags = normalizeSonidosTags(data.sonidosTags, data.sonidosTag);
     }
     if (data.descansoTags !== undefined) {
       updates.descansoTags = data.descansoTags;

@@ -83,11 +83,17 @@ const DESCANSO_TAGS = [
   "Sonidos de lluvia",
   "Ruido",
 ];
-const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
+const SONIDOS_TAGS = [
+  "Sonidos Binaurales",
+  "Sonidos Naturaleza",
+  "Sonidos Atmosféricos",
+  "Frecuencias Astrales",
+];
 const SONIDOS_COLLECTION_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",
   "Sonidos binaurales",
+  "Frecuencias Astrales",
   "Música de enfoque",
   "Cantos medicinales",
   "Sonidos de lluvia",

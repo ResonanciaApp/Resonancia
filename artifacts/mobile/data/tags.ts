@@ -131,6 +131,7 @@ export type SonidosCollectionTag =
   | "Todos los sonidos"
   | "Sonidos de naturaleza"
   | "Sonidos binaurales"
+  | "Frecuencias Astrales"
   | "Música de enfoque"
   | "Cantos medicinales"
   | "Sonidos de lluvia"
@@ -165,6 +166,13 @@ export const SONIDOS_TAG_CARDS: SonidosTagCard[] = [
     description: "Frecuencias inmersivas que acompañan estados de enfoque, descanso y expansión.",
     icon: "radio",
     accent: "#8AAAD4",
+  },
+  {
+    id: "frecuencias-astrales",
+    label: "Frecuencias Astrales",
+    description: "Paisajes de frecuencia para conectar con estados de expansión, claridad y contemplación.",
+    icon: "star",
+    accent: "#A896D8",
   },
   {
     id: "musica-de-enfoque",
