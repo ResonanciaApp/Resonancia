@@ -30,6 +30,7 @@ type Props = {
 const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
+const ROUTINE_HANDLE_COLOR = "#7F7F7F";
 
 function ActivityRow({
   activity,
@@ -66,9 +67,6 @@ function ActivityRow({
   const sharedDragOriginSlot = dragOriginSlot;
   const sharedDragDeltaY = dragDeltaY;
   const sharedInsertAt = insertAt;
-  const detail = activity.description
-    ? `${activity.category} · ${activity.description}`
-    : activity.category;
 
   useEffect(() => {
     completionProgress.value = withTiming(completed ? 1 : 0, { duration: 450 });
@@ -166,28 +164,36 @@ function ActivityRow({
       <GestureDetector gesture={pan}>
         <Reanimated.View style={[styles.activityCard, completionStyle]}>
           <View style={styles.activityCopy}>
-            <Text
-              style={[
-                styles.activityTitle,
-                { color: completed ? "#FFFFFF" : colors.foreground },
-              ]}
-              numberOfLines={1}
-            >
-              {activity.title}
+            <Text style={[styles.activityCategory, { color: colors.accent }]} numberOfLines={1}>
+              {activity.category}
             </Text>
-            <Text
-              style={[
-                styles.activityDescription,
-                {
-                  color: completed
-                    ? "rgba(255,255,255,0.76)"
-                    : colors.mutedForeground,
-                },
-              ]}
-              numberOfLines={1}
-            >
-              {detail}
-            </Text>
+            <View style={styles.activityTitleRow}>
+              <Text
+                style={[
+                  styles.activityTitle,
+                  { color: completed ? "#FFFFFF" : colors.foreground },
+                ]}
+                numberOfLines={1}
+              >
+                {activity.title}
+              </Text>
+              <Feather name="more-horizontal" size={18} color={ROUTINE_HANDLE_COLOR} />
+            </View>
+            {activity.description ? (
+              <Text
+                style={[
+                  styles.activityDescription,
+                  {
+                    color: completed
+                      ? "rgba(255,255,255,0.76)"
+                      : colors.mutedForeground,
+                  },
+                ]}
+                numberOfLines={1}
+              >
+                {activity.description}
+              </Text>
+            ) : null}
           </View>
           <Pressable
             onPress={onToggle}
@@ -198,10 +204,13 @@ function ActivityRow({
             hitSlop={10}
             style={({ pressed }) => [
               styles.checkButton,
-              { opacity: pressed ? 0.58 : 1 },
+              {
+                backgroundColor: colors.accent,
+                opacity: pressed ? 0.58 : 1,
+              },
             ]}
           >
-            {completed ? <Feather name="check" size={20} color="#FFFFFF" /> : null}
+            {completed ? <Feather name="check" size={20} color={WIDGET_GREEN_SOLID} /> : null}
           </Pressable>
         </Reanimated.View>
       </GestureDetector>
@@ -321,9 +330,6 @@ export function MiRutinaSection({ style }: Props) {
       <View style={styles.headerRow}>
         <View style={styles.titleWrap}>
           <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina</Text>
-          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
-            Pequeños pasos para volver a lo esencial
-          </Text>
         </View>
         <View style={styles.headerActions}>
           <Feather name="calendar" size={19} color={colors.mutedForeground} />
@@ -335,7 +341,7 @@ export function MiRutinaSection({ style }: Props) {
             hitSlop={8}
             style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
           >
-            <Feather name="plus" size={25} color={WIDGET_GREEN_SOLID} />
+            <Feather name="plus" size={25} color="#F9F9F9" />
           </Pressable>
         </View>
       </View>
@@ -464,9 +470,23 @@ const styles = StyleSheet.create({
     minWidth: 0,
     paddingRight: 8,
   },
+  activityCategory: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "600",
+    letterSpacing: 0.25,
+    marginBottom: 2,
+  },
+  activityTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    minWidth: 0,
+    gap: 5,
+  },
   activityTitle: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    flex: 1,
+    fontSize: 14,
     fontWeight: "600",
     lineHeight: 20,
   },
@@ -479,6 +499,7 @@ const styles = StyleSheet.create({
   checkButton: {
     width: 32,
     height: 32,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
   },
