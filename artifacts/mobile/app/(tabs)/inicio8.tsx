@@ -3065,6 +3065,8 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
@@ -3073,6 +3075,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(190,150,80,0.28)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   inicio2HeroAvatarInitial: {
     color: "#FFFFFF",
@@ -3099,8 +3103,8 @@ const styles = StyleSheet.create({
   inicio2HeroGreetingName: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 23,
+    fontSize: 15,
+    lineHeight: 20,
     fontWeight: "700",
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },

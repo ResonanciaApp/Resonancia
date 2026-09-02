@@ -15,14 +15,15 @@ import {
 type Props = {
   style?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
+  showTitle?: boolean;
 };
 
-export function MilestoneCards({ style, titleStyle }: Props) {
+export function MilestoneCards({ style, titleStyle, showTitle = true }: Props) {
   const { statuses: milestones, previewMilestone, resetMilestone } = useMilestones();
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={[styles.sectionLabel, titleStyle]}>Hitos</Text>
+      {showTitle && <Text style={[styles.sectionLabel, titleStyle]}>Hitos</Text>}
       <View style={styles.list}>
         {milestones.map((m) => {
           const done = !!m.unlockedAt;

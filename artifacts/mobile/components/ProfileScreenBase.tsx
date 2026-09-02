@@ -407,6 +407,7 @@ export function ProfileScreenBase({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
+  const [milestonesOpen, setMilestonesOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
@@ -1471,7 +1472,43 @@ export function ProfileScreenBase({
               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
             </Pressable>
 
-            <MilestoneCards />
+             <Pressable
+               onPress={() => {
+                 LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                 setMilestonesOpen((open) => !open);
+               }}
+               accessibilityRole="button"
+               accessibilityLabel="Abrir Hitos"
+               accessibilityState={{ expanded: milestonesOpen }}
+               style={({ pressed }) => [
+                 styles.profileNotificationRow,
+                 styles.profileMilestonesRow,
+                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
+               ]}
+             >
+               <View style={styles.profileNotificationIcon}>
+                 <Feather name="flag" size={19} color={colors.foreground} />
+               </View>
+               <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
+                 Hitos
+               </Text>
+               <Feather
+                 name={milestonesOpen ? "chevron-up" : "chevron-down"}
+                 size={20}
+                 color={colors.mutedForeground}
+               />
+             </Pressable>
+
+             {milestonesOpen && (
+               <View
+                 style={[
+                   styles.milestonesDropdown,
+                   { backgroundColor: resourceBlockBackground },
+                 ]}
+               >
+                 <MilestoneCards showTitle={false} />
+               </View>
+             )}
 
           </>
         )}
@@ -2452,6 +2489,15 @@ const styles = StyleSheet.create({
   },
   profileDownloadsRow: {
     marginBottom: 24,
+  },
+  profileMilestonesRow: {
+    marginBottom: 0,
+  },
+  milestonesDropdown: {
+    marginTop: 8,
+    marginBottom: 24,
+    borderRadius: 18,
+    padding: 12,
   },
   profileNotificationIcon: {
     width: 36,

@@ -5,6 +5,7 @@ import { useCategoryOverlay, type OverlayEntry } from "@/context/CategoryOverlay
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import VideosScreen from "@/app/videos";
 
 // ─── Descanzo: import EAGER (es ruta de tab, no de root) ──────────────────────
 // Las rutas de tab son split-bundles de Expo Router. Si se lazy-importan con
@@ -30,7 +31,6 @@ const LazyChakra        = React.lazy(() => import("@/app/chakra/[id]"));
 const LazyBusqueda      = React.lazy(() => import("@/app/busqueda"));
 const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
 const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
-const LazyVideos        = React.lazy(() => import("@/app/videos"));
 const LazyFavoritos     = React.lazy(() => import("@/app/favoritos-todos"));
 const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
 const LazySleepTag      = React.lazy(() => import("@/app/sleep-tag/[id]"));
@@ -54,7 +54,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   const b = route.match(/^\/busqueda(?:\?tiempo=(.+))?$/);
   if (b) return { node: <LazyBusqueda tiempo={b[1] ? decodeURIComponent(b[1]) : undefined} />, eager: false };
   if (route === "/todas-las-tematicas") return { node: <LazyTodasTematicas />, eager: false };
-  if (route === "/videos") return { node: <LazyVideos />, eager: false };
+  if (route === "/videos") return { node: <VideosScreen />, eager: true };
   if (route === "/favoritos-todos") return { node: <LazyFavoritos />, eager: false };
   const p = route.match(/^\/playlist\/(.+)$/);
   if (p) return { node: <LazyPlaylist id={decodeURIComponent(p[1])} />, eager: false };

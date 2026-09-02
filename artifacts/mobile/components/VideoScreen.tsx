@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useRef, useState } from "react";
 import {
@@ -96,7 +96,6 @@ export function VideoScreen({ showBack = false }: Props) {
 
   return (
     <View style={styles.root}>
-      <Stack.Screen options={{ headerShown: false }} />
       <StatusBar hidden />
       <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
       <GeoUniverseBackground />
