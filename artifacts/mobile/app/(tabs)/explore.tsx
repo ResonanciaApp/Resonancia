@@ -551,7 +551,7 @@ export function ExploreScreen({
                         : FIRST_DISCOVER_CAROUSEL_GAP
                       : 0,
                   ...(carousel.slug === "para-la-ansiedad"
-                    ? { transform: [{ translateY: -11 }] }
+                    ? { transform: [{ translateY: -13 }] }
                     : {}),
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
