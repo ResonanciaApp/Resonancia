@@ -179,7 +179,7 @@ export default function CrearRutinaScreen() {
         </View>
 
         <View style={styles.suggestionsBlock}>
-          <View style={[styles.tabRail, { borderBottomColor: "rgba(255,255,255,0.10)" }]}>
+          <View style={styles.tabRail}>
             <KeyboardAwareScrollViewCompat
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -398,9 +398,12 @@ const styles = StyleSheet.create({
   },
   tabRail: {
     borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: ROUTINE_MUTED,
+    marginHorizontal: -22,
   },
   tabRow: {
     gap: 27,
+    paddingLeft: 22,
     paddingRight: 22,
   },
   tab: {
