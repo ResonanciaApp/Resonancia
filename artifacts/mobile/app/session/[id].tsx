@@ -1,9 +1,7 @@
-import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
-import MaskedView from "@react-native-masked-view/masked-view";
-import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -13,9 +11,9 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  ActivityIndicator,
   Animated,
-  Dimensions,
-  Easing,
+  Alert,
   Linking,
   Modal,
   Platform,
@@ -34,11 +32,9 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
-import { usePremium } from "@/context/PremiumContext";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { hexToRgba } from "@/utils/color";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
@@ -46,89 +42,36 @@ import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
-import { BackPill } from "@/components/BackPill";
-import { GhostPill } from "@/components/GhostPill";
-import { SacredGlyph } from "@/components/SacredGlyph";
-import { CHAKRAS, chakraMatchesTag, isChakraTag } from "@/data/chakras";
 
-const { width } = Dimensions.get("window");
-const HEADER_H = 343;
-
-function AnimatedHeart({
-  favorited,
-  onToggle,
-  size = 20,
+function CircleActionButton({
+  label,
+  testID,
+  onPress,
+  backgroundColor,
+  children,
 }: {
-  favorited: boolean;
-  onToggle: () => void;
-  size?: number;
+  label: string;
+  testID: string;
+  onPress: () => void;
+  backgroundColor: string;
+  children: React.ReactNode;
 }) {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const handlePress = () => {
-    onToggle();
-    scale.setValue(1);
-    Animated.sequence([
-      Animated.timing(scale, { toValue: 1.1, duration: 120, useNativeDriver: true }),
-      Animated.spring(scale, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
-    ]).start();
-  };
-
   return (
-    <Pressable onPress={handlePress} hitSlop={10}>
-      <Animated.View style={{ transform: [{ scale }] }}>
-        {favorited ? (
-          <Ionicons name="heart" size={size} color="rgba(255,255,255,0.95)" />
-        ) : (
-          <Ionicons name="heart-outline" size={size} color="rgba(255,255,255,0.9)" />
-        )}
-      </Animated.View>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      testID={testID}
+      onPress={onPress}
+      hitSlop={6}
+      style={({ pressed }) => [
+        styles.circleAction,
+        { backgroundColor, opacity: pressed ? 0.78 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] },
+      ]}
+    >
+      {children}
     </Pressable>
   );
 }
-
-function GlowPill({ onPress, pillStyle, bgColor }: { onPress: () => void; pillStyle: object; bgColor?: string }) {
-  const scale  = useRef(new Animated.Value(1)).current;
-  const bright = useRef(new Animated.Value(0)).current;
-
-  function handlePressIn() {
-    Animated.parallel([
-      Animated.timing(scale,  { toValue: 0.97, duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(bright, { toValue: 1,    duration: 160, easing: Easing.out(Easing.quad),       useNativeDriver: true }),
-    ]).start();
-  }
-
-  function handlePressOut() {
-    Animated.parallel([
-      Animated.timing(scale,  { toValue: 1, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(bright, { toValue: 0, duration: 400, easing: Easing.in(Easing.quad), useNativeDriver: true }),
-    ]).start();
-    onPress();
-  }
-
-  return (
-    <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        style={[pillStyle, { overflow: "hidden", backgroundColor: bgColor ?? "rgba(0,0,0,0.14)" }]}
-      >
-        <Animated.View
-          pointerEvents="none"
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            borderRadius: 19,
-            backgroundColor: "rgba(255,255,255,0.28)",
-            opacity: bright,
-          }}
-        />
-        <Feather name="chevron-left" size={22} color="#FFF" />
-      </Pressable>
-    </Animated.View>
-  );
-}
-
-
 
 export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}) {
   const { id: idParam, source } = useLocalSearchParams<{ id: string; source?: string }>();
@@ -137,12 +80,20 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, playSessionInPlaylist, isFavorite, toggleFavorite, currentSession, isPlaying, progress, clearSessionProgress } = usePlayer();
-  const { isPremium } = usePremium();
+  const {
+    playSession,
+    playSessionInPlaylist,
+    pauseResume,
+    isFavorite,
+    toggleFavorite,
+    currentSession,
+    isPlaying,
+    isLoading,
+    progress,
+    clearSessionProgress,
+  } = usePlayer();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
-
-  const accentColor = "rgb(218,212,236)";
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -163,20 +114,13 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   // Esta pantalla cubre: Ancestrales (Sesiones), Meditaciones.
   // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
-  const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isPlaceholder = session.isPlaceholder === true;
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const sessionGradient: string[] = sceneTheme.id === "tibet"
     ? ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"]
     : [...sceneTheme.gradient];
-  const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
-  const stickyHeaderColor = sessionGradient[0];
-  const isIndigoPlayBtn = sceneTheme.id === "indigo";
-  const listenNowBtnColors: [string, string, ...string[]] = getListenNowButtonColors(isIndigoPlayBtn);
-  const playBtnTextColor = isIndigoPlayBtn ? "#f9f9f9" : "#0d0c26";
-  const listenNowBtnTextColor = isIndigoPlayBtn ? "#F9F9F9" : playBtnTextColor;
-  const shareBtnTextColor = "#F9F9F9";
-  const shareBtnBorder = isIndigoPlayBtn ? "#F9F9F9" : "#F9F9F9";
+  const actionBackground = hexToRgba(colors.warmBlack ?? colors.background, 0.52);
+  const softOverlay = hexToRgba(colors.warmBlack ?? colors.background, 0.38);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -290,27 +234,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     setRatingModal(false);
   }, []);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false },
-  );
-
-  // Zoom suave en la imagen — sutil, se deshace solo al soltar (rebote nativo)
-  const heroScale = scrollY.interpolate({
-    inputRange: [-260, 0],
-    outputRange: [1.12, 1],
-    extrapolate: "clamp",
-  });
-  const STICKY_START = HEADER_H + 68 - topPad;
-  const STICKY_END   = STICKY_START + 40;
-  const stickyOpacity = scrollY.interpolate({
-    inputRange: [STICKY_START, STICKY_END],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
   const fav = localFav !== null ? localFav : isFavorite(session.id);
-  const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
+  const isCurrentSession = currentSession?.id === session.id;
+  const isCurrentlyPlaying = isCurrentSession && isPlaying;
 
   const { data: playsData } = useGetSessionPlayCount(session.id, {
     query: { queryKey: getGetSessionPlayCountQueryKey(session.id), staleTime: 60_000 },
@@ -331,6 +257,24 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     router.push("/player" as never);
   };
 
+  const handlePlayback = () => {
+    if (isLoading && isCurrentSession) return;
+    if (isPlaceholder) {
+      handlePlay();
+      return;
+    }
+    if (isCurrentSession && (isPlaying || progress < 1)) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      pauseResume();
+      return;
+    }
+    handlePlay();
+  };
+
+  const handleDownload = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.");
+  };
 
   const handleShare = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -399,175 +343,187 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
       <StatusBar hidden />
 
-      {/* Colchón de color fijo — cubre cualquier gap durante scroll rápido sin lag */}
-      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sessionGradient[0], zIndex: 0 }} pointerEvents="none" />
+      {/* ── Imagen inmersiva y contraste ─────────────────────────────────── */}
+      <View style={styles.immersiveBackground} pointerEvents="none">
+        <Image
+          source={session.image}
+          style={StyleSheet.absoluteFill as object}
+          contentFit="cover"
+          placeholder={BLUR_PLACEHOLDER}
+          transition={IMAGE_TRANSITION}
+        />
+        <LinearGradient
+          colors={[
+            hexToRgba(colors.warmBlack ?? colors.background, 0.28),
+            hexToRgba(colors.warmBlack ?? colors.background, 0.56),
+            hexToRgba(colors.warmBlack ?? colors.background, 0.9),
+          ]}
+          locations={[0, 0.46, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: softOverlay }]} />
+      </View>
 
-      {/* ── Hero fijo ──────────────────────────────────────────────────────── */}
-      <Animated.View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
-        <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
-          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-        </Animated.View>
-      </Animated.View>
+      {/* ── Fila superior de acciones ─────────────────────────────────────── */}
+      <View style={[styles.topActionRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
+        <CircleActionButton
+          label="Volver"
+          testID="session-detail-back-button"
+          onPress={goBack}
+          backgroundColor={actionBackground}
+        >
+          <Feather name="chevron-left" size={23} color={colors.foreground} />
+        </CircleActionButton>
 
-      {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
-      <View style={[styles.navBar, { paddingTop: topPad, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
-        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.5)", marginTop: -2, transform: [{ translateY: 2 }] }}>
-          <BackPill onPress={goBack} size={27} iconOffsetX={-2} />
-        </GhostPill>
-        <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
-          <FontAwesome name="instagram" size={20} color="#FBFBFB" />
-        </Pressable>
+        <View style={styles.topActionGroup}>
+          <CircleActionButton
+            label="Descargar"
+            testID="session-detail-download-button"
+            onPress={handleDownload}
+            backgroundColor={actionBackground}
+          >
+            <Feather name="download" size={19} color={colors.foreground} />
+          </CircleActionButton>
+          <CircleActionButton
+            label={fav ? "Quitar de Me gusta" : "Me gusta"}
+            testID="session-detail-favorite-button"
+            onPress={handleFav}
+            backgroundColor={actionBackground}
+          >
+            <Ionicons
+              name={fav ? "heart" : "heart-outline"}
+              size={21}
+              color={colors.foreground}
+            />
+          </CircleActionButton>
+          <CircleActionButton
+            label="Compartir"
+            testID="session-detail-share-button"
+            onPress={handleShare}
+            backgroundColor={actionBackground}
+          >
+            <Feather name="share-2" size={19} color={colors.foreground} />
+          </CircleActionButton>
+          <CircleActionButton
+            label="Más opciones"
+            testID="session-detail-more-button"
+            onPress={() => setActionsSheetOpen(true)}
+            backgroundColor={actionBackground}
+          >
+            <Feather name="more-horizontal" size={20} color={colors.foreground} />
+          </CircleActionButton>
+        </View>
       </View>
 
       <Animated.ScrollView
-        style={[styles.scroll, { zIndex: 2 }]}
-        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
+        style={styles.immersiveScroll}
+        contentContainerStyle={[
+          styles.immersiveScrollContent,
+          { paddingTop: topPad + 74, paddingBottom: bottomPad + 38 },
+        ]}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={handleScroll}
       >
-        {/* Spacer transparente — muestra el hero fijo debajo */}
-        <View style={{ height: HEADER_H }} pointerEvents="none" />
-
-        {/* ── Bloque fondo+contenido que cubre el hero al hacer scroll ──── */}
-        <View style={{ backgroundColor: sessionGradient[sessionGradient.length - 1] }}>
-          <LinearGradient
-            colors={sessionGradient as unknown as [string, string, ...string[]]}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-        {/* ── Content ────────────────────────────────────────────────────── */}
-        <View style={styles.content}>
-
-          {/* Title + acciones */}
-          <View style={[styles.titleRow, { marginTop: 24 }]}>
-            <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
-            <View style={styles.titleActions}>
-              <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="more-horizontal" size={22} color="#FBFBFB" />
-              </Pressable>
-              <AnimatedHeart favorited={fav} onToggle={handleFav} size={22} />
-            </View>
-          </View>
-
-          {/* Author name */}
-          {authors[0] && (
+        <View style={styles.immersiveStage}>
+          <View style={styles.playArea}>
             <Pressable
-              onPress={() => router.push(authors[0].profilePath as never)}
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+              accessibilityRole="button"
+              accessibilityLabel={
+                isPlaceholder
+                  ? "Ver disponibilidad de la sesión"
+                  : isCurrentlyPlaying
+                    ? "Pausar sesión"
+                    : "Reproducir sesión"
+              }
+              accessibilityState={{
+                busy: isLoading && isCurrentSession,
+                disabled: isLoading && isCurrentSession,
+              }}
+              testID="session-detail-play-button"
+              onPress={handlePlayback}
+              disabled={isLoading && isCurrentSession}
+              style={({ pressed }) => [
+                styles.immersivePlayButton,
+                {
+                  backgroundColor: hexToRgba(colors.foreground, 0.94),
+                  opacity: isLoading && isCurrentSession ? 0.82 : pressed ? 0.82 : 1,
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                },
+              ]}
             >
-              <Text style={styles.authorNameInline}>
-                {"Por "}
-                <Text style={styles.authorNameLink}>{authors[0].name}</Text>
-              </Text>
-            </Pressable>
-          )}
-
-          {/* ── Botones Escuchar / Compartir ─────────────────────────── */}
-            <View style={{ flexDirection: "row", gap: 10, marginTop: 16, marginBottom: 26 }}>
-              <Pressable
-                onPress={handlePlay}
-                style={({ pressed }) => [
-                  styles.playBtn,
-                  {
-                    flex: 1,
-                    opacity: pressed ? 0.88 : 1,
-                    ...(isIndigoPlayBtn
-                      ? {
-                          shadowOpacity: 0,
-                          shadowRadius: 0,
-                          elevation: 0,
-                        }
-                      : {}),
-                  },
-                ]}
-              >
-                <View style={[StyleSheet.absoluteFill, { borderRadius: styles.playBtn.borderRadius, overflow: "hidden" }]}>
-                  <LinearGradient colors={listenNowBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Svg width={21} height={21} viewBox="0 0 48 48">
-                    <Path
-                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill={listenNowBtnTextColor}
-                    />
-                  </Svg>
-                  <Text style={[styles.playBtnText, { color: listenNowBtnTextColor }]}>
-                    {isPlaceholder ? "Contenido próximamente" : (isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora")}
-                  </Text>
-                </View>
-              </Pressable>
-
-              {isPlaceholder && (
-                <Text style={{ position: "absolute", left: 0, right: 0, bottom: -22, textAlign: "center", color: "#FBFBFB", fontSize: 12 }}>
-                  Abrí el reproductor para ver la disponibilidad.
-                </Text>
+              {isLoading && isCurrentSession ? (
+                <ActivityIndicator size="small" color={sessionGradient[0]} />
+              ) : (
+                <Ionicons
+                  name={isCurrentlyPlaying ? "pause" : "play"}
+                  size={31}
+                  color={sessionGradient[0]}
+                  style={!isCurrentlyPlaying ? { marginLeft: 3 } : undefined}
+                />
               )}
-
-              <Pressable
-                onPress={handleShare}
-                style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
-              >
-                <View style={[styles.shareBtnInner, { borderColor: shareBtnBorder, flex: 1 }]}>
-                  <Text style={[styles.shareBtnText, { color: shareBtnTextColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={shareBtnTextColor} />
-                </View>
-              </Pressable>
-            </View>
-
-          {/* Duration label + rating */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5, marginBottom: 5 }}>
-            {ratingStars > 0 && (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                <Text style={{ fontSize: 17, fontWeight: "600", color: "#FBFBFB" }}>
-                  {ratingStars.toFixed(1)}
-                </Text>
-                <Text style={{ fontSize: 14, color: "#FBFBFB", lineHeight: 19 }}>★</Text>
-              </View>
-            )}
-            <Text style={[styles.durationLabel, { marginTop: 0, fontSize: 17 }]}>{session.durationLabel}</Text>
+            </Pressable>
           </View>
 
-          {/* ── Reproducciones ──────────────────────────────────────────── */}
-          {playsData !== undefined && (
-            <View style={styles.playsRow}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                <Feather name="headphones" size={13} color="#f4f4f4" style={{ marginTop: -2 }} />
-                <Text style={[styles.playsText, { color: "#f4f4f4" }]}>
+          <View style={styles.immersiveInfo}>
+            {!!session.categoryLabel && (
+              <Text style={[styles.immersiveCategory, { color: colors.foreground }]}>
+                {session.categoryLabel}
+              </Text>
+            )}
+            <Text style={[styles.immersiveTitle, { color: colors.foreground }]}>{session.title}</Text>
+
+            {!!session.description && (
+              <Text style={[styles.immersiveDescription, { color: colors.foreground }]}>
+                {session.description}
+              </Text>
+            )}
+
+            {authors[0] && (
+              <Pressable
+                accessibilityRole="link"
+                accessibilityLabel={`Ver perfil de ${authors[0].name}`}
+                onPress={() => router.push(authors[0].profilePath as never)}
+                style={({ pressed }) => [styles.immersiveAuthorButton, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={[styles.immersiveAuthorPrefix, { color: colors.foreground }]}>Por </Text>
+                <Text style={[styles.immersiveAuthor, { color: colors.foreground }]}>
+                  {authors[0].name}
+                </Text>
+              </Pressable>
+            )}
+
+            <View style={styles.immersiveMetaRow}>
+              {ratingStars > 0 && (
+                <View style={styles.ratingMeta}>
+                  <Text style={[styles.ratingMetaValue, { color: colors.foreground }]}>
+                    {ratingStars.toFixed(1)}
+                  </Text>
+                  <Text style={[styles.ratingMetaStar, { color: colors.foreground }]}>★</Text>
+                </View>
+              )}
+              <Text style={[styles.immersiveDuration, { color: colors.foreground }]}>
+                {session.durationLabel}
+              </Text>
+            </View>
+
+            {isPlaceholder && (
+              <Text style={[styles.placeholderHint, { color: colors.foreground }]}>
+                Contenido próximamente
+              </Text>
+            )}
+
+            {playsData !== undefined && (
+              <View style={styles.playsRow}>
+                <Feather name="headphones" size={13} color={colors.foreground} />
+                <Text style={[styles.playsText, { color: colors.foreground }]}>
                   {playsData.plays === 0
                     ? "Sé el primero en escuchar esta sesión"
                     : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}${session.createdAt ? ` desde ${new Date(session.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })}` : ""}`}
                 </Text>
               </View>
-            </View>
-          )}
-
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
-            {session.description}
-          </Text>
-
-
+            )}
+          </View>
         </View>
-        </View>{/* /bloque fondo+contenido */}
       </Animated.ScrollView>
-
-      {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
-      <Animated.View
-        pointerEvents="box-none"
-        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
-      >
-        <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.10)", marginTop: -2, transform: [{ translateY: -3 }] }}>
-          <BackPill onPress={goBack} size={27} iconOffsetX={-2} />
-        </GhostPill>
-        <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
-          <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
-          <Text style={styles.stickySubtitle} numberOfLines={1}>
-            {[authors[0]?.name, session.durationLabel].filter(Boolean).join(" · ")}
-          </Text>
-        </View>
-        <View style={{ width: 36 }} />
-      </Animated.View>
 
       {/* ── Options Sheet (···) ─────────────────────────────────────────── */}
       <Modal
@@ -617,8 +573,20 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 <Text style={styles.optRowText}>Temporizador</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
+              {/* Compartir en Instagram */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => {
+                  setActionsSheetOpen(false);
+                  void handleInstagramShare();
+                }}
+              >
+                <Feather name="instagram" size={18} color="#FBFBFB" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Compartir en Instagram</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
               {/* Descargar */}
-              <Pressable style={styles.optRow}>
+              <Pressable style={styles.optRow} onPress={handleDownload}>
                 <Feather name="download" size={18} color="#FBFBFB" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Descargar</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
@@ -830,273 +798,172 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  scroll: { flex: 1 },
-
-  // Hero
-  hero: { width: "100%", overflow: "hidden" },
-  navBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 18,
+  immersiveBackground: {
+    ...StyleSheet.absoluteFillObject,
   },
-  navBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // Content
-  content: { paddingHorizontal: 20 },
-
-  // Badges
-  badges: { flexDirection: "row", gap: 8, marginBottom: 12, justifyContent: "center" },
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  badgeText: { fontFamily: "Manrope", fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
-
-  // Category pill
-  durationLabel: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#FBFBFB",
-    marginTop: 29,
-  },
-  authorNameInline: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#FBFBFB",
-    marginTop: 3,
-    marginBottom: 16,
-  },
-  authorNameLink: {
-    fontFamily: "Manrope",
-    textDecorationLine: "underline",
-    textDecorationColor: "#FBFBFB",
-  },
-
-  // Title
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginTop: 10,
-    marginBottom: 7,
-  },
-  titleActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  title: {
-    fontFamily: "Manrope",
-    fontSize: 23,
-    fontWeight: "700",
-    lineHeight: 33,
-    letterSpacing: -0.3,
-    textAlign: "left",
-  },
-
-  // Description
-  description: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 23,
-    marginTop: 30,
-    marginBottom: 24,
-    textAlign: "left",
-  },
-
-  // Chakra banner
-  chakraBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 24,
-  },
-  chakraBannerText: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-    color: "rgba(255,255,255,0.70)",
-  },
-  chakraBannerBold: {
-    fontFamily: "Manrope",
-    fontWeight: "700",
-    fontSize: 13,
-  },
-
-  // Theme tag chips
-  tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 20 },
-  tagChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  tagChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
-
-  // Author section
-  authorSection: { marginTop: 37, marginBottom: 28 },
-  authorHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
-  },
-  authorCard: {
-    marginBottom: 16,
-  },
-  authorBigPhoto: {
-    width: "100%",
-    height: 210,
-    borderRadius: 14,
-    marginTop: 7,
-    marginBottom: 14,
-  },
-  authorName: { fontFamily: "Manrope", fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
-  authorCountry: { fontFamily: "Manrope", fontSize: 14, color: "#FBFBFB", marginTop: 6, marginBottom: 8 },
-  authorBio: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, color: "#FBFBFB", marginTop: 6 },
-  authorLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  allContentsBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 14,
-    borderRadius: 30,
-    marginTop: 8,
-    shadowColor: "#F9F9F9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  allContentsBtnText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-    color: "#F9F9F9",
-  },
-
-  // Sticky header
-  stickyHeader: {
+  topActionRow: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingBottom: 18,
-    gap: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
-    zIndex: 10,
+    paddingBottom: 10,
+    zIndex: 4,
   },
-  pillBorder: {
-    borderRadius: 19,
-  },
-  heroBackPill: {
+  topActionGroup: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    height: 38,
-    width: 42,
-    borderRadius: 19,
+    gap: 7,
   },
-  igBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+  circleAction: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
-  stickyBackPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 38,
-    width: 42,
-    borderRadius: 19,
-    backgroundColor: "transparent",
+  immersiveScroll: {
+    flex: 1,
+    zIndex: 1,
   },
-  stickyTitle: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#FBFBFB",
-    textAlign: "center",
-  },
-  stickySubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.5)",
-    textAlign: "center",
-    marginTop: 1,
-  },
-
-  playBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    borderRadius: 30,
-    shadowColor: "#8769e9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  playBtnText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  shareBtnInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 10.5,
-    borderRadius: 30,
-    backgroundColor: "transparent",
-    borderWidth: 1.5,
-    borderColor: "#F9F9F9",
+  immersiveScrollContent: {
+    flexGrow: 1,
     paddingHorizontal: 24,
   },
-  shareBtnText: {
+  immersiveStage: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
+  playArea: {
+    flexGrow: 1,
+    minHeight: 210,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 18,
+    paddingBottom: 24,
+  },
+  immersivePlayButton: {
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.32,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  immersiveInfo: {
+    alignItems: "center",
+    paddingHorizontal: 6,
+  },
+  immersiveCategory: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 16,
+    fontWeight: "700",
+    letterSpacing: 2.2,
+    textAlign: "center",
+    textTransform: "uppercase",
+    opacity: 0.76,
+    marginBottom: 10,
+  },
+  immersiveTitle: {
+    fontFamily: "Manrope",
+    fontSize: 27,
+    lineHeight: 34,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+    textAlign: "center",
+    maxWidth: 350,
+  },
+  immersiveDescription: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 21,
+    fontWeight: "400",
+    textAlign: "center",
+    opacity: 0.82,
+    maxWidth: 350,
+    marginTop: 14,
+  },
+  immersiveAuthorButton: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "center",
+    marginTop: 17,
+  },
+  immersiveAuthorPrefix: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    opacity: 0.68,
+  },
+  immersiveAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
+  immersiveMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 9,
+  },
+  ratingMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+  ratingMetaValue: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#F9F9F9",
-    letterSpacing: 0.5,
+    opacity: 0.78,
+  },
+  ratingMetaStar: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+    opacity: 0.78,
+  },
+  immersiveDuration: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "500",
+    opacity: 0.78,
+  },
+  placeholderHint: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "600",
+    textAlign: "center",
+    opacity: 0.72,
+    marginTop: 11,
   },
   playsRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     gap: 6,
-    marginTop: 17,
-    marginBottom: -16,
+    marginTop: 14,
+    maxWidth: 350,
   },
   playsText: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    color: "#F9F9F9",
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: "center",
+    opacity: 0.66,
   },
 
   // Rating modal
