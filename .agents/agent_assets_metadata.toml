@@ -2804,3 +2804,24 @@ mtime_ms = 1788274244749
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/ac8e329d-3ac3-4f4a-b409-0f6156d1a8fd/bab25573-b124-4f6b-adfe-621b499b1848"
 storage_version_token = "1788274256158671"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "XHCsUNBZfWrpn_ojXiTAw"
+uri = "file://.local/outputs/RESONANCIA---Arquitectura.pdf"
+type = "pdf"
+title = "RESONANCIA — Arquitectura.pdf"
+logical_id = "bfba91c9-a3f8-4b1d-8f8f-3e5622f38852"
+
+[[outputs]]
+id = "DGb49LL_1Bp6cILfPOarc"
+uri = "file://exports/descripcion-general-app-resonancia.pdf"
+type = "pdf"
+title = "Descripción general de la App — PDF"
+description = "Documento de Casa del Cuenco / Resonancia maquetado con fondo Indigo 2 y acento Teal de la app."
+logical_id = "0860c547-aac0-469e-b99b-d47195d94a06"
+content_hash = "sha256:47e11a8335529a855609dd110732190c4145d9717386111b173339916bcb24d8"
+size = 141614
+mtime_ms = 1788376356506
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/0860c547-aac0-469e-b99b-d47195d94a06/3063cc24-3f75-4c02-b166-72d384ff9671"
+storage_version_token = "1788376378852286"
+content_type = "application/pdf"
