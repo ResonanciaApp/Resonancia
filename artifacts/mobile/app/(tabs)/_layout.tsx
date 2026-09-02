@@ -157,7 +157,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { openMixer, isMixerOpen } = useMixerPanel();
   // Compensa el parallax del wrapper de Tabs (la barra vive dentro de él).
   const { isGeometrixOpen } = useGeometrixPanel();
-  const { closeAllCategories } = useCategoryOverlay();
+  const { closeAllCategories, stack: categoryStack } = useCategoryOverlay();
   const { libOpen, closeLib, libraryParallax } = useDrawer();
 
   // El bloque llega hasta el borde inferior e incluye el área segura.
@@ -172,7 +172,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
   const librarySurface = libOpen || isLibraryRoute;
-  const routeForcesHidden = pathname === "/player" || pathname.startsWith("/session/");
+  const sessionOverlayOpen = categoryStack.some((entry) => entry.route.startsWith("/session/"));
+  const routeForcesHidden =
+    pathname === "/player" ||
+    pathname.startsWith("/session/") ||
+    sessionOverlayOpen;
   const tabBarHidden = hidden || librarySurface || routeForcesHidden;
   const libraryBarOffset = libraryParallax.interpolate({
     inputRange: [0, 1],
