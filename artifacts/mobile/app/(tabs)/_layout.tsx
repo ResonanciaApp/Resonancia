@@ -38,7 +38,7 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "#A9A9C3";
-const INDIGO2_COLOR  = "#F4F4F4";
+const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
@@ -104,7 +104,7 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = ACTIVE_COLOR;
+  const activeCol   = indigo2Mode ? WIDGET_GREEN_SOLID : ACTIVE_COLOR;
   const inactiveCol = indigo2Mode ? INDIGO2_COLOR : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
@@ -168,7 +168,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { activeSceneId, theme } = useSceneTheme();
   const { brightMode } = useBrightness();
   const indigo2Mode = activeSceneId === "indigo2";
-  const tabBarBackground = brightMode ? applyBrightSat(theme.gradient[0]) : theme.gradient[0];
+  const tabBarBackground = indigo2Mode
+    ? theme.solid
+    : brightMode
+      ? applyBrightSat(theme.gradient[0])
+      : theme.gradient[0];
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
