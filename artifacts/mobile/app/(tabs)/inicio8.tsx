@@ -1275,7 +1275,7 @@ function Inicio2HeroStatic({
         style={[StyleSheet.absoluteFill, styles.inicio2HeroSliderClip]}
       >
         <Image
-          source={require("@/assets/images/inicio2-mistico-1.jpg")}
+          source={require("@/assets/images/casadelcuenco-hero-04.jpg")}
           resizeMode="cover"
           style={styles.inicio2HeroImage}
         />
