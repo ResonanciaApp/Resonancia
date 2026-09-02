@@ -109,6 +109,10 @@ const styles = StyleSheet.create({
   },
   resonador: {
     alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.03)",
   },
   photoFrame: {
     borderRadius: 15,
@@ -119,11 +123,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "600",
     color: "#F9F9F9",
     textAlign: "center",
-    lineHeight: 18,
+    lineHeight: 15,
   },
   subtype: {
     marginTop: 2,
