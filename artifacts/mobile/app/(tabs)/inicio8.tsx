@@ -70,7 +70,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { TEMAS } from "@/data/temas";
-import { useGetSceneAnimations } from "@workspace/api-client-react";
+import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
@@ -194,7 +194,7 @@ const DURATION_SLOTS = [
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
-const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
+const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 0.85);
 
 function DurationExplorePill({
   label,
@@ -1717,6 +1717,25 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const { version: catalogVersion, status: catalogStatus } = useCatalog();
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+
+  const featuredMoment = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter(
+      (session) =>
+        session.categoryId === "meditaciones-guiadas" &&
+        session.isFeatured &&
+        !session.isPlaceholder,
+    );
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]);
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [recoOffset, setRecoOffset] = useState(0);
@@ -2590,6 +2609,96 @@ export default function HomeScreen2({
             showAuthor={false}
             showMetaBelow
           />
+        )}
+        {isInicio2 && featuredMoment && (
+          <View
+            style={{
+              paddingHorizontal: GRID_PAD,
+              marginBottom: INICIO2_SECTION_GAP,
+            }}
+          >
+            <Text
+              style={[
+                styles.sectionTitle,
+                { fontSize: 20, marginBottom: 17 },
+              ]}
+            >
+              Para este momento
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (featuredMoment.isPremium && !isPremium) {
+                  router.push("/membresia" as never);
+                  return;
+                }
+                if (openForSession(featuredMoment)) return;
+                if (featuredMoment.skipMiniPlayer) {
+                  playSession(featuredMoment);
+                  return;
+                }
+                if (featuredMoment.skipDetail) {
+                  playSession(featuredMoment);
+                  router.push("/player" as never);
+                  return;
+                }
+                openCategory(`/session/${featuredMoment.id}`);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={featuredMoment.title}
+              style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+            >
+              <View style={styles.heroImageContainer}>
+                <ExpoImage
+                  source={featuredMoment.image}
+                  style={styles.heroImage}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+              </View>
+              {(() => {
+                const guide = featuredMoment.guideId
+                  ? getGuide(featuredMoment.guideId)
+                  : undefined;
+                const artist = featuredMoment.artistId
+                  ? getArtist(featuredMoment.artistId)
+                  : undefined;
+                const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                const authorPhoto = guide?.photo ?? artist?.photo;
+                return (
+                  <View
+                    style={{
+                      marginTop: 12,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    {authorPhoto && (
+                      <ExpoImage
+                        source={authorPhoto}
+                        style={styles.heroAvatar}
+                        contentFit="cover"
+                        cachePolicy="memory-disk"
+                      />
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.heroMetaText} numberOfLines={1}>
+                        {[featuredMoment.categoryLabel, featuredMoment.durationLabel]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </Text>
+                      <Text style={styles.heroTitle} numberOfLines={2}>
+                        {featuredMoment.title}
+                      </Text>
+                      <Text style={styles.heroAuthor} numberOfLines={1}>
+                        {authorName}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })()}
+            </Pressable>
+          </View>
         )}
         {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
