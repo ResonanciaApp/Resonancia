@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState, useMemo, useRef } from "react";
 import {
@@ -40,7 +40,6 @@ import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadores
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -51,6 +50,10 @@ const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const HERO_HEIGHT = 270;
+const TAB_PRESSED_STYLE = {
+  backgroundColor: "rgba(255,255,255,0.14)",
+  borderColor: "rgba(255,255,255,0.3)",
+};
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -88,12 +91,45 @@ function getSessionAuthor(s: Session): string {
   return getArtist(s.artistId).name;
 }
 
+type DiscoverIconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+
+const DISCOVER_ICON_BY_SLUG: Record<string, DiscoverIconName> = {
+  "para-la-ansiedad": "heart-pulse",
+  "energiza-tus-mananas": "weather-sunset-up",
+  "foco-concentracion": "bullseye-arrow",
+  "suelto-la-rabia": "fire",
+  "crecimiento-personal": "sprout",
+  "armonia-familiar": "account-group-outline",
+  "respiracion-consciente": "weather-windy",
+  "meditaciones-activas": "meditation",
+  astrologia: "star-four-points-outline",
+};
+
+function getDiscoverIcon(slug: string, label: string): DiscoverIconName {
+  const directIcon = DISCOVER_ICON_BY_SLUG[slug];
+  if (directIcon) return directIcon;
+
+  const concept = `${slug} ${label}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (concept.includes("ansiedad") || concept.includes("estres")) return "heart-pulse";
+  if (concept.includes("manana") || concept.includes("energia")) return "weather-sunset-up";
+  if (concept.includes("foco") || concept.includes("concentr")) return "bullseye-arrow";
+  if (concept.includes("rabia")) return "fire";
+  if (concept.includes("crecimiento")) return "sprout";
+  if (concept.includes("famil")) return "account-group-outline";
+  if (concept.includes("respir")) return "weather-windy";
+  if (concept.includes("medit")) return "meditation";
+  if (concept.includes("astro")) return "star-four-points-outline";
+  return "compass-outline";
+}
+
 function DiscoverPill({
   label,
+  icon,
   sceneId,
   onPress,
 }: {
   label: string;
+  icon: DiscoverIconName;
   sceneId: string;
   onPress: () => void;
 }) {
@@ -134,10 +170,11 @@ function DiscoverPill({
           styles.discoverPill,
           sceneId === "tibet" && styles.discoverPillTibet,
           sceneId === "indigo" && styles.discoverPillIndigo,
-          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
+          isPressed && TAB_PRESSED_STYLE,
           { transform: [{ scale }] },
         ]}
       >
+        <MaterialCommunityIcons name={icon} size={22} color="#FFFFFF" />
         <Text style={[styles.discoverPillText, isPressed && { color: "#FFFFFF" }]} numberOfLines={1}>
           {label}
         </Text>
@@ -477,6 +514,7 @@ export function ExploreScreen({
                   <DiscoverPill
                     key={carousel.slug}
                     label={carousel.label}
+                    icon={getDiscoverIcon(carousel.slug, carousel.label)}
                     sceneId={activeSceneId}
                     onPress={() =>
                       openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
@@ -635,11 +673,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   discoverPill: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     height: 46,
     paddingHorizontal: 16,
     borderRadius: 27,
+    gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
@@ -653,7 +693,7 @@ const styles = StyleSheet.create({
   },
   discoverPillText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
   },

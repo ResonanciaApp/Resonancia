@@ -37,9 +37,12 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
+const TAB_PRESSED_STYLE = {
+  backgroundColor: "rgba(255,255,255,0.14)",
+  borderColor: "rgba(255,255,255,0.3)",
+};
 
 function SleepPill({
   sel, label, icon, onPress,
@@ -122,7 +125,7 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
           sel && styles.sleepPillSel,
-          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
+          isPressed && TAB_PRESSED_STYLE,
         ]}
       >
         {sel && !isPressed && <LinearGradient colors={["#784576", "#50326E"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
@@ -979,7 +982,7 @@ const styles = StyleSheet.create({
   sleepPillSel: {},
   sleepPillText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
   },

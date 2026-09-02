@@ -33,7 +33,6 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
@@ -43,6 +42,10 @@ const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
+const TAB_PRESSED_STYLE = {
+  backgroundColor: "rgba(255,255,255,0.14)",
+  borderColor: "rgba(255,255,255,0.3)",
+};
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
@@ -82,7 +85,7 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
           styles.pill,
           theme.id === "tibet" && styles.pillTibet,
           theme.id === "indigo" && styles.pillIndigo,
-          isPressed && { backgroundColor: WIDGET_GREEN_SOLID },
+          isPressed && TAB_PRESSED_STYLE,
           { transform: [{ scale }] },
         ]}
       >
@@ -405,7 +408,7 @@ const styles = StyleSheet.create({
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
   },

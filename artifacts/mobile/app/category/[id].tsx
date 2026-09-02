@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
     textAlign: "center",

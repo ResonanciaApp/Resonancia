@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
 
   tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginTop: 31 },
   tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
-  tabLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
+  tabLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
     overflow: "hidden", borderRadius: 1,

@@ -2167,7 +2167,7 @@ const styles = StyleSheet.create({
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
