@@ -24,8 +24,11 @@ import {
 } from "@/context/RutinaContext";
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
+const ROUTINE_MUTED = "#7F7F7F";
+const ROUTINE_SELECTED = "#F9F9F9";
 
 function repeatLabel(repeatDays: number[]) {
   if (repeatDays.length === 7) return "Cada día";
@@ -35,6 +38,7 @@ function repeatLabel(repeatDays: number[]) {
 
 export default function CrearRutinaScreen() {
   const colors = useColors();
+  const { activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { addActivity } = useRutina();
   const [title, setTitle] = useState("");
@@ -47,6 +51,12 @@ export default function CrearRutinaScreen() {
   const bottomPad = Platform.OS === "web" ? 24 : Math.max(insets.bottom, 18);
   const suggestions = useMemo(() => ROUTINE_SUGGESTIONS[category], [category]);
   const canSave = title.trim().length > 0 && repeatDays.length > 0;
+  const suggestionSurface =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : activeSceneId === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
 
   const toggleDay = (day: number) => {
     setRepeatDays((current) =>
@@ -114,7 +124,7 @@ export default function CrearRutinaScreen() {
           value={title}
           onChangeText={setTitle}
           placeholder="Nombra tu actividad"
-          placeholderTextColor={colors.mutedForeground}
+          placeholderTextColor={ROUTINE_MUTED}
           style={[styles.titleInput, { color: colors.foreground }]}
           accessibilityLabel="Nombre de la actividad"
           testID="crear-rutina-title"
@@ -126,7 +136,7 @@ export default function CrearRutinaScreen() {
           value={description}
           onChangeText={setDescription}
           placeholder="Añadir una descripción (opcional)"
-          placeholderTextColor={colors.mutedForeground}
+          placeholderTextColor={ROUTINE_MUTED}
           style={[styles.descriptionInput, { color: colors.foreground }]}
           multiline
           textAlignVertical="top"
@@ -169,7 +179,7 @@ export default function CrearRutinaScreen() {
         </View>
 
         <View style={styles.suggestionsBlock}>
-          <View style={[styles.tabRail, { borderBottomColor: colors.border }]}>
+          <View style={[styles.tabRail, { borderBottomColor: "rgba(255,255,255,0.10)" }]}>
             <KeyboardAwareScrollViewCompat
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -188,12 +198,12 @@ export default function CrearRutinaScreen() {
                     style={({ pressed }) => [
                       styles.tab,
                       {
-                        borderBottomColor: selected ? colors.foreground : "transparent",
+                        borderBottomColor: selected ? ROUTINE_SELECTED : "transparent",
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}
                   >
-                    <Text style={[styles.tabText, { color: selected ? colors.foreground : colors.mutedForeground }]}>
+                    <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : ROUTINE_MUTED }]}>
                       {tab}
                     </Text>
                   </Pressable>
@@ -213,7 +223,7 @@ export default function CrearRutinaScreen() {
                 style={({ pressed }) => [
                   styles.suggestionRow,
                   {
-                    backgroundColor: colors.card,
+                    backgroundColor: suggestionSurface,
                     opacity: pressed ? 0.72 : 1,
                   },
                 ]}
@@ -349,6 +359,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   descriptionInput: {
+    marginTop: 15,
     minHeight: 36,
     paddingHorizontal: 0,
     paddingTop: 4,
@@ -408,8 +419,9 @@ const styles = StyleSheet.create({
     minHeight: 60,
     borderRadius: 13,
     paddingHorizontal: 23,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   suggestionText: {
     fontFamily: "Manrope",
