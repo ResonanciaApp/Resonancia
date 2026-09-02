@@ -379,7 +379,7 @@ export default function MeditacionesGuiadasScreen() {
               sessions={recentInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-               style={{ marginTop: 33, marginBottom: 0 }}
+               style={{ marginTop: 14, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               allowOversizedCardWidth
               titleSize={19}
@@ -405,7 +405,7 @@ export default function MeditacionesGuiadasScreen() {
                   sessions={preview}
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
-                   style={{ marginTop: idx === 0 ? 33 : 53, marginBottom: 0 }}
+                   style={{ marginTop: idx === 0 ? 14 : 53, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={18}
                   showCardMetadata

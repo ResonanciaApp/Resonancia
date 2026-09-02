@@ -579,7 +579,7 @@ export default function DescansoScreen() {
               sessions={recentInDescanso}
               isPremium={isPremium}
               onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
+              style={{ marginTop: 17, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
               allowOversizedCardWidth
               titleSize={19}
@@ -597,7 +597,7 @@ export default function DescansoScreen() {
               sessions={collection.sessions.slice(0, 5)}
               isPremium={isPremium}
               onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: index === 0 ? 33 : 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+              style={{ marginTop: index === 0 ? 17 : 53, marginBottom: 0, paddingHorizontal: H_PAD }}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata

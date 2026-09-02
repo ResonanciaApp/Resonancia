@@ -341,7 +341,7 @@ export default function NochesScreen() {
               sessions={favoritesInCategory}
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-              style={{ marginTop: 24, marginBottom: 0 }}
+              style={{ marginTop: featuredSessions.length > 0 ? 24 : 14, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
@@ -364,7 +364,13 @@ export default function NochesScreen() {
                   sessions={preview}
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                  style={{
+                    marginTop:
+                      idx === 0 && featuredSessions.length === 0 && favoritesInCategory.length === 0
+                        ? 14
+                        : 24,
+                    marginBottom: 0,
+                  }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={19}
                   showCardMetadata
@@ -525,7 +531,7 @@ const styles = StyleSheet.create({
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "400" },
 
-  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 10 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 14 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
 
