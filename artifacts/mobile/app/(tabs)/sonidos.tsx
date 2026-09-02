@@ -1,10 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Image } from "expo-image";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Easing,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -18,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -38,11 +42,13 @@ import {
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
+const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
   const { theme } = useSceneTheme();
@@ -103,10 +109,13 @@ export default function SonidosScreen() {
     playSessionInPlaylist,
   } = usePlayer();
   const [searchVisible, setSearchVisible] = useState(false);
+  const [allVisible, setAllVisible] = useState(false);
+  const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = theme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
+  const slideX = useRef(new Animated.Value(W)).current;
   const compactRef = useRef(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
@@ -141,6 +150,29 @@ export default function SonidosScreen() {
   );
   const allSessions = useMemo(() => getSonidosVisibleSessions(), [version]);
   const allIds = useMemo(() => allSessions.map((session) => session.id), [allSessions]);
+  const closeAll = useCallback(() => {
+    Animated.timing(slideX, {
+      toValue: W,
+      duration: 280,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: true,
+    }).start(() => {
+      setAllVisible(false);
+      setAllVisibleCount(20);
+    });
+  }, [slideX]);
+
+  useEffect(() => {
+    if (!allVisible) return;
+    slideX.setValue(W);
+    Animated.timing(slideX, {
+      toValue: 0,
+      duration: 320,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [allVisible, slideX]);
+
   const recent = useMemo(() => {
     const allowed = new Set(allIds);
     const seen = new Set<string>();
@@ -303,6 +335,20 @@ export default function SonidosScreen() {
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}
+            <Pressable
+              onPress={() => setAllVisible(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Todas las sesiones de Sonidos"
+              style={({ pressed }) => [
+                styles.allSessionsButton,
+                { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.75 : 1 },
+              ]}
+            >
+              <Text style={styles.allSessionsButtonText}>
+                Todas las sesiones de Sonidos
+              </Text>
+              <Feather name="chevron-right" size={16} color="#F9F9F9" />
+            </Pressable>
           </>
         )}
         </View>
@@ -321,6 +367,74 @@ export default function SonidosScreen() {
           if (session) openSession(session);
         }}
       />
+
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: theme.gradient[theme.gradient.length - 1] as string,
+              transform: [{ translateX: slideX }],
+            },
+          ]}
+        >
+          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+          <View style={[styles.allSessionsHeader, { paddingTop: topPad + 14 }]}>
+            <Pressable onPress={closeAll} hitSlop={12} style={styles.allSessionsBack}>
+              <Feather name="chevron-left" size={28} color="#FBFBFB" />
+            </Pressable>
+            <Text style={styles.allSessionsTitle}>Sesiones de Sonidos</Text>
+          </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[styles.allSessionsGrid, { paddingBottom: 120 + bottomPad }]}
+            scrollEventThrottle={16}
+            onScroll={(event) => {
+              const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+              if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
+                setAllVisibleCount((count) => count + 20);
+              }
+            }}
+          >
+            {allSessions.slice(0, allVisibleCount).map((session) => {
+              const locked = !!session.isPremium && !isPremium;
+              return (
+                <Pressable
+                  key={session.id}
+                  onPress={() => {
+                    if (locked) {
+                      router.push("/membresia" as never);
+                      return;
+                    }
+                    closeAll();
+                    openSession(session);
+                  }}
+                  style={({ pressed }) => [
+                    styles.allSessionCard,
+                    { opacity: pressed ? 0.85 : 1 },
+                  ]}
+                >
+                  <View style={styles.allSessionImageWrap}>
+                    <Image source={session.image} style={styles.allSessionImage} contentFit="cover" />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      style={styles.allSessionDuration}
+                    />
+                    {locked && (
+                      <View style={styles.allSessionLock}>
+                        <Feather name="lock" size={9} color="#FFFFFF" />
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.allSessionName} numberOfLines={2}>
+                    {session.title}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </Animated.View>
+      </Modal>
     </LinearGradient>
   );
 }
@@ -435,5 +549,79 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
+  },
+  allSessionsButton: {
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+    overflow: "hidden",
+    paddingHorizontal: 28,
+    paddingVertical: 9,
+    gap: 6,
+    marginTop: 29,
+    marginBottom: 16,
+  },
+  allSessionsButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#F9F9F9",
+  },
+  allSessionsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 14,
+    gap: 4,
+  },
+  allSessionsBack: { padding: 4 },
+  allSessionsTitle: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    flex: 1,
+  },
+  allSessionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 14,
+    paddingHorizontal: H_PAD,
+    rowGap: 24,
+    paddingTop: 8,
+  },
+  allSessionCard: { width: ALL_CARD_W },
+  allSessionImageWrap: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 17,
+    overflow: "hidden",
+  },
+  allSessionImage: { width: "100%", height: "100%" },
+  allSessionDuration: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+  },
+  allSessionLock: {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  allSessionName: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    lineHeight: 18,
+    marginTop: 8,
   },
 });
