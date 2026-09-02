@@ -22,7 +22,7 @@ export const SERIES: Series[] = [
     accentColor: "#8AAAD4",
     gradient: ["#243350", "#101A28"],
     image: SESSIONS.find((s) => s.id === "8")?.image ?? SESSIONS[0].image,
-    sessionIds: ["8", "9", "2", "24", "22", "25"],
+    sessionIds: ["8", "9", "2", "24", "25"],
   },
   {
     id: "iniciacion-al-cuenco",
@@ -44,7 +44,7 @@ export const SERIES: Series[] = [
     accentColor: "#C8B4E0",
     gradient: ["#4A3260", "#251633"],
     image: SESSIONS.find((s) => s.id === "1")?.image ?? SESSIONS[0].image,
-    sessionIds: ["1", "30", "26", "21"],
+    sessionIds: ["1", "30", "26"],
   },
 ];
 

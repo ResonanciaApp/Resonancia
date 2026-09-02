@@ -2502,6 +2502,7 @@ export default function HomeScreen2({
             cardAuthorColor="#acaac2"
             showAuthor={false}
             showMetaBelow
+            hideAmbientalTitleInSquareRecent
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (

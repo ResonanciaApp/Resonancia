@@ -358,62 +358,6 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "sonidosTag": "Sonidos Naturaleza"
   },
   {
-    "id": "21",
-    "title": "Lluvia de Bosque",
-    "subtitle": "Sonidos Naturales",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 15,
-    "durationLabel": "15 min",
-    "description": "El sonido suave de la lluvia cayendo sobre hojas de bosque antiguo. Una experiencia sonora que disuelve el ruido mental y devuelve la calma natural.",
-    "benefits": [
-      "Relajación profunda",
-      "Sueño suave",
-      "Calma instantánea",
-      "Presencia plena"
-    ],
-    "instruments": [
-      "Lluvia",
-      "Viento suave",
-      "Naturaleza"
-    ],
-    "imageKey": "session-3-musica-dark.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 9,
-    "sonidosTag": "Sonidos Naturaleza"
-  },
-  {
-    "id": "22",
-    "title": "Orilla del Mar",
-    "subtitle": "Sonidos Naturales",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 20,
-    "durationLabel": "20 min",
-    "description": "Las olas llegando y retirándose sobre la arena. Cada ciclo del mar es un recordatorio de que todo pasa y todo vuelve. Suéltate al ritmo del océano.",
-    "benefits": [
-      "Descanso mental",
-      "Reducción del estrés",
-      "Ritmo natural",
-      "Sueño reparador"
-    ],
-    "instruments": [
-      "Olas del mar",
-      "Brisa marina",
-      "Naturaleza costera"
-    ],
-    "imageKey": "session-5-musica-dark.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 10,
-    "sonidosTag": "Sonidos Naturaleza"
-  },
-  {
     "id": "23",
     "title": "Binaural Alpha 8Hz",
     "subtitle": "Ondas Cerebrales",
@@ -760,33 +704,6 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "soundTag": "Música Étnica"
   },
   {
-    "id": "35",
-    "title": "Delta Profundo",
-    "subtitle": "Ondas Cerebrales",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 60,
-    "durationLabel": "60 min",
-    "description": "Frecuencias binaurales en la banda Delta (0.5–4 Hz) para inducir sueño profundo y regeneración celular. Usar con auriculares para la experiencia completa.",
-    "benefits": [
-      "Sueño profundo",
-      "Regeneración celular",
-      "Descanso total",
-      "Meditación profunda"
-    ],
-    "instruments": [
-      "Frecuencias binaurales delta",
-      "Ruido rosa suave"
-    ],
-    "imageKey": "session-9.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": true,
-    "status": "published",
-    "sortOrder": 23,
-    "sonidosTag": "Sonidos Binaurales"
-  },
-  {
     "id": "36",
     "title": "Gamma 40Hz — Claridad",
     "subtitle": "Ondas Cerebrales",
@@ -812,62 +729,6 @@ export const SEED_SESSIONS: InsertCatalogSession[] = [
     "status": "published",
     "sortOrder": 24,
     "sonidosTag": "Sonidos Binaurales"
-  },
-  {
-    "id": "37",
-    "title": "Selva Tropical",
-    "subtitle": "Sonidos Naturales",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 45,
-    "durationLabel": "45 min",
-    "description": "La sinfonía viva de una selva tropical en su plenitud: aves exóticas, insectos nocturnos, lluvia suave sobre el dosel verde. Un refugio sonoro para salir del ruido mental.",
-    "benefits": [
-      "Conexión con la naturaleza",
-      "Calma instantánea",
-      "Presencia plena",
-      "Sueño suave"
-    ],
-    "instruments": [
-      "Aves tropicales",
-      "Insectos",
-      "Lluvia de selva"
-    ],
-    "imageKey": "session-1.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 25,
-    "sonidosTag": "Sonidos Naturaleza"
-  },
-  {
-    "id": "38",
-    "title": "Río de Montaña",
-    "subtitle": "Sonidos Naturales",
-    "categoryId": "podcast",
-    "categoryLabel": "Sonidos",
-    "duration": 30,
-    "durationLabel": "30 min",
-    "description": "El fluir constante de un río de montaña limpio y fresco. Cada gorgoteo del agua sobre las piedras ancla la mente al momento presente y disuelve la tensión acumulada.",
-    "benefits": [
-      "Anclaje al presente",
-      "Reducción del estrés",
-      "Claridad mental",
-      "Relajación natural"
-    ],
-    "instruments": [
-      "Agua corriente",
-      "Viento suave",
-      "Naturaleza andina"
-    ],
-    "imageKey": "session-2.jpg",
-    "isFeatured": false,
-    "isNew": true,
-    "isPremium": false,
-    "status": "published",
-    "sortOrder": 26,
-    "sonidosTag": "Sonidos Naturaleza"
   },
   {
     "id": "39",

@@ -91,6 +91,7 @@ type SessionCarouselProps = {
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
+  hideAmbientalTitleInSquareRecent?: boolean;
 };
 
 export function SessionCarousel({
@@ -118,6 +119,7 @@ export function SessionCarousel({
   durationLift = 0,
   showHeader = true,
   cardVariant,
+  hideAmbientalTitleInSquareRecent = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -139,6 +141,11 @@ export function SessionCarousel({
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
   const forceAmbientalVariant = cardVariant === "ambiental";
+  // Esta excepción se activa únicamente desde el carrusel de "Sesiones
+  // recientes" de Inicio. Otros carruseles cuadrados con metadata inferior
+  // conservan el título superpuesto sobre la imagen.
+  const shouldHideAmbientalTitle =
+    hideAmbientalTitleInSquareRecent && squareCards;
   const ambientalCardBackground =
     theme.id === "indigo"
       ? "rgba(42,40,64,0.65)"
@@ -223,12 +230,14 @@ export function SessionCarousel({
                     {!showMetaBelow && (showImageCategoryPill || !showCollectionBelow) && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
-                    <Text
-                      style={[styles.ambientalTitle, { color: colors.foreground }]}
-                      numberOfLines={2}
-                    >
-                      {s.title}
-                    </Text>
+                    {!shouldHideAmbientalTitle && (
+                      <Text
+                        style={[styles.ambientalTitle, { color: colors.foreground }]}
+                        numberOfLines={2}
+                      >
+                        {s.title}
+                      </Text>
+                    )}
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay

@@ -126,14 +126,14 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
     id: "default_calma_profunda",
     name: "Calma Profunda",
     description: "Sonidos y sesiones para soltar el día y relajarte.",
-    sessionIds: ["41", "44", "21", "22", "27"],
+    sessionIds: ["41", "44", "27"],
     createdAt: new Date().toISOString(),
   },
   {
     id: "default_sueno_reparador",
     name: "Sueño Reparador",
     description: "Acompañamiento para una noche de descanso profundo.",
-    sessionIds: ["8", "46", "47", "50", "24"],
+    sessionIds: ["8", "47", "50", "24"],
     createdAt: new Date().toISOString(),
   },
 ];

@@ -26,8 +26,6 @@ export type NatureSounds = {
 
 export const NATURE_BASE_MAP: Record<string, NatureSounds> = {
   "20": { base: "bosque", ambient: "grillos" },
-  "21": { base: "lluvia" },
-  "22": { base: "oceano" },
 };
 
 /** Sonidos (base + ambiente) de una sesión natural (o undefined si no está mapeada). */

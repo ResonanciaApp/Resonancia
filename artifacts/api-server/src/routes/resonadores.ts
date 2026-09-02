@@ -348,7 +348,7 @@ function getSeedData() {
       instagram: "https://instagram.com/kaiamara",
       linktree: "https://linktr.ee/kaiamara",
       donationUrl: "https://ko-fi.com/kaiamara",
-      sessionIds: ["20", "21", "22", "24", "25"],
+      sessionIds: ["20", "24", "25"],
       projects: [
         { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },
         { platform: "soundcloud", label: "SoundCloud", url: "https://soundcloud.com" },
@@ -380,7 +380,7 @@ function getSeedData() {
       bookingPrice: "USD 60",
       bookingModality: "presencial",
       instagram: "https://instagram.com/arbolsagrado",
-      sessionIds: ["32", "33", "34", "35", "37"],
+      sessionIds: ["32", "33", "34"],
       projects: [
         { platform: "spotify", label: "Álbumes en Spotify", url: "https://spotify.com" },
         { platform: "youtube", label: "Conciertos en vivo", url: "https://youtube.com" },

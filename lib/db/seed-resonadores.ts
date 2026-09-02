@@ -62,7 +62,7 @@ const SEED = [
     instagram: "https://instagram.com/kaiamara",
     linktree: "https://linktr.ee/kaiamara",
     donationUrl: "https://ko-fi.com/kaiamara",
-    sessionIds: ["20", "21", "22", "24", "25"],
+    sessionIds: ["20", "24", "25"],
     projects: [
       { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },
     ],
@@ -89,7 +89,7 @@ const SEED = [
     bookingPrice: "USD 60",
     bookingModality: "presencial",
     instagram: "https://instagram.com/arbolsagrado",
-    sessionIds: ["32", "33", "34", "35", "36", "37"],
+    sessionIds: ["32", "33", "34", "36"],
     quote: "Los cuencos recuerdan al cuerpo lo que la mente olvida.",
     sortOrder: 3,
   },

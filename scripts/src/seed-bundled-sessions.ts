@@ -308,36 +308,6 @@ const SESSIONS = [
     sonidosTag: "Sonidos Naturaleza",
   },
   {
-    id: "21",
-    title: "Lluvia de Bosque",
-    subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 15,
-    durationLabel: "15 min",
-    description:
-      "El sonido suave de la lluvia cayendo sobre hojas de bosque antiguo. Una experiencia sonora que disuelve el ruido mental y devuelve la calma natural.",
-    benefits: ["Relajación profunda", "Sueño suave", "Calma instantánea", "Presencia plena"],
-    instruments: ["Lluvia", "Viento suave", "Naturaleza"],
-    isNew: true,
-    sonidosTag: "Sonidos Naturaleza",
-  },
-  {
-    id: "22",
-    title: "Orilla del Mar",
-    subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 20,
-    durationLabel: "20 min",
-    description:
-      "Las olas llegando y retirándose sobre la arena. Cada ciclo del mar es un recordatorio de que todo pasa y todo vuelve. Suéltate al ritmo del océano.",
-    benefits: ["Descanso mental", "Reducción del estrés", "Ritmo natural", "Sueño reparador"],
-    instruments: ["Olas del mar", "Brisa marina", "Naturaleza costera"],
-    isNew: true,
-    sonidosTag: "Sonidos Naturaleza",
-  },
-  {
     id: "27",
     isPremium: true,
     title: "Riachuelo con Pájaros",
@@ -352,36 +322,6 @@ const SESSIONS = [
     instruments: ["Agua corriente", "Canto de pájaros", "Ambiente natural"],
     isNew: true,
     sonidosTag: "Sonidos Naturaleza",
-  },
-  {
-    id: "37",
-    title: "Selva Tropical",
-    subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 45,
-    durationLabel: "45 min",
-    description:
-      "La sinfonía viva de una selva tropical en su plenitud: aves exóticas, insectos nocturnos, lluvia suave sobre el dosel verde. Un refugio sonoro para salir del ruido mental.",
-    benefits: ["Conexión con la naturaleza", "Calma instantánea", "Presencia plena", "Sueño suave"],
-    instruments: ["Aves tropicales", "Insectos", "Lluvia de selva"],
-    sonidosTag: "Sonidos Naturaleza",
-    isNew: true,
-  },
-  {
-    id: "38",
-    title: "Río de Montaña",
-    subtitle: "Sonidos Naturales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 30,
-    durationLabel: "30 min",
-    description:
-      "El fluir constante de un río de montaña limpio y fresco. Cada gorgoteo del agua sobre las piedras ancla la mente al momento presente y disuelve la tensión acumulada.",
-    benefits: ["Anclaje al presente", "Reducción del estrés", "Claridad mental", "Relajación natural"],
-    instruments: ["Agua corriente", "Viento suave", "Naturaleza andina"],
-    sonidosTag: "Sonidos Naturaleza",
-    isNew: true,
   },
   {
     id: "39",
@@ -571,22 +511,6 @@ const SESSIONS = [
   },
   // Sonidos Binaurales en musica-sonidos (Música)
   {
-    id: "35",
-    isPremium: true,
-    title: "Delta Profundo",
-    subtitle: "Ondas Cerebrales",
-    categoryId: "musica-sonidos",
-    categoryLabel: "Música",
-    duration: 60,
-    durationLabel: "60 min",
-    description:
-      "Frecuencias binaurales en la banda Delta (0.5–4 Hz) para inducir sueño profundo y regeneración celular. Usar con auriculares para la experiencia completa.",
-    benefits: ["Sueño profundo", "Regeneración celular", "Descanso total", "Meditación profunda"],
-    instruments: ["Frecuencias binaurales delta", "Ruido rosa suave"],
-    sonidosTag: "Sonidos Binaurales",
-    isNew: true,
-  },
-  {
     id: "36",
     isPremium: true,
     title: "Gamma 40Hz — Claridad",
@@ -674,20 +598,6 @@ const SESSIONS = [
   },
 
   // ── Descanso — Sueño profundo ─────────────────────────────────────────────
-  {
-    id: "46",
-    title: "Delta profundo",
-    subtitle: "Sueño profundo",
-    categoryId: "descanso",
-    categoryLabel: "Dormir",
-    descansoTag: "Sueño profundo",
-    duration: 45,
-    durationLabel: "45 min",
-    description:
-      "Frecuencias delta de 1-4 Hz diseñadas para llevar el cerebro al estado de sueño más profundo y reparador. Ideal para noches de descanso total.",
-    benefits: ["Sueño profundo", "Regeneración celular", "Descanso máximo", "Recuperación física"],
-    instruments: ["Frecuencias delta", "Ruido rosa", "Drones suaves"],
-  },
   {
     id: "47",
     title: "Umbral del sueño",
