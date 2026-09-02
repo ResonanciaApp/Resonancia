@@ -1,0 +1,34 @@
+[
+  {
+    "id": "8df3f2a1-6d7b-4c29-9b0e-1a7f8d2c4e65",
+    "position": 1,
+    "filepath": "src/pages/slides/ArchitectureCover.tsx",
+    "title": "RESONANCIA",
+    "description": "Arquitectura de la app móvil — resumen ejecutivo técnico de Casa del Cuenco.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "1a6c9e42-83f5-4b70-a2d1-7c9e5f0648ab",
+    "position": 2,
+    "filepath": "src/pages/slides/ArchitectureLayers.tsx",
+    "title": "Una arquitectura móvil por capas",
+    "description": "Capas principales de mobile, backend, datos y archivos.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4c2b7e19-d8a6-45f3-91ce-0b7d2a5e684f",
+    "position": 3,
+    "filepath": "src/pages/slides/AudioEngines.tsx",
+    "title": "Los motores que sostienen la experiencia",
+    "description": "Componentes de reproducción, mezclador, audio y escenas.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "7e5a1c38-b2d9-46f0-8a64-3c7e9b152d0f",
+    "position": 4,
+    "filepath": "src/pages/slides/OfflineFirst.tsx",
+    "title": "Offline-first, sincronizada y administrable",
+    "description": "Persistencia local, sincronización y administración segura.",
+    "speakerNotes": ""
+  }
+]

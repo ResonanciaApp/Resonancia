@@ -1,0 +1,28 @@
+kind = "slides"
+previewPath = "/resonancia-arquitectura/"
+title = "RESONANCIA — Arquitectura"
+description = "Resumen ejecutivo técnico de la arquitectura de Casa del Cuenco: capas de la app móvil, componentes de estado, motores de audio, datos, sincronización y administración."
+version = "1.0.0"
+id = "artifacts/resonancia-arquitectura"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/resonancia-arquitectura/" ]
+localPort = 20548
+
+[services.development]
+run = "pnpm --filter @workspace/resonancia-arquitectura run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/resonancia-arquitectura", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/resonancia-arquitectura/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20548"
+BASE_PATH = "/resonancia-arquitectura/"
