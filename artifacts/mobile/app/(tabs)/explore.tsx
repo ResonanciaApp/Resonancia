@@ -46,6 +46,7 @@ const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
+const FIRST_DISCOVER_CAROUSEL_GAP = 8;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -548,7 +549,7 @@ export function ExploreScreen({
                     index === 0
                       ? collapseCategoryHeader
                         ? COLLAPSED_FIRST_CAROUSEL_GAP
-                        : SECTION_GAP - 20
+                        : FIRST_DISCOVER_CAROUSEL_GAP
                       : 0,
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
