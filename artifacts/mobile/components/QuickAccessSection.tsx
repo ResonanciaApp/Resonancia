@@ -76,6 +76,7 @@ function QuickAccessCard({
   cardOpacity,
   showCardBorders,
   horizontal,
+  largeLabel,
   profile,
   profileWide,
   foregroundColor,
@@ -87,6 +88,7 @@ function QuickAccessCard({
   cardOpacity: number;
   showCardBorders: boolean;
   horizontal: boolean;
+  largeLabel: boolean;
   profile: boolean;
   profileWide: boolean;
   foregroundColor: string;
@@ -150,6 +152,7 @@ function QuickAccessCard({
           style={[
             styles.label,
             horizontal && styles.horizontalLabel,
+            largeLabel && styles.largeLabel,
             profile && styles.profileLabel,
             profileWide && styles.profileWideLabel,
             { color: isPressed ? "#FFFFFF" : foregroundColor },
@@ -169,6 +172,7 @@ export function QuickAccessSection({
   profileLayout = false,
   accessIds,
   horizontalIds,
+  largeLabelIds,
   cardGap = GRID_GAP,
   showTitle = true,
   title = "Mis accesos",
@@ -182,6 +186,7 @@ export function QuickAccessSection({
   profileLayout?: boolean;
   accessIds?: AccessId[];
   horizontalIds?: AccessId[];
+  largeLabelIds?: AccessId[];
   cardGap?: number;
   showTitle?: boolean;
   title?: string;
@@ -264,6 +269,7 @@ export function QuickAccessSection({
             cardOpacity={cardOpacity}
             showCardBorders={showCardBorders}
             horizontal={horizontalIds?.includes(access.id) ?? false}
+            largeLabel={largeLabelIds?.includes(access.id) ?? false}
             profile={profileLayout}
             profileWide={
               profileLayout && access.id !== "saved" && access.id !== "library" &&
@@ -334,6 +340,9 @@ const styles = StyleSheet.create({
   },
   horizontalLabel: {
     textAlign: "center",
+    fontSize: 14,
+  },
+  largeLabel: {
     fontSize: 14,
   },
   profileLabel: {

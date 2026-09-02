@@ -2576,6 +2576,7 @@ export default function HomeScreen2({
             title="Tu contenido"
             accessIds={["history", "favorites", "downloads", "sessions", "encounters"]}
             horizontalIds={["sessions", "encounters"]}
+            largeLabelIds={["history", "favorites", "downloads"]}
             cardGap={10}
             showCardBorders={false}
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
