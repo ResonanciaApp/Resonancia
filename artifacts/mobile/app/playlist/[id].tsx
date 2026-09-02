@@ -620,9 +620,14 @@ function PlaylistSessionRow({
   return (
     <View style={styles.sessionRow}>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
-        style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}>
+        style={({ pressed }) => [styles.thumbWrap, { opacity: pressed ? 0.75 : 1 }]}>
         <Image source={session.image as never} style={styles.thumb}
           placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
+        <SessionDurationBadge
+          label={session.durationLabel}
+          style={styles.thumbDurationBadge}
+          textStyle={styles.thumbDurationText}
+        />
       </Pressable>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
@@ -642,11 +647,6 @@ function PlaylistSessionRow({
         </View>
         <View style={styles.rowBottomMeta}>
           <Text style={styles.rowMeta} numberOfLines={1}>{author}</Text>
-          <SessionDurationBadge
-            label={session.durationLabel}
-            style={styles.rowDurationBadge}
-            textStyle={styles.rowDurationText}
-          />
         </View>
       </Pressable>
       <Pressable onPress={onRemove} hitSlop={10} style={styles.removeBtn}>
@@ -663,8 +663,15 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
 
   return (
     <View style={styles.sessionRow}>
-      <Image source={session.image as never} style={styles.thumb}
-        placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
+      <View style={styles.thumbWrap}>
+        <Image source={session.image as never} style={styles.thumb}
+          placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
+        <SessionDurationBadge
+          label={session.durationLabel}
+          style={styles.thumbDurationBadge}
+          textStyle={styles.thumbDurationText}
+        />
+      </View>
       <View style={{ flex: 1 }}>
         <View style={styles.rowCategory}>
           <SessionCategoryPill
@@ -677,11 +684,6 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
         <Text style={styles.rowName} numberOfLines={2}>{session.title}</Text>
         <View style={styles.rowBottomMeta}>
           <Text style={styles.rowMeta} numberOfLines={1}>{author}</Text>
-          <SessionDurationBadge
-            label={session.durationLabel}
-            style={styles.rowDurationBadge}
-            textStyle={styles.rowDurationText}
-          />
         </View>
       </View>
       <Pressable onPress={onAdd} hitSlop={10} style={styles.addIconBtn}>
@@ -855,7 +857,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
-  thumb: { width: 96, height: 96, borderRadius: 8 },
+  thumbWrap: { width: 96, height: 96, borderRadius: 8, overflow: "hidden", position: "relative", flexShrink: 0 },
+  thumb: { width: "100%", height: "100%" },
+  thumbDurationBadge: { position: "absolute", bottom: 6, left: 6 },
+  thumbDurationText: { fontSize: 11 },
   rowName: { fontFamily: "Manrope", color: "#f9f9f9", fontSize: 13, fontWeight: "600", lineHeight: 18 },
   rowCategory: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
   rowBottomMeta: {
@@ -866,8 +871,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, flex: 1 },
-  rowDurationBadge: { flexShrink: 0 },
-  rowDurationText: { fontSize: 11 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
