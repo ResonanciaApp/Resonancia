@@ -209,6 +209,7 @@ function ProfileMembershipModules() {
                 onPress={() => togglePlan(plan.id)}
                 style={({ pressed }) => [
                   styles.membershipCardHeader,
+                  isPremium ? styles.membershipCardHeaderPremium : styles.membershipCardHeaderPlus,
                   { opacity: pressed ? 0.78 : 1 },
                 ]}
                 accessibilityRole="button"
@@ -245,10 +246,7 @@ function ProfileMembershipModules() {
               </Pressable>
 
               {isOpen && (
-                <View
-                  style={styles.membershipBenefits}
-                  accessibilityLabel={`Beneficios de ${plan.name}`}
-                >
+                <View style={styles.membershipBenefits} accessibilityLabel={`Beneficios de ${plan.name}`}>
                   <View style={styles.membershipBenefitsDivider} />
                   {plan.benefits.map((benefit) => (
                     <View key={benefit} style={styles.membershipBenefitRow}>
@@ -1296,7 +1294,17 @@ export function ProfileScreenBase({
               <View style={styles.streakHeadingRow}>
                 <View style={styles.streakHeadingMain}>
                   <View style={styles.streakLotusIcon}>
-                    <MaterialCommunityIcons name="spa" size={52} color="#ECECEC" />
+                    <MaskedView
+                      style={styles.streakLotusMask}
+                      maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
+                    >
+                      <LinearGradient
+                        colors={["#CFCFCF", "#E3E3E3"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    </MaskedView>
                   </View>
                   <View style={styles.streakHeadingCopy}>
                     <View style={styles.streakTitleRow}>
@@ -2219,6 +2227,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
   },
+  membershipCardHeaderPremium: {
+    minHeight: 66,
+    paddingVertical: 6,
+  },
+  membershipCardHeaderPlus: {
+    minHeight: 61,
+    paddingVertical: 3.5,
+  },
   membershipIcon: {
     width: 54,
     height: 54,
@@ -2238,8 +2254,8 @@ const styles = StyleSheet.create({
   },
   membershipPlanName: {
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "700",
     letterSpacing: -0.5,
   },
   membershipPlanEyebrow: {
@@ -2352,10 +2368,14 @@ const styles = StyleSheet.create({
   },
   streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 16 },
   streakLotusIcon: {
-    width: 52,
-    height: 52,
+    width: 61,
+    height: 61,
     alignItems: "center",
     justifyContent: "center",
+  },
+  streakLotusMask: {
+    width: 61,
+    height: 61,
   },
   streakHeadingCopy: { flex: 1, gap: 1 },
   streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },

@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   largeTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", flex: 1 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  compactTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  compactTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", transform: [{ translateY: -5 }] },
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
