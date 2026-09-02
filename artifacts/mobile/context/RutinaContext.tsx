@@ -48,6 +48,7 @@ interface RutinaContextValue {
   lastAddedId: string | null;
   addActivity: (input: RoutineActivityInput) => RoutineActivity;
   toggleActivity: (activityId: string, dateKey?: string) => void;
+  reorderActivities: (orderedActivityIds: string[]) => void;
   isActivityCompleted: (activity: RoutineActivity, dateKey?: string) => boolean;
 }
 
@@ -230,6 +231,27 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const reorderActivities = useCallback((orderedActivityIds: string[]) => {
+    setActivities((current) => {
+      if (orderedActivityIds.length < 2) return current;
+
+      const orderedIdSet = new Set(orderedActivityIds);
+      const activitiesById = new Map(current.map((activity) => [activity.id, activity]));
+      const orderedActivities = orderedActivityIds
+        .map((id) => activitiesById.get(id))
+        .filter((activity): activity is RoutineActivity => activity !== undefined);
+
+      if (orderedActivities.length !== orderedActivityIds.length) return current;
+
+      let orderedIndex = 0;
+      return current.map((activity) =>
+        orderedIdSet.has(activity.id)
+          ? orderedActivities[orderedIndex++]
+          : activity,
+      );
+    });
+  }, []);
+
   const isActivityCompleted = useCallback(
     (activity: RoutineActivity, dateKey = getRoutineDateKey()) =>
       activity.completedDates.includes(dateKey),
@@ -243,9 +265,18 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       lastAddedId,
       addActivity,
       toggleActivity,
+      reorderActivities,
       isActivityCompleted,
     }),
-    [activities, isHydrated, lastAddedId, addActivity, toggleActivity, isActivityCompleted],
+    [
+      activities,
+      isHydrated,
+      lastAddedId,
+      addActivity,
+      toggleActivity,
+      reorderActivities,
+      isActivityCompleted,
+    ],
   );
 
   return <RutinaContext.Provider value={value}>{children}</RutinaContext.Provider>;
