@@ -778,7 +778,7 @@ function Inicio2HeroSlider({
             {/* El overlay pertenece a cada slide para que el desplazamiento,
                 parallax y estiramiento no puedan separarlo de la imagen. */}
             <LinearGradient
-              colors={["rgba(2,5,12,0.42)", "rgba(2,5,12,0.02)", "rgba(2,5,12,0)"]}
+              colors={["rgba(8,8,8,0.42)", "rgba(8,8,8,0.02)", "rgba(8,8,8,0)"]}
               locations={[0, 0.48, 1]}
               style={styles.inicio2HeroImage}
               pointerEvents="none"
@@ -1099,9 +1099,9 @@ function Inicio2HeroSliderRebuilt({
                   />
                   <LinearGradient
                     colors={[
-                      "rgba(2,5,12,0.42)",
-                      "rgba(2,5,12,0.02)",
-                      "rgba(2,5,12,0)",
+                      "rgba(8,8,8,0.42)",
+                      "rgba(8,8,8,0.02)",
+                      "rgba(8,8,8,0)",
                     ]}
                     locations={[0, 0.48, 1]}
                     style={styles.inicio2HeroImage}
@@ -1280,9 +1280,9 @@ function Inicio2HeroStatic({
         />
         <LinearGradient
           colors={[
-            "rgba(2,5,12,0.42)",
-            "rgba(2,5,12,0.02)",
-            "rgba(2,5,12,0)",
+            "rgba(8,8,8,0.42)",
+            "rgba(8,8,8,0.02)",
+            "rgba(8,8,8,0)",
           ]}
           locations={[0, 0.48, 1]}
           style={styles.inicio2HeroImage}
