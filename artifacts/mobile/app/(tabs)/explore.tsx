@@ -46,7 +46,7 @@ const H_PAD = 14;
 const GAP = 16;
 const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
-const FIRST_DISCOVER_CAROUSEL_GAP = 8;
+const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -655,12 +655,13 @@ const styles = StyleSheet.create({
   discoverTabsHeader: {
     marginTop: 9,
     paddingBottom: 15,
+    paddingHorizontal: H_PAD,
   },
   discoverTabs: {
     marginBottom: 0,
   },
   discoverTabsContent: {
-    paddingHorizontal: H_PAD,
+    paddingRight: H_PAD,
     gap: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -692,7 +693,7 @@ const styles = StyleSheet.create({
   },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
+  compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
     width: 40,
     height: 40,
@@ -703,7 +704,7 @@ const styles = StyleSheet.create({
   },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
