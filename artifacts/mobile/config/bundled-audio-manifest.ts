@@ -8,7 +8,6 @@ export const BUNDLED_AUDIO_SESSION_IDS = [
   "20",
   "21",
   "22",
-  "27",
   "28",
   "29",
   "30",

@@ -7,7 +7,6 @@ const SERVER_BUNDLED_AUDIO_SESSION_IDS = new Set([
   "20",
   "21",
   "22",
-  "27",
   "28",
   "29",
   "30",

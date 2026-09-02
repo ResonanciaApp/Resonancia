@@ -380,7 +380,7 @@ function getSeedData() {
       bookingPrice: "USD 60",
       bookingModality: "presencial",
       instagram: "https://instagram.com/arbolsagrado",
-      sessionIds: ["32", "33", "34", "35", "36", "37"],
+      sessionIds: ["32", "33", "34", "35", "37"],
       projects: [
         { platform: "spotify", label: "Álbumes en Spotify", url: "https://spotify.com" },
         { platform: "youtube", label: "Conciertos en vivo", url: "https://youtube.com" },

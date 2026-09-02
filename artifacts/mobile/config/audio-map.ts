@@ -21,7 +21,6 @@ const BUNDLED_AUDIO_MAP: Record<BundledAudioSessionId, ReturnType<typeof require
   "20": require("@/assets/audio/sesion2_pad_mi_mayor.mp3"),
   "21": require("@/assets/audio/rio_orilla_mar.wav"),
   "22": require("@/assets/audio/rio_orilla_mar.wav"),
-  "27": require("@/assets/audio/riachuelo_stream.mp3"),
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
   "29": require("@/assets/audio/prueba1.mp3"),
   "30": require("@/assets/audio/prueba1.mp3"),
@@ -36,7 +35,7 @@ export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =
  * Solo las sesiones "Sonidos Naturaleza" de Música y Sonidos son loops.
  * Las de "Música Ambient" / "Música Enteógena" son pistas con duración fija.
  */
-export const LOOP_SESSIONS = new Set(["20", "21", "22", "27"]);
+export const LOOP_SESSIONS = new Set(["20", "21", "22"]);
 
 /**
  * VOICE_MAP — audio de voz guiada superpuesto al fondo musical.
