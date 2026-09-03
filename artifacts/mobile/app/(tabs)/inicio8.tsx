@@ -101,7 +101,6 @@ import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSe
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
@@ -2707,7 +2706,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <AlmaCommunitySection />}
-        {isInicio2 && <AhoraEnResonanciaSection />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
