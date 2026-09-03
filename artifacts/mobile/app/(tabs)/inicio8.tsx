@@ -2721,6 +2721,7 @@ export default function HomeScreen2({
             showCardBorders
             cardBorderWidth={2}
             cardBorderColor="rgba(255,255,255,0.1)"
+            joinedContentCorners
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}

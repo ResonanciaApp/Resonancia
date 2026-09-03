@@ -77,6 +77,7 @@ function QuickAccessCard({
   showCardBorders,
   cardBorderWidth,
   cardBorderColor,
+  joinedContentCorners,
   horizontal,
   largeLabel,
   profile,
@@ -91,6 +92,7 @@ function QuickAccessCard({
   showCardBorders: boolean;
   cardBorderWidth: number;
   cardBorderColor: string;
+  joinedContentCorners: boolean;
   horizontal: boolean;
   largeLabel: boolean;
   profile: boolean;
@@ -143,6 +145,16 @@ function QuickAccessCard({
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
+            ...(joinedContentCorners
+              ? {
+                  borderTopLeftRadius: access.id === "encounters" ? 0 : 25,
+                  borderTopRightRadius: access.id === "sessions" ? 0 : 25,
+                  borderBottomLeftRadius:
+                    access.id === "favorites" || access.id === "downloads" ? 0 : 25,
+                  borderBottomRightRadius:
+                    access.id === "history" || access.id === "favorites" ? 0 : 25,
+                }
+              : null),
             opacity: isPressed ? cardOpacity * 0.75 : cardOpacity,
             transform: [{ scale }],
           },
@@ -184,6 +196,7 @@ export function QuickAccessSection({
   showCardBorders = true,
   cardBorderWidth = 1,
   cardBorderColor = "rgba(255,255,255,0.1)",
+  joinedContentCorners = false,
   cardBackgroundColor,
   cardOpacity = 1,
   style,
@@ -200,6 +213,7 @@ export function QuickAccessSection({
   showCardBorders?: boolean;
   cardBorderWidth?: number;
   cardBorderColor?: string;
+  joinedContentCorners?: boolean;
   cardBackgroundColor?: string;
   cardOpacity?: number;
   style?: object;
@@ -281,6 +295,7 @@ export function QuickAccessSection({
             showCardBorders={showCardBorders}
             cardBorderWidth={cardBorderWidth}
             cardBorderColor={cardBorderColor}
+            joinedContentCorners={joinedContentCorners}
             horizontal={horizontalIds?.includes(access.id) ?? false}
             largeLabel={largeLabelIds?.includes(access.id) ?? false}
             profile={profileLayout}
