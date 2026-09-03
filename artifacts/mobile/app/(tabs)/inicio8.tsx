@@ -2530,7 +2530,6 @@ export default function HomeScreen2({
             hideAmbientalTitleInSquareRecent
           />
         )}
-        {isInicio2 && <ProfileMixCarousel />}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
@@ -2722,6 +2721,7 @@ export default function HomeScreen2({
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
+        {isInicio2 && <ProfileMixCarousel />}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginTop={0}

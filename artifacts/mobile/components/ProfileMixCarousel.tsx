@@ -59,6 +59,28 @@ export function ProfileMixCarousel() {
         style={styles.scroll}
         contentContainerStyle={styles.content}
       >
+        {newestPresets.length === 0 &&
+          ["empty-left", "empty-right"].map((placeholderId) => (
+            <View
+              key={placeholderId}
+              style={[
+                styles.placeholderCard,
+                {
+                  width: cardWidth,
+                  height: cardWidth,
+                  backgroundColor: cardBackground,
+                },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="tune-variant"
+                size={44}
+                color={WIDGET_GREEN_SOLID}
+                style={styles.emptyPlaceholderIcon}
+              />
+            </View>
+          ))}
+
         {newestPresets.map((mix) => {
           const hasCover = Boolean(
             mix.image ||
@@ -167,6 +189,9 @@ const styles = StyleSheet.create({
   },
   placeholderIcon: {
     opacity: 0.5,
+  },
+  emptyPlaceholderIcon: {
+    opacity: 0.3,
   },
   addLabel: {
     fontFamily: "Manrope",
