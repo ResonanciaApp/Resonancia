@@ -14,7 +14,7 @@ type Props = {
 };
 
 const SECTION_PADDING = 14;
-const CARD_GAP = 10;
+const CARD_GAP = 14;
 const TRAILING_CARD_FRACTION = 0.2;
 
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
