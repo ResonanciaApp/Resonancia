@@ -75,6 +75,8 @@ function QuickAccessCard({
   cardBackground,
   cardOpacity,
   showCardBorders,
+  cardBorderWidth,
+  cardBorderColor,
   horizontal,
   largeLabel,
   profile,
@@ -87,6 +89,8 @@ function QuickAccessCard({
   cardBackground: string;
   cardOpacity: number;
   showCardBorders: boolean;
+  cardBorderWidth: number;
+  cardBorderColor: string;
   horizontal: boolean;
   largeLabel: boolean;
   profile: boolean;
@@ -137,7 +141,8 @@ function QuickAccessCard({
           {
             width,
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
-            borderWidth: showCardBorders ? 1 : 0,
+            borderWidth: showCardBorders ? cardBorderWidth : 0,
+            borderColor: cardBorderColor,
             opacity: isPressed ? cardOpacity * 0.75 : cardOpacity,
             transform: [{ scale }],
           },
@@ -177,6 +182,8 @@ export function QuickAccessSection({
   showTitle = true,
   title = "Mis accesos",
   showCardBorders = true,
+  cardBorderWidth = 1,
+  cardBorderColor = "rgba(255,255,255,0.1)",
   cardBackgroundColor,
   cardOpacity = 1,
   style,
@@ -191,6 +198,8 @@ export function QuickAccessSection({
   showTitle?: boolean;
   title?: string;
   showCardBorders?: boolean;
+  cardBorderWidth?: number;
+  cardBorderColor?: string;
   cardBackgroundColor?: string;
   cardOpacity?: number;
   style?: object;
@@ -270,6 +279,8 @@ export function QuickAccessSection({
             cardBackground={cardBackground}
             cardOpacity={cardOpacity}
             showCardBorders={showCardBorders}
+            cardBorderWidth={cardBorderWidth}
+            cardBorderColor={cardBorderColor}
             horizontal={horizontalIds?.includes(access.id) ?? false}
             largeLabel={largeLabelIds?.includes(access.id) ?? false}
             profile={profileLayout}

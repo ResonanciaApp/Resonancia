@@ -2717,7 +2717,9 @@ export default function HomeScreen2({
             horizontalIds={["sessions", "encounters"]}
             largeLabelIds={["history", "favorites", "downloads"]}
             cardGap={10}
-            showCardBorders={false}
+            showCardBorders
+            cardBorderWidth={2}
+            cardBorderColor="rgba(255,255,255,0.1)"
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
@@ -4051,6 +4053,8 @@ const styles = StyleSheet.create({
   },
   durPill: {
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
     paddingHorizontal: 10,
     minWidth: 80,
     height: 42,
@@ -4063,8 +4067,6 @@ const styles = StyleSheet.create({
     width: INICIO2_DURATION_PILL_WIDTH,
     minWidth: INICIO2_DURATION_PILL_WIDTH,
     height: 44,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.04)",
   },
   inicio2DurPillRow: {
     gap: INICIO2_DURATION_PILL_GAP,
