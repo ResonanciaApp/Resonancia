@@ -9,22 +9,46 @@ const webBackdropBlur = Platform.OS === "web"
     } as const)
   : undefined;
 
+const strongWebBackdropBlur = Platform.OS === "web"
+  ? ({
+      backdropFilter: "blur(36px)",
+      WebkitBackdropFilter: "blur(36px)",
+    } as const)
+  : undefined;
+
 /** Non-interactive frosted surface used behind compact mobile headers. */
 export function StickyHeaderSurface({
   opacity,
   tint,
+  showTint = true,
+  showDivider = true,
+  blurIntensity,
+  showBlackTint = true,
+  strongBlur = false,
 }: {
   opacity: Animated.AnimatedInterpolation<number> | Animated.Value | number;
   tint: string;
+  showTint?: boolean;
+  showDivider?: boolean;
+  blurIntensity?: number;
+  showBlackTint?: boolean;
+  strongBlur?: boolean;
 }) {
   return (
     <Animated.View
       pointerEvents="none"
-      style={[StyleSheet.absoluteFill, styles.surface, webBackdropBlur, { opacity }]}
+      style={[
+        StyleSheet.absoluteFill,
+        styles.surface,
+        strongBlur ? strongWebBackdropBlur : webBackdropBlur,
+        { opacity },
+      ]}
     >
-      <SessionBadgeGlass />
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.tint, { backgroundColor: tint }]} />
-      <View pointerEvents="none" style={styles.divider} />
+      <SessionBadgeGlass intensity={blurIntensity} showBlackTint={showBlackTint} />
+      {showTint && (
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.tint, { backgroundColor: tint }]} />
+      )}
+      {showDivider && <View pointerEvents="none" style={styles.divider} />}
     </Animated.View>
   );
 }

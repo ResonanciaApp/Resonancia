@@ -470,7 +470,15 @@ export function ExploreScreen({
           }
         >
           {collapseCategoryHeader && (
-            <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={activeTheme.gradient[0] as string} />
+            <StickyHeaderSurface
+              opacity={stickyHeaderSurfaceOpacity}
+              tint={activeTheme.gradient[0] as string}
+              showTint={false}
+              showDivider={false}
+              blurIntensity={85}
+              showBlackTint={false}
+              strongBlur
+            />
           )}
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>

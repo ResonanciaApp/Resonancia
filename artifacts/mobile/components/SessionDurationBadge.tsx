@@ -38,16 +38,22 @@ export function SessionDurationBadge({ label, style, textStyle, showClock = fals
 }
 
 /** Superficie compartida por las píldoras de metadata de las cards. */
-export function SessionBadgeGlass() {
+export function SessionBadgeGlass({
+  intensity,
+  showBlackTint = true,
+}: {
+  intensity?: number;
+  showBlackTint?: boolean;
+} = {}) {
   return (
     <>
       <BlurView
-        intensity={Platform.OS === "android" ? 60 : 28}
+        intensity={intensity ?? (Platform.OS === "android" ? 60 : 28)}
         tint="default"
         experimentalBlurMethod="dimezisBlurView"
         style={StyleSheet.absoluteFill}
       />
-      <View style={[StyleSheet.absoluteFill, styles.blackTint]} />
+      {showBlackTint && <View style={[StyleSheet.absoluteFill, styles.blackTint]} />}
     </>
   );
 }
