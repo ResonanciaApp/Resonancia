@@ -353,7 +353,7 @@ export function HistorialCalendar({
             {formatSelectedDate(selectedDate, today)}
           </Text>
           {dayEntries.length === 0 ? (
-            <Text style={styles.embeddedEmptyText}>
+            <Text style={[styles.embeddedEmptyText, { color: "#F9F9F9" }]}>
               {isSameDay(selectedDate, today)
                 ? "Aún no has completado nada hoy. Tómate un momento para pausar y comenzar tu práctica. 🌿"
                 : "No hay actividad"}
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
   embeddedEmptyText: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 12,
     lineHeight: 22,
     fontWeight: "600",
     color: "#AAAAC4",
