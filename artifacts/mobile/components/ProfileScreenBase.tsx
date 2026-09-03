@@ -1303,9 +1303,6 @@ export function ProfileScreenBase({
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <Text style={[styles.streakSectionTitle, { color: colors.foreground }]}>
-              Tu progreso de expansión
-            </Text>
             <View
               style={[
                 styles.streakSection,
@@ -2256,7 +2253,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     alignItems: "stretch",
     overflow: "hidden",
-    marginBottom: 32,
+    marginBottom: 15,
     gap: 0,
   },
   profileIdentityRow: {
@@ -2428,12 +2425,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
     marginBottom: 16,
-  },
-  streakSectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-    marginBottom: 17,
   },
   streakHeadingRow: {
     flexDirection: "row",
