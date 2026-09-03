@@ -126,13 +126,11 @@ function DiscoverPill({
   label,
   icon,
   sceneId,
-  elevated = false,
   onPress,
 }: {
   label: string;
   icon: DiscoverIconName;
   sceneId: string;
-  elevated?: boolean;
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -163,7 +161,6 @@ function DiscoverPill({
       onTouchEnd={handlePressOut}
       onTouchCancel={handlePressOut}
       testID={`discover-carousel-tab-${label}`}
-      style={elevated ? styles.discoverPillStickyShadow : undefined}
     >
       <Animated.View
         style={[
@@ -368,7 +365,6 @@ export function ExploreScreen({
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
   const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
-  const [stickyHeaderActive, setStickyHeaderActive] = React.useState(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = React.useState(0);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
@@ -384,7 +380,6 @@ export function ExploreScreen({
     const shouldCompact = scrollY > 8;
     if (shouldCompact !== titleCompactRef.current) {
       titleCompactRef.current = shouldCompact;
-      setStickyHeaderActive(shouldCompact);
       Animated.timing(titleCompactAnim, {
         toValue: shouldCompact ? 1 : 0,
         duration: 300,
@@ -527,7 +522,6 @@ export function ExploreScreen({
                     label={carousel.label}
                     icon={getDiscoverIcon(carousel.slug, carousel.label)}
                     sceneId={activeSceneId}
-                    elevated={activeSceneId === "indigo2" && stickyHeaderActive}
                     onPress={() =>
                       openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
                     }
@@ -706,14 +700,6 @@ const styles = StyleSheet.create({
   discoverPillIndigo2: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",
-  },
-  discoverPillStickyShadow: {
-    borderRadius: 27,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 7 },
-    shadowOpacity: 0.42,
-    shadowRadius: 11,
-    elevation: 10,
   },
   discoverPillText: {
     fontFamily: "Manrope",
