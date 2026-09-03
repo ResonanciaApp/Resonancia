@@ -227,20 +227,22 @@ export function ContentCategoryGrid({
                 {({ pressed }) =>
                   isWatercolorCard ? (
                     <>
-                      <ExpoImage
-                        source={watercolorImage}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        transition={180}
-                      />
-                      <View
-                        pointerEvents="none"
-                        style={[
-                          StyleSheet.absoluteFill,
-                          styles.watercolorOverlay,
-                          pressed && styles.watercolorOverlayPressed,
-                        ]}
-                      />
+                      <View style={styles.watercolorImageWrap}>
+                        <ExpoImage
+                          source={watercolorImage}
+                          style={StyleSheet.absoluteFill}
+                          contentFit="cover"
+                          transition={180}
+                        />
+                        <View
+                          pointerEvents="none"
+                          style={[
+                            StyleSheet.absoluteFill,
+                            styles.watercolorOverlay,
+                            pressed && styles.watercolorOverlayPressed,
+                          ]}
+                        />
+                      </View>
                       <Text style={styles.watercolorLabel}>{category.label}</Text>
                     </>
                   ) : (
@@ -338,12 +340,20 @@ const styles = StyleSheet.create({
   },
   watercolorCard: {
     width: WATERCOLOR_CARD_SIZE,
-    height: WATERCOLOR_CARD_SIZE,
-    borderRadius: WATERCOLOR_CARD_RADIUS,
+    height: WATERCOLOR_CARD_SIZE + 48,
     paddingVertical: 0,
     paddingHorizontal: 0,
+    flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "flex-start",
+    gap: 0,
+    overflow: "visible",
+  },
+  watercolorImageWrap: {
+    width: WATERCOLOR_CARD_SIZE,
+    height: WATERCOLOR_CARD_SIZE,
+    borderRadius: WATERCOLOR_CARD_RADIUS,
+    overflow: "hidden",
   },
   watercolorOverlay: {
     backgroundColor: "rgba(0,0,0,0.16)",
@@ -352,17 +362,14 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   watercolorLabel: {
-    color: "#FFFFFF",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 14.5,
+    fontSize: 14,
     lineHeight: 19,
-    fontWeight: "700",
-    marginTop: 12,
-    marginLeft: 12,
-    maxWidth: WATERCOLOR_CARD_SIZE - 24,
-    textShadowColor: "rgba(0,0,0,0.85)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    fontWeight: "600",
+    marginTop: 9,
+    width: WATERCOLOR_CARD_SIZE,
+    textAlign: "left",
   },
   horizontalSmallRadiusCard: {
     borderRadius: 23,
