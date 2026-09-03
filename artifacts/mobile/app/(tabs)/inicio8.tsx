@@ -2436,25 +2436,6 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD }}
           />
         )}
-        {isInicio2 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
-              ]}
-            >
-              Explora por contenido
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              horizontal
-              visualVariant="watercolor"
-            />
-          </View>
-        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2707,6 +2688,25 @@ export default function HomeScreen2({
             showCardBorders={false}
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
+        )}
+        {isInicio2 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
+              ]}
+            >
+              Explora por contenido
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant="watercolor"
+            />
+          </View>
         )}
         {isInicio2 && (
           <EncuentrosResonadoresSection
