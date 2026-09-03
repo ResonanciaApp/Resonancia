@@ -2503,6 +2503,7 @@ export default function HomeScreen2({
             cardAuthorColor="#acaac2"
             showAuthor={false}
             showMetaBelow
+            durationInsideWithMeta
             hideAmbientalTitleInSquareRecent
           />
         )}
@@ -2591,6 +2592,7 @@ export default function HomeScreen2({
             cardAuthorColor="#acaac2"
             showAuthor={false}
             showMetaBelow
+            durationInsideWithMeta
           />
         )}
         {isInicio2 && <MiRutinaSection />}

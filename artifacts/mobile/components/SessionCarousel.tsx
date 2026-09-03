@@ -88,6 +88,7 @@ type SessionCarouselProps = {
   showAuthor?: boolean;
   showCollectionBelow?: boolean;
   showMetaBelow?: boolean;
+  durationInsideWithMeta?: boolean;
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
@@ -116,6 +117,7 @@ export function SessionCarousel({
   showAuthor = true,
   showCollectionBelow = false,
   showMetaBelow = false,
+  durationInsideWithMeta = false,
   durationLift = 0,
   showHeader = true,
   cardVariant,
@@ -238,6 +240,17 @@ export function SessionCarousel({
                         {s.title}
                       </Text>
                     )}
+                    {durationInsideWithMeta && (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[
+                          styles.durBadge,
+                          !showAuthor && styles.durBadgeLower,
+                          { bottom: (showAuthor ? 8 : 4) + durationLift },
+                        ]}
+                        textStyle={styles.durText}
+                      />
+                    )}
                   </>
                 ) : showCardMetadata ? (
                   <SessionCardMetadataOverlay
@@ -259,7 +272,7 @@ export function SessionCarousel({
                     {!showMetaBelow && showImageCategoryPill && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
-                    {!showMetaBelow && (
+                    {(!showMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
@@ -299,7 +312,9 @@ export function SessionCarousel({
                       style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
                       numberOfLines={1}
                     >
-                      {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
+                      {durationInsideWithMeta
+                        ? s.categoryLabel
+                        : [s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
                   ) : showCollectionBelow && s.categoryLabel ? (
                     <Text
