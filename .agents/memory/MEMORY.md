@@ -127,3 +127,4 @@
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
 - [Rendimiento del drag de Mi Rutina](routine-drag-performance.md) — animar cambios de slot una sola vez, memoizar filas/gestos y limpiar estados transitorios al perder foco
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2
+- [Animated drivers no se mezclan por View](animated-driver-view-mixing.md) — separar en capas los estilos JS (color) y native (transform), aunque usen Animated.Value distintos

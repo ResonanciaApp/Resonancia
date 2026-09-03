@@ -96,12 +96,15 @@ function CollectionPill({
           theme.id === "tibet" && styles.pillTibet,
           theme.id === "indigo" && styles.pillIndigo,
           theme.id === "indigo2" && styles.pillIndigo2,
-          theme.id === "indigo2" && indigo2BackgroundColor && {
-            backgroundColor: indigo2BackgroundColor,
-          },
           { transform: [{ scale }] },
         ]}
       >
+        {theme.id === "indigo2" && indigo2BackgroundColor && (
+          <Animated.View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
+          />
+        )}
         <Feather name={icon as never} size={22} color="#FFFFFF" />
         <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
       </Animated.View>

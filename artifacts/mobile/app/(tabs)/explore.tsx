@@ -170,12 +170,15 @@ function DiscoverPill({
           sceneId === "tibet" && styles.discoverPillTibet,
           sceneId === "indigo" && styles.discoverPillIndigo,
           sceneId === "indigo2" && styles.discoverPillIndigo2,
-          sceneId === "indigo2" && indigo2BackgroundColor && {
-            backgroundColor: indigo2BackgroundColor,
-          },
           { transform: [{ scale }] },
         ]}
       >
+        {sceneId === "indigo2" && indigo2BackgroundColor && (
+          <Animated.View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
+          />
+        )}
         <MaterialCommunityIcons name={icon} size={22} color="#FFFFFF" />
         <Text style={styles.discoverPillText} numberOfLines={1}>
           {label}
