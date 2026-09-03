@@ -65,9 +65,10 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
 const styles = StyleSheet.create({
   wrap: {
     alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 14,
     paddingVertical: 8,
-    minHeight: 93,
+    minHeight: 108,
     borderRadius: 14,
     overflow: "hidden",
   },

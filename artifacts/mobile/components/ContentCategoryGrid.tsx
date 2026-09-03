@@ -6,7 +6,6 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react
 import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
-  getContentCarouselCardWidth,
 } from "@/constants/carousel";
 import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -22,9 +21,17 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-export const WATERCOLOR_CARD_SIZE = getContentCarouselCardWidth(
-  Dimensions.get("window").width,
-  GRID_PAD,
+const WATERCOLOR_TRAILING_PEEK = 25;
+export const WATERCOLOR_CARD_SIZE = Math.max(
+  120,
+  Math.round(
+    (
+      Dimensions.get("window").width
+      - GRID_PAD
+      - CONTENT_CAROUSEL_GAP * 2
+      - WATERCOLOR_TRAILING_PEEK
+    ) / 2,
+  ),
 );
 export const WATERCOLOR_CARD_HEIGHT = Math.round(
   (WATERCOLOR_CARD_SIZE + 50) *
