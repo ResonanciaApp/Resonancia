@@ -1794,16 +1794,6 @@ export default function HomeScreen2({
     return shuffled.slice(0, 3);
   }, [todayKey, catalogVersion]);
 
-  // Recientes — últimas sesiones incorporadas al catálogo, no confundir con
-  // “Escuchadas recientemente”, que depende del historial personal.
-  const recentSessions = React.useMemo<Session[]>(
-    () =>
-      [...SESSIONS]
-        .sort((a, b) => Number.parseInt(b.id, 10) - Number.parseInt(a.id, 10))
-        .slice(0, 7),
-    [catalogVersion],
-  );
-
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
   const listenedRecently = React.useMemo<Session[]>(() => {
@@ -2487,7 +2477,6 @@ export default function HomeScreen2({
         {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
-            description="Contenido que has escuchado recientemente"
             sessions={filteredListened}
             isPremium={isPremium}
             onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
@@ -2504,7 +2493,6 @@ export default function HomeScreen2({
             showAuthor
             showMetaBelow
             durationInsideWithMeta
-            showImageCategoryPill
             hideAmbientalTitleInSquareRecent
           />
         )}
@@ -2594,29 +2582,9 @@ export default function HomeScreen2({
             showAuthor
             showMetaBelow
             durationInsideWithMeta
-            showImageCategoryPill
           />
         )}
         {isInicio2 && <MiRutinaSection />}
-        {isInicio2 && (
-          <SessionCarousel
-            title="Recientes"
-            sessions={recentSessions}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={INICIO2_SESSION_CARD_W}
-            allowOversizedCardWidth
-            titleSize={19}
-            titleSpacing={17}
-            viewAllColor={carouselViewAllColor}
-            squareCards
-            cardAuthorColor="#acaac2"
-            showAuthor={false}
-            showMetaBelow
-          />
-        )}
         {isInicio2 && featuredMoment && (
           <View
             style={{
@@ -2823,23 +2791,6 @@ export default function HomeScreen2({
             ))}
           </ScrollView>
           </View>
-        )}
-
-        {/* ── RECIENTES ── */}
-        {!isInicio2 && (
-          <SessionCarousel
-            title="Recientes"
-            sessions={recentSessions}
-            isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: -6, marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
-            titleOffset={10}
-            cardWidth={RECENT_CARD_W}
-            titleSize={20}
-            showCardMetadata
-            showAuthor={false}
-            showMetaBelow
-          />
         )}
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
