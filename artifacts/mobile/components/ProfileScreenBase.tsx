@@ -1302,7 +1302,7 @@ export function ProfileScreenBase({
             </View>
           </View>
           <View style={styles.profileCardDivider} />
-          <ProfileMembershipModules secondaryTextColor={indigo2SecondaryText} />
+          <ProfileMembershipModules secondaryTextColor={progressAccent} />
         </View>
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
@@ -2318,7 +2318,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
+    borderWidth: 0,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 18,
