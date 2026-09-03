@@ -10,12 +10,22 @@ import {
   View,
 } from "react-native";
 
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useIntencion } from "@/context/IntencionContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
   const { savedEntries, favorites } = useIntencion();
+  const { activeSceneId } = useSceneTheme();
   const currentIntention = savedEntries[0]?.text ?? favorites[0] ?? null;
   const cursorOpacity = useRef(new Animated.Value(1)).current;
+  const cardBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "indigo2"
+        ? "rgba(255,255,255,0.025)"
+        : "rgba(255,255,255,0.05)";
 
   useEffect(() => {
     const blink = Animated.loop(
@@ -31,7 +41,11 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
   return (
     <Pressable
       onPress={() => router.push("/intencion-onboarding" as never)}
-      style={({ pressed }) => [styles.wrap, style, { opacity: pressed ? 0.75 : 1 }]}
+      style={({ pressed }) => [
+        styles.wrap,
+        { backgroundColor: cardBackground, opacity: pressed ? 0.75 : 1 },
+        style,
+      ]}
       accessibilityRole="button"
       accessibilityLabel="Establecer mi intención"
     >
@@ -41,7 +55,7 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
         {currentIntention ? (
           <Text style={styles.text} numberOfLines={2}>{currentIntention}</Text>
         ) : (
-          <Text style={styles.text}>Proyecta tu propósito</Text>
+          <Text style={[styles.text, styles.placeholderText]}>Proyecta tu propósito</Text>
         )}
       </View>
     </Pressable>
@@ -53,6 +67,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 14,
     paddingVertical: 20,
+    borderRadius: 14,
+    overflow: "hidden",
   },
   super: {
     fontFamily: "Manrope",
@@ -80,5 +96,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
+  },
+  placeholderText: {
+    color: WIDGET_GREEN_SOLID,
   },
 });
