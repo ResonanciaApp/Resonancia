@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 14,
     paddingVertical: 8,
-    minHeight: 68,
+    minHeight: 93,
     borderRadius: 14,
     overflow: "hidden",
   },
@@ -100,5 +100,7 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: WIDGET_GREEN_SOLID,
+    fontSize: 15,
+    fontWeight: "700",
   },
 });
