@@ -1497,14 +1497,16 @@ export default function HomeScreen2({
       : activeSceneId === "indigo"
         ? "#212033"
         : activeSceneId === "indigo2"
-          ? "#101014"
+          ? activeTheme.solid
           : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
   const durationPillBg = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
-    : cardBg;
+    : activeSceneId === "indigo2"
+      ? "rgba(255,255,255,0.025)"
+      : cardBg;
   const recommendationSurfaceBg = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
     : cardBg;
@@ -2890,7 +2892,6 @@ export default function HomeScreen2({
       <InicioEmotionWidget
         bottom={emotionWidgetBottom}
         backgroundColor={emotionWidgetBackground}
-        borderColor={activeSceneId === "indigo2" ? "rgba(255,255,255,0.10)" : undefined}
         onOpenMoodPicker={() => setMoodSheetVisible(true)}
       />
       </Animated.View>{/* fin contenido desvanecible */}
@@ -4046,6 +4047,8 @@ const styles = StyleSheet.create({
   },
   inicio2DurPill: {
     borderRadius: 10,
+    minWidth: 85,
+    height: 44,
   },
   durPillText: {
     fontFamily: "Manrope",
