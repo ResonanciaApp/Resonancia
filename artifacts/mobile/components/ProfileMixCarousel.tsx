@@ -129,6 +129,7 @@ export function ProfileMixCarousel() {
 
 const styles = StyleSheet.create({
   section: {
+    paddingHorizontal: GRID_PAD,
     marginBottom: 32,
   },
   sectionTitle: {

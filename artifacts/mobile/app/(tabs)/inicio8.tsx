@@ -57,6 +57,7 @@ import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
+import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -2529,6 +2530,7 @@ export default function HomeScreen2({
             hideAmbientalTitleInSquareRecent
           />
         )}
+        {isInicio2 && <ProfileMixCarousel />}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
@@ -2821,6 +2823,7 @@ export default function HomeScreen2({
             showMetaBelow
           />
         )}
+        {!isInicio2 && <ProfileMixCarousel />}
 
         {/* ── FAVORITOS ── */}
         {!isInicio2 && (

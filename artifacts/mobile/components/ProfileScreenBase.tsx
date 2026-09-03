@@ -77,7 +77,6 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1300,8 +1299,6 @@ export function ProfileScreenBase({
           <View style={styles.profileCardDivider} />
           <ProfileMembershipModules secondaryTextColor={indigo2SecondaryText} />
         </View>
-
-        <ProfileMixCarousel />
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
