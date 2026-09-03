@@ -78,8 +78,7 @@ function CalendarActivityRow({
       style={({ pressed }) => [
         styles.activityRow,
         {
-          backgroundColor: "rgba(255,255,255,0.10)",
-          borderColor: routineTheme.divider,
+          backgroundColor: "rgba(255,255,255,0.025)",
           opacity: pressed ? 0.72 : 1,
         },
       ]}
@@ -240,7 +239,10 @@ export default function RutinaCalendarioScreen() {
                 <Text
                   style={[
                     styles.dayLabel,
-                    { color: routineTheme.accent, opacity: 0.7 },
+                    {
+                      color: selected ? routineTheme.completion : routineTheme.accent,
+                      opacity: selected ? 1 : 0.7,
+                    },
                   ]}
                 >
                   {DAY_LABELS[index]}
@@ -418,8 +420,7 @@ const styles = StyleSheet.create({
   },
   activityRow: {
     minHeight: 98,
-    borderRadius: 17,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 12,
     padding: 14,
     flexDirection: "row",
     alignItems: "center",
