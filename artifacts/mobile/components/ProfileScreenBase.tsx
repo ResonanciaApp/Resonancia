@@ -224,13 +224,14 @@ function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?:
                   style={[
                     styles.membershipIcon,
                     {
-                      backgroundColor: "rgba(255,255,255,0.1)",
+                      backgroundColor: "transparent",
+                      borderColor: plan.colors.accent,
                       shadowColor: plan.colors.glow,
                     },
                   ]}
                 >
                   {isPremium ? (
-                    <MaterialCommunityIcons name="star" size={26} color={plan.colors.accent} />
+                    <MaterialCommunityIcons name="star" size={31} color={plan.colors.accent} />
                   ) : (
                     <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
                   )}
@@ -2276,7 +2277,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   membershipSection: {
-    marginTop: 0,
+    marginTop: 7,
     marginBottom: 0,
   },
   membershipCard: {
@@ -2286,7 +2287,7 @@ const styles = StyleSheet.create({
   profileCardDivider: {
     height: 1,
     width: "100%",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     marginTop: 20,
     marginBottom: 4,
   },
@@ -2314,10 +2315,10 @@ const styles = StyleSheet.create({
   membershipIcon: {
     width: 54,
     height: 54,
-    borderRadius: 13,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 0,
+    borderWidth: 1,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 18,
