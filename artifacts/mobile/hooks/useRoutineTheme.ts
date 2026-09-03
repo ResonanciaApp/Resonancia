@@ -38,7 +38,7 @@ const ROUTINE_SCENE_SURFACES = {
     surface: "#17171E",
     surfaceElevated: "#1D1D25",
     divider: "rgba(134,136,135,0.22)",
-    ticketSurface: "#0F0F15",
+    ticketSurface: "#191919",
   },
 } as const;
 
