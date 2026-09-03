@@ -2454,6 +2454,9 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <IntentionPrompt style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP }} />
+        )}
+        {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
               Explora según tu tiempo

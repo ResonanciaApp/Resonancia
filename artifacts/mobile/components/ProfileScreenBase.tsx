@@ -68,7 +68,6 @@ import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
-import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
@@ -1306,8 +1305,6 @@ export function ProfileScreenBase({
           </View>
         </View>
 
-        {dedicated && <IntentionPrompt style={styles.profileIntentionSection} />}
-
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
@@ -1408,6 +1405,7 @@ export function ProfileScreenBase({
                 circleSize={37}
                 edgeAligned
                 dayLabelColor={activeTheme.accent ?? colors.primary}
+                activeBorderColor="#7FB9AB"
               />
             </View>
 
@@ -1505,7 +1503,9 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
-            <ProfileMixCarousel marginBottom={32} />
+            <View style={{ marginTop: 32 }}>
+              <ProfileMixCarousel marginBottom={32} />
+            </View>
 
             <Pressable
               onPress={() => router.push("/notificaciones-practica" as never)}
@@ -2548,6 +2548,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: 10 }],
   },
   weeklyStreakNumber: {
     fontFamily: "Manrope",
@@ -2560,10 +2561,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 15,
     marginTop: -1,
-  },
-  profileIntentionSection: {
-    marginTop: 0,
-    marginBottom: 16,
   },
   personalStatsSection: {
     borderRadius: 18,
