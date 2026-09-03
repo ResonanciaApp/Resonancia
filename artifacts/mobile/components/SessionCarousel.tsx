@@ -152,7 +152,7 @@ export function SessionCarousel({
     theme.id === "indigo"
       ? "rgba(42,40,64,0.65)"
       : theme.id === "indigo2"
-        ? "rgba(255,255,255,0.05)"
+        ? "rgba(255,255,255,0.025)"
         : colors.card;
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.id === "indigo" || theme.id === "indigo2"
