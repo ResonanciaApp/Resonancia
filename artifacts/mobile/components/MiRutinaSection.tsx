@@ -521,8 +521,7 @@ export function MiRutinaSection({ style }: Props) {
         style={({ pressed }) => [
           styles.addButton,
           {
-            borderColor: routineTheme.divider,
-            backgroundColor: routineTheme.surface,
+            borderColor: routineTheme.completion,
             opacity: pressed ? 0.72 : 1,
           },
         ]}
@@ -665,9 +664,11 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   addButton: {
-    minHeight: 58,
+    minHeight: 68,
     borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
