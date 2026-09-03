@@ -1348,6 +1348,8 @@ export function ProfileScreenBase({
                 idPrefix="profile-streak"
                 daysMarginTop={4}
                 circleSize={37}
+                edgeAligned
+                dayLabelColor={activeTheme.accent ?? colors.primary}
               />
             </View>
 

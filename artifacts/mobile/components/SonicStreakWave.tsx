@@ -69,24 +69,40 @@ export function SonicStreakDays({
   todayIndex,
   daysMarginTop = 0,
   circleSize = 39,
+  edgeAligned = false,
+  dayLabelColor,
 }: {
   activeFlags: boolean[];
   todayIndex: number;
   idPrefix?: string;
   daysMarginTop?: number;
   circleSize?: number;
+  edgeAligned?: boolean;
+  dayLabelColor?: string;
 }) {
   const inactiveCircleSize = circleSize - 2;
   const circleCenter = circleSize / 2;
   const circleRadius = circleCenter - 2;
 
   return (
-    <View style={[styles.row, daysMarginTop ? { marginTop: daysMarginTop } : undefined]}>
+    <View
+      style={[
+        styles.row,
+        edgeAligned && styles.rowEdgeAligned,
+        daysMarginTop ? { marginTop: daysMarginTop } : undefined,
+      ]}
+    >
       {DAY_LABELS.map((label, i) => {
         const met = activeFlags[i];
         const isToday = i === todayIndex;
         return (
-          <View key={i} style={styles.dayCol}>
+          <View
+            key={i}
+            style={[
+              styles.dayCol,
+              edgeAligned && { flex: 0, width: circleSize },
+            ]}
+          >
             {met ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
@@ -117,6 +133,7 @@ export function SonicStreakDays({
               styles.dayLabel,
               isToday && styles.dayLabelToday,
               !met && !isToday && styles.dayLabelInactive,
+              dayLabelColor && { color: dayLabelColor },
             ]}>
               {label}
             </Text>
@@ -234,6 +251,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: COMP_W,
     marginTop: -7,
+  },
+  rowEdgeAligned: {
+    width: "100%",
   },
   dayCol: {
     alignItems: "center",
