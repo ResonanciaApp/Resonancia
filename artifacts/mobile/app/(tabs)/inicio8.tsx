@@ -187,14 +187,18 @@ const HEADER_PHRASES = [
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const DURATION_SLOTS = [
-  { label: "5 min",  displayLabel: "5 Minutos",  min: 0,  max: 5  },
-  { label: "10 min", displayLabel: "10 Minutos", min: 6,  max: 10 },
-  { label: "20 min", displayLabel: "20 Minutos", min: 11, max: 25 },
-  { label: "30 min", displayLabel: "30 Minutos", min: 26, max: 35 },
-  { label: "60 min", displayLabel: "60 Minutos", min: 36, max: Infinity },
+  { label: "5 min",  displayLabel: "5 minutos",  min: 0,  max: 5  },
+  { label: "10 min", displayLabel: "10 minutos", min: 6,  max: 10 },
+  { label: "20 min", displayLabel: "20 minutos", min: 11, max: 25 },
+  { label: "30 min", displayLabel: "30 minutos", min: 26, max: 35 },
+  { label: "60 min", displayLabel: "60 minutos", min: 36, max: Infinity },
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
+const INICIO2_DURATION_PILL_GAP = 9;
+const INICIO2_DURATION_PILL_WIDTH = Math.floor(
+  (width - GRID_PAD * 2 - INICIO2_DURATION_PILL_GAP * 2) / 3,
+);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 0.85);
 
 function DurationExplorePill({
@@ -2465,7 +2469,11 @@ export default function HomeScreen2({
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+              contentContainerStyle={[
+                styles.durPillRow,
+                styles.inicio2DurPillRow,
+                { paddingLeft: GRID_PAD },
+              ]}
             >
               {DURATION_SLOTS.map((slot) => (
                 <DurationExplorePill
@@ -4047,12 +4055,19 @@ const styles = StyleSheet.create({
   },
   inicio2DurPill: {
     borderRadius: 10,
-    minWidth: 85,
+    width: INICIO2_DURATION_PILL_WIDTH,
+    minWidth: INICIO2_DURATION_PILL_WIDTH,
     height: 44,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.04)",
+  },
+  inicio2DurPillRow: {
+    gap: INICIO2_DURATION_PILL_GAP,
+    paddingRight: GRID_PAD,
   },
   durPillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
