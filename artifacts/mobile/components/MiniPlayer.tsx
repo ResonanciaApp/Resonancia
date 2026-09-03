@@ -18,6 +18,7 @@ import {
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -566,7 +567,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#50326E",
+    backgroundColor: WIDGET_GREEN_SOLID,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000",
