@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 2,
     alignItems: "center",
-    marginTop: 2,
+    marginTop: -1,
   },
   labelActive: {
     fontFamily: "Manrope",
