@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   chip: {
-    height: 46,
+    height: 56,
     paddingHorizontal: 16,
     borderRadius: 27,
     overflow: "hidden",

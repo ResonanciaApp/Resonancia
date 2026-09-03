@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 41,
+    height: 51,
     paddingHorizontal: 16,
     borderRadius: 27,
     gap: 12,

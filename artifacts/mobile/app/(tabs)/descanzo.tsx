@@ -994,7 +994,7 @@ const styles = StyleSheet.create({
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 41,
+    height: 51,
     paddingHorizontal: 16,
     borderRadius: 27,
     gap: 12,
