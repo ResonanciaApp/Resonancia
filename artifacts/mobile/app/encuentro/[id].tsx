@@ -16,6 +16,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ENCUENTROS, formatearFechaDetalle } from "@/data/encuentros";
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 22;
 const HERO_H = 300;
@@ -23,6 +24,7 @@ const AVATAR_SIZE = 40;
 
 export default function EncuentroDetalle() {
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const encuentro = ENCUENTROS.find((e) => e.id === id);
   const [asistencia, setAsistencia] = useState(false);
@@ -163,17 +165,14 @@ export default function EncuentroDetalle() {
 
           {/* Botón añadir al calendario */}
           <Pressable
-            style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
+            style={({ pressed }) => [
+              styles.calBtn,
+              { backgroundColor: "#F9F9F9", opacity: pressed ? 0.8 : 1 },
+            ]}
             onPress={() => setCalSheet(true)}
           >
-            <LinearGradient
-              colors={["#784576", "#50326E"]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginRight: 8 }} />
-            <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
+            <Feather name="calendar" size={16} color={theme.gradient[0]} style={{ marginRight: 8 }} />
+            <Text style={[styles.calBtnText, { color: theme.gradient[0] }]}>Añadir a mi calendario</Text>
           </Pressable>
         </View>
       </ScrollView>

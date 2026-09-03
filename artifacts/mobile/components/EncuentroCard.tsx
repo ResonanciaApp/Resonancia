@@ -11,7 +11,6 @@ import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   encuentro: Encuentro;
@@ -20,7 +19,7 @@ type Props = {
 };
 
 export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const fechaTexto = formatearFecha(encuentro.fechaISO);
   const extraInscritos = Math.max(0, encuentro.inscritos - encuentro.participantes.length);
 
@@ -83,11 +82,11 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [
             styles.calBtn,
-            { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.8 : 1 },
+            { backgroundColor: "#F9F9F9", opacity: pressed ? 0.8 : 1 },
           ]}
         >
-          <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
-          <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginLeft: 8 }} />
+          <Text style={[styles.calBtnText, { color: theme.gradient[0] }]}>Añadir a mi calendario</Text>
+          <Feather name="calendar" size={16} color={theme.gradient[0]} style={{ marginLeft: 8 }} />
         </Pressable>
       </View>
     </View>

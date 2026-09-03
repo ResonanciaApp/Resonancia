@@ -16,7 +16,6 @@ import {
   Animated,
   Easing,
   KeyboardAvoidingView,
-  LayoutAnimation,
   Linking,
   Modal,
   Platform,
@@ -203,73 +202,16 @@ function WeeklyStreakProgress({
   );
 }
 
-function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const handlePressIn = () => {
-    scale.stopAnimation();
-    Animated.timing(scale, {
-      toValue: 0.97,
-      duration: 90,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    scale.stopAnimation();
-    Animated.spring(scale, {
-      toValue: 1,
-      tension: 180,
-      friction: 14,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  return (
-    <Pressable
-      onPress={() => router.push("/membresia")}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      style={styles.membershipActionPressable}
-      accessibilityRole="button"
-      accessibilityLabel={isPremium ? "Gestionar Premium" : "Desbloquear Premium Plus"}
-    >
-      <Animated.View
-        style={[
-          styles.membershipManageButton,
-          { transform: [{ scale }] },
-        ]}
-      >
-        <LinearGradient
-          colors={
-            isPremium
-              ? ["#D9A940", "#F2D581", "#C88E2B"]
-              : ["#9D70E8", "#D7B9FF", "#8051D3"]
-          }
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
-        <Text style={styles.membershipManageText}>
-          {isPremium ? "Gestionar Premium" : "Desbloquear"}
-        </Text>
-      </Animated.View>
-    </Pressable>
-  );
-}
-
-function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?: string }) {
-  const [expandedPlan, setExpandedPlan] = useState<string | null>("premium");
-
-  const togglePlan = (planId: string) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedPlan((current) => (current === planId ? null : planId));
-  };
-
+function ProfileMembershipModules({
+  secondaryTextColor,
+  foregroundColor,
+}: {
+  secondaryTextColor?: string;
+  foregroundColor: string;
+}) {
   return (
     <View style={styles.membershipSection}>
       {VISIBLE_MEMBERSHIP_PLANS.map((plan, index) => {
-        const isOpen = expandedPlan === plan.id;
         const isPremium = plan.id === "premium";
 
         return (
@@ -277,15 +219,14 @@ function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?:
             {index > 0 && <View style={styles.membershipSectionDivider} />}
             <View style={styles.membershipCard}>
               <Pressable
-                onPress={() => togglePlan(plan.id)}
+                onPress={() => router.push("/membresia")}
                 style={({ pressed }) => [
                   styles.membershipCardHeader,
                   isPremium ? styles.membershipCardHeaderPremium : styles.membershipCardHeaderPlus,
                   { opacity: pressed ? 0.78 : 1 },
                 ]}
                 accessibilityRole="button"
-                accessibilityLabel={`${plan.name}. ${isOpen ? "Contraer" : "Expandir"} beneficios`}
-                accessibilityState={{ expanded: isOpen }}
+                accessibilityLabel={`Abrir perfil de ${plan.name}`}
               >
                 <View
                   style={[
@@ -311,26 +252,15 @@ function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?:
                     {plan.eyebrow}
                   </Text>
                 </View>
-                <Feather
-                  name="chevron-down"
-                  size={19}
-                  color={plan.colors.accent}
-                  style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
-                />
+                <View style={styles.profileChevronButton}>
+                  <Feather
+                    name="chevron-right"
+                    size={24}
+                    color={foregroundColor}
+                  />
+                </View>
               </Pressable>
 
-              {isOpen && (
-                <View style={styles.membershipBenefits} accessibilityLabel={`Beneficios de ${plan.name}`}>
-                  <View style={styles.membershipBenefitsDivider} />
-                  {plan.benefits.map((benefit) => (
-                    <View key={benefit} style={styles.membershipBenefitRow}>
-                      <Feather name="check" size={15} color={plan.colors.accent} />
-                      <Text style={styles.membershipBenefitText}>{benefit}</Text>
-                    </View>
-                  ))}
-                  <MembershipActionButton isPremium={isPremium} />
-                </View>
-              )}
             </View>
           </React.Fragment>
         );
@@ -1386,7 +1316,10 @@ export function ProfileScreenBase({
             </View>
           </View>
           <View style={styles.profileCardDivider} />
-          <ProfileMembershipModules secondaryTextColor={progressAccent} />
+          <ProfileMembershipModules
+            secondaryTextColor={progressAccent}
+            foregroundColor={colors.foreground}
+          />
         </View>
 
         {/* ── Racha (solo en el Perfil dedicado) ── */}
@@ -2310,6 +2243,7 @@ const styles = StyleSheet.create({
   membershipCardHeaderPremium: {
     minHeight: 66,
     paddingVertical: 6,
+    paddingRight: 24,
   },
   membershipCardHeaderPlus: {
     minHeight: 61,

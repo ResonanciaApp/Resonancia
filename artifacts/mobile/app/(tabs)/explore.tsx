@@ -41,18 +41,21 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { TEMAS } from "@/data/temas";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
+const TEMA_GAP = 10;
 const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
+const TEMA_CARD_W = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 const HERO_HEIGHT = 270;
 
 const BREATHING_EXERCISES = [
@@ -598,6 +601,33 @@ export function ExploreScreen({
             </View>
           ))}
 
+          <View style={styles.topicSection}>
+            <Text style={styles.sectionTitle}>Explorar todo</Text>
+            <View style={styles.topicGrid}>
+              {TEMAS.map((tema) => (
+                <Pressable
+                  key={tema.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Explorar ${tema.label}`}
+                  onPress={() => openCategory(tema.route ?? `/tema/${tema.id}`)}
+                  style={({ pressed }) => [
+                    styles.topicCard,
+                    {
+                      backgroundColor: `${tema.color}22`,
+                      borderColor: `${tema.color}55`,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <MaterialCommunityIcons name={tema.icon} size={28} color={tema.color} />
+                  <Text style={[styles.topicLabel, { color: colors.foreground }]}>
+                    {tema.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
           <ResonadoresSection
             marginTop={0}
             marginBottom={SECTION_GAP}
@@ -748,6 +778,33 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  topicSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: SECTION_GAP,
+  },
+  topicGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: TEMA_GAP,
+  },
+  topicCard: {
+    width: TEMA_CARD_W,
+    minHeight: 84,
+    borderRadius: 15,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  topicLabel: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 17,
+  },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
   ritualGrid: {
