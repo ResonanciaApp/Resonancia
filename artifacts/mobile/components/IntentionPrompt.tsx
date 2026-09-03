@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   wrap: {
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingVertical: 20,
+    paddingVertical: 8,
+    minHeight: 68,
     borderRadius: 14,
     overflow: "hidden",
   },

@@ -2368,7 +2368,7 @@ export default function HomeScreen2({
           </View>
         ) : variant === "original" ? (
           /* Establece tu intención aquí (modo intención diaria) */
-          <IntentionPrompt style={{ marginTop: -5, marginBottom: 0 }} />
+          <IntentionPrompt style={{ marginTop: -5, marginBottom: 0, marginHorizontal: GRID_PAD }} />
         ) : null}
 
         <View
@@ -2415,6 +2415,9 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD }}
           />
         )}
+        {isInicio2 && (
+          <IntentionPrompt style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, marginHorizontal: GRID_PAD }} />
+        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2452,9 +2455,6 @@ export default function HomeScreen2({
               visualVariant="watercolor"
             />
           </View>
-        )}
-        {isInicio2 && (
-          <IntentionPrompt style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP }} />
         )}
         {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
