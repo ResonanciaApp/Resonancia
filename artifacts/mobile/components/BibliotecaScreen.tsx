@@ -55,6 +55,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -155,27 +156,45 @@ function MixRow({
 }
 
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
-function LibChip({ label, icon, sel, onPress }: { label: string; icon: React.ComponentProps<typeof Feather>["name"]; sel: boolean; onPress: () => void }) {
+function LibChip({
+  label,
+  icon,
+  sel,
+  indigo2BackgroundColor,
+  onPress,
+}: {
+  label: string;
+  icon: React.ComponentProps<typeof Feather>["name"];
+  sel: boolean;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  onPress: () => void;
+}) {
   const { theme } = useSceneTheme();
   const contentColor = "#F4F4F4";
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        theme.id === "tibet" && styles.chipTibet,
-        theme.id === "indigo" && styles.chipIndigo,
-        !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive,
-        sel && styles.chipSel,
-        sel && { backgroundColor: WIDGET_GREEN_SOLID },
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
-    >
-      <Feather name={icon} size={22} color={contentColor} />
-      <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
-        {label}
-      </Text>
+    <Pressable onPress={onPress}>
+      {({ pressed }) => (
+        <Animated.View
+          style={[
+            styles.chip,
+            theme.id === "tibet" && styles.chipTibet,
+            theme.id === "indigo" && styles.chipIndigo,
+            !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive,
+            !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
+              backgroundColor: indigo2BackgroundColor,
+            },
+            sel && styles.chipSel,
+            sel && { backgroundColor: WIDGET_GREEN_SOLID },
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          <Feather name={icon} size={22} color={contentColor} />
+          <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
+            {label}
+          </Text>
+        </Animated.View>
+      )}
     </Pressable>
   );
 }
@@ -194,6 +213,7 @@ function AnimatedChipRow({
   onClear,
   onSearch,
   onAdd,
+  indigo2BackgroundColor,
 }: {
   tabs: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[];
   activeTab: LibTab | null;
@@ -201,6 +221,7 @@ function AnimatedChipRow({
   onClear: () => void;
   onSearch?: () => void;
   onAdd?: () => void;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
 }) {
   const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
@@ -322,6 +343,7 @@ function AnimatedChipRow({
                 label={t.label}
                 icon={t.icon}
                 sel={colorTab === t.id}
+                indigo2BackgroundColor={indigo2BackgroundColor}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
@@ -1121,6 +1143,15 @@ export function BibliotecaScreen({
   const HEADER_BORDER_THRESHOLD_PX = 8;
   const headerBorderActiveRef = useRef(false);
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
+  const stickyHeaderSurfaceOpacity = headerBorderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.96],
+  });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
   const handleHeaderScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = e.nativeEvent.contentOffset.y;
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
@@ -1130,6 +1161,11 @@ export function BibliotecaScreen({
         toValue: shouldShowBorder ? 1 : 0,
         duration: 300,
         useNativeDriver: true,
+      }).start();
+      Animated.timing(indigo2TabsSurfaceAnim, {
+        toValue: shouldShowBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
       }).start();
     }
   };
@@ -1900,10 +1936,24 @@ export function BibliotecaScreen({
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
-        style={[styles.stickyHeader, {
-          paddingTop: embedded ? 0 : topPad - 34,
-        }]}
+        style={[
+          styles.stickyHeader,
+          (activeSceneId === "indigo" || activeSceneId === "indigo2") && styles.stickyHeaderFade,
+          { paddingTop: embedded ? 0 : topPad - 34 },
+        ]}
       >
+        {(activeSceneId === "indigo" || activeSceneId === "indigo2") && (
+          <StickyHeaderSurface
+            opacity={stickyHeaderSurfaceOpacity}
+            tint={sceneTheme.gradient[0] as string}
+            showTint={false}
+            showDivider={false}
+            blurIntensity={85}
+            showBlackTint={false}
+            strongBlur
+            fadeBottom
+          />
+        )}
         {/* Fila 2: chips de tab (animados) */}
         {/* En Android/tablet el inset real es chico (piso 40): dar más aire
             entre el título y los tabs para igualar la altura del header de iPhone */}
@@ -1919,10 +1969,11 @@ export function BibliotecaScreen({
             onClear={() => setActiveTab(null)}
             onSearch={onHeaderActions ? undefined : () => setSearchVisible(true)}
             onAdd={onHeaderActions ? undefined : () => setCreateVisible(true)}
+            indigo2BackgroundColor={indigo2TabsBackgroundColor}
           />
         </View>
 
-        {!embedded && (
+        {!embedded && activeSceneId !== "indigo" && activeSceneId !== "indigo2" && (
           <LinearGradient
             colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
             style={styles.stickyHeaderShadow}
@@ -2085,6 +2136,9 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
+  },
+  stickyHeaderFade: {
+    overflow: "visible",
   },
   stickyHeaderShadow: {
     position: "absolute",

@@ -77,10 +77,26 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
   return <Animated.View style={{ opacity }}>{children}</Animated.View>;
 }
 
-function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+function Chip({
+  label,
+  sel,
+  indigo2BackgroundColor,
+  onPress,
+}: {
+  label: string;
+  sel: boolean;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  onPress: () => void;
+}) {
   const { theme: chipTheme } = useSceneTheme();
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, chipTheme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+      {chipTheme.id === "indigo2" && !sel && indigo2BackgroundColor && (
+        <Animated.View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
+        />
+      )}
       {sel && (chipTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
         : <LinearGradient colors={["rgb(218,212,236)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
@@ -90,16 +106,21 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
   );
 }
 
-function ChipRow({ tabs, activeTab, onSelect, onClear }: {
-  tabs: SubDef[]; activeTab: CatTab | null; onSelect: (id: CatTab) => void; onClear: () => void;
+function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect, onClear }: {
+  tabs: SubDef[];
+  activeTab: CatTab | null;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  onSelect: (id: CatTab) => void;
+  onClear: () => void;
 }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Todos" sel={activeTab === null} onPress={onClear} />
+        <Chip label="Todos" sel={activeTab === null} indigo2BackgroundColor={indigo2BackgroundColor} onPress={onClear} />
         {tabs.map((t) => (
           <Chip key={t.tag} label={t.tag} sel={activeTab === t.tag}
+            indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => activeTab === t.tag ? onClear() : onSelect(t.tag)} />
         ))}
       </ScrollView>
@@ -238,15 +259,26 @@ export default function NochesScreen() {
 
   const scrollRef = useRef<ScrollView>(null);
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const indigo2ChipsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
+  const isIndigoTheme = theme.id === "indigo" || theme.id === "indigo2";
+  const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [stickyActive]); // eslint-disable-line react-hooks/exhaustive-deps
+    Animated.timing(indigo2ChipsSurfaceAnim, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [indigo2ChipsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -448,6 +480,7 @@ export default function NochesScreen() {
           <ChipRow
             tabs={TABS}
             activeTab={activeTab}
+            indigo2BackgroundColor={indigo2ChipBackgroundColor}
             onSelect={(id) => setActiveTab(id)}
             onClear={() => setActiveTab(null)}
           />
@@ -484,7 +517,16 @@ export default function NochesScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface
+          opacity={0.96}
+          tint={theme.gradient[0] as string}
+          showTint={!isIndigoTheme}
+          showDivider={!isIndigoTheme}
+          blurIntensity={isIndigoTheme ? 85 : undefined}
+          showBlackTint={!isIndigoTheme}
+          strongBlur={isIndigoTheme}
+          fadeBottom={isIndigoTheme}
+        />
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
@@ -502,7 +544,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },

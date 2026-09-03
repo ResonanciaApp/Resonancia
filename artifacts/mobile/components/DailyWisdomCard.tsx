@@ -23,7 +23,13 @@ export function DailyWisdomCard() {
   };
 
   return (
-    <View style={styles.card} testID="inicio2-daily-wisdom">
+    <View
+      style={[
+        styles.card,
+        theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+      ]}
+      testID="inicio2-daily-wisdom"
+    >
       <Text style={[styles.author, { color: accent }]}>{quote.author}</Text>
       <Text style={styles.quote}>{quote.text}</Text>
       <Pressable

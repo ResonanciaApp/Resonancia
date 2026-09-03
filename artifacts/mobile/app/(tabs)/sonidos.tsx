@@ -50,7 +50,17 @@ const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 
-function CollectionPill({ label, icon, onPress }: { label: string; icon: string; onPress: () => void }) {
+function CollectionPill({
+  label,
+  icon,
+  indigo2BackgroundColor,
+  onPress,
+}: {
+  label: string;
+  icon: string;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  onPress: () => void;
+}) {
   const { theme } = useSceneTheme();
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -86,6 +96,9 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
           theme.id === "tibet" && styles.pillTibet,
           theme.id === "indigo" && styles.pillIndigo,
           theme.id === "indigo2" && styles.pillIndigo2,
+          theme.id === "indigo2" && indigo2BackgroundColor && {
+            backgroundColor: indigo2BackgroundColor,
+          },
           { transform: [{ scale }] },
         ]}
       >
@@ -116,6 +129,7 @@ export default function SonidosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = theme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(W)).current;
   const compactRef = useRef(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
@@ -123,6 +137,11 @@ export default function SonidosScreen() {
     inputRange: [0, 1],
     outputRange: [0, 0.96],
   });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
+  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
@@ -136,8 +155,13 @@ export default function SonidosScreen() {
         duration: 300,
         useNativeDriver: true,
       }).start();
+      Animated.timing(indigo2TabsSurfaceAnim, {
+        toValue: compact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
     }
-  }, [titleProgress]);
+  }, [indigo2TabsSurfaceAnim, titleProgress]);
 
   const collections = useMemo(
     () =>
@@ -238,10 +262,23 @@ export default function SonidosScreen() {
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
         <View
-          style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
+          style={[
+            styles.fixedHeader,
+            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
+            { paddingTop: topPad + 2 },
+          ]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={theme.gradient[0] as string} />
+          <StickyHeaderSurface
+            opacity={stickyHeaderSurfaceOpacity}
+            tint={theme.gradient[0] as string}
+            showTint={!useDiscoverStickyStyle}
+            showDivider={!useDiscoverStickyStyle}
+            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+            showBlackTint={!useDiscoverStickyStyle}
+            strongBlur={useDiscoverStickyStyle}
+            fadeBottom={useDiscoverStickyStyle}
+          />
           <View style={styles.titleRow}>
             <Animated.Text
               style={[
@@ -279,6 +316,7 @@ export default function SonidosScreen() {
                   key={collection.id}
                   label={collection.label}
                   icon={collection.icon}
+                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
               ))}
@@ -451,6 +489,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
     backgroundColor: "transparent",
   },
+  fixedHeaderFadeOverflow: { overflow: "visible" },
   titleRow: {
     position: "relative",
     flexDirection: "row",

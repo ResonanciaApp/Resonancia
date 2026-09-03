@@ -88,7 +88,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
   return <Animated.View style={{opacity}}>{children}</Animated.View>;
 }
 
-function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()=>void }) {
+function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; sel: boolean; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onPress:()=>void }) {
   const { theme } = useSceneTheme();
   const selectedBorderColor = theme.id === "indigo2"
     ? "rgba(255,255,255,0.8)"
@@ -97,19 +97,21 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()
       : "transparent";
 
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, sel && { borderWidth: 2, borderColor: selectedBorderColor }, {opacity:pressed?0.7:1}]}>
-      <Text style={styles.chipText}>{label}</Text>
+    <Pressable onPress={onPress} style={({pressed})=>({opacity:pressed?0.7:1})}>
+      <Animated.View style={[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive, !sel && theme.id === "indigo2" && indigo2BackgroundColor && { backgroundColor: indigo2BackgroundColor }, sel && { borderWidth: 2, borderColor: selectedBorderColor }]}>
+        <Text style={styles.chipText}>{label}</Text>
+      </Animated.View>
     </Pressable>
   );
 }
 
-function ChipRow({ tabs, activeTab, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab|null)=>void }) {
+function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
         {tabs.map((t) => (
-          <Chip key={t.id} label={t.label} sel={activeTab === t.id}
+          <Chip key={t.id} label={t.label} sel={activeTab === t.id} indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => onSelect(activeTab === t.id ? null : t.id)} />
         ))}
       </ScrollView>
@@ -305,6 +307,7 @@ export default function MeditacionesGuiadasScreen() {
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = 238;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
   useEffect(() => {
@@ -313,7 +316,17 @@ export default function MeditacionesGuiadasScreen() {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [stickyActive]);
+    Animated.timing(indigo2TabsSurfaceAnim, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
+  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -498,7 +511,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab}
+          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor}
             onSelect={(id) => setActiveTab(id)}
           />
         </View>
@@ -533,8 +546,17 @@ export default function MeditacionesGuiadasScreen() {
       </Modal>
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
+      <Animated.View style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+        <StickyHeaderSurface
+          opacity={0.96}
+          tint={theme.gradient[0] as string}
+          showTint={!useDiscoverStickyStyle}
+          showDivider={!useDiscoverStickyStyle}
+          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+          showBlackTint={!useDiscoverStickyStyle}
+          strongBlur={useDiscoverStickyStyle}
+          fadeBottom={useDiscoverStickyStyle}
+        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -573,7 +595,7 @@ export default function MeditacionesGuiadasScreen() {
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
         <View style={{ marginTop: 19 }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} />
+          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor} onSelect={setActiveTab} />
         </View>
       </Animated.View>
 
@@ -588,6 +610,7 @@ const styles = StyleSheet.create({
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
+  stickyHeaderFadeOverflow: { overflow: "visible" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },
@@ -623,6 +646,7 @@ const styles = StyleSheet.create({
    chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(255,255,255,0.025)", borderColor: "rgba(255,255,255,0.04)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},

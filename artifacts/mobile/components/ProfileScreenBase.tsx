@@ -1093,6 +1093,8 @@ export function ProfileScreenBase({
         style={[
           styles.stickyHeader,
           dedicated && styles.stickyHeaderDedicatedOverlay,
+          dedicated && (activeSceneId === "indigo" || activeSceneId === "indigo2") &&
+            styles.stickyHeaderFadeOverflow,
           {
             paddingTop: asTab ? topPad + 8 : topPad + 2,
           },
@@ -1102,12 +1104,18 @@ export function ProfileScreenBase({
           <StickyHeaderSurface
             opacity={profileTitleCompactAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, 0.88],
+              outputRange: [0, 0.96],
             })}
             tint={activeTheme.gradient[0] as string}
+            showTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            showDivider={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            blurIntensity={activeSceneId === "indigo" || activeSceneId === "indigo2" ? 85 : undefined}
+            showBlackTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            strongBlur={activeSceneId === "indigo" || activeSceneId === "indigo2"}
+            fadeBottom={activeSceneId === "indigo" || activeSceneId === "indigo2"}
           />
         )}
-        {!dedicated && (
+        {!dedicated && activeSceneId !== "indigo" && activeSceneId !== "indigo2" && (
           <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         )}
         <View style={[
@@ -1941,6 +1949,9 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 30,
     elevation: 30,
+  },
+  stickyHeaderFadeOverflow: {
+    overflow: "visible",
   },
   profileHeaderGlass: {
     position: "absolute",

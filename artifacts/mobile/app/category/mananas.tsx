@@ -166,6 +166,7 @@ const TABS: ActiveTab[] = ["Todos", "Audios", "Videos", "Maestros"];
 export default function MananasScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const isIndigoTheme = theme.id === "indigo" || theme.id === "indigo2";
   const insets = useSafeAreaInsets();
   const { history, playSession } = usePlayer();
   const { isPremium } = usePremium();
@@ -570,7 +571,16 @@ export default function MananasScreen() {
         pointerEvents={!selectedTag && stickyActive ? "auto" : "none"}
         style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
       >
-        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface
+          opacity={0.96}
+          tint={theme.gradient[0] as string}
+          showTint={!isIndigoTheme}
+          showDivider={!isIndigoTheme}
+          blurIntensity={isIndigoTheme ? 85 : undefined}
+          showBlackTint={!isIndigoTheme}
+          strongBlur={isIndigoTheme}
+          fadeBottom={isIndigoTheme}
+        />
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={[styles.stickyTitle, { color: colors.foreground }]}>Mañanas</Text>
         <View style={styles.stickySpacer} />
@@ -588,7 +598,7 @@ export default function MananasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   stickySpacer: { width: 45 },
 

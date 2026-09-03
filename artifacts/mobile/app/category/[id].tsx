@@ -42,10 +42,12 @@ const MUTED = "#c2c2c2";
 function Chip({
   label,
   selected,
+  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   selected: boolean;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
@@ -58,16 +60,22 @@ function Chip({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        theme.id === "tibet" && styles.chipTibet,
-        theme.id === "indigo" && styles.chipIndigo,
-        !selected && theme.id === "indigo2" && styles.chipIndigo2Inactive,
-        selected && { borderWidth: 2, borderColor: selectedBorderColor },
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
+      style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
     >
-      <Text style={styles.chipText}>{label}</Text>
+      <Animated.View
+        style={[
+          styles.chip,
+          theme.id === "tibet" && styles.chipTibet,
+          theme.id === "indigo" && styles.chipIndigo,
+          !selected && theme.id === "indigo2" && styles.chipIndigo2Inactive,
+          !selected && theme.id === "indigo2" && indigo2BackgroundColor && {
+            backgroundColor: indigo2BackgroundColor,
+          },
+          selected && { borderWidth: 2, borderColor: selectedBorderColor },
+        ]}
+      >
+        <Text style={styles.chipText}>{label}</Text>
+      </Animated.View>
     </Pressable>
   );
 }
@@ -75,10 +83,12 @@ function Chip({
 function ChipRow({
   tabs,
   activeTab,
+  indigo2BackgroundColor,
   onSelect,
 }: {
   tabs: string[];
   activeTab: string | null;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (tab: string | null) => void;
 }) {
   return (
@@ -94,6 +104,7 @@ function ChipRow({
             key={tab}
             label={tab}
             selected={activeTab === tab}
+            indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => onSelect(activeTab === tab ? null : tab)}
           />
         ))}
@@ -150,6 +161,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   );
 
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive, setStickyActive] = useState(false);
   const [chipsOffsetY, setChipsOffsetY] = useState(Number.POSITIVE_INFINITY);
 
@@ -159,7 +171,17 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [stickyActive, stickyHeaderOpacity]);
+    Animated.timing(indigo2TabsSurfaceAnim, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
+  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
 
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -312,6 +334,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           <ChipRow
             tabs={tabs}
             activeTab={activeTab}
+            indigo2BackgroundColor={indigo2TabsBackgroundColor}
             onSelect={setActiveTab}
           />
         </View>
@@ -324,6 +347,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       <Animated.View
         style={[
           styles.stickyHeader,
+          useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow,
           {
             paddingTop: topPad + 8,
             opacity: stickyHeaderOpacity,
@@ -331,7 +355,16 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <StickyHeaderSurface opacity={0.96} tint={theme.gradient[0] as string} />
+        <StickyHeaderSurface
+          opacity={0.96}
+          tint={theme.gradient[0] as string}
+          showTint={!useDiscoverStickyStyle}
+          showDivider={!useDiscoverStickyStyle}
+          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+          showBlackTint={!useDiscoverStickyStyle}
+          strongBlur={useDiscoverStickyStyle}
+          fadeBottom={useDiscoverStickyStyle}
+        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -372,6 +405,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           <ChipRow
             tabs={tabs}
             activeTab={activeTab}
+            indigo2BackgroundColor={indigo2TabsBackgroundColor}
             onSelect={setActiveTab}
           />
         </View>
@@ -513,6 +547,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  stickyHeaderFadeOverflow: { overflow: "visible" },
   stickyHeaderRow: {
     width: "100%",
     flexDirection: "row",

@@ -48,8 +48,15 @@ const FAV_TABS = [
 type FavTabId = typeof FAV_TABS[number]["id"];
 
 function FavPill({
-  tabId, sel, label, icon, onPress,
-}: { tabId: FavTabId; sel: boolean; label: string; icon: string; onPress: () => void }) {
+  tabId, sel, label, icon, indigo2BackgroundColor, onPress,
+}: {
+  tabId: FavTabId;
+  sel: boolean;
+  label: string;
+  icon: string;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  onPress: () => void;
+}) {
   const { theme } = useSceneTheme();
   const selectedColors: [string, string] =
     tabId === "meditaciones" || tabId === "videos" ? LISTEN_PURPLE_GRADIENT
@@ -64,33 +71,39 @@ function FavPill({
   const selectedTextColor = sel ? "#F9F9F9" : "#F4F4F4";
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.pill,
-        theme.id === "tibet" && styles.pillTibet,
-        theme.id === "indigo" && styles.pillIndigo,
-        !sel && theme.id === "indigo2" && styles.pillIndigo2Inactive,
-        sel && styles.pillSel,
-        { opacity: pressed ? 0.7 : 1 },
-      ]}
-    >
-      {sel && (
-        <LinearGradient
-          colors={selectedColors}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-        />
+    <Pressable onPress={onPress}>
+      {({ pressed }) => (
+        <Animated.View
+          style={[
+            styles.pill,
+            theme.id === "tibet" && styles.pillTibet,
+            theme.id === "indigo" && styles.pillIndigo,
+            !sel && theme.id === "indigo2" && styles.pillIndigo2Inactive,
+            !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
+              backgroundColor: indigo2BackgroundColor,
+            },
+            sel && styles.pillSel,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          {sel && (
+            <LinearGradient
+              colors={selectedColors}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
+          )}
+          {tabId === "ambientales" ? (
+            <MaterialCommunityIcons name="leaf" size={22} color={contentColor} />
+          ) : (
+            <Feather name={icon as never} size={22} color={contentColor} />
+          )}
+          <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
+            {label}
+          </Text>
+        </Animated.View>
       )}
-      {tabId === "ambientales" ? (
-        <MaterialCommunityIcons name="leaf" size={22} color={contentColor} />
-      ) : (
-        <Feather name={icon as never} size={22} color={contentColor} />
-      )}
-      <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
-        {label}
-      </Text>
     </Pressable>
   );
 }
@@ -115,15 +128,25 @@ export default function FavoritosTodosScreen() {
 
   const [activeTab, setActiveTab] = useState<FavTabId>("sesiones");
   const titleProgress = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
   const stickySurfaceOpacity = titleProgress.interpolate({ inputRange: [0, 1], outputRange: [0, 0.96] });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
   const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const compact = event.nativeEvent.contentOffset.y > 8;
     if (compact !== compactRef.current) {
       compactRef.current = compact;
       Animated.timing(titleProgress, { toValue: compact ? 1 : 0, duration: 300, useNativeDriver: true }).start();
+      Animated.timing(indigo2TabsSurfaceAnim, {
+        toValue: compact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
     }
-  }, [titleProgress]);
+  }, [indigo2TabsSurfaceAnim, titleProgress]);
 
   // Misma regla que la lista plana de Biblioteca: sesiones dentro de una
   // carpeta de Favoritos no aparecen en la lista plana.
@@ -163,10 +186,23 @@ export default function FavoritosTodosScreen() {
 
       <View style={styles.contentShift}>
         <View
-          style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}
+          style={[
+            styles.stickyHeader,
+            (activeSceneId === "indigo" || activeSceneId === "indigo2") && styles.stickyHeaderFade,
+            { paddingTop: topPad + 8 },
+          ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <StickyHeaderSurface opacity={stickySurfaceOpacity} tint={sceneTheme.gradient[0] as string} />
+          <StickyHeaderSurface
+            opacity={stickySurfaceOpacity}
+            tint={sceneTheme.gradient[0] as string}
+            showTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            showDivider={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            blurIntensity={activeSceneId === "indigo" || activeSceneId === "indigo2" ? 85 : undefined}
+            showBlackTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
+            strongBlur={activeSceneId === "indigo" || activeSceneId === "indigo2"}
+            fadeBottom={activeSceneId === "indigo" || activeSceneId === "indigo2"}
+          />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -205,6 +241,7 @@ export default function FavoritosTodosScreen() {
                   sel={activeTab === tab.id}
                   label={tab.label}
                   icon={tab.icon}
+                   indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => setActiveTab(tab.id)}
                 />
               ))}
@@ -290,6 +327,9 @@ const styles = StyleSheet.create({
     zIndex: 20,
     backgroundColor: "transparent",
     overflow: "hidden",
+  },
+  stickyHeaderFade: {
+    overflow: "visible",
   },
   stickyHeaderRow: {
     position: "relative",

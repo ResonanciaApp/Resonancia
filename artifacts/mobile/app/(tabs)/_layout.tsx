@@ -169,7 +169,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { brightMode } = useBrightness();
   const indigo2Mode = activeSceneId === "indigo2";
   const tabBarBackground = indigo2Mode
-    ? "#000000"
+    ? theme.solid
     : brightMode
       ? applyBrightSat(theme.gradient[0])
       : theme.gradient[0];

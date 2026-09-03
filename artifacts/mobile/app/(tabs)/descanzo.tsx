@@ -29,6 +29,7 @@ import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -40,13 +41,15 @@ import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const SLEEP_PILL_CANCEL_DISTANCE = 14;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function SleepPill({
-  sel, label, icon, onPress,
+  sel, label, icon, indigo2BackgroundColor, onPress,
 }: {
   sel: boolean;
   label: string;
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
@@ -104,7 +107,7 @@ function SleepPill({
       collapsable={false}
       style={[styles.sleepPillAnimated, { transform: [{ scale }] }]}
     >
-      <Pressable
+      <AnimatedPressable
         onPressIn={() => {
           pressCancelledRef.current = false;
           animatePress(true);
@@ -120,6 +123,9 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
           !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
+          !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
+            backgroundColor: indigo2BackgroundColor,
+          },
           sel && styles.sleepPillSel,
         ]}
       >
@@ -128,7 +134,7 @@ function SleepPill({
         <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
           {label}
         </Text>
-      </Pressable>
+      </AnimatedPressable>
     </Animated.View>
   );
 }
@@ -360,6 +366,7 @@ export default function DescansoScreen() {
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const titleCompactAnim = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const titleCompactRef = useRef(false);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
@@ -370,6 +377,11 @@ export default function DescansoScreen() {
     inputRange: [0, 1],
     outputRange: [0, 0.96],
   });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
+  const useDiscoverStickyStyle = sceneTheme.id === "indigo" || sceneTheme.id === "indigo2";
 
   const handleScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -381,8 +393,13 @@ export default function DescansoScreen() {
         duration: 300,
         useNativeDriver: true,
       }).start();
+      Animated.timing(indigo2TabsSurfaceAnim, {
+        toValue: shouldCompact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
     }
-  }, [titleCompactAnim]);
+  }, [indigo2TabsSurfaceAnim, titleCompactAnim]);
 
   const {
     currentSession,
@@ -507,28 +524,23 @@ export default function DescansoScreen() {
 
       <View style={styles.contentShift}>
         <View
-          style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}
+          style={[
+            styles.fixedHeader,
+            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
+            { paddingTop: topPad + 2 },
+          ]}
           onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              styles.stickyHeaderGlass,
-              { opacity: stickyHeaderSurfaceOpacity },
-            ]}
-          >
-            <SessionBadgeGlass />
-            <View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFill,
-                styles.stickyHeaderTint,
-                { backgroundColor: bgGradient[0] as string },
-              ]}
-            />
-            <View pointerEvents="none" style={styles.stickyHeaderDivider} />
-          </Animated.View>
+          <StickyHeaderSurface
+            opacity={stickyHeaderSurfaceOpacity}
+            tint={bgGradient[0] as string}
+            showTint={!useDiscoverStickyStyle}
+            showDivider={!useDiscoverStickyStyle}
+            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+            showBlackTint={!useDiscoverStickyStyle}
+            strongBlur={useDiscoverStickyStyle}
+            fadeBottom={useDiscoverStickyStyle}
+          />
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
               Dormir
@@ -560,6 +572,7 @@ export default function DescansoScreen() {
                   sel={false}
                   label={tab.label}
                   icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
                 />
               ))}
@@ -1016,20 +1029,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     overflow: "hidden",
   },
-  stickyHeaderGlass: {
-    overflow: "hidden",
-  },
-  stickyHeaderTint: {
-    opacity: 0.85,
-  },
-  stickyHeaderDivider: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
+  fixedHeaderFadeOverflow: { overflow: "visible" },
   titleRow: {
     position: "relative",
     flexDirection: "row",

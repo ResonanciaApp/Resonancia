@@ -4,9 +4,11 @@ import React from "react";
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import {
+  CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
-  getTwoCardCarouselCardWidth,
+  getContentCarouselCardWidth,
 } from "@/constants/carousel";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -20,15 +22,17 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-export const WATERCOLOR_CARD_SIZE = getTwoCardCarouselCardWidth(
+export const WATERCOLOR_CARD_SIZE = getContentCarouselCardWidth(
   Dimensions.get("window").width,
   GRID_PAD,
 );
 export const WATERCOLOR_CARD_HEIGHT = Math.round(
-  WATERCOLOR_CARD_SIZE * CONTENT_CAROUSEL_HEIGHT_SCALE,
+  (WATERCOLOR_CARD_SIZE + 50) *
+    SESSION_CARD_METADATA_HEIGHT_SCALE *
+    CONTENT_CAROUSEL_HEIGHT_SCALE,
 );
 export const WATERCOLOR_CARD_RADIUS = 19;
-export const WATERCOLOR_CARD_GAP = 12;
+export const WATERCOLOR_CARD_GAP = CONTENT_CAROUSEL_GAP;
 
 const WATERCOLOR_CATEGORY_IMAGES: Partial<
   Record<ContentCategoryDefinition["id"], number>
@@ -39,6 +43,17 @@ const WATERCOLOR_CATEGORY_IMAGES: Partial<
   ambientales: require("@/assets/images/discover2-category-ambientales.jpg"),
   historias: require("@/assets/images/discover2-category-historias.jpg"),
   charlas: require("@/assets/images/discover2-category-charlas.jpg"),
+};
+
+const WATERCOLOR_CATEGORY_DESCRIPTIONS: Partial<
+  Record<ContentCategoryDefinition["id"], string>
+> = {
+  "meditaciones-guiadas": "Prácticas guiadas para volver a tu centro",
+  "sonidos-ancestrales": "Vibraciones que armonizan cuerpo y mente",
+  "musica-sonidos": "Sonidos para acompañar cada momento",
+  ambientales: "Paisajes sonoros para relajarte y conectar",
+  historias: "Relatos que inspiran calma y consciencia",
+  charlas: "Ideas y conversaciones para expandirte",
 };
 
 function renderCategoryIcon(
@@ -252,6 +267,9 @@ export function ContentCategoryGrid({
                         ]}
                       />
                       <Text style={styles.watercolorLabel}>{category.label}</Text>
+                      <Text style={styles.watercolorDescription} numberOfLines={2}>
+                        {WATERCOLOR_CATEGORY_DESCRIPTIONS[category.id]}
+                      </Text>
                     </>
                   ) : (
                     <>
@@ -371,6 +389,20 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     maxWidth: WATERCOLOR_CARD_SIZE - 24,
     textShadowColor: "rgba(0,0,0,0.85)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
+  },
+  watercolorDescription: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    bottom: 13,
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 17,
+    fontWeight: "500",
+    textShadowColor: "rgba(0,0,0,0.9)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
   },
