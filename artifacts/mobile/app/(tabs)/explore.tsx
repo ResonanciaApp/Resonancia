@@ -470,12 +470,7 @@ export function ExploreScreen({
           }
         >
           {collapseCategoryHeader && (
-            <StickyHeaderSurface
-              opacity={stickyHeaderSurfaceOpacity}
-              tint={activeTheme.gradient[0] as string}
-              showDivider={false}
-              bottomFadeHeight={26}
-            />
+            <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={activeTheme.gradient[0] as string} />
           )}
           <View style={styles.titleRow}>
             <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
@@ -660,7 +655,7 @@ const styles = StyleSheet.create({
   },
   discoverTabsHeader: {
     marginTop: 9,
-    paddingBottom: 26,
+    paddingBottom: 15,
     paddingHorizontal: H_PAD,
   },
   discoverTabs: {
