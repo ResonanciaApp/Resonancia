@@ -157,6 +157,12 @@ function WeeklyStreakProgress({
 
   return (
     <View style={styles.weeklyStreakSummary}>
+      <View style={styles.weeklyStreakIntro}>
+        <Text style={[styles.weeklyStreakIntroTitle, { color: textColor }]}>Tu progreso</Text>
+        <Text style={styles.weeklyStreakIntroDescription}>
+          Bastan 3 días a la semana para comenzar a transformar tu vida.
+        </Text>
+      </View>
       <Text style={[styles.weeklyStreakTitle, { color: textColor }]}>ESTA SEMANA</Text>
       <View style={{ width: size, height: size }}>
         <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
@@ -2507,6 +2513,22 @@ const styles = StyleSheet.create({
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   weeklyStreakSummary: {
     alignItems: "center",
+  },
+  weeklyStreakIntro: {
+    width: "100%",
+    marginBottom: 22,
+  },
+  weeklyStreakIntroTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  weeklyStreakIntroDescription: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    color: MEMBERSHIP_AURORA.textMuted,
   },
   weeklyStreakTitle: {
     fontFamily: "Manrope",
