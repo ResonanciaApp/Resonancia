@@ -62,6 +62,7 @@ function Chip({
         styles.chip,
         theme.id === "tibet" && styles.chipTibet,
         theme.id === "indigo" && styles.chipIndigo,
+        !selected && theme.id === "indigo2" && styles.chipIndigo2Inactive,
         selected && { borderWidth: 2, borderColor: selectedBorderColor },
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -458,6 +459,10 @@ const styles = StyleSheet.create({
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  chipIndigo2Inactive: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.04)",
+  },
   chipText: {
     fontFamily: "Manrope",
     fontSize: 13,

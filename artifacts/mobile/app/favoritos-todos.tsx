@@ -70,6 +70,7 @@ function FavPill({
         styles.pill,
         theme.id === "tibet" && styles.pillTibet,
         theme.id === "indigo" && styles.pillIndigo,
+        !sel && theme.id === "indigo2" && styles.pillIndigo2Inactive,
         sel && styles.pillSel,
         { opacity: pressed ? 0.7 : 1 },
       ]}
@@ -358,6 +359,10 @@ const styles = StyleSheet.create({
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillSel: { borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  pillIndigo2Inactive: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.04)",
+  },
   pillText: {
     fontFamily: "Manrope",
     fontSize: 13,

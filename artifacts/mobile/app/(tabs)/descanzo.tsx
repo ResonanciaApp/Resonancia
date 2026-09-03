@@ -119,6 +119,7 @@ function SleepPill({
           styles.sleepPill,
           theme.id === "tibet" && styles.sleepPillTibet,
           theme.id === "indigo" && styles.sleepPillIndigo,
+          !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
           sel && styles.sleepPillSel,
         ]}
       >
@@ -991,6 +992,10 @@ const styles = StyleSheet.create({
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  sleepPillIndigo2Inactive: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.04)",
+  },
   sleepPillInactive: { backgroundColor: "#2B2944" },
   sleepPillSel: {},
   sleepPillText: {

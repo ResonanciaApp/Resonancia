@@ -85,6 +85,7 @@ function CollectionPill({ label, icon, onPress }: { label: string; icon: string;
           styles.pill,
           theme.id === "tibet" && styles.pillTibet,
           theme.id === "indigo" && styles.pillIndigo,
+          theme.id === "indigo2" && styles.pillIndigo2,
           { transform: [{ scale }] },
         ]}
       >
@@ -515,6 +516,10 @@ const styles = StyleSheet.create({
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  pillIndigo2: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.04)",
+  },
   pillText: {
     fontFamily: "Manrope",
     fontSize: 13,

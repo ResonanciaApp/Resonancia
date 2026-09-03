@@ -167,6 +167,7 @@ function DiscoverPill({
           styles.discoverPill,
           sceneId === "tibet" && styles.discoverPillTibet,
           sceneId === "indigo" && styles.discoverPillIndigo,
+          sceneId === "indigo2" && styles.discoverPillIndigo2,
           { transform: [{ scale }] },
         ]}
       >
@@ -686,6 +687,10 @@ const styles = StyleSheet.create({
   },
   discoverPillIndigo: {
     backgroundColor: "rgba(42,40,64,0.65)",
+  },
+  discoverPillIndigo2: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.04)",
   },
   discoverPillText: {
     fontFamily: "Manrope",
