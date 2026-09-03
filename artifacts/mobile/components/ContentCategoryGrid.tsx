@@ -241,14 +241,7 @@ export function ContentCategoryGrid({
                           pressed && styles.watercolorOverlayPressed,
                         ]}
                       />
-                      <View style={styles.watercolorGhostPill}>
-                        <View style={styles.watercolorGhostIcon}>
-                          {renderCategoryIcon(category, true, true)}
-                        </View>
-                        <Text style={styles.watercolorLabel} numberOfLines={2}>
-                          {category.label}
-                        </Text>
-                      </View>
+                      <Text style={styles.watercolorLabel}>{category.label}</Text>
                     </>
                   ) : (
                     <>
@@ -358,36 +351,18 @@ const styles = StyleSheet.create({
   watercolorOverlayPressed: {
     backgroundColor: "transparent",
   },
-  watercolorGhostPill: {
-    position: "absolute",
-    left: 8,
-    right: 8,
-    bottom: 8,
-    minHeight: 30,
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(0,0,0,0.52)",
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  watercolorGhostIcon: {
-    width: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
   watercolorLabel: {
-    flex: 1,
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 16,
+    fontSize: 14.5,
+    lineHeight: 19,
     fontWeight: "700",
-    textAlign: "left",
+    marginTop: 12,
+    marginLeft: 12,
+    maxWidth: WATERCOLOR_CARD_SIZE - 24,
+    textShadowColor: "rgba(0,0,0,0.85)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
   },
   horizontalSmallRadiusCard: {
     borderRadius: 23,
