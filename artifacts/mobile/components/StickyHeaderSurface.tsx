@@ -1,3 +1,5 @@
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Animated, Platform, StyleSheet, View } from "react-native";
 import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
@@ -25,6 +27,7 @@ export function StickyHeaderSurface({
   blurIntensity,
   showBlackTint = true,
   strongBlur = false,
+  fadeBottom = false,
 }: {
   opacity: Animated.AnimatedInterpolation<number> | Animated.Value | number;
   tint: string;
@@ -33,7 +36,18 @@ export function StickyHeaderSurface({
   blurIntensity?: number;
   showBlackTint?: boolean;
   strongBlur?: boolean;
+  fadeBottom?: boolean;
 }) {
+  const glass = (
+    <>
+      <SessionBadgeGlass intensity={blurIntensity} showBlackTint={showBlackTint} />
+      {showTint && (
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.tint, { backgroundColor: tint }]} />
+      )}
+      {showDivider && <View pointerEvents="none" style={styles.divider} />}
+    </>
+  );
+
   return (
     <Animated.View
       pointerEvents="none"
@@ -41,20 +55,34 @@ export function StickyHeaderSurface({
         StyleSheet.absoluteFill,
         styles.surface,
         strongBlur ? strongWebBackdropBlur : webBackdropBlur,
+        fadeBottom && styles.fadeBottomExtension,
         { opacity },
       ]}
     >
-      <SessionBadgeGlass intensity={blurIntensity} showBlackTint={showBlackTint} />
-      {showTint && (
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.tint, { backgroundColor: tint }]} />
+      {fadeBottom ? (
+        <MaskedView
+          style={styles.maskedGlass}
+          maskElement={
+            <LinearGradient
+              colors={["#000000", "#000000", "transparent"]}
+              locations={[0, 0.78, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          }
+        >
+          {glass}
+        </MaskedView>
+      ) : (
+        glass
       )}
-      {showDivider && <View pointerEvents="none" style={styles.divider} />}
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   surface: { overflow: "hidden" },
+  fadeBottomExtension: { bottom: -22 },
+  maskedGlass: { flex: 1 },
   tint: { opacity: 0.85 },
   divider: {
     position: "absolute",

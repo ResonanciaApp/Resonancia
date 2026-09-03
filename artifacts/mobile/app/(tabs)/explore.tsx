@@ -478,6 +478,7 @@ export function ExploreScreen({
               blurIntensity={85}
               showBlackTint={false}
               strongBlur
+              fadeBottom
             />
           )}
           <View style={styles.titleRow}>
