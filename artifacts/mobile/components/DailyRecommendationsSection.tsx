@@ -53,6 +53,7 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
+  const indigo2Accent = theme.id === "indigo2" ? colors.accent : undefined;
   const sleepTabSurface =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -89,6 +90,9 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
               categoryPillOutlineColor={sleepTabSurface}
               showDurationBadge
               showChevron
+              authorColor={indigo2Accent}
+              authorFontSize={theme.id === "indigo2" ? 11 : undefined}
+              chevronColor={indigo2Accent}
               style={styles.row}
             />
             {index < recommendations.length - 1 && (

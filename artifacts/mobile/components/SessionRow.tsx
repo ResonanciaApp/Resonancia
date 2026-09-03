@@ -30,6 +30,9 @@ type Props = {
   categoryPillOutlineColor?: string;
   showDurationBadge?: boolean;
   showChevron?: boolean;
+  authorColor?: string;
+  authorFontSize?: number;
+  chevronColor?: string;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
@@ -45,6 +48,9 @@ export function SessionRow({
   categoryPillOutlineColor,
   showDurationBadge = false,
   showChevron = false,
+  authorColor,
+  authorFontSize,
+  chevronColor,
   onActionsPress,
   onPress,
 }: Props) {
@@ -126,7 +132,14 @@ export function SessionRow({
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
-          <Text style={[styles.sessionAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+          <Text
+            style={[
+              styles.sessionAuthor,
+              { color: authorColor ?? colors.mutedForeground },
+              authorFontSize !== undefined && { fontSize: authorFontSize },
+            ]}
+            numberOfLines={1}
+          >
             {author}
           </Text>
         </View>
@@ -134,7 +147,7 @@ export function SessionRow({
           <Feather
             name="chevron-right"
             size={25}
-            color={colors.mutedForeground}
+            color={chevronColor ?? colors.mutedForeground}
             style={styles.chevron}
           />
         )}
