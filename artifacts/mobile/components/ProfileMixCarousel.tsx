@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
@@ -10,6 +10,7 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const GRID_PAD = 14;
 const CARD_GAP = 14;
@@ -22,6 +23,13 @@ export function ProfileMixCarousel() {
   const { openMixer } = useMixerPanel();
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
   const accent = theme.accent ?? colors.accent;
+  const cardBackground = theme.id === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : theme.id === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : theme.id === "indigo2"
+        ? "rgba(255,255,255,0.025)"
+        : "rgba(255,255,255,0.05)";
 
   const newestPresets = useMemo(
     () =>
@@ -49,6 +57,50 @@ export function ProfileMixCarousel() {
         style={styles.scroll}
         contentContainerStyle={styles.content}
       >
+        {newestPresets.map((mix) => {
+          const hasCover = Boolean(
+            mix.image ||
+            mix.coverUri ||
+            mix.coverGeometryId ||
+            mix.coverCreationId,
+          );
+          return (
+            <PressScale
+              key={mix.id}
+              onPress={() => router.push(`/mi-mezcla/${encodeURIComponent(mix.id)}` as never)}
+              style={{ width: cardWidth }}
+            >
+              {hasCover ? (
+                <MixCover mix={mix} size={cardWidth} radius={13} />
+              ) : (
+                <View
+                  style={[
+                    styles.placeholderCard,
+                    {
+                      width: cardWidth,
+                      height: cardWidth,
+                      backgroundColor: cardBackground,
+                    },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="tune-variant"
+                    size={44}
+                    color={WIDGET_GREEN_SOLID}
+                    style={styles.placeholderIcon}
+                  />
+                </View>
+              )}
+              <Text style={styles.mixName} numberOfLines={2}>
+                {mix.name}
+              </Text>
+              <Text style={[styles.soundCount, { color: accent }]} numberOfLines={1}>
+                {mix.sounds.length} sonido{mix.sounds.length === 1 ? "" : "s"}
+              </Text>
+            </PressScale>
+          );
+        })}
+
         <PressScale
           onPress={() => {
             stopAll();
@@ -70,22 +122,6 @@ export function ProfileMixCarousel() {
             <Text style={[styles.addLabel, { color: accent }]}>Añadir una mezcla</Text>
           </View>
         </PressScale>
-
-        {newestPresets.map((mix) => (
-          <PressScale
-            key={mix.id}
-            onPress={() => router.push(`/mi-mezcla/${encodeURIComponent(mix.id)}` as never)}
-            style={{ width: cardWidth }}
-          >
-            <MixCover mix={mix} size={cardWidth} radius={15} />
-            <Text style={styles.mixName} numberOfLines={2}>
-              {mix.name}
-            </Text>
-            <Text style={[styles.soundCount, { color: accent }]} numberOfLines={1}>
-              {mix.sounds.length} sonido{mix.sounds.length === 1 ? "" : "s"}
-            </Text>
-          </PressScale>
-        ))}
       </ScrollView>
     </View>
   );
@@ -110,13 +146,22 @@ const styles = StyleSheet.create({
     gap: CARD_GAP,
   },
   addCard: {
-    borderRadius: 15,
+    borderRadius: 13,
     borderWidth: 1,
     borderStyle: "dashed",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
     backgroundColor: "transparent",
+  },
+  placeholderCard: {
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  placeholderIcon: {
+    opacity: 0.5,
   },
   addLabel: {
     fontFamily: "Manrope",
