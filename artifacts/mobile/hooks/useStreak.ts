@@ -63,13 +63,14 @@ export function useStreak(): StreakData {
 
   const d = serverQuery.data;
   if (d) {
+    const weekFlags = d.weekFlags.map((flag, index) => flag || local.weekFlags[index]);
     return {
-      currentStreak: d.currentStreak,
-      maxStreak: d.maxStreak,
-      weekFlags: d.weekFlags,
-      weekCount: d.weekCount,
+      currentStreak: Math.max(d.currentStreak, local.currentStreak),
+      maxStreak: Math.max(d.maxStreak, local.maxStreak),
+      weekFlags,
+      weekCount: weekFlags.filter(Boolean).length,
       todayIndex: d.todayIndex,
-      totalActiveDays: d.totalActiveDays,
+      totalActiveDays: Math.max(d.totalActiveDays, local.totalActiveDays),
     };
   }
 

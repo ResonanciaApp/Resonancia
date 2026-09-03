@@ -103,7 +103,7 @@
 - [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
 - [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
-- [useStreak hook unificado](usestreak-unified.md) — hook único (server+fallback local) para racha; TODOS los componentes importan de hooks/useStreak; NO llamar compute* directamente excepto StreakCelebrationContext (necesita tiempo real vía lastLocalStat)
+- [useStreak hook unificado](usestreak-unified.md) — hook único reconcilia servidor+local sin regresiones; toda UI importa de hooks/useStreak, salvo la celebración en tiempo real
 - [Sleep timer background enforcement](sleep-timer-background.md) — MixerContext y PlayerContext: sleepEndTimeRef timestamp + guardián en listener nativo (UIBackgroundModes audio); AppState recovery al volver al frente; setInterval solo es UI
 - [Social table indexes](social-db-indexes.md) — 12 índices añadidos a tablas sociales (shared_mixes/glyphs feed+likes+author, comments mix+author, likes user, messages createdAt); aplicar con push-force tras cambios de schema
 - [Server streak endpoint + Orval Zod crash](server-streak-endpoint.md) — GET /me/streak?tz= server-authoritative; Orval ^8.9.1 se actualizó a 8.23.0 → genera zod.int() (v4) → crash API; fix: pin exacto "8.9.1" + parche sed en api-zod/generated

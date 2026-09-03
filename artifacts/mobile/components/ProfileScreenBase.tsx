@@ -140,12 +140,10 @@ const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id === "
 function WeeklyStreakProgress({
   days,
   completedDays,
-  color,
   textColor,
 }: {
   days: number;
   completedDays: number;
-  color: string;
   textColor: string;
 }) {
   const size = 132;
@@ -155,8 +153,7 @@ function WeeklyStreakProgress({
   const circumference = 2 * Math.PI * radius;
   const gap = 16;
   const segmentLength = (circumference - gap * 3) / 3;
-  const weeklyProgress = Math.max(0, Math.min(1, completedDays / 7));
-  const segmentProgress = weeklyProgress * 3;
+  const filledSegments = Math.max(0, Math.min(3, completedDays));
 
   return (
     <View style={styles.weeklyStreakSummary}>
@@ -164,7 +161,7 @@ function WeeklyStreakProgress({
       <View style={{ width: size, height: size }}>
         <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           {[0, 1, 2].map((index) => {
-            const fill = Math.max(0, Math.min(1, segmentProgress - index));
+            const isFilled = index < filledSegments;
             const rotation = -90 + index * 120;
             return (
               <React.Fragment key={index}>
@@ -179,16 +176,16 @@ function WeeklyStreakProgress({
                   strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
                   transform={`rotate(${rotation} ${center} ${center})`}
                 />
-                {fill > 0 && (
+                {isFilled && (
                   <Circle
                     cx={center}
                     cy={center}
                     r={radius}
                     fill="none"
-                    stroke={color}
+                    stroke="#F4F4F4"
                     strokeWidth={strokeWidth}
                     strokeLinecap="round"
-                    strokeDasharray={`${segmentLength * fill} ${circumference - segmentLength * fill}`}
+                    strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
                     transform={`rotate(${rotation} ${center} ${center})`}
                   />
                 )}
@@ -1390,7 +1387,6 @@ export function ProfileScreenBase({
               <WeeklyStreakProgress
                 days={currentStreak}
                 completedDays={weekFlags.filter(Boolean).length}
-                color={progressAccent}
                 textColor={colors.foreground}
               />
 
