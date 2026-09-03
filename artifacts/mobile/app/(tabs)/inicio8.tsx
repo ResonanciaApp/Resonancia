@@ -2456,6 +2456,28 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <DurationExplorePill
+                  key={slot.label}
+                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
+                  label={slot.displayLabel}
+                  backgroundColor={durationPillBg}
+                  compact
+                />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+        {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
             sessions={filteredListened}
@@ -2654,28 +2676,6 @@ export default function HomeScreen2({
                 );
               })()}
             </Pressable>
-          </View>
-        )}
-        {isInicio2 && (
-          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <DurationExplorePill
-                  key={slot.label}
-                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                  label={slot.displayLabel}
-                  backgroundColor={durationPillBg}
-                  compact
-                />
-              ))}
-            </ScrollView>
           </View>
         )}
         {isInicio2 && (

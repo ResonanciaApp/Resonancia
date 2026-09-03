@@ -2,10 +2,10 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -22,7 +22,6 @@ const GRID_GAP = 10;
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = Math.floor(
     (screenWidth - SECTION_PADDING * 2 - GRID_GAP * 2) / 3,
@@ -33,14 +32,6 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
     <View style={[styles.root, { marginTop, marginBottom, paddingHorizontal: SECTION_PADDING }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Los Resonadores</Text>
-        <Pressable
-          onPress={() => router.push("/equipo" as never)}
-          accessibilityRole="button"
-          accessibilityLabel="Ver todos los Resonadores"
-          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-        >
-          <Text style={[styles.viewAll, { color: theme.id === "indigo" || theme.id === "indigo2" ? WIDGET_GREEN_SOLID : colors.accent }]}>Ver todos</Text>
-        </Pressable>
       </View>
       <View style={styles.grid}>
         {resonadores.map((resonador) => (
@@ -77,6 +68,21 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           </Pressable>
         ))}
       </View>
+      <Pressable
+        onPress={() => router.push("/equipo" as never)}
+        accessibilityRole="button"
+        accessibilityLabel="Ver todos los Resonadores"
+        style={({ pressed }) => [
+          styles.allResonadoresButton,
+          {
+            backgroundColor: WIDGET_GREEN_SOLID,
+            opacity: pressed ? 0.75 : 1,
+          },
+        ]}
+      >
+        <Text style={styles.allResonadoresButtonText}>Ver todos los Resonadores</Text>
+        <Feather name="chevron-right" size={16} color="#F9F9F9" />
+      </Pressable>
     </View>
   );
 }
@@ -96,10 +102,24 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F4F4F4",
   },
-  viewAll: {
+  allResonadoresButton: {
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+    overflow: "hidden",
+    paddingHorizontal: 28,
+    paddingVertical: 9,
+    gap: 6,
+    marginTop: 29,
+    marginBottom: 16,
+  },
+  allResonadoresButtonText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
+    color: "#F9F9F9",
   },
   grid: {
     flexDirection: "row",
