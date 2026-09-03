@@ -9,6 +9,7 @@ import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { PressScale } from "@/components/PressScale";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -18,6 +19,7 @@ const CARD_GAP = 14;
 export function ProfileMixCarousel() {
   const { width } = useWindowDimensions();
   const colors = useColors();
+  const routineTheme = useRoutineTheme();
   const { theme } = useSceneTheme();
   const { presets, stopAll } = useMixer();
   const { openMixer } = useMixerPanel();
@@ -114,12 +116,14 @@ export function ProfileMixCarousel() {
               {
                 width: cardWidth,
                 height: cardWidth,
-                borderColor: accent,
+                borderColor: routineTheme.completion,
               },
             ]}
           >
-            <Feather name="plus" size={23} color={accent} />
-            <Text style={[styles.addLabel, { color: accent }]}>Crear una mezcla</Text>
+            <Feather name="plus" size={23} color={routineTheme.completion} />
+            <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
+              Crear una mezcla
+            </Text>
           </View>
         </PressScale>
       </ScrollView>
