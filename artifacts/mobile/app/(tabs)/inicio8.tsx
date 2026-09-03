@@ -2717,6 +2717,7 @@ export default function HomeScreen2({
             horizontalIds={["sessions", "encounters"]}
             largeLabelIds={["history", "favorites", "downloads"]}
             cardGap={10}
+            cardBackgroundColor="rgba(255,255,255,0.06)"
             showCardBorders
             cardBorderWidth={2}
             cardBorderColor="rgba(255,255,255,0.1)"
