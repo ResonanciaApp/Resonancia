@@ -364,6 +364,8 @@ function NavStack() {
         <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="crear-rutina" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="rutina/[id]" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="rutina-calendario" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen
           name="diario-entrada"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}

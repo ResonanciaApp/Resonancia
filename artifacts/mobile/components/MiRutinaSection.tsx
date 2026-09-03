@@ -1,7 +1,15 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type GestureResponderEvent,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Reanimated, {
   interpolateColor,
@@ -12,16 +20,15 @@ import Reanimated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   getRoutineDateKey,
-  getRoutineWeekday,
+  isRoutineActivityScheduledForDate,
   useRutina,
   type RoutineActivity,
 } from "@/context/RutinaContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
+import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -30,43 +37,38 @@ type Props = {
 const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
-const ROUTINE_HANDLE_COLOR = "#7F7F7F";
-const ROUTINE_TOAST_DURATION = 2400;
-const ROUTINE_TICKET_DEACTIVATION_DELAY = ROUTINE_TOAST_DURATION + 2000;
+const COMPLETION_EXIT_DELAY = 1000;
+const TOAST_DURATION = 2400;
+const HANDLE_COLOR = "#7F7F7F";
 
 function ActivityRow({
   activity,
-  dateKey,
+  completing,
   itemCount,
-  neutralBackground,
-  ticketBackground,
   orderSV,
   draggingId,
   dragOriginSlot,
   dragDeltaY,
   insertAt,
-  onToggle,
+  onOpen,
+  onComplete,
   onDragEnd,
 }: {
   activity: RoutineActivity;
-  dateKey: string;
+  completing: boolean;
   itemCount: number;
-  neutralBackground: string;
-  ticketBackground: string;
   orderSV: SharedValue<string[]>;
   draggingId: SharedValue<string>;
   dragOriginSlot: SharedValue<number>;
   dragDeltaY: SharedValue<number>;
   insertAt: SharedValue<number>;
-  onToggle: () => void;
+  onOpen: () => void;
+  onComplete: () => void;
   onDragEnd: (from: number, to: number) => void;
 }) {
-  const colors = useColors();
-  const completed = activity.completedDates.includes(dateKey);
-  const completionProgress = useSharedValue(completed ? 1 : 0);
+  const routineTheme = useRoutineTheme();
+  const completionProgress = useSharedValue(completing ? 1 : 0);
   const didActivate = useSharedValue(0);
-  const [ticketActive, setTicketActive] = useState(!completed);
-  const ticketDeactivateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activityId = activity.id;
   const sharedOrder = orderSV;
   const sharedDraggingId = draggingId;
@@ -75,41 +77,8 @@ function ActivityRow({
   const sharedInsertAt = insertAt;
 
   useEffect(() => {
-    completionProgress.value = withTiming(completed ? 1 : 0, { duration: 450 });
-  }, [completed, completionProgress]);
-
-  useEffect(() => {
-    if (!completed) {
-      if (ticketDeactivateTimerRef.current) {
-        clearTimeout(ticketDeactivateTimerRef.current);
-        ticketDeactivateTimerRef.current = null;
-      }
-      setTicketActive(true);
-    }
-  }, [completed]);
-
-  useEffect(
-    () => () => {
-      if (ticketDeactivateTimerRef.current) clearTimeout(ticketDeactivateTimerRef.current);
-    },
-    [],
-  );
-
-  const handleTicketPress = useCallback(() => {
-    const wasCompleted = completed;
-    onToggle();
-    if (ticketDeactivateTimerRef.current) {
-      clearTimeout(ticketDeactivateTimerRef.current);
-      ticketDeactivateTimerRef.current = null;
-    }
-    setTicketActive(true);
-    if (!wasCompleted) {
-      ticketDeactivateTimerRef.current = setTimeout(() => {
-        setTicketActive(false);
-        ticketDeactivateTimerRef.current = null;
-      }, ROUTINE_TICKET_DEACTIVATION_DELAY);
-    }
-  }, [completed, onToggle]);
+    completionProgress.value = withTiming(completing ? 1 : 0, { duration: 450 });
+  }, [completing, completionProgress]);
 
   const pan = Gesture.Pan()
     .activateAfterLongPress(250)
@@ -137,7 +106,7 @@ function ActivityRow({
       const to = sharedInsertAt.value;
       const nextOrder = [...sharedOrder.value];
       const [moved] = nextOrder.splice(from, 1);
-      nextOrder.splice(to, 0, moved);
+      if (moved) nextOrder.splice(to, 0, moved);
       sharedOrder.value = nextOrder;
       sharedDraggingId.value = "";
       sharedDragDeltaY.value = 0;
@@ -191,9 +160,17 @@ function ActivityRow({
     backgroundColor: interpolateColor(
       completionProgress.value,
       [0, 1],
-      [neutralBackground, WIDGET_GREEN_SOLID],
+      [routineTheme.surface, routineTheme.completion],
     ),
   }));
+
+  const completeFromTicket = useCallback(
+    (event: GestureResponderEvent) => {
+      event.stopPropagation();
+      if (!completing) onComplete();
+    },
+    [completing, onComplete],
+  );
 
   return (
     <Reanimated.View
@@ -202,55 +179,56 @@ function ActivityRow({
     >
       <GestureDetector gesture={pan}>
         <Reanimated.View style={[styles.activityCard, completionStyle]}>
-          <Feather name="more-vertical" size={18} color={ROUTINE_HANDLE_COLOR} />
-          <View style={styles.activityCopy}>
-            <Text style={[styles.activityCategory, { color: colors.accent }]} numberOfLines={1}>
-              {activity.category}
-            </Text>
-            <View style={styles.activityTitleRow}>
+          <Pressable
+            onPress={onOpen}
+            disabled={completing}
+            accessibilityRole="button"
+            accessibilityLabel={`Abrir ${activity.title}`}
+            style={styles.activityOpenArea}
+          >
+            <Feather name="more-vertical" size={18} color={HANDLE_COLOR} />
+            <View style={styles.activityCopy}>
+              <Text
+                style={[
+                  styles.activityCategory,
+                  { color: completing ? "rgba(255,255,255,0.78)" : routineTheme.accent },
+                ]}
+                numberOfLines={1}
+              >
+                {activity.category}
+              </Text>
               <Text
                 style={[
                   styles.activityTitle,
-                  { color: completed ? "#FFFFFF" : colors.foreground },
+                  { color: completing ? "#FFFFFF" : routineTheme.text },
                 ]}
-                numberOfLines={1}
+                numberOfLines={2}
               >
                 {activity.title}
               </Text>
-              <Feather name="more-horizontal" size={18} color={ROUTINE_HANDLE_COLOR} />
             </View>
-            {activity.description ? (
-              <Text
-                style={[
-                  styles.activityDescription,
-                  {
-                    color: completed
-                      ? "rgba(255,255,255,0.76)"
-                      : colors.mutedForeground,
-                  },
-                ]}
-                numberOfLines={1}
-              >
-                {activity.description}
-              </Text>
-            ) : null}
-          </View>
+          </Pressable>
           <Pressable
-            onPress={handleTicketPress}
+            onPress={completeFromTicket}
+            disabled={completing}
             accessibilityRole="checkbox"
-            accessibilityState={{ checked: ticketActive }}
-            accessibilityLabel={`${ticketActive ? "Desactivar" : "Activar"} ticket de ${activity.title}`}
+            accessibilityState={{ checked: completing }}
+            accessibilityLabel={`Completar ${activity.title}`}
             testID={`routine-toggle-${activity.id}`}
             hitSlop={10}
             style={({ pressed }) => [
               styles.checkButton,
               {
-                backgroundColor: ticketBackground,
+                backgroundColor: completing
+                  ? "rgba(255,255,255,0.92)"
+                  : routineTheme.ticketSurface,
                 opacity: pressed ? 0.58 : 1,
               },
             ]}
           >
-            {ticketActive ? <Feather name="check" size={20} color={WIDGET_GREEN_SOLID} /> : null}
+            {!completing ? (
+              <Feather name="check" size={20} color={routineTheme.completion} />
+            ) : null}
           </Pressable>
         </Reanimated.View>
       </GestureDetector>
@@ -260,25 +238,34 @@ function ActivityRow({
 
 export function MiRutinaSection({ style }: Props) {
   const colors = useColors();
-  const { activeSceneId, theme } = useSceneTheme();
+  const routineTheme = useRoutineTheme();
   const todayKey = useDayRollover();
   const {
     activities,
     isHydrated,
     lastAddedId,
-    toggleActivity,
+    completeActivity,
     reorderActivities,
   } = useRutina();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [completingIds, setCompletingIds] = useState<Set<string>>(() => new Set());
   const lastSeenAddedId = useRef<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const exitTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const today = useMemo(() => new Date(), [todayKey]);
   const dateKey = getRoutineDateKey(today);
-  const todayDay = getRoutineWeekday(today);
   const todayActivities = useMemo(
-    () => activities.filter((activity) => activity.repeatDays.includes(todayDay)),
-    [activities, todayDay],
+    () =>
+      activities.filter((activity) => {
+        if (!isRoutineActivityScheduledForDate(activity, today)) return false;
+        if (completingIds.has(activity.id)) return true;
+        return (
+          !activity.completedDates.includes(dateKey) &&
+          !activity.skippedDates.includes(dateKey)
+        );
+      }),
+    [activities, completingIds, dateKey, today],
   );
   const todayActivityIds = useMemo(
     () => todayActivities.map((activity) => activity.id),
@@ -290,12 +277,6 @@ export function MiRutinaSection({ style }: Props) {
   const dragOriginSlot = useSharedValue(-1);
   const dragDeltaY = useSharedValue(0);
   const insertAt = useSharedValue(-1);
-  const neutralCardBackground =
-    activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : activeSceneId === "indigo"
-        ? "rgba(42,40,64,0.65)"
-        : "rgba(255,255,255,0.05)";
   const previousActivityIdsKey = useRef(todayActivityIdsKey);
 
   useEffect(() => {
@@ -312,6 +293,8 @@ export function MiRutinaSection({ style }: Props) {
   useEffect(
     () => () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      exitTimersRef.current.forEach(clearTimeout);
+      exitTimersRef.current.clear();
     },
     [],
   );
@@ -322,7 +305,7 @@ export function MiRutinaSection({ style }: Props) {
     toastTimerRef.current = setTimeout(() => {
       setToastMessage(null);
       toastTimerRef.current = null;
-    }, ROUTINE_TOAST_DURATION);
+    }, TOAST_DURATION);
   }, []);
 
   useFocusEffect(
@@ -337,13 +320,42 @@ export function MiRutinaSection({ style }: Props) {
     router.push("/crear-rutina" as never);
   }, []);
 
-  const handleToggle = useCallback(
-    (activity: RoutineActivity) => {
-      const wasCompleted = activity.completedDates.includes(dateKey);
-      toggleActivity(activity.id, dateKey);
-      if (!wasCompleted) showToast("Actividad finalizada");
+  const openCalendar = useCallback(() => {
+    router.push("/rutina-calendario" as never);
+  }, []);
+
+  const openActivity = useCallback(
+    (activityId: string) => {
+      router.push(`/rutina/${activityId}?dateKey=${dateKey}` as never);
     },
-    [dateKey, showToast, toggleActivity],
+    [dateKey],
+  );
+
+  const handleComplete = useCallback(
+    (activity: RoutineActivity) => {
+      if (completingIds.has(activity.id)) return;
+      completeActivity(activity.id, dateKey);
+      setCompletingIds((current) => {
+        const next = new Set(current);
+        next.add(activity.id);
+        return next;
+      });
+      showToast("Actividad finalizada");
+      const existingTimer = exitTimersRef.current.get(activity.id);
+      if (existingTimer) clearTimeout(existingTimer);
+      exitTimersRef.current.set(
+        activity.id,
+        setTimeout(() => {
+          setCompletingIds((current) => {
+            const next = new Set(current);
+            next.delete(activity.id);
+            return next;
+          });
+          exitTimersRef.current.delete(activity.id);
+        }, COMPLETION_EXIT_DELAY),
+      );
+    },
+    [completeActivity, completingIds, dateKey, showToast],
   );
 
   const handleDragEnd = useCallback(
@@ -359,27 +371,39 @@ export function MiRutinaSection({ style }: Props) {
       }
       const reorderedIds = [...todayActivityIds];
       const [movedId] = reorderedIds.splice(from, 1);
+      if (!movedId) return;
       reorderedIds.splice(to, 0, movedId);
       reorderActivities(reorderedIds);
     },
     [reorderActivities, todayActivityIds],
   );
 
+  const hasScheduledToday = activities.some((activity) =>
+    isRoutineActivityScheduledForDate(activity, today),
+  );
+
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
       <View style={styles.headerRow}>
-        <View style={styles.titleWrap}>
-          <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina</Text>
-        </View>
+        <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina</Text>
         <View style={styles.headerActions}>
-          <Feather name="calendar" size={19} color={colors.mutedForeground} />
+          <Pressable
+            onPress={openCalendar}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir calendario de Mi Rutina"
+            testID="mi-rutina-calendar"
+            hitSlop={8}
+            style={({ pressed }) => ({ opacity: pressed ? 0.58 : 1 })}
+          >
+            <Feather name="calendar" size={19} color={routineTheme.accent} />
+          </Pressable>
           <Pressable
             onPress={openCreate}
             accessibilityRole="button"
             accessibilityLabel="Añadir una actividad a Mi rutina"
             testID="mi-rutina-add-header"
             hitSlop={8}
-            style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
+            style={({ pressed }) => ({ opacity: pressed ? 0.58 : 1 })}
           >
             <Feather name="plus" size={25} color="#F9F9F9" />
           </Pressable>
@@ -397,30 +421,43 @@ export function MiRutinaSection({ style }: Props) {
             <ActivityRow
               key={activity.id}
               activity={activity}
-              dateKey={dateKey}
+              completing={completingIds.has(activity.id)}
               itemCount={todayActivities.length}
-              neutralBackground={neutralCardBackground}
-              ticketBackground={theme.gradient[0]}
               orderSV={orderSV}
               draggingId={draggingId}
               dragOriginSlot={dragOriginSlot}
               dragDeltaY={dragDeltaY}
               insertAt={insertAt}
-              onToggle={() => handleToggle(activity)}
+              onOpen={() => openActivity(activity.id)}
+              onComplete={() => handleComplete(activity)}
               onDragEnd={handleDragEnd}
             />
           ))}
         </View>
-      ) : activities.length > 0 ? (
-        <View style={[styles.emptyState, { borderColor: `${WIDGET_GREEN_SOLID}AA` }]}>
-          <Feather name="calendar" size={21} color={WIDGET_GREEN_SOLID} />
+      ) : hasScheduledToday ? (
+        <Pressable
+          onPress={openCalendar}
+          style={[
+            styles.completeState,
+            {
+              backgroundColor: routineTheme.completionSoft,
+              borderColor: routineTheme.completion,
+            },
+          ]}
+        >
+          <View style={[styles.completeIcon, { backgroundColor: routineTheme.completion }]}>
+            <Feather name="check" size={16} color="#FFFFFF" />
+          </View>
           <View style={styles.emptyCopy}>
-            <Text style={[styles.emptyTitle, { color: WIDGET_GREEN_SOLID }]}>No hay prácticas para hoy</Text>
-            <Text style={[styles.emptySubtitle, { color: colors.mutedForeground }]}>
-              Programa una práctica para este día o crea una nueva.
+            <Text style={[styles.completeTitle, { color: routineTheme.text }]}>
+              Rutina del día completada
+            </Text>
+            <Text style={[styles.emptySubtitle, { color: routineTheme.textMuted }]}>
+              Revisa tu progreso en el calendario.
             </Text>
           </View>
-        </View>
+          <Feather name="chevron-right" size={18} color={routineTheme.accent} />
+        </Pressable>
       ) : null}
 
       <Pressable
@@ -431,21 +468,33 @@ export function MiRutinaSection({ style }: Props) {
         style={({ pressed }) => [
           styles.addButton,
           {
-            borderColor: `${WIDGET_GREEN_SOLID}AA`,
+            borderColor: routineTheme.divider,
+            backgroundColor: routineTheme.surface,
             opacity: pressed ? 0.72 : 1,
           },
         ]}
       >
-        <Feather name="plus" size={20} color={WIDGET_GREEN_SOLID} />
-        <Text style={[styles.addButtonText, { color: WIDGET_GREEN_SOLID }]}>Añadir una actividad</Text>
+        <Feather name="plus" size={20} color={routineTheme.completion} />
+        <Text style={[styles.addButtonText, { color: routineTheme.completion }]}>
+          Añadir una actividad
+        </Text>
       </Pressable>
 
       {toastMessage ? (
-        <View style={styles.toast} pointerEvents="none">
-          <View style={styles.toastIcon}>
+        <View
+          style={[
+            styles.toast,
+            {
+              backgroundColor: routineTheme.surfaceElevated,
+              borderColor: routineTheme.divider,
+            },
+          ]}
+          pointerEvents="none"
+        >
+          <View style={[styles.toastIcon, { backgroundColor: routineTheme.completion }]}>
             <Feather name="check" size={14} color="#FFFFFF" />
           </View>
-          <Text style={styles.toastText}>{toastMessage}</Text>
+          <Text style={[styles.toastText, { color: routineTheme.text }]}>{toastMessage}</Text>
         </View>
       ) : null}
     </View>
@@ -463,20 +512,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 15,
   },
-  titleWrap: {
-    flex: 1,
-    minWidth: 0,
-  },
   title: {
     fontFamily: "Manrope",
+    flex: 1,
     fontSize: 21,
     fontWeight: "700",
     letterSpacing: 0.2,
-  },
-  subtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    marginTop: 4,
   },
   headerActions: {
     flexDirection: "row",
@@ -503,9 +544,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingRight: 11,
+    overflow: "hidden",
+  },
+  activityOpenArea: {
+    flex: 1,
+    height: "100%",
+    minWidth: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
   },
   activityCopy: {
     flex: 1,
@@ -519,48 +568,41 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     marginBottom: 2,
   },
-  activityTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    minWidth: 0,
-    gap: 5,
-  },
   activityTitle: {
     fontFamily: "Manrope",
-    flex: 1,
     fontSize: 14,
     fontWeight: "600",
-    lineHeight: 20,
-  },
-  activityDescription: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 4,
+    lineHeight: 19,
   },
   checkButton: {
-    width: 32,
-    height: 32,
+    width: 34,
+    height: 34,
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
   },
-  emptyState: {
+  completeState: {
     minHeight: 76,
     borderRadius: 16,
-    borderWidth: 1.2,
-    borderStyle: "dashed",
+    borderWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 18,
-    gap: 13,
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  completeIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   emptyCopy: {
     flex: 1,
   },
-  emptyTitle: {
+  completeTitle: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
   },
   emptySubtitle: {
@@ -572,8 +614,7 @@ const styles = StyleSheet.create({
   addButton: {
     minHeight: 58,
     borderRadius: 16,
-    borderWidth: 1.2,
-    borderStyle: "dashed",
+    borderWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -592,12 +633,12 @@ const styles = StyleSheet.create({
     bottom: -7,
     minHeight: 48,
     borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 15,
-    backgroundColor: "#080808",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOpacity: 0.35,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 5 },
@@ -609,12 +650,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: WIDGET_GREEN_SOLID,
   },
   toastText: {
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
 });

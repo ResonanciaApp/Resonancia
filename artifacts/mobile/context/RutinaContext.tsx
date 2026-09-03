@@ -10,6 +10,20 @@ import React, {
   type ReactNode,
 } from "react";
 
+import {
+  canMutateRoutineDate,
+  completeRoutineDate,
+  getRoutineDateKey,
+  skipRoutineDate,
+} from "@/lib/routineLogic";
+export {
+  getRoutineDateFromKey,
+  getRoutineDateKey,
+  getRoutineWeekday,
+  isRoutineActivityScheduledForDate,
+  canMutateRoutineDate,
+} from "@/lib/routineLogic";
+
 const STORAGE_KEY = "@resonance_routine_v1";
 
 export const ROUTINE_DAY_LABELS = ["L", "M", "X", "J", "V", "S", "D"] as const;
@@ -32,6 +46,8 @@ export interface RoutineActivity {
   category: RoutineCategory;
   repeatDays: number[];
   completedDates: string[];
+  skippedDates: string[];
+  archivedAt: string | null;
   createdAt: string;
 }
 
@@ -47,24 +63,23 @@ interface RutinaContextValue {
   isHydrated: boolean;
   lastAddedId: string | null;
   addActivity: (input: RoutineActivityInput) => RoutineActivity;
+  completeActivity: (activityId: string, dateKey?: string) => void;
+  skipActivity: (activityId: string, dateKey?: string) => void;
+  archiveActivity: (activityId: string) => void;
   toggleActivity: (activityId: string, dateKey?: string) => void;
   reorderActivities: (orderedActivityIds: string[]) => void;
   isActivityCompleted: (activity: RoutineActivity, dateKey?: string) => boolean;
+  isActivitySkipped: (activity: RoutineActivity, dateKey?: string) => boolean;
+  getActivityById: (activityId: string) => RoutineActivity | undefined;
 }
 
 const RutinaContext = createContext<RutinaContextValue | null>(null);
 
-export function getRoutineDateKey(date = new Date()): string {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
-}
-
-export function getRoutineWeekday(date = new Date()): number {
-  const day = date.getDay();
-  return day === 0 ? 6 : day - 1;
+function normalizeDateList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return Array.from(
+    new Set(value.filter((date): date is string => typeof date === "string")),
+  ).sort();
 }
 
 const SUGGESTION_GROUPS: Record<RoutineCategory, string[]> = {
@@ -153,9 +168,9 @@ function normalizeActivity(value: unknown): RoutineActivity | null {
       ? (item.category as RoutineCategory)
       : "Sugerido",
     repeatDays,
-    completedDates: Array.isArray(item.completedDates)
-      ? item.completedDates.filter((date): date is string => typeof date === "string")
-      : [],
+    completedDates: normalizeDateList(item.completedDates),
+    skippedDates: normalizeDateList(item.skippedDates),
+    archivedAt: typeof item.archivedAt === "string" ? item.archivedAt : null,
     createdAt: typeof item.createdAt === "string" ? item.createdAt : new Date().toISOString(),
   };
 }
@@ -209,11 +224,50 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       category: input.category,
       repeatDays: Array.from(new Set(input.repeatDays)).sort((a, b) => a - b),
       completedDates: [],
+      skippedDates: [],
+      archivedAt: null,
       createdAt: new Date().toISOString(),
     };
     setActivities((current) => [activity, ...current]);
     setLastAddedId(activity.id);
     return activity;
+  }, []);
+
+  const completeActivity = useCallback(
+    (activityId: string, dateKey = getRoutineDateKey()) => {
+      setActivities((current) =>
+        current.map((activity) => {
+          if (activity.id !== activityId) return activity;
+          if (!canMutateRoutineDate(activity, dateKey)) return activity;
+          return completeRoutineDate(activity, dateKey);
+        }),
+      );
+    },
+    [],
+  );
+
+  const skipActivity = useCallback(
+    (activityId: string, dateKey = getRoutineDateKey()) => {
+      setActivities((current) =>
+        current.map((activity) => {
+          if (activity.id !== activityId) return activity;
+          if (!canMutateRoutineDate(activity, dateKey)) return activity;
+          return skipRoutineDate(activity, dateKey);
+        }),
+      );
+    },
+    [],
+  );
+
+  const archiveActivity = useCallback((activityId: string) => {
+    const archivedAt = new Date().toISOString();
+    setActivities((current) =>
+      current.map((activity) =>
+        activity.id === activityId && !activity.archivedAt
+          ? { ...activity, archivedAt }
+          : activity,
+      ),
+    );
   }, []);
 
   const toggleActivity = useCallback((activityId: string, dateKey = getRoutineDateKey()) => {
@@ -258,24 +312,45 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const isActivitySkipped = useCallback(
+    (activity: RoutineActivity, dateKey = getRoutineDateKey()) =>
+      activity.skippedDates.includes(dateKey),
+    [],
+  );
+
+  const getActivityById = useCallback(
+    (activityId: string) => activities.find((activity) => activity.id === activityId),
+    [activities],
+  );
+
   const value = useMemo(
     () => ({
       activities,
       isHydrated,
       lastAddedId,
       addActivity,
+      completeActivity,
+      skipActivity,
+      archiveActivity,
       toggleActivity,
       reorderActivities,
       isActivityCompleted,
+      isActivitySkipped,
+      getActivityById,
     }),
     [
       activities,
       isHydrated,
       lastAddedId,
       addActivity,
+      completeActivity,
+      skipActivity,
+      archiveActivity,
       toggleActivity,
       reorderActivities,
       isActivityCompleted,
+      isActivitySkipped,
+      getActivityById,
     ],
   );
 
