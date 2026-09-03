@@ -109,7 +109,7 @@ const MEMBERSHIP_PLANS = [
   {
     id: "premium",
     name: "Tu Premium",
-    eyebrow: "Tu práctica, sin límites",
+    eyebrow: "Gestiona tu suscripción y descubre tus beneficios de Resonancia Premium",
     icon: "star" as const,
     colors: MEMBERSHIP_AURORA.premium,
     benefits: [
@@ -224,13 +224,13 @@ function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?:
                   style={[
                     styles.membershipIcon,
                     {
-                      backgroundColor: "transparent",
+                      backgroundColor: "rgba(255,255,255,0.1)",
                       shadowColor: plan.colors.glow,
                     },
                   ]}
                 >
                   {isPremium ? (
-                    <MaterialCommunityIcons name="star" size={23} color={plan.colors.accent} />
+                    <MaterialCommunityIcons name="star" size={26} color={plan.colors.accent} />
                   ) : (
                     <MaterialCommunityIcons name="diamond-stone" size={23} color={plan.colors.accent} />
                   )}
@@ -2314,7 +2314,7 @@ const styles = StyleSheet.create({
   membershipIcon: {
     width: 54,
     height: 54,
-    borderRadius: 27,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 0,
@@ -2386,10 +2386,18 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarImage: { width: 80, height: 80, borderRadius: 40 },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   userNameLeft: { textAlign: "left" },
   emailText: { fontFamily: "Manrope", fontSize: 12 },
