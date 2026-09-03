@@ -1306,6 +1306,8 @@ export function ProfileScreenBase({
           </View>
         </View>
 
+        {dedicated && <IntentionPrompt style={styles.profileIntentionSection} />}
+
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
@@ -1503,7 +1505,6 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
-            <IntentionPrompt style={styles.profileIntentionSection} />
             <ProfileMixCarousel marginBottom={32} />
 
             <Pressable
@@ -2521,6 +2522,7 @@ const styles = StyleSheet.create({
   weeklyStreakIntro: {
     width: "100%",
     paddingHorizontal: 2,
+    marginTop: 15,
     marginBottom: 12,
   },
   weeklyStreakIntroTitle: {
@@ -2560,7 +2562,7 @@ const styles = StyleSheet.create({
     marginTop: -1,
   },
   profileIntentionSection: {
-    marginTop: 16,
+    marginTop: 0,
     marginBottom: 16,
   },
   personalStatsSection: {
