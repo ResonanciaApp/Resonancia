@@ -613,14 +613,13 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.topicCard,
                     {
-                      backgroundColor: `${tema.color}22`,
-                      borderColor: `${tema.color}55`,
+                      backgroundColor: tema.color,
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
                 >
-                  <MaterialCommunityIcons name={tema.icon} size={28} color={tema.color} />
-                  <Text style={[styles.topicLabel, { color: colors.foreground }]}>
+                  <MaterialCommunityIcons name={tema.icon} size={28} color="#F9F9F9" />
+                  <Text style={styles.topicLabel}>
                     {tema.label}
                   </Text>
                 </Pressable>
@@ -790,8 +789,7 @@ const styles = StyleSheet.create({
   topicCard: {
     width: TEMA_CARD_W,
     minHeight: 84,
-    borderRadius: 15,
-    borderWidth: 1,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
@@ -804,6 +802,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 17,
+    color: "#F9F9F9",
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
