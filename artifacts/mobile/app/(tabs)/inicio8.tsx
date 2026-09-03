@@ -2446,7 +2446,7 @@ export default function HomeScreen2({
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
+              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
                 <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
               </Pressable>
@@ -2467,7 +2467,7 @@ export default function HomeScreen2({
             <Text
               style={[
                 styles.sectionTitle,
-                { fontSize: 20, marginBottom: 17, paddingHorizontal: GRID_PAD },
+                { fontSize: 19, marginBottom: 17, paddingHorizontal: GRID_PAD },
               ]}
             >
               Explora por contenido
@@ -2629,7 +2629,7 @@ export default function HomeScreen2({
             <Text
               style={[
                 styles.sectionTitle,
-                { fontSize: 20, marginBottom: 17 },
+                { fontSize: 19, marginBottom: 17 },
               ]}
             >
               Para este momento
@@ -3669,7 +3669,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 17, color: "#FBFBFB" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, marginBottom: 17, color: "#FBFBFB" },
   inicio2SectionTitle: { fontSize: 19, marginBottom: 17 },
   continueSection: {
     marginTop: 0,
