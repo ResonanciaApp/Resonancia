@@ -180,6 +180,8 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   const hydratedRef = useRef(false);
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestActivitiesRef = useRef<RoutineActivity[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -213,8 +215,26 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(activities)).catch(() => {});
+    latestActivitiesRef.current = activities;
+    if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+    persistTimerRef.current = setTimeout(() => {
+      persistTimerRef.current = null;
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(latestActivitiesRef.current)).catch(() => {});
+    }, 350);
   }, [activities]);
+
+  useEffect(
+    () => () => {
+      if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+      if (hydratedRef.current) {
+        AsyncStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(latestActivitiesRef.current),
+        ).catch(() => {});
+      }
+    },
+    [],
+  );
 
   const addActivity = useCallback((input: RoutineActivityInput) => {
     const activity: RoutineActivity = {

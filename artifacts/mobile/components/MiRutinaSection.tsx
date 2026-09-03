@@ -15,6 +15,7 @@ import Reanimated, {
   interpolateColor,
   runOnJS,
   type SharedValue,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -41,8 +42,9 @@ const COMPLETION_EXIT_DELAY = 1000;
 const TOAST_DURATION = 2400;
 const HANDLE_COLOR = "#7F7F7F";
 
-function ActivityRow({
+const ActivityRow = React.memo(function ActivityRow({
   activity,
+  initialIndex,
   completing,
   itemCount,
   orderSV,
@@ -62,8 +64,9 @@ function ActivityRow({
   dragOriginSlot: SharedValue<number>;
   dragDeltaY: SharedValue<number>;
   insertAt: SharedValue<number>;
-  onOpen: () => void;
-  onComplete: () => void;
+  initialIndex: number;
+  onOpen: (activityId: string) => void;
+  onComplete: (activity: RoutineActivity) => void;
   onDragEnd: (from: number, to: number) => void;
 }) {
   const routineTheme = useRoutineTheme();
@@ -75,49 +78,95 @@ function ActivityRow({
   const sharedDragOriginSlot = dragOriginSlot;
   const sharedDragDeltaY = dragDeltaY;
   const sharedInsertAt = insertAt;
+  const settledY = useSharedValue(initialIndex * ROUTINE_SLOT_HEIGHT);
 
   useEffect(() => {
     completionProgress.value = withTiming(completing ? 1 : 0, { duration: 450 });
   }, [completing, completionProgress]);
 
-  const pan = Gesture.Pan()
-    .activateAfterLongPress(250)
-    .onStart(() => {
-      didActivate.value = 1;
-      const slot = sharedOrder.value.indexOf(activityId);
-      sharedDragOriginSlot.value = slot;
-      sharedDragDeltaY.value = 0;
-      sharedInsertAt.value = slot;
-      sharedDraggingId.value = activityId;
-    })
-    .onUpdate((event) => {
-      if (didActivate.value !== 1) return;
-      sharedDragDeltaY.value = event.translationY;
-      const rawSlot = Math.round(
-        (sharedDragOriginSlot.value * ROUTINE_SLOT_HEIGHT + event.translationY) /
-          ROUTINE_SLOT_HEIGHT,
-      );
-      sharedInsertAt.value = Math.max(0, Math.min(itemCount - 1, rawSlot));
-    })
-    .onFinalize(() => {
-      if (didActivate.value !== 1) return;
-      didActivate.value = 0;
-      const from = sharedDragOriginSlot.value;
-      const to = sharedInsertAt.value;
-      const nextOrder = [...sharedOrder.value];
-      const [moved] = nextOrder.splice(from, 1);
-      if (moved) nextOrder.splice(to, 0, moved);
-      sharedOrder.value = nextOrder;
-      sharedDraggingId.value = "";
-      sharedDragDeltaY.value = 0;
-      sharedDragOriginSlot.value = -1;
-      sharedInsertAt.value = -1;
-      runOnJS(onDragEnd)(from, to);
-    });
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .activateAfterLongPress(250)
+        .onStart(() => {
+          didActivate.value = 1;
+          const slot = sharedOrder.value.indexOf(activityId);
+          sharedDragOriginSlot.value = slot;
+          sharedDragDeltaY.value = 0;
+          sharedInsertAt.value = slot;
+          sharedDraggingId.value = activityId;
+        })
+        .onUpdate((event) => {
+          if (didActivate.value !== 1) return;
+          sharedDragDeltaY.value = event.translationY;
+          const rawSlot = Math.round(
+            (sharedDragOriginSlot.value * ROUTINE_SLOT_HEIGHT + event.translationY) /
+              ROUTINE_SLOT_HEIGHT,
+          );
+          const nextSlot = Math.max(0, Math.min(itemCount - 1, rawSlot));
+          if (sharedInsertAt.value !== nextSlot) sharedInsertAt.value = nextSlot;
+        })
+        .onFinalize(() => {
+          if (didActivate.value !== 1) return;
+          didActivate.value = 0;
+          const from = sharedDragOriginSlot.value;
+          const to = sharedInsertAt.value;
+          const nextOrder = [...sharedOrder.value];
+          const [moved] = nextOrder.splice(from, 1);
+          if (moved) nextOrder.splice(to, 0, moved);
+          sharedOrder.value = nextOrder;
+          sharedDraggingId.value = "";
+          sharedDragDeltaY.value = 0;
+          sharedDragOriginSlot.value = -1;
+          sharedInsertAt.value = -1;
+          runOnJS(onDragEnd)(from, to);
+        }),
+    [
+      activityId,
+      didActivate,
+      itemCount,
+      onDragEnd,
+      sharedDragDeltaY,
+      sharedDraggingId,
+      sharedDragOriginSlot,
+      sharedInsertAt,
+      sharedOrder,
+    ],
+  );
+
+  useAnimatedReaction(
+    () => {
+      const ownSlot = sharedOrder.value.indexOf(activityId);
+      const origin = sharedDragOriginSlot.value;
+      const destination = sharedInsertAt.value;
+      let effectiveSlot = ownSlot;
+      if (sharedDraggingId.value !== "" && origin >= 0 && destination >= 0) {
+        if (destination <= origin) {
+          if (ownSlot >= destination && ownSlot < origin) effectiveSlot = ownSlot + 1;
+        } else if (ownSlot > origin && ownSlot <= destination) {
+          effectiveSlot = ownSlot - 1;
+        }
+      }
+      return {
+        target: Math.max(0, effectiveSlot) * ROUTINE_SLOT_HEIGHT,
+        dragging: sharedDraggingId.value === activityId,
+      };
+    },
+    (current, previous) => {
+      if (current.dragging) return;
+      if (
+        previous === null ||
+        previous.dragging ||
+        previous.target !== current.target
+      ) {
+        settledY.value = withTiming(current.target, { duration: 180 });
+      }
+    },
+    [activityId],
+  );
 
   const positionStyle = useAnimatedStyle(() => {
     const isDragging = sharedDraggingId.value === activityId;
-    const ownSlot = sharedOrder.value.indexOf(activityId);
     if (isDragging) {
       return {
         transform: [
@@ -132,25 +181,8 @@ function ActivityRow({
       };
     }
 
-    const origin = sharedDragOriginSlot.value;
-    const destination = sharedInsertAt.value;
-    let effectiveSlot = ownSlot;
-    if (sharedDraggingId.value !== "" && origin >= 0 && destination >= 0) {
-      if (destination <= origin) {
-        if (ownSlot >= destination && ownSlot < origin) effectiveSlot = ownSlot + 1;
-      } else if (ownSlot > origin && ownSlot <= destination) {
-        effectiveSlot = ownSlot - 1;
-      }
-    }
-
     return {
-      transform: [
-        {
-          translateY: withTiming(effectiveSlot * ROUTINE_SLOT_HEIGHT, {
-            duration: 180,
-          }),
-        },
-      ],
+      transform: [{ translateY: settledY.value }],
       zIndex: 1,
       shadowOpacity: 0,
     };
@@ -167,9 +199,9 @@ function ActivityRow({
   const completeFromTicket = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      if (!completing) onComplete();
+      if (!completing) onComplete(activity);
     },
-    [completing, onComplete],
+    [activity, completing, onComplete],
   );
 
   return (
@@ -180,7 +212,7 @@ function ActivityRow({
       <GestureDetector gesture={pan}>
         <Reanimated.View style={[styles.activityCard, completionStyle]}>
           <Pressable
-            onPress={onOpen}
+            onPress={() => onOpen(activityId)}
             disabled={completing}
             accessibilityRole="button"
             accessibilityLabel={`Abrir ${activity.title}`}
@@ -234,7 +266,7 @@ function ActivityRow({
       </GestureDetector>
     </Reanimated.View>
   );
-}
+});
 
 export function MiRutinaSection({ style }: Props) {
   const colors = useColors();
@@ -249,6 +281,7 @@ export function MiRutinaSection({ style }: Props) {
   } = useRutina();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [completingIds, setCompletingIds] = useState<Set<string>>(() => new Set());
+  const completingIdsRef = useRef<Set<string>>(new Set());
   const lastSeenAddedId = useRef<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exitTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
@@ -316,6 +349,23 @@ export function MiRutinaSection({ style }: Props) {
     }, [lastAddedId, showToast]),
   );
 
+  useFocusEffect(
+    useCallback(
+      () => () => {
+        if (toastTimerRef.current) {
+          clearTimeout(toastTimerRef.current);
+          toastTimerRef.current = null;
+        }
+        exitTimersRef.current.forEach(clearTimeout);
+        exitTimersRef.current.clear();
+        completingIdsRef.current = new Set();
+        setCompletingIds(new Set());
+        setToastMessage(null);
+      },
+      [],
+    ),
+  );
+
   const openCreate = useCallback(() => {
     router.push("/crear-rutina" as never);
   }, []);
@@ -333,49 +383,51 @@ export function MiRutinaSection({ style }: Props) {
 
   const handleComplete = useCallback(
     (activity: RoutineActivity) => {
-      if (completingIds.has(activity.id)) return;
+      if (completingIdsRef.current.has(activity.id)) return;
+      const nextCompleting = new Set(completingIdsRef.current);
+      nextCompleting.add(activity.id);
+      completingIdsRef.current = nextCompleting;
       completeActivity(activity.id, dateKey);
-      setCompletingIds((current) => {
-        const next = new Set(current);
-        next.add(activity.id);
-        return next;
-      });
+      setCompletingIds(nextCompleting);
       showToast("Actividad finalizada");
       const existingTimer = exitTimersRef.current.get(activity.id);
       if (existingTimer) clearTimeout(existingTimer);
       exitTimersRef.current.set(
         activity.id,
         setTimeout(() => {
-          setCompletingIds((current) => {
-            const next = new Set(current);
-            next.delete(activity.id);
-            return next;
-          });
+          const next = new Set(completingIdsRef.current);
+          next.delete(activity.id);
+          completingIdsRef.current = next;
+          setCompletingIds(next);
           exitTimersRef.current.delete(activity.id);
         }, COMPLETION_EXIT_DELAY),
       );
     },
-    [completeActivity, completingIds, dateKey, showToast],
+    [completeActivity, dateKey, showToast],
   );
+
+  const todayActivityIdsRef = useRef(todayActivityIds);
+  todayActivityIdsRef.current = todayActivityIds;
 
   const handleDragEnd = useCallback(
     (from: number, to: number) => {
+      const currentIds = todayActivityIdsRef.current;
       if (
         from < 0 ||
         to < 0 ||
-        from >= todayActivityIds.length ||
-        to >= todayActivityIds.length ||
+        from >= currentIds.length ||
+        to >= currentIds.length ||
         from === to
       ) {
         return;
       }
-      const reorderedIds = [...todayActivityIds];
+      const reorderedIds = [...currentIds];
       const [movedId] = reorderedIds.splice(from, 1);
       if (!movedId) return;
       reorderedIds.splice(to, 0, movedId);
       reorderActivities(reorderedIds);
     },
-    [reorderActivities, todayActivityIds],
+    [reorderActivities],
   );
 
   const hasScheduledToday = activities.some((activity) =>
@@ -417,10 +469,11 @@ export function MiRutinaSection({ style }: Props) {
             { height: todayActivities.length * ROUTINE_SLOT_HEIGHT },
           ]}
         >
-          {todayActivities.map((activity) => (
+          {todayActivities.map((activity, index) => (
             <ActivityRow
               key={activity.id}
               activity={activity}
+              initialIndex={index}
               completing={completingIds.has(activity.id)}
               itemCount={todayActivities.length}
               orderSV={orderSV}
@@ -428,8 +481,8 @@ export function MiRutinaSection({ style }: Props) {
               dragOriginSlot={dragOriginSlot}
               dragDeltaY={dragDeltaY}
               insertAt={insertAt}
-              onOpen={() => openActivity(activity.id)}
-              onComplete={() => handleComplete(activity)}
+              onOpen={openActivity}
+              onComplete={handleComplete}
               onDragEnd={handleDragEnd}
             />
           ))}
