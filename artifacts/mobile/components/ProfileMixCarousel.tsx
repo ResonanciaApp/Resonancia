@@ -119,7 +119,7 @@ export function ProfileMixCarousel() {
             ]}
           >
             <Feather name="plus" size={23} color={accent} />
-            <Text style={[styles.addLabel, { color: accent }]}>Añadir una mezcla</Text>
+            <Text style={[styles.addLabel, { color: accent }]}>Crear una mezcla</Text>
           </View>
         </PressScale>
       </ScrollView>

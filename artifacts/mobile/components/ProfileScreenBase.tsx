@@ -188,7 +188,7 @@ function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
   );
 }
 
-function ProfileMembershipModules() {
+function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?: string }) {
   const [expandedPlan, setExpandedPlan] = useState<string | null>("premium");
 
   const togglePlan = (planId: string) => {
@@ -236,7 +236,9 @@ function ProfileMembershipModules() {
                   <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
                     {plan.name}
                   </Text>
-                  <Text style={styles.membershipPlanEyebrow}>{plan.eyebrow}</Text>
+                  <Text style={[styles.membershipPlanEyebrow, secondaryTextColor && { color: secondaryTextColor }]}>
+                    {plan.eyebrow}
+                  </Text>
                 </View>
                 <Feather
                   name="chevron-down"
@@ -421,6 +423,7 @@ export function ProfileScreenBase({
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
+  const indigo2SecondaryText = activeSceneId === "indigo2" ? colors.accent : undefined;
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -1268,7 +1271,7 @@ export function ProfileScreenBase({
 
                 {email ? (
                   <Text
-                    style={[styles.emailText, { color: "#AAAAC4" }]}
+                    style={[styles.emailText, { color: indigo2SecondaryText ?? "#AAAAC4" }]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -1278,8 +1281,8 @@ export function ProfileScreenBase({
 
                 {location ? (
                   <View style={styles.locationRow}>
-                    <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-                    <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{location}</Text>
+                    <Feather name="map-pin" size={12} color={indigo2SecondaryText ?? colors.mutedForeground} />
+                    <Text style={[styles.locationText, { color: indigo2SecondaryText ?? colors.mutedForeground }]}>{location}</Text>
                   </View>
                 ) : null}
               </Pressable>
@@ -1295,7 +1298,7 @@ export function ProfileScreenBase({
             </View>
           </View>
           <View style={styles.profileCardDivider} />
-          <ProfileMembershipModules />
+          <ProfileMembershipModules secondaryTextColor={indigo2SecondaryText} />
         </View>
 
         <ProfileMixCarousel />
