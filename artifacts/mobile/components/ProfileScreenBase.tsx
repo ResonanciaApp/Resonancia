@@ -48,7 +48,6 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
-import { MilestoneCards } from "@/components/MilestoneCards";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -69,6 +68,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
+import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import {
@@ -481,7 +481,6 @@ export function ProfileScreenBase({
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
-  const [milestonesOpen, setMilestonesOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
@@ -816,6 +815,24 @@ export function ProfileScreenBase({
     } finally {
       setAccountAction(null);
     }
+  };
+
+  const handleProfileLogout = () => {
+    Alert.alert(
+      "Cerrar sesión",
+      "Saldrás de RESONANCE. Tu progreso queda guardado.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Cerrar sesión",
+          style: "destructive",
+          onPress: async () => {
+            await logout();
+            router.replace("/onboarding");
+          },
+        },
+      ],
+    );
   };
 
   const handleDeleteAccount = () => {
@@ -1506,82 +1523,14 @@ export function ProfileScreenBase({
             <View style={{ marginTop: 32 }}>
               <ProfileMixCarousel marginBottom={32} />
             </View>
-
-            <Pressable
-              onPress={() => router.push("/notificaciones-practica" as never)}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Notificaciones"
-               style={({ pressed }) => [
-                 styles.profileNotificationRow,
-                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
-               ]}
-             >
-               <View style={styles.profileNotificationIcon}>
-                 <Feather name="bell" size={19} color={colors.foreground} />
-               </View>
-               <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
-                 Notificaciones
-               </Text>
-               <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-             </Pressable>
-
-             <Pressable
-               onPress={() => Alert.alert("Descargas", "La descarga estará disponible próximamente.")}
-               accessibilityRole="button"
-               accessibilityLabel="Abrir Descargas"
-               testID="profile-downloads-row"
-               style={({ pressed }) => [
-                 styles.profileNotificationRow,
-                 styles.profileDownloadsRow,
-                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
-               ]}
-            >
-              <View style={styles.profileNotificationIcon}>
-                <Feather name="download" size={19} color={colors.foreground} />
-              </View>
-              <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
-                Descargas
-              </Text>
-              <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-            </Pressable>
-
-             <Pressable
-               onPress={() => {
-                 LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                 setMilestonesOpen((open) => !open);
-               }}
-               accessibilityRole="button"
-               accessibilityLabel="Abrir Hitos"
-               accessibilityState={{ expanded: milestonesOpen }}
-               style={({ pressed }) => [
-                 styles.profileNotificationRow,
-                 styles.profileMilestonesRow,
-                 { backgroundColor: resourceBlockBackground, opacity: pressed ? 0.72 : 1 },
-               ]}
-             >
-               <View style={styles.profileNotificationIcon}>
-                 <Feather name="flag" size={19} color={colors.foreground} />
-               </View>
-               <Text style={[styles.profileNotificationLabel, { color: colors.foreground }]}>
-                 Hitos
-               </Text>
-               <Feather
-                 name={milestonesOpen ? "chevron-up" : "chevron-down"}
-                 size={20}
-                 color={colors.mutedForeground}
-               />
-             </Pressable>
-
-             {milestonesOpen && (
-               <View
-                 style={[
-                   styles.milestonesDropdown,
-                   { backgroundColor: resourceBlockBackground },
-                 ]}
-               >
-                 <MilestoneCards showTitle={false} />
-               </View>
-             )}
+            <ProfileSettingsSections
+              sceneId={activeSceneId}
+              foreground={colors.foreground}
+              mutedForeground={progressAccent}
+              accent={activeTheme.accent ?? colors.primary}
+              cardBackground={resourceBlockBackground}
+              onLogout={handleProfileLogout}
+            />
 
           </>
         )}
@@ -2602,41 +2551,6 @@ const styles = StyleSheet.create({
   personalStatDivider: { width: 1, height: 58, marginHorizontal: 4 },
   personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "600" },
   personalStatLabel: { fontFamily: "Manrope", fontSize: 10, lineHeight: 15, letterSpacing: 0.35, textAlign: "center" },
-  profileNotificationRow: {
-    minHeight: 62,
-    borderRadius: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    marginTop: 16,
-    marginBottom: 0,
-  },
-  profileDownloadsRow: {
-    marginBottom: 0,
-  },
-  profileMilestonesRow: {
-    marginBottom: 0,
-  },
-  milestonesDropdown: {
-    marginTop: 8,
-    marginBottom: 24,
-    borderRadius: 18,
-    padding: 12,
-  },
-  profileNotificationIcon: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  profileNotificationLabel: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-
   // Membresía
   membershipRow: {
     borderRadius: 18,
