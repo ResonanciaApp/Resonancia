@@ -16,7 +16,11 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 const GRID_PAD = 14;
 const CARD_GAP = 14;
 
-export function ProfileMixCarousel() {
+export function ProfileMixCarousel({
+  marginBottom = 32,
+}: {
+  marginBottom?: number;
+}) {
   const { width } = useWindowDimensions();
   const colors = useColors();
   const routineTheme = useRoutineTheme();
@@ -51,7 +55,7 @@ export function ProfileMixCarousel() {
   );
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { marginBottom }]}>
       <Text style={styles.sectionTitle}>Mis mezclas</Text>
       <ScrollView
         horizontal
@@ -157,7 +161,6 @@ export function ProfileMixCarousel() {
 const styles = StyleSheet.create({
   section: {
     paddingHorizontal: GRID_PAD,
-    marginBottom: 32,
   },
   sectionTitle: {
     color: "#F9F9F9",

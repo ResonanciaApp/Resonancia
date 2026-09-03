@@ -102,6 +102,7 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
+import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import {
@@ -2727,7 +2728,7 @@ export default function HomeScreen2({
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
-        {isInicio2 && <ProfileMixCarousel />}
+        {isInicio2 && <ProfileMixCarousel marginBottom={53} />}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginTop={0}
@@ -2735,6 +2736,7 @@ export default function HomeScreen2({
             titleMarginTop={0}
           />
         )}
+        {isInicio2 && <AlmaCommunitySection />}
         {isInicio2 && <AhoraEnResonanciaSection />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (

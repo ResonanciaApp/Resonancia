@@ -180,8 +180,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 13,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
     height: 52,
     gap: 12,
     paddingHorizontal: 16,
