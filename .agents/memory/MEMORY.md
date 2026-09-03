@@ -151,6 +151,7 @@
 - [Panel de chakras del Perfil](profile-chakra-aurora.md) — conservar el panel interactivo con aurora de 7 colores; no sustituirlo por una lista vertical de tarjetas
 - [Accesos rápidos del Perfil](profile-quick-access-layout.md) — Mi perfil usa Guardados primero; Descargas y Sesiones ocupan dos columnas con ícono a la izquierda
 - [Herramientas de Inicio](inicio-tools-layout.md) — Inicio 2 muestra Biblioteca primero y mantiene Geometrix seguido de Videos
+- [Ticket de Mi Rutina](routine-ticket-behavior.md) — indicador teal activo por defecto; al completar permanece hasta 2 s después del popup y luego se oculta
 - [Flujo emocional local](mood-checkin-local.md) — primera fase guarda check-ins completos localmente; encuesta secuencial por emoción y recomendaciones con mapeo provisional
 - [Carruseles editoriales compactos](content-carousel-sizing.md) — en Dormir/Descubrir/Sonidos/categorías: gap 14 px; pill sube solo con título de 2 líneas
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS

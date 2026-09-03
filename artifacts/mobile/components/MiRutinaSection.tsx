@@ -31,6 +31,8 @@ const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
 const ROUTINE_HANDLE_COLOR = "#7F7F7F";
+const ROUTINE_TOAST_DURATION = 2400;
+const ROUTINE_TICKET_DEACTIVATION_DELAY = ROUTINE_TOAST_DURATION + 2000;
 
 function ActivityRow({
   activity,
@@ -63,6 +65,8 @@ function ActivityRow({
   const completed = activity.completedDates.includes(dateKey);
   const completionProgress = useSharedValue(completed ? 1 : 0);
   const didActivate = useSharedValue(0);
+  const [ticketActive, setTicketActive] = useState(!completed);
+  const ticketDeactivateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activityId = activity.id;
   const sharedOrder = orderSV;
   const sharedDraggingId = draggingId;
@@ -73,6 +77,39 @@ function ActivityRow({
   useEffect(() => {
     completionProgress.value = withTiming(completed ? 1 : 0, { duration: 450 });
   }, [completed, completionProgress]);
+
+  useEffect(() => {
+    if (!completed) {
+      if (ticketDeactivateTimerRef.current) {
+        clearTimeout(ticketDeactivateTimerRef.current);
+        ticketDeactivateTimerRef.current = null;
+      }
+      setTicketActive(true);
+    }
+  }, [completed]);
+
+  useEffect(
+    () => () => {
+      if (ticketDeactivateTimerRef.current) clearTimeout(ticketDeactivateTimerRef.current);
+    },
+    [],
+  );
+
+  const handleTicketPress = useCallback(() => {
+    const wasCompleted = completed;
+    onToggle();
+    if (ticketDeactivateTimerRef.current) {
+      clearTimeout(ticketDeactivateTimerRef.current);
+      ticketDeactivateTimerRef.current = null;
+    }
+    setTicketActive(true);
+    if (!wasCompleted) {
+      ticketDeactivateTimerRef.current = setTimeout(() => {
+        setTicketActive(false);
+        ticketDeactivateTimerRef.current = null;
+      }, ROUTINE_TICKET_DEACTIVATION_DELAY);
+    }
+  }, [completed, onToggle]);
 
   const pan = Gesture.Pan()
     .activateAfterLongPress(250)
@@ -199,10 +236,10 @@ function ActivityRow({
             ) : null}
           </View>
           <Pressable
-            onPress={onToggle}
+            onPress={handleTicketPress}
             accessibilityRole="checkbox"
-            accessibilityState={{ checked: completed }}
-            accessibilityLabel={`${completed ? "Desmarcar" : "Marcar"} ${activity.title}`}
+            accessibilityState={{ checked: ticketActive }}
+            accessibilityLabel={`${ticketActive ? "Desactivar" : "Activar"} ticket de ${activity.title}`}
             testID={`routine-toggle-${activity.id}`}
             hitSlop={10}
             style={({ pressed }) => [
@@ -213,7 +250,7 @@ function ActivityRow({
               },
             ]}
           >
-            {completed ? <Feather name="check" size={20} color={WIDGET_GREEN_SOLID} /> : null}
+            {ticketActive ? <Feather name="check" size={20} color={WIDGET_GREEN_SOLID} /> : null}
           </Pressable>
         </Reanimated.View>
       </GestureDetector>
@@ -285,7 +322,7 @@ export function MiRutinaSection({ style }: Props) {
     toastTimerRef.current = setTimeout(() => {
       setToastMessage(null);
       toastTimerRef.current = null;
-    }, 2400);
+    }, ROUTINE_TOAST_DURATION);
   }, []);
 
   useFocusEffect(
