@@ -417,6 +417,7 @@ export function ProfileScreenBase({
     ? "rgba(42,40,64,0.65)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
+  const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -1324,7 +1325,7 @@ export function ProfileScreenBase({
                       </Text>
                       <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Días de racha</Text>
                     </View>
-                    <Text style={[styles.streakSubtitle, { color: "#AAAAC4" }]}>
+                    <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
                       Expande tu consciencia todos los días
                     </Text>
                   </View>
@@ -1359,10 +1360,10 @@ export function ProfileScreenBase({
                   accessibilityLabel="Elegir filtro de días"
                   accessibilityState={{ expanded: statsFilterOpen }}
                 >
-                  <Text style={[styles.statsFilterText, { color: "#AAAAC4" }]}>
+                  <Text style={[styles.statsFilterText, { color: progressAccent }]}>
                     Últimos {statsRangeDays} días
                   </Text>
-                  <Feather name="chevron-down" size={17} color="#AAAAC4" />
+                  <Feather name="chevron-down" size={17} color={progressAccent} />
                 </Pressable>
                 {statsFilterOpen && (
                   <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground }]}>
@@ -1378,7 +1379,7 @@ export function ProfileScreenBase({
                           statsRangeDays === days && { backgroundColor: "rgba(152,93,212,0.16)" },
                         ]}
                       >
-                        <Text style={[styles.statsFilterText, { color: "#AAAAC4" }]}>
+                        <Text style={[styles.statsFilterText, { color: progressAccent }]}>
                           Últimos {days} días
                         </Text>
                       </Pressable>
@@ -1397,7 +1398,7 @@ export function ProfileScreenBase({
                       {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
                     </Text>
                   </View>
-                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
                     TIEMPO DE{"\n"}BIENESTAR
                   </Text>
                 </View>
@@ -1411,7 +1412,7 @@ export function ProfileScreenBase({
                       {personalStats.completedSessions}
                     </Text>
                   </View>
-                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
                     SESIONES{"\n"}COMPLETADAS
                   </Text>
                 </View>
@@ -1425,7 +1426,7 @@ export function ProfileScreenBase({
                       {maxStreak} {maxStreak === 1 ? "día" : "días"}
                     </Text>
                   </View>
-                  <Text style={[styles.personalStatLabel, { color: "#AAAAC4" }]}>
+                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
                     RACHA{"\n"}MÁXIMA
                   </Text>
                 </View>

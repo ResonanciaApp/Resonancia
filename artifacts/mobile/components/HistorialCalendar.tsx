@@ -215,6 +215,7 @@ export function HistorialCalendar({
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
+  const calendarAccent = activeSceneId === "indigo2" ? colors.accent : colors.mutedForeground;
   const { history, statEvents, isFavorite, toggleFavorite, playSession } = usePlayer();
   const calendarBackground = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
@@ -319,7 +320,7 @@ export function HistorialCalendar({
 
         <View style={[styles.weekRow, embedded && styles.embeddedWeekRow]}>
           {(embedded ? EMBEDDED_WEEK_LABELS : WEEK_LABELS).map((label, index) => (
-            <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: colors.mutedForeground }]}>
+            <Text key={`${label}-${index}`} style={[styles.weekLabel, { color: calendarAccent }]}>
               {label}
             </Text>
           ))}
@@ -348,7 +349,7 @@ export function HistorialCalendar({
 
         {embedded && (
         <View style={styles.embeddedSummary}>
-          <Text style={[styles.embeddedDateLabel, { color: colors.mutedForeground }]}>
+          <Text style={[styles.embeddedDateLabel, { color: calendarAccent }]}>
             {formatSelectedDate(selectedDate, today)}
           </Text>
           {dayEntries.length === 0 ? (
@@ -384,7 +385,7 @@ export function HistorialCalendar({
                     <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
                       {entry.categoryLabel || session.categoryLabel || "Contenido"}
                     </Text>
-                    <Text style={[styles.embeddedEntryTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
+                    <Text style={[styles.embeddedEntryTitle, { color: calendarAccent }]} numberOfLines={2}>
                       {session.title}
                     </Text>
                   </View>
