@@ -102,6 +102,7 @@ import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { AhoraEnResonanciaSection } from "@/components/AhoraEnResonanciaSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2598,6 +2599,7 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <MiRutinaSection />}
+        {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && featuredMoment && (
           <View
             style={{
