@@ -229,7 +229,8 @@ export function SessionCarousel({
                         },
                       ]}
                     />
-                    {!showMetaBelow && (showImageCategoryPill || !showCollectionBelow) && (
+                    {(!showMetaBelow || durationInsideWithMeta) &&
+                      (showImageCategoryPill || !showCollectionBelow) && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
                     {!shouldHideAmbientalTitle && (
@@ -269,7 +270,7 @@ export function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {!showMetaBelow && showImageCategoryPill && (
+                    {(!showMetaBelow || durationInsideWithMeta) && showImageCategoryPill && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
                     {(!showMetaBelow || durationInsideWithMeta) && (
@@ -307,14 +308,12 @@ export function SessionCarousel({
                   >
                     {s.title}
                   </Text>
-                  {showMetaBelow ? (
+                  {showMetaBelow && !durationInsideWithMeta ? (
                     <Text
                       style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
                       numberOfLines={1}
                     >
-                      {durationInsideWithMeta
-                        ? s.categoryLabel
-                        : [s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
+                      {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
                   ) : showCollectionBelow && s.categoryLabel ? (
                     <Text

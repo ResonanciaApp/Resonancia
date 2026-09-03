@@ -85,8 +85,6 @@ function ToolCard({
           tool.id === "diario" && styles.lastCard,
           {
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : pillBackground,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.07)",
             transform: [{ scale }],
           },
         ]}

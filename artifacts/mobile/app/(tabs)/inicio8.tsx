@@ -2501,9 +2501,10 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
-            showAuthor={false}
+            showAuthor
             showMetaBelow
             durationInsideWithMeta
+            showImageCategoryPill
             hideAmbientalTitleInSquareRecent
           />
         )}
@@ -2590,9 +2591,10 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
-            showAuthor={false}
+            showAuthor
             showMetaBelow
             durationInsideWithMeta
+            showImageCategoryPill
           />
         )}
         {isInicio2 && <MiRutinaSection />}
