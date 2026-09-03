@@ -377,20 +377,6 @@ export default function SonidosScreen() {
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}
-            <Pressable
-              onPress={() => setAllVisible(true)}
-              accessibilityRole="button"
-              accessibilityLabel="Todas las sesiones de Sonidos"
-              style={({ pressed }) => [
-                styles.allSessionsButton,
-                { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.75 : 1 },
-              ]}
-            >
-              <Text style={styles.allSessionsButtonText}>
-                Todas las sesiones de Sonidos
-              </Text>
-              <Feather name="chevron-right" size={16} color="#F9F9F9" />
-            </Pressable>
           </>
         )}
         </View>
