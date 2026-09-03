@@ -132,6 +132,10 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
+// Premium Plus queda configurado para una futura reactivación, pero por ahora
+// Perfil muestra únicamente el plan Premium.
+const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id === "premium");
+
 function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -197,7 +201,7 @@ function ProfileMembershipModules({ secondaryTextColor }: { secondaryTextColor?:
 
   return (
     <View style={styles.membershipSection}>
-      {MEMBERSHIP_PLANS.map((plan, index) => {
+      {VISIBLE_MEMBERSHIP_PLANS.map((plan, index) => {
         const isOpen = expandedPlan === plan.id;
         const isPremium = plan.id === "premium";
 
