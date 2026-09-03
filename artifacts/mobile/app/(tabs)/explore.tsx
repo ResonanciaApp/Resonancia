@@ -383,7 +383,7 @@ export function ExploreScreen({
   });
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.05)"],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
