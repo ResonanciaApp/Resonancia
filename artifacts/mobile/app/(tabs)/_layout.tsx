@@ -573,9 +573,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 11,
     letterSpacing: 0.3,
-    fontWeight: "700",
+    fontWeight: "500",
   },
   labelWrap: {
     width: "100%",
