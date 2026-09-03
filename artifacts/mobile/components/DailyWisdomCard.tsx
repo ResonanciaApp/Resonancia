@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 22,
     paddingBottom: 24,
-    minHeight: 240,
+    minHeight: 210,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "flex-start",
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   quote: {
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 19,
     lineHeight: 29,
     fontWeight: "700",
     color: "#F9F9F9",
