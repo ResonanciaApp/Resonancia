@@ -50,14 +50,6 @@ function selectedDateLabel(date: Date, todayKey: string): string {
   return `${prefix}${shortMonth(date)} ${date.getDate()}`;
 }
 
-function weekRangeLabel(start: Date): string {
-  const end = addDays(start, 6);
-  if (start.getMonth() === end.getMonth()) {
-    return `${start.getDate()}–${end.getDate()} ${shortMonth(start)}`;
-  }
-  return `${start.getDate()} ${shortMonth(start)} – ${end.getDate()} ${shortMonth(end)}`;
-}
-
 function statusFor(activity: RoutineActivity, dateKey: string) {
   if (activity.completedDates.includes(dateKey)) return "completed" as const;
   if (activity.skippedDates.includes(dateKey)) return "skipped" as const;
@@ -150,12 +142,13 @@ export default function RutinaCalendarioScreen() {
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(today));
   const [showAll, setShowAll] = useState(false);
   const { activities, isHydrated } = useRutina();
   const selectedKey = getRoutineDateKey(selectedDate);
+  const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
+  const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)),
     [weekStart],
@@ -187,12 +180,6 @@ export default function RutinaCalendarioScreen() {
     ? historyForDate
     : historyForDate.filter((activity) => activity.completedDates.includes(selectedKey));
 
-  const moveWeek = (amount: number) => {
-    const nextStart = addDays(weekStart, amount * 7);
-    setWeekStart(nextStart);
-    setSelectedDate(nextStart);
-  };
-
   return (
     <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
       <StatusBar hidden />
@@ -213,7 +200,10 @@ export default function RutinaCalendarioScreen() {
           >
             <Feather name="arrow-left" size={23} color={routineTheme.text} />
           </Pressable>
-          <Text style={[styles.headerDate, { color: routineTheme.text }]}>
+          <Text
+            pointerEvents="none"
+            style={[styles.headerDate, { color: routineTheme.text }]}
+          >
             {selectedDateLabel(selectedDate, todayKey)}
           </Text>
           <Pressable
@@ -224,33 +214,6 @@ export default function RutinaCalendarioScreen() {
             <Text style={[styles.showAll, { color: routineTheme.completion }]}>
               {showAll ? "Solo completadas" : "Mostrar todo"}
             </Text>
-          </Pressable>
-        </View>
-
-        <View
-          style={[
-            styles.weekNavigator,
-            { backgroundColor: routineTheme.surface, borderColor: routineTheme.divider },
-          ]}
-        >
-          <Pressable
-            onPress={() => moveWeek(-1)}
-            accessibilityRole="button"
-            accessibilityLabel="Ver semana anterior"
-            hitSlop={10}
-          >
-            <Feather name="chevron-left" size={20} color={routineTheme.accent} />
-          </Pressable>
-          <Text style={[styles.weekRange, { color: routineTheme.textMuted }]}>
-            {weekRangeLabel(weekStart)}
-          </Text>
-          <Pressable
-            onPress={() => moveWeek(1)}
-            accessibilityRole="button"
-            accessibilityLabel="Ver semana siguiente"
-            hitSlop={10}
-          >
-            <Feather name="chevron-right" size={20} color={routineTheme.accent} />
           </Pressable>
         </View>
 
@@ -311,9 +274,11 @@ export default function RutinaCalendarioScreen() {
 
         <View style={[styles.divider, { backgroundColor: routineTheme.divider }]} />
 
-        <Text style={[styles.progressTitle, { color: routineTheme.text }]}>
-          {completedCount} / {scheduledForDate.length} completadas
-        </Text>
+        {!isFutureDate && (
+          <Text style={[styles.progressTitle, { color: routineTheme.text }]}>
+            {completedCount} / {scheduledForDate.length} completadas
+          </Text>
+        )}
 
         {!isHydrated ? null : visibleActivities.length ? (
           <View style={styles.activityList}>
@@ -381,8 +346,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    position: "relative",
   },
   headerDate: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    textAlign: "center",
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
@@ -391,21 +361,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
-  },
-  weekNavigator: {
-    height: 40,
-    borderRadius: 15,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 12,
-    marginTop: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  weekRange: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
   },
   daysRow: {
     flexDirection: "row",
