@@ -1513,6 +1513,10 @@ export default function HomeScreen2({
     : activeSceneId === "indigo2"
       ? "rgba(255,255,255,0.025)"
       : cardBg;
+  const quickAccessBg =
+    activeSceneId === "indigo" || activeSceneId === "indigo2"
+      ? durationPillBg
+      : "rgba(255,255,255,0.025)";
   const recommendationSurfaceBg = activeSceneId === "indigo"
     ? "rgba(42,40,64,0.65)"
     : cardBg;
@@ -2716,8 +2720,8 @@ export default function HomeScreen2({
             accessIds={["history", "favorites", "downloads", "sessions", "encounters"]}
             horizontalIds={["sessions", "encounters"]}
             largeLabelIds={["history", "favorites", "downloads"]}
-            cardGap={2}
-            cardBackgroundColor="rgba(255,255,255,0.025)"
+            cardGap={4}
+            cardBackgroundColor={quickAccessBg}
             showCardBorders={false}
             joinedContentCorners
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
