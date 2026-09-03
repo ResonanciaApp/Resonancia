@@ -221,6 +221,8 @@ export default function RutinaCalendarioScreen() {
           {weekDays.map((date, index) => {
             const dateKey = getRoutineDateKey(date);
             const selected = dateKey === selectedKey;
+            const isPast = dateKey < todayKey;
+            const isFuture = dateKey > todayKey;
             const hasCompletion = activities.some((activity) =>
               activity.completedDates.includes(dateKey),
             );
@@ -238,9 +240,7 @@ export default function RutinaCalendarioScreen() {
                 <Text
                   style={[
                     styles.dayLabel,
-                    {
-                      color: selected ? routineTheme.completion : routineTheme.textMuted,
-                    },
+                    { color: routineTheme.accent },
                   ]}
                 >
                   {DAY_LABELS[index]}
@@ -251,6 +251,8 @@ export default function RutinaCalendarioScreen() {
                     {
                       backgroundColor: selected
                         ? routineTheme.completion
+                        : isFuture
+                          ? "rgba(41,139,115,0.20)"
                         : hasCompletion
                           ? routineTheme.completionSoft
                           : routineTheme.surface,
@@ -261,7 +263,16 @@ export default function RutinaCalendarioScreen() {
                   <Text
                     style={[
                       styles.dayNumber,
-                      { color: selected ? "#FFFFFF" : routineTheme.text },
+                      {
+                        color: selected
+                          ? "#FFFFFF"
+                          : isFuture
+                            ? routineTheme.completion
+                            : isPast
+                              ? routineTheme.accent
+                              : routineTheme.text,
+                        opacity: isFuture && !selected ? 0.9 : 1,
+                      },
                     ]}
                   >
                     {date.getDate()}
@@ -354,7 +365,7 @@ const styles = StyleSheet.create({
     right: 0,
     textAlign: "center",
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
   },
   showAll: {
@@ -397,8 +408,8 @@ const styles = StyleSheet.create({
   },
   progressTitle: {
     fontFamily: "Manrope",
-    fontSize: 22,
-    lineHeight: 29,
+    fontSize: 18,
+    lineHeight: 25,
     fontWeight: "700",
     marginTop: 28,
     marginBottom: 16,
