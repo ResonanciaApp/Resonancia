@@ -126,11 +126,13 @@ function DiscoverPill({
   label,
   icon,
   sceneId,
+  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   icon: DiscoverIconName;
   sceneId: string;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -168,6 +170,9 @@ function DiscoverPill({
           sceneId === "tibet" && styles.discoverPillTibet,
           sceneId === "indigo" && styles.discoverPillIndigo,
           sceneId === "indigo2" && styles.discoverPillIndigo2,
+          sceneId === "indigo2" && indigo2BackgroundColor && {
+            backgroundColor: indigo2BackgroundColor,
+          },
           { transform: [{ scale }] },
         ]}
       >
@@ -363,6 +368,7 @@ export function ExploreScreen({
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = React.useRef(new Animated.Value(0)).current;
   const exploreScrollY = React.useRef(new Animated.Value(0)).current;
   const titleCompactRef = React.useRef(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = React.useState(0);
@@ -375,6 +381,10 @@ export function ExploreScreen({
     inputRange: [0, 1],
     outputRange: [0, 0.96],
   });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.05)"],
+  });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
@@ -385,8 +395,13 @@ export function ExploreScreen({
         duration: 300,
         useNativeDriver: true,
       }).start();
+      Animated.timing(indigo2TabsSurfaceAnim, {
+        toValue: shouldCompact ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
     }
-  }, [titleCompactAnim]);
+  }, [indigo2TabsSurfaceAnim, titleCompactAnim]);
 
 
   function handleSessionPress(s: Session) {
@@ -522,6 +537,7 @@ export function ExploreScreen({
                     label={carousel.label}
                     icon={getDiscoverIcon(carousel.slug, carousel.label)}
                     sceneId={activeSceneId}
+                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
                     onPress={() =>
                       openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
                     }
