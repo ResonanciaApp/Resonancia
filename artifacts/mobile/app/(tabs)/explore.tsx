@@ -127,11 +127,13 @@ function DiscoverPill({
   icon,
   sceneId,
   onPress,
+  stickyShadowOpacity,
 }: {
   label: string;
   icon: DiscoverIconName;
   sceneId: string;
   onPress: () => void;
+  stickyShadowOpacity: Animated.AnimatedInterpolation<number>;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -162,6 +164,14 @@ function DiscoverPill({
       onTouchCancel={handlePressOut}
       testID={`discover-carousel-tab-${label}`}
     >
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          styles.discoverPillStickyShadow,
+          { opacity: stickyShadowOpacity },
+        ]}
+      />
       <Animated.View
         style={[
           styles.discoverPill,
@@ -375,6 +385,10 @@ export function ExploreScreen({
     inputRange: [0, 1],
     outputRange: [0, 0.96],
   });
+  const stickyTabsShadowOpacity = titleCompactAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
   const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const shouldCompact = scrollY > 8;
@@ -454,14 +468,11 @@ export function ExploreScreen({
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        {/* ── Header sticky desde el inicio — título + accesos ── */}
+        {/* ── Cabecera y tabs sticky como capas visuales separadas ── */}
         <View
           style={[
             styles.fixedHeader,
             collapseCategoryHeader && styles.overlayHeader,
-            {
-              paddingTop: topPad + 2,
-            },
           ]}
           onLayout={
             collapseCategoryHeader
@@ -469,34 +480,41 @@ export function ExploreScreen({
               : undefined
           }
         >
-          {collapseCategoryHeader && (
-            <StickyHeaderSurface opacity={stickyHeaderSurfaceOpacity} tint={activeTheme.gradient[0] as string} />
-          )}
-          <View style={styles.titleRow}>
-            <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
-              {screenTitle}
-            </Animated.Text>
-            <Animated.View
-              pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
-            >
-              <Text style={styles.compactPageTitle} numberOfLines={1}>
+          <View style={[styles.stickyTitleHeader, { paddingTop: topPad + 2 }]}>
+            {collapseCategoryHeader && (
+              <StickyHeaderSurface
+                opacity={stickyHeaderSurfaceOpacity}
+                tint={activeTheme.gradient[0] as string}
+                showDivider={false}
+                fadeBottom
+              />
+            )}
+            <View style={styles.titleRow}>
+              <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
                 {screenTitle}
-              </Text>
-            </Animated.View>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              hitSlop={10}
-              style={[
-                styles.headerSearchButton,
-                activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={`Buscar en ${screenTitle}`}
-              testID="discover-search-button"
-            >
-              <Feather name="search" size={24} color="#F9F9F9" />
-            </Pressable>
+              </Animated.Text>
+              <Animated.View
+                pointerEvents="none"
+                style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
+              >
+                <Text style={styles.compactPageTitle} numberOfLines={1}>
+                  {screenTitle}
+                </Text>
+              </Animated.View>
+              <Pressable
+                onPress={() => setSearchVisible(true)}
+                hitSlop={10}
+                style={[
+                  styles.headerSearchButton,
+                  activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={`Buscar en ${screenTitle}`}
+                testID="discover-search-button"
+              >
+                <Feather name="search" size={24} color="#F9F9F9" />
+              </Pressable>
+            </View>
           </View>
 
           {themeCarousels.length > 0 && (
@@ -513,6 +531,7 @@ export function ExploreScreen({
                     label={carousel.label}
                     icon={getDiscoverIcon(carousel.slug, carousel.label)}
                     sceneId={activeSceneId}
+                    stickyShadowOpacity={stickyTabsShadowOpacity}
                     onPress={() =>
                       openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
                     }
@@ -645,26 +664,33 @@ const styles = StyleSheet.create({
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
 
-  fixedHeader:  { zIndex: 10, paddingBottom: 15 },
+  fixedHeader:  { zIndex: 10 },
   overlayHeader: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+  },
+  stickyTitleHeader: {
     paddingBottom: 0,
+    zIndex: 2,
   },
   discoverTabsHeader: {
     marginTop: 9,
-    paddingBottom: 15,
+    paddingBottom: 5,
     paddingHorizontal: H_PAD,
+    backgroundColor: "transparent",
+    zIndex: 1,
   },
   discoverTabs: {
     marginHorizontal: -H_PAD,
     marginBottom: 0,
+    overflow: "visible",
   },
   discoverTabsContent: {
     paddingLeft: H_PAD,
     paddingRight: H_PAD,
+    paddingBottom: 10,
     gap: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -681,6 +707,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
+  },
+  discoverPillStickyShadow: {
+    borderRadius: 27,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.72,
+    shadowRadius: 10,
+    elevation: 9,
   },
   discoverPillTibet: {
     backgroundColor: "rgba(0,0,0,0.15)",
