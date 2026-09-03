@@ -33,6 +33,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Svg, { Circle } from "react-native-svg";
 
 import {
   useGetMe,
@@ -135,6 +136,74 @@ const MEMBERSHIP_PLANS = [
 // Premium Plus queda configurado para una futura reactivación, pero por ahora
 // Perfil muestra únicamente el plan Premium.
 const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id === "premium");
+
+function WeeklyStreakProgress({
+  days,
+  completedDays,
+  color,
+  textColor,
+}: {
+  days: number;
+  completedDays: number;
+  color: string;
+  textColor: string;
+}) {
+  const size = 132;
+  const strokeWidth = 10;
+  const radius = 50;
+  const center = size / 2;
+  const circumference = 2 * Math.PI * radius;
+  const gap = 16;
+  const segmentLength = (circumference - gap * 3) / 3;
+  const weeklyProgress = Math.max(0, Math.min(1, completedDays / 7));
+  const segmentProgress = weeklyProgress * 3;
+
+  return (
+    <View style={styles.weeklyStreakSummary}>
+      <Text style={[styles.weeklyStreakTitle, { color: textColor }]}>ESTA SEMANA</Text>
+      <View style={{ width: size, height: size }}>
+        <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {[0, 1, 2].map((index) => {
+            const fill = Math.max(0, Math.min(1, segmentProgress - index));
+            const rotation = -90 + index * 120;
+            return (
+              <React.Fragment key={index}>
+                <Circle
+                  cx={center}
+                  cy={center}
+                  r={radius}
+                  fill="none"
+                  stroke="rgba(255,255,255,0.14)"
+                  strokeWidth={strokeWidth}
+                  strokeLinecap="round"
+                  strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+                  transform={`rotate(${rotation} ${center} ${center})`}
+                />
+                {fill > 0 && (
+                  <Circle
+                    cx={center}
+                    cy={center}
+                    r={radius}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={strokeWidth}
+                    strokeLinecap="round"
+                    strokeDasharray={`${segmentLength * fill} ${circumference - segmentLength * fill}`}
+                    transform={`rotate(${rotation} ${center} ${center})`}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </Svg>
+        <View style={styles.weeklyStreakCounter}>
+          <Text style={[styles.weeklyStreakNumber, { color: textColor }]}>{days}</Text>
+          <Text style={[styles.weeklyStreakDaysLabel, { color: textColor }]}>Días</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
 
 function MembershipActionButton({ isPremium }: { isPremium: boolean }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -1318,40 +1387,18 @@ export function ProfileScreenBase({
                 },
               ]}
             >
-              <View style={styles.streakHeadingRow}>
-                <View style={styles.streakHeadingMain}>
-                  <View style={styles.streakLotusIcon}>
-                    <MaskedView
-                      style={styles.streakLotusMask}
-                      maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
-                    >
-                      <LinearGradient
-                        colors={["#CFCFCF", "#E3E3E3"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={StyleSheet.absoluteFill}
-                      />
-                    </MaskedView>
-                  </View>
-                  <View style={styles.streakHeadingCopy}>
-                    <View style={styles.streakTitleRow}>
-                      <Text style={[styles.streakCountText, styles.streakCountInline, { color: colors.foreground }]}>
-                        {currentStreak}
-                      </Text>
-                      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Días de racha</Text>
-                    </View>
-                    <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
-                      Expande tu consciencia todos los días
-                    </Text>
-                  </View>
-                </View>
-              </View>
+              <WeeklyStreakProgress
+                days={currentStreak}
+                completedDays={weekFlags.filter(Boolean).length}
+                color={progressAccent}
+                textColor={colors.foreground}
+              />
 
               <SonicStreakDays
                 activeFlags={weekFlags}
                 todayIndex={todayIndex}
                 idPrefix="profile-streak"
-                daysMarginTop={4}
+                daysMarginTop={20}
                 circleSize={37}
                 edgeAligned
                 dayLabelColor={activeTheme.accent ?? colors.primary}
@@ -2462,6 +2509,33 @@ const styles = StyleSheet.create({
   streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
   streakCountInline: { fontSize: 21 },
   streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
+  weeklyStreakSummary: {
+    alignItems: "center",
+  },
+  weeklyStreakTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.9,
+    marginBottom: 8,
+  },
+  weeklyStreakCounter: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  weeklyStreakNumber: {
+    fontFamily: "Manrope",
+    fontSize: 40,
+    lineHeight: 43,
+    fontWeight: "500",
+  },
+  weeklyStreakDaysLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 15,
+    marginTop: -1,
+  },
   personalStatsSection: {
     borderRadius: 18,
     borderWidth: 1,
