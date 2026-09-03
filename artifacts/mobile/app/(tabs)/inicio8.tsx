@@ -2691,6 +2691,7 @@ export default function HomeScreen2({
             horizontalIds={["sessions", "encounters"]}
             largeLabelIds={["history", "favorites", "downloads"]}
             cardGap={4}
+            cardHeightOffset={13}
             cardBackgroundColor={quickAccessBg}
             showCardBorders={false}
             joinedContentCorners

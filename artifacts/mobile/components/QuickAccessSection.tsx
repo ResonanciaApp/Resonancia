@@ -82,6 +82,7 @@ function QuickAccessCard({
   largeLabel,
   profile,
   profileWide,
+  cardHeightOffset,
   foregroundColor,
   onPress,
 }: {
@@ -97,6 +98,7 @@ function QuickAccessCard({
   largeLabel: boolean;
   profile: boolean;
   profileWide: boolean;
+  cardHeightOffset: number;
   foregroundColor: string;
   onPress: () => void;
 }) {
@@ -142,6 +144,7 @@ function QuickAccessCard({
           profileWide && styles.profileWideCard,
           {
             width,
+            height: (profileWide ? 44 : horizontal ? 56 : 76) + cardHeightOffset,
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
@@ -199,6 +202,7 @@ export function QuickAccessSection({
   joinedContentCorners = false,
   cardBackgroundColor,
   cardOpacity = 1,
+  cardHeightOffset = 0,
   style,
 }: {
   includeExtras?: boolean;
@@ -216,6 +220,7 @@ export function QuickAccessSection({
   joinedContentCorners?: boolean;
   cardBackgroundColor?: string;
   cardOpacity?: number;
+  cardHeightOffset?: number;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -303,6 +308,7 @@ export function QuickAccessSection({
               profileLayout && access.id !== "saved" && access.id !== "library" &&
               access.id !== "favorites" && access.id !== "history"
             }
+            cardHeightOffset={cardHeightOffset}
             foregroundColor={colors.foreground}
             onPress={() => handlePress(access.id)}
           />
