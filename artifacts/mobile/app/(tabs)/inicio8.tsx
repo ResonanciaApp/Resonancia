@@ -58,6 +58,7 @@ import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
+import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -69,7 +70,6 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
-import { useIntencion } from "@/context/IntencionContext";
 import { TEMAS } from "@/data/temas";
 import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
@@ -1458,8 +1458,6 @@ export default function HomeScreen2({
 } = {}) {
   const isInicio2 = variant === "copy";
   const colors = useColors();
-  const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
-  const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const {
     playSession,
@@ -1612,22 +1610,6 @@ export default function HomeScreen2({
       .filter((mood): mood is Mood => Boolean(mood));
     setSelectedMoods(nextMoods);
   }
-
-  function handleIntentionPress() {
-    router.push("/intencion-onboarding" as never);
-  }
-
-  const cursorOpacity = useRef(new Animated.Value(1)).current;
-  useEffect(() => {
-    const blink = Animated.loop(
-      Animated.sequence([
-        Animated.timing(cursorOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
-        Animated.timing(cursorOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-      ])
-    );
-    blink.start();
-    return () => blink.stop();
-  }, [cursorOpacity]);
 
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
@@ -2386,23 +2368,7 @@ export default function HomeScreen2({
           </View>
         ) : variant === "original" ? (
           /* Establece tu intención aquí (modo intención diaria) */
-          <Pressable
-            onPress={handleIntentionPress}
-            style={({ pressed }) => [
-              styles.intencionWrap,
-              { marginTop: -5, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
-            ]}
-          >
-            <Text style={styles.intencionSuper}>Hoy quiero…</Text>
-            <View style={styles.intencionRow}>
-              <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
-              {currentIntencion ? (
-                <Text style={styles.intencionText} numberOfLines={2}>{currentIntencion}</Text>
-              ) : (
-                <Text style={styles.intencionPlaceholder}>Proyecta tu propósito</Text>
-              )}
-            </View>
-          </Pressable>
+          <IntentionPrompt style={{ marginTop: -5, marginBottom: 0 }} />
         ) : null}
 
         <View

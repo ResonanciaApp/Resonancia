@@ -68,6 +68,8 @@ import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { IntentionPrompt } from "@/components/IntentionPrompt";
+import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import {
@@ -1501,6 +1503,8 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
+            <IntentionPrompt style={styles.profileIntentionSection} />
+            <ProfileMixCarousel marginBottom={32} />
 
             <Pressable
               onPress={() => router.push("/notificaciones-practica" as never)}
@@ -2554,6 +2558,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 15,
     marginTop: -1,
+  },
+  profileIntentionSection: {
+    marginTop: 16,
+    marginBottom: 16,
   },
   personalStatsSection: {
     borderRadius: 18,
