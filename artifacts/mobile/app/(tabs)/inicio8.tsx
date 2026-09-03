@@ -4052,7 +4052,7 @@ const styles = StyleSheet.create({
   },
   durPillText: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
