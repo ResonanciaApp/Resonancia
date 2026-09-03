@@ -1,8 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -16,7 +20,13 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-export const WATERCOLOR_CARD_SIZE = 131;
+export const WATERCOLOR_CARD_SIZE = getTwoCardCarouselCardWidth(
+  Dimensions.get("window").width,
+  GRID_PAD,
+);
+export const WATERCOLOR_CARD_HEIGHT = Math.round(
+  WATERCOLOR_CARD_SIZE * CONTENT_CAROUSEL_HEIGHT_SCALE,
+);
 export const WATERCOLOR_CARD_RADIUS = 19;
 export const WATERCOLOR_CARD_GAP = 12;
 
@@ -338,7 +348,7 @@ const styles = StyleSheet.create({
   },
   watercolorCard: {
     width: WATERCOLOR_CARD_SIZE,
-    height: WATERCOLOR_CARD_SIZE,
+    height: WATERCOLOR_CARD_HEIGHT,
     borderRadius: WATERCOLOR_CARD_RADIUS,
     paddingVertical: 0,
     paddingHorizontal: 0,

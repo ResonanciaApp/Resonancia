@@ -68,12 +68,18 @@ export function SonicStreakDays({
   activeFlags,
   todayIndex,
   daysMarginTop = 0,
+  circleSize = 39,
 }: {
   activeFlags: boolean[];
   todayIndex: number;
   idPrefix?: string;
   daysMarginTop?: number;
+  circleSize?: number;
 }) {
+  const inactiveCircleSize = circleSize - 2;
+  const circleCenter = circleSize / 2;
+  const circleRadius = circleCenter - 2;
+
   return (
     <View style={[styles.row, daysMarginTop ? { marginTop: daysMarginTop } : undefined]}>
       {DAY_LABELS.map((label, i) => {
@@ -82,20 +88,30 @@ export function SonicStreakDays({
         return (
           <View key={i} style={styles.dayCol}>
             {met ? (
-              <View style={styles.circleGradientBorder}>
-                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
+              <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
+                <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
             ) : isToday ? (
-              <View style={styles.circleGradientBorder}>
-                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
+              <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
+                <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={WIDGET_GREEN_SOLID} strokeWidth={2.9} fill="rgba(255,255,255,0.18)" />
                 </Svg>
               </View>
             ) : (
-              <View style={[styles.circle, styles.circleInactive]} />
+              <View
+                style={[
+                  styles.circle,
+                  styles.circleInactive,
+                  {
+                    width: inactiveCircleSize,
+                    height: inactiveCircleSize,
+                    borderRadius: inactiveCircleSize / 2,
+                  },
+                ]}
+              />
             )}
             <Text style={[
               styles.dayLabel,

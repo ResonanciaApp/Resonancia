@@ -1339,6 +1339,7 @@ export function ProfileScreenBase({
                 todayIndex={todayIndex}
                 idPrefix="profile-streak"
                 daysMarginTop={4}
+                circleSize={37}
               />
             </View>
 
