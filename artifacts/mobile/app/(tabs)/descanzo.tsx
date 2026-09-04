@@ -29,7 +29,6 @@ import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -257,38 +256,12 @@ export default function DescansoScreen() {
 
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
-  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
-  const titleCompactAnim = useRef(new Animated.Value(0)).current;
-  const titleCompactRef = useRef(false);
-  const compactTitleOpacity = titleCompactAnim;
-  const largeTitleOpacity = titleCompactAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-  const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.96],
-  });
   const indigo2TabsBackgroundColor = "rgba(255,255,255,0.05)";
-  const useDiscoverStickyStyle = sceneTheme.id === "indigo" || sceneTheme.id === "indigo2";
-
-  const handleScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
-    const y = e.nativeEvent.contentOffset.y;
-    const shouldCompact = y > 8;
-    if (shouldCompact !== titleCompactRef.current) {
-      titleCompactRef.current = shouldCompact;
-      Animated.timing(titleCompactAnim, {
-        toValue: shouldCompact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [titleCompactAnim]);
 
   const pauseBackgrounds = useCallback(() => {
     if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
@@ -418,31 +391,26 @@ export default function DescansoScreen() {
       <GeoUniverseBackground paused={isScrolling} />
 
       <View style={styles.contentShift}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScrollBeginDrag={pauseBackgrounds}
+          onMomentumScrollBegin={pauseBackgrounds}
+          onScrollEndDrag={resumeBackgrounds}
+          onMomentumScrollEnd={resumeBackgrounds}
+        >
         <View
           style={[
-            styles.fixedHeader,
-            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
+            styles.pageHeader,
             { paddingTop: topPad + 2 },
           ]}
-          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <StickyHeaderSurface
-            opacity={stickyHeaderSurfaceOpacity}
-            tint={bgGradient[0] as string}
-            showTint={!useDiscoverStickyStyle}
-            showDivider={!useDiscoverStickyStyle}
-            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-            showBlackTint={!useDiscoverStickyStyle}
-            strongBlur={useDiscoverStickyStyle}
-            fadeBottom={useDiscoverStickyStyle}
-          />
           <View style={styles.titleRow}>
-            <Animated.Text style={[styles.heroTitle, { color: colors.foreground, opacity: largeTitleOpacity }]}>
+            <Text style={[styles.heroTitle, { color: colors.foreground }]}>
               Dormir
-            </Animated.Text>
-            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}>
-              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Dormir</Text>
-            </Animated.View>
+            </Text>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -475,17 +443,6 @@ export default function DescansoScreen() {
           </View>
         </View>
 
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingTop: fixedHeaderHeight, paddingBottom: 140 + bottomPad }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={handleScroll}
-          onScrollBeginDrag={pauseBackgrounds}
-          onMomentumScrollBegin={pauseBackgrounds}
-          onScrollEndDrag={resumeBackgrounds}
-          onMomentumScrollEnd={resumeBackgrounds}
-        >
         <View style={{ marginTop: -3 }}>
           {false && recentInDescanso.length > 0 && (
             <SessionCarousel
@@ -906,17 +863,10 @@ const styles = StyleSheet.create({
   },
   sleepPillTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
 
-  /* Sticky header */
-  fixedHeader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 20,
+  pageHeader: {
     backgroundColor: "transparent",
     overflow: "hidden",
   },
-  fixedHeaderFadeOverflow: { overflow: "visible" },
   titleRow: {
     position: "relative",
     flexDirection: "row",
