@@ -12,6 +12,7 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { hexToRgba } from "@/utils/color";
 
 type Props = {
   sessions: Session[];
@@ -104,7 +105,7 @@ export function DailyRecommendationsSection({
               showCategoryPill
               showAuthor={false}
               categoryPillPlain={false}
-              categoryPillOutlineColor={categoryAccent}
+              categoryPillOutlineColor={hexToRgba(categoryAccent, 0.4)}
               categoryTextColor={categoryAccent}
               showDurationBadge
               showChevron
