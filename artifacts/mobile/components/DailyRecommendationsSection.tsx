@@ -101,6 +101,8 @@ export function DailyRecommendationsSection({
               session={session}
               imageSize={84}
               showCategoryPill
+              categoryBelowTitle
+              showAuthor={false}
               categoryPillPlain={false}
               categoryPillOutlineColor={sleepTabSurface}
               showDurationBadge

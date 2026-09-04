@@ -26,12 +26,14 @@ type Props = {
   imageSize?: number;
   metaText?: string;
   showCategoryPill?: boolean;
+  categoryBelowTitle?: boolean;
   categoryPillPlain?: boolean;
   categoryPillOutlineColor?: string;
   showDurationBadge?: boolean;
   showChevron?: boolean;
   authorColor?: string;
   authorFontSize?: number;
+  showAuthor?: boolean;
   chevronColor?: string;
   onActionsPress?: () => void;
   onPress?: () => void;
@@ -44,12 +46,14 @@ export function SessionRow({
   imageSize = 80,
   metaText,
   showCategoryPill = false,
+  categoryBelowTitle = false,
   categoryPillPlain = true,
   categoryPillOutlineColor,
   showDurationBadge = false,
   showChevron = false,
   authorColor,
   authorFontSize,
+  showAuthor = true,
   chevronColor,
   onActionsPress,
   onPress,
@@ -106,7 +110,7 @@ export function SessionRow({
         </View>
 
         <View style={styles.sessionContent}>
-          {showCategoryPill ? (
+          {showCategoryPill && !categoryBelowTitle ? (
             <View style={styles.sessionMeta}>
               <SessionCategoryPill
                 categoryId={session.categoryId}
@@ -115,7 +119,7 @@ export function SessionRow({
                 outlineColor={categoryPillOutlineColor}
               />
             </View>
-          ) : (
+          ) : !showCategoryPill ? (
             <View style={styles.sessionMeta}>
               {metaText ? (
                 <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
@@ -128,20 +132,32 @@ export function SessionRow({
                 </>
               )}
             </View>
-          )}
+          ) : null}
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
-          <Text
-            style={[
-              styles.sessionAuthor,
-              { color: authorColor ?? colors.mutedForeground },
-              authorFontSize !== undefined && { fontSize: authorFontSize },
-            ]}
-            numberOfLines={1}
-          >
-            {author}
-          </Text>
+          {showCategoryPill && categoryBelowTitle && (
+            <View style={styles.sessionMeta}>
+              <SessionCategoryPill
+                categoryId={session.categoryId}
+                inline
+                plain={categoryPillPlain}
+                outlineColor={categoryPillOutlineColor}
+              />
+            </View>
+          )}
+          {showAuthor && (
+            <Text
+              style={[
+                styles.sessionAuthor,
+                { color: authorColor ?? colors.mutedForeground },
+                authorFontSize !== undefined && { fontSize: authorFontSize },
+              ]}
+              numberOfLines={1}
+            >
+              {author}
+            </Text>
+          )}
         </View>
         {showChevron && (
           <Feather
