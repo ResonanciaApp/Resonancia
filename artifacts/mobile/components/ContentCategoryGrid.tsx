@@ -52,17 +52,6 @@ const WATERCOLOR_CATEGORY_IMAGES: Partial<
   charlas: require("@/assets/images/discover2-category-charlas.jpg"),
 };
 
-const WATERCOLOR_CATEGORY_DESCRIPTIONS: Partial<
-  Record<ContentCategoryDefinition["id"], string>
-> = {
-  "meditaciones-guiadas": "Prácticas guiadas para volver a tu centro",
-  "sonidos-ancestrales": "Vibraciones que armonizan cuerpo y mente",
-  "musica-sonidos": "Sonidos para acompañar cada momento",
-  ambientales: "Paisajes sonoros para relajarte y conectar",
-  historias: "Relatos que inspiran calma y consciencia",
-  charlas: "Ideas y conversaciones para expandirte",
-};
-
 function renderCategoryIcon(
   category: ContentCategoryDefinition,
   horizontal: boolean,
@@ -283,9 +272,6 @@ export function ContentCategoryGrid({
                         ]}
                       />
                       <Text style={styles.watercolorLabel}>{category.label}</Text>
-                      <Text style={styles.watercolorDescription} numberOfLines={2}>
-                        {WATERCOLOR_CATEGORY_DESCRIPTIONS[category.id]}
-                      </Text>
                     </>
                   ) : (
                     <>
@@ -405,20 +391,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     maxWidth: WATERCOLOR_CARD_SIZE - 24,
     textShadowColor: "rgba(0,0,0,0.85)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
-  },
-  watercolorDescription: {
-    position: "absolute",
-    left: 12,
-    right: 12,
-    bottom: 13,
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 17,
-    fontWeight: "500",
-    textShadowColor: "rgba(0,0,0,0.9)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
   },

@@ -644,7 +644,7 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
-  scrollContent: { paddingTop: 22 },
+  scrollContent: { marginTop: -3 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   overlayHeader: {
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginBottom: 24,
+    marginBottom: SECTION_GAP,
   },
   durationSection: {
     marginBottom: SECTION_GAP,
