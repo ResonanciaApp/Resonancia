@@ -5,6 +5,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  FlatList,
   Image,
   Modal,
   PanResponder,
@@ -409,79 +410,65 @@ export default function DescansoScreen() {
       <GeoUniverseBackground paused={isScrolling} />
 
       <View style={styles.contentShift}>
-        <ScrollView
+        <FlatList
           style={styles.scroll}
+          data={sleepCollections}
+          keyExtractor={(collection) => collection.id}
           contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          initialNumToRender={2}
+          maxToRenderPerBatch={2}
+          windowSize={5}
           onScrollBeginDrag={pauseBackgrounds}
           onMomentumScrollBegin={pauseBackgrounds}
           onScrollEndDrag={resumeBackgrounds}
           onMomentumScrollEnd={resumeBackgrounds}
-        >
-        <View
-          style={[
-            styles.pageHeader,
-            { paddingTop: topPad + 2 },
-          ]}
-        >
-          <View style={styles.titleRow}>
-            <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-              Dormir
-            </Text>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              hitSlop={10}
-              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Dormir"
-              testID="sleep-search-button"
+          ListHeaderComponent={(
+            <View
+              style={[
+                styles.pageHeader,
+                { paddingTop: topPad + 2, marginBottom: -3 },
+              ]}
             >
-              <Feather name="search" size={24} color={colors.foreground} />
-            </Pressable>
-          </View>
-          <View style={styles.sleepTabsHeader}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={[styles.tabGrid, { marginBottom: 0 }]}
-              contentContainerStyle={styles.tabGridContent}
-            >
-              {sleepCollections.map((tab) => (
-                <SleepPill
-                  key={tab.id}
-                  sel={false}
-                  label={tab.label}
-                  icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
-                  onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-
-        <View style={{ marginTop: -3 }}>
-          {false && recentInDescanso.length > 0 && (
-            <SessionCarousel
-              title="Sesiones recientes"
-              sessions={recentInDescanso}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: 33, marginBottom: 0, paddingHorizontal: H_PAD }}
-              cardWidth={RECENT_CARD_W}
-              allowOversizedCardWidth
-              titleSize={19}
-              titleOffset={10}
-              titleSpacing={17}
-              squareCards
-              cardAuthorColor="#acaac2"
-              showMetaBelow
-            />
+              <View style={styles.titleRow}>
+                <Text style={[styles.heroTitle, { color: colors.foreground }]}>
+                  Dormir
+                </Text>
+                <Pressable
+                  onPress={() => setSearchVisible(true)}
+                  hitSlop={10}
+                  style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Buscar en Dormir"
+                  testID="sleep-search-button"
+                >
+                  <Feather name="search" size={24} color={colors.foreground} />
+                </Pressable>
+              </View>
+              <View style={styles.sleepTabsHeader}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={[styles.tabGrid, { marginBottom: 0 }]}
+                  contentContainerStyle={styles.tabGridContent}
+                >
+                  {sleepCollections.map((tab) => (
+                    <SleepPill
+                      key={tab.id}
+                      sel={false}
+                      label={tab.label}
+                      icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                      indigo2BackgroundColor={indigo2TabsBackgroundColor}
+                      onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
           )}
-          {sleepCollections.map((collection, index) => (
+          renderItem={({ item: collection, index }) => (
             <SessionCarousel
-              key={collection.id}
               title={collection.label}
               sessions={collection.sessions}
               isPremium={isPremium}
@@ -492,13 +479,9 @@ export default function DescansoScreen() {
               showCardMetadata
               showAuthor={false}
               onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-              removeClippedSubviews
             />
-          ))}
-
-        </View>
-
-        </ScrollView>
+          )}
+        />
       </View>
 
       <NightTimerSheet

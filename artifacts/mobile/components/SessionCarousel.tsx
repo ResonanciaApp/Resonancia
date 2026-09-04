@@ -99,7 +99,6 @@ type SessionCarouselProps = {
   cardVariant?: "ambiental";
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
-  removeClippedSubviews?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -130,7 +129,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
-  removeClippedSubviews = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -197,7 +195,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         initialNumToRender={eagerRender ? sessions.length : 3}
         maxToRenderPerBatch={eagerRender ? sessions.length : 3}
         windowSize={eagerRender ? 11 : 3}
-        removeClippedSubviews={removeClippedSubviews}
+        removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
         contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
