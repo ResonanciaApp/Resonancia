@@ -2,11 +2,9 @@ import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Image as ExpoImage } from "expo-image";
 import { router } from "expo-router";
-import { Feather } from "@expo/vector-icons";
 
 import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   marginTop?: number;
@@ -37,6 +35,15 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
     <View style={[styles.root, { marginTop, marginBottom }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Los Resonadores</Text>
+        <Pressable
+          onPress={() => router.push("/equipo" as never)}
+          accessibilityRole="button"
+          accessibilityLabel="Ver todos los Resonadores"
+          hitSlop={8}
+          style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
+        >
+          <Text style={[styles.viewAllText, { color: colors.accent }]}>Ver todos</Text>
+        </Pressable>
       </View>
       <ScrollView
         horizontal
@@ -76,21 +83,6 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
             </Pressable>
           ))}
       </ScrollView>
-      <Pressable
-        onPress={() => router.push("/equipo" as never)}
-        accessibilityRole="button"
-        accessibilityLabel="Ver todos los Resonadores"
-        style={({ pressed }) => [
-          styles.allResonadoresButton,
-          {
-            backgroundColor: WIDGET_GREEN_SOLID,
-            opacity: pressed ? 0.75 : 1,
-          },
-        ]}
-      >
-        <Text style={styles.allResonadoresButtonText}>Ver todos los Resonadores</Text>
-        <Feather name="chevron-right" size={16} color="#F9F9F9" />
-      </Pressable>
     </View>
   );
 }
@@ -111,24 +103,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F4F4F4",
   },
-  allResonadoresButton: {
-    alignSelf: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 15,
-    overflow: "hidden",
-    paddingHorizontal: 28,
-    paddingVertical: 9,
-    gap: 6,
-    marginTop: 29,
-    marginBottom: 16,
-  },
-  allResonadoresButtonText: {
+  viewAllText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#F9F9F9",
   },
   carouselContent: {
     gap: CARD_GAP,

@@ -121,14 +121,14 @@ const DISCOVER_ICON_BY_SLUG: Record<string, DiscoverIconName> = {
 };
 
 const THEME_CARD_OVERLAY_BY_SLUG: Record<string, [string, string]> = {
-  "para-la-ansiedad": ["rgba(109,47,74,0.34)", "rgba(25,10,18,0.28)"],
-  "energiza-tus-mananas": ["rgba(199,132,48,0.32)", "rgba(49,27,8,0.26)"],
-  "foco-concentracion": ["rgba(52,89,139,0.34)", "rgba(11,22,39,0.28)"],
-  "suelto-la-rabia": ["rgba(149,51,40,0.34)", "rgba(43,12,8,0.28)"],
-  "crecimiento-personal": ["rgba(50,105,74,0.34)", "rgba(9,31,20,0.28)"],
-  "armonia-familiar": ["rgba(142,79,103,0.32)", "rgba(40,17,27,0.26)"],
-  "respiracion-consciente": ["rgba(45,112,116,0.34)", "rgba(8,31,33,0.28)"],
-  "meditaciones-activas": ["rgba(160,92,50,0.32)", "rgba(43,20,9,0.26)"],
+  "para-la-ansiedad": ["rgba(109,47,74,0.41)", "rgba(25,10,18,0.35)"],
+  "energiza-tus-mananas": ["rgba(199,132,48,0.39)", "rgba(49,27,8,0.33)"],
+  "foco-concentracion": ["rgba(52,89,139,0.41)", "rgba(11,22,39,0.35)"],
+  "suelto-la-rabia": ["rgba(149,51,40,0.41)", "rgba(43,12,8,0.35)"],
+  "crecimiento-personal": ["rgba(50,105,74,0.41)", "rgba(9,31,20,0.35)"],
+  "armonia-familiar": ["rgba(142,79,103,0.39)", "rgba(40,17,27,0.33)"],
+  "respiracion-consciente": ["rgba(45,112,116,0.41)", "rgba(8,31,33,0.35)"],
+  "meditaciones-activas": ["rgba(160,92,50,0.39)", "rgba(43,20,9,0.33)"],
 };
 
 function getDiscoverIcon(slug: string, label: string): DiscoverIconName {
@@ -635,7 +635,7 @@ export function ExploreScreen({
           ))}
 
           <ResonadoresSection
-            marginTop={0}
+            marginTop={16}
             marginBottom={SECTION_GAP}
           />
 
