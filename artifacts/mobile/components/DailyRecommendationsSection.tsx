@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Pressable,
   StyleProp,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 type Props = {
   sessions: Session[];
   dayKey: string;
+  onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -49,7 +51,12 @@ function formatDailyDate(dayKey: string): string {
   return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} ${MONTHS[date.getMonth()]}`;
 }
 
-export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) {
+export function DailyRecommendationsSection({
+  sessions,
+  dayKey,
+  onRefreshRecommendations,
+  style,
+}: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
@@ -60,6 +67,14 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
       : theme.id === "indigo"
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
+  const refreshButtonBackground =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : theme.id === "indigo2"
+          ? "rgba(255,255,255,0.025)"
+          : "rgba(255,255,255,0.05)";
 
   if (recommendations.length < 3) return null;
 
@@ -101,6 +116,22 @@ export function DailyRecommendationsSection({ sessions, dayKey, style }: Props) 
           </React.Fragment>
         ))}
       </View>
+      {onRefreshRecommendations && (
+        <Pressable
+          onPress={onRefreshRecommendations}
+          accessibilityRole="button"
+          accessibilityLabel="Actualizar recomendaciones"
+          style={({ pressed }) => [
+            styles.refreshButton,
+            {
+              backgroundColor: refreshButtonBackground,
+              opacity: pressed ? 0.72 : 1,
+            },
+          ]}
+        >
+          <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -135,5 +166,20 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     opacity: 0.75,
+  },
+  refreshButton: {
+    height: 45,
+    borderRadius: 15,
+    marginTop: 16,
+    paddingHorizontal: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  refreshButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#F9F9F9",
+    textAlign: "center",
   },
 });
