@@ -21,6 +21,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
+const FEATURED_CARD_WIDTH = (Dimensions.get("window").width - GRID_PAD * 2) * 0.48;
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
@@ -191,6 +192,10 @@ export function ContentCategoryGrid({
           const watercolorImage = WATERCOLOR_CATEGORY_IMAGES[category.id];
           const isWatercolorCard =
             horizontal && visualVariant === "watercolor" && watercolorImage !== undefined;
+          const isFeaturedSquareCard =
+            !horizontal &&
+            isDiscoverGrid &&
+            (category.id === "meditaciones-guiadas" || category.id === "sonidos-ancestrales");
           const radius = 27;
           const corners = [
             {
@@ -254,7 +259,10 @@ export function ContentCategoryGrid({
                         category.id === "meditaciones-guiadas" && styles.horizontalRightSmallRadiusCard,
                         category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
-                    : corners[index] ?? { borderRadius: radius },
+                    : isDiscoverGrid
+                      ? { borderRadius: 18 }
+                      : corners[index] ?? { borderRadius: radius },
+                  isFeaturedSquareCard && styles.featuredSquareCard,
                   isWatercolorCard && squareWatercolorCards && {
                     height: WATERCOLOR_CARD_SIZE,
                   },
@@ -299,7 +307,13 @@ export function ContentCategoryGrid({
                       >
                         {renderCategoryIcon(category, horizontal, horizontal)}
                       </View>
-                      <Text style={[styles.label, horizontal && styles.horizontalLabel]}>
+                      <Text
+                        style={[
+                          styles.label,
+                          horizontal && styles.horizontalLabel,
+                          isFeaturedSquareCard && styles.featuredSquareLabel,
+                        ]}
+                      >
                         {category.label}
                       </Text>
                     </>
@@ -369,6 +383,18 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     borderWidth: 0,
+  },
+  featuredSquareCard: {
+    aspectRatio: FEATURED_CARD_WIDTH / (FEATURED_CARD_WIDTH - 20),
+    borderRadius: 18,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+  },
+  featuredSquareLabel: {
+    width: "100%",
+    textAlign: "center",
   },
   horizontalCard: {
     borderRadius: 27,
