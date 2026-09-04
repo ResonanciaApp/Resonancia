@@ -34,29 +34,24 @@ import { isChakraTag } from "@/data/chakras";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
-import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { TEMAS } from "@/data/temas";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
 const GAP = 16;
-const TEMA_GAP = 10;
 const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
-const TEMA_CARD_W = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
@@ -215,7 +210,6 @@ export function ExploreScreen({
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
-  const colors   = useColors();
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
@@ -385,41 +379,6 @@ export function ExploreScreen({
 
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const titleCompactAnim = React.useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = React.useRef(new Animated.Value(0)).current;
-  const exploreScrollY = React.useRef(new Animated.Value(0)).current;
-  const titleCompactRef = React.useRef(false);
-  const [fixedHeaderHeight, setFixedHeaderHeight] = React.useState(0);
-  const compactTitleOpacity = titleCompactAnim;
-  const largeTitleOpacity = titleCompactAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-  const stickyHeaderSurfaceOpacity = titleCompactAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.96],
-  });
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
-  });
-  const handleExploreScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    const shouldCompact = scrollY > 8;
-    if (shouldCompact !== titleCompactRef.current) {
-      titleCompactRef.current = shouldCompact;
-      Animated.timing(titleCompactAnim, {
-        toValue: shouldCompact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(indigo2TabsSurfaceAnim, {
-        toValue: shouldCompact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [indigo2TabsSurfaceAnim, titleCompactAnim]);
 
 
   function handleSessionPress(s: Session) {
@@ -486,46 +445,15 @@ export function ExploreScreen({
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar hidden />
 
-      <View style={styles.contentShift}>
-        {/* ── Header sticky desde el inicio — título + accesos ── */}
-        <View
-          style={[
-            styles.fixedHeader,
-            collapseCategoryHeader && styles.overlayHeader,
-            {
-              paddingTop: topPad + 2,
-            },
-          ]}
-          onLayout={
-            collapseCategoryHeader
-              ? (event) => setFixedHeaderHeight(event.nativeEvent.layout.height)
-              : undefined
-          }
-        >
-          {collapseCategoryHeader && (
-            <StickyHeaderSurface
-              opacity={stickyHeaderSurfaceOpacity}
-              tint={activeTheme.gradient[0] as string}
-              showTint={false}
-              showDivider={false}
-              blurIntensity={85}
-              showBlackTint={false}
-              strongBlur
-              fadeBottom
-            />
-          )}
+      <Animated.ScrollView
+        style={styles.contentShift}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
-            <Animated.Text style={[styles.pageTitle, { opacity: largeTitleOpacity }]}>
-              {screenTitle}
-            </Animated.Text>
-            <Animated.View
-              pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: compactTitleOpacity }]}
-            >
-              <Text style={styles.compactPageTitle} numberOfLines={1}>
-                {screenTitle}
-              </Text>
-            </Animated.View>
+            <Text style={styles.pageTitle}>{screenTitle}</Text>
           </View>
 
           <View style={styles.searchWrap}>
@@ -551,23 +479,7 @@ export function ExploreScreen({
           </View>
         </View>
 
-        <Animated.ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{
-            paddingTop: collapseCategoryHeader ? fixedHeaderHeight + 22 : 22,
-            paddingBottom: 160 + bottomPad,
-          }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
-            {
-              useNativeDriver: true,
-              listener: handleExploreScroll,
-            },
-          )}
-          scrollEventThrottle={16}
-        >
+        <View style={styles.scrollContent}>
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={0}
@@ -627,63 +539,6 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
-
-          <View style={styles.topicSection}>
-            <Text style={styles.sectionTitle}>Explorar todo</Text>
-            <View style={styles.topicGrid}>
-              {TEMAS.map((tema) => (
-                <Pressable
-                  key={tema.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Explorar ${tema.label}`}
-                  onPress={() => openCategory(tema.route ?? `/tema/${tema.id}`)}
-                  style={({ pressed }) => [
-                    styles.topicCard,
-                    {
-                      backgroundColor:
-                        activeSceneId === "tibet"
-                          ? "rgba(0,0,0,0.15)"
-                          : activeSceneId === "indigo"
-                            ? "rgba(42,40,64,0.65)"
-                            : activeSceneId === "indigo2"
-                              ? "rgba(255,255,255,0.025)"
-                              : "rgba(255,255,255,0.05)",
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <MaterialCommunityIcons name={tema.icon} size={28} color={tema.color} />
-                  <Text style={[styles.topicLabel, { color: colors.foreground }]}>
-                    {tema.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-
-          {themeCarousels.length > 0 && (
-            <View style={styles.discoverTabsHeader}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.discoverTabs}
-                contentContainerStyle={styles.discoverTabsContent}
-              >
-                {themeCarousels.map((carousel) => (
-                  <DiscoverPill
-                    key={carousel.slug}
-                    label={carousel.label}
-                    icon={getDiscoverIcon(carousel.slug, carousel.label)}
-                    sceneId={activeSceneId}
-                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
-                    onPress={() =>
-                      openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)
-                    }
-                  />
-                ))}
-              </ScrollView>
-            </View>
-          )}
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel, index) => (
@@ -760,8 +615,8 @@ export function ExploreScreen({
             </ScrollView>
           </View>
           )}
-        </Animated.ScrollView>
-      </View>
+        </View>
+      </Animated.ScrollView>
 
       <ContextSearchModal
         visible={searchVisible}
@@ -789,6 +644,7 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
+  scrollContent: { paddingTop: 22 },
 
   fixedHeader:  { zIndex: 10, paddingBottom: 15 },
   overlayHeader: {
@@ -888,7 +744,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginBottom: 53,
+    marginBottom: 24,
   },
   durationSection: {
     marginBottom: SECTION_GAP,
@@ -915,32 +771,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
-  },
-  topicSection: {
-    paddingHorizontal: H_PAD,
-    marginBottom: SECTION_GAP,
-  },
-  topicGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: TEMA_GAP,
-  },
-  topicCard: {
-    width: TEMA_CARD_W,
-    minHeight: 84,
-    borderRadius: 13,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
-  },
-  topicLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 17,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
