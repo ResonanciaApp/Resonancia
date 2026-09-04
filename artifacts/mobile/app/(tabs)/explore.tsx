@@ -831,8 +831,6 @@ const styles = StyleSheet.create({
     minWidth: DURATION_CARD_WIDTH,
     height: 44,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.13)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,
