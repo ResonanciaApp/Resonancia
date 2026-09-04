@@ -68,6 +68,31 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
         showsHorizontalScrollIndicator={false}
         style={styles.scroll}
         contentContainerStyle={styles.content}
+        ListHeaderComponent={
+          <PressScale
+            onPress={() => {
+              stopAll();
+              openMixer();
+            }}
+            style={{ width: cardWidth }}
+          >
+            <View
+              style={[
+                styles.addCard,
+                {
+                  width: cardWidth,
+                  height: cardWidth,
+                  borderColor: routineTheme.completion,
+                },
+              ]}
+            >
+              <Feather name="plus" size={23} color={routineTheme.completion} />
+              <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
+                Crear una mezcla
+              </Text>
+            </View>
+          </PressScale>
+        }
         ListEmptyComponent={() => (
           <View style={styles.emptyCards}>
             {["empty-left", "empty-right"].map((placeholderId) => (
@@ -135,31 +160,6 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
             </PressScale>
           );
         }}
-        ListFooterComponent={
-          <PressScale
-            onPress={() => {
-              stopAll();
-              openMixer();
-            }}
-            style={{ width: cardWidth }}
-          >
-            <View
-              style={[
-                styles.addCard,
-                {
-                  width: cardWidth,
-                  height: cardWidth,
-                  borderColor: routineTheme.completion,
-                },
-              ]}
-            >
-              <Feather name="plus" size={23} color={routineTheme.completion} />
-              <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
-                Crear una mezcla
-              </Text>
-            </View>
-          </PressScale>
-        }
       />
     </View>
   );
