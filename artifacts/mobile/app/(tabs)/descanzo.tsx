@@ -1,4 +1,4 @@
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -12,19 +12,16 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
-import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } from "@/data/sessions";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
-import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
@@ -36,7 +33,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -123,104 +119,6 @@ const { width: W, height: H } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
 
-/* ─── Constantes del sheet ───────────────────────────────────────────── */
-const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
-const SHEET_BG = "#120A18";
-
-/* ─── NightTimerSheet (controlado desde DescansoScreen) ─────────────── */
-interface NightTimerSheetProps {
-  visible:      boolean;
-  onClose:      () => void;
-  timerMin:     number | null;
-  setTimerMin:  (v: number | null) => void;
-  fadeVol:      boolean;
-  setFadeVol:   (v: boolean) => void;
-}
-
-function NightTimerSheet({
-  visible, onClose, timerMin, setTimerMin, fadeVol, setFadeVol,
-}: NightTimerSheetProps) {
-  const insets     = useSafeAreaInsets();
-  const slideY     = useRef(new Animated.Value(500)).current;
-  const backdropOp = useRef(new Animated.Value(0)).current;
-  const [rendered, setRendered] = useState(false);
-
-  useEffect(() => {
-    if (visible) {
-      setRendered(true);
-      slideY.setValue(500);
-      backdropOp.setValue(0);
-      Animated.parallel([
-        Animated.timing(slideY,     { toValue: 0,   duration: DURATION.SHEET_OPEN,  easing: easeOutCubic, useNativeDriver: true }),
-        Animated.timing(backdropOp, { toValue: 1,   duration: DURATION.SHEET_OPEN,  easing: easeOutCubic, useNativeDriver: true }),
-      ]).start();
-    } else if (rendered) {
-      Animated.parallel([
-        Animated.timing(slideY,     { toValue: 500, duration: DURATION.SHEET_CLOSE, easing: easeOutCubic, useNativeDriver: true }),
-        Animated.timing(backdropOp, { toValue: 0,   duration: DURATION.SHEET_CLOSE, easing: easeOutCubic, useNativeDriver: true }),
-      ]).start(() => setRendered(false));
-    }
-  }, [visible]);
-
-  if (!rendered) return null;
-
-  return (
-    <Modal transparent animationType="none" visible statusBarTranslucent onRequestClose={onClose}>
-      <Animated.View
-        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)", opacity: backdropOp }]}
-      >
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
-
-      <Animated.View
-        style={[
-          styles.sheet,
-          { paddingBottom: 28 + insets.bottom, transform: [{ translateY: slideY }] },
-        ]}
-      >
-        <View style={styles.sheetHandle} />
-
-        <View style={styles.sheetHeader}>
-          <Ionicons name="moon" size={16} color="#FFFFFF" />
-          <Text style={styles.sheetTitle}>Prepara tu noche</Text>
-        </View>
-
-        <Text style={styles.sheetLabel}>Temporizador</Text>
-        <View style={styles.timerRow}>
-          {TIMER_OPTIONS.map((min) => {
-            const sel = timerMin === min;
-            return (
-              <Pressable
-                key={min}
-                onPress={() => setTimerMin(sel ? null : min)}
-                style={[styles.timerChip, sel && styles.timerChipSel]}
-              >
-                <Text style={[styles.timerChipText, sel && styles.timerChipTextSel]}>
-                  {min} min
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <View style={styles.fadeRow}>
-          <View style={{ flex: 1, gap: 3 }}>
-            <Text style={styles.fadeTitle}>Desvanecer volumen</Text>
-            <Text style={styles.fadeSub}>El sonido baja gradualmente hasta silenciarse</Text>
-          </View>
-          <Switch
-            value={fadeVol}
-            onValueChange={setFadeVol}
-            trackColor={{ false: "rgba(255,255,255,0.12)", true: "#7B4FCE" }}
-            thumbColor={fadeVol ? "#C4A8F5" : "rgba(255,255,255,0.6)"}
-          />
-        </View>
-      </Animated.View>
-    </Modal>
-  );
-}
-
-
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
   const colors    = useColors();
@@ -231,10 +129,8 @@ export default function DescansoScreen() {
   const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
 
-  const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
-  const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
@@ -400,7 +296,7 @@ export default function DescansoScreen() {
       style={styles.root}
     >
       <StatusBar hidden />
-      <GeoUniverseBackground />
+      <GeoUniverseBackground paused />
 
       <View style={styles.contentShift}>
         <View
@@ -504,15 +400,6 @@ export default function DescansoScreen() {
         </ScrollView>
       </View>
 
-      <NightTimerSheet
-        visible={timerSheet}
-        onClose={() => setTimerSheet(false)}
-        timerMin={timerMin}
-        setTimerMin={setTimerMin}
-        fadeVol={fadeVol}
-        setFadeVol={setFadeVol}
-      />
-
       <ContextSearchModal
         visible={searchVisible}
         onClose={() => setSearchVisible(false)}
@@ -612,98 +499,6 @@ const styles = StyleSheet.create({
     overflow: "visible",
   },
   scroll: { flex: 1 },
-
-  /* NightTimerSheet */
-  sheet: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: SHEET_BG,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    paddingTop: 12,
-    paddingHorizontal: 24,
-  },
-  sheetHandle: {
-    alignSelf: "center",
-    width: 38,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.18)",
-    marginBottom: 20,
-  },
-  sheetHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: 28,
-  },
-  sheetTitle: {
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    color: "#FBFBFB",
-  },
-  sheetLabel: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.45)",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 12,
-  },
-  timerRow: {
-    flexDirection: "row",
-    gap: 8,
-    marginBottom: 28,
-  },
-  timerChip: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-    alignItems: "center",
-  },
-  timerChipSel: {
-    backgroundColor: "rgba(196,168,245,0.15)",
-    borderColor: "rgba(196,168,245,0.5)",
-  },
-  timerChipText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.45)",
-    fontWeight: "500",
-  },
-  timerChipTextSel: {
-    fontFamily: "Manrope",
-    color: "#C4A8F5",
-    fontWeight: "700",
-  },
-  fadeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.05)",
-  },
-  fadeTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.88)",
-    marginBottom: 2,
-  },
-  fadeSub: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.4)",
-    lineHeight: 16,
-  },
 
   /* Session grid (Historias / ASMR) */
   sessionGrid: {
