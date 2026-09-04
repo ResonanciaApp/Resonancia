@@ -11,6 +11,7 @@ import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   encuentro: Encuentro;
@@ -82,7 +83,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [
             styles.calBtn,
-            { backgroundColor: "#F9F9F9", opacity: pressed ? 0.8 : 1 },
+            { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.8 : 1 },
           ]}
         >
           <Text style={[styles.calBtnText, { color: theme.gradient[0] }]}>Añadir a mi calendario</Text>

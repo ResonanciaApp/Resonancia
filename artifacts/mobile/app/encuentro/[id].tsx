@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ENCUENTROS, formatearFechaDetalle } from "@/data/encuentros";
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const H_PAD = 22;
 const HERO_H = 300;
@@ -167,7 +168,7 @@ export default function EncuentroDetalle() {
           <Pressable
             style={({ pressed }) => [
               styles.calBtn,
-              { backgroundColor: "#F9F9F9", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.8 : 1 },
             ]}
             onPress={() => setCalSheet(true)}
           >
