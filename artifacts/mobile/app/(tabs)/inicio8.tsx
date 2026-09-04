@@ -2537,11 +2537,11 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <QuickAccessSection
-            title="Herramientas"
+            title="Mis herramientas y servicios"
             accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             cardGap={9}
-            cardCornerRadius={14}
+            cardCornerRadius={21}
             cardHeightOffset={13}
             horizontalPadding={GRID_PAD}
             cardBackgroundColor={quickAccessBg}
