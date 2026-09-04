@@ -64,6 +64,7 @@ export function SessionCategoryPill({
   plain = false,
   textOnly = false,
   outlineColor,
+  textColor,
   leftInset,
 }: {
   categoryId?: string;
@@ -71,6 +72,7 @@ export function SessionCategoryPill({
   plain?: boolean;
   textOnly?: boolean;
   outlineColor?: string;
+  textColor?: string;
   leftInset?: number;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
@@ -91,7 +93,14 @@ export function SessionCategoryPill({
     >
       {!plain && !outlineColor && <SessionBadgeGlass />}
       {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
-      <Text style={[styles.categoryLabel, !plain && styles.categoryLabelCard]} numberOfLines={1}>
+      <Text
+        style={[
+          styles.categoryLabel,
+          !plain && styles.categoryLabelCard,
+          textColor ? { color: textColor } : null,
+        ]}
+        numberOfLines={1}
+      >
         {category.label.toUpperCase()}
       </Text>
     </View>

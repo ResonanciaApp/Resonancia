@@ -60,6 +60,7 @@ export function DailyRecommendationsSection({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
+  const categoryAccent = theme.accent ?? colors.accent;
   const indigo2Accent = theme.id === "indigo2" ? colors.accent : undefined;
   const sleepTabSurface =
     theme.id === "tibet"
@@ -101,10 +102,10 @@ export function DailyRecommendationsSection({
               session={session}
               imageSize={84}
               showCategoryPill
-              categoryBelowTitle
               showAuthor={false}
               categoryPillPlain={false}
-              categoryPillOutlineColor={sleepTabSurface}
+              categoryPillOutlineColor={categoryAccent}
+              categoryTextColor={categoryAccent}
               showDurationBadge
               showChevron
               authorColor={indigo2Accent}
