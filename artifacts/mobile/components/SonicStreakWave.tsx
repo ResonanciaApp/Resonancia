@@ -72,6 +72,7 @@ export function SonicStreakDays({
   edgeAligned = false,
   dayLabelColor,
   activeBorderColor = WIDGET_GREEN_SOLID,
+  activeBorderWidth = 1.9,
 }: {
   activeFlags: boolean[];
   todayIndex: number;
@@ -81,6 +82,7 @@ export function SonicStreakDays({
   edgeAligned?: boolean;
   dayLabelColor?: string;
   activeBorderColor?: string;
+  activeBorderWidth?: number;
 }) {
   const inactiveCircleSize = circleSize - 2;
   const circleCenter = circleSize / 2;
@@ -108,14 +110,14 @@ export function SonicStreakDays({
             {met ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={1.9} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
             ) : isToday ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={1.9} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
                 </Svg>
               </View>
             ) : (

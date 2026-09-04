@@ -1386,6 +1386,7 @@ export function ProfileScreenBase({
                 edgeAligned
                 dayLabelColor={activeTheme.accent ?? colors.primary}
                 activeBorderColor={WIDGET_GREEN_SOLID}
+                activeBorderWidth={2.9}
               />
             </View>
 
