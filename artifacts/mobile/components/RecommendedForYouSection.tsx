@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { Image as ExpoImage } from "expo-image";
 import {
   Pressable,
   ScrollView,
@@ -15,21 +15,55 @@ import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
-import { useSceneTheme } from "@/context/SceneThemeContext";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
-const CATEGORY_ICONS: Record<string, React.ComponentProps<typeof MaterialCommunityIcons>["name"]> = {
-  "meditaciones-guiadas": "meditation",
-  "sonidos-ancestrales": "music-note-eighth",
-  "musica-sonidos": "music",
-  ambientales: "forest-outline",
-  __descanzo__: "weather-night",
-  historias: "book-open-page-variant-outline",
-  charlas: "account-voice",
-  __mezcla__: "tune-variant",
-  __geometrix__: "shape-outline",
-};
+
+function RecommendedCategoryIcon({
+  category,
+  selected,
+}: {
+  category: (typeof DISCOVER_CONTENT_CATEGORIES)[number];
+  selected: boolean;
+}) {
+  const color = selected ? "#F9F9F9" : category.color;
+  switch (category.id) {
+    case "meditaciones-guiadas":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-meditaciones.png")}
+          style={styles.imageIcon}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "sonidos-ancestrales":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-sesiones.png")}
+          style={styles.imageIcon}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "musica-sonidos":
+      return (
+        <ExpoImage
+          source={require("@/assets/images/cat-musica.png")}
+          style={styles.imageIcon}
+          contentFit="contain"
+          tintColor={color}
+        />
+      );
+    case "ambientales":
+      return <MaterialCommunityIcons name="leaf" size={18} color={color} />;
+    case "historias":
+      return <MaterialCommunityIcons name="book-open-page-variant" size={18} color={color} />;
+    case "charlas":
+      return <MaterialCommunityIcons name="message-text-outline" size={18} color={color} />;
+  }
+}
 
 type RecommendationsByCategory = Record<string, string[]>;
 
@@ -120,7 +154,6 @@ export function RecommendedForYouSection({
   marginBottom = 0,
 }: Props) {
   const { width } = useWindowDimensions();
-  const { activeSceneId } = useSceneTheme();
   const [activeCategoryId, setActiveCategoryId] = useState(
     DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
   );
@@ -160,14 +193,6 @@ export function RecommendedForYouSection({
   if (!hasRecommendations) return null;
 
   const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
-  const inactiveTabBackground =
-    activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : activeSceneId === "indigo"
-        ? "rgba(42,40,64,0.65)"
-        : activeSceneId === "indigo2"
-          ? "rgba(255,255,255,0.025)"
-          : "rgba(255,255,255,0.05)";
   return (
     <View
       style={[styles.root, { marginBottom }]}
@@ -197,24 +222,11 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${category.id}`}
               style={({ pressed }) => [
                 styles.tab,
-                 { backgroundColor: inactiveTabBackground },
                  selected && styles.tabSelected,
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
-               {selected && (
-                 <LinearGradient
-                   colors={["#784576", "#50326E"]}
-                   start={{ x: 0, y: 0.5 }}
-                   end={{ x: 1, y: 0.5 }}
-                   style={StyleSheet.absoluteFill}
-                 />
-               )}
-               <MaterialCommunityIcons
-                 name={CATEGORY_ICONS[category.id] ?? "circle-outline"}
-                 size={22}
-                 color="#FFFFFF"
-               />
+               <RecommendedCategoryIcon category={category} selected={selected} />
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
                 {category.label}
               </Text>
@@ -271,24 +283,30 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tab: {
-    height: 51,
+    minHeight: 38,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
-    borderRadius: 27,
-    gap: 12,
+    paddingHorizontal: 17,
+    borderRadius: 22,
+    gap: 8,
     overflow: "hidden",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "transparent",
   },
   tabSelected: {
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.5)",
+    backgroundColor: WIDGET_GREEN_SOLID,
+  },
+  imageIcon: {
+    width: 18,
+    height: 18,
   },
   tabText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600",
     color: "#F4F4F4",
   },
