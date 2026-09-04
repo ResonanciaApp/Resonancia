@@ -15,7 +15,6 @@ import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
@@ -298,7 +297,6 @@ const styles = StyleSheet.create({
   tabSelected: {
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.5)",
-    backgroundColor: WIDGET_GREEN_SOLID,
   },
   imageIcon: {
     width: 18,
