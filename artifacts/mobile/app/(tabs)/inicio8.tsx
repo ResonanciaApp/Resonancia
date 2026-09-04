@@ -2511,7 +2511,15 @@ export default function HomeScreen2({
                         {[featuredMoment.categoryLabel, featuredMoment.durationLabel].filter(Boolean).join(" · ")}
                       </Text>
                       <Text style={styles.heroTitle} numberOfLines={2}>{featuredMoment.title}</Text>
-                      <Text style={styles.heroAuthor} numberOfLines={1}>{authorName}</Text>
+                      <Text
+                        style={[
+                          styles.heroAuthor,
+                          { color: activeTheme.accent ?? colors.accent },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {authorName}
+                      </Text>
                     </View>
                   </View>
                 );
@@ -2522,8 +2530,8 @@ export default function HomeScreen2({
         {isInicio2 && (
           <QuickAccessSection
             title="Herramientas"
-            accessIds={["library", "mixer", "breathing", "journal"]}
-            horizontalIds={["library", "mixer", "breathing", "journal"]}
+            accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
+            horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             cardGap={9}
             cardCornerRadius={14}
             cardHeightOffset={13}

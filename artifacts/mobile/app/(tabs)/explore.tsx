@@ -494,6 +494,64 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
+          {featuredHoy && (
+            <View style={styles.featuredMomentSection}>
+              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 17 }]}>
+                Para este momento
+              </Text>
+              <Pressable
+                onPress={() => handleSessionPress(featuredHoy)}
+                accessibilityRole="button"
+                accessibilityLabel={featuredHoy.title}
+                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+              >
+                <View style={styles.heroImageContainer}>
+                  <Image
+                    source={featuredHoy.image as number}
+                    style={styles.heroImage}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                </View>
+                {(() => {
+                  const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
+                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
+                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const authorPhoto = guide?.photo ?? artist?.photo;
+                  return (
+                    <View style={styles.featuredMomentMeta}>
+                      {authorPhoto && (
+                        <Image
+                          source={authorPhoto}
+                          style={styles.featuredMomentAvatar}
+                          contentFit="cover"
+                          cachePolicy="memory-disk"
+                        />
+                      )}
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.heroMetaLabel} numberOfLines={1}>
+                          {[featuredHoy.categoryLabel, featuredHoy.durationLabel].filter(Boolean).join(" · ")}
+                        </Text>
+                        <Text style={styles.heroTitle} numberOfLines={2}>
+                          {featuredHoy.title}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.heroAuthor,
+                            { color: activeTheme.accent ?? "#BE9650" },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {authorName}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })()}
+              </Pressable>
+            </View>
+          )}
+
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={0}
@@ -968,6 +1026,22 @@ const styles = StyleSheet.create({
   },
 
   // Hero — Para este momento
+  featuredMomentSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: SECTION_GAP,
+  },
+  featuredMomentMeta: {
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  featuredMomentAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
   heroImageContainer: {
     width: "100%",
     height: HERO_HEIGHT,
