@@ -2544,6 +2544,7 @@ export default function HomeScreen2({
             cardCornerRadius={21}
             cardHeightOffset={13}
             horizontalPadding={GRID_PAD}
+            twoRowCarousel
             cardBackgroundColor={quickAccessBg}
             showCardBorders={false}
             style={{

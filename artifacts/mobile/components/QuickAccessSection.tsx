@@ -5,6 +5,7 @@ import {
   Alert,
   Animated,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -212,6 +213,7 @@ export function QuickAccessSection({
   cardOpacity = 1,
   cardHeightOffset = 0,
   horizontalPadding = GRID_PAD,
+  twoRowCarousel = false,
   style,
 }: {
   includeExtras?: boolean;
@@ -232,6 +234,7 @@ export function QuickAccessSection({
   cardOpacity?: number;
   cardHeightOffset?: number;
   horizontalPadding?: number;
+  twoRowCarousel?: boolean;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -244,6 +247,10 @@ export function QuickAccessSection({
   const profileWideCardWidth = Math.max(
     0,
     Math.floor((width - horizontalPadding * 2 - cardGap) / 2),
+  );
+  const twoRowCardWidth = Math.max(
+    0,
+    Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 2.25),
   );
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
@@ -306,42 +313,81 @@ export function QuickAccessSection({
     : includeExtras
       ? accessCards
       : ACCESS_CARDS;
+  const twoRowColumns = Array.from(
+    { length: Math.ceil(visibleAccessCards.length / 2) },
+    (_, index) => visibleAccessCards.slice(index * 2, index * 2 + 2),
+  );
   return (
     <View style={[styles.section, style]} testID="quick-access-section">
       {showTitle && <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>}
-      <View style={[styles.accessRow, { gap: cardGap }]}>
-        {visibleAccessCards.map((access) => (
-          <QuickAccessCard
-            key={access.id}
-            access={access}
-            width={
-              profileLayout && access.id !== "saved" && access.id !== "library" &&
-              access.id !== "favorites" && access.id !== "history"
-                ? profileWideCardWidth
-                : horizontalIds?.includes(access.id)
+      {twoRowCarousel ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -horizontalPadding }}
+          contentContainerStyle={{ paddingHorizontal: horizontalPadding, gap: cardGap }}
+        >
+          {twoRowColumns.map((column, columnIndex) => (
+            <View key={`column-${columnIndex}`} style={{ gap: cardGap }}>
+              {column.map((access) => (
+                <QuickAccessCard
+                  key={access.id}
+                  access={access}
+                  width={twoRowCardWidth}
+                  cardBackground={cardBackground}
+                  cardOpacity={cardOpacity}
+                  showCardBorders={showCardBorders}
+                  cardBorderWidth={cardBorderWidth}
+                  cardBorderColor={cardBorderColor}
+                  cardCornerRadius={cardCornerRadius}
+                  joinedContentCorners={false}
+                  horizontal
+                  largeLabel={largeLabelIds?.includes(access.id) ?? false}
+                  profile={false}
+                  profileWide={false}
+                  cardHeightOffset={cardHeightOffset}
+                  foregroundColor={colors.foreground}
+                  onPress={() => handlePress(access.id)}
+                />
+              ))}
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={[styles.accessRow, { gap: cardGap }]}>
+          {visibleAccessCards.map((access) => (
+            <QuickAccessCard
+              key={access.id}
+              access={access}
+              width={
+                profileLayout && access.id !== "saved" && access.id !== "library" &&
+                access.id !== "favorites" && access.id !== "history"
                   ? profileWideCardWidth
-                  : cardWidth
-            }
-            cardBackground={cardBackground}
-            cardOpacity={cardOpacity}
-            showCardBorders={showCardBorders}
-            cardBorderWidth={cardBorderWidth}
-            cardBorderColor={cardBorderColor}
-            cardCornerRadius={cardCornerRadius}
-            joinedContentCorners={joinedContentCorners}
-            horizontal={horizontalIds?.includes(access.id) ?? false}
-            largeLabel={largeLabelIds?.includes(access.id) ?? false}
-            profile={profileLayout}
-            profileWide={
-              profileLayout && access.id !== "saved" && access.id !== "library" &&
-              access.id !== "favorites" && access.id !== "history"
-            }
-            cardHeightOffset={cardHeightOffset}
-            foregroundColor={colors.foreground}
-            onPress={() => handlePress(access.id)}
-          />
-        ))}
-      </View>
+                  : horizontalIds?.includes(access.id)
+                    ? profileWideCardWidth
+                    : cardWidth
+              }
+              cardBackground={cardBackground}
+              cardOpacity={cardOpacity}
+              showCardBorders={showCardBorders}
+              cardBorderWidth={cardBorderWidth}
+              cardBorderColor={cardBorderColor}
+              cardCornerRadius={cardCornerRadius}
+              joinedContentCorners={joinedContentCorners}
+              horizontal={horizontalIds?.includes(access.id) ?? false}
+              largeLabel={largeLabelIds?.includes(access.id) ?? false}
+              profile={profileLayout}
+              profileWide={
+                profileLayout && access.id !== "saved" && access.id !== "library" &&
+                access.id !== "favorites" && access.id !== "history"
+              }
+              cardHeightOffset={cardHeightOffset}
+              foregroundColor={colors.foreground}
+              onPress={() => handlePress(access.id)}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
