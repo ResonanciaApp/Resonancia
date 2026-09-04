@@ -22,10 +22,12 @@ const CARDS_PER_TAB = 5;
 
 function RecommendedCategoryIcon({
   category,
+  selected,
 }: {
   category: (typeof DISCOVER_CONTENT_CATEGORIES)[number];
+  selected: boolean;
 }) {
-  const color = "#FFFFFF";
+  const color = selected ? category.color : "#FFFFFF";
   switch (category.id) {
     case "meditaciones-guiadas":
       return (
@@ -233,7 +235,7 @@ export function RecommendedForYouSection({
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
-               <RecommendedCategoryIcon category={category} />
+               <RecommendedCategoryIcon category={category} selected={selected} />
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
                 {category.label}
               </Text>
