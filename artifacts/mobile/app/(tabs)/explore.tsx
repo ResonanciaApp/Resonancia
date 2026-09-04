@@ -41,6 +41,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
@@ -515,6 +516,31 @@ export function ExploreScreen({
               squareWatercolorCards
             />
           </View>
+
+          <QuickAccessSection
+            title="Herramientas"
+            accessIds={["library", "mixer", "breathing", "journal"]}
+            horizontalIds={["library", "mixer", "breathing", "journal"]}
+            cardGap={9}
+            cardCornerRadius={14}
+            cardHeightOffset={13}
+            horizontalPadding={H_PAD}
+            cardBackgroundColor={
+              activeSceneId === "tibet"
+                ? "rgba(0,0,0,0.15)"
+                : activeSceneId === "indigo"
+                  ? "rgba(42,40,64,0.65)"
+                  : activeSceneId === "indigo2"
+                    ? "rgba(255,255,255,0.025)"
+                    : "rgba(255,255,255,0.05)"
+            }
+            showCardBorders={false}
+            style={{
+              marginTop: 0,
+              marginBottom: SECTION_GAP,
+              paddingHorizontal: H_PAD,
+            }}
+          />
 
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>

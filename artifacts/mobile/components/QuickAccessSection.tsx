@@ -13,6 +13,7 @@ import {
 
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -31,6 +32,9 @@ const EXTRA_ACCESS_CARDS = [
   { id: "sessions", label: "Sesiones", icon: "calendar-outline", route: "/mis-sesiones" },
   { id: "encounters", label: "Encuentros", icon: "account-group-outline", route: "/explore" },
   { id: "library", label: "Biblioteca", icon: "book-open-variant", route: "__biblioteca_overlay" },
+  { id: "mixer", label: "Mezclador", icon: "tune-variant", route: "__mixer_panel" },
+  { id: "breathing", label: "Respiración", icon: "weather-windy", route: "/respiracion" },
+  { id: "journal", label: "Diario", icon: "book-open-page-variant-outline", route: "/diario" },
 ] as const;
 
 const ACCESS_CARDS_WITH_EXTRAS = [
@@ -235,6 +239,7 @@ export function QuickAccessSection({
   const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
+  const { openMixer } = useMixerPanel();
   const cardWidth = Math.max(0, Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 3));
   const profileWideCardWidth = Math.max(
     0,
@@ -261,6 +266,18 @@ export function QuickAccessSection({
       router.push("/(tabs)/biblioteca" as never);
       return;
     }
+    if (id === "mixer") {
+      openMixer();
+      return;
+    }
+    if (id === "breathing") {
+      openCategory(access.route);
+      return;
+    }
+    if (id === "journal") {
+      openOverlay(access.route);
+      return;
+    }
     if (id === "videos") {
       openCategory("/videos");
       return;
@@ -274,7 +291,7 @@ export function QuickAccessSection({
       return;
     }
     openOverlay(access.route);
-  }, [openCategory, openOverlay]);
+  }, [openCategory, openMixer, openOverlay]);
 
   const accessCards = profileLayout
     ? PROFILE_ACCESS_CARDS
