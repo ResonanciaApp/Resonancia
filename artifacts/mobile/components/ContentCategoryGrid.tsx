@@ -21,7 +21,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const DISCOVER_GRID_GAP = 9;
+const DISCOVER_GRID_GAP = 12;
 const DISCOVER_PRIMARY_CARD_SIZE = Math.floor(
   (Dimensions.get("window").width - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
 );
@@ -63,6 +63,7 @@ function renderCategoryIcon(
   category: ContentCategoryDefinition,
   horizontal: boolean,
   forceWhite: boolean,
+  sizeBoost = 0,
 ) {
   const color = forceWhite ? CATEGORY_ICON_COLOR : undefined;
   switch (category.id) {
@@ -70,7 +71,10 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-meditaciones.png")}
-          style={{ width: horizontal ? 11 : 22, height: horizontal ? 11 : 22 }}
+          style={{
+            width: (horizontal ? 11 : 22) + sizeBoost,
+            height: (horizontal ? 11 : 22) + sizeBoost,
+          }}
           contentFit="contain"
           tintColor={color}
         />
@@ -79,7 +83,10 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-sesiones.png")}
-          style={{ width: horizontal ? 15 : 26, height: horizontal ? 15 : 26 }}
+          style={{
+            width: (horizontal ? 15 : 26) + sizeBoost,
+            height: (horizontal ? 15 : 26) + sizeBoost,
+          }}
           contentFit="contain"
           tintColor={color}
         />
@@ -88,7 +95,10 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-musica.png")}
-          style={{ width: horizontal ? 15 : 26, height: horizontal ? 15 : 26 }}
+          style={{
+            width: (horizontal ? 15 : 26) + sizeBoost,
+            height: (horizontal ? 15 : 26) + sizeBoost,
+          }}
           contentFit="contain"
           tintColor={color}
         />
@@ -97,7 +107,10 @@ function renderCategoryIcon(
       return (
         <ExpoImage
           source={require("@/assets/images/cat-luna.png")}
-          style={{ width: horizontal ? 11 : 22, height: horizontal ? 11 : 22 }}
+          style={{
+            width: (horizontal ? 11 : 22) + sizeBoost,
+            height: (horizontal ? 11 : 22) + sizeBoost,
+          }}
           contentFit="contain"
           tintColor={color ?? CATEGORY_ICON_COLOR}
         />
@@ -106,7 +119,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="leaf"
-          size={horizontal ? 15 : 24}
+          size={(horizontal ? 15 : 24) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -114,7 +127,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="book-open-page-variant"
-          size={horizontal ? 14 : 24}
+          size={(horizontal ? 14 : 24) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -122,7 +135,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="message-text-outline"
-          size={horizontal ? 14 : 24}
+          size={(horizontal ? 14 : 24) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -130,7 +143,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="tune-variant"
-          size={horizontal ? 15 : 24}
+          size={(horizontal ? 15 : 24) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -138,7 +151,7 @@ function renderCategoryIcon(
       return (
         <MaterialCommunityIcons
           name="cube-outline"
-          size={horizontal ? 15 : 29}
+          size={(horizontal ? 15 : 29) + sizeBoost}
           color={color ?? category.color}
         />
       );
@@ -226,7 +239,7 @@ export function ContentCategoryGrid({
           ]}
         >
           <View style={styles.discoverCardIcon}>
-            {renderCategoryIcon(category, false, false)}
+            {renderCategoryIcon(category, false, false, 9)}
           </View>
           <Text
             style={[
@@ -262,7 +275,12 @@ export function ContentCategoryGrid({
           contentContainerStyle={styles.discoverSecondaryRow}
         >
           {secondaryCategories.map((category) =>
-            renderDiscoverCard(category, DISCOVER_SECONDARY_CARD_SIZE, true),
+            renderDiscoverCard(
+              category,
+              DISCOVER_SECONDARY_CARD_SIZE,
+              true,
+              DISCOVER_SECONDARY_CARD_SIZE + 20,
+            ),
           )}
         </ScrollView>
       </View>
@@ -446,7 +464,7 @@ const styles = StyleSheet.create({
     paddingRight: GRID_PAD + 18,
   },
   discoverCard: {
-    borderRadius: 21,
+    borderRadius: 14,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -454,8 +472,8 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   discoverCardIcon: {
-    width: 30,
-    height: 30,
+    width: 39,
+    height: 39,
     alignItems: "center",
     justifyContent: "center",
   },
