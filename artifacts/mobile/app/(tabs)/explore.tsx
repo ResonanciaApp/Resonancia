@@ -579,7 +579,9 @@ export function ExploreScreen({
           </View>
 
           <View style={styles.durationSection}>
-            <Text style={styles.sectionTitle}>Explora según tu tiempo</Text>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
