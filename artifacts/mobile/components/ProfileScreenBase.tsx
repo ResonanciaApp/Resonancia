@@ -67,7 +67,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
+import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
@@ -1326,6 +1326,7 @@ export function ProfileScreenBase({
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
+            <IntentionPrompt style={{ marginBottom: 32 }} />
             <View style={styles.weeklyStreakIntro}>
               <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Tu progreso</Text>
             </View>
@@ -1482,18 +1483,6 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
-            <QuickAccessSection
-              showTitle={false}
-              accessIds={["sessions", "encounters"]}
-              horizontalIds={["sessions", "encounters"]}
-              cardGap={9}
-              cardCornerRadius={14}
-              cardHeightOffset={13}
-              horizontalPadding={14}
-              cardBackgroundColor={resourceBlockBackground}
-              showCardBorders={false}
-              style={{ marginTop: 32, marginBottom: 0 }}
-            />
             <View style={{ marginTop: 32 }}>
               <ProfileMixCarousel marginBottom={32} />
             </View>
