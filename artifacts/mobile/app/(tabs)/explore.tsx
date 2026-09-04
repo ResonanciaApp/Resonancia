@@ -31,6 +31,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
+import { TAG_CARDS } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -55,6 +56,10 @@ const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
+);
+const THEME_GRID_GAP = 9;
+const THEME_GRID_CARD_WIDTH = Math.floor(
+  (width - H_PAD * 2 - THEME_GRID_GAP) / 2,
 );
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
@@ -340,6 +345,17 @@ export function ExploreScreen({
       }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const themeGridCards = React.useMemo(
+    () =>
+      themeCarousels
+        .map((carousel) => {
+          const card = TAG_CARDS.find((candidate) => candidate.label === carousel.label);
+          return card ? { ...card, slug: carousel.slug } : null;
+        })
+        .filter((card): card is NonNullable<typeof card> => card !== null),
+    [themeCarousels],
+  );
+
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
@@ -550,10 +566,40 @@ export function ExploreScreen({
           </View>
 
           {themeCarousels.length > 0 && (
-            <View style={styles.otherThemesHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Otras temáticas
-              </Text>
+            <View style={styles.otherThemesSection}>
+              <View style={styles.otherThemesHeader}>
+                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                  Otras temáticas
+                </Text>
+              </View>
+              <View style={styles.themeGrid}>
+                {themeGridCards.map((card) => (
+                  <Pressable
+                    key={card.slug}
+                    onPress={() => openCategory(`/tag/${encodeURIComponent(card.slug)}`)}
+                    style={({ pressed }) => [
+                      styles.themeGridCard,
+                      { opacity: pressed ? 0.82 : 1 },
+                    ]}
+                  >
+                    <Image
+                      source={card.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                      transition={IMAGE_TRANSITION}
+                    />
+                    <LinearGradient
+                      colors={["rgba(6,6,12,0.02)", "rgba(6,6,12,0.78)"]}
+                      locations={[0.25, 1]}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <Text style={styles.themeGridLabel} numberOfLines={2}>
+                      {card.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
           )}
 
@@ -790,8 +836,36 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   otherThemesHeader: {
-    paddingHorizontal: H_PAD,
     marginBottom: 17,
+  },
+  otherThemesSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: 28,
+  },
+  themeGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: THEME_GRID_GAP,
+  },
+  themeGridCard: {
+    width: THEME_GRID_CARD_WIDTH,
+    height: 116,
+    borderRadius: 14,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+    padding: 12,
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  themeGridLabel: {
+    fontFamily: "Manrope",
+    color: "#FFFFFF",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
