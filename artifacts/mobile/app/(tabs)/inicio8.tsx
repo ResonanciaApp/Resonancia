@@ -57,6 +57,7 @@ import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
@@ -2490,6 +2491,11 @@ export default function HomeScreen2({
                   contentFit="cover"
                   cachePolicy="memory-disk"
                 />
+                <SessionDurationBadge
+                  label={featuredMoment.durationLabel}
+                  style={styles.featuredMomentDuration}
+                  textStyle={styles.featuredMomentDurationText}
+                />
               </View>
               {(() => {
                 const guide = featuredMoment.guideId ? getGuide(featuredMoment.guideId) : undefined;
@@ -2507,8 +2513,14 @@ export default function HomeScreen2({
                       />
                     )}
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.heroMetaText} numberOfLines={1}>
-                        {[featuredMoment.categoryLabel, featuredMoment.durationLabel].filter(Boolean).join(" · ")}
+                      <Text
+                        style={[
+                          styles.heroMetaText,
+                          { color: activeTheme.accent ?? colors.accent },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {featuredMoment.categoryLabel}
                       </Text>
                       <Text style={styles.heroTitle} numberOfLines={2}>{featuredMoment.title}</Text>
                       <Text
@@ -3906,6 +3918,16 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
+  featuredMomentDuration: {
+    position: "absolute",
+    left: 12,
+    bottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  featuredMomentDurationText: {
+    fontSize: 17,
+  },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
