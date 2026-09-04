@@ -5,7 +5,6 @@ import React from "react";
 import {
   Pressable,
   FlatList,
-  Platform,
   ScrollView,
   StyleSheet,
   type ImageStyle,
@@ -190,7 +189,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         initialNumToRender={3}
         maxToRenderPerBatch={3}
         windowSize={3}
-        removeClippedSubviews={Platform.OS === "android"}
+        removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
         contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
