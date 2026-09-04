@@ -90,8 +90,6 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { ProgresoModal } from "@/components/ProgresoModal";
-import { LiveSessionCard } from "@/components/LiveSessionCard";
-import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
@@ -100,6 +98,8 @@ import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSe
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
+import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -1483,7 +1483,6 @@ export default function HomeScreen2({
   const { currentStreak: currentStreakDisplay } = useStreak();
 
   const { isPremium } = usePremium();
-  const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -2689,38 +2688,23 @@ export default function HomeScreen2({
         )}
         {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
-        {isInicio2 && upcomingLiveSessions.length > 0 && (
-          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={[styles.sectionTitle, { marginBottom: 17 }]}>
-                Encuentros Resonadores
-              </Text>
-              <Pressable
-                onPress={() => router.push("/mis-sesiones" as never)}
-                hitSlop={8}
-              >
-                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todas</Text>
-              </Pressable>
-            </View>
-            <View style={{ gap: 12 }}>
-              {upcomingLiveSessions.slice(0, 3).map((session) => (
-                <LiveSessionCard
-                  key={session.id}
-                  session={session}
-                  onEnter={(s) => {
-                    router.push({
-                      pathname: "/sesion-vivo/[id]" as never,
-                      params: {
-                        id: String(s.id),
-                        roomUrl: s.dailyRoomUrl ?? "",
-                        guideDisplayName: s.guideDisplayName ?? "",
-                      },
-                    } as never);
-                  }}
-                />
-              ))}
-            </View>
-          </View>
+        {isInicio2 && (
+          <RecommendedForYouSection
+            selectedMoods={selectedMoods}
+            generation={recoOffset}
+            catalogStatus={catalogStatus}
+            catalogVersion={catalogVersion}
+            isPremium={isPremium}
+            onPress={handleSessionCarouselPress}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
+        )}
+        {isInicio2 && (
+          <EncuentrosResonadoresSection
+            marginTop={0}
+            marginBottom={INICIO2_SECTION_GAP}
+            titleMarginTop={0}
+          />
         )}
 
 
