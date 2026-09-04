@@ -115,23 +115,26 @@ export function DailyRecommendationsSection({
             )}
           </React.Fragment>
         ))}
+        {onRefreshRecommendations && (
+          <>
+            <View style={[styles.divider, { backgroundColor: sleepTabSurface }]} />
+            <Pressable
+              onPress={onRefreshRecommendations}
+              accessibilityRole="button"
+              accessibilityLabel="Actualizar recomendaciones"
+              style={({ pressed }) => [
+                styles.refreshButton,
+                {
+                  backgroundColor: refreshButtonBackground,
+                  opacity: pressed ? 0.72 : 1,
+                },
+              ]}
+            >
+              <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+            </Pressable>
+          </>
+        )}
       </View>
-      {onRefreshRecommendations && (
-        <Pressable
-          onPress={onRefreshRecommendations}
-          accessibilityRole="button"
-          accessibilityLabel="Actualizar recomendaciones"
-          style={({ pressed }) => [
-            styles.refreshButton,
-            {
-              backgroundColor: refreshButtonBackground,
-              opacity: pressed ? 0.72 : 1,
-            },
-          ]}
-        >
-          <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
-        </Pressable>
-      )}
     </View>
   );
 }
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
   refreshButton: {
     height: 45,
     borderRadius: 15,
-    marginTop: 16,
+    marginVertical: 16,
     paddingHorizontal: 18,
     alignItems: "center",
     justifyContent: "center",

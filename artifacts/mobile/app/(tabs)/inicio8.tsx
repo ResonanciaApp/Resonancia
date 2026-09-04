@@ -1780,7 +1780,7 @@ export default function HomeScreen2({
   // recomendaciones hasta que cambie la fecha.
   const dailyRecommendations = React.useMemo<Session[]>(() => {
     const pool = SESSIONS.filter((session) => !session.isPlaceholder);
-    const seed = `${todayKey}:${pool.map((session) => session.id).join(",")}`;
+    const seed = `${todayKey}:${recoOffset}:${pool.map((session) => session.id).join(",")}`;
     let hash = 2166136261;
     for (let i = 0; i < seed.length; i++) {
       hash ^= seed.charCodeAt(i);
@@ -1798,7 +1798,7 @@ export default function HomeScreen2({
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled.slice(0, 3);
-  }, [todayKey, catalogVersion]);
+  }, [todayKey, catalogVersion, recoOffset]);
 
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
