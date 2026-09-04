@@ -100,6 +100,7 @@ import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2694,6 +2695,12 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             marginBottom={INICIO2_SECTION_GAP}
+          />
+        )}
+        {isInicio2 && (
+          <EncuentrosResonadoresSection
+            marginBottom={INICIO2_SECTION_GAP}
+            titleMarginTop={0}
           />
         )}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
