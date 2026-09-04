@@ -1335,7 +1335,7 @@ function Inicio2HeroStatic({
               >
                 <MaterialCommunityIcons
                   name="star"
-                  size={14}
+                  size={20}
                   color={MEMBERSHIP_AURORA.premium.accent}
                 />
               </View>
@@ -2995,7 +2995,6 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
