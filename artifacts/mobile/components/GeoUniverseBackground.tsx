@@ -199,12 +199,12 @@ const PRESET: Array<{ id: GeometryId; settings: GeoSettings; index: number }> = 
 ];
 
 // ─── Componente público ───────────────────────────────────────────────────────
-export function GeoUniverseBackground() {
+export function GeoUniverseBackground({ paused = false }: { paused?: boolean }) {
   const { enabled } = useGeoUniverse();
   const { width }   = useWindowDimensions();
   const [isScreenFocused, setIsScreenFocused] = useState(false);
   const [appState, setAppState] = useState(AppState.currentState);
-  const isActive = enabled && isScreenFocused && appState === "active";
+  const isActive = enabled && !paused && isScreenFocused && appState === "active";
 
   useFocusEffect(
     useCallback(() => {

@@ -126,6 +126,11 @@ type PlayerContextType = {
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
+type PlayerBrowseContextType = Pick<
+  PlayerContextType,
+  "currentSession" | "history" | "playSession"
+>;
+const PlayerBrowseContext = createContext<PlayerBrowseContextType | null>(null);
 
 const FAVORITES_KEY = "@resonance_favorites";
 const HISTORY_KEY = "@resonance_history";
@@ -1908,9 +1913,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     [favorites]
   );
 
+  const browseValue = React.useMemo(
+    () => ({ currentSession, history, playSession }),
+    [currentSession, history, playSession],
+  );
+
   return (
-    <PlayerContext.Provider
-      value={{
+    <PlayerBrowseContext.Provider value={browseValue}>
+      <PlayerContext.Provider
+        value={{
         currentSession,
         isPlaying,
         progress,
@@ -1956,15 +1967,26 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         hasVoiceTrack: !!(VOICE_MAP[currentSession?.id ?? ""] || currentSession?.voiceUri),
         voiceVolume,
         setVoiceVolume,
-      }}
-    >
-      {children}
-    </PlayerContext.Provider>
+        }}
+      >
+        {children}
+      </PlayerContext.Provider>
+    </PlayerBrowseContext.Provider>
   );
 }
 
 export function usePlayer() {
   const ctx = useContext(PlayerContext);
   if (!ctx) throw new Error("usePlayer must be used within PlayerProvider");
+  return ctx;
+}
+
+/**
+ * Read-only browsing surface for catalog screens. Unlike usePlayer(), this
+ * context does not update on playback progress ticks.
+ */
+export function usePlayerBrowse() {
+  const ctx = useContext(PlayerBrowseContext);
+  if (!ctx) throw new Error("usePlayerBrowse must be used within PlayerProvider");
   return ctx;
 }

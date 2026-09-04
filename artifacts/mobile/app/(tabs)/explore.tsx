@@ -32,7 +32,7 @@ import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
 import { usePremium } from "@/context/PremiumContext";
-import { usePlayer } from "@/context/PlayerContext";
+import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -215,7 +215,7 @@ export function ExploreScreen({
   const [searchVisible, setSearchVisible] = useState(false);
 
   const { isPremium } = usePremium();
-  const { playSession, history } = usePlayer();
+  const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
@@ -231,9 +231,18 @@ export function ExploreScreen({
     [catalogVersion],
   );
 
-  const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
-  const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
-  const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
+  const ancestralesSessions = React.useMemo(
+    () => SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10),
+    [catalogVersion],
+  );
+  const musicaSessions = React.useMemo(
+    () => SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10),
+    [catalogVersion],
+  );
+  const meditacionesSessions = React.useMemo(
+    () => SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10),
+    [catalogVersion],
+  );
 
   // ── Recientes (últimas meditaciones agregadas) ──
   const recientesMeditaciones = React.useMemo(() => {
@@ -381,14 +390,14 @@ export function ExploreScreen({
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
 
-  function handleSessionPress(s: Session) {
+  const handleSessionPress = React.useCallback((s: Session) => {
     const locked = s.isPremium && !isPremium;
     if (locked) { router.push("/membresia" as never); return; }
     if (openForSession(s)) return;
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     openCategory(`/session/${s.id}`);
-  }
+  }, [isPremium, openCategory, openForSession, playSession]);
 
   function renderCarousel(title: string, sessions: Session[], categoryRoute: string, contentPaddingTop = 0) {
     return (

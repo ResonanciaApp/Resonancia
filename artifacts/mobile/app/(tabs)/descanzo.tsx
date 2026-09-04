@@ -31,7 +31,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { usePlayer } from "@/context/PlayerContext";
+import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -49,7 +49,7 @@ function SleepPill({
   sel: boolean;
   label: string;
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
+  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number> | string;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
@@ -168,16 +168,32 @@ const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
     delay: Math.random() * 4000,
   };
 });
-function NightSky() {
+function NightSky({ paused = false }: { paused?: boolean }) {
   const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
   const shootX   = useRef(new Animated.Value(0)).current;
   const shootY   = useRef(new Animated.Value(0)).current;
   const shootOp  = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    if (paused) {
+      twinkles.forEach((value, i) => {
+        value.stopAnimation();
+        value.setValue(STARS[i].minOpacity);
+      });
+      shootX.stopAnimation();
+      shootY.stopAnimation();
+      shootOp.stopAnimation();
+      shootOp.setValue(0);
+      return;
+    }
+
+    const animations: Animated.CompositeAnimation[] = [];
     STARS.forEach((star, i) => {
+      // A small distributed subset twinkles; the remaining stars stay static.
+      // This preserves the night-sky texture without 110 concurrent loops.
+      if (i % 6 !== 0) return;
       const loop = () => {
-        Animated.sequence([
+        const animation = Animated.sequence([
           Animated.timing(twinkles[i], {
             toValue: star.maxOpacity,
             duration: star.duration,
@@ -189,7 +205,9 @@ function NightSky() {
             duration: star.duration,
             useNativeDriver: true,
           }),
-        ]).start(({ finished }) => { if (finished) loop(); });
+        ]);
+        animations[i] = animation;
+        animation.start(({ finished }) => { if (finished) loop(); });
       };
       loop();
     });
@@ -212,8 +230,14 @@ function NightSky() {
 
     fire();
     const id = setInterval(fire, 3800);
-    return () => clearInterval(id);
-  }, []);
+    return () => {
+      clearInterval(id);
+      animations.forEach((animation) => animation.stop());
+      shootX.stopAnimation();
+      shootY.stopAnimation();
+      shootOp.stopAnimation();
+    };
+  }, [paused, shootOp, shootX, shootY, twinkles]);
 
   return (
     <View style={[StyleSheet.absoluteFill, { opacity: 0.3 }]} pointerEvents="none">
@@ -362,11 +386,12 @@ export default function DescansoScreen() {
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const titleCompactAnim = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const titleCompactRef = useRef(false);
   const compactTitleOpacity = titleCompactAnim;
   const largeTitleOpacity = titleCompactAnim.interpolate({
@@ -377,10 +402,7 @@ export default function DescansoScreen() {
     inputRange: [0, 1],
     outputRange: [0, 0.96],
   });
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
-  });
+  const indigo2TabsBackgroundColor = "rgba(255,255,255,0.05)";
   const useDiscoverStickyStyle = sceneTheme.id === "indigo" || sceneTheme.id === "indigo2";
 
   const handleScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -393,24 +415,26 @@ export default function DescansoScreen() {
         duration: 300,
         useNativeDriver: true,
       }).start();
-      Animated.timing(indigo2TabsSurfaceAnim, {
-        toValue: shouldCompact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
     }
-  }, [indigo2TabsSurfaceAnim, titleCompactAnim]);
+  }, [titleCompactAnim]);
+
+  const pauseBackgrounds = useCallback(() => {
+    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
+    setIsScrolling(true);
+  }, []);
+  const resumeBackgrounds = useCallback(() => {
+    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
+    scrollResumeTimerRef.current = setTimeout(() => setIsScrolling(false), 80);
+  }, []);
+  useEffect(() => () => {
+    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
+  }, []);
 
   const {
     currentSession,
-    isPlaying: sessionIsPlaying,
-    elapsed: sessionElapsed,
-    actualDurationSeconds: sessionDuration,
     playSession,
-    pauseResume,
-    stop,
     history,
-  } = usePlayer();
+  } = usePlayerBrowse();
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
   const { isPremium } = usePremium();
@@ -519,8 +543,8 @@ export default function DescansoScreen() {
       style={styles.root}
     >
       <StatusBar hidden />
-      <GeoUniverseBackground />
-      <NightSky />
+      <GeoUniverseBackground paused={isScrolling} />
+      <NightSky paused={isScrolling} />
 
       <View style={styles.contentShift}>
         <View
@@ -586,6 +610,10 @@ export default function DescansoScreen() {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
+          onScrollBeginDrag={pauseBackgrounds}
+          onMomentumScrollBegin={pauseBackgrounds}
+          onScrollEndDrag={resumeBackgrounds}
+          onMomentumScrollEnd={resumeBackgrounds}
         >
         <View style={{ marginTop: -3 }}>
           {false && recentInDescanso.length > 0 && (
