@@ -2428,7 +2428,7 @@ export default function HomeScreen2({
               { marginTop: 31, marginBottom: INICIO2_SECTION_GAP - 11 },
             ]}
           >
-            <ToolsGrid />
+            <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
           </View>
         )}
         {isInicio2 && (

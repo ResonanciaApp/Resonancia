@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   Pressable,
   ScrollView,
@@ -13,7 +13,6 @@ import {
 
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
-import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -22,11 +21,12 @@ const PILLS_PAD = 19;
 const PILLS_GAP = 8;
 
 const TOOLS = [
-  { id: "biblioteca", label: "Biblioteca", icon: "book-open-variant", color: "#8ED9FF" },
-  { id: "mezclador", label: "Mezclador", icon: "tune-variant", color: "#E6BE67" },
+  { id: "mood-register", label: "Registro de ánimo", icon: "emoticon-happy-outline", color: "#8ED9FF" },
   { id: "videos", label: "Videos", icon: "video-outline", color: "#D5A4E8" },
-  { id: "respiracion", label: "Ejercicios de respiración", icon: "weather-windy", color: "#C8A6FF" },
-  { id: "diario", label: "Diario", icon: "book-open-page-variant-outline", color: "#E7A36E" },
+  { id: "favorites", label: "Favoritos", icon: "heart-outline", color: "#E6BE67" },
+  { id: "history", label: "Historial", icon: "history", color: "#C8A6FF" },
+  { id: "downloads", label: "Descargas", icon: "download-outline", color: "#E7A36E" },
+  { id: "mood-history", label: "Historial de estado de ánimo", icon: "chart-timeline-variant", color: "#8ED9FF" },
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];
@@ -81,8 +81,8 @@ function ToolCard({
       <Animated.View
         style={[
           styles.card,
-          tool.id === "biblioteca" && styles.firstCard,
-          tool.id === "diario" && styles.lastCard,
+          tool.id === "mood-register" && styles.firstCard,
+          tool.id === "mood-history" && styles.lastCard,
           {
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : pillBackground,
             transform: [{ scale }],
@@ -109,13 +109,14 @@ function ToolCard({
 
 export function ToolsGrid({
   style,
+  onOpenMoodPicker,
 }: {
   style?: StyleProp<ViewStyle>;
+  onOpenMoodPicker?: () => void;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openCategory } = useCategoryOverlay();
-  const { openMixer } = useMixerPanel();
   const { openOverlay } = useDrawer();
 
   const pillBackground = activeSceneId === "tibet"
@@ -127,23 +128,26 @@ export function ToolsGrid({
       : "rgba(255,255,255,0.05)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
-      case "biblioteca":
-        router.push("/(tabs)/biblioteca" as never);
-        break;
-      case "mezclador":
-        openMixer();
+      case "mood-register":
+        onOpenMoodPicker?.();
         break;
       case "videos":
         openCategory("/videos");
         break;
-      case "respiracion":
-        openCategory("/respiracion");
+      case "favorites":
+        openOverlay("/favoritos-todos");
         break;
-      case "diario":
-        openOverlay("/diario");
+      case "history":
+        openOverlay("/historial");
+        break;
+      case "downloads":
+        Alert.alert("Descargas", "La descarga estará disponible próximamente.");
+        break;
+      case "mood-history":
+        openOverlay("/historial-emociones");
         break;
     }
-  }, [openCategory, openMixer, openOverlay]);
+  }, [onOpenMoodPicker, openCategory, openOverlay]);
 
   return (
     <ScrollView
