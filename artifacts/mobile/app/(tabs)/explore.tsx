@@ -21,6 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   SESSIONS,
@@ -512,9 +513,13 @@ export function ExploreScreen({
                     contentFit="cover"
                     cachePolicy="memory-disk"
                   />
+                  <SessionDurationBadge
+                    label={featuredHoy.durationLabel}
+                    style={styles.featuredMomentDuration}
+                  />
                 </View>
                 {(() => {
-                  const guide = featuredHoy.guideId ? getGuide(featuredHoy.guideId) : undefined;
+                  const guide = getGuide(featuredHoy.guideId ?? "casa-cuenco");
                   const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
                   const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
                   const authorPhoto = guide?.photo ?? artist?.photo;
@@ -529,8 +534,14 @@ export function ExploreScreen({
                         />
                       )}
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.heroMetaLabel} numberOfLines={1}>
-                          {[featuredHoy.categoryLabel, featuredHoy.durationLabel].filter(Boolean).join(" · ")}
+                        <Text
+                          style={[
+                            styles.heroMetaLabel,
+                            { color: "#E7B95C" },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {featuredHoy.categoryLabel}
                         </Text>
                         <Text style={styles.heroTitle} numberOfLines={2}>
                           {featuredHoy.title}
@@ -538,7 +549,7 @@ export function ExploreScreen({
                         <Text
                           style={[
                             styles.heroAuthor,
-                            { color: activeTheme.accent ?? "#BE9650" },
+                            { color: "#E7B95C" },
                           ]}
                           numberOfLines={1}
                         >
@@ -1049,6 +1060,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
+  featuredMomentDuration: {
+    position: "absolute",
+    left: 12,
+    bottom: 12,
+  },
   heroMeta: {
     flexDirection: "row",
     alignItems: "stretch",
@@ -1063,23 +1079,24 @@ const styles = StyleSheet.create({
   },
   heroMetaLabel: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    color: "#c2c2c2",
-    marginBottom: 4,
+    fontSize: 11,
+    lineHeight: 14,
+    color: "#F4F4F4",
+    marginBottom: 6,
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "600",
-    lineHeight: 24,
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
     color: "#FBFBFB",
+    marginBottom: 4,
   },
   heroAuthor: {
     fontFamily: "Manrope",
     fontSize: 12,
-    color: "#c2c2c2",
-    flexShrink: 1,
-    marginTop: 4,
+    color: "#F4F4F4",
+    marginTop: 2,
   },
   heroAuthorAvatar: {
     width: 76,

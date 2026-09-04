@@ -2494,7 +2494,6 @@ export default function HomeScreen2({
                 <SessionDurationBadge
                   label={featuredMoment.durationLabel}
                   style={styles.featuredMomentDuration}
-                  textStyle={styles.featuredMomentDurationText}
                 />
               </View>
               {(() => {
@@ -3922,11 +3921,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     bottom: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-  },
-  featuredMomentDurationText: {
-    fontSize: 17,
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
