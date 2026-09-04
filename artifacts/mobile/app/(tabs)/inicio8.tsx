@@ -2541,8 +2541,8 @@ export default function HomeScreen2({
             accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             cardGap={9}
-            cardCornerRadius={21}
-            cardHeightOffset={13}
+            cardCornerRadius={15}
+            cardHeightOffset={3}
             horizontalPadding={GRID_PAD}
             twoRowCarousel
             cardBackgroundColor={quickAccessBg}
@@ -2553,32 +2553,6 @@ export default function HomeScreen2({
               paddingHorizontal: GRID_PAD,
             }}
           />
-        )}
-        {isInicio2 && (
-          <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[
-                styles.durPillRow,
-                styles.inicio2DurPillRow,
-                { paddingLeft: GRID_PAD },
-              ]}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <DurationExplorePill
-                  key={slot.label}
-                  onPress={() => openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)}
-                  label={slot.displayLabel}
-                  backgroundColor={durationPillBg}
-                  compact
-                />
-              ))}
-            </ScrollView>
-          </View>
         )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>

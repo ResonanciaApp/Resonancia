@@ -250,7 +250,7 @@ export function QuickAccessSection({
   );
   const twoRowCardWidth = Math.max(
     0,
-    Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 2.25),
+    Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 2.25) + 10,
   );
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
