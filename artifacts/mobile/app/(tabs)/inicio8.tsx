@@ -2679,7 +2679,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             titleOffset={10}
-            cardWidth={INICIO2_SESSION_CARD_W}
+            cardWidth={INICIO2_RECENT_CARD_W}
             allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
@@ -2687,8 +2687,8 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
-            showAuthor
-            showMetaBelow
+            showAuthor={false}
+            showCollectionBelow
             durationInsideWithMeta
           />
         )}
