@@ -175,6 +175,8 @@ export function ContentCategoryGrid({
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo" && isDiscoverGrid
       ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "indigo2" && isDiscoverGrid
+        ? "rgba(255,255,255,0.025)"
       : activeSceneId === "indigo"
         ? "rgba(255,255,255,0.04)"
         : CARD_BG;
@@ -191,12 +193,12 @@ export function ContentCategoryGrid({
           const corners = [
             {
               borderTopLeftRadius: radius,
-              borderTopRightRadius: isDiscoverGrid ? 10 : radius,
+              borderTopRightRadius: radius,
               borderBottomLeftRadius: radius,
               borderBottomRightRadius: 10,
             },
             {
-              borderTopLeftRadius: isDiscoverGrid ? 10 : radius,
+              borderTopLeftRadius: radius,
               borderTopRightRadius: radius,
               borderBottomLeftRadius: 10,
               borderBottomRightRadius: radius,
@@ -290,7 +292,7 @@ export function ContentCategoryGrid({
                           },
                         ]}
                       >
-                        {renderCategoryIcon(category, horizontal, horizontal || isDiscoverGrid)}
+                        {renderCategoryIcon(category, horizontal, horizontal)}
                       </View>
                       <Text style={[styles.label, horizontal && styles.horizontalLabel]}>{category.label}</Text>
                     </>
