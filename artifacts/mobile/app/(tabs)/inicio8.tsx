@@ -97,7 +97,6 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
-import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
@@ -2409,25 +2408,6 @@ export default function HomeScreen2({
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD }}
           />
-        )}
-        {isInicio2 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                { fontSize: 19, marginBottom: 17, paddingHorizontal: GRID_PAD },
-              ]}
-            >
-              Explora por contenido
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              horizontal
-              visualVariant="watercolor"
-            />
-          </View>
         )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
