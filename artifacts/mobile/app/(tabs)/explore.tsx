@@ -41,6 +41,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { TEMAS } from "@/data/temas";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
@@ -56,6 +57,17 @@ const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const TEMA_CARD_W = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
+const DURATION_GAP = 9;
+const DURATION_CARD_WIDTH = Math.floor(
+  (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
+);
+const DURATION_SLOTS = [
+  { label: "5 min", displayLabel: "5 minutos" },
+  { label: "10 min", displayLabel: "10 minutos" },
+  { label: "20 min", displayLabel: "20 minutos" },
+  { label: "30 min", displayLabel: "30 minutos" },
+  { label: "60 min", displayLabel: "60 minutos" },
+] as const;
 const HERO_HEIGHT = 270;
 
 const BREATHING_EXERCISES = [
@@ -514,19 +526,92 @@ export function ExploreScreen({
                 {screenTitle}
               </Text>
             </Animated.View>
+          </View>
+
+          <View style={styles.searchWrap}>
             <Pressable
               onPress={() => setSearchVisible(true)}
-              hitSlop={10}
               style={[
-                styles.headerSearchButton,
-                activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+                styles.searchBox,
+                activeSceneId === "tibet"
+                  ? styles.searchBoxTibet
+                  : activeSceneId === "indigo"
+                    ? styles.searchBoxIndigo
+                    : activeSceneId === "indigo2"
+                      ? styles.searchBoxIndigo2
+                      : null,
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
             >
-              <Feather name="search" size={24} color="#F9F9F9" />
+              <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
+              <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
             </Pressable>
+          </View>
+        </View>
+
+        <Animated.ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{
+            paddingTop: collapseCategoryHeader ? fixedHeaderHeight + 22 : 22,
+            paddingBottom: 160 + bottomPad,
+          }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
+            {
+              useNativeDriver: true,
+              listener: handleExploreScroll,
+            },
+          )}
+          scrollEventThrottle={16}
+        >
+          <View style={styles.contentCategorySection}>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              horizontal
+              visualVariant="watercolor"
+            />
+          </View>
+
+          <View style={styles.durationSection}>
+            <Text style={styles.sectionTitle}>Explora según tu tiempo</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor:
+                        activeSceneId === "tibet"
+                          ? "rgba(0,0,0,0.15)"
+                          : activeSceneId === "indigo"
+                            ? "rgba(42,40,64,0.65)"
+                            : activeSceneId === "indigo2"
+                              ? "rgba(255,255,255,0.025)"
+                              : "rgba(255,255,255,0.05)",
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
           </View>
 
           {themeCarousels.length > 0 && (
@@ -552,25 +637,7 @@ export function ExploreScreen({
               </ScrollView>
             </View>
           )}
-        </View>
 
-        <Animated.ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{
-            paddingTop: collapseCategoryHeader ? fixedHeaderHeight + 22 : 22,
-            paddingBottom: 160 + bottomPad,
-          }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: exploreScrollY } } }],
-            {
-              useNativeDriver: true,
-              listener: handleExploreScroll,
-            },
-          )}
-          scrollEventThrottle={16}
-        >
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel, index) => (
             <View key={carousel.slug}>
@@ -779,11 +846,57 @@ const styles = StyleSheet.create({
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
+  searchBoxTibet: {
+    backgroundColor: "rgba(0,0,0,0.15)",
+    borderColor: "rgba(255,255,255,0.12)",
+  },
+  searchBoxIndigo: {
+    backgroundColor: "rgba(42,40,64,0.65)",
+    borderColor: "rgba(170,170,196,0.18)",
+  },
+  searchBoxIndigo2: {
+    backgroundColor: "rgba(255,255,255,0.025)",
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  searchPlaceholder: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "400",
+    color: "rgba(249,249,249,0.62)",
+  },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  contentCategorySection: {
+    marginBottom: SECTION_GAP,
+  },
+  durationSection: {
+    marginBottom: SECTION_GAP,
+  },
+  durationRow: {
+    gap: DURATION_GAP,
+    paddingHorizontal: H_PAD,
+    paddingRight: H_PAD,
+  },
+  durationCard: {
+    width: DURATION_CARD_WIDTH,
+    minWidth: DURATION_CARD_WIDTH,
+    height: 44,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+  },
+  durationCardText: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+  },
   topicSection: {
     paddingHorizontal: H_PAD,
     marginBottom: SECTION_GAP,
