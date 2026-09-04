@@ -63,30 +63,6 @@ export function ProfileMixCarousel({
         style={styles.scroll}
         contentContainerStyle={styles.content}
       >
-        <PressScale
-          onPress={() => {
-            stopAll();
-            openMixer();
-          }}
-          style={{ width: cardWidth }}
-        >
-          <View
-            style={[
-              styles.addCard,
-              {
-                width: cardWidth,
-                height: cardWidth,
-                borderColor: routineTheme.completion,
-              },
-            ]}
-          >
-            <Feather name="plus" size={23} color={routineTheme.completion} />
-            <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
-              Crear una mezcla
-            </Text>
-          </View>
-        </PressScale>
-
         {newestPresets.length === 0 &&
           ["empty-left", "empty-right"].map((placeholderId) => (
             <View
@@ -152,6 +128,30 @@ export function ProfileMixCarousel({
             </PressScale>
           );
         })}
+
+        <PressScale
+          onPress={() => {
+            stopAll();
+            openMixer();
+          }}
+          style={{ width: cardWidth }}
+        >
+          <View
+            style={[
+              styles.addCard,
+              {
+                width: cardWidth,
+                height: cardWidth,
+                borderColor: routineTheme.completion,
+              },
+            ]}
+          >
+            <Feather name="plus" size={23} color={routineTheme.completion} />
+            <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
+              Crear una mezcla
+            </Text>
+          </View>
+        </PressScale>
 
       </ScrollView>
     </View>

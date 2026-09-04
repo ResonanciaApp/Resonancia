@@ -98,8 +98,6 @@ import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import {
@@ -2645,14 +2643,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <ProfileMixCarousel marginBottom={53} />}
-        {isInicio2 && (
-          <EncuentrosResonadoresSection
-            marginTop={0}
-            marginBottom={INICIO2_SECTION_GAP}
-            titleMarginTop={0}
-          />
-        )}
-        {isInicio2 && <AlmaCommunitySection />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
