@@ -1,5 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -149,8 +149,8 @@ const SOUND_CARD_W  = 120;
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
 const STAR_ZONE = H * 0.42;
-const STAR_COUNT = 110;
-const COLS = 10;
+const STAR_COUNT = 42;
+const COLS = 7;
 const ROWS = Math.ceil(STAR_COUNT / COLS);
 const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
   const col = i % COLS;
@@ -189,8 +189,7 @@ function NightSky({ paused = false }: { paused?: boolean }) {
 
     const animations: Animated.CompositeAnimation[] = [];
     STARS.forEach((star, i) => {
-      // A small distributed subset twinkles; the remaining stars stay static.
-      // This preserves the night-sky texture without 110 concurrent loops.
+      // Only a small distributed subset twinkles; the remaining stars stay static.
       if (i % 6 !== 0) return;
       const loop = () => {
         const animation = Animated.sequence([
@@ -387,9 +386,17 @@ export default function DescansoScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isTabFocused, setIsTabFocused] = useState(false);
   const scrollResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsTabFocused(true);
+      return () => setIsTabFocused(false);
+    }, []),
+  );
 
   const titleCompactAnim = useRef(new Animated.Value(0)).current;
   const titleCompactRef = useRef(false);
@@ -544,7 +551,7 @@ export default function DescansoScreen() {
     >
       <StatusBar hidden />
       <GeoUniverseBackground paused={isScrolling} />
-      <NightSky paused={isScrolling} />
+      <NightSky paused={isScrolling || !isTabFocused} />
 
       <View style={styles.contentShift}>
         <View
