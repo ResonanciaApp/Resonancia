@@ -577,12 +577,16 @@ export function ExploreScreen({
           </View>
 
           <View style={styles.contentCategorySection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora por contenido
+            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
               hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
               horizontal
               visualVariant="watercolor"
+              squareWatercolorCards
             />
           </View>
 
@@ -884,7 +888,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginBottom: 24,
+    marginBottom: 53,
   },
   durationSection: {
     marginBottom: SECTION_GAP,

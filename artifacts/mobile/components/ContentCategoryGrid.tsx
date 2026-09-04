@@ -159,12 +159,14 @@ export function ContentCategoryGrid({
   hiddenIds = [],
   horizontal = false,
   visualVariant = "default",
+  squareWatercolorCards = false,
 }: {
   marginTop?: number;
   marginBottom?: number;
   hiddenIds?: readonly string[];
   horizontal?: boolean;
   visualVariant?: "default" | "watercolor";
+  squareWatercolorCards?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
@@ -189,6 +191,10 @@ export function ContentCategoryGrid({
           const watercolorImage = WATERCOLOR_CATEGORY_IMAGES[category.id];
           const isWatercolorCard =
             horizontal && visualVariant === "watercolor" && watercolorImage !== undefined;
+          const isFeaturedSquareCard =
+            !horizontal &&
+            isDiscoverGrid &&
+            (category.id === "meditaciones-guiadas" || category.id === "sonidos-ancestrales");
           const radius = 27;
           const corners = [
             {
@@ -253,6 +259,10 @@ export function ContentCategoryGrid({
                         category.id === "__descanzo__" && styles.horizontalLeftSmallRadiusCard,
                       ]
                     : corners[index] ?? { borderRadius: radius },
+                  isFeaturedSquareCard && styles.featuredSquareCard,
+                  isWatercolorCard && squareWatercolorCards && {
+                    height: WATERCOLOR_CARD_SIZE,
+                  },
                   isWatercolorCard
                     ? { transform: [{ scale: pressed ? 0.96 : 1 }] }
                     : { opacity: pressed ? 0.75 : 1 },
@@ -362,6 +372,13 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     borderWidth: 0,
+  },
+  featuredSquareCard: {
+    aspectRatio: 1,
+    borderRadius: 18,
+    flexDirection: "column",
+    justifyContent: "center",
+    gap: 12,
   },
   horizontalCard: {
     borderRadius: 27,
