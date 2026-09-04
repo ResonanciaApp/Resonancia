@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Pressable,
   ScrollView,
@@ -13,9 +15,21 @@ import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
+const CATEGORY_ICONS: Record<string, React.ComponentProps<typeof MaterialCommunityIcons>["name"]> = {
+  "meditaciones-guiadas": "meditation",
+  "sonidos-ancestrales": "music-note-eighth",
+  "musica-sonidos": "music",
+  ambientales: "forest-outline",
+  __descanzo__: "weather-night",
+  historias: "book-open-page-variant-outline",
+  charlas: "account-voice",
+  __mezcla__: "tune-variant",
+  __geometrix__: "shape-outline",
+};
 
 type RecommendationsByCategory = Record<string, string[]>;
 
@@ -106,6 +120,7 @@ export function RecommendedForYouSection({
   marginBottom = 0,
 }: Props) {
   const { width } = useWindowDimensions();
+  const { activeSceneId } = useSceneTheme();
   const [activeCategoryId, setActiveCategoryId] = useState(
     DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
   );
@@ -145,6 +160,14 @@ export function RecommendedForYouSection({
   if (!hasRecommendations) return null;
 
   const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
+  const inactiveTabBackground =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : activeSceneId === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : activeSceneId === "indigo2"
+          ? "rgba(255,255,255,0.025)"
+          : "rgba(255,255,255,0.05)";
   return (
     <View
       style={[styles.root, { marginBottom }]}
@@ -174,12 +197,24 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${category.id}`}
               style={({ pressed }) => [
                 styles.tab,
-                selected && {
-                   borderColor: "rgba(255,255,255,0.8)",
-                },
+                 { backgroundColor: inactiveTabBackground },
+                 selected && styles.tabSelected,
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
+               {selected && (
+                 <LinearGradient
+                   colors={["#784576", "#50326E"]}
+                   start={{ x: 0, y: 0.5 }}
+                   end={{ x: 1, y: 0.5 }}
+                   style={StyleSheet.absoluteFill}
+                 />
+               )}
+               <MaterialCommunityIcons
+                 name={CATEGORY_ICONS[category.id] ?? "circle-outline"}
+                 size={22}
+                 color="#FFFFFF"
+               />
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
                 {category.label}
               </Text>
@@ -236,17 +271,24 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tab: {
-    minHeight: 38,
+    height: 51,
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 17,
-    borderRadius: 22,
-    borderWidth: 2,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    gap: 12,
+    overflow: "hidden",
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "transparent",
+  },
+  tabSelected: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.5)",
   },
   tabText: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
   },
