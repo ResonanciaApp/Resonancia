@@ -629,7 +629,7 @@ export function ExploreScreen({
           ))}
 
           <ResonadoresSection
-            marginTop={16}
+            marginTop={25}
             marginBottom={SECTION_GAP}
           />
 
