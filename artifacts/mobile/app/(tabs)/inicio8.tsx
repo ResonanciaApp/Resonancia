@@ -2502,6 +2502,24 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <QuickAccessSection
+            title="Herramientas"
+            accessIds={["library", "mixer", "breathing", "journal"]}
+            horizontalIds={["library", "mixer", "breathing", "journal"]}
+            cardGap={9}
+            cardCornerRadius={14}
+            cardHeightOffset={13}
+            horizontalPadding={GRID_PAD}
+            cardBackgroundColor={quickAccessBg}
+            showCardBorders={false}
+            style={{
+              marginTop: 0,
+              marginBottom: INICIO2_SECTION_GAP,
+              paddingHorizontal: GRID_PAD,
+            }}
+          />
+        )}
+        {isInicio2 && (
           <View style={[styles.durSection, { marginTop: 0, marginBottom: INICIO2_SECTION_GAP }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 17, paddingHorizontal: GRID_PAD }]}>
               Explora según tu tiempo
@@ -4009,6 +4027,7 @@ const styles = StyleSheet.create({
     width: INICIO2_DURATION_PILL_WIDTH,
     minWidth: INICIO2_DURATION_PILL_WIDTH,
     height: 44,
+    borderWidth: 0,
   },
   inicio2DurPillRow: {
     gap: INICIO2_DURATION_PILL_GAP,
