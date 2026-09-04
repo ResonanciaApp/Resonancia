@@ -11,7 +11,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
@@ -22,7 +21,6 @@ const PILLS_GAP = 8;
 
 const TOOLS = [
   { id: "mood-register", label: "Registro de ánimo", icon: "emoticon-happy-outline", color: "#8ED9FF" },
-  { id: "videos", label: "Videos", icon: "video-outline", color: "#D5A4E8" },
   { id: "favorites", label: "Favoritos", icon: "heart-outline", color: "#E6BE67" },
   { id: "history", label: "Historial", icon: "history", color: "#C8A6FF" },
   { id: "downloads", label: "Descargas", icon: "download-outline", color: "#E7A36E" },
@@ -116,7 +114,6 @@ export function ToolsGrid({
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
-  const { openCategory } = useCategoryOverlay();
   const { openOverlay } = useDrawer();
 
   const pillBackground = activeSceneId === "tibet"
@@ -131,9 +128,6 @@ export function ToolsGrid({
       case "mood-register":
         onOpenMoodPicker?.();
         break;
-      case "videos":
-        openCategory("/videos");
-        break;
       case "favorites":
         openOverlay("/favoritos-todos");
         break;
@@ -147,7 +141,7 @@ export function ToolsGrid({
         openOverlay("/historial-emociones");
         break;
     }
-  }, [onOpenMoodPicker, openCategory, openOverlay]);
+  }, [onOpenMoodPicker, openOverlay]);
 
   return (
     <ScrollView

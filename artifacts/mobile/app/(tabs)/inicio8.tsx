@@ -100,7 +100,6 @@ import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSe
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
-import { ResonadoresSection } from "@/components/ResonadoresSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -1485,7 +1484,6 @@ export default function HomeScreen2({
 
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
-  const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -2691,15 +2689,11 @@ export default function HomeScreen2({
         )}
         {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
-        {isInicio2 && (
-          <ResonadoresSection marginBottom={INICIO2_SECTION_GAP} />
-        )}
-        {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
-        {nextLiveSession && (
-          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
+        {isInicio2 && upcomingLiveSessions.length > 0 && (
+          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={[styles.sectionTitle, isInicio2 && { marginBottom: 17 }]}>
-                Tu próxima sesión
+              <Text style={[styles.sectionTitle, { marginBottom: 17 }]}>
+                Encuentros Resonadores
               </Text>
               <Pressable
                 onPress={() => router.push("/mis-sesiones" as never)}
@@ -2708,19 +2702,24 @@ export default function HomeScreen2({
                 <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todas</Text>
               </Pressable>
             </View>
-            <LiveSessionCard
-              session={nextLiveSession}
-              onEnter={(s) => {
-                router.push({
-                  pathname: "/sesion-vivo/[id]" as never,
-                  params: {
-                    id: String(s.id),
-                    roomUrl: s.dailyRoomUrl ?? "",
-                    guideDisplayName: s.guideDisplayName ?? "",
-                  },
-                } as never);
-              }}
-            />
+            <View style={{ gap: 12 }}>
+              {upcomingLiveSessions.slice(0, 3).map((session) => (
+                <LiveSessionCard
+                  key={session.id}
+                  session={session}
+                  onEnter={(s) => {
+                    router.push({
+                      pathname: "/sesion-vivo/[id]" as never,
+                      params: {
+                        id: String(s.id),
+                        roomUrl: s.dailyRoomUrl ?? "",
+                        guideDisplayName: s.guideDisplayName ?? "",
+                      },
+                    } as never);
+                  }}
+                />
+              ))}
+            </View>
           </View>
         )}
 
