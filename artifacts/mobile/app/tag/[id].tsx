@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { Image as ExpoImage } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -16,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
@@ -30,6 +33,12 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const COL_GAP = 12;
 const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
+const DURATION_FILTERS = [
+  { label: "5–10 min", min: 0, max: 10 },
+  { label: "10–20 min", min: 11, max: 20 },
+  { label: "20–30 min", min: 21, max: 30 },
+  { label: "30+ min", min: 31, max: Number.POSITIVE_INFINITY },
+] as const;
 
 /**
  * The API stores the display label on each session and exposes a slug on the
@@ -73,6 +82,10 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     () => resolveThemeLabel(slug ? decodeURIComponent(slug) : undefined),
     [slug, catalogVersion],
   );
+  const tag = useMemo(
+    () => TAG_CARDS.find((candidate) => candidate.id === slug),
+    [slug],
+  );
   const sessions = useMemo(
     () =>
       tagLabel
@@ -82,6 +95,15 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
         : [],
     [tagLabel, catalogVersion],
   );
+  const [durationFilter, setDurationFilter] = React.useState<string | null>(null);
+  const filteredSessions = useMemo(() => {
+    if (!durationFilter) return sessions;
+    const filter = DURATION_FILTERS.find((candidate) => candidate.label === durationFilter);
+    if (!filter) return sessions;
+    return sessions.filter(
+      (session) => session.duration >= filter.min && session.duration <= filter.max,
+    );
+  }, [durationFilter, sessions]);
 
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
@@ -137,31 +159,117 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
         }}
       >
         <View
-          style={[styles.header, { paddingTop: topPad + 8 }]}
+          style={styles.legacyHeader}
           onLayout={(event) => {
             const { y, height } = event.nativeEvent.layout;
             setHeaderBottomY(y + height);
           }}
         >
+          <View style={styles.hero}>
+            {tag?.image ? (
+              <ExpoImage
+                source={tag.image}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+                cachePolicy="memory-disk"
+              />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] as string }]} />
+            )}
+            <LinearGradient
+              colors={["rgba(6,6,12,0)", "rgba(6,6,12,0.28)", theme.gradient[0] as string]}
+              locations={[0, 0.68, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+            <Pressable
+              onPress={goBack}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.heroBackBtn,
+                {
+                  top: topPad + 8,
+                  backgroundColor: "rgba(12,10,22,0.48)",
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}
+            >
+              <Feather name="chevron-left" size={26} color={colors.foreground} />
+            </Pressable>
+          </View>
+          <View style={styles.intro}>
+            <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
+              {tagLabel}
+            </Text>
+            {tag?.description ? (
+              <Text style={[styles.pageDescription, { color: colors.foreground }]}>
+                {tag.description}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filtersRow}
+        >
           <Pressable
-            onPress={goBack}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.backBtn,
-              { backgroundColor: "rgba(255,255,255,0.08)", opacity: pressed ? 0.7 : 1 },
+            onPress={() => setDurationFilter(null)}
+            style={[
+              styles.filterPill,
+              durationFilter === null ? styles.filterPillSelected : styles.filterPillIdle,
             ]}
           >
-            <Feather name="chevron-left" size={26} color={colors.foreground} />
+            {durationFilter === null && (
+              <LinearGradient
+                colors={["#FFFFFF", "#F5F5F5"]}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={StyleSheet.absoluteFill}
+              />
+            )}
+            <Text
+              style={[
+                styles.filterLabel,
+                durationFilter === null ? styles.filterLabelSelected : styles.filterLabelIdle,
+              ]}
+            >
+              Todos
+            </Text>
           </Pressable>
-          <Text
-            style={[styles.pageTitle, { color: colors.foreground }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.75}
-          >
-            {tagLabel}
-          </Text>
-        </View>
+          {DURATION_FILTERS.map((filter) => {
+            const active = durationFilter === filter.label;
+            return (
+              <Pressable
+                key={filter.label}
+                onPress={() => setDurationFilter(active ? null : filter.label)}
+                style={[
+                  styles.filterPill,
+                  active ? styles.filterPillSelected : styles.filterPillIdle,
+                ]}
+              >
+                {active && (
+                  <LinearGradient
+                    colors={["#FFFFFF", "#F5F5F5"]}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
+                <Text
+                  style={[
+                    styles.filterLabel,
+                    active ? styles.filterLabelSelected : styles.filterLabelIdle,
+                  ]}
+                >
+                  {filter.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
 
         {sessions.length === 0 ? (
           <View style={[styles.emptySlot, { borderColor: colors.border }]}>
@@ -173,9 +281,19 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
               Estamos preparando nuevas experiencias para esta temática
             </Text>
           </View>
+        ) : filteredSessions.length === 0 ? (
+          <View style={[styles.emptySlot, { borderColor: colors.border }]}>
+            <Feather name="clock" size={28} color={colors.mutedForeground} />
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+              Sin sesiones en este filtro
+            </Text>
+            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+              Prueba con otra duración
+            </Text>
+          </View>
         ) : (
           <View style={styles.sessionGrid}>
-            {sessions.map((session) => (
+            {filteredSessions.map((session) => (
               <SessionCard
                 key={session.id}
                 session={session}
@@ -237,6 +355,77 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
+  legacyHeader: {
+    width: "100%",
+  },
+  hero: {
+    width: "100%",
+    height: Math.round(width * 0.72),
+    overflow: "hidden",
+  },
+  heroBackBtn: {
+    position: "absolute",
+    left: H_PAD,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  intro: {
+    paddingHorizontal: H_PAD,
+    paddingTop: 20,
+    paddingBottom: 24,
+    alignItems: "center",
+  },
+  legacyPageTitle: {
+    fontFamily: "Manrope",
+    fontSize: 26,
+    lineHeight: 33,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    textAlign: "center",
+    marginBottom: 6,
+  },
+  pageDescription: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: "center",
+    opacity: 0.92,
+  },
+  filtersRow: {
+    paddingHorizontal: H_PAD,
+    paddingBottom: 4,
+    gap: 9,
+  },
+  filterPill: {
+    minHeight: 38,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderWidth: 1,
+  },
+  filterPillSelected: {
+    borderColor: "rgba(255,255,255,0.72)",
+  },
+  filterPillIdle: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderColor: "rgba(255,255,255,0.12)",
+  },
+  filterLabel: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  filterLabelSelected: {
+    color: "#0D0A1E",
+  },
+  filterLabelIdle: {
+    color: "#F4F4F4",
+  },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 12,

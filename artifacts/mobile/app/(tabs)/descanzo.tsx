@@ -1,5 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -147,133 +147,6 @@ const { width: W, height: H } = Dimensions.get("window");
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
 
-/* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
-const STAR_ZONE = H * 0.42;
-const STAR_COUNT = 42;
-const COLS = 7;
-const ROWS = Math.ceil(STAR_COUNT / COLS);
-const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
-  const col = i % COLS;
-  const row = Math.floor(i / COLS);
-  const normalizedRow = row / ROWS;
-  const rowFade = 1 - normalizedRow * 0.85;
-  return {
-    key: i,
-    x: (col / COLS) * W + (Math.random() - 0.5) * (W / COLS) * 0.95,
-    y: normalizedRow * STAR_ZONE + (Math.random() - 0.5) * (STAR_ZONE / ROWS) * 0.9,
-    size: 0.8 + Math.random() * 1.6,
-    minOpacity: (0.08 + Math.random() * 0.15) * rowFade,
-    maxOpacity: (0.45 + Math.random() * 0.45) * rowFade,
-    duration: 1200 + Math.random() * 2800,
-    delay: Math.random() * 4000,
-  };
-});
-function NightSky({ paused = false }: { paused?: boolean }) {
-  const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
-  const shootX   = useRef(new Animated.Value(0)).current;
-  const shootY   = useRef(new Animated.Value(0)).current;
-  const shootOp  = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (paused) {
-      twinkles.forEach((value, i) => {
-        value.stopAnimation();
-        value.setValue(STARS[i].minOpacity);
-      });
-      shootX.stopAnimation();
-      shootY.stopAnimation();
-      shootOp.stopAnimation();
-      shootOp.setValue(0);
-      return;
-    }
-
-    const animations: Animated.CompositeAnimation[] = [];
-    STARS.forEach((star, i) => {
-      // Only a small distributed subset twinkles; the remaining stars stay static.
-      if (i % 6 !== 0) return;
-      const loop = () => {
-        const animation = Animated.sequence([
-          Animated.timing(twinkles[i], {
-            toValue: star.maxOpacity,
-            duration: star.duration,
-            delay: star.delay,
-            useNativeDriver: true,
-          }),
-          Animated.timing(twinkles[i], {
-            toValue: star.minOpacity,
-            duration: star.duration,
-            useNativeDriver: true,
-          }),
-        ]);
-        animations[i] = animation;
-        animation.start(({ finished }) => { if (finished) loop(); });
-      };
-      loop();
-    });
-
-    const fire = () => {
-      const sx = Math.random() * W * 0.5;
-      const sy = 30 + Math.random() * H * 0.25;
-      shootX.setValue(sx);
-      shootY.setValue(sy);
-      shootOp.setValue(0);
-      Animated.sequence([
-        Animated.timing(shootOp, { toValue: 0.9, duration: 120, useNativeDriver: true }),
-        Animated.parallel([
-          Animated.timing(shootX,  { toValue: sx + 130, duration: 550, useNativeDriver: true }),
-          Animated.timing(shootY,  { toValue: sy + 90,  duration: 550, useNativeDriver: true }),
-          Animated.timing(shootOp, { toValue: 0,        duration: 550, useNativeDriver: true }),
-        ]),
-      ]).start();
-    };
-
-    fire();
-    const id = setInterval(fire, 3800);
-    return () => {
-      clearInterval(id);
-      animations.forEach((animation) => animation.stop());
-      shootX.stopAnimation();
-      shootY.stopAnimation();
-      shootOp.stopAnimation();
-    };
-  }, [paused, shootOp, shootX, shootY, twinkles]);
-
-  return (
-    <View style={[StyleSheet.absoluteFill, { opacity: 0.3 }]} pointerEvents="none">
-      {STARS.map((star, i) => (
-        <Animated.View
-          key={star.key}
-          style={{
-            position: "absolute",
-            left: star.x,
-            top: star.y,
-            width: star.size,
-            height: star.size,
-            borderRadius: star.size / 2,
-            backgroundColor: "#ffffff",
-            opacity: twinkles[i],
-          }}
-        />
-      ))}
-      <Animated.View
-        style={{
-          position: "absolute",
-          width: 70,
-          height: 1.5,
-          borderRadius: 1,
-          backgroundColor: "#ffffff",
-          opacity: shootOp,
-          transform: [
-            { translateX: shootX },
-            { translateY: shootY },
-            { rotate: "32deg" },
-          ],
-        }}
-      />
-    </View>
-  );
-}
-
 /* ─── Constantes del sheet ───────────────────────────────────────────── */
 const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
 const SHEET_BG = "#120A18";
@@ -386,17 +259,9 @@ export default function DescansoScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
-  const [isTabFocused, setIsTabFocused] = useState(false);
   const scrollResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
-
-  useFocusEffect(
-    useCallback(() => {
-      setIsTabFocused(true);
-      return () => setIsTabFocused(false);
-    }, []),
-  );
 
   const titleCompactAnim = useRef(new Animated.Value(0)).current;
   const titleCompactRef = useRef(false);
@@ -551,7 +416,6 @@ export default function DescansoScreen() {
     >
       <StatusBar hidden />
       <GeoUniverseBackground paused={isScrolling} />
-      <NightSky paused={isScrolling || !isTabFocused} />
 
       <View style={styles.contentShift}>
         <View

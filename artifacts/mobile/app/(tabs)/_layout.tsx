@@ -42,7 +42,7 @@ const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 63;   // altura del bloque de navegación, sin safe area
+const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;

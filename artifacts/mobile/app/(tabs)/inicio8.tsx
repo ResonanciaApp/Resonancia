@@ -2674,7 +2674,6 @@ export default function HomeScreen2({
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}
-        {isInicio2 && <ProfileMixCarousel marginBottom={53} />}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
