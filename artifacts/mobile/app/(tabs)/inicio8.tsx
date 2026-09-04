@@ -111,7 +111,7 @@ import {
 const { width, height } = Dimensions.get("window");
 
 const GRID_GAP = 12;
-const GRID_PAD = 14;
+const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
@@ -2684,6 +2684,7 @@ export default function HomeScreen2({
             largeLabelIds={["history", "favorites", "downloads"]}
             cardGap={4}
             cardHeightOffset={13}
+            horizontalPadding={GRID_PAD}
             cardBackgroundColor={quickAccessBg}
             showCardBorders={false}
             joinedContentCorners

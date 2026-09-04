@@ -203,6 +203,7 @@ export function QuickAccessSection({
   cardBackgroundColor,
   cardOpacity = 1,
   cardHeightOffset = 0,
+  horizontalPadding = GRID_PAD,
   style,
 }: {
   includeExtras?: boolean;
@@ -221,6 +222,7 @@ export function QuickAccessSection({
   cardBackgroundColor?: string;
   cardOpacity?: number;
   cardHeightOffset?: number;
+  horizontalPadding?: number;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -228,8 +230,11 @@ export function QuickAccessSection({
   const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
   const { openCategory } = useCategoryOverlay();
-  const cardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - cardGap * 2) / 3));
-  const profileWideCardWidth = Math.max(0, Math.floor((width - GRID_PAD * 2 - cardGap) / 2));
+  const cardWidth = Math.max(0, Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 3));
+  const profileWideCardWidth = Math.max(
+    0,
+    Math.floor((width - horizontalPadding * 2 - cardGap) / 2),
+  );
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
