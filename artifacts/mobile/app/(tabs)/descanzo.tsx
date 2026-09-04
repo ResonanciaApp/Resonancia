@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { useColors } from "@/hooks/useColors";
 import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } from "@/data/sessions";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
@@ -296,7 +295,6 @@ export default function DescansoScreen() {
       style={styles.root}
     >
       <StatusBar hidden />
-      <GeoUniverseBackground paused />
 
       <View style={styles.contentShift}>
         <View
@@ -585,35 +583,6 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
 
-  /* Banner Prepara tu noche */
-  nightBannerWrap: {
-    marginHorizontal: H_PAD,
-    marginTop: -17,
-    marginBottom: 24,
-    borderRadius: 14,
-    overflow: "hidden",
-  },
-  nightBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    minHeight: 78,
-  },
-  nightBannerTitle: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.9)",
-    marginBottom: 3,
-  },
-  nightBannerSub: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
-    color: "rgba(255,255,255,0.5)",
-  },
   dormirMiniPlayer: {
     position: "absolute",
     left: 0,
