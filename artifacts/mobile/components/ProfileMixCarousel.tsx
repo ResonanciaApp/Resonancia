@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Platform, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
@@ -16,7 +16,7 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 const GRID_PAD = 14;
 const CARD_GAP = 14;
 
-export function ProfileMixCarousel({
+export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   marginBottom = 32,
 }: {
   marginBottom?: number;
@@ -57,14 +57,20 @@ export function ProfileMixCarousel({
   return (
     <View style={[styles.section, { marginBottom }]}>
       <Text style={styles.sectionTitle}>Mis mezclas</Text>
-      <ScrollView
+      <FlatList
         horizontal
+        data={newestPresets}
+        keyExtractor={(mix) => mix.id}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        windowSize={3}
+        removeClippedSubviews={Platform.OS === "android"}
         showsHorizontalScrollIndicator={false}
         style={styles.scroll}
         contentContainerStyle={styles.content}
-      >
-        {newestPresets.length === 0 &&
-          ["empty-left", "empty-right"].map((placeholderId) => (
+        ListEmptyComponent={() => (
+          <View style={styles.emptyCards}>
+            {["empty-left", "empty-right"].map((placeholderId) => (
             <View
               key={placeholderId}
               style={[
@@ -83,9 +89,10 @@ export function ProfileMixCarousel({
                 style={styles.emptyPlaceholderIcon}
               />
             </View>
-          ))}
-
-        {newestPresets.map((mix) => {
+            ))}
+          </View>
+        )}
+        renderItem={({ item: mix }) => {
           const hasCover = Boolean(
             mix.image ||
             mix.coverUri ||
@@ -127,36 +134,36 @@ export function ProfileMixCarousel({
               </Text>
             </PressScale>
           );
-        })}
-
-        <PressScale
-          onPress={() => {
-            stopAll();
-            openMixer();
-          }}
-          style={{ width: cardWidth }}
-        >
-          <View
-            style={[
-              styles.addCard,
-              {
-                width: cardWidth,
-                height: cardWidth,
-                borderColor: routineTheme.completion,
-              },
-            ]}
+        }}
+        ListFooterComponent={
+          <PressScale
+            onPress={() => {
+              stopAll();
+              openMixer();
+            }}
+            style={{ width: cardWidth }}
           >
-            <Feather name="plus" size={23} color={routineTheme.completion} />
-            <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
-              Crear una mezcla
-            </Text>
-          </View>
-        </PressScale>
-
-      </ScrollView>
+            <View
+              style={[
+                styles.addCard,
+                {
+                  width: cardWidth,
+                  height: cardWidth,
+                  borderColor: routineTheme.completion,
+                },
+              ]}
+            >
+              <Feather name="plus" size={23} color={routineTheme.completion} />
+              <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
+                Crear una mezcla
+              </Text>
+            </View>
+          </PressScale>
+        }
+      />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   section: {
@@ -174,6 +181,10 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: GRID_PAD,
+    gap: CARD_GAP,
+  },
+  emptyCards: {
+    flexDirection: "row",
     gap: CARD_GAP,
   },
   addCard: {

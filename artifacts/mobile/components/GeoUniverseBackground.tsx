@@ -5,8 +5,9 @@
  * cíclico) con una creación preset. Se activa/desactiva desde EscenasSheet
  * a través de GeoUniverseContext.
  */
-import React, { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet, useWindowDimensions, View } from "react-native";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Animated, AppState, Easing, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { type GeometryId } from "@/data/geometries";
@@ -20,12 +21,14 @@ function BgGlyph({
   masterOpacity,
   size,
   index,
+  isActive,
 }: {
   id: GeometryId;
   settings: GeoSettings;
   masterOpacity: number;
   size: number;
   index: number;
+  isActive: boolean;
 }) {
   const rot   = useRef(new Animated.Value(0)).current;
   const pulse = useRef(new Animated.Value(0)).current;
@@ -48,7 +51,7 @@ function BgGlyph({
   const sw           = base1px * (1 + safeThick * 5);
 
   useEffect(() => {
-    if (spinning) {
+    if (isActive && spinning) {
       const a = Animated.loop(
         Animated.timing(rot, { toValue: 1, duration: spinDuration, easing: Easing.linear, useNativeDriver: true })
       );
@@ -56,10 +59,10 @@ function BgGlyph({
       return () => a.stop();
     }
     rot.setValue(0);
-  }, [spinning, spinDuration, rot]);
+  }, [isActive, spinning, spinDuration, rot]);
 
   useEffect(() => {
-    if ((settings.breatheAmount ?? 0) > 0) {
+    if (isActive && (settings.breatheAmount ?? 0) > 0) {
       const a = Animated.loop(
         Animated.sequence([
           Animated.timing(pulse, { toValue: 1, duration: 6000 + index * 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
@@ -71,11 +74,11 @@ function BgGlyph({
     }
     pulse.setValue(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [(settings.breatheAmount ?? 0) > 0, index, pulse]);
+  }, [isActive, (settings.breatheAmount ?? 0) > 0, index, pulse]);
 
   useEffect(() => {
     const fadeOn = (settings.fadeLoopAmount ?? 0) > 0;
-    if (fadeOn) {
+    if (isActive && fadeOn) {
       const safeFadeAmt = Math.max(0, Math.min(1, settings.fadeLoopAmount ?? 0));
       const minOpacity  = 1 - safeFadeAmt * 0.85;
       const a = Animated.loop(
@@ -89,7 +92,7 @@ function BgGlyph({
     }
     fade.setValue(1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [(settings.fadeLoopAmount ?? 0) > 0, index, fade]);
+  }, [isActive, (settings.fadeLoopAmount ?? 0) > 0, index, fade]);
 
   const layerOpacity = Math.max(0.1, settings.opacity * masterOpacity);
   const rotDeg       = rot.interpolate({ inputRange: [0, 1], outputRange: [`${settings.manualAngle}deg`, `${settings.manualAngle + 360 * dir}deg`] });
@@ -199,6 +202,21 @@ const PRESET: Array<{ id: GeometryId; settings: GeoSettings; index: number }> = 
 export function GeoUniverseBackground() {
   const { enabled } = useGeoUniverse();
   const { width }   = useWindowDimensions();
+  const [isScreenFocused, setIsScreenFocused] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
+  const isActive = enabled && isScreenFocused && appState === "active";
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsScreenFocused(true);
+      return () => setIsScreenFocused(false);
+    }, []),
+  );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", setAppState);
+    return () => subscription.remove();
+  }, []);
 
   if (!enabled) return null;
 
@@ -214,6 +232,7 @@ export function GeoUniverseBackground() {
           masterOpacity={1}
           size={glyphContainerSize}
           index={p.index}
+          isActive={isActive}
         />
       ))}
     </View>

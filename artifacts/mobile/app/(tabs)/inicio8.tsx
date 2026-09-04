@@ -2104,6 +2104,37 @@ export default function HomeScreen2({
     },
     [closeSearch, isPremium, openCategory, openForSession, playSession],
   );
+  // Compartido por los carruseles: mantiene estables las props de sus listas
+  // virtualizadas cuando el reproductor actualiza progreso u otro estado de Inicio.
+  const handleSessionCarouselPress = useCallback(
+    (session: Session) => {
+      if (session.skipMiniPlayer) {
+        playSession(session);
+        return;
+      }
+      if (session.skipDetail) {
+        playSession(session);
+        router.push("/player" as never);
+        return;
+      }
+      openCategory(`/session/${session.id}`);
+    },
+    [openCategory, playSession],
+  );
+  const handleViewAllRecent = useCallback(() => {
+    router.push("/historial" as never);
+  }, []);
+  const handleViewAllFavorites = useCallback(() => {
+    openCategory("/favoritos-todos");
+  }, [openCategory]);
+  const inicio2SessionCarouselStyle = useMemo(
+    () => ({ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }),
+    [],
+  );
+  const originalSessionCarouselStyle = useMemo(
+    () => ({ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }),
+    [],
+  );
 
   return (
     <View
@@ -2501,14 +2532,14 @@ export default function HomeScreen2({
             title="Sesiones recientes"
             sessions={filteredListened}
             isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            onPress={handleSessionCarouselPress}
+            style={inicio2SessionCarouselStyle}
             titleOffset={10}
             cardWidth={INICIO2_SESSION_CARD_W}
             allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
-            onViewAll={() => router.push("/historial" as never)}
+            onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
@@ -2590,14 +2621,14 @@ export default function HomeScreen2({
             title="Mis favoritos"
             sessions={favoriteSessions}
             isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            onPress={handleSessionCarouselPress}
+            style={inicio2SessionCarouselStyle}
             titleOffset={10}
             cardWidth={INICIO2_SESSION_CARD_W}
             allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
-            onViewAll={() => openCategory("/favoritos-todos")}
+            onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
@@ -2726,8 +2757,8 @@ export default function HomeScreen2({
             title="Sesiones recientes"
             sessions={filteredListened}
             isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            onPress={handleSessionCarouselPress}
+            style={originalSessionCarouselStyle}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={20}
@@ -2744,12 +2775,12 @@ export default function HomeScreen2({
             title="Mis favoritos"
             sessions={favoriteSessions}
             isPremium={isPremium}
-            onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } openCategory(`/session/${s.id}`); }}
-            style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+            onPress={handleSessionCarouselPress}
+            style={originalSessionCarouselStyle}
             titleOffset={10}
             cardWidth={RECENT_CARD_W}
             titleSize={20}
-            onViewAll={() => openCategory("/favoritos-todos")}
+            onViewAll={handleViewAllFavorites}
             viewAllColor={colors.accent}
             showCardMetadata
             showAuthor={false}

@@ -7,10 +7,11 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
+  AppState,
   Easing,
   Pressable,
   ScrollView,
@@ -61,6 +62,21 @@ export default function InmersivoMixerScreen() {
   const insets = useSafeAreaInsets();
   const { activeSounds, isPlaying, togglePlay, sleepTimerRemaining, setSleepTimer, openSheet } = useMixer();
   const params = useLocalSearchParams<{ bgPresetId?: string; packId?: string }>();
+  const [isScreenFocused, setIsScreenFocused] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
+  const isActive = isScreenFocused && appState === "active";
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsScreenFocused(true);
+      return () => setIsScreenFocused(false);
+    }, []),
+  );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", setAppState);
+    return () => subscription.remove();
+  }, []);
 
   // ── Fondo ──────────────────────────────────────────────────────────────────
   const { theme } = useSceneTheme();
@@ -80,9 +96,9 @@ export default function InmersivoMixerScreen() {
         Animated.timing(breathScale, { toValue: 1,    duration: 18000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
       ]),
     );
-    anim.start();
+    if (isActive) anim.start();
     return () => anim.stop();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isActive, breathScale]);
 
   // ── Mensajes ───────────────────────────────────────────────────────────────
   const [packId, setPackId] = useState(params.packId ?? DEFAULT_MESSAGE_PACK_ID);
@@ -91,28 +107,37 @@ export default function InmersivoMixerScreen() {
   const activePack = MESSAGE_PACKS.find((p) => p.id === packId) ?? MESSAGE_PACKS[0]!;
 
   const advanceMsg = useCallback(() => {
-    Animated.timing(msgOpacity, { toValue: 0, duration: MSG_FADE_MS, useNativeDriver: true }).start(() => {
+    Animated.timing(msgOpacity, { toValue: 0, duration: MSG_FADE_MS, useNativeDriver: true }).start(({ finished }) => {
+      if (!finished) return;
       setMsgIdx((i) => (i + 1) % activePack.messages.length);
       Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true }).start();
     });
   }, [activePack.messages.length, msgOpacity]);
 
   useEffect(() => {
+    if (!isActive) {
+      msgOpacity.stopAnimation();
+      return;
+    }
     const t = setInterval(advanceMsg, MSG_DISPLAY_MS);
     return () => clearInterval(t);
-  }, [advanceMsg]);
+  }, [advanceMsg, isActive, msgOpacity]);
 
   useEffect(() => {
+    if (!isActive) return;
     msgOpacity.setValue(0);
     setMsgIdx(0);
-    Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true }).start();
-  }, [packId]); // eslint-disable-line react-hooks/exhaustive-deps
+    const animation = Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true });
+    animation.start();
+    return () => animation.stop();
+  }, [isActive, msgOpacity, packId]);
 
   // ── Auto-ocultar controles ─────────────────────────────────────────────────
   const controlsOpacity = useRef(new Animated.Value(1)).current;
   const hideTimer        = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showControls = useCallback(() => {
+    if (!isActive) return;
     if (hideTimer.current) clearTimeout(hideTimer.current);
     Animated.timing(controlsOpacity, { toValue: 1, duration: 280, useNativeDriver: true }).start();
     hideTimer.current = setTimeout(() => {
@@ -124,12 +149,17 @@ export default function InmersivoMixerScreen() {
         return open;
       });
     }, CONTROLS_TIMEOUT);
-  }, [controlsOpacity]);
+  }, [controlsOpacity, isActive]);
 
   useEffect(() => {
+    if (!isActive) {
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      controlsOpacity.stopAnimation();
+      return;
+    }
     showControls();
     return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [controlsOpacity, isActive, showControls]);
 
   // ── Timer panel ────────────────────────────────────────────────────────────
   const [timerPanelOpen, setTimerPanelOpen] = useState(false);
@@ -142,11 +172,16 @@ export default function InmersivoMixerScreen() {
   }, [timerPanelAnim]);
 
   const closeTimerPanel = useCallback(() => {
-    Animated.timing(timerPanelAnim, { toValue: 0, duration: 220, easing: Easing.in(Easing.ease), useNativeDriver: true }).start(() => {
+    Animated.timing(timerPanelAnim, { toValue: 0, duration: 220, easing: Easing.in(Easing.ease), useNativeDriver: true }).start(({ finished }) => {
+      if (!finished) return;
       setTimerPanelOpen(false);
       showControls();
     });
   }, [timerPanelAnim, showControls]);
+
+  useEffect(() => {
+    if (!isActive) timerPanelAnim.stopAnimation();
+  }, [isActive, timerPanelAnim]);
 
   const handleTimerOption = useCallback((minutes: number) => {
     setSleepTimer(minutes);

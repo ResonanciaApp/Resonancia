@@ -4,6 +4,8 @@ import { router } from "expo-router";
 import React from "react";
 import {
   Pressable,
+  FlatList,
+  Platform,
   ScrollView,
   StyleSheet,
   type ImageStyle,
@@ -95,7 +97,7 @@ type SessionCarouselProps = {
   hideAmbientalTitleInSquareRecent?: boolean;
 };
 
-export function SessionCarousel({
+export const SessionCarousel = React.memo(function SessionCarousel({
   title,
   sessions,
   isPremium,
@@ -181,13 +183,18 @@ export function SessionCarousel({
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
       ))}
-      <ScrollView
+      <FlatList
         horizontal
+        data={sessions}
+        keyExtractor={(session) => session.id}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        windowSize={3}
+        removeClippedSubviews={Platform.OS === "android"}
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
         contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
-      >
-        {sessions.map((s) => {
+        renderItem={({ item: s }) => {
           const locked = !!s.isPremium && !isPremium;
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
@@ -334,11 +341,11 @@ export function SessionCarousel({
               )}
             </PressScale>
           );
-        })}
-      </ScrollView>
+        }}
+      />
     </View>
   );
-}
+});
 
 // ── Carrusel de portadas (playlists / mezclas, sin píldora de duración) ────────
 export type CoverItem = {

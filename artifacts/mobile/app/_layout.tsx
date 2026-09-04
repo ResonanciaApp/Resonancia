@@ -110,10 +110,18 @@ const queryClient = new QueryClient({
 
 // React Query no conoce el AppState de React Native por sí solo: sin esto,
 // "focused" queda siempre true y los refetchInterval siguen corriendo con la
-// app minimizada.
-AppState.addEventListener("change", (state) => {
-  focusManager.setFocused(state === "active");
-});
+// app minimizada. El listener vive dentro del árbol para liberarlo al desmontar
+// el layout (el listener de módulo anterior nunca se limpiaba).
+function ReactQueryAppStateBridge() {
+  useEffect(() => {
+    focusManager.setFocused(AppState.currentState === "active");
+    const subscription = AppState.addEventListener("change", (state) => {
+      focusManager.setFocused(state === "active");
+    });
+    return () => subscription.remove();
+  }, []);
+  return null;
+}
 
 /** Attach Clerk session token to all generated API client requests and community helpers. */
 function ApiAuthBridge() {
@@ -521,6 +529,7 @@ export default function RootLayout() {
           <ErrorBoundary>
             <BrightnessProvider>
             <QueryClientProvider client={queryClient}>
+              <ReactQueryAppStateBridge />
               <SoundsProvider>
               <CatalogProvider>
               <AuthProvider>

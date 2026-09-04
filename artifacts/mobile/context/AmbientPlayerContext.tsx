@@ -3,6 +3,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 
@@ -67,7 +68,10 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const [currentSceneId, setCurrentSceneId] = useState<SceneId>("tibet");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const currentScene = AMBIENT_SCENES.find((s) => s.id === currentSceneId)!;
+  const currentScene = useMemo(
+    () => AMBIENT_SCENES.find((scene) => scene.id === currentSceneId)!,
+    [currentSceneId],
+  );
 
   const setScene = useCallback(async (id: SceneId) => {
     setCurrentSceneId(id);
@@ -77,16 +81,19 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
   const closeSheet = useCallback(() => setIsSheetOpen(false), []);
 
+  const value = useMemo(
+    () => ({
+      currentScene,
+      setScene,
+      isSheetOpen,
+      openSheet,
+      closeSheet,
+    }),
+    [currentScene, setScene, isSheetOpen, openSheet, closeSheet],
+  );
+
   return (
-    <AmbientContext.Provider
-      value={{
-        currentScene,
-        setScene,
-        isSheetOpen,
-        openSheet,
-        closeSheet,
-      }}
-    >
+    <AmbientContext.Provider value={value}>
       {children}
     </AmbientContext.Provider>
   );
