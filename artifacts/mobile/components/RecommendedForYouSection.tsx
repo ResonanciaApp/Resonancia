@@ -231,7 +231,6 @@ export function RecommendedForYouSection({
               style={({ pressed }) => [
                 styles.tab,
                  { backgroundColor: tabBackground },
-                 selected && styles.tabSelected,
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
@@ -301,10 +300,6 @@ const styles = StyleSheet.create({
     gap: 8,
     overflow: "hidden",
     borderWidth: 0,
-  },
-  tabSelected: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.5)",
   },
   imageIcon: {
     width: 18,
