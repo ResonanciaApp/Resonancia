@@ -568,6 +568,13 @@ export function ExploreScreen({
           )}
           scrollEventThrottle={16}
         >
+          <View style={styles.categoryBlocksSection}>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+            />
+          </View>
+
           <View style={styles.contentCategorySection}>
             <ContentCategoryGrid
               marginTop={0}
@@ -614,6 +621,39 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
+          </View>
+
+          <View style={styles.topicSection}>
+            <Text style={styles.sectionTitle}>Explorar todo</Text>
+            <View style={styles.topicGrid}>
+              {TEMAS.map((tema) => (
+                <Pressable
+                  key={tema.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Explorar ${tema.label}`}
+                  onPress={() => openCategory(tema.route ?? `/tema/${tema.id}`)}
+                  style={({ pressed }) => [
+                    styles.topicCard,
+                    {
+                      backgroundColor:
+                        activeSceneId === "tibet"
+                          ? "rgba(0,0,0,0.15)"
+                          : activeSceneId === "indigo"
+                            ? "rgba(42,40,64,0.65)"
+                            : activeSceneId === "indigo2"
+                              ? "rgba(255,255,255,0.025)"
+                              : "rgba(255,255,255,0.05)",
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <MaterialCommunityIcons name={tema.icon} size={28} color={tema.color} />
+                  <Text style={[styles.topicLabel, { color: colors.foreground }]}>
+                    {tema.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
           </View>
 
           {themeCarousels.length > 0 && (
@@ -669,39 +709,6 @@ export function ExploreScreen({
               />
             </View>
           ))}
-
-          <View style={styles.topicSection}>
-            <Text style={styles.sectionTitle}>Explorar todo</Text>
-            <View style={styles.topicGrid}>
-              {TEMAS.map((tema) => (
-                <Pressable
-                  key={tema.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Explorar ${tema.label}`}
-                  onPress={() => openCategory(tema.route ?? `/tema/${tema.id}`)}
-                  style={({ pressed }) => [
-                    styles.topicCard,
-                    {
-                      backgroundColor:
-                        activeSceneId === "tibet"
-                          ? "rgba(0,0,0,0.15)"
-                          : activeSceneId === "indigo"
-                            ? "rgba(42,40,64,0.65)"
-                            : activeSceneId === "indigo2"
-                              ? "rgba(255,255,255,0.025)"
-                              : "rgba(255,255,255,0.05)",
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <MaterialCommunityIcons name={tema.icon} size={28} color={tema.color} />
-                  <Text style={[styles.topicLabel, { color: colors.foreground }]}>
-                    {tema.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
 
           <ResonadoresSection
             marginTop={0}
@@ -875,6 +882,9 @@ const styles = StyleSheet.create({
   contentCategorySection: {
     marginBottom: SECTION_GAP,
   },
+  categoryBlocksSection: {
+    marginBottom: 24,
+  },
   durationSection: {
     marginBottom: SECTION_GAP,
   },
@@ -888,6 +898,8 @@ const styles = StyleSheet.create({
     minWidth: DURATION_CARD_WIDTH,
     height: 44,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.13)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,
