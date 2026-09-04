@@ -15,18 +15,17 @@ import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
 
 function RecommendedCategoryIcon({
   category,
-  selected,
 }: {
   category: (typeof DISCOVER_CONTENT_CATEGORIES)[number];
-  selected: boolean;
 }) {
-  const color = selected ? "#F9F9F9" : category.color;
+  const color = "#FFFFFF";
   switch (category.id) {
     case "meditaciones-guiadas":
       return (
@@ -153,6 +152,7 @@ export function RecommendedForYouSection({
   marginBottom = 0,
 }: Props) {
   const { width } = useWindowDimensions();
+  const { activeSceneId } = useSceneTheme();
   const [activeCategoryId, setActiveCategoryId] = useState(
     DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
   );
@@ -192,6 +192,13 @@ export function RecommendedForYouSection({
   if (!hasRecommendations) return null;
 
   const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
+  const tabBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "indigo2"
+        ? "rgba(255,255,255,0.025)"
+        : "rgba(255,255,255,0.05)";
   return (
     <View
       style={[styles.root, { marginBottom }]}
@@ -221,11 +228,12 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${category.id}`}
               style={({ pressed }) => [
                 styles.tab,
+                 { backgroundColor: tabBackground },
                  selected && styles.tabSelected,
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
-               <RecommendedCategoryIcon category={category} selected={selected} />
+               <RecommendedCategoryIcon category={category} />
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
                 {category.label}
               </Text>
@@ -290,9 +298,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     gap: 8,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "transparent",
+    borderWidth: 0,
   },
   tabSelected: {
     borderWidth: 2,
