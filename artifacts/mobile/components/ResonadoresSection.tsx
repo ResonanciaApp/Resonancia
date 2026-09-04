@@ -15,16 +15,23 @@ type Props = {
 
 const SECTION_PADDING = 14;
 const CARD_GAP = 14;
-const TRAILING_CARD_FRACTION = 0.2;
+const TRAILING_CARD_PEEK = 5;
+const VISIBLE_CARD_COUNT = 3;
+const PHOTO_ASPECT_RATIO = 1.2;
 
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
   const { resonadores } = useResonadores();
   const colors = useColors();
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = Math.floor(
-    (screenWidth - SECTION_PADDING - CARD_GAP * 2) / (2 + TRAILING_CARD_FRACTION),
+    (
+      screenWidth
+      - SECTION_PADDING
+      - CARD_GAP * VISIBLE_CARD_COUNT
+      - TRAILING_CARD_PEEK
+    ) / VISIBLE_CARD_COUNT,
   );
-  const photoSize = cardWidth;
+  const photoHeight = Math.round(cardWidth * PHOTO_ASPECT_RATIO);
 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
@@ -49,15 +56,14 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
                 style={[
                   styles.photoFrame,
                   {
-                    width: photoSize,
-                    height: photoSize,
-                    borderRadius: photoSize / 2,
+                    width: cardWidth,
+                    height: photoHeight,
                   },
                 ]}
               >
                 <ExpoImage
                   source={resonador.photo}
-                  style={[styles.photo, { width: photoSize, height: photoSize }]}
+                  style={[styles.photo, { width: cardWidth, height: photoHeight }]}
                   contentFit="cover"
                 />
               </View>

@@ -120,6 +120,17 @@ const DISCOVER_ICON_BY_SLUG: Record<string, DiscoverIconName> = {
   astrologia: "star-four-points-outline",
 };
 
+const THEME_CARD_OVERLAY_BY_SLUG: Record<string, [string, string]> = {
+  "para-la-ansiedad": ["rgba(109,47,74,0.34)", "rgba(25,10,18,0.28)"],
+  "energiza-tus-mananas": ["rgba(199,132,48,0.32)", "rgba(49,27,8,0.26)"],
+  "foco-concentracion": ["rgba(52,89,139,0.34)", "rgba(11,22,39,0.28)"],
+  "suelto-la-rabia": ["rgba(149,51,40,0.34)", "rgba(43,12,8,0.28)"],
+  "crecimiento-personal": ["rgba(50,105,74,0.34)", "rgba(9,31,20,0.28)"],
+  "armonia-familiar": ["rgba(142,79,103,0.32)", "rgba(40,17,27,0.26)"],
+  "respiracion-consciente": ["rgba(45,112,116,0.34)", "rgba(8,31,33,0.28)"],
+  "meditaciones-activas": ["rgba(160,92,50,0.32)", "rgba(43,20,9,0.26)"],
+};
+
 function getDiscoverIcon(slug: string, label: string): DiscoverIconName {
   const directIcon = DISCOVER_ICON_BY_SLUG[slug];
   if (directIcon) return directIcon;
@@ -561,7 +572,7 @@ export function ExploreScreen({
               </Text>
             </View>
             <View style={styles.themeGrid}>
-              {TAG_CARDS.map((card) => (
+              {TAG_CARDS.slice(0, 8).map((card) => (
                 <Pressable
                   key={card.id}
                   onPress={() => openCategory(`/tag/${encodeURIComponent(card.id)}`)}
@@ -578,8 +589,11 @@ export function ExploreScreen({
                     transition={IMAGE_TRANSITION}
                   />
                   <LinearGradient
-                    colors={["rgba(6,6,12,0.02)", "rgba(6,6,12,0.78)"]}
-                    locations={[0.25, 1]}
+                    colors={
+                      THEME_CARD_OVERLAY_BY_SLUG[card.id]
+                      ?? ["rgba(24,24,36,0.18)", "rgba(6,6,12,0.34)"]
+                    }
+                    locations={[0, 1]}
                     style={StyleSheet.absoluteFill}
                   />
                   <Text style={styles.themeGridLabel} numberOfLines={2}>
@@ -839,7 +853,8 @@ const styles = StyleSheet.create({
     height: 116,
     borderRadius: 14,
     overflow: "hidden",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
     backgroundColor: "rgba(255,255,255,0.04)",
   },
@@ -849,6 +864,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
     fontWeight: "700",
+    textAlign: "center",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
