@@ -1246,12 +1246,14 @@ function Inicio2HeroSliderRebuilt({
 function Inicio2HeroStatic({
   topInset,
   currentStreak,
+  isPremium,
   giftScale,
   onOpenDrawer,
   onOpenProfile,
 }: {
   topInset: number;
   currentStreak: number;
+  isPremium: boolean;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
@@ -1304,6 +1306,7 @@ function Inicio2HeroStatic({
           <Pressable
             onPress={() => router.push("/(tabs)/profile" as never)}
             hitSlop={10}
+            style={styles.inicio2HeroAvatarButton}
             accessibilityRole="button"
             accessibilityLabel="Abrir mi perfil"
             testID="inicio2-open-profile"
@@ -1317,6 +1320,15 @@ function Inicio2HeroStatic({
             ) : (
               <View style={styles.inicio2HeroAvatarFallback}>
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
+              </View>
+            )}
+            {isPremium && (
+              <View
+                pointerEvents="none"
+                style={styles.inicio2HeroPremiumBadge}
+                accessibilityElementsHidden
+              >
+                <MaterialCommunityIcons name="star" size={10} color="#060A0F" />
               </View>
             )}
           </Pressable>
@@ -2286,6 +2298,7 @@ export default function HomeScreen2({
             <Inicio2HeroStatic
               topInset={topPad}
               currentStreak={currentStreakDisplay}
+              isPremium={isPremium}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
               onOpenProfile={() => router.push("/(tabs)/profile" as never)}
@@ -2986,6 +2999,22 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
+  },
+  inicio2HeroAvatarButton: {
+    position: "relative",
+  },
+  inicio2HeroPremiumBadge: {
+    position: "absolute",
+    top: -4,
+    left: -4,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#BE9650",
+    borderWidth: 1.5,
+    borderColor: "#F0D99E",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
