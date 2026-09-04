@@ -1341,17 +1341,48 @@ export function ProfileScreenBase({
                 },
               ]}
             >
-              <WeeklyStreakProgress
-                days={currentStreak}
-                completedDays={weekFlags.filter(Boolean).length}
-                textColor={colors.foreground}
-              />
+              <View style={styles.streakHeadingRow}>
+                <View style={styles.streakHeadingMain}>
+                  <View style={styles.streakLotusIcon}>
+                    <MaskedView
+                      style={styles.streakLotusMask}
+                      maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
+                    >
+                      <LinearGradient
+                        colors={["#CFCFCF", "#E3E3E3"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    </MaskedView>
+                  </View>
+                  <View style={styles.streakHeadingCopy}>
+                    <View style={styles.streakTitleRow}>
+                      <Text
+                        style={[
+                          styles.streakCountText,
+                          styles.streakCountInline,
+                          { color: colors.foreground },
+                        ]}
+                      >
+                        {currentStreak}
+                      </Text>
+                      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                        Días de racha
+                      </Text>
+                    </View>
+                    <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
+                      Expande tu consciencia todos los días
+                    </Text>
+                  </View>
+                </View>
+              </View>
 
               <SonicStreakDays
                 activeFlags={weekFlags}
                 todayIndex={todayIndex}
                 idPrefix="profile-streak"
-                daysMarginTop={20}
+                daysMarginTop={4}
                 circleSize={37}
                 edgeAligned
                 dayLabelColor={activeTheme.accent ?? colors.primary}
