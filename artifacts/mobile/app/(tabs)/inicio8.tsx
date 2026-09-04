@@ -2409,23 +2409,67 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD }}
           />
         )}
-        {isInicio2 && videos.length > 0 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
-              </Pressable>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
+        {isInicio2 && featuredMoment && (
+          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
+            <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 17 }]}>
+              Para este momento
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (featuredMoment.isPremium && !isPremium) {
+                  router.push("/membresia" as never);
+                  return;
+                }
+                if (openForSession(featuredMoment)) return;
+                if (featuredMoment.skipMiniPlayer) {
+                  playSession(featuredMoment);
+                  return;
+                }
+                if (featuredMoment.skipDetail) {
+                  playSession(featuredMoment);
+                  router.push("/player" as never);
+                  return;
+                }
+                openCategory(`/session/${featuredMoment.id}`);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={featuredMoment.title}
+              style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
             >
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
+              <View style={styles.heroImageContainer}>
+                <ExpoImage
+                  source={featuredMoment.image}
+                  style={styles.heroImage}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+              </View>
+              {(() => {
+                const guide = featuredMoment.guideId ? getGuide(featuredMoment.guideId) : undefined;
+                const artist = featuredMoment.artistId ? getArtist(featuredMoment.artistId) : undefined;
+                const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                const authorPhoto = guide?.photo ?? artist?.photo;
+                return (
+                  <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    {authorPhoto && (
+                      <ExpoImage
+                        source={authorPhoto}
+                        style={styles.heroAvatar}
+                        contentFit="cover"
+                        cachePolicy="memory-disk"
+                      />
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.heroMetaText} numberOfLines={1}>
+                        {[featuredMoment.categoryLabel, featuredMoment.durationLabel].filter(Boolean).join(" · ")}
+                      </Text>
+                      <Text style={styles.heroTitle} numberOfLines={2}>{featuredMoment.title}</Text>
+                      <Text style={styles.heroAuthor} numberOfLines={1}>{authorName}</Text>
+                    </View>
+                  </View>
+                );
+              })()}
+            </Pressable>
           </View>
         )}
         {isInicio2 && (
@@ -2566,94 +2610,23 @@ export default function HomeScreen2({
         )}
         {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
-        {isInicio2 && featuredMoment && (
-          <View
-            style={{
-              paddingHorizontal: GRID_PAD,
-              marginBottom: INICIO2_SECTION_GAP,
-            }}
-          >
-            <Text
-              style={[
-                styles.sectionTitle,
-                { fontSize: 19, marginBottom: 17 },
-              ]}
+        {isInicio2 && videos.length > 0 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
+              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
             >
-              Para este momento
-            </Text>
-            <Pressable
-              onPress={() => {
-                if (featuredMoment.isPremium && !isPremium) {
-                  router.push("/membresia" as never);
-                  return;
-                }
-                if (openForSession(featuredMoment)) return;
-                if (featuredMoment.skipMiniPlayer) {
-                  playSession(featuredMoment);
-                  return;
-                }
-                if (featuredMoment.skipDetail) {
-                  playSession(featuredMoment);
-                  router.push("/player" as never);
-                  return;
-                }
-                openCategory(`/session/${featuredMoment.id}`);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={featuredMoment.title}
-              style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-            >
-              <View style={styles.heroImageContainer}>
-                <ExpoImage
-                  source={featuredMoment.image}
-                  style={styles.heroImage}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
-              </View>
-              {(() => {
-                const guide = featuredMoment.guideId
-                  ? getGuide(featuredMoment.guideId)
-                  : undefined;
-                const artist = featuredMoment.artistId
-                  ? getArtist(featuredMoment.artistId)
-                  : undefined;
-                const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                const authorPhoto = guide?.photo ?? artist?.photo;
-                return (
-                  <View
-                    style={{
-                      marginTop: 12,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 10,
-                    }}
-                  >
-                    {authorPhoto && (
-                      <ExpoImage
-                        source={authorPhoto}
-                        style={styles.heroAvatar}
-                        contentFit="cover"
-                        cachePolicy="memory-disk"
-                      />
-                    )}
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.heroMetaText} numberOfLines={1}>
-                        {[featuredMoment.categoryLabel, featuredMoment.durationLabel]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </Text>
-                      <Text style={styles.heroTitle} numberOfLines={2}>
-                        {featuredMoment.title}
-                      </Text>
-                      <Text style={styles.heroAuthor} numberOfLines={1}>
-                        {authorName}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })()}
-            </Pressable>
+              {videos.slice(0, 8).map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
           </View>
         )}
         {isInicio2 && (
@@ -2662,12 +2635,12 @@ export default function HomeScreen2({
             accessIds={["history", "favorites", "downloads", "sessions", "encounters"]}
             horizontalIds={["sessions", "encounters"]}
             largeLabelIds={["history", "favorites", "downloads"]}
-            cardGap={4}
+            cardGap={9}
+            cardCornerRadius={14}
             cardHeightOffset={13}
             horizontalPadding={GRID_PAD}
             cardBackgroundColor={quickAccessBg}
             showCardBorders={false}
-            joinedContentCorners
             style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
           />
         )}

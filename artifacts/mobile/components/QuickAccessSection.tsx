@@ -77,6 +77,7 @@ function QuickAccessCard({
   showCardBorders,
   cardBorderWidth,
   cardBorderColor,
+  cardCornerRadius,
   joinedContentCorners,
   horizontal,
   largeLabel,
@@ -93,6 +94,7 @@ function QuickAccessCard({
   showCardBorders: boolean;
   cardBorderWidth: number;
   cardBorderColor: string;
+  cardCornerRadius: number;
   joinedContentCorners: boolean;
   horizontal: boolean;
   largeLabel: boolean;
@@ -148,6 +150,7 @@ function QuickAccessCard({
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
+            borderRadius: cardCornerRadius,
             ...(joinedContentCorners
               ? {
                   borderTopLeftRadius: access.id === "encounters" ? 0 : 25,
@@ -199,6 +202,7 @@ export function QuickAccessSection({
   showCardBorders = true,
   cardBorderWidth = 1,
   cardBorderColor = "rgba(255,255,255,0.1)",
+  cardCornerRadius = 16,
   joinedContentCorners = false,
   cardBackgroundColor,
   cardOpacity = 1,
@@ -218,6 +222,7 @@ export function QuickAccessSection({
   showCardBorders?: boolean;
   cardBorderWidth?: number;
   cardBorderColor?: string;
+  cardCornerRadius?: number;
   joinedContentCorners?: boolean;
   cardBackgroundColor?: string;
   cardOpacity?: number;
@@ -305,6 +310,7 @@ export function QuickAccessSection({
             showCardBorders={showCardBorders}
             cardBorderWidth={cardBorderWidth}
             cardBorderColor={cardBorderColor}
+            cardCornerRadius={cardCornerRadius}
             joinedContentCorners={joinedContentCorners}
             horizontal={horizontalIds?.includes(access.id) ?? false}
             largeLabel={largeLabelIds?.includes(access.id) ?? false}
