@@ -345,17 +345,6 @@ export function ExploreScreen({
       }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const themeGridCards = React.useMemo(
-    () =>
-      themeCarousels
-        .map((carousel) => {
-          const card = TAG_CARDS.find((candidate) => candidate.label === carousel.label);
-          return card ? { ...card, slug: carousel.slug } : null;
-        })
-        .filter((card): card is NonNullable<typeof card> => card !== null),
-    [themeCarousels],
-  );
-
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
@@ -565,43 +554,41 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          {themeCarousels.length > 0 && (
-            <View style={styles.otherThemesSection}>
-              <View style={styles.otherThemesHeader}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                  Otras temáticas
-                </Text>
-              </View>
-              <View style={styles.themeGrid}>
-                {themeGridCards.map((card) => (
-                  <Pressable
-                    key={card.slug}
-                    onPress={() => openCategory(`/tag/${encodeURIComponent(card.slug)}`)}
-                    style={({ pressed }) => [
-                      styles.themeGridCard,
-                      { opacity: pressed ? 0.82 : 1 },
-                    ]}
-                  >
-                    <Image
-                      source={card.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <LinearGradient
-                      colors={["rgba(6,6,12,0.02)", "rgba(6,6,12,0.78)"]}
-                      locations={[0.25, 1]}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <Text style={styles.themeGridLabel} numberOfLines={2}>
-                      {card.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+          <View style={styles.otherThemesSection}>
+            <View style={styles.otherThemesHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Otras temáticas
+              </Text>
             </View>
-          )}
+            <View style={styles.themeGrid}>
+              {TAG_CARDS.map((card) => (
+                <Pressable
+                  key={card.id}
+                  onPress={() => openCategory(`/tag/${encodeURIComponent(card.id)}`)}
+                  style={({ pressed }) => [
+                    styles.themeGridCard,
+                    { opacity: pressed ? 0.82 : 1 },
+                  ]}
+                >
+                  <Image
+                    source={card.image}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                    transition={IMAGE_TRANSITION}
+                  />
+                  <LinearGradient
+                    colors={["rgba(6,6,12,0.02)", "rgba(6,6,12,0.78)"]}
+                    locations={[0.25, 1]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <Text style={styles.themeGridLabel} numberOfLines={2}>
+                    {card.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel, index) => (
