@@ -12,7 +12,6 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { hexToRgba } from "@/utils/color";
 
 type Props = {
   sessions: Session[];
@@ -61,7 +60,6 @@ export function DailyRecommendationsSection({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
-  const categoryAccent = theme.accent ?? colors.accent;
   const indigo2Accent = theme.id === "indigo2" ? colors.accent : undefined;
   const sleepTabSurface =
     theme.id === "tibet"
@@ -103,10 +101,8 @@ export function DailyRecommendationsSection({
               session={session}
               imageSize={84}
               showCategoryPill
-              showAuthor={false}
               categoryPillPlain={false}
-              categoryPillOutlineColor={hexToRgba(categoryAccent, 0.4)}
-              categoryTextColor={categoryAccent}
+              categoryPillOutlineColor={sleepTabSurface}
               showDurationBadge
               showChevron
               authorColor={indigo2Accent}
