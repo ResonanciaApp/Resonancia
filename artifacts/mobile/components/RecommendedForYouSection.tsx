@@ -315,6 +315,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   carousel: {
+    marginTop: 8,
     marginBottom: 0,
     paddingHorizontal: HORIZONTAL_PAD,
   },
