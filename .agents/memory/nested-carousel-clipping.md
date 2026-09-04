@@ -3,8 +3,8 @@ name: Carruseles anidados y clipping
 description: Regla de rendimiento para pantallas verticales con varios carruseles horizontales
 ---
 
-En Dormir, no activar `removeClippedSubviews` en los carruseles horizontales ni envolver sus secciones en una lista vertical virtualizada. Mantener la misma estructura de `ScrollView` vertical + carruseles horizontales que usa Sonidos.
+En Dormir, no activar `removeClippedSubviews` en los carruseles horizontales ni envolver sus secciones en una lista vertical virtualizada. Mantener la misma composición probada de Sonidos: header fijo fuera del `ScrollView`, contenido con `paddingTop` medido y cards del ancho estándar de contenido.
 
-**Why:** ambos enfoques empeoraron el rendimiento en el dispositivo. La diferencia relevante frente a Sonidos era exclusiva de Dormir: los pills instalaban un `PanResponder` que competía con el scroll y el fondo se pausaba/reanudaba mediante estado React al iniciar y terminar cada gesto.
+**Why:** clipping y virtualización vertical empeoraron el rendimiento en el dispositivo. Quitar el `PanResponder` de los pills y los toggles React del fondo no bastó: Dormir seguía moviendo su header dentro del scroll y decodificaba cards más grandes que Sonidos.
 
-**How to apply:** usar interacción normal de `Pressable` en los pills y dejar el fondo sin toggles de estado ligados al scroll. Conservar arrays, callbacks y estilos estables; no “optimizar” esta composición cambiando el contenedor vertical o el clipping nativo.
+**How to apply:** usar `Pressable` normal en los pills, fondo sin toggles de estado ligados al scroll, header absoluto medido fuera del scroll y el ancho estándar compartido. Conservar arrays, callbacks y estilos estables.

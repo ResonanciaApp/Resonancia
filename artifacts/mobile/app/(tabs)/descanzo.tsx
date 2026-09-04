@@ -1,11 +1,11 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
   Easing,
-  Image,
   Modal,
   Platform,
   Pressable,
@@ -27,6 +27,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -34,7 +35,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
+import { getContentCarouselCardWidth } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -119,9 +120,7 @@ function SleepPill({
 const H_PAD = 14;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
-// Igual que "Sesiones recientes" de Inicio 2: 2 cards completas + 10 px
-// de la tercera, considerando el padding y gap del SessionCarousel.
-const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
+const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
 
 /* ─── Constantes del sheet ───────────────────────────────────────────── */
@@ -237,7 +236,37 @@ export default function DescansoScreen() {
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
-  const indigo2TabsBackgroundColor = "rgba(255,255,255,0.05)";
+  const titleProgress = useRef(new Animated.Value(0)).current;
+  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
+  const compactRef = useRef(false);
+  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
+  const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.96],
+  });
+  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+  });
+  const useDiscoverStickyStyle = sceneTheme.id === "indigo" || sceneTheme.id === "indigo2";
+
+  const handleScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const compact = event.nativeEvent.contentOffset.y > 8;
+    if (compact === compactRef.current) return;
+    compactRef.current = compact;
+    Animated.timing(titleProgress, {
+      toValue: compact ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(indigo2TabsSurfaceAnim, {
+      toValue: compact ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [indigo2TabsSurfaceAnim, titleProgress]);
 
   const {
     currentSession,
@@ -374,54 +403,87 @@ export default function DescansoScreen() {
       <GeoUniverseBackground />
 
       <View style={styles.contentShift}>
+        <View
+          style={[
+            styles.fixedHeader,
+            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
+            { paddingTop: topPad + 2 },
+          ]}
+          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
+        >
+          <StickyHeaderSurface
+            opacity={stickyHeaderSurfaceOpacity}
+            tint={bgGradient[0] as string}
+            showTint={!useDiscoverStickyStyle}
+            showDivider={!useDiscoverStickyStyle}
+            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+            showBlackTint={!useDiscoverStickyStyle}
+            strongBlur={useDiscoverStickyStyle}
+            fadeBottom={useDiscoverStickyStyle}
+          />
+          <View style={styles.titleRow}>
+            <Animated.Text
+              style={[
+                styles.heroTitle,
+                {
+                  color: colors.foreground,
+                  opacity: titleProgress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0],
+                  }),
+                },
+              ]}
+            >
+              Dormir
+            </Animated.Text>
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.compactTitleOverlay, { opacity: titleProgress }]}
+            >
+              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Dormir</Text>
+            </Animated.View>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Dormir"
+              testID="sleep-search-button"
+            >
+              <Feather name="search" size={24} color={colors.foreground} />
+            </Pressable>
+          </View>
+          <View style={styles.sleepTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.tabGrid, { marginBottom: 0 }]}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {sleepCollections.map((tab) => (
+                <SleepPill
+                  key={tab.id}
+                  sel={false}
+                  label={tab.label}
+                  icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
+                  onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          contentContainerStyle={{
+            paddingTop: fixedHeaderHeight,
+            paddingBottom: 140 + bottomPad,
+          }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          onScroll={handleScroll}
         >
-          <View
-            style={[
-              styles.pageHeader,
-              { paddingTop: topPad + 2 },
-            ]}
-          >
-            <View style={styles.titleRow}>
-              <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-                Dormir
-              </Text>
-              <Pressable
-                onPress={() => setSearchVisible(true)}
-                hitSlop={10}
-                style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
-                accessibilityRole="button"
-                accessibilityLabel="Buscar en Dormir"
-                testID="sleep-search-button"
-              >
-                <Feather name="search" size={24} color={colors.foreground} />
-              </Pressable>
-            </View>
-            <View style={styles.sleepTabsHeader}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={[styles.tabGrid, { marginBottom: 0 }]}
-                contentContainerStyle={styles.tabGridContent}
-              >
-                {sleepCollections.map((tab) => (
-                  <SleepPill
-                    key={tab.id}
-                    sel={false}
-                    label={tab.label}
-                    icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
-                    onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
-                  />
-                ))}
-              </ScrollView>
-            </View>
-          </View>
-
           <View style={{ marginTop: -3 }}>
             {sleepCollections.map((collection, index) => (
               <SessionCarousel
@@ -431,7 +493,7 @@ export default function DescansoScreen() {
                 isPremium={isPremium}
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
-                cardWidth={RECENT_CARD_W}
+                cardWidth={CARD_W}
                 titleSize={19}
                 showCardMetadata
                 showAuthor={false}
@@ -508,7 +570,12 @@ export default function DescansoScreen() {
                   style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.85 : 1 }]}
                 >
                   <View style={{ width: "100%", aspectRatio: 1, borderRadius: 17, overflow: "hidden" }}>
-                    <Image source={s.image as number} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                    <Image
+                      source={s.image as number}
+                      style={{ width: "100%", height: "100%" }}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
                     <SessionDurationBadge label={s.durationLabel} style={{ position: "absolute", bottom: 8, left: 8 }} />
                     {locked && (
                       <View style={{ position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" }}>
@@ -533,6 +600,17 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
+  fixedHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+    backgroundColor: "transparent",
+  },
+  fixedHeaderFadeOverflow: {
+    overflow: "visible",
+  },
   scroll: { flex: 1 },
 
   /* NightTimerSheet */
