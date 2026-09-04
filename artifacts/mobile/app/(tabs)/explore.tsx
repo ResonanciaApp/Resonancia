@@ -32,7 +32,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
-import { TAG_CARDS, THEME_CARD_OVERLAY_BY_SLUG } from "@/data/tags";
+import { TAG_CARDS } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -637,10 +637,7 @@ export function ExploreScreen({
                     transition={IMAGE_TRANSITION}
                   />
                   <LinearGradient
-                    colors={
-                      THEME_CARD_OVERLAY_BY_SLUG[card.id]
-                      ?? ["rgba(24,24,36,0.18)", "rgba(6,6,12,0.34)"]
-                    }
+                    colors={["rgba(0,0,0,0.15)", "rgba(0,0,0,0.15)"]}
                     locations={[0, 1]}
                     style={StyleSheet.absoluteFill}
                   />

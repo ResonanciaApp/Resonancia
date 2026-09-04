@@ -556,7 +556,7 @@ export function MiRutinaSection({ style }: Props) {
 const styles = StyleSheet.create({
   section: {
     marginHorizontal: 14,
-    marginBottom: 36,
+    marginBottom: 53,
   },
   headerRow: {
     flexDirection: "row",

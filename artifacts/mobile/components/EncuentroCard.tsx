@@ -86,7 +86,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
             { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.8 : 1 },
           ]}
         >
-          <Text style={[styles.calBtnText, { color: theme.gradient[0] }]}>Añadir a mi calendario</Text>
+          <Text style={[styles.calBtnText, { color: "#F9F9F9" }]}>Añadir a mi calendario</Text>
           <Feather name="calendar" size={16} color={theme.gradient[0]} style={{ marginLeft: 8 }} />
         </Pressable>
       </View>
