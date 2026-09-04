@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -28,7 +29,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
   TAG_CARDS,
-  THEME_CARD_BACKGROUND_BY_SLUG,
   slugifyThemeTag,
 } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
@@ -90,8 +90,16 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     () => TAG_CARDS.find((candidate) => candidate.id === slug),
     [slug],
   );
-  const themeCardBackground =
-    THEME_CARD_BACKGROUND_BY_SLUG[tag?.id ?? ""] ?? "rgb(52,89,139)";
+  const inactiveFilterBackground =
+    theme.id === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : theme.id === "indigo"
+        ? "rgba(42,40,64,0.65)"
+        : "rgba(255,255,255,0.05)";
+  const inactiveFilterBorder =
+    theme.id === "indigo2"
+      ? "rgba(255,255,255,0.04)"
+      : "rgba(255,255,255,0.1)";
   const sessions = useMemo(
     () =>
       tagLabel
@@ -226,7 +234,12 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             style={[
               styles.filterPill,
               durationFilter === null ? styles.filterPillSelected : styles.filterPillIdle,
-              durationFilter === null ? null : { backgroundColor: themeCardBackground },
+              durationFilter === null
+                ? null
+                : {
+                    backgroundColor: inactiveFilterBackground,
+                    borderColor: inactiveFilterBorder,
+                  },
             ]}
           >
             <Text
@@ -247,7 +260,12 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 style={[
                   styles.filterPill,
                   active ? styles.filterPillSelected : styles.filterPillIdle,
-                  active ? null : { backgroundColor: themeCardBackground },
+                  active
+                    ? null
+                    : {
+                        backgroundColor: inactiveFilterBackground,
+                        borderColor: inactiveFilterBorder,
+                      },
                 ]}
               >
                 <Text
@@ -401,8 +419,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   filterPillSelected: {
-    backgroundColor: "#2C6B7B",
-    borderColor: "#2C6B7B",
+    backgroundColor: WIDGET_GREEN_SOLID,
+    borderColor: WIDGET_GREEN_SOLID,
   },
   filterPillIdle: {
     borderColor: "rgba(255,255,255,0.16)",

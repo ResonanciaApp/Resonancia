@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import React from "react";
 import {
   Dimensions,
@@ -33,13 +34,28 @@ export default function TodasLasTemáticasScreen() {
   const goBack = () => (overlayBack ? overlayBack() : router.back());
   const overlay = useCategoryOverlayOptional();
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View
+      style={[
+        styles.root,
+        { backgroundColor: theme.gradient[theme.gradient.length - 1] as string },
+      ]}
+    >
       <StatusBar hidden />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={
+          theme.gradient.length === 4
+            ? [0, 0.35, 0.72, 1]
+            : undefined
+        }
+        style={StyleSheet.absoluteFill}
+      />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 12 }]}>
@@ -50,6 +66,7 @@ export default function TodasLasTemáticasScreen() {
             {TAG_CARDS.length} temáticas disponibles
           </Text>
         </View>
+        <View style={styles.headerSideSpacer} />
       </View>
 
       <ScrollView
@@ -98,6 +115,10 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
     gap: 14,
   },
+  headerSideSpacer: {
+    width: 28,
+    height: 28,
+  },
   backBtn: {
     width: 38,
     height: 38,
@@ -107,17 +128,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  headerText: { flex: 1 },
+  headerText: { flex: 1, alignItems: "center" },
   title: {
     fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.2,
+    textAlign: "center",
   },
   subtitle: {
     fontFamily: "Manrope",
     fontSize: 13,
     marginTop: 2,
+    textAlign: "center",
   },
   scroll: { flex: 1 },
   content: {
