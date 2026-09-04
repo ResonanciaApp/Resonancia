@@ -2547,6 +2547,7 @@ export default function HomeScreen2({
             showMetaBelow
             durationInsideWithMeta
             hideAmbientalTitleInSquareRecent
+            eagerRender
           />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (

@@ -44,7 +44,11 @@ type CarouselImageProps = {
   contentFit?: "cover" | "contain";
 };
 
-function CarouselImage({ source, style, contentFit = "cover" }: CarouselImageProps) {
+const CarouselImage = React.memo(function CarouselImage({
+  source,
+  style,
+  contentFit = "cover",
+}: CarouselImageProps) {
   const [failed, setFailed] = React.useState(false);
 
   if (failed) {
@@ -64,7 +68,7 @@ function CarouselImage({ source, style, contentFit = "cover" }: CarouselImagePro
       onError={() => setFailed(true)}
     />
   );
-}
+});
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
@@ -94,6 +98,7 @@ type SessionCarouselProps = {
   showHeader?: boolean;
   cardVariant?: "ambiental";
   hideAmbientalTitleInSquareRecent?: boolean;
+  eagerRender?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -123,6 +128,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showHeader = true,
   cardVariant,
   hideAmbientalTitleInSquareRecent = false,
+  eagerRender = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -186,9 +192,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         horizontal
         data={sessions}
         keyExtractor={(session) => session.id}
-        initialNumToRender={3}
-        maxToRenderPerBatch={3}
-        windowSize={3}
+        initialNumToRender={eagerRender ? sessions.length : 3}
+        maxToRenderPerBatch={eagerRender ? sessions.length : 3}
+        windowSize={eagerRender ? 11 : 3}
         removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
