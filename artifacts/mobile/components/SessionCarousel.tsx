@@ -94,6 +94,7 @@ type SessionCarouselProps = {
   showCollectionBelow?: boolean;
   showMetaBelow?: boolean;
   durationInsideWithMeta?: boolean;
+  showDurationBadge?: boolean;
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
@@ -124,6 +125,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showCollectionBelow = false,
   showMetaBelow = false,
   durationInsideWithMeta = false,
+  showDurationBadge = true,
   durationLift = 0,
   showHeader = true,
   cardVariant,
@@ -253,7 +255,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         {s.title}
                       </Text>
                     )}
-                    {durationInsideWithMeta && (
+                    {durationInsideWithMeta && showDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
@@ -274,7 +276,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     showAuthor={showAuthor && !showCollectionBelow}
                     showCategoryPill={!showMetaBelow && (showImageCategoryPill || !showCollectionBelow)}
                     showCategoryBelow={showMetaBelow || showCollectionBelow}
-                    showDuration={!showMetaBelow}
+                    showDuration={showDurationBadge && !showMetaBelow}
                     durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
                     metaBottom={hasSecondaryMeta ? 15 : 20}
                     metaLeft={hasSecondaryMeta ? 10 : 18}
@@ -285,7 +287,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {(!showMetaBelow || durationInsideWithMeta) && showImageCategoryPill && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
-                    {(!showMetaBelow || durationInsideWithMeta) && (
+                    {showDurationBadge && (!showMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[

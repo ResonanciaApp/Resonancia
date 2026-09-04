@@ -168,6 +168,10 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 const INICIO2_SESSION_CARD_W = Math.max(
   getTwoCardCarouselCardWidth(width, GRID_PAD),
 );
+// Una card completa y aproximadamente 85% de la siguiente.
+const INICIO2_RECENT_CARD_W = Math.round(
+  (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.85,
+);
 const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
@@ -1329,7 +1333,7 @@ function Inicio2HeroStatic({
               >
                 <MaterialCommunityIcons
                   name="star"
-                  size={20}
+                  size={14}
                   color={MEMBERSHIP_AURORA.premium.accent}
                 />
               </View>
@@ -2586,7 +2590,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             titleOffset={10}
-            cardWidth={INICIO2_SESSION_CARD_W}
+            cardWidth={INICIO2_RECENT_CARD_W}
             allowOversizedCardWidth
             titleSize={19}
             titleSpacing={17}
@@ -2594,9 +2598,8 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
             squareCards
             cardAuthorColor="#acaac2"
-            showAuthor
-            showMetaBelow
-            durationInsideWithMeta
+            showAuthor={false}
+            showDurationBadge={false}
             hideAmbientalTitleInSquareRecent
             eagerRender
           />
@@ -2986,10 +2989,14 @@ const styles = StyleSheet.create({
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
-    top: -6,
-    left: -6,
+    top: -5,
+    left: -5,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#FFFFFF",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
