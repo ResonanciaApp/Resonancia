@@ -1328,9 +1328,6 @@ export function ProfileScreenBase({
           <>
             <View style={styles.weeklyStreakIntro}>
               <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Tu progreso</Text>
-              <Text style={styles.weeklyStreakIntroDescription}>
-                Bastan 3 días a la semana para comenzar a transformar tu vida.
-              </Text>
             </View>
             <View
               style={[

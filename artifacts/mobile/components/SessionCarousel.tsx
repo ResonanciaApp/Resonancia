@@ -32,7 +32,6 @@ import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const CARD_W = 150;
 const GRID_PAD = 14;
@@ -164,9 +163,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         ? "rgba(255,255,255,0.025)"
         : colors.card;
   const ambientalImageSize = Math.round(cw * 0.72);
-  const viewAllAccent = theme.id === "indigo" || theme.id === "indigo2"
-    ? WIDGET_GREEN_SOLID
-    : (viewAllColor ?? colors.accent);
+  const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
   return (
     <View style={[styles.section, style]}>
