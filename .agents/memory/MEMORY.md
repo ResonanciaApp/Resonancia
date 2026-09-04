@@ -128,4 +128,4 @@
 - [Rendimiento del drag de Mi Rutina](routine-drag-performance.md) — animar cambios de slot una sola vez, memoizar filas/gestos y limpiar estados transitorios al perder foco
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2
 - [Animated drivers no se mezclan por View](animated-driver-view-mixing.md) — separar en capas los estilos JS (color) y native (transform), aunque usen Animated.Value distintos
-- [Carruseles anidados y clipping](nested-carousel-clipping.md) — removeClippedSubviews empeora carruseles horizontales con margen negativo; virtualizar las secciones verticales
+- [Carruseles anidados en Dormir](nested-carousel-clipping.md) — no usar clipping ni virtualización vertical; igualar Sonidos y evitar PanResponder/toggles de fondo durante scroll

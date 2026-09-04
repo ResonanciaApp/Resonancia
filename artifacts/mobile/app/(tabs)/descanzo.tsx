@@ -5,10 +5,8 @@ import {
   Animated,
   Dimensions,
   Easing,
-  FlatList,
   Image,
   Modal,
-  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -39,7 +37,6 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const SLEEP_PILL_CANCEL_DISTANCE = 14;
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function SleepPill({
@@ -73,10 +70,6 @@ function SleepPill({
     }).start();
   }, [scale]);
 
-  const cancelPress = useCallback(() => {
-    pressCancelledRef.current = true;
-  }, []);
-
   const finishPress = useCallback(() => {
     animatePress(false);
   }, [animatePress]);
@@ -86,23 +79,8 @@ function SleepPill({
     animatePress(false);
   }, [animatePress]);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      // Let Pressable and the horizontal ScrollView handle the initial touch.
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponderCapture: (_, gesture) =>
-        gesture.dy > SLEEP_PILL_CANCEL_DISTANCE && gesture.dy > Math.abs(gesture.dx),
-      onMoveShouldSetPanResponder: (_, gesture) =>
-        gesture.dy > SLEEP_PILL_CANCEL_DISTANCE && gesture.dy > Math.abs(gesture.dx),
-      onPanResponderGrant: cancelPress,
-      onPanResponderRelease: finishPress,
-      onPanResponderTerminate: cancelTouch,
-    }),
-  ).current;
-
   return (
     <Animated.View
-      {...panResponder.panHandlers}
       collapsable={false}
       style={[styles.sleepPillAnimated, { transform: [{ scale }] }]}
     >
@@ -256,24 +234,10 @@ export default function DescansoScreen() {
 
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const scrollResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { version: catalogVersion } = useCatalog();
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol } = useDescansoPlayerContext();
 
   const indigo2TabsBackgroundColor = "rgba(255,255,255,0.05)";
-
-  const pauseBackgrounds = useCallback(() => {
-    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
-    setIsScrolling(true);
-  }, []);
-  const resumeBackgrounds = useCallback(() => {
-    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
-    scrollResumeTimerRef.current = setTimeout(() => setIsScrolling(false), 80);
-  }, []);
-  useEffect(() => () => {
-    if (scrollResumeTimerRef.current) clearTimeout(scrollResumeTimerRef.current);
-  }, []);
 
   const {
     currentSession,
@@ -407,81 +371,75 @@ export default function DescansoScreen() {
       style={styles.root}
     >
       <StatusBar hidden />
-      <GeoUniverseBackground paused={isScrolling} />
+      <GeoUniverseBackground />
 
       <View style={styles.contentShift}>
-        <FlatList
+        <ScrollView
           style={styles.scroll}
-          data={sleepCollections}
-          keyExtractor={(collection) => collection.id}
           contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          initialNumToRender={2}
-          maxToRenderPerBatch={2}
-          windowSize={5}
-          onScrollBeginDrag={pauseBackgrounds}
-          onMomentumScrollBegin={pauseBackgrounds}
-          onScrollEndDrag={resumeBackgrounds}
-          onMomentumScrollEnd={resumeBackgrounds}
-          ListHeaderComponent={(
-            <View
-              style={[
-                styles.pageHeader,
-                { paddingTop: topPad + 2, marginBottom: -3 },
-              ]}
-            >
-              <View style={styles.titleRow}>
-                <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-                  Dormir
-                </Text>
-                <Pressable
-                  onPress={() => setSearchVisible(true)}
-                  hitSlop={10}
-                  style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Buscar en Dormir"
-                  testID="sleep-search-button"
-                >
-                  <Feather name="search" size={24} color={colors.foreground} />
-                </Pressable>
-              </View>
-              <View style={styles.sleepTabsHeader}>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={[styles.tabGrid, { marginBottom: 0 }]}
-                  contentContainerStyle={styles.tabGridContent}
-                >
-                  {sleepCollections.map((tab) => (
-                    <SleepPill
-                      key={tab.id}
-                      sel={false}
-                      label={tab.label}
-                      icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                      indigo2BackgroundColor={indigo2TabsBackgroundColor}
-                      onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
+        >
+          <View
+            style={[
+              styles.pageHeader,
+              { paddingTop: topPad + 2 },
+            ]}
+          >
+            <View style={styles.titleRow}>
+              <Text style={[styles.heroTitle, { color: colors.foreground }]}>
+                Dormir
+              </Text>
+              <Pressable
+                onPress={() => setSearchVisible(true)}
+                hitSlop={10}
+                style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+                accessibilityRole="button"
+                accessibilityLabel="Buscar en Dormir"
+                testID="sleep-search-button"
+              >
+                <Feather name="search" size={24} color={colors.foreground} />
+              </Pressable>
             </View>
-          )}
-          renderItem={({ item: collection, index }) => (
-            <SessionCarousel
-              title={collection.label}
-              sessions={collection.sessions}
-              isPremium={isPremium}
-              onPress={handleSessionTap}
-              style={sleepCarouselStyles[index]}
-              cardWidth={RECENT_CARD_W}
-              titleSize={19}
-              showCardMetadata
-              showAuthor={false}
-              onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-            />
-          )}
-        />
+            <View style={styles.sleepTabsHeader}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={[styles.tabGrid, { marginBottom: 0 }]}
+                contentContainerStyle={styles.tabGridContent}
+              >
+                {sleepCollections.map((tab) => (
+                  <SleepPill
+                    key={tab.id}
+                    sel={false}
+                    label={tab.label}
+                    icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
+                    onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+
+          <View style={{ marginTop: -3 }}>
+            {sleepCollections.map((collection, index) => (
+              <SessionCarousel
+                key={collection.id}
+                title={collection.label}
+                sessions={collection.sessions}
+                isPremium={isPremium}
+                onPress={handleSessionTap}
+                style={sleepCarouselStyles[index]}
+                cardWidth={RECENT_CARD_W}
+                titleSize={19}
+                showCardMetadata
+                showAuthor={false}
+                onViewAll={sleepCarouselViewAllHandlers[collection.id]}
+              />
+            ))}
+          </View>
+        </ScrollView>
       </View>
 
       <NightTimerSheet
