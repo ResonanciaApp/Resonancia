@@ -540,6 +540,14 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
+          {themeCarousels.length > 0 && (
+            <View style={styles.otherThemesHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Otras temáticas
+              </Text>
+            </View>
+          )}
+
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
           {themeCarousels.map((carousel, index) => (
             <View key={carousel.slug}>
@@ -771,6 +779,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
+  },
+  otherThemesHeader: {
+    paddingHorizontal: H_PAD,
+    marginBottom: 17,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
