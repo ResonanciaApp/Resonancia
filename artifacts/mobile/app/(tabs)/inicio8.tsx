@@ -58,7 +58,6 @@ import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
-import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -2365,9 +2364,6 @@ export default function HomeScreen2({
               )}
             </Animated.View>
           </View>
-        ) : variant === "original" ? (
-          /* Establece tu intención aquí (modo intención diaria) */
-          <IntentionPrompt style={{ marginTop: -5, marginBottom: 0, marginHorizontal: GRID_PAD }} />
         ) : null}
 
         <View
@@ -2413,9 +2409,6 @@ export default function HomeScreen2({
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD }}
           />
-        )}
-        {isInicio2 && (
-          <IntentionPrompt style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, marginHorizontal: GRID_PAD }} />
         )}
         {isInicio2 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
