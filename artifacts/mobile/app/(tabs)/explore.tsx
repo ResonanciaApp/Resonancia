@@ -537,7 +537,7 @@ export function ExploreScreen({
                         <Text
                           style={[
                             styles.heroMetaLabel,
-                            { color: "#E7B95C" },
+                            { color: activeTheme.accent ?? "#ACACC1" },
                           ]}
                           numberOfLines={1}
                         >
@@ -549,7 +549,7 @@ export function ExploreScreen({
                         <Text
                           style={[
                             styles.heroAuthor,
-                            { color: "#E7B95C" },
+                            { color: activeTheme.accent ?? "#ACACC1" },
                           ]}
                           numberOfLines={1}
                         >
@@ -564,6 +564,9 @@ export function ExploreScreen({
           )}
 
           <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Descubrir por categoría
+            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
