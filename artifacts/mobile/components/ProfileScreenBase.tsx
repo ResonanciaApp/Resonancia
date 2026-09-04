@@ -67,6 +67,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
@@ -1484,6 +1485,18 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
+            <QuickAccessSection
+              showTitle={false}
+              accessIds={["sessions", "encounters"]}
+              horizontalIds={["sessions", "encounters"]}
+              cardGap={9}
+              cardCornerRadius={14}
+              cardHeightOffset={13}
+              horizontalPadding={14}
+              cardBackgroundColor={resourceBlockBackground}
+              showCardBorders={false}
+              style={{ marginTop: 32, marginBottom: 0 }}
+            />
             <View style={{ marginTop: 32 }}>
               <ProfileMixCarousel marginBottom={32} />
             </View>

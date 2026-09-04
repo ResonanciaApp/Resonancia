@@ -2677,21 +2677,6 @@ export default function HomeScreen2({
         )}
         {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
-        {isInicio2 && (
-          <QuickAccessSection
-            title="Tu contenido"
-            accessIds={["history", "favorites", "downloads", "sessions", "encounters"]}
-            horizontalIds={["sessions", "encounters"]}
-            largeLabelIds={["history", "favorites", "downloads"]}
-            cardGap={9}
-            cardCornerRadius={14}
-            cardHeightOffset={13}
-            horizontalPadding={GRID_PAD}
-            cardBackgroundColor={quickAccessBg}
-            showCardBorders={false}
-            style={{ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }}
-          />
-        )}
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: isInicio2 ? INICIO2_SECTION_GAP : SECTION_GAP }}>
