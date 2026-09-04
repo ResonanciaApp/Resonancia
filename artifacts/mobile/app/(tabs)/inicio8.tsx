@@ -1794,7 +1794,7 @@ export default function HomeScreen2({
       if (seen.has(h.sessionId)) continue;
       seen.add(h.sessionId);
       const s = getSessionById(h.sessionId);
-      if (s) result.push(s);
+      if (s && s.categoryId !== "ambientales") result.push(s);
       if (result.length === 10) break;
     }
     return result;
