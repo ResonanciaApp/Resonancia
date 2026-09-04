@@ -17,7 +17,7 @@ import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import Svg, { Path } from "react-native-svg";
 
-const SHEET_HEIGHT = 340;
+const SHEET_HEIGHT = 320;
 const WHEEL_ROW_HEIGHT = 44;
 const WHEEL_HEIGHT = 132;
 const PRESETS = [5, 10, 20] as const;
@@ -454,8 +454,9 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 3,
     backgroundColor: "rgba(255,255,255,0.24)",
-    marginTop: 33,
+    marginTop: 13,
     marginBottom: 10,
+    transform: [{ translateY: 20 }],
   },
   title: {
     fontFamily: "Manrope",
@@ -464,6 +465,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     marginBottom: 10,
+    transform: [{ translateY: 20 }],
   },
   contentArea: {
     minHeight: 110,
