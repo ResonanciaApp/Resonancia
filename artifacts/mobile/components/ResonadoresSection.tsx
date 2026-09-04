@@ -34,7 +34,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
   return (
     <View style={[styles.root, { marginTop, marginBottom }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Los Resonadores</Text>
+        <Text style={styles.title}>Encuentros Resonadores</Text>
         <Pressable
           onPress={() => router.push("/equipo" as never)}
           accessibilityRole="button"
