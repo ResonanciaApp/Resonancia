@@ -2686,7 +2686,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <MiRutinaSection />}
-        {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && (
           <RecommendedForYouSection
             selectedMoods={selectedMoods}
@@ -2704,6 +2703,7 @@ export default function HomeScreen2({
             titleMarginTop={0}
           />
         )}
+        {isInicio2 && <DailyWisdomCard />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
