@@ -2501,6 +2501,25 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {isInicio2 && videos.length > 0 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
+              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
+            >
+              {videos.slice(0, 8).map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
         {isInicio2 && (
           <QuickAccessSection
             title="Herramientas"
@@ -2658,25 +2677,6 @@ export default function HomeScreen2({
         )}
         {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
-        {isInicio2 && videos.length > 0 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
-              </Pressable>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
-            >
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
         {isInicio2 && (
           <QuickAccessSection
             title="Tu contenido"
