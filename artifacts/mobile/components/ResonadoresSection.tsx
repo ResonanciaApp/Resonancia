@@ -14,7 +14,7 @@ type Props = {
 };
 
 const SECTION_PADDING = 14;
-const CARD_GAP = 14;
+const CARD_GAP = 11;
 const TRAILING_CARD_PEEK = 5;
 const VISIBLE_CARD_COUNT = 3;
 const PHOTO_ASPECT_RATIO = 1.2;
