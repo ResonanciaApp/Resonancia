@@ -167,7 +167,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
 
 const styles = StyleSheet.create({
   section: {
-    paddingHorizontal: GRID_PAD,
+    paddingHorizontal: 0,
   },
   sectionTitle: {
     color: "#F9F9F9",
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   scroll: {
-    marginHorizontal: -GRID_PAD,
+    marginHorizontal: 0,
   },
   content: {
-    paddingHorizontal: GRID_PAD,
+    paddingHorizontal: 0,
     gap: CARD_GAP,
   },
   emptyCards: {

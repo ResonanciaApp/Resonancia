@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -7,7 +8,6 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
 import {
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -18,14 +18,15 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { TAG_CARDS } from "@/data/tags";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { TAG_CARDS, THEME_CARD_OVERLAY_BY_SLUG } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const GAP = 10;
+const GAP = 12;
 const TAG_W = (width - H_PAD * 2 - GAP) / 2;
-const TAG_H = 140;
+const TAG_H = 116;
 
 export default function TodasLasTemáticasScreen() {
   const overlayBack = useBackOverride();
@@ -65,20 +66,21 @@ export default function TodasLasTemáticasScreen() {
             >
               <Image
                 source={tag.image}
-                style={{ position: "absolute", width: TAG_W, height: TAG_H }}
-                resizeMode="cover"
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+                cachePolicy="memory-disk"
               />
               <LinearGradient
-                colors={["#4A0C0C", "#27070E", "#1B060F"]}
-                style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+                colors={
+                  THEME_CARD_OVERLAY_BY_SLUG[tag.id]
+                  ?? ["rgba(24,24,36,0.18)", "rgba(6,6,12,0.34)"]
+                }
+                locations={[0, 1]}
+                style={StyleSheet.absoluteFill}
               />
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { borderRadius: 16, borderWidth: 1, borderColor: "rgba(212,175,55,0.22)" },
-                ]}
-              />
-              <Text style={styles.label}>{tag.label}</Text>
+              <Text style={styles.label} numberOfLines={2}>{tag.label}</Text>
             </Pressable>
           ))}
         </View>
@@ -129,16 +131,20 @@ const styles = StyleSheet.create({
   card: {
     width: TAG_W,
     height: TAG_H,
-    borderRadius: 16,
+    borderRadius: 14,
     overflow: "hidden",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   label: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 14,
+    lineHeight: 18,
     fontWeight: "700",
+    textAlign: "center",
     letterSpacing: 0.2,
     textShadowColor: "rgba(0,0,0,0.6)",
     textShadowOffset: { width: 0, height: 1 },

@@ -9,6 +9,31 @@ export type ThemeTag =
   | "Meditaciones Activas"
   | "Astrología";
 
+/** Paleta compartida por las tarjetas y los filtros de Otras temáticas. */
+export const THEME_CARD_OVERLAY_BY_SLUG: Record<string, [string, string]> = {
+  "para-la-ansiedad": ["rgba(109,47,74,0.41)", "rgba(25,10,18,0.35)"],
+  "energiza-tus-mananas": ["rgba(199,132,48,0.39)", "rgba(49,27,8,0.33)"],
+  "foco-concentracion": ["rgba(52,89,139,0.41)", "rgba(11,22,39,0.35)"],
+  "suelto-la-rabia": ["rgba(149,51,40,0.41)", "rgba(43,12,8,0.35)"],
+  "crecimiento-personal": ["rgba(50,105,74,0.41)", "rgba(9,31,20,0.35)"],
+  "armonia-familiar": ["rgba(142,79,103,0.39)", "rgba(40,17,27,0.33)"],
+  "respiracion-consciente": ["rgba(45,112,116,0.41)", "rgba(8,31,33,0.35)"],
+  "meditaciones-activas": ["rgba(160,92,50,0.39)", "rgba(43,20,9,0.33)"],
+  astrologia: ["rgba(92,70,139,0.41)", "rgba(22,14,43,0.35)"],
+};
+
+export const THEME_CARD_BACKGROUND_BY_SLUG: Record<string, string> = {
+  "para-la-ansiedad": "rgb(109,47,74)",
+  "energiza-tus-mananas": "rgb(199,132,48)",
+  "foco-concentracion": "rgb(52,89,139)",
+  "suelto-la-rabia": "rgb(149,51,40)",
+  "crecimiento-personal": "rgb(50,105,74)",
+  "armonia-familiar": "rgb(142,79,103)",
+  "respiracion-consciente": "rgb(45,112,116)",
+  "meditaciones-activas": "rgb(160,92,50)",
+  astrologia: "rgb(92,70,139)",
+};
+
 export interface TagCard {
   id: string;
   label: ThemeTag;

@@ -31,7 +31,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
-import { TAG_CARDS } from "@/data/tags";
+import { TAG_CARDS, THEME_CARD_OVERLAY_BY_SLUG } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -118,17 +118,6 @@ const DISCOVER_ICON_BY_SLUG: Record<string, DiscoverIconName> = {
   "respiracion-consciente": "weather-windy",
   "meditaciones-activas": "meditation",
   astrologia: "star-four-points-outline",
-};
-
-const THEME_CARD_OVERLAY_BY_SLUG: Record<string, [string, string]> = {
-  "para-la-ansiedad": ["rgba(109,47,74,0.41)", "rgba(25,10,18,0.35)"],
-  "energiza-tus-mananas": ["rgba(199,132,48,0.39)", "rgba(49,27,8,0.33)"],
-  "foco-concentracion": ["rgba(52,89,139,0.41)", "rgba(11,22,39,0.35)"],
-  "suelto-la-rabia": ["rgba(149,51,40,0.41)", "rgba(43,12,8,0.35)"],
-  "crecimiento-personal": ["rgba(50,105,74,0.41)", "rgba(9,31,20,0.35)"],
-  "armonia-familiar": ["rgba(142,79,103,0.39)", "rgba(40,17,27,0.33)"],
-  "respiracion-consciente": ["rgba(45,112,116,0.41)", "rgba(8,31,33,0.35)"],
-  "meditaciones-activas": ["rgba(160,92,50,0.39)", "rgba(43,20,9,0.33)"],
 };
 
 function getDiscoverIcon(slug: string, label: string): DiscoverIconName {

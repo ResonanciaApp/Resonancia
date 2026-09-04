@@ -29,6 +29,7 @@ type MenuRow = {
 type MenuSection = {
   title: string;
   rows: MenuRow[];
+  compactTitle?: boolean;
 };
 
 type ProfileSettingsSectionsProps = {
@@ -75,6 +76,7 @@ export function ProfileSettingsSections({
   const sections: MenuSection[] = [
     {
       title: "Tu suscripción",
+      compactTitle: true,
       rows: [
         { icon: "activity", label: "Terapia en línea", onPress: () => comingSoon("Terapia en línea") },
         { icon: "gift", label: "Canjear cupón", onPress: () => comingSoon("Canjear cupón") },
@@ -82,6 +84,7 @@ export function ProfileSettingsSections({
     },
     {
       title: "Preferencias",
+      compactTitle: true,
       rows: [
         { icon: "heart", label: "Conectar HealthKit", toggle: true, onPress: () => comingSoon("HealthKit") },
         { icon: "moon", label: "Tema", value: isIndigo2 ? "Índigo 2" : isIndigo ? "Índigo" : "Actual", onPress: () => comingSoon("Tema") },
@@ -93,6 +96,7 @@ export function ProfileSettingsSections({
     },
     {
       title: "Comparte bienestar",
+      compactTitle: true,
       rows: [
         { icon: "gift", label: "Regalar cuenta Premium", accent: true, onPress: () => comingSoon("Regalar cuenta Premium") },
         { icon: "users", label: "Compartir acceso familiar", value: "0 / 5", onPress: () => comingSoon("Acceso familiar") },
@@ -130,7 +134,15 @@ export function ProfileSettingsSections({
     <View style={styles.root}>
       {sections.map((section) => (
         <View key={section.title} style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: foreground }]}>{section.title}</Text>
+          <Text
+            style={[
+              styles.sectionTitle,
+              section.compactTitle && styles.sectionTitleCompact,
+              { color: foreground },
+            ]}
+          >
+            {section.title}
+          </Text>
           <View style={[styles.card, { backgroundColor: cardBackground, borderColor }]}>
             {section.rows.map((row, index) => {
               const rowColor = row.accent ? "#D8B56A" : foreground;
@@ -220,6 +232,10 @@ const styles = StyleSheet.create({
     lineHeight: 27,
     fontWeight: "700",
     marginBottom: 16,
+  },
+  sectionTitleCompact: {
+    fontSize: 19,
+    lineHeight: 24,
   },
   card: {
     borderRadius: 18,

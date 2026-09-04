@@ -26,7 +26,11 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SESSIONS, type Session } from "@/data/sessions";
-import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
+import {
+  TAG_CARDS,
+  THEME_CARD_BACKGROUND_BY_SLUG,
+  slugifyThemeTag,
+} from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -86,6 +90,8 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     () => TAG_CARDS.find((candidate) => candidate.id === slug),
     [slug],
   );
+  const themeCardBackground =
+    THEME_CARD_BACKGROUND_BY_SLUG[tag?.id ?? ""] ?? "rgb(52,89,139)";
   const sessions = useMemo(
     () =>
       tagLabel
@@ -220,16 +226,9 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             style={[
               styles.filterPill,
               durationFilter === null ? styles.filterPillSelected : styles.filterPillIdle,
+              durationFilter === null ? null : { backgroundColor: themeCardBackground },
             ]}
           >
-            {durationFilter === null && (
-              <LinearGradient
-                colors={["#FFFFFF", "#F5F5F5"]}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={StyleSheet.absoluteFill}
-              />
-            )}
             <Text
               style={[
                 styles.filterLabel,
@@ -248,16 +247,9 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 style={[
                   styles.filterPill,
                   active ? styles.filterPillSelected : styles.filterPillIdle,
+                  active ? null : { backgroundColor: themeCardBackground },
                 ]}
               >
-                {active && (
-                  <LinearGradient
-                    colors={["#FFFFFF", "#F5F5F5"]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                )}
                 <Text
                   style={[
                     styles.filterLabel,
@@ -409,11 +401,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   filterPillSelected: {
-    borderColor: "rgba(255,255,255,0.72)",
+    backgroundColor: "#2C6B7B",
+    borderColor: "#2C6B7B",
   },
   filterPillIdle: {
-    backgroundColor: "rgba(255,255,255,0.06)",
-    borderColor: "rgba(255,255,255,0.12)",
+    borderColor: "rgba(255,255,255,0.16)",
   },
   filterLabel: {
     fontFamily: "Manrope",
@@ -421,7 +413,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   filterLabelSelected: {
-    color: "#0D0A1E",
+    color: "#FFFFFF",
   },
   filterLabelIdle: {
     color: "#F4F4F4",
