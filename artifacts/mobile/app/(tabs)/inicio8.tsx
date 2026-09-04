@@ -86,7 +86,7 @@ import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { ProgresoModal } from "@/components/ProgresoModal";
@@ -1327,7 +1327,11 @@ function Inicio2HeroStatic({
                 style={styles.inicio2HeroPremiumBadge}
                 accessibilityElementsHidden
               >
-                <MaterialCommunityIcons name="star" size={10} color="#060A0F" />
+                <MaterialCommunityIcons
+                  name="star"
+                  size={20}
+                  color={MEMBERSHIP_AURORA.premium.accent}
+                />
               </View>
             )}
           </Pressable>
@@ -2982,16 +2986,10 @@ const styles = StyleSheet.create({
   },
   inicio2HeroPremiumBadge: {
     position: "absolute",
-    top: -4,
-    left: -4,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    top: -6,
+    left: -6,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#BE9650",
-    borderWidth: 1.5,
-    borderColor: "#F0D99E",
   },
   inicio2HeroAvatarFallback: {
     width: 42,
