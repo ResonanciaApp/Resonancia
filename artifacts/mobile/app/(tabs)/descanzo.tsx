@@ -26,7 +26,6 @@ import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } 
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
-import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
@@ -324,9 +323,28 @@ export default function DescansoScreen() {
     () =>
       DESCANSO_TAG_CARDS.map((tag) => ({
         ...tag,
-        sessions: getSessionsByDescansoTag(tag.label),
+        sessions: getSessionsByDescansoTag(tag.label).slice(0, 5),
       })).filter((tag) => tag.sessions.length > 0),
     [catalogVersion],
+  );
+  const sleepCarouselStyles = useMemo(
+    () =>
+      sleepCollections.map((_, index) => ({
+        marginTop: index === 0 ? 33 : 53,
+        marginBottom: 0,
+        paddingHorizontal: H_PAD,
+      })),
+    [sleepCollections],
+  );
+  const sleepCarouselViewAllHandlers = useMemo(
+    () =>
+      Object.fromEntries(
+        sleepCollections.map((collection) => [
+          collection.id,
+          () => openCategory(`/sleep-tag/${collection.id}`),
+        ]),
+      ) as Record<string, () => void>,
+    [openCategory, sleepCollections],
   );
 
   // allDescansoIds usa getDescansoVisibleSessions() como fuente de verdad compartida
@@ -465,15 +483,16 @@ export default function DescansoScreen() {
             <SessionCarousel
               key={collection.id}
               title={collection.label}
-              sessions={collection.sessions.slice(0, 5)}
+              sessions={collection.sessions}
               isPremium={isPremium}
-              onPress={(s) => handleSessionTap(s)}
-              style={{ marginTop: index === 0 ? 33 : 53, marginBottom: 0, paddingHorizontal: H_PAD }}
+              onPress={handleSessionTap}
+              style={sleepCarouselStyles[index]}
               cardWidth={RECENT_CARD_W}
               titleSize={19}
               showCardMetadata
               showAuthor={false}
-              onViewAll={() => openCategory(`/sleep-tag/${collection.id}`)}
+              onViewAll={sleepCarouselViewAllHandlers[collection.id]}
+              removeClippedSubviews
             />
           ))}
 
