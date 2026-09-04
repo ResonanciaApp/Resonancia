@@ -21,6 +21,13 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
+const DISCOVER_GRID_GAP = 9;
+const DISCOVER_PRIMARY_CARD_SIZE = Math.floor(
+  (Dimensions.get("window").width - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
+);
+const DISCOVER_SECONDARY_CARD_SIZE = Math.floor(
+  (Dimensions.get("window").width - GRID_PAD * 2 - DISCOVER_GRID_GAP * 3) / 3.2,
+);
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
@@ -149,6 +156,7 @@ export function ContentCategoryGrid({
   horizontal = false,
   visualVariant = "default",
   squareWatercolorCards = false,
+  discoverTieredLayout = false,
 }: {
   marginTop?: number;
   marginBottom?: number;
@@ -156,6 +164,7 @@ export function ContentCategoryGrid({
   horizontal?: boolean;
   visualVariant?: "default" | "watercolor";
   squareWatercolorCards?: boolean;
+  discoverTieredLayout?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
@@ -171,11 +180,98 @@ export function ContentCategoryGrid({
       : activeSceneId === "indigo"
         ? "rgba(255,255,255,0.04)"
         : CARD_BG;
+  const visibleCategories = CONTENT_CATEGORIES.filter(
+    (category) => !hiddenIds.includes(category.id),
+  );
+  const openContentCategory = (category: ContentCategoryDefinition) => {
+    if (category.id === "__descanzo__") openCategory("/(tabs)/descanzo");
+    else if (category.id === "__mezcla__") openMixer();
+    else if (category.id === "__geometrix__") openGeometrix();
+    else openCategory(`/category/${category.id}`);
+  };
+
+  if (discoverTieredLayout) {
+    const primaryCategories = visibleCategories.filter(
+      (category) =>
+        category.id === "meditaciones-guiadas" ||
+        category.id === "sonidos-ancestrales",
+    );
+    const secondaryCategories = visibleCategories.filter(
+      (category) =>
+        category.id === "musica-sonidos" ||
+        category.id === "ambientales" ||
+        category.id === "historias" ||
+        category.id === "charlas",
+    );
+
+    const renderDiscoverCard = (
+      category: ContentCategoryDefinition,
+      width: number,
+      secondary: boolean,
+      height = width,
+    ) => {
+      return (
+        <Pressable
+          key={category.id}
+          testID={`content-category-${category.id}`}
+          onPress={() => openContentCategory(category)}
+          style={({ pressed }) => [
+            styles.discoverCard,
+            {
+              width,
+              height,
+              backgroundColor: catBlockBg,
+              opacity: pressed ? 0.75 : 1,
+            },
+          ]}
+        >
+          <View style={styles.discoverCardIcon}>
+            {renderCategoryIcon(category, false, false)}
+          </View>
+          <Text
+            style={[
+              styles.discoverCardLabel,
+              secondary && styles.discoverSecondaryCardLabel,
+            ]}
+            numberOfLines={2}
+          >
+            {category.label}
+          </Text>
+        </Pressable>
+      );
+    };
+
+    return (
+      <View
+        style={{ marginTop, marginBottom }}
+        testID="content-category-grid"
+      >
+        <View style={styles.discoverPrimaryRow}>
+          {primaryCategories.map((category) =>
+            renderDiscoverCard(
+              category,
+              DISCOVER_PRIMARY_CARD_SIZE,
+              false,
+              DISCOVER_PRIMARY_CARD_SIZE - 40,
+            ),
+          )}
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.discoverSecondaryRow}
+        >
+          {secondaryCategories.map((category) =>
+            renderDiscoverCard(category, DISCOVER_SECONDARY_CARD_SIZE, true),
+          )}
+        </ScrollView>
+      </View>
+    );
+  }
 
   const categoryCards = (
       <>
-        {CONTENT_CATEGORIES
-          .filter((category) => !hiddenIds.includes(category.id))
+        {visibleCategories
           .map((category, index) => {
           const watercolorImage = WATERCOLOR_CATEGORY_IMAGES[category.id];
           const isWatercolorCard =
@@ -224,12 +320,7 @@ export function ContentCategoryGrid({
               <Pressable
                 key={category.id}
                 testID={`content-category-${category.id}`}
-                onPress={() => {
-                  if (category.id === "__descanzo__") openCategory("/(tabs)/descanzo");
-                  else if (category.id === "__mezcla__") openMixer();
-                  else if (category.id === "__geometrix__") openGeometrix();
-                  else openCategory(`/category/${category.id}`);
-                }}
+                onPress={() => openContentCategory(category)}
                 style={({ pressed }) => [
                   styles.card,
                   horizontal
@@ -342,6 +433,43 @@ const styles = StyleSheet.create({
     paddingRight: GRID_PAD + 24,
     gap: 8,
     marginTop: 5,
+  },
+  discoverPrimaryRow: {
+    flexDirection: "row",
+    gap: DISCOVER_GRID_GAP,
+    paddingHorizontal: GRID_PAD,
+    marginBottom: DISCOVER_GRID_GAP,
+  },
+  discoverSecondaryRow: {
+    gap: DISCOVER_GRID_GAP,
+    paddingHorizontal: GRID_PAD,
+    paddingRight: GRID_PAD + 18,
+  },
+  discoverCard: {
+    borderRadius: 21,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    padding: 12,
+  },
+  discoverCardIcon: {
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  discoverCardLabel: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  discoverSecondaryCardLabel: {
+    fontSize: 12,
+    lineHeight: 16,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,

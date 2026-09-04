@@ -565,12 +565,13 @@ export function ExploreScreen({
 
           <View style={styles.categoryBlocksSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Descubrir por categoría
+              Categorías
             </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
               hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              discoverTieredLayout
             />
           </View>
 

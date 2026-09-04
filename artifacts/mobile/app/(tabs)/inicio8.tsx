@@ -2541,7 +2541,7 @@ export default function HomeScreen2({
             accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             cardGap={9}
-            cardCornerRadius={15}
+            cardCornerRadius={13}
             cardHeightOffset={3}
             horizontalPadding={GRID_PAD}
             twoRowCarousel
