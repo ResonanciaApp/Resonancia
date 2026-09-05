@@ -60,8 +60,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   resonancia: {
     id: "resonancia",
     label: "Resonancia",
-    gradient: ["#213047", "#1C273B", "#12121E"],
-    solid: "#12121E",
+    gradient: ["#2E4369", "#263654", "#1D2A3D", "#17202E"],
+    solid: "#17202E",
     accent: "#E2E2E2",
   },
   indigo2: {
