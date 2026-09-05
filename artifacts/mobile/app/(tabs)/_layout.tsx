@@ -171,7 +171,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const indigo2Mode = activeSceneId === "indigo2";
   const tabBarBackground =
     indigo2Mode
-      ? "#2B1E54"
+      ? "#130E24"
       : activeSceneId === "resonancia"
         ? "#090B17"
         : "#0E0E17";
@@ -554,6 +554,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     overflow: "hidden",
   },
   row: {
