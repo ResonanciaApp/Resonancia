@@ -136,6 +136,8 @@ type SessionCarouselProps = {
   cardVariant?: "ambiental";
   /** Explicit width for Ambiental cards; ignored by sleep-category presentation. */
   ambientalCardWidth?: number;
+  /** Optional surface override for Ambiental cards on a specific screen/theme. */
+  ambientalCardBackground?: string;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared square, below-metadata presentation for Dormir category carousels. */
@@ -170,6 +172,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showHeader = true,
   cardVariant,
   ambientalCardWidth,
+  ambientalCardBackground: ambientalCardBackgroundOverride,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -225,7 +228,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const shouldHideAmbientalTitle =
     (isSleepCategoryPresentation || hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
-  const ambientalCardBackground = "rgba(181,211,255,0.057)";
+  const ambientalCardBackground =
+    ambientalCardBackgroundOverride ?? "rgba(181,211,255,0.057)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (

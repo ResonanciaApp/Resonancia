@@ -49,15 +49,18 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
+const RESONANCIA_CARD_SURFACE = "#202B3A";
 
 function CollectionPill({
   label,
   icon,
   onPress,
+  backgroundColor,
 }: {
   label: string;
   icon: string;
   onPress: () => void;
+  backgroundColor?: string;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -90,6 +93,7 @@ function CollectionPill({
       <Animated.View
         style={[
           styles.pill,
+          backgroundColor ? { backgroundColor } : null,
           { transform: [{ scale }] },
         ]}
       >
@@ -119,6 +123,8 @@ export default function SonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.057)" : undefined;
+  const indigo2ResonanciaSurface =
+    theme.id === "indigo2" ? RESONANCIA_CARD_SURFACE : undefined;
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyHeaderActiveRef = useRef(false);
@@ -311,6 +317,7 @@ export default function SonidosScreen() {
                   label={collection.label}
                   icon={collection.icon}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
+                  backgroundColor={indigo2ResonanciaSurface}
                 />
               ))}
             </ScrollView>
@@ -353,6 +360,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                 cardWidth={CARD_W}
                 ambientalCardWidth={RECENT_CARD_W}
+                ambientalCardBackground={indigo2ResonanciaSurface}
                 titleSize={19}
                 showCardMetadata
                  metadataTitleNumberOfLines={3}
