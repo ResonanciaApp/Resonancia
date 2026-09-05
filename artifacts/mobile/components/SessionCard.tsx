@@ -20,7 +20,6 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -118,12 +117,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
-  const ambientalCardBackground =
-    isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.05)"
-      : theme.id === "indigo2"
-        ? "rgba(255,255,255,0.025)"
-        : colors.card;
+  const ambientalCardBackground = "rgba(240,246,250,0.12)";
   const ambientalImageSize = Math.round(width * 0.72);
   const ambientalCardHeight = Math.round(
     (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,

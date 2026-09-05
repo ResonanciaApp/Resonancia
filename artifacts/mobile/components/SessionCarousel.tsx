@@ -15,7 +15,6 @@ import {
 } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { getArtist } from "@/data/artists";
@@ -157,12 +156,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   // conservan el título superpuesto sobre la imagen.
   const shouldHideAmbientalTitle =
     hideAmbientalTitleInSquareRecent && squareCards;
-  const ambientalCardBackground =
-    isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.05)"
-      : theme.id === "indigo2"
-        ? "rgba(255,255,255,0.025)"
-        : colors.card;
+  const ambientalCardBackground = "rgba(240,246,250,0.12)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
