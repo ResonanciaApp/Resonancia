@@ -142,8 +142,8 @@ type SessionCarouselProps = {
   ambientalCardBackground?: string;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
-  /** Shared tall, below-metadata presentation for Dormir category carousels. */
-  presentation?: "sleep-category";
+  /** Shared tall presentation used by Dormir and editorial discovery carousels. */
+  presentation?: "sleep-category" | "tall-overlay";
   /** Places title and author over the image without a category pill. */
   overlayMetadataInside?: boolean;
 };
@@ -189,34 +189,36 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
+  const isTallOverlayPresentation =
+    isSleepCategoryPresentation || presentation === "tall-overlay";
   const useOverlayMetadata =
-    isSleepCategoryPresentation || overlayMetadataInside;
+    isTallOverlayPresentation || overlayMetadataInside;
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
     (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
   const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(viewportWidth, GRID_PAD);
-  const requestedCardWidth = isSleepCategoryPresentation
+  const requestedCardWidth = isTallOverlayPresentation
     ? sleepCategoryCardWidth
     : isAmbientalCarousel
     ? ambientalCardWidth ?? ambientalCarouselCardWidth
     : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
   const effectiveAllowOversizedCardWidth =
-    isSleepCategoryPresentation || allowOversizedCardWidth;
+    isTallOverlayPresentation || allowOversizedCardWidth;
   const cw = effectiveAllowOversizedCardWidth
     ? requestedCardWidth
     : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
   const effectiveShowCardMetadata =
-    isSleepCategoryPresentation ? false : showCardMetadata;
-  const effectiveSquareCards = isSleepCategoryPresentation ? false : squareCards;
-  const effectiveShowAuthor = isSleepCategoryPresentation ? true : showAuthor;
+    isTallOverlayPresentation ? false : showCardMetadata;
+  const effectiveSquareCards = isTallOverlayPresentation ? false : squareCards;
+  const effectiveShowAuthor = isTallOverlayPresentation ? true : showAuthor;
   const effectiveShowCollectionBelow =
-    isSleepCategoryPresentation ? false : showCollectionBelow;
+    isTallOverlayPresentation ? false : showCollectionBelow;
   const effectiveShowMetaBelow =
-    isSleepCategoryPresentation ? false : showMetaBelow;
+    isTallOverlayPresentation ? false : showMetaBelow;
   const effectiveShowDurationBadge =
-    isSleepCategoryPresentation ? true : showDurationBadge;
+    isTallOverlayPresentation ? true : showDurationBadge;
   const baseCardHeight = cardHeight ?? cw;
   const originalCardHeight = effectiveShowCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
@@ -224,7 +226,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const sleepCategoryCardHeight = Math.round(
     (cw + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE,
   );
-  const ch = isSleepCategoryPresentation
+  const ch = isTallOverlayPresentation
     ? sleepCategoryCardHeight
     : effectiveSquareCards
       ? cw

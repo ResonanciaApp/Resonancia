@@ -602,9 +602,8 @@ export function ExploreScreen({
                   marginBottom: SECTION_GAP,
                   paddingHorizontal: H_PAD,
                 }}
-                cardWidth={SQCARD_W}
                 titleSize={19}
-                overlayMetadataInside
+                presentation="tall-overlay"
                 onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
               />
             </View>
