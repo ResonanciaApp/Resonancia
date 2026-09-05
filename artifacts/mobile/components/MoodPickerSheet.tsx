@@ -287,6 +287,7 @@ export function MoodPickerSheet({
                       testID={`mood-option-${mood.id}`}
                       style={({ pressed }) => [
                         styles.moodCard,
+                        { backgroundColor: themeCardBackground },
                         isSelected && styles.moodCardSelected,
                         { opacity: pressed ? 0.8 : 1 },
                       ]}
@@ -340,10 +341,6 @@ export function MoodPickerSheet({
               <Text style={[styles.subtitle, { color: themeAccent }]}>
                 Depende de ti si quieres compartir esto
               </Text>
-              <View style={styles.activeMoodPill}>
-                <Text style={styles.activeMoodEmoji}>{currentMood.emoji}</Text>
-                <Text style={styles.activeMoodLabel}>{currentMood.label}</Text>
-              </View>
               <View style={[styles.optionsCard, { backgroundColor: themeCardBackground }]}>
                 {MOOD_SURVEY_OPTIONS[currentMood.id].map((option, index) => {
                   const isSelected = currentAnswer === option.id;
@@ -592,7 +589,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "#FFFFFF",
+    borderColor: "rgba(255,255,255,0.3)",
   },
   skipText: {
     fontFamily: "Manrope",
@@ -686,28 +683,6 @@ const styles = StyleSheet.create({
   },
   continueButtonTextDisabled: {
     color: "rgba(30,28,38,0.48)",
-  },
-  activeMoodPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 8,
-    borderRadius: 22,
-    paddingHorizontal: 13,
-    paddingVertical: 8,
-    marginBottom: 18,
-    backgroundColor: "rgba(41,139,115,0.18)",
-    borderWidth: 1,
-    borderColor: "rgba(41,139,115,0.48)",
-  },
-  activeMoodEmoji: {
-    fontSize: 20,
-  },
-  activeMoodLabel: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "700",
   },
   optionsCard: {
     overflow: "hidden",
