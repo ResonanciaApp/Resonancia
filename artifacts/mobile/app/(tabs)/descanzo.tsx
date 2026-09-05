@@ -370,7 +370,6 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
-                sleepMetadataInside={collection.id === "musica-para-dormir"}
                 titleSize={19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />

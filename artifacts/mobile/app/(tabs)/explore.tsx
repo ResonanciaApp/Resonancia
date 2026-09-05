@@ -604,8 +604,7 @@ export function ExploreScreen({
                 }}
                 cardWidth={SQCARD_W}
                 titleSize={19}
-                showCardMetadata
-                showAuthor={false}
+                overlayMetadataInside
                 onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
               />
             </View>

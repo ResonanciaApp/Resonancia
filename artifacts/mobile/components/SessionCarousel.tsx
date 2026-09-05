@@ -144,8 +144,8 @@ type SessionCarouselProps = {
   eagerRender?: boolean;
   /** Shared tall, below-metadata presentation for Dormir category carousels. */
   presentation?: "sleep-category";
-  /** Places title and author over the image for selected Dormir carousels. */
-  sleepMetadataInside?: boolean;
+  /** Places title and author over the image without a category pill. */
+  overlayMetadataInside?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -180,7 +180,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
-  sleepMetadataInside = false,
+  overlayMetadataInside = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -189,8 +189,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
-  const useSleepOverlayMetadata =
-    isSleepCategoryPresentation && sleepMetadataInside;
+  const useOverlayMetadata =
+    isSleepCategoryPresentation || overlayMetadataInside;
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
@@ -304,30 +304,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 {!isAmbiental && (
                   <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
                 )}
-                {useSleepOverlayMetadata && (
-                  <>
-                    <LinearGradient
-                      colors={[
-                        "rgba(0,0,0,0)",
-                        "rgba(0,0,0,0.18)",
-                        "rgba(0,0,0,0.82)",
-                      ]}
-                      locations={[0.28, 0.58, 1]}
-                      style={StyleSheet.absoluteFill}
-                      pointerEvents="none"
-                    />
-                    <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
-                      <Text style={styles.sleepOverlayTitle} numberOfLines={2}>
-                        {s.title}
-                      </Text>
-                      {authorName ? (
-                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
-                          {authorName}
-                        </Text>
-                      ) : null}
-                    </View>
-                  </>
-                )}
                 {isAmbiental ? (
                   <>
                     <CarouselImage
@@ -392,13 +368,37 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.durBadge,
                           !effectiveShowAuthor && styles.durBadgeLower,
-                          useSleepOverlayMetadata
+                          useOverlayMetadata
                             ? styles.sleepOverlayDuration
                             : { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
                         ]}
                         textStyle={styles.durText}
                       />
                     )}
+                  </>
+                )}
+                {useOverlayMetadata && (
+                  <>
+                    <LinearGradient
+                      colors={[
+                        "rgba(0,0,0,0)",
+                        "rgba(0,0,0,0.18)",
+                        "rgba(0,0,0,0.82)",
+                      ]}
+                      locations={[0.28, 0.58, 1]}
+                      style={StyleSheet.absoluteFill}
+                      pointerEvents="none"
+                    />
+                    <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
+                      <Text style={styles.sleepOverlayTitle} numberOfLines={2}>
+                        {s.title}
+                      </Text>
+                      {authorName ? (
+                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                          {authorName}
+                        </Text>
+                      ) : null}
+                    </View>
                   </>
                 )}
                 {locked && (
@@ -409,7 +409,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 )}
               </View>
-              {!effectiveShowCardMetadata && !useSleepOverlayMetadata && (
+              {!effectiveShowCardMetadata && !useOverlayMetadata && (
                 <>
                   <Text
                     style={[
