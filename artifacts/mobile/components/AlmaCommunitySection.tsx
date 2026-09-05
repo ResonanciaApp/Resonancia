@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     marginBottom: 16,
   },
-  composeChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
+  composeChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#0E0E17" },
 
   emptyRow: {
     paddingVertical: 20,

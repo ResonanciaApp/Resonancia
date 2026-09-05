@@ -396,7 +396,7 @@ export function AmbientalDurationSheet({
               <Svg width={21} height={21} viewBox="0 0 48 48">
                 <Path
                   d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                  fill="#FFFFFF"
+                  fill="#0E0E17"
                 />
               </Svg>
               <Text style={styles.startButtonText}>Empezar sesión</Text>
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     letterSpacing: 0.5,
-    color: "#FFFFFF",
+    color: "#0E0E17",
   },
   cancelButton: {
     height: 54,

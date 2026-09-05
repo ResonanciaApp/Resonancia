@@ -193,7 +193,7 @@ function QuickAccessCard({
         <MaterialCommunityIcons
           name={access.icon}
           size={22}
-          color={isPressed ? "#FFFFFF" : foregroundColor}
+          color={isPressed ? "#0E0E17" : foregroundColor}
         />
         <Text
           style={[
@@ -202,7 +202,7 @@ function QuickAccessCard({
             largeLabel && styles.largeLabel,
             profile && styles.profileLabel,
             profileWide && styles.profileWideLabel,
-            { color: isPressed ? "#FFFFFF" : foregroundColor },
+            { color: isPressed ? "#0E0E17" : foregroundColor },
           ]}
           numberOfLines={1}
         >

@@ -258,7 +258,7 @@ function DurationExplorePill({
         ]}
       >
         <Text
-          style={styles.durPillText}
+          style={[styles.durPillText, isPressed && { color: "#0E0E17" }]}
           numberOfLines={1}
           adjustsFontSizeToFit
           minimumFontScale={0.7}

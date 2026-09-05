@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   filterLabelSelected: {
-    color: "#FFFFFF",
+    color: "#0E0E17",
   },
   filterLabelIdle: {
     color: "#F4F4F4",

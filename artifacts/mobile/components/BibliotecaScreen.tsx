@@ -172,7 +172,7 @@ function LibChip({
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
-  const contentColor = "#F4F4F4";
+  const contentColor = sel ? "#0E0E17" : "#F4F4F4";
 
   return (
     <Pressable onPress={onPress}>
@@ -2230,8 +2230,8 @@ const styles = StyleSheet.create({
   },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
-  chipTextIndigoSel: { color: "#F9F9F9" },
+  chipTextSel: { fontFamily: "Manrope", color: "#0E0E17", fontWeight: "600" },
+  chipTextIndigoSel: { color: "#0E0E17" },
 
   controlRow: {
     flexDirection: "row",

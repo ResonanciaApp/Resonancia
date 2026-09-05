@@ -31,7 +31,7 @@ const colors = {
   radius: 22,
 };
 
-export const WIDGET_GREEN_SOLID = "#298B73";
+export const WIDGET_GREEN_SOLID = "#F9F9F9";
 
 export const MEMBERSHIP_AURORA = {
   textSoft: "#D4DDDA",

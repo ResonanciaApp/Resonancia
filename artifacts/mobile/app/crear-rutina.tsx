@@ -289,7 +289,7 @@ export default function CrearRutinaScreen() {
                       },
                     ]}
                   >
-                    <Text style={[styles.dayText, { color: selected ? "#FFFFFF" : colors.foreground }]}>
+                    <Text style={[styles.dayText, { color: selected ? "#0E0E17" : colors.foreground }]}>
                       {label}
                     </Text>
                   </Pressable>
@@ -506,6 +506,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#0E0E17",
   },
 });

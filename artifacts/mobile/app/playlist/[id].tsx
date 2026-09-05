@@ -331,7 +331,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               hitSlop={10}
               style={[styles.iconBtn, { backgroundColor: PLAYLIST_CONTROL_BG, borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
             >
-              <Feather name="more-horizontal" size={22} color={TEXT} />
+              <Feather name="more-horizontal" size={22} color="#0E0E17" />
             </Pressable>
             <View style={{ marginTop: 3, paddingRight: 44 }}>
               <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
@@ -364,10 +364,10 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               <Feather
                 name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
                 size={16}
-                color="#F9F9F9"
+                color="#0E0E17"
                 style={{ marginRight: 7 }}
               />
-              <Text style={[styles.pillText, { color: "#F9F9F9" }]}>
+              <Text style={[styles.pillText, { color: "#0E0E17" }]}>
                 {miniPlayerVisible && displayIsPlaying ? "Pausar" : "Reproducir"}
               </Text>
             </Pressable>
