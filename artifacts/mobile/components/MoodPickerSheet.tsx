@@ -334,7 +334,9 @@ export function MoodPickerSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={[styles.content, { paddingBottom: bottomPad + 28 }]}
             >
-              <Text style={styles.title}>¿Por qué te sientes de esta manera?</Text>
+              <Text style={[styles.title, styles.surveyTitle]}>
+                ¿Por qué te sientes de esta manera?
+              </Text>
               <Text style={[styles.subtitle, { color: themeAccent }]}>
                 Depende de ti si quieres compartir esto
               </Text>
@@ -588,9 +590,9 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(53,22,68,0.74)",
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.18)",
+    borderColor: "#FFFFFF",
   },
   skipText: {
     fontFamily: "Manrope",
@@ -610,6 +612,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: -0.25,
     marginBottom: 8,
+  },
+  surveyTitle: {
+    fontSize: 17,
+    lineHeight: 24,
   },
   subtitle: {
     fontFamily: "Manrope",
