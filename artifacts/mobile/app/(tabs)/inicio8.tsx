@@ -1438,7 +1438,7 @@ function InicioEmotionWidget({
       ]}
     >
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#213047" }]}>
+      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#F9F9F9" }]}>
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -1503,7 +1503,7 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
-  const emotionWidgetBackground = "#0E0E17";
+  const emotionWidgetBackground = "#2B1E54";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(181,211,255,0.057)";
@@ -3032,7 +3032,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   inicio2HeroEmotionAddText: {
-    color: "#FFFFFF",
+    color: "#0E0B21",
     fontFamily: "Manrope",
     fontSize: 25,
     lineHeight: 28,
