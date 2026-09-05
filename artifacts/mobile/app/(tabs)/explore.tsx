@@ -514,7 +514,7 @@ export function ExploreScreen({
                           : isIndigoThemeId(activeSceneId)
                             ? "rgba(181,211,255,0.057)"
                             : activeSceneId === "indigo2"
-                              ? "rgba(191,207,255,0.055)"
+                              ? "rgba(191,207,255,0.096)"
                               : "rgba(181,211,255,0.057)",
                       opacity: pressed ? 0.72 : 1,
                     },
@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(181,211,255,0.057)",
   },
   discoverPillIndigo2: {
-    backgroundColor: "rgba(191,207,255,0.055)",
+    backgroundColor: "rgba(191,207,255,0.096)",
     borderColor: "rgba(255,255,255,0.04)",
   },
   discoverPillText: {
@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(170,170,196,0.18)",
   },
   searchBoxIndigo2: {
-    backgroundColor: "rgba(191,207,255,0.055)",
+    backgroundColor: "rgba(191,207,255,0.096)",
     borderColor: "rgba(255,255,255,0.08)",
   },
   searchPlaceholder: {

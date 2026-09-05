@@ -122,7 +122,7 @@ export function ToolsGrid({
     : isIndigoThemeId(activeSceneId)
       ? "rgba(181,211,255,0.057)"
       : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.055)"
+        ? "rgba(191,207,255,0.096)"
       : "rgba(181,211,255,0.057)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {

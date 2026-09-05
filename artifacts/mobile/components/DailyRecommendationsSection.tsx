@@ -74,7 +74,7 @@ export function DailyRecommendationsSection({
       : isIndigoThemeId(theme.id)
         ? "rgba(181,211,255,0.057)"
         : theme.id === "indigo2"
-          ? "rgba(191,207,255,0.055)"
+          ? "rgba(191,207,255,0.096)"
           : "rgba(181,211,255,0.057)";
 
   if (recommendations.length < 3) return null;

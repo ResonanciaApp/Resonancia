@@ -265,7 +265,7 @@ export default function NochesScreen() {
   const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.055)", "rgba(191,207,255,0.105)"],
+    outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
   });
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {

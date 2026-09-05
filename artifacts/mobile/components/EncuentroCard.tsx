@@ -30,7 +30,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
         styles.card,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
         isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.057)" },
-        activeSceneId === "indigo2" && { backgroundColor: "rgba(191,207,255,0.055)" },
+        activeSceneId === "indigo2" && { backgroundColor: "rgba(191,207,255,0.096)" },
       ]}
     >
       {/* Hero — imagen del tema */}
