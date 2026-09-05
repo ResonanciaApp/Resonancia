@@ -87,13 +87,13 @@ function TabItem({
   isFocused,
   onPress,
   tibetMode = false,
-  indigo2Mode = false,
+  lightNeutralColors = false,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
   tibetMode?: boolean;
-  indigo2Mode?: boolean;
+  lightNeutralColors?: boolean;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -104,8 +104,8 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = indigo2Mode ? "#F9F9F9" : ACTIVE_COLOR;
-  const inactiveCol = indigo2Mode ? "#F0F0F0" : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
+  const activeCol   = lightNeutralColors ? "#F9F9F9" : ACTIVE_COLOR;
+  const inactiveCol = lightNeutralColors ? "#F0F0F0" : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -315,7 +315,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 isFocused={isFocused}
                 onPress={onPress}
                 tibetMode={activeSceneId === "tibet"}
-                indigo2Mode={indigo2Mode}
+                lightNeutralColors={
+                  indigo2Mode || activeSceneId === "resonancia"
+                }
               />
             );
           })}
