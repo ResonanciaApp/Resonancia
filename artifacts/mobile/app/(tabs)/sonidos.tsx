@@ -123,6 +123,10 @@ export default function SonidosScreen() {
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyHeaderActiveRef = useRef(false);
   const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+  const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [6, 0],
+  });
 
   const handleMainScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
@@ -249,9 +253,17 @@ export default function SonidosScreen() {
           ]}
         >
           <View style={styles.titleRow}>
-            <Text style={[styles.stickyTitle, { color: colors.foreground }]}>
+            <Animated.Text
+              style={[
+                styles.stickyTitle,
+                {
+                  color: colors.foreground,
+                  transform: [{ translateY: stickyTitleTranslateY }],
+                },
+              ]}
+            >
               Sonidos
-            </Text>
+            </Animated.Text>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -471,7 +483,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "left",
-    transform: [{ translateY: 1 }],
   },
   headerSearchButton: {
     width: 40,
