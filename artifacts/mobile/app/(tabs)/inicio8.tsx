@@ -2900,8 +2900,8 @@ const styles = StyleSheet.create({
   },
   inicio2HeroStaticImageFrame: {
     position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
+    left: 0,
+    right: 0,
     bottom: 18,
     borderRadius: 15,
     overflow: "hidden",
