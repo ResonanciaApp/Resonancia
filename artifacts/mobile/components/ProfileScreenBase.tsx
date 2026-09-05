@@ -1253,7 +1253,7 @@ export function ProfileScreenBase({
               </Text>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
-                  <MaterialCommunityIcons name="spa" size={22} color="#F4F4F4" />
+                  <MaterialCommunityIcons name="spa" size={22} color="#BE9650" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
                   </Text>
@@ -1261,7 +1261,7 @@ export function ProfileScreenBase({
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="clock" size={20} color="#F4F4F4" />
+                  <Feather name="clock" size={20} color="#BE9650" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {personalStats.completedSessions}
                   </Text>
@@ -1269,7 +1269,7 @@ export function ProfileScreenBase({
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="flag" size={20} color="#F4F4F4" />
+                  <Feather name="flag" size={20} color="#BE9650" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {maxStreak} {maxStreak === 1 ? "día" : "días"}
                   </Text>

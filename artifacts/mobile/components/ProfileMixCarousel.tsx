@@ -109,7 +109,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
               <MaterialCommunityIcons
                 name="tune-variant"
                 size={44}
-                  color="#77A8F2"
+                  color="#BE9650"
                 style={styles.emptyPlaceholderIcon}
               />
             </View>
