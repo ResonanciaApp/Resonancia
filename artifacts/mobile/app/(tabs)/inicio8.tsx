@@ -844,14 +844,14 @@ function Inicio2HeroSlider({
         </View>
 
         <Pressable
-          onPress={onOpenProfile}
+          onPress={() => router.push("/progreso" as never)}
           onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
           onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile"
+          accessibilityLabel="Abrir mi racha"
+          testID="inicio2-open-streak"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -1165,7 +1165,7 @@ function Inicio2HeroSliderRebuilt({
         </View>
 
         <Pressable
-          onPress={onOpenProfile}
+          onPress={() => router.push("/progreso" as never)}
           onPressIn={() =>
             Animated.spring(giftScale, {
               toValue: 0.84,
@@ -1185,8 +1185,8 @@ function Inicio2HeroSliderRebuilt({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile"
+          accessibilityLabel="Abrir mi racha"
+          testID="inicio2-open-streak"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -1355,7 +1355,7 @@ function Inicio2HeroStatic({
         </View>
 
         <Pressable
-          onPress={onOpenProfile}
+          onPress={() => router.push("/progreso" as never)}
           onPressIn={() =>
             Animated.spring(giftScale, {
               toValue: 0.84,
@@ -1375,8 +1375,8 @@ function Inicio2HeroStatic({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile"
+          accessibilityLabel="Abrir mi racha"
+          testID="inicio2-open-streak"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
