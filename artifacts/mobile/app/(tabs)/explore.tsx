@@ -43,7 +43,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
-import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 16;
@@ -53,7 +53,7 @@ const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
-const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
+const SQCARD_W = getTwoCardCarouselCardWidth(width, H_PAD, 55);
 const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
@@ -603,9 +603,8 @@ export function ExploreScreen({
                   paddingHorizontal: H_PAD,
                 }}
                 cardWidth={SQCARD_W}
-                titleSize={19}
-                showCardMetadata
-                showAuthor={false}
+                presentation="sleep-category"
+                titleSize={16}
                 onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
               />
             </View>
