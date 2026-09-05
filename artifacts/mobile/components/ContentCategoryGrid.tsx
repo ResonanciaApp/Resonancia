@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     paddingRight: GRID_PAD + 18,
   },
   discoverCard: {
-    borderRadius: 14,
+    borderRadius: 31,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

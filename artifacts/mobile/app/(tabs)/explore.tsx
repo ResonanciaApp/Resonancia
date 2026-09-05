@@ -473,7 +473,7 @@ export function ExploreScreen({
               testID="discover-search-button"
             >
               <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
-              <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
+              <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
             </Pressable>
           </View>
         </View>
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
-  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 15, borderWidth: 0, paddingHorizontal: 18, height: 45 },
+  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 0, paddingHorizontal: 18, height: 55 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {
     backgroundColor: "rgba(0,0,0,0.15)",
@@ -785,6 +785,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
+    marginTop: 30,
     marginBottom: SECTION_GAP,
   },
   durationSection: {
