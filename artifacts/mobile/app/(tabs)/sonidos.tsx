@@ -38,16 +38,13 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
-import {
-  getContentCarouselCardWidth,
-  getTwoCardCarouselCardWidth,
-} from "@/constants/carousel";
+import { getFractionalCardCarouselWidth } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const H_PAD = 16;
 const { width: W } = Dimensions.get("window");
-const CARD_W = getContentCarouselCardWidth(W, H_PAD);
-const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
+const CARD_W = getFractionalCardCarouselWidth(W, H_PAD, 2.4);
+const RECENT_CARD_W = CARD_W;
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.096)";
 

@@ -112,7 +112,7 @@ const H_PAD = 16;
 const MUSIC_SLEEP_CARD_W = getTwoCardCarouselCardWidth(
   Dimensions.get("window").width,
   H_PAD,
-  35,
+  55,
 );
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
@@ -377,7 +377,7 @@ export default function DescansoScreen() {
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
                 cardWidth={collection.id === "musica-para-dormir" ? MUSIC_SLEEP_CARD_W : undefined}
-                titleSize={19}
+                titleSize={collection.id === "musica-para-dormir" ? 16 : 19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}

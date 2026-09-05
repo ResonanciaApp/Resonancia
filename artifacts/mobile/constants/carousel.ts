@@ -22,6 +22,27 @@ export function getContentCarouselCardWidth(
 }
 
 /**
+ * Ancho exacto para mostrar un número fraccionario de cards dentro del
+ * viewport, incluyendo los gaps entre las cards visibles.
+ */
+export function getFractionalCardCarouselWidth(
+  viewportWidth: number,
+  horizontalPadding: number,
+  visibleCards: number,
+): number {
+  const visibleGaps = Math.ceil(visibleCards) - 1;
+  return Math.max(
+    120,
+    Math.round(
+      (viewportWidth
+        - horizontalPadding * 2
+        - CONTENT_CAROUSEL_GAP * visibleGaps)
+        / visibleCards,
+    ),
+  );
+}
+
+/**
  * Ancho de las cards cuadradas de sesiones recientes:
  * dos cards completas y 10 px de la tercera.
  */
