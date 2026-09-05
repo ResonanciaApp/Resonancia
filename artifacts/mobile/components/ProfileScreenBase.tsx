@@ -343,6 +343,7 @@ export function ProfileScreenBase({
 
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -1254,39 +1255,65 @@ export function ProfileScreenBase({
                 },
               ]}
             >
-              <View style={styles.personalStatsHeader}>
-                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                  Estadísticas personales
-                </Text>
-                <View style={styles.personalStatsRange}>
-                  {([7, 30, 90] as const).map((days) => {
-                    const selected = statsRangeDays === days;
-                    return (
-                      <Pressable
-                        key={days}
-                        onPress={() => setStatsRangeDays(days)}
-                        accessibilityRole="button"
-                        accessibilityState={{ selected }}
-                        accessibilityLabel={`Mostrar estadísticas de ${days} días`}
-                        style={[
-                          styles.personalStatsRangeButton,
-                          {
-                            backgroundColor: selected ? "#F9F9F9" : "transparent",
-                          },
-                        ]}
-                      >
-                        <Text
+              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                Estadísticas personales
+              </Text>
+              <View style={styles.personalStatsRangeDropdown}>
+                <Pressable
+                  onPress={() => setStatsRangeOpen((open) => !open)}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: statsRangeOpen }}
+                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
+                  style={styles.personalStatsRangeTrigger}
+                >
+                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
+                    Últimos {statsRangeDays} días
+                  </Text>
+                  <Feather
+                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
+                    size={14}
+                    color={secondaryAccent}
+                  />
+                </Pressable>
+                {statsRangeOpen && (
+                  <View
+                    style={[
+                      styles.personalStatsRangeMenu,
+                      {
+                        backgroundColor: activeTheme.gradient[0],
+                        borderColor: "rgba(255,255,255,0.12)",
+                      },
+                    ]}
+                  >
+                    {([7, 30, 90] as const).map((days) => {
+                      const selected = statsRangeDays === days;
+                      return (
+                        <Pressable
+                          key={days}
+                          onPress={() => {
+                            setStatsRangeDays(days);
+                            setStatsRangeOpen(false);
+                          }}
+                          accessibilityRole="menuitem"
+                          accessibilityState={{ selected }}
                           style={[
-                            styles.personalStatsRangeText,
-                            { color: selected ? "#0E0E17" : secondaryAccent },
+                            styles.personalStatsRangeOption,
+                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
                           ]}
                         >
-                          {days}D
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
+                          <Text
+                            style={[
+                              styles.personalStatsRangeOptionText,
+                              { color: selected ? "#F9F9F9" : secondaryAccent },
+                            ]}
+                          >
+                            Últimos {days} días
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
               </View>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
@@ -2230,30 +2257,44 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
-  personalStatsHeader: {
+  personalStatsRangeDropdown: {
+    position: "relative",
+    alignSelf: "flex-start",
+    marginTop: 8,
+    zIndex: 2,
+  },
+  personalStatsRangeTrigger: {
+    minHeight: 28,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
+    gap: 4,
   },
-  personalStatsRange: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 2,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.06)",
+  personalStatsRangeLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "500",
   },
-  personalStatsRangeButton: {
-    minWidth: 34,
-    height: 26,
-    borderRadius: 13,
-    alignItems: "center",
+  personalStatsRangeMenu: {
+    position: "absolute",
+    top: 30,
+    left: 0,
+    width: 142,
+    padding: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    zIndex: 10,
+    elevation: 10,
+  },
+  personalStatsRangeOption: {
+    minHeight: 34,
+    borderRadius: 7,
+    paddingHorizontal: 10,
     justifyContent: "center",
   },
-  personalStatsRangeText: {
+  personalStatsRangeOptionText: {
     fontFamily: "Manrope",
-    fontSize: 10,
-    fontWeight: "700",
+    fontSize: 12,
+    fontWeight: "500",
   },
   personalStatsValues: {
     flexDirection: "row",
