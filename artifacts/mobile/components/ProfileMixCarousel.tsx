@@ -10,7 +10,6 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
-import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { PressScale } from "@/components/PressScale";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -24,7 +23,6 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
 }) {
   const { width } = useWindowDimensions();
   const colors = useColors();
-  const routineTheme = useRoutineTheme();
   const { theme } = useSceneTheme();
   const { presets, stopAll } = useMixer();
   const { openMixer } = useMixerPanel();
@@ -83,12 +81,12 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
                 {
                   width: cardWidth,
                   height: cardWidth,
-                  borderColor: routineTheme.completion,
+                  borderColor: "#F9F9F9",
                 },
               ]}
             >
-              <Feather name="plus" size={23} color={routineTheme.completion} />
-              <Text style={[styles.addLabel, { color: routineTheme.completion }]}>
+              <Feather name="plus" size={23} color="#F9F9F9" />
+              <Text style={[styles.addLabel, { color: "#F9F9F9" }]}>
                 Crear una mezcla
               </Text>
             </View>
@@ -111,7 +109,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
               <MaterialCommunityIcons
                 name="tune-variant"
                 size={44}
-                color={WIDGET_GREEN_SOLID}
+                  color="#77A8F2"
                 style={styles.emptyPlaceholderIcon}
               />
             </View>
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   emptyPlaceholderIcon: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   addLabel: {
     fontFamily: "Manrope",
