@@ -175,6 +175,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       : brightMode
         ? applyBrightSat(theme.gradient[0])
         : theme.gradient[0];
+  const isSleepRoute = state.routes[state.index]?.name === "descanzo";
+  const sleepBackgroundProgress = useRef(
+    new Animated.Value(isSleepRoute ? 1 : 0),
+  ).current;
+  const animatedTabBarBackground = sleepBackgroundProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [tabBarBackground, "#0D0C11"],
+  });
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -205,6 +213,16 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   }
   const effectiveRouteIndex = currentIsRendered ? state.index : lastRealRouteIndex.current;
   // ────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    sleepBackgroundProgress.stopAnimation();
+    Animated.timing(sleepBackgroundProgress, {
+      toValue: isSleepRoute ? 1 : 0,
+      duration: 320,
+      easing: easeOutCubic,
+      useNativeDriver: false,
+    }).start();
+  }, [isSleepRoute, sleepBackgroundProgress]);
 
   useEffect(() => {
     Animated.timing(translateY, {
@@ -241,7 +259,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[
           styles.bar,
           {
-            backgroundColor: tabBarBackground,
             height: barHeight,
             transform: [
               { translateX: libraryBarOffset },
@@ -250,6 +267,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: animatedTabBarBackground },
+          ]}
+        />
         <View
           style={[
             styles.row,

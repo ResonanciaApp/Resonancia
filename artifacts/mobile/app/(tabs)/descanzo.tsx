@@ -118,6 +118,12 @@ const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const SOUND_CARD_W  = 120;
+const SLEEP_BACKGROUND_GRADIENT = [
+  "#24133F",
+  "#211337",
+  "#170F26",
+  "#0D0C11",
+] as const;
 
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
@@ -126,7 +132,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const bgGradient = sceneTheme.gradient;
+  const bgGradient = SLEEP_BACKGROUND_GRADIENT;
   const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(255,255,255,0.05)" : undefined;
 
   const [searchVisible, setSearchVisible] = useState(false);
