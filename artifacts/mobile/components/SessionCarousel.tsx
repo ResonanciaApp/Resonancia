@@ -274,7 +274,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 - 22,
+                          top: (ch - ambientalImageSize) / 2 - 32,
                         },
                       ]}
                     />
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
   ambientalTitle: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "300",
     lineHeight: 18,
     textAlign: "center",
   },

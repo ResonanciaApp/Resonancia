@@ -214,7 +214,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   height: ambientalImageSize,
                   borderRadius: ambientalImageSize / 2,
                   left: (width - ambientalImageSize) / 2,
-                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 22,
+                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 32,
                 },
               ]}
               contentFit="cover"
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     bottom: 16,
     fontFamily: "Manrope",
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "300",
     lineHeight: 21,
   },
   ambientalCardTitleWrap: {
@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
   ambientalCardTitle: {
     marginTop: 0,
     fontSize: 10,
+    fontWeight: "300",
     lineHeight: 15,
     textAlign: "center",
   },
