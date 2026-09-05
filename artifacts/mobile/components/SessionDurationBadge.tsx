@@ -24,7 +24,7 @@ type Props = {
  * behind it, so the badge never inherits the old burgundy color.
  */
 export function SessionDurationBadge({ label, style, textStyle, showClock = false }: Props) {
-  const displayLabel = label.replace(/\bmin\b/gi, "Min");
+  const displayLabel = label.replace(/\bmin\b/gi, "min");
 
   return (
     <View pointerEvents="none" style={[styles.root, style, styles.rounded]}>
