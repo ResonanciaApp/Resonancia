@@ -193,7 +193,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (viewportWidth - 16 - CONTENT_CAROUSEL_GAP) / 1.85,
   );
   const requestedCardWidth = isSleepCategoryPresentation
-    ? sleepCategoryCardWidth
+    ? cardWidth ?? sleepCategoryCardWidth
     : isAmbientalCarousel
     ? ambientalCardWidth ?? ambientalCarouselCardWidth
     : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
