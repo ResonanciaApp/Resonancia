@@ -219,12 +219,12 @@ export function HistorialCalendar({
   const calendarAccent = activeSceneId === "indigo2" ? colors.accent : colors.mutedForeground;
   const { history, statEvents, isFavorite, toggleFavorite, playSession } = usePlayer();
   const calendarBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.045)"
+    ? "rgba(181,211,255,0.057)"
     : activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(181,211,255,0.045)";
+        : "rgba(181,211,255,0.057)";
 
   const today = useMemo(() => new Date(), []);
   const [viewMonth, setViewMonth] = useState<Date>(startOfMonth(today));

@@ -1518,9 +1518,9 @@ export default function HomeScreen2({
           : "#3B2A47";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : "rgba(181,211,255,0.045)";
+    : "rgba(181,211,255,0.057)";
   const durationPillBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.045)"
+    ? "rgba(181,211,255,0.057)"
     : activeSceneId === "indigo2"
       ? "rgba(255,255,255,0.025)"
       : cardBg;
@@ -1529,7 +1529,7 @@ export default function HomeScreen2({
       ? durationPillBg
       : "rgba(255,255,255,0.025)";
   const recommendationSurfaceBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.045)"
+    ? "rgba(181,211,255,0.057)"
     : cardBg;
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
@@ -2818,7 +2818,7 @@ export default function HomeScreen2({
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
               />
               <LinearGradient
-                colors={["rgba(181,211,255,0.045)", "transparent"]}
+                colors={["rgba(181,211,255,0.057)", "transparent"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0.6, y: 1 }}
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
@@ -3715,7 +3715,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
     right: 30,
     bottom: -24,
   },
@@ -3904,7 +3904,7 @@ const styles = StyleSheet.create({
   },
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
-  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(181,211,255,0.045)" },
+  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(181,211,255,0.057)" },
   heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", marginTop: 2 },
   heroBtn: {
     width: 46,

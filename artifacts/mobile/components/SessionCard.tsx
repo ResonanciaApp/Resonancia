@@ -116,7 +116,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
-  const ambientalCardBackground = "rgba(181,211,255,0.045)";
+  const ambientalCardBackground = "rgba(181,211,255,0.057)";
   const ambientalImageSize = Math.round(width * 0.72);
   const ambientalCardHeight = Math.round(
     (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,

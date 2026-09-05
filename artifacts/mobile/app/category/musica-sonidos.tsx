@@ -286,8 +286,8 @@ export default function MusicaSonidosScreen() {
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.045)"
-      : "rgba(181,211,255,0.045)";
+      ? "rgba(181,211,255,0.057)"
+      : "rgba(181,211,255,0.057)";
 
   const TABS = useMemo(() => {
     const uniqueTags = [...new Set(
@@ -507,7 +507,7 @@ export default function MusicaSonidosScreen() {
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.045)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.057)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -579,7 +579,7 @@ export default function MusicaSonidosScreen() {
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.045)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.057)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Música"
@@ -652,9 +652,9 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.057)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
   chipIndigo2Inactive: { backgroundColor: "rgba(255,255,255,0.025)", borderColor: "rgba(255,255,255,0.04)" },
   chipBorder: {},
   chipBorderSel: {},

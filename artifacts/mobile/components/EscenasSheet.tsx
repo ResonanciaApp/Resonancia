@@ -626,7 +626,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   timerDropdown: {
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
     borderRadius: 14,
     overflow: "hidden",
     marginBottom: 4,

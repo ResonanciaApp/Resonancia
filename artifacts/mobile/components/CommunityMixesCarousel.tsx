@@ -247,7 +247,7 @@ export function MixRow({
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
-        isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.045)" },
+        isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(181,211,255,0.057)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >

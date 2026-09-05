@@ -396,8 +396,8 @@ export function MixerSheet() {
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(theme.id)
-        ? "rgba(181,211,255,0.045)"
-        : "rgba(181,211,255,0.045)";
+        ? "rgba(181,211,255,0.057)"
+        : "rgba(181,211,255,0.057)";
 
   // Cargar preset y overlay guardados
   // Nota: "borgona" era el fondo por defecto ANTES de enlazar el fondo al tema
@@ -1274,7 +1274,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
-    borderColor: "rgba(181,211,255,0.045)",
+    borderColor: "rgba(181,211,255,0.057)",
     backgroundColor: "rgba(255,255,255,0.005)",
   },
   pillAboveFooter: {

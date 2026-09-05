@@ -20,7 +20,7 @@ import {
 
 const GRID_PAD = 14;
 const SECTION_GAP = 60;
-const CARD_BG = "rgba(181,211,255,0.045)";
+const CARD_BG = "rgba(181,211,255,0.057)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
 const DISCOVER_GRID_GAP = 11;
 const DISCOVER_PRIMARY_CARD_SIZE = Math.floor(
@@ -188,7 +188,7 @@ export function ContentCategoryGrid({
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId) && isDiscoverGrid
-      ? "rgba(181,211,255,0.045)"
+      ? "rgba(181,211,255,0.057)"
       : activeSceneId === "indigo2" && isDiscoverGrid
         ? "rgba(255,255,255,0.025)"
       : isIndigoThemeId(activeSceneId)

@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
 
   /* ── Sección Expansor ── */
   expansorSection: {
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
     borderRadius: 18,
     padding: 16,
     gap: 16,
@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
 
   /* ── Galería ── */
   gallerySection: {
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
     borderRadius: 18,
     padding: 16,
     gap: 12,
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   },
   galleryCell: {
     borderRadius: 10,
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
   },
 
   /* ── Lightbox ── */

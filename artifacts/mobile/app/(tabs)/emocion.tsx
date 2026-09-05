@@ -26,7 +26,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 const GOLD = "#F9F9F9";
 const MUTED = "rgba(244,244,244,0.62)";
 const SURFACE = "rgba(255,255,255,0.065)";
-const CARD_BG = "rgba(181,211,255,0.045)";
+const CARD_BG = "rgba(181,211,255,0.057)";
 const GRID_PAD = 20;
 const SECTION_GAP = 32;
 

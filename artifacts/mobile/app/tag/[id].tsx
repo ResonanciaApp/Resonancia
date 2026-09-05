@@ -95,8 +95,8 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(theme.id)
-        ? "rgba(181,211,255,0.045)"
-        : "rgba(181,211,255,0.045)";
+        ? "rgba(181,211,255,0.057)"
+        : "rgba(181,211,255,0.057)";
   const inactiveFilterBorder =
     theme.id === "indigo2"
       ? "rgba(255,255,255,0.04)"

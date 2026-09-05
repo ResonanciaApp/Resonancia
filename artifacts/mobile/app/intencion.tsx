@@ -143,7 +143,7 @@ export default function IntencionScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={[styles.tabRow, { borderBottomColor: "rgba(181,211,255,0.045)" }]}>
+        <View style={[styles.tabRow, { borderBottomColor: "rgba(181,211,255,0.057)" }]}>
           {(["ideas", "guardados", "favoritos"] as Tab[]).map((t) => (
             <Pressable key={t} onPress={() => setTab(t)} style={styles.tabBtn}>
               <Text style={[styles.tabLabel, { color: tab === t ? colors.primary : colors.mutedForeground }]}>

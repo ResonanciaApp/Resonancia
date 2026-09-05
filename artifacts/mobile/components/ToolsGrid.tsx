@@ -120,10 +120,10 @@ export function ToolsGrid({
   const pillBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.045)"
+      ? "rgba(181,211,255,0.057)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-      : "rgba(181,211,255,0.045)";
+      : "rgba(181,211,255,0.057)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
       case "mood-register":

@@ -111,7 +111,7 @@ export default function EncuentroDetalle() {
 
           {/* ── Guía ── */}
           <Text style={styles.sectionLabel}>Guía</Text>
-          <Pressable style={styles.guiaCard} android_ripple={{ color: "rgba(181,211,255,0.045)" }}>
+          <Pressable style={styles.guiaCard} android_ripple={{ color: "rgba(181,211,255,0.057)" }}>
             {/* Avatar */}
             <View style={[styles.guiaAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
               <Text style={styles.guiaAvatarText}>{encuentro.guia.iniciales}</Text>

@@ -118,7 +118,7 @@ export default function SonidosScreen() {
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.045)" : undefined;
+  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.057)" : undefined;
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyHeaderActiveRef = useRef(false);
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.045)",
+    backgroundColor: "rgba(181,211,255,0.057)",
     borderWidth: 0,
   },
   pillText: {
