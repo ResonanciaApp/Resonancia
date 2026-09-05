@@ -281,7 +281,7 @@ export function QuickAccessSection({
       : isIndigoThemeId(activeSceneId)
         ? "rgba(181,211,255,0.057)"
         : activeSceneId === "indigo2"
-          ? "rgba(255,255,255,0.025)"
+          ? "rgba(191,207,255,0.055)"
         : "rgba(181,211,255,0.057)"
   );
 

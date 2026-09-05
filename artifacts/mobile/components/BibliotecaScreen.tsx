@@ -1152,7 +1152,7 @@ export function BibliotecaScreen({
   });
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+    outputRange: ["rgba(191,207,255,0.055)", "rgba(191,207,255,0.105)"],
   });
   const handleHeaderScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -2224,7 +2224,7 @@ const styles = StyleSheet.create({
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(255,255,255,0.025)",
+    backgroundColor: "rgba(191,207,255,0.055)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.04)",
   },

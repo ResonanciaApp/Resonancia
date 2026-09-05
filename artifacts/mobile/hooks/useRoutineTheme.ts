@@ -41,7 +41,7 @@ const ROUTINE_SCENE_SURFACES = {
     ticketSurface: "#1C1B28",
   },
   indigo2: {
-    surface: "rgba(255,255,255,0.025)",
+    surface: "rgba(191,207,255,0.055)",
     surfaceElevated: "#1D1D25",
     divider: "rgba(255,255,255,0.10)",
     ticketSurface: "#191919",

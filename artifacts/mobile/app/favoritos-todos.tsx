@@ -134,7 +134,7 @@ export default function FavoritosTodosScreen() {
   const stickySurfaceOpacity = titleProgress.interpolate({ inputRange: [0, 1], outputRange: [0, 0.96] });
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
+    outputRange: ["rgba(191,207,255,0.055)", "rgba(191,207,255,0.105)"],
   });
   const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
     const compact = event.nativeEvent.contentOffset.y > 8;
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   pillSel: { borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
   pillIndigo2Inactive: {
-    backgroundColor: "rgba(255,255,255,0.025)",
+    backgroundColor: "rgba(191,207,255,0.055)",
     borderColor: "rgba(255,255,255,0.04)",
   },
   pillText: {
