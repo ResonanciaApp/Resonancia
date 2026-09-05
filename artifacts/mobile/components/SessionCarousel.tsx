@@ -89,6 +89,7 @@ type SessionCarouselProps = {
   onViewAll?: () => void;
   viewAllColor?: string;
   showCardMetadata?: boolean;
+  metadataTitleNumberOfLines?: number;
   showAuthor?: boolean;
   showCollectionBelow?: boolean;
   showMetaBelow?: boolean;
@@ -120,6 +121,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   onViewAll,
   viewAllColor,
   showCardMetadata = false,
+  metadataTitleNumberOfLines,
   showAuthor = true,
   showCollectionBelow = false,
   showMetaBelow = false,
@@ -243,10 +245,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       ]}
                     />
                     {!shouldHideAmbientalTitle && (
-                      <View style={styles.ambientalTitleWrap}>
+                      <View
+                        style={[
+                          styles.ambientalTitleWrap,
+                          {
+                            height: (metadataTitleNumberOfLines ?? 2) * 18,
+                          },
+                        ]}
+                      >
                         <Text
                           style={[styles.ambientalTitle, { color: colors.foreground }]}
-                          numberOfLines={2}
+                          numberOfLines={metadataTitleNumberOfLines ?? 2}
                         >
                           {s.title}
                         </Text>
@@ -269,6 +278,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     categoryId={s.categoryId}
                     durationLabel={s.durationLabel}
                     title={s.title}
+                    titleNumberOfLines={metadataTitleNumberOfLines}
                     authorName={showAuthor && !showCollectionBelow ? authorName : undefined}
                     showAuthor={showAuthor && !showCollectionBelow}
                     showCategoryPill={!showMetaBelow && (showImageCategoryPill || !showCollectionBelow)}
@@ -447,7 +457,6 @@ const styles = StyleSheet.create({
     left: 8,
     right: 8,
     bottom: 23,
-    height: 36,
     alignItems: "center",
     justifyContent: "center",
   },

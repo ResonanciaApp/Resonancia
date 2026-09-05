@@ -133,6 +133,7 @@ type Props = {
   showCategoryBelow?: boolean;
   showMetaBelow?: boolean;
   titleFontSize?: number;
+  titleNumberOfLines?: number;
   showDuration?: boolean;
   durationBottom?: number;
   metaBottom?: number;
@@ -151,6 +152,7 @@ export function SessionCardMetadataOverlay({
   showCategoryBelow = false,
   showMetaBelow = false,
   titleFontSize,
+  titleNumberOfLines = 2,
   showDuration = true,
   // Deja un poco más de aire cuando el título ocupa dos líneas.
   durationBottom = 70,
@@ -158,8 +160,9 @@ export function SessionCardMetadataOverlay({
   metaLeft = 10,
   contentLeft = 8,
 }: Props) {
-  const [isTwoLineTitle, setIsTwoLineTitle] = React.useState(false);
-  const effectiveDurationBottom = isTwoLineTitle ? durationBottom + 18 : durationBottom;
+  const [titleLineCount, setTitleLineCount] = React.useState(1);
+  const effectiveDurationBottom =
+    durationBottom + Math.max(0, titleLineCount - 1) * 18;
   const categoryLabel = categoryId ? CATEGORY_PILL_META[categoryId]?.label : undefined;
   const metaBelowLabel = [categoryLabel, durationLabel].filter(Boolean).join(" · ");
 
@@ -192,13 +195,12 @@ export function SessionCardMetadataOverlay({
               styles.title,
               titleFontSize ? { fontSize: titleFontSize, lineHeight: titleFontSize + 4 } : null,
             ]}
-            numberOfLines={2}
+            numberOfLines={titleNumberOfLines}
             onTextLayout={(event) => {
               const lineCount = event.nativeEvent.lines?.length ?? 1;
-              setIsTwoLineTitle((previous) => {
-                const next = lineCount > 1;
-                return previous === next ? previous : next;
-              });
+              setTitleLineCount((previous) =>
+                previous === lineCount ? previous : lineCount
+              );
             }}
           >
             {title}

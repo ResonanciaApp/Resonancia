@@ -355,6 +355,7 @@ export default function SonidosScreen() {
                 cardWidth={CARD_W}
                 titleSize={19}
                 showCardMetadata
+                 metadataTitleNumberOfLines={3}
                 showAuthor={false}
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
@@ -436,7 +437,7 @@ export default function SonidosScreen() {
                       </View>
                     )}
                   </View>
-                  <Text style={styles.allSessionName} numberOfLines={2}>
+                  <Text style={styles.allSessionName} numberOfLines={3}>
                     {session.title}
                   </Text>
                 </Pressable>
