@@ -54,15 +54,12 @@ const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 function CollectionPill({
   label,
   icon,
-  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   icon: string;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
-  const { theme } = useSceneTheme();
   const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -94,18 +91,9 @@ function CollectionPill({
       <Animated.View
         style={[
           styles.pill,
-          theme.id === "tibet" && styles.pillTibet,
-          isIndigoThemeId(theme.id) && styles.pillIndigo,
-          theme.id === "indigo2" && styles.pillIndigo2,
           { transform: [{ scale }] },
         ]}
       >
-        {theme.id === "indigo2" && indigo2BackgroundColor && (
-          <Animated.View
-            pointerEvents="none"
-            style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
-          />
-        )}
         <Feather name={icon as never} size={22} color="#FFFFFF" />
         <Text style={styles.pillText} numberOfLines={1}>{label}</Text>
       </Animated.View>
@@ -133,17 +121,12 @@ export default function SonidosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(255,255,255,0.05)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(W)).current;
   const compactRef = useRef(false);
   const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
   const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 0.96],
-  });
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
@@ -159,13 +142,8 @@ export default function SonidosScreen() {
         duration: 300,
         useNativeDriver: true,
       }).start();
-      Animated.timing(indigo2TabsSurfaceAnim, {
-        toValue: compact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
     }
-  }, [indigo2TabsSurfaceAnim, titleProgress]);
+  }, [titleProgress]);
 
   const collections = useMemo(
     () =>
@@ -320,7 +298,6 @@ export default function SonidosScreen() {
                   key={collection.id}
                   label={collection.label}
                   icon={collection.icon}
-                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
                 />
               ))}
@@ -539,15 +516,9 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(196,242,255,0.06)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-  },
-  pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
-  pillIndigo2: {
-    backgroundColor: "rgba(255,255,255,0.025)",
-    borderColor: "rgba(255,255,255,0.04)",
   },
   pillText: {
     fontFamily: "Manrope",
