@@ -134,6 +134,8 @@ type SessionCarouselProps = {
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
+  /** Explicit width for Ambiental cards; ignored by sleep-category presentation. */
+  ambientalCardWidth?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared square, below-metadata presentation for Dormir category carousels. */
@@ -167,6 +169,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   durationLift = 0,
   showHeader = true,
   cardVariant,
+  ambientalCardWidth,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -189,7 +192,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const requestedCardWidth = isSleepCategoryPresentation
     ? sleepCategoryCardWidth
     : isAmbientalCarousel
-    ? ambientalCarouselCardWidth
+    ? ambientalCardWidth ?? ambientalCarouselCardWidth
     : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
   const effectiveAllowOversizedCardWidth =
     isSleepCategoryPresentation || allowOversizedCardWidth;

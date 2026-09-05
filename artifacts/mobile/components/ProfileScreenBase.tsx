@@ -69,7 +69,6 @@ import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import {
   gradientColors,
   type GeoSettings,
@@ -419,8 +418,7 @@ export function ProfileScreenBase({
     ? "rgba(181,211,255,0.057)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
-  const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
-  const indigo2SecondaryText = activeSceneId === "indigo2" ? colors.accent : undefined;
+  const secondaryAccent = activeTheme.accent ?? colors.accent;
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -433,7 +431,6 @@ export function ProfileScreenBase({
 
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
   const profileScrollRef = useRef<ScrollView>(null);
-  const [profileStickyHeaderHeight, setProfileStickyHeaderHeight] = useState(0);
   const navigation = useNavigation();
   useEffect(() => {
     const tabNavigation = navigation as unknown as {
@@ -457,11 +454,12 @@ export function ProfileScreenBase({
   const HEADER_BORDER_THRESHOLD_PX = 8;
   const headerBorderActiveRef = useRef(false);
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const profileTitleCompactAnim = useRef(new Animated.Value(0)).current;
-  const profileTitleCompactRef = useRef(false);
-  const profileLargeTitleOpacity = profileTitleCompactAnim.interpolate({
+  const profileStickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const profileStickyHeaderActiveRef = useRef(false);
+  const [profileStickyHeaderActive, setProfileStickyHeaderActive] = useState(false);
+  const profileStickyTitleTranslateY = profileStickyHeaderOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: [1, 0],
+    outputRange: [20, 0],
   });
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -474,12 +472,14 @@ export function ProfileScreenBase({
         useNativeDriver: true,
       }).start();
     }
-    const shouldCompact = dedicated && y > HEADER_BORDER_THRESHOLD_PX;
-    if (shouldCompact !== profileTitleCompactRef.current) {
-      profileTitleCompactRef.current = shouldCompact;
-      Animated.timing(profileTitleCompactAnim, {
-        toValue: shouldCompact ? 1 : 0,
-        duration: 300,
+    const shouldShowCompactHeader = dedicated && y > HEADER_BORDER_THRESHOLD_PX;
+    if (shouldShowCompactHeader !== profileStickyHeaderActiveRef.current) {
+      profileStickyHeaderActiveRef.current = shouldShowCompactHeader;
+      setProfileStickyHeaderActive(shouldShowCompactHeader);
+      profileStickyHeaderOpacity.stopAnimation();
+      Animated.timing(profileStickyHeaderOpacity, {
+        toValue: shouldShowCompactHeader ? 1 : 0,
+        duration: 220,
         useNativeDriver: true,
       }).start();
     }
@@ -1080,96 +1080,84 @@ export function ProfileScreenBase({
       <GeometrixOverlay active={profileGeoActive} />
 
       <View style={styles.contentShift}>
-      {/* ── Sticky header (estilo Calm) ── */}
-      <View
-        onLayout={dedicated ? (event) => {
-          const nextHeight = Math.ceil(event.nativeEvent.layout.height);
-          setProfileStickyHeaderHeight((current) => current === nextHeight ? current : nextHeight);
-        } : undefined}
-        style={[
-          styles.stickyHeader,
-          dedicated && styles.stickyHeaderDedicatedOverlay,
-          dedicated && (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") &&
-            styles.stickyHeaderFadeOverflow,
-          {
-            paddingTop: asTab ? topPad + 8 : topPad + 2,
-          },
-        ]}
-      >
-        {dedicated && (
-          <StickyHeaderSurface
-            opacity={profileTitleCompactAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 0.96],
-            })}
-            tint={activeTheme.gradient[0] as string}
-            showTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            showDivider={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            blurIntensity={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2" ? 85 : undefined}
-            showBlackTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            strongBlur={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
-            fadeBottom={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
-          />
-        )}
-        {!dedicated && !isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
-          <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        )}
-        <View style={[
-          styles.stickyHeaderRow,
-          !dedicated && !asTab && { paddingTop: 25 },
-          dedicated && { paddingBottom: 15 },
-          asTab && styles.libraryTabHeaderRow,
-        ]}>
-          {asTab && (
+      {dedicated ? (
+        <Animated.View
+          pointerEvents={profileStickyHeaderActive ? "auto" : "none"}
+          style={[
+            styles.dedicatedStickyHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: activeTheme.gradient[0] as string,
+              opacity: profileStickyHeaderOpacity,
+            },
+          ]}
+        >
+          <View style={[styles.dedicatedTitleRow, { marginHorizontal: 0 }]}>
+            <Animated.Text
+              style={[
+                styles.dedicatedStickyTitle,
+                { color: colors.foreground, transform: [{ translateY: profileStickyTitleTranslateY }] },
+              ]}
+            >
+              Perfil
+            </Animated.Text>
             <Pressable
-              onPress={onBack ?? (() => router.navigate("/(tabs)/inicio-copia" as never))}
-              hitSlop={6}
-              style={styles.libraryTabBackHitArea}
+              hitSlop={10}
+              onPress={() => router.push("/configuraciones")}
+              style={[styles.dedicatedSettingsButton, { backgroundColor: resourceBlockBackground }]}
               accessibilityRole="button"
-              accessibilityLabel="Volver a Inicio"
+              accessibilityLabel="Abrir configuraciones"
             >
-              {({ pressed }) => (
-                <View
-                  style={[
-                    styles.libraryTabBackBtn,
-                    { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
-                  ]}
-                >
-                  <Feather name="chevron-left" size={26} color="#FBFBFB" />
-                </View>
-              )}
+              <Feather name="settings" size={23} color={colors.foreground} />
             </Pressable>
+          </View>
+        </Animated.View>
+      ) : (
+        <View
+          style={[styles.stickyHeader, { paddingTop: asTab ? topPad + 8 : topPad + 2 }]}
+        >
+          {!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
+            <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
           )}
-          {!asTab && !dedicated && (
-            <BackPill
-              onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
-              size={28}
-              bgColor={libraryHeaderButtonBackground}
-              style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
-            />
-          )}
-          <Animated.Text style={[
-            styles.stickyTitle,
-            dedicated && styles.stickyTitleDedicated,
-            !dedicated && !asTab && styles.stickyTitleBiblioteca,
-            asTab && styles.stickyTitleLibraryTab,
-            dedicated && { opacity: profileLargeTitleOpacity },
-          ]}>{dedicated ? "Perfil" : "Biblioteca"}</Animated.Text>
-          {dedicated && (
-            <Animated.View
-              pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: profileTitleCompactAnim }]}
-            >
-              <Text style={styles.compactProfileTitle}>Perfil</Text>
-            </Animated.View>
-          )}
-          {dedicated ? (
-            <View style={styles.profileSettingsWrap}>
-              <Pressable hitSlop={8} onPress={() => router.push("/configuraciones")}>
-                <Feather name="settings" size={23} color="#FBFBFB" />
+          <View style={[
+            styles.stickyHeaderRow,
+            !asTab && { paddingTop: 25 },
+            asTab && styles.libraryTabHeaderRow,
+          ]}>
+            {asTab && (
+              <Pressable
+                onPress={onBack ?? (() => router.navigate("/(tabs)/inicio-copia" as never))}
+                hitSlop={6}
+                style={styles.libraryTabBackHitArea}
+                accessibilityRole="button"
+                accessibilityLabel="Volver a Inicio"
+              >
+                {({ pressed }) => (
+                  <View
+                    style={[
+                      styles.libraryTabBackBtn,
+                      { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
+                    ]}
+                  >
+                    <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                  </View>
+                )}
               </Pressable>
-            </View>
-          ) : libActions && !libActions.hidden ? (
+            )}
+            {!asTab && (
+              <BackPill
+                onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
+                size={28}
+                bgColor={libraryHeaderButtonBackground}
+                style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
+              />
+            )}
+            <Animated.Text style={[
+              styles.stickyTitle,
+              !asTab && styles.stickyTitleBiblioteca,
+              asTab && styles.stickyTitleLibraryTab,
+            ]}>Biblioteca</Animated.Text>
+            {libActions && !libActions.hidden ? (
             <View style={styles.libActionsPill}>
               <Pressable
                 onPress={libActions.onSearch}
@@ -1190,12 +1178,12 @@ export function ProfileScreenBase({
                 <Feather name="plus" size={24} color="#f9f9f9" />
               </Pressable>
             </View>
-          ) : (
-            <View style={{ width: 25 }} />
-          )}
+            ) : (
+              <View style={{ width: 25 }} />
+            )}
+          </View>
         </View>
-
-      </View>
+      )}
 
       {dedicated && (
       <ScrollView
@@ -1203,7 +1191,7 @@ export function ProfileScreenBase({
         style={styles.scroll}
         contentContainerStyle={{
           paddingBottom: 160 + bottomPad,
-          paddingTop: Math.max(profileStickyHeaderHeight, topPad + 56),
+          paddingTop: topPad + 2,
           paddingHorizontal: 16,
         }}
         showsVerticalScrollIndicator={false}
@@ -1211,19 +1199,17 @@ export function ProfileScreenBase({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
-        {/* ── Acciones ── */}
-        <View style={[styles.header, { justifyContent: "flex-end" }]}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            {isExpansor && (
-              <Pressable
-                onPress={openExpansorEdit}
-                style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
-                hitSlop={10}
-              >
-                <Feather name="edit" size={17} color="#F9F9F9" />
-              </Pressable>
-            )}
-          </View>
+        <View style={styles.dedicatedTitleRow}>
+          <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
+          <Pressable
+            hitSlop={10}
+            onPress={() => router.push("/configuraciones")}
+            style={[styles.dedicatedSettingsButton, { backgroundColor: resourceBlockBackground }]}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir configuraciones"
+          >
+            <Feather name="settings" size={23} color={colors.foreground} />
+          </Pressable>
         </View>
 
         {/* ── Profile Card ── */}
@@ -1263,7 +1249,7 @@ export function ProfileScreenBase({
 
                 {email ? (
                   <Text
-                    style={[styles.emailText, { color: indigo2SecondaryText ?? "#AAAAC4" }]}
+                    style={[styles.emailText, { color: secondaryAccent }]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -1273,9 +1259,14 @@ export function ProfileScreenBase({
 
                 {location ? (
                   <View style={styles.locationRow}>
-                    <Feather name="map-pin" size={12} color={indigo2SecondaryText ?? colors.mutedForeground} />
-                    <Text style={[styles.locationText, { color: indigo2SecondaryText ?? colors.mutedForeground }]}>{location}</Text>
+                    <Feather name="map-pin" size={12} color={secondaryAccent} />
+                    <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
                   </View>
+                ) : null}
+                {description.trim() ? (
+                  <Text style={[styles.bioText, styles.bioTextLeft, { color: secondaryAccent }]}>
+                    {description.trim()}
+                  </Text>
                 ) : null}
               </Pressable>
               <Pressable
@@ -1291,7 +1282,7 @@ export function ProfileScreenBase({
           </View>
           <View style={styles.profileCardDivider} />
           <ProfileMembershipModules
-            secondaryTextColor={progressAccent}
+            secondaryTextColor={secondaryAccent}
             foregroundColor={colors.foreground}
           />
         </View>
@@ -1301,7 +1292,7 @@ export function ProfileScreenBase({
           <>
             <IntentionPrompt style={{ marginBottom: 53 }} />
             <View style={[styles.weeklyStreakIntro, { marginTop: 0 }]}>
-              <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Tu progreso</Text>
+              <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Estadísticas personales</Text>
             </View>
             <View
               style={[
@@ -1343,7 +1334,7 @@ export function ProfileScreenBase({
                         Días de racha
                       </Text>
                     </View>
-                    <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
+                    <Text style={[styles.streakSubtitle, { color: secondaryAccent }]}>
                       Expande tu consciencia todos los días
                     </Text>
                   </View>
@@ -1369,7 +1360,7 @@ export function ProfileScreenBase({
             <ProfileSettingsSections
               sceneId={activeSceneId}
               foreground={colors.foreground}
-              mutedForeground={progressAccent}
+              mutedForeground={secondaryAccent}
               accent={activeTheme.accent ?? colors.primary}
               cardBackground={resourceBlockBackground}
               onLogout={handleProfileLogout}
@@ -1782,12 +1773,6 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
 
-  header: {
-    marginBottom: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   pageTitle: { fontFamily: "Manrope", fontSize: 28, fontWeight: "800", letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
@@ -1795,24 +1780,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "transparent",
   },
-  stickyHeaderDedicatedOverlay: {
+  dedicatedStickyHeader: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     zIndex: 30,
     elevation: 30,
-  },
-  stickyHeaderFadeOverflow: {
-    overflow: "visible",
-  },
-  profileHeaderGlass: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 68,
-    overflow: "hidden",
   },
   stickyHeaderBorder: {
     position: "absolute",
@@ -1846,22 +1820,26 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
-  stickyTitleDedicated: { fontSize: 31, textAlign: "left", marginLeft: 0, transform: [{ translateY: 6 }] },
-  profileSettingsWrap: { flexDirection: "row", alignItems: "center", transform: [{ translateY: 6 }] },
-  compactTitleOverlay: {
-    ...StyleSheet.absoluteFillObject,
+  dedicatedTitleRow: {
+    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    paddingTop: 7,
+    paddingBottom: 10,
+    paddingHorizontal: 16,
+    marginHorizontal: -16,
   },
-  compactProfileTitle: {
+  dedicatedHeroTitle: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: "800",
-    color: "#F4F4F4",
     letterSpacing: 0.3,
-    textAlign: "center",
-    transform: [{ translateY: 4 }],
+    textAlign: "left",
+    transform: [{ translateY: 1 }],
   },
+  dedicatedStickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, textAlign: "left" },
+  dedicatedSettingsButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libraryTabHeaderRow: {

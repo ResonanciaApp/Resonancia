@@ -352,6 +352,7 @@ export default function SonidosScreen() {
                 onPress={openSession}
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                 cardWidth={CARD_W}
+                ambientalCardWidth={RECENT_CARD_W}
                 titleSize={19}
                 showCardMetadata
                  metadataTitleNumberOfLines={3}
