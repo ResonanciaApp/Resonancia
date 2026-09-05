@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback, useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Dimensions,
   Animated,
@@ -26,7 +26,6 @@ import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   SESSIONS,
-  getSessionById,
   sortSessionsNewestFirst,
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
@@ -41,10 +40,9 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
@@ -71,7 +69,6 @@ const DURATION_SLOTS = [
   { label: "30 min", displayLabel: "30 minutos" },
   { label: "60 min", displayLabel: "60 minutos" },
 ] as const;
-const HERO_HEIGHT = 270;
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -221,36 +218,11 @@ export function ExploreScreen({
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
-  const titleProgress = useRef(new Animated.Value(0)).current;
-  const compactHeaderRef = useRef(false);
-  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.96],
-  });
-  const useDiscoverStickyStyle = isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2";
-  const largeTitleOpacity = titleProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-  const handleDiscoverScroll = useCallback((event: {
-    nativeEvent: { contentOffset: { y: number } };
-  }) => {
-    const compact = event.nativeEvent.contentOffset.y > 8;
-    if (compact === compactHeaderRef.current) return;
-    compactHeaderRef.current = compact;
-    titleProgress.stopAnimation();
-    Animated.timing(titleProgress, {
-      toValue: compact ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [titleProgress]);
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -374,8 +346,6 @@ export function ExploreScreen({
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
-
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
     { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 30 }), staleTime: 5 * 60_000 } },
@@ -387,19 +357,6 @@ export function ExploreScreen({
       .filter((s): s is Session => !!s && s.categoryId === "meditaciones-guiadas")
       .slice(0, 10);
   }, [popularData, catalogVersion]);
-
-  const featuredHoy = React.useMemo(() => {
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
-      return getSessionById(pinned.id) ?? undefined;
-    }
-    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
-    if (!pool.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return pool[dayOfYear % pool.length];
-  }, [pinnedFeaturedData, catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const discoverSearchItems = React.useMemo(
     () =>
@@ -487,145 +444,42 @@ export function ExploreScreen({
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar hidden />
 
-      <View
-        style={[
-          styles.fixedHeader,
-          useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
-          { paddingTop: topPad + 2 },
-        ]}
-        onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
-      >
-        <StickyHeaderSurface
-          opacity={stickyHeaderSurfaceOpacity}
-          tint={activeTheme.gradient[0] as string}
-          showTint={!useDiscoverStickyStyle}
-          showDivider={!useDiscoverStickyStyle}
-          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-          showBlackTint={!useDiscoverStickyStyle}
-          strongBlur={useDiscoverStickyStyle}
-          fadeBottom={useDiscoverStickyStyle}
-        />
-        <View style={styles.titleRow}>
-          <Animated.Text
-            style={[styles.pageTitle, { opacity: largeTitleOpacity }]}
-          >
-            {screenTitle}
-          </Animated.Text>
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.compactTitleOverlay, { opacity: titleProgress }]}
-          >
-            <Text style={styles.compactPageTitle}>{screenTitle}</Text>
-          </Animated.View>
-        </View>
-
-        <View style={styles.searchWrap}>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            style={[
-              styles.searchBox,
-              activeSceneId === "tibet"
-                ? styles.searchBoxTibet
-                : isIndigoThemeId(activeSceneId)
-                  ? styles.searchBoxIndigo
-                  : activeSceneId === "indigo2"
-                    ? styles.searchBoxIndigo2
-                    : null,
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel={`Buscar en ${screenTitle}`}
-            testID="discover-search-button"
-          >
-            <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
-            <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
-          </Pressable>
-        </View>
-      </View>
-
       <Animated.ScrollView
         style={styles.contentShift}
-        contentContainerStyle={{
-          paddingTop: fixedHeaderHeight,
-          paddingBottom: 160 + bottomPad,
-        }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        scrollEventThrottle={16}
-        onScroll={handleDiscoverScroll}
       >
-        <View style={styles.scrollContent}>
-          {featuredHoy && (
-            <View style={styles.featuredMomentSection}>
-              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 17 }]}>
-                Para este momento
-              </Text>
-              <Pressable
-                onPress={() => handleSessionPress(featuredHoy)}
-                accessibilityRole="button"
-                accessibilityLabel={featuredHoy.title}
-                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-              >
-                <View style={styles.heroImageContainer}>
-                  <Image
-                    source={featuredHoy.image as number}
-                    style={styles.heroImage}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                  <SessionDurationBadge
-                    label={featuredHoy.durationLabel}
-                    style={styles.featuredMomentDuration}
-                  />
-                </View>
-                {(() => {
-                  const guide = getGuide(featuredHoy.guideId ?? "casa-cuenco");
-                  const artist = featuredHoy.artistId ? getArtist(featuredHoy.artistId) : undefined;
-                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                  const authorPhoto = guide?.photo ?? artist?.photo;
-                  return (
-                    <View style={styles.featuredMomentMeta}>
-                      {authorPhoto && (
-                        <Image
-                          source={authorPhoto}
-                          style={styles.featuredMomentAvatar}
-                          contentFit="cover"
-                          cachePolicy="memory-disk"
-                        />
-                      )}
-                      <View style={{ flex: 1 }}>
-                        <Text
-                          style={[
-                            styles.heroMetaLabel,
-                            { color: activeTheme.accent ?? "#ACACC1" },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {featuredHoy.categoryLabel}
-                        </Text>
-                        <Text style={styles.heroTitle} numberOfLines={2}>
-                          {featuredHoy.title}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.heroAuthor,
-                            { color: activeTheme.accent ?? "#ACACC1" },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {authorName}
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })()}
-              </Pressable>
-            </View>
-          )}
+        <View style={[styles.pageHeader, { paddingTop: topPad + 2 }]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.pageTitle}>{screenTitle}</Text>
+          </View>
 
+          <View style={styles.searchWrap}>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              style={[
+                styles.searchBox,
+                activeSceneId === "tibet"
+                  ? styles.searchBoxTibet
+                  : isIndigoThemeId(activeSceneId)
+                    ? styles.searchBoxIndigo
+                    : activeSceneId === "indigo2"
+                      ? styles.searchBoxIndigo2
+                      : null,
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={`Buscar en ${screenTitle}`}
+              testID="discover-search-button"
+            >
+              <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
+              <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.scrollContent}>
           <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Categorías
-            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
@@ -833,16 +687,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { marginTop: -3 },
 
-  fixedHeader:  {
-    position: "absolute",
-    top: -5,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-    paddingBottom: 10,
-    backgroundColor: "transparent",
-  },
-  fixedHeaderFadeOverflow: { overflow: "visible" },
+  pageHeader: { paddingBottom: 10 },
   overlayHeader: {
     position: "absolute",
     top: 0,
@@ -1103,76 +948,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     marginTop: 3,
-  },
-
-  // Hero — Para este momento
-  featuredMomentSection: {
-    paddingHorizontal: H_PAD,
-    marginBottom: SECTION_GAP,
-  },
-  featuredMomentMeta: {
-    marginTop: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  featuredMomentAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(181,211,255,0.045)",
-  },
-  heroImageContainer: {
-    width: "100%",
-    height: HERO_HEIGHT,
-    borderRadius: 15,
-    overflow: "hidden",
-  },
-  heroImage: { width: "100%", height: "100%" },
-  featuredMomentDuration: {
-    position: "absolute",
-    left: 12,
-    bottom: 12,
-  },
-  heroMeta: {
-    flexDirection: "row",
-    alignItems: "stretch",
-    gap: 12,
-    marginTop: 12,
-    paddingHorizontal: 2,
-  },
-  heroTextBlock: {
-    flex: 1,
-    minWidth: 0,
-    justifyContent: "center",
-  },
-  heroMetaLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 14,
-    color: "#F4F4F4",
-    marginBottom: 6,
-  },
-  heroTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 20,
-    color: "#FBFBFB",
-    marginBottom: 4,
-  },
-  heroAuthor: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    color: "#F4F4F4",
-    marginTop: 2,
-  },
-  heroAuthorAvatar: {
-    width: 76,
-    minHeight: 76,
-    alignSelf: "stretch",
-    borderRadius: 12,
-    flexShrink: 0,
   },
 
   // Hero: Vuelve a ti
