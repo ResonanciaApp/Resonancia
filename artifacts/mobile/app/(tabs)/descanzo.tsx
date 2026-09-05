@@ -23,7 +23,6 @@ import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -37,12 +36,11 @@ import { getContentCarouselCardWidth } from "@/constants/carousel";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function SleepPill({
-  sel, label, icon, indigo2BackgroundColor, onPress,
+  sel, label, icon, onPress,
 }: {
   sel: boolean;
   label: string;
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number> | string;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
@@ -97,9 +95,6 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           isIndigoThemeId(theme.id) && styles.sleepPillIndigo,
           !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
-          !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
-            backgroundColor: indigo2BackgroundColor,
-          },
           sel && styles.sleepPillSel,
         ]}
       >
@@ -132,37 +127,28 @@ export default function DescansoScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
 
-  const titleProgress = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
-  const compactRef = useRef(false);
-  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
-  const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyHeaderActiveRef = useRef(false);
+  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+  const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 0.96],
+    outputRange: [20, 0],
   });
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
-  });
-  const useDiscoverStickyStyle = isIndigoThemeId(sceneTheme.id) || sceneTheme.id === "indigo2";
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
   }) => {
-    const compact = event.nativeEvent.contentOffset.y > 8;
-    if (compact === compactRef.current) return;
-    compactRef.current = compact;
-    Animated.timing(titleProgress, {
-      toValue: compact ? 1 : 0,
-      duration: 300,
+    const active = event.nativeEvent.contentOffset.y > 8;
+    if (active === stickyHeaderActiveRef.current) return;
+    stickyHeaderActiveRef.current = active;
+    setStickyHeaderActive(active);
+    stickyHeaderOpacity.stopAnimation();
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
       useNativeDriver: true,
     }).start();
-    Animated.timing(indigo2TabsSurfaceAnim, {
-      toValue: compact ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [indigo2TabsSurfaceAnim, titleProgress]);
+  }, [stickyHeaderOpacity]);
 
   const {
     currentSession,
@@ -298,45 +284,29 @@ export default function DescansoScreen() {
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        <View
+        <Animated.View
+          pointerEvents={stickyHeaderActive ? "auto" : "none"}
           style={[
-            styles.fixedHeader,
-            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
-            { paddingTop: topPad + 2 },
+            styles.stickyHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: sceneTheme.gradient[0] as string,
+              opacity: stickyHeaderOpacity,
+            },
           ]}
-          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <StickyHeaderSurface
-            opacity={stickyHeaderSurfaceOpacity}
-            tint={bgGradient[0] as string}
-            showTint={!useDiscoverStickyStyle}
-            showDivider={!useDiscoverStickyStyle}
-            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-            showBlackTint={!useDiscoverStickyStyle}
-            strongBlur={useDiscoverStickyStyle}
-            fadeBottom={useDiscoverStickyStyle}
-          />
           <View style={styles.titleRow}>
             <Animated.Text
               style={[
-                styles.heroTitle,
+                styles.stickyTitle,
                 {
                   color: colors.foreground,
-                  opacity: titleProgress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0],
-                  }),
+                  transform: [{ translateY: stickyTitleTranslateY }],
                 },
               ]}
             >
               Dormir
             </Animated.Text>
-            <Animated.View
-              pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: titleProgress }]}
-            >
-              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Dormir</Text>
-            </Animated.View>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -348,37 +318,50 @@ export default function DescansoScreen() {
               <Feather name="search" size={24} color={colors.foreground} />
             </Pressable>
           </View>
-          <View style={styles.sleepTabsHeader}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={[styles.tabGrid, { marginBottom: 0 }]}
-              contentContainerStyle={styles.tabGridContent}
-            >
-              {sleepCollections.map((tab) => (
-                <SleepPill
-                  key={tab.id}
-                  sel={false}
-                  label={tab.label}
-                  icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                  indigo2BackgroundColor={indigo2TabsBackgroundColor}
-                  onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+        </Animated.View>
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{
-            paddingTop: fixedHeaderHeight,
-            paddingBottom: 140 + bottomPad,
-          }}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
         >
+          <View style={{ paddingTop: topPad + 2 }}>
+            <View style={styles.titleRow}>
+              <Text style={[styles.heroTitle, { color: colors.foreground }]}>
+                Dormir
+              </Text>
+              <Pressable
+                onPress={() => setSearchVisible(true)}
+                hitSlop={10}
+                style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+                accessibilityRole="button"
+                accessibilityLabel="Buscar en Dormir"
+                testID="sleep-search-button"
+              >
+                <Feather name="search" size={24} color={colors.foreground} />
+              </Pressable>
+            </View>
+            <View style={styles.sleepTabsHeader}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={[styles.tabGrid, { marginBottom: 0 }]}
+                contentContainerStyle={styles.tabGridContent}
+              >
+                {sleepCollections.map((tab) => (
+                  <SleepPill
+                    key={tab.id}
+                    sel={false}
+                    label={tab.label}
+                    icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                    onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          </View>
           <View style={{ marginTop: -3 }}>
             {sleepCollections.map((collection, index) => (
               <SessionCarousel
@@ -486,16 +469,12 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
-  fixedHeader: {
+  stickyHeader: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     zIndex: 20,
-    backgroundColor: "transparent",
-  },
-  fixedHeaderFadeOverflow: {
-    overflow: "visible",
   },
   scroll: { flex: 1 },
 
@@ -679,17 +658,12 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 10,
   },
-  compactTitleOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  compactPageTitle: {
+  stickyTitle: {
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.2,
-    textAlign: "center",
+    textAlign: "left",
   },
   sleepTabsHeader: {
     marginTop: 9,
