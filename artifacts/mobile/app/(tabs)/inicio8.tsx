@@ -2654,13 +2654,13 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <MiRutinaSection />}
+        {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginBottom={INICIO2_SECTION_GAP}
             titleMarginTop={0}
           />
         )}
-        {isInicio2 && <DailyWisdomCard />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>

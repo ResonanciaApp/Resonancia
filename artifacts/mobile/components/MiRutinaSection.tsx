@@ -521,7 +521,7 @@ export function MiRutinaSection({ style }: Props) {
         style={({ pressed }) => [
           styles.addButton,
           {
-            borderColor: "#F9F9F9",
+            borderColor: "rgba(249,249,249,0.5)",
             opacity: pressed ? 0.72 : 1,
           },
         ]}
