@@ -77,8 +77,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    gradient: ["#18264A", "#16213A", "#111827"],
-    gradientLocations: [0, 0.45, 1],
+    gradient: ["#253A73", "#243066", "#1F254D"],
+    gradientLocations: [0, 0.26, 0.65],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
     solid: "#000000",
@@ -109,9 +109,9 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         cy: 43,
         r: 45,
         stops: [
-          { offset: 0, color: "#5268C7", opacity: 0.09 },
-          { offset: 0.35, color: "#3F4F9C", opacity: 0.045 },
-          { offset: 0.72, color: "#3F4F9C", opacity: 0 },
+          { offset: 0, color: "#8296F2", opacity: 0.16 },
+          { offset: 0.35, color: "#6479D6", opacity: 0.08 },
+          { offset: 0.72, color: "#6479D6", opacity: 0 },
         ],
       },
       {
@@ -119,9 +119,9 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         cy: 58,
         r: 48,
         stops: [
-          { offset: 0, color: "#6552B8", opacity: 0.08 },
-          { offset: 0.38, color: "#493F8F", opacity: 0.04 },
-          { offset: 0.74, color: "#493F8F", opacity: 0 },
+          { offset: 0, color: "#8296F2", opacity: 0.15 },
+          { offset: 0.38, color: "#6479D6", opacity: 0.075 },
+          { offset: 0.74, color: "#6479D6", opacity: 0 },
         ],
       },
     ],
