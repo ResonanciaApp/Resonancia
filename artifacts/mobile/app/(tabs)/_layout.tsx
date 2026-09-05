@@ -171,9 +171,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const indigo2Mode = activeSceneId === "indigo2";
   const tabBarBackground =
     indigo2Mode
-      ? "#1F254D"
+      ? "#0E1124"
       : activeSceneId === "resonancia"
-        ? "#0E1124"
+        ? "#090B17"
         : "#0E0E17";
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
