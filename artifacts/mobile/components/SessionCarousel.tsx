@@ -121,7 +121,6 @@ type SessionCarouselProps = {
   titleSpacing?: number;
   description?: string;
   squareCards?: boolean;
-  cardAuthorColor?: string;
   showImageCategoryPill?: boolean;
   onViewAll?: () => void;
   viewAllColor?: string;
@@ -153,7 +152,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   titleSpacing,
   description,
   squareCards = false,
-  cardAuthorColor,
   showImageCategoryPill = false,
   onViewAll,
   viewAllColor,
@@ -205,7 +203,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalCardBackground = "rgba(181,211,255,0.057)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
-  const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
   return (
     <View style={[styles.section, style]}>
       {showHeader && (onViewAll ? (
@@ -217,13 +214,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </Pressable>
           </View>
           {description && (
-            <Text style={[styles.sectionDescription, { color: sectionDescriptionColor }]}>{description}</Text>
+            <Text style={[styles.sectionDescription, { color: viewAllAccent }]}>{description}</Text>
           )}
         </View>
       ) : description ? (
         <View style={{ marginBottom: titleSpacing ?? 17 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 4 }]}>{title}</Text>
-          <Text style={[styles.sectionDescription, { color: sectionDescriptionColor }]}>{description}</Text>
+          <Text style={[styles.sectionDescription, { color: viewAllAccent }]}>{description}</Text>
         </View>
       ) : (
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
@@ -358,21 +355,21 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   </Text>
                   {showMetaBelow && !durationInsideWithMeta ? (
                     <Text
-                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
+                      style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}
                     >
                       {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
                   ) : showCollectionBelow && s.categoryLabel ? (
                     <Text
-                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
+                      style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}
                     >
                       {s.categoryLabel}
                     </Text>
                   ) : showAuthor && authorName ? (
                     <Text
-                      style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : cardAuthorColor }]}
+                      style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}
                     >
                       {authorName}

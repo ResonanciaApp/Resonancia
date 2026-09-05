@@ -13,6 +13,8 @@ import { useCatalog } from "@/context/CatalogContext";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const CATEGORY_ID = "charlas";
 const HORIZONTAL_PAD = 14;
@@ -31,6 +33,8 @@ export function ExpandConsciousnessSection({
 }: Props) {
   const { width } = useWindowDimensions();
   const { version: catalogVersion } = useCatalog();
+  const { theme } = useSceneTheme();
+  const colors = useColors();
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const sessions = useMemo(
@@ -74,7 +78,7 @@ export function ExpandConsciousnessSection({
     >
       <View style={styles.header}>
         <Text style={styles.title}>Expande tu consciencia</Text>
-        <Text style={styles.description}>
+        <Text style={[styles.description, { color: theme.accent ?? colors.accent }]}>
           Charlas que despiertan lo verdadero en ti
         </Text>
       </View>
@@ -121,7 +125,7 @@ export function ExpandConsciousnessSection({
           showHeader={false}
         />
       ) : (
-        <Text style={styles.empty}>
+        <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>
           Próximamente en Charlas
         </Text>
       )}
@@ -148,7 +152,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
-    color: "#acaac2",
   },
   tabs: {
     paddingHorizontal: HORIZONTAL_PAD,
@@ -188,6 +191,5 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     fontFamily: "Manrope",
     fontSize: 13,
-    color: "#acaac2",
   },
 });

@@ -249,7 +249,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
                 titleOffset={10}
                 titleSpacing={17}
                 squareCards
-                cardAuthorColor="#acaac2"
                 showImageCategoryPill
                 cardVariant={id === "ambientales" ? "ambiental" : undefined}
               />

@@ -17,6 +17,7 @@ import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { useColors } from "@/hooks/useColors";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
@@ -155,7 +156,8 @@ export function RecommendedForYouSection({
   marginBottom = 0,
 }: Props) {
   const { width } = useWindowDimensions();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
+  const colors = useColors();
   const [activeCategoryId, setActiveCategoryId] = useState(
     DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
   );
@@ -209,7 +211,7 @@ export function RecommendedForYouSection({
     >
       <View style={styles.header}>
         <Text style={styles.title}>Recomendado para ti</Text>
-        <Text style={styles.description}>
+        <Text style={[styles.description, { color: theme.accent ?? colors.accent }]}>
           En base a tus preferencia y estados de ánimo.
         </Text>
       </View>
@@ -258,7 +260,7 @@ export function RecommendedForYouSection({
           showHeader={false}
         />
       ) : (
-        <Text style={styles.empty}>No hay recomendaciones disponibles.</Text>
+        <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>No hay recomendaciones disponibles.</Text>
       )}
     </View>
   );
@@ -283,7 +285,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
-    color: "#acaac2",
   },
   tabs: {
     paddingHorizontal: HORIZONTAL_PAD,
@@ -326,6 +327,5 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     fontFamily: "Manrope",
     fontSize: 13,
-    color: "#acaac2",
   },
 });

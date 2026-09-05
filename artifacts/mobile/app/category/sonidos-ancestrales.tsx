@@ -542,7 +542,6 @@ export default function SonidosAncestalesScreen() {
               titleOffset={10}
               titleSpacing={17}
               squareCards
-              cardAuthorColor="#acaac2"
               showMetaBelow
             />
           </>

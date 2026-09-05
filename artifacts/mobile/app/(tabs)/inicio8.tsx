@@ -2591,7 +2591,6 @@ export default function HomeScreen2({
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             squareCards
-            cardAuthorColor="#acaac2"
             showAuthor={false}
             showDurationBadge={false}
             hideAmbientalTitleInSquareRecent
@@ -2680,7 +2679,6 @@ export default function HomeScreen2({
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
             squareCards
-            cardAuthorColor="#acaac2"
             showAuthor={false}
             showCollectionBelow
             durationInsideWithMeta

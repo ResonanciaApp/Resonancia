@@ -387,7 +387,6 @@ export default function DescansoScreen() {
                   showAuthor={isSleepMusic}
                   showDurationBadge={!isSleepMusic}
                   hideAmbientalTitleInSquareRecent={isSleepMusic}
-                  cardAuthorColor="#acaac2"
                   onViewAll={sleepCarouselViewAllHandlers[collection.id]}
                 />
               );
