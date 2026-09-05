@@ -95,13 +95,13 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         ],
       },
       {
-        cx: 25,
+        cx: 50,
         cy: 100,
         r: 60,
         stops: [
-          { offset: 0, color: "#6946FF", opacity: 0.2 },
-          { offset: 0.3, color: "#463CAA", opacity: 0.1 },
-          { offset: 0.6, color: "#463CAA", opacity: 0 },
+          { offset: 0, color: "#5F69FF", opacity: 0.2 },
+          { offset: 0.3, color: "#4650B4", opacity: 0.1 },
+          { offset: 0.6, color: "#4650B4", opacity: 0 },
         ],
       },
       {
