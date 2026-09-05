@@ -41,6 +41,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
@@ -222,6 +223,7 @@ export function ExploreScreen({
   const [searchVisible, setSearchVisible] = useState(false);
   const titleProgress = useRef(new Animated.Value(0)).current;
   const compactHeaderRef = useRef(false);
+  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
@@ -229,8 +231,9 @@ export function ExploreScreen({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 1],
+    outputRange: [0, 0.96],
   });
+  const useDiscoverStickyStyle = isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2";
   const largeTitleOpacity = titleProgress.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
@@ -484,65 +487,72 @@ export function ExploreScreen({
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar hidden />
 
+      <View
+        style={[
+          styles.fixedHeader,
+          useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
+          { paddingTop: topPad + 2 },
+        ]}
+        onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
+      >
+        <StickyHeaderSurface
+          opacity={stickyHeaderSurfaceOpacity}
+          tint={activeTheme.gradient[0] as string}
+          showTint={!useDiscoverStickyStyle}
+          showDivider={!useDiscoverStickyStyle}
+          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
+          showBlackTint={!useDiscoverStickyStyle}
+          strongBlur={useDiscoverStickyStyle}
+          fadeBottom={useDiscoverStickyStyle}
+        />
+        <View style={styles.titleRow}>
+          <Animated.Text
+            style={[styles.pageTitle, { opacity: largeTitleOpacity }]}
+          >
+            {screenTitle}
+          </Animated.Text>
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.compactTitleOverlay, { opacity: titleProgress }]}
+          >
+            <Text style={styles.compactPageTitle}>{screenTitle}</Text>
+          </Animated.View>
+        </View>
+
+        <View style={styles.searchWrap}>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            style={[
+              styles.searchBox,
+              activeSceneId === "tibet"
+                ? styles.searchBoxTibet
+                : isIndigoThemeId(activeSceneId)
+                  ? styles.searchBoxIndigo
+                  : activeSceneId === "indigo2"
+                    ? styles.searchBoxIndigo2
+                    : null,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={`Buscar en ${screenTitle}`}
+            testID="discover-search-button"
+          >
+            <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
+            <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
+          </Pressable>
+        </View>
+      </View>
+
       <Animated.ScrollView
         style={styles.contentShift}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+        contentContainerStyle={{
+          paddingTop: fixedHeaderHeight,
+          paddingBottom: 160 + bottomPad,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        stickyHeaderIndices={[0]}
         scrollEventThrottle={16}
         onScroll={handleDiscoverScroll}
       >
-        <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              { opacity: stickyHeaderSurfaceOpacity },
-            ]}
-          >
-            <LinearGradient
-              colors={activeTheme.gradient}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-          <View style={styles.titleRow}>
-            <Animated.Text
-              style={[styles.pageTitle, { opacity: largeTitleOpacity }]}
-            >
-              {screenTitle}
-            </Animated.Text>
-            <Animated.View
-              pointerEvents="none"
-              style={[styles.compactTitleOverlay, { opacity: titleProgress }]}
-            >
-              <Text style={styles.compactPageTitle}>{screenTitle}</Text>
-            </Animated.View>
-          </View>
-
-          <View style={styles.searchWrap}>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              style={[
-                styles.searchBox,
-                activeSceneId === "tibet"
-                  ? styles.searchBoxTibet
-                  : isIndigoThemeId(activeSceneId)
-                    ? styles.searchBoxIndigo
-                    : activeSceneId === "indigo2"
-                      ? styles.searchBoxIndigo2
-                      : null,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={`Buscar en ${screenTitle}`}
-              testID="discover-search-button"
-            >
-              <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
-              <Text style={styles.searchPlaceholder}>Buscar sesiones, sonidos y guías</Text>
-            </Pressable>
-          </View>
-        </View>
-
         <View style={styles.scrollContent}>
           {featuredHoy && (
             <View style={styles.featuredMomentSection}>
@@ -823,7 +833,16 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { marginTop: -3 },
 
-  fixedHeader:  { zIndex: 10, paddingBottom: 10, overflow: "hidden" },
+  fixedHeader:  {
+    position: "absolute",
+    top: -5,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+    paddingBottom: 10,
+    backgroundColor: "transparent",
+  },
+  fixedHeaderFadeOverflow: { overflow: "visible" },
   overlayHeader: {
     position: "absolute",
     top: 0,

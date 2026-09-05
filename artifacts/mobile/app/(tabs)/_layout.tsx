@@ -107,8 +107,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = lightNeutralColors ? "#F9F9F9" : ACTIVE_COLOR;
-  const inactiveCol = inactiveColorOverride
-    ?? (lightNeutralColors ? "#F0F0F0" : tibetMode ? "#A9A9C3" : INACTIVE_COLOR);
+  const inactiveCol = inactiveColorOverride ?? "#E3F1FF";
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -301,7 +300,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                   indigo2Mode || activeSceneId === "resonancia"
                 }
                 inactiveColorOverride={
-                  activeSceneId === "resonancia" ? "#A6A6A6" : undefined
+                  "#E3F1FF"
                 }
               />
             );
