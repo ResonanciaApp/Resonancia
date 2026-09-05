@@ -33,7 +33,6 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import {
   CONTENT_CAROUSEL_GAP,
-  getContentCarouselCardWidth,
 } from "@/constants/carousel";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -114,8 +113,7 @@ function SleepPill({
 const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
-const CARD_W = getContentCarouselCardWidth(W, H_PAD);
-const SLEEP_MUSIC_CARD_W = Math.round(
+const SLEEP_CAROUSEL_CARD_W = Math.round(
   (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.85,
 );
 const SOUND_CARD_W  = 120;
@@ -369,28 +367,25 @@ export default function DescansoScreen() {
             </View>
           </View>
           <View style={{ marginTop: -3 }}>
-            {sleepCollections.map((collection, index) => {
-              const isSleepMusic = collection.id === "musica-para-dormir";
-              return (
-                <SessionCarousel
-                  key={collection.id}
-                  title={collection.label}
-                  sessions={collection.sessions}
-                  isPremium={isPremium}
-                  onPress={handleSessionTap}
-                  style={sleepCarouselStyles[index]}
-                  cardWidth={isSleepMusic ? SLEEP_MUSIC_CARD_W : CARD_W}
-                  allowOversizedCardWidth={isSleepMusic}
-                  titleSize={19}
-                  squareCards={isSleepMusic}
-                  showCardMetadata={!isSleepMusic}
-                  showAuthor={isSleepMusic}
-                  showDurationBadge
-                  hideAmbientalTitleInSquareRecent={isSleepMusic}
-                  onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-                />
-              );
-            })}
+            {sleepCollections.map((collection, index) => (
+              <SessionCarousel
+                key={collection.id}
+                title={collection.label}
+                sessions={collection.sessions}
+                isPremium={isPremium}
+                onPress={handleSessionTap}
+                style={sleepCarouselStyles[index]}
+                cardWidth={SLEEP_CAROUSEL_CARD_W}
+                allowOversizedCardWidth
+                titleSize={19}
+                squareCards
+                showCardMetadata={false}
+                showAuthor
+                showDurationBadge
+                hideAmbientalTitleInSquareRecent
+                onViewAll={sleepCarouselViewAllHandlers[collection.id]}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>
