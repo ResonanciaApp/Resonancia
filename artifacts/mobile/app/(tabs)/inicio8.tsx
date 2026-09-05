@@ -99,7 +99,6 @@ import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSe
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
-import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -2655,17 +2654,6 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <MiRutinaSection />}
-        {isInicio2 && (
-          <RecommendedForYouSection
-            selectedMoods={selectedMoods}
-            generation={recoOffset}
-            catalogStatus={catalogStatus}
-            catalogVersion={catalogVersion}
-            isPremium={isPremium}
-            onPress={handleSessionCarouselPress}
-            marginBottom={INICIO2_SECTION_GAP}
-          />
-        )}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginBottom={INICIO2_SECTION_GAP}

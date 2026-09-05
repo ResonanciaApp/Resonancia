@@ -114,6 +114,7 @@ function QuickAccessCard({
 }) {
   const scale = useRef(new Animated.Value(1)).current;
   const [isPressed, setIsPressed] = useState(false);
+  const cardHeight = (profileWide ? 44 : horizontal ? 56 : 76) + cardHeightOffset;
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -154,20 +155,24 @@ function QuickAccessCard({
           profileWide && styles.profileWideCard,
           {
             width,
-            height: (profileWide ? 44 : horizontal ? 56 : 76) + cardHeightOffset,
+            height: cardHeight,
             backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
             borderRadius: cardCornerRadius,
             ...(roundedSide === "left"
               ? {
-                  borderTopLeftRadius: 999,
-                  borderBottomLeftRadius: 999,
+                  borderTopLeftRadius: cardHeight / 2,
+                  borderBottomLeftRadius: cardHeight / 2,
+                  borderTopRightRadius: cardCornerRadius,
+                  borderBottomRightRadius: cardCornerRadius,
                 }
               : roundedSide === "right"
                 ? {
-                    borderTopRightRadius: 999,
-                    borderBottomRightRadius: 999,
+                    borderTopLeftRadius: cardCornerRadius,
+                    borderBottomLeftRadius: cardCornerRadius,
+                    borderTopRightRadius: cardHeight / 2,
+                    borderBottomRightRadius: cardHeight / 2,
                   }
                 : null),
             ...(joinedContentCorners
