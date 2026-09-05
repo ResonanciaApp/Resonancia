@@ -13,6 +13,7 @@ import {
 
 import { useDrawer } from "@/context/DrawerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -118,7 +119,7 @@ export function ToolsGrid({
 
   const pillBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"

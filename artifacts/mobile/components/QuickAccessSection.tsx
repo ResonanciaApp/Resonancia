@@ -16,6 +16,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -255,7 +256,7 @@ export function QuickAccessSection({
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? "rgba(42,40,64,0.65)"
         : activeSceneId === "indigo2"
           ? "rgba(255,255,255,0.025)"

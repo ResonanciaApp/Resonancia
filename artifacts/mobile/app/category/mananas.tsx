@@ -35,6 +35,7 @@ import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
@@ -166,7 +167,7 @@ const TABS: ActiveTab[] = ["Todos", "Audios", "Videos", "Maestros"];
 export default function MananasScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const isIndigoTheme = theme.id === "indigo" || theme.id === "indigo2";
+  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const insets = useSafeAreaInsets();
   const { history, playSession } = usePlayer();
   const { isPremium } = usePremium();

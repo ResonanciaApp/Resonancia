@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export default function HistorialScreen() {
@@ -24,7 +25,7 @@ export default function HistorialScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = insets.bottom + 24;
-  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+  const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : "rgba(255,255,255,0.12)";
 

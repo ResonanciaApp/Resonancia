@@ -13,6 +13,8 @@ import {
 } from "react-native";
 
 import { MilestoneCards } from "@/components/MilestoneCards";
+import { isIndigoThemeId } from "@/config/scene-themes";
+import type { SceneId } from "@/context/AmbientPlayerContext";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -33,7 +35,7 @@ type MenuSection = {
 };
 
 type ProfileSettingsSectionsProps = {
-  sceneId: string;
+  sceneId: SceneId;
   foreground: string;
   mutedForeground: string;
   accent: string;
@@ -50,7 +52,7 @@ export function ProfileSettingsSections({
   onLogout,
 }: ProfileSettingsSectionsProps) {
   const [milestonesOpen, setMilestonesOpen] = useState(false);
-  const isIndigo = sceneId === "indigo";
+  const isIndigo = isIndigoThemeId(sceneId);
   const isIndigo2 = sceneId === "indigo2";
   const themeAccent = isIndigo2 ? accent : isIndigo ? "#AAAAC4" : accent;
   const dividerColor = isIndigo

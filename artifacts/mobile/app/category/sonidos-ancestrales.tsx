@@ -37,6 +37,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -146,12 +147,12 @@ function Chip({
   const { theme } = useSceneTheme();
   const selectedBorderColor = theme.id === "indigo2"
     ? "rgba(255,255,255,0.8)"
-    : theme.id === "indigo"
+    : isIndigoThemeId(theme.id)
       ? "rgba(255,255,255,0.8)"
       : "transparent";
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && { borderWidth: 2, borderColor: selectedBorderColor }, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && { borderWidth: 2, borderColor: selectedBorderColor }, { opacity: pressed ? 0.7 : 1 }]}>
       {theme.id === "indigo2" && !sel && indigo2BackgroundColor && (
         <Animated.View
           pointerEvents="none"
@@ -410,7 +411,7 @@ export default function SonidosAncestalesScreen() {
   const backOverride = useBackOverride();
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
 
@@ -444,7 +445,7 @@ export default function SonidosAncestalesScreen() {
   const indigo2ChipsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
-  const isIndigoTheme = theme.id === "indigo" || theme.id === "indigo2";
+  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
@@ -640,7 +641,7 @@ export default function SonidosAncestalesScreen() {
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -691,7 +692,7 @@ export default function SonidosAncestalesScreen() {
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonoterapia"

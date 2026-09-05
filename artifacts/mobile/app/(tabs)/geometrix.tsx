@@ -104,6 +104,7 @@ import { sendHeartbeat } from "@/lib/communityApi";
 import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
@@ -4033,7 +4034,7 @@ export default function GeometrixScreen() {
   // tema activo: Índigo usa el mismo degradado del Inicio de ese tema; los
   // demás mantienen el degradado fijo tipo Tibet (pedido del usuario).
   const themeDefaultBg: [string, string, ...string[]] =
-    sceneTheme.id === "indigo"
+    isIndigoThemeId(sceneTheme.id)
       ? ([...sceneTheme.gradient] as [string, string, ...string[]])
       : (["#2D1C52", "#261F57", "#1F255A", "#1F2A62"] as [string, string, ...string[]]);
   const canvasBgColors: [string, string, ...string[]] = selectedBg
@@ -4205,20 +4206,20 @@ export default function GeometrixScreen() {
                 <Pressable
                   key={c.id}
                   onPress={() => setActiveCategory(c.id)}
-                  style={[styles.catChip, sceneTheme.id === "indigo" ? styles.catChipIndigo : null, on ? styles.catChipOn : null]}
+                  style={[styles.catChip, isIndigoThemeId(sceneTheme.id) ? styles.catChipIndigo : null, on ? styles.catChipOn : null]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`Filtrar geometrías: ${c.label}`}
                 >
                   {on && (
                     <LinearGradient
-                      colors={sceneTheme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
+                      colors={isIndigoThemeId(sceneTheme.id) ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
                       start={{ x: 0, y: 0.5 }}
                       end={{ x: 1, y: 0.5 }}
                       style={StyleSheet.absoluteFill}
                     />
                   )}
-                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null, on && sceneTheme.id === "indigo" ? styles.catChipTextIndigoOn : null]} numberOfLines={1}>
+                  <Text style={[styles.catChipText, on ? styles.catChipTextOn : null, on && isIndigoThemeId(sceneTheme.id) ? styles.catChipTextIndigoOn : null]} numberOfLines={1}>
                     {c.label}
                   </Text>
                 </Pressable>

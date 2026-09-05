@@ -24,6 +24,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import type { VideoItem } from "@/data/videos";
 
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
@@ -148,10 +149,10 @@ export function VideoScreen({ showBack = false }: Props) {
                 <Pressable
                   key={chip}
                   onPress={() => setActiveChip(chip)}
-                  style={[styles.chip, activeTheme.id === "tibet" && styles.chipTibet, activeSceneId === "indigo" && styles.chipIndigo, sel && styles.chipSel]}
+                  style={[styles.chip, activeTheme.id === "tibet" && styles.chipTibet, isIndigoThemeId(activeSceneId) && styles.chipIndigo, sel && styles.chipSel]}
                 >
-                  {sel && <LinearGradient colors={activeSceneId === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-                  <Text style={[styles.chipText, { color: sel ? (activeSceneId === "indigo" ? "#F9F9F9" : "#0D0A1E") : "#F4F4F4" }]}>
+                  {sel && <LinearGradient colors={isIndigoThemeId(activeSceneId) ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+                  <Text style={[styles.chipText, { color: sel ? (isIndigoThemeId(activeSceneId) ? "#F9F9F9" : "#0D0A1E") : "#F4F4F4" }]}>
                     {chip}
                   </Text>
                 </Pressable>

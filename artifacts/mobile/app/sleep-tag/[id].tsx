@@ -28,6 +28,7 @@ import { getSessionsByDescansoTag } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useCatalog } from "@/context/CatalogContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -55,7 +56,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
   const [stickyActive, setStickyActive] = React.useState(false);

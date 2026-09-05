@@ -29,6 +29,7 @@ import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { getListenNowButtonColors } from "@/components/GoldGradient";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
@@ -65,7 +66,7 @@ function FavPill({
         : tabId === "ambientales" ? ["#357849", "#23522F"]
           : tabId === "historias" ? ["#8F227F", "#691E5E"]
             : tabId === "charlas" ? ["#953732", "#78221E"]
-              : theme.id === "indigo" ? ["#784576", "#50326E"]
+              : isIndigoThemeId(theme.id) ? ["#784576", "#50326E"]
                 : ["#FFFFFF", "#F5F5F5"];
   const contentColor = sel ? "#F9F9F9" : "#F4F4F4";
   const selectedTextColor = sel ? "#F9F9F9" : "#F4F4F4";
@@ -77,7 +78,7 @@ function FavPill({
           style={[
             styles.pill,
             theme.id === "tibet" && styles.pillTibet,
-            theme.id === "indigo" && styles.pillIndigo,
+            isIndigoThemeId(theme.id) && styles.pillIndigo,
             !sel && theme.id === "indigo2" && styles.pillIndigo2Inactive,
             !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
               backgroundColor: indigo2BackgroundColor,
@@ -122,7 +123,7 @@ export default function FavoritosTodosScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+  const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : "rgba(255,255,255,0.12)";
 
@@ -188,7 +189,7 @@ export default function FavoritosTodosScreen() {
         <View
           style={[
             styles.stickyHeader,
-            (activeSceneId === "indigo" || activeSceneId === "indigo2") && styles.stickyHeaderFade,
+            (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && styles.stickyHeaderFade,
             { paddingTop: topPad + 8 },
           ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
@@ -196,12 +197,12 @@ export default function FavoritosTodosScreen() {
           <StickyHeaderSurface
             opacity={stickySurfaceOpacity}
             tint={sceneTheme.gradient[0] as string}
-            showTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            showDivider={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            blurIntensity={activeSceneId === "indigo" || activeSceneId === "indigo2" ? 85 : undefined}
-            showBlackTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            strongBlur={activeSceneId === "indigo" || activeSceneId === "indigo2"}
-            fadeBottom={activeSceneId === "indigo" || activeSceneId === "indigo2"}
+            showTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            showDivider={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            blurIntensity={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2" ? 85 : undefined}
+            showBlackTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            strongBlur={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
+            fadeBottom={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
           />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable

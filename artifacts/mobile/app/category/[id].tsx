@@ -31,6 +31,7 @@ import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -53,7 +54,7 @@ function Chip({
   const { theme } = useSceneTheme();
   const selectedBorderColor = theme.id === "indigo2"
     ? "rgba(255,255,255,0.8)"
-    : theme.id === "indigo"
+    : isIndigoThemeId(theme.id)
       ? "rgba(255,255,255,0.8)"
       : "transparent";
 
@@ -66,7 +67,7 @@ function Chip({
         style={[
           styles.chip,
           theme.id === "tibet" && styles.chipTibet,
-          theme.id === "indigo" && styles.chipIndigo,
+          isIndigoThemeId(theme.id) && styles.chipIndigo,
           !selected && theme.id === "indigo2" && styles.chipIndigo2Inactive,
           !selected && theme.id === "indigo2" && indigo2BackgroundColor && {
             backgroundColor: indigo2BackgroundColor,
@@ -181,11 +182,11 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
-  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
   const title = category?.title ?? "Categoría";
@@ -317,7 +318,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -378,7 +379,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${title}`}

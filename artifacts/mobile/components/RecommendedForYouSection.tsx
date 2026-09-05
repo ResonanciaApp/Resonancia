@@ -16,6 +16,7 @@ import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
@@ -196,7 +197,7 @@ export function RecommendedForYouSection({
   const discoverCardWidth = getContentCarouselCardWidth(width, HORIZONTAL_PAD);
   const tabBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"

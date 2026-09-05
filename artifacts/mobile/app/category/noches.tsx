@@ -27,6 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD   = 14;
 const { width: W } = Dimensions.get("window");
@@ -262,7 +263,7 @@ export default function NochesScreen() {
   const indigo2ChipsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
-  const isIndigoTheme = theme.id === "indigo" || theme.id === "indigo2";
+  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],

@@ -24,6 +24,7 @@ import {
 } from "@/context/RutinaContext";
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
@@ -54,7 +55,7 @@ export default function CrearRutinaScreen() {
   const suggestionSurface =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
 

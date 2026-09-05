@@ -12,6 +12,7 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 type Props = {
   sessions: Session[];
@@ -64,13 +65,13 @@ export function DailyRecommendationsSection({
   const sleepTabSurface =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
+      : isIndigoThemeId(theme.id)
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
   const refreshButtonBackground =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
+      : isIndigoThemeId(theme.id)
         ? "rgba(42,40,64,0.65)"
         : theme.id === "indigo2"
           ? "rgba(255,255,255,0.025)"

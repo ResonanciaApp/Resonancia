@@ -10,6 +10,7 @@ import { Image } from "expo-image";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -29,7 +30,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
       style={[
         styles.card,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
-        activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+        isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(42,40,64,0.65)" },
         activeSceneId === "indigo2" && { backgroundColor: "rgba(255,255,255,0.025)" },
       ]}
     >

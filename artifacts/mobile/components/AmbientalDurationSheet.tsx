@@ -12,6 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -190,7 +191,7 @@ export function AmbientalDurationSheet({
   const sleepTabSurface =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
+      : isIndigoThemeId(theme.id)
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
   const enterCustomMode = () => {

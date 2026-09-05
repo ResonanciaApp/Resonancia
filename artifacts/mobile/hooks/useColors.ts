@@ -1,6 +1,7 @@
 import { useColorScheme } from "react-native";
 
 import colors from "@/constants/colors";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 /**
@@ -16,7 +17,7 @@ export function useColors() {
 
   const { activeSceneId, theme } = useSceneTheme();
   const primary =
-    activeSceneId === "tibet" || activeSceneId === "indigo" || activeSceneId === "indigo2" ? "#ACACC1" : palette.primary;
+    activeSceneId === "tibet" || isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2" ? "#ACACC1" : palette.primary;
   const accent = theme.accent ?? palette.accent;
 
   return { ...palette, primary, accent, radius: colors.radius };

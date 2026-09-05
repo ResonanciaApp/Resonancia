@@ -38,6 +38,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -100,13 +101,13 @@ function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; 
   const { theme } = useSceneTheme();
   const selectedBorderColor = theme.id === "indigo2"
     ? "rgba(255,255,255,0.8)"
-    : theme.id === "indigo"
+    : isIndigoThemeId(theme.id)
       ? "rgba(255,255,255,0.8)"
       : "transparent";
 
   return (
     <Pressable onPress={onPress} style={({pressed})=>({opacity:pressed?0.7:1})}>
-      <Animated.View style={[styles.chip, theme.id === "tibet" && styles.chipTibet, theme.id === "indigo" && styles.chipIndigo, !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive, !sel && theme.id === "indigo2" && indigo2BackgroundColor && { backgroundColor: indigo2BackgroundColor }, sel && { borderWidth: 2, borderColor: selectedBorderColor }]}>
+      <Animated.View style={[styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive, !sel && theme.id === "indigo2" && indigo2BackgroundColor && { backgroundColor: indigo2BackgroundColor }, sel && { borderWidth: 2, borderColor: selectedBorderColor }]}>
         <Text style={styles.chipText}>{label}</Text>
       </Animated.View>
     </Pressable>
@@ -284,7 +285,7 @@ export default function MusicaSonidosScreen() {
   const backOverride = useBackOverride();
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
 
@@ -334,7 +335,7 @@ export default function MusicaSonidosScreen() {
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
-  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -506,7 +507,7 @@ export default function MusicaSonidosScreen() {
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -578,7 +579,7 @@ export default function MusicaSonidosScreen() {
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Música"

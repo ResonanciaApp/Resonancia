@@ -1,5 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
+import type { SceneId } from "@/context/AmbientPlayerContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
@@ -67,9 +69,9 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-function getLibraryTabSurface(sceneId: string): string {
+function getLibraryTabSurface(sceneId: SceneId): string {
   if (sceneId === "tibet") return "rgba(0,0,0,0.15)";
-  if (sceneId === "indigo") return "rgba(42,40,64,0.65)";
+  if (isIndigoThemeId(sceneId)) return "rgba(42,40,64,0.65)";
   return "rgba(255,255,255,0.05)";
 }
 
@@ -179,7 +181,7 @@ function LibChip({
           style={[
             styles.chip,
             theme.id === "tibet" && styles.chipTibet,
-            theme.id === "indigo" && styles.chipIndigo,
+            isIndigoThemeId(theme.id) && styles.chipIndigo,
             !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive,
             !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
               backgroundColor: indigo2BackgroundColor,
@@ -190,7 +192,7 @@ function LibChip({
           ]}
         >
           <Feather name={icon} size={22} color={contentColor} />
-          <Text style={[styles.chipText, sel && styles.chipTextSel, sel && theme.id === "indigo" && styles.chipTextIndigoSel]} numberOfLines={1}>
+          <Text style={[styles.chipText, sel && styles.chipTextSel, sel && isIndigoThemeId(theme.id) && styles.chipTextIndigoSel]} numberOfLines={1}>
             {label}
           </Text>
         </Animated.View>
@@ -1938,11 +1940,11 @@ export function BibliotecaScreen({
       <View
         style={[
           styles.stickyHeader,
-          (activeSceneId === "indigo" || activeSceneId === "indigo2") && styles.stickyHeaderFade,
+          (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && styles.stickyHeaderFade,
           { paddingTop: embedded ? 0 : topPad - 34 },
         ]}
       >
-        {(activeSceneId === "indigo" || activeSceneId === "indigo2") && (
+        {(isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && (
           <StickyHeaderSurface
             opacity={stickyHeaderSurfaceOpacity}
             tint={sceneTheme.gradient[0] as string}
@@ -1973,7 +1975,7 @@ export function BibliotecaScreen({
           />
         </View>
 
-        {!embedded && activeSceneId !== "indigo" && activeSceneId !== "indigo2" && (
+        {!embedded && !isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
           <LinearGradient
             colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
             style={styles.stickyHeaderShadow}

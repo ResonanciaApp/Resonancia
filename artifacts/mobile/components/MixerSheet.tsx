@@ -55,6 +55,7 @@ import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { InmersivoContent } from "@/components/InmersivoMixerModal";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
@@ -394,7 +395,7 @@ export function MixerSheet() {
   const sleepTabBackground =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
+      : isIndigoThemeId(theme.id)
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
 

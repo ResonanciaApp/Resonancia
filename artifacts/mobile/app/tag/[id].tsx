@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -93,7 +94,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
   const inactiveFilterBackground =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
-      : theme.id === "indigo"
+      : isIndigoThemeId(theme.id)
         ? "rgba(42,40,64,0.65)"
         : "rgba(255,255,255,0.05)";
   const inactiveFilterBorder =

@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -72,7 +73,7 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
   const sheetSolid =
     activeSceneId === "tibet"
       ? ((theme.gradient[2] ?? "#2d4081") as string)
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? (theme.gradient[theme.gradient.length - 1] as string)
         : null;
   const sheetGradient = sheetSolid ? ([sheetSolid, sheetSolid] as [string, string]) : theme.gradient;

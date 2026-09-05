@@ -27,6 +27,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import {
@@ -94,7 +95,7 @@ function CollectionPill({
         style={[
           styles.pill,
           theme.id === "tibet" && styles.pillTibet,
-          theme.id === "indigo" && styles.pillIndigo,
+          isIndigoThemeId(theme.id) && styles.pillIndigo,
           theme.id === "indigo2" && styles.pillIndigo2,
           { transform: [{ scale }] },
         ]}
@@ -130,7 +131,7 @@ export default function SonidosScreen() {
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const indigoSurface = theme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
+  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(42,40,64,0.65)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(W)).current;
@@ -144,7 +145,7 @@ export default function SonidosScreen() {
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
-  const useDiscoverStickyStyle = theme.id === "indigo" || theme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };

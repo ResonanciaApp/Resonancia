@@ -21,6 +21,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { SOUNDS, hasSoundFile, type MixSound, type SoundCategoryId } from "@/data/sounds";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
 
 /** Sonidos que realmente tienen audio (bundle o remoto) */
@@ -454,7 +455,7 @@ export function AmbientSoundPickerSheet({
               styles.controlesPanel,
               { paddingBottom: bottomPad + 16 },
               sceneTheme.id === "tibet" && { backgroundColor: (sceneTheme.gradient[2] ?? themeBg) as string },
-              sceneTheme.id === "indigo" && { backgroundColor: themeBg },
+              isIndigoThemeId(sceneTheme.id) && { backgroundColor: themeBg },
             ]}
           >
             <Text style={styles.controlesTitulo}>Controles</Text>

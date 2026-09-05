@@ -28,6 +28,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -94,7 +95,7 @@ function SleepPill({
         style={[
           styles.sleepPill,
           theme.id === "tibet" && styles.sleepPillTibet,
-          theme.id === "indigo" && styles.sleepPillIndigo,
+          isIndigoThemeId(theme.id) && styles.sleepPillIndigo,
           !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
           !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
             backgroundColor: indigo2BackgroundColor,
@@ -126,7 +127,7 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;
-  const indigoSurface = sceneTheme.id === "indigo" ? "rgba(42,40,64,0.65)" : undefined;
+  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(42,40,64,0.65)" : undefined;
 
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
@@ -143,7 +144,7 @@ export default function DescansoScreen() {
     inputRange: [0, 1],
     outputRange: ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.075)"],
   });
-  const useDiscoverStickyStyle = sceneTheme.id === "indigo" || sceneTheme.id === "indigo2";
+  const useDiscoverStickyStyle = isIndigoThemeId(sceneTheme.id) || sceneTheme.id === "indigo2";
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };

@@ -12,6 +12,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CATEGORIES,
   type ContentCategoryDefinition,
@@ -186,11 +187,11 @@ export function ContentCategoryGrid({
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo" && isDiscoverGrid
+    : isIndigoThemeId(activeSceneId) && isDiscoverGrid
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2" && isDiscoverGrid
         ? "rgba(255,255,255,0.025)"
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? "rgba(255,255,255,0.04)"
         : CARD_BG;
   const visibleCategories = CONTENT_CATEGORIES.filter(

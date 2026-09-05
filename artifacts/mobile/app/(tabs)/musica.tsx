@@ -31,6 +31,7 @@ import { useSaveEvent } from "@/context/SaveEventContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   type MixSound,
@@ -193,7 +194,7 @@ const PillTab = memo(function PillTab({
       style={({ pressed }) => [
         styles.pillTab,
         theme.id === "tibet" && styles.pillTabTibet,
-        theme.id === "indigo" && styles.pillTabIndigo,
+        isIndigoThemeId(theme.id) && styles.pillTabIndigo,
         sel && {
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.8)",
@@ -785,7 +786,7 @@ export default function MezcladorScreen() {
                     bgColor={
                       theme.id === "tibet"
                         ? "rgba(0,0,0,0.15)"
-                        : theme.id === "indigo"
+                        : isIndigoThemeId(theme.id)
                           ? "rgba(42,40,64,0.65)"
                           : "rgba(255,255,255,0.05)"
                     }

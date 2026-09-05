@@ -20,6 +20,7 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -118,7 +119,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
   const ambientalCardBackground =
-    theme.id === "indigo"
+    isIndigoThemeId(theme.id)
       ? "rgba(42,40,64,0.65)"
       : theme.id === "indigo2"
         ? "rgba(255,255,255,0.025)"

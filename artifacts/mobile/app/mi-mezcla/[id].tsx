@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
@@ -252,10 +253,10 @@ export default function MiMezclaScreen() {
   const [pickerVisible, setPickerVisible] = useState(false);
   const profileBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : "rgba(255,255,255,0.05)";
-  const listenNowBtnColors: [string, string, ...string[]] = activeSceneId === "indigo"
+  const listenNowBtnColors: [string, string, ...string[]] = isIndigoThemeId(activeSceneId)
     ? ["#784576", "#50326E"]
     : ["#F9F9F9", "#F9F9F9"];
 
@@ -414,7 +415,7 @@ export default function MiMezclaScreen() {
           <LinearGradient
             colors={listenNowBtnColors}
             start={{ x: 0, y: 0 }}
-            end={{ x: activeSceneId === "indigo" ? 1 : 0, y: activeSceneId === "indigo" ? 0 : 1 }}
+            end={{ x: isIndigoThemeId(activeSceneId) ? 1 : 0, y: isIndigoThemeId(activeSceneId) ? 0 : 1 }}
             style={StyleSheet.absoluteFill}
           />
           <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#F9F9F9" />

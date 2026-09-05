@@ -7,6 +7,7 @@ import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -217,7 +218,7 @@ export function HistorialCalendar({
   const { activeSceneId } = useSceneTheme();
   const calendarAccent = activeSceneId === "indigo2" ? colors.accent : colors.mutedForeground;
   const { history, statEvents, isFavorite, toggleFavorite, playSession } = usePlayer();
-  const calendarBackground = activeSceneId === "indigo"
+  const calendarBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"

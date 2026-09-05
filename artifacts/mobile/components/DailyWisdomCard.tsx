@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { getDailyWisdomQuote } from "@/data/dailyWisdomQuotes";
 import { useColors } from "@/hooks/useColors";
 
@@ -26,7 +27,7 @@ export function DailyWisdomCard() {
     <View
       style={[
         styles.card,
-        theme.id === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+        isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
       ]}
       testID="inicio2-daily-wisdom"
     >

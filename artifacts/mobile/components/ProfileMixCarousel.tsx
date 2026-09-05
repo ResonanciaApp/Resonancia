@@ -8,6 +8,7 @@ import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { PressScale } from "@/components/PressScale";
@@ -31,7 +32,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const accent = theme.accent ?? colors.accent;
   const cardBackground = theme.id === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : theme.id === "indigo"
+    : isIndigoThemeId(theme.id)
       ? "rgba(42,40,64,0.65)"
       : theme.id === "indigo2"
         ? "rgba(255,255,255,0.025)"

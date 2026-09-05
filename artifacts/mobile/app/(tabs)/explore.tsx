@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
+import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -147,7 +148,7 @@ function DiscoverPill({
 }: {
   label: string;
   icon: DiscoverIconName;
-  sceneId: string;
+  sceneId: SceneTheme["id"];
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
@@ -184,7 +185,7 @@ function DiscoverPill({
         style={[
           styles.discoverPill,
           sceneId === "tibet" && styles.discoverPillTibet,
-          sceneId === "indigo" && styles.discoverPillIndigo,
+          isIndigoThemeId(sceneId) && styles.discoverPillIndigo,
           sceneId === "indigo2" && styles.discoverPillIndigo2,
           { transform: [{ scale }] },
         ]}
@@ -478,7 +479,7 @@ export function ExploreScreen({
                 styles.searchBox,
                 activeSceneId === "tibet"
                   ? styles.searchBoxTibet
-                  : activeSceneId === "indigo"
+                  : isIndigoThemeId(activeSceneId)
                     ? styles.searchBoxIndigo
                     : activeSceneId === "indigo2"
                       ? styles.searchBoxIndigo2
@@ -598,7 +599,7 @@ export function ExploreScreen({
                       backgroundColor:
                         activeSceneId === "tibet"
                           ? "rgba(0,0,0,0.15)"
-                          : activeSceneId === "indigo"
+                          : isIndigoThemeId(activeSceneId)
                             ? "rgba(42,40,64,0.65)"
                             : activeSceneId === "indigo2"
                               ? "rgba(255,255,255,0.025)"
@@ -656,7 +657,7 @@ export function ExploreScreen({
                 styles.themeViewAllButton,
                 activeSceneId === "tibet"
                   ? styles.searchBoxTibet
-                  : activeSceneId === "indigo"
+                  : isIndigoThemeId(activeSceneId)
                     ? styles.searchBoxIndigo
                     : activeSceneId === "indigo2"
                       ? styles.searchBoxIndigo2

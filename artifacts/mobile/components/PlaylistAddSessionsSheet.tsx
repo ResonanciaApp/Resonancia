@@ -48,6 +48,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { AUDIO_MAP } from "@/config/audio-map";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
@@ -472,7 +473,7 @@ export function PlaylistAddSessionsSheet({
                       ? styles.tabChipActive
                       : (theme.id === "tibet"
                         ? styles.tabChipInactiveTibet
-                        : theme.id === "indigo"
+                        : isIndigoThemeId(theme.id)
                           ? styles.tabChipInactiveIndigo
                           : null),
                   { opacity: pressed ? 0.8 : 1 },
@@ -481,7 +482,7 @@ export function PlaylistAddSessionsSheet({
               >
                 {active && (
                     <LinearGradient
-                      colors={theme.id === "indigo" ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
+                      colors={isIndigoThemeId(theme.id) ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]}
                       start={{ x: 0, y: 0.5 }}
                       end={{ x: 1, y: 0.5 }}
                       style={StyleSheet.absoluteFill}
@@ -491,7 +492,7 @@ export function PlaylistAddSessionsSheet({
                     style={[
                       styles.tabText,
                       active && styles.tabTextActive,
-                      active && theme.id === "indigo" && styles.tabTextIndigoActive,
+                      active && isIndigoThemeId(theme.id) && styles.tabTextIndigoActive,
                     ]}
                   >
                     {tab}

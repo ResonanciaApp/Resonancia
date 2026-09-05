@@ -49,6 +49,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
@@ -409,12 +410,12 @@ export function ProfileScreenBase({
   const { currentStreak, weekFlags, todayIndex } = useStreak();
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
         : "rgba(255,255,255,0.05)";
-  const libraryHeaderButtonBackground = activeSceneId === "indigo"
+  const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
@@ -1088,7 +1089,7 @@ export function ProfileScreenBase({
         style={[
           styles.stickyHeader,
           dedicated && styles.stickyHeaderDedicatedOverlay,
-          dedicated && (activeSceneId === "indigo" || activeSceneId === "indigo2") &&
+          dedicated && (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") &&
             styles.stickyHeaderFadeOverflow,
           {
             paddingTop: asTab ? topPad + 8 : topPad + 2,
@@ -1102,15 +1103,15 @@ export function ProfileScreenBase({
               outputRange: [0, 0.96],
             })}
             tint={activeTheme.gradient[0] as string}
-            showTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            showDivider={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            blurIntensity={activeSceneId === "indigo" || activeSceneId === "indigo2" ? 85 : undefined}
-            showBlackTint={activeSceneId !== "indigo" && activeSceneId !== "indigo2"}
-            strongBlur={activeSceneId === "indigo" || activeSceneId === "indigo2"}
-            fadeBottom={activeSceneId === "indigo" || activeSceneId === "indigo2"}
+            showTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            showDivider={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            blurIntensity={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2" ? 85 : undefined}
+            showBlackTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
+            strongBlur={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
+            fadeBottom={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
           />
         )}
-        {!dedicated && activeSceneId !== "indigo" && activeSceneId !== "indigo2" && (
+        {!dedicated && !isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
           <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         )}
         <View style={[

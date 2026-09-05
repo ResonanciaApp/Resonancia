@@ -62,6 +62,7 @@ import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
@@ -1510,7 +1511,7 @@ export default function HomeScreen2({
   const emotionWidgetBackground =
     activeSceneId === "tibet"
       ? "#1A2453"
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? "#212033"
         : activeSceneId === "indigo2"
           ? activeTheme.solid
@@ -1518,16 +1519,16 @@ export default function HomeScreen2({
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
-  const durationPillBg = activeSceneId === "indigo"
+  const durationPillBg = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : activeSceneId === "indigo2"
       ? "rgba(255,255,255,0.025)"
       : cardBg;
   const quickAccessBg =
-    activeSceneId === "indigo" || activeSceneId === "indigo2"
+    isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"
       ? durationPillBg
       : "rgba(255,255,255,0.025)";
-  const recommendationSurfaceBg = activeSceneId === "indigo"
+  const recommendationSurfaceBg = isIndigoThemeId(activeSceneId)
     ? "rgba(42,40,64,0.65)"
     : cardBg;
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
@@ -2251,7 +2252,7 @@ export default function HomeScreen2({
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{
-              backgroundColor: activeSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
+              backgroundColor: isIndigoThemeId(activeSceneId) ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
               borderRadius: 20,
               height: 36,
               paddingHorizontal: 10,

@@ -32,6 +32,7 @@ import { getMixImage } from "@/config/mix-images";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useAuth } from "@/context/AuthContext";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
@@ -246,7 +247,7 @@ export function MixRow({
       style={({ pressed }) => [
         styles.row,
         activeSceneId === "tibet" && { backgroundColor: "rgba(0,0,0,0.15)" },
-        activeSceneId === "indigo" && { backgroundColor: "rgba(42,40,64,0.65)" },
+        isIndigoThemeId(activeSceneId) && { backgroundColor: "rgba(42,40,64,0.65)" },
         { opacity: pressed ? 0.6 : 1 },
       ]}
     >

@@ -75,3 +75,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
 export const DEFAULT_THEME_ID: SceneId = "tibet";
 
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
+
+/** Resonancia hereda exactamente las reglas visuales especiales de Índigo. */
+export function isIndigoThemeId(id: SceneId): boolean {
+  return id === "indigo" || id === "resonancia";
+}

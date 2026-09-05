@@ -22,6 +22,7 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 export default function ProgresoScreen() {
   const colors = useColors();
@@ -37,7 +38,7 @@ export default function ProgresoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"

@@ -37,6 +37,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { type MixFolder, type MixPreset, useMixer } from "@/context/MixerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
@@ -124,7 +125,7 @@ export function MixActionsSheet({
   const sheetSolid =
     activeSceneId === "tibet"
       ? ((theme.gradient[2] ?? "#2d4081") as string)
-      : activeSceneId === "indigo"
+      : isIndigoThemeId(activeSceneId)
         ? (theme.gradient[theme.gradient.length - 1] as string)
         : null;
   const sheetGradient = sheetSolid ? ([sheetSolid, sheetSolid] as [string, string]) : theme.gradient;

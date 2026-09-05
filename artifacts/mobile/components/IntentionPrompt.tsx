@@ -13,6 +13,7 @@ import {
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useIntencion } from "@/context/IntencionContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
   const { savedEntries, favorites } = useIntencion();
@@ -21,7 +22,7 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
   const cursorOpacity = useRef(new Animated.Value(1)).current;
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
-    : activeSceneId === "indigo"
+    : isIndigoThemeId(activeSceneId)
       ? "rgba(42,40,64,0.65)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
