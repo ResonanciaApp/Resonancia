@@ -176,12 +176,15 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         ? applyBrightSat(theme.gradient[0])
         : theme.gradient[0];
   const isSleepRoute = state.routes[state.index]?.name === "descanzo";
+  const sleepTabBarBackground = activeSceneId === "resonancia"
+    ? "#06030F"
+    : "#0D0C11";
   const sleepBackgroundProgress = useRef(
     new Animated.Value(isSleepRoute ? 1 : 0),
   ).current;
   const animatedTabBarBackground = sleepBackgroundProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [tabBarBackground, "#0D0C11"],
+    outputRange: [tabBarBackground, sleepTabBarBackground],
   });
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
