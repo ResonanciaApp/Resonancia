@@ -1273,7 +1273,10 @@ function Inicio2HeroStatic({
     >
       <View
         pointerEvents="none"
-        style={[StyleSheet.absoluteFill, styles.inicio2HeroSliderClip]}
+        style={[
+          styles.inicio2HeroStaticImageFrame,
+          { top: topInset + 66 },
+        ]}
       >
         <Image
           source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
@@ -1379,15 +1382,19 @@ function Inicio2HeroStatic({
 
       <View
         pointerEvents="box-none"
-        style={[styles.inicio2HeroCopy, { transform: [{ translateY: 15 }] }]}
+        style={[
+          styles.inicio2HeroStaticCopy,
+          { top: topInset + 66 },
+        ]}
       >
-        <Text style={styles.inicio2HeroTitle}>
+        <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
           Aprendamos a conectar con lo esencial
         </Text>
         <Pressable
           onPress={() => {}}
           style={({ pressed }) => [
             styles.inicio2HeroActionButton,
+            styles.inicio2HeroStaticActionButton,
             { opacity: pressed ? 0.82 : 1 },
           ]}
           accessibilityRole="button"
@@ -2913,6 +2920,14 @@ const styles = StyleSheet.create({
   inicio2HeroSliderClip: {
     overflow: "hidden",
   },
+  inicio2HeroStaticImageFrame: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    bottom: 18,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
   inicio2HeroImage: {
     ...StyleSheet.absoluteFillObject,
     width: "106%",
@@ -3060,6 +3075,17 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 24,
   },
+  inicio2HeroStaticCopy: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    bottom: 18,
+    zIndex: 10,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 20,
+  },
   inicio2HeroTitle: {
     fontFamily: "Manrope",
     fontSize: 22,
@@ -3071,6 +3097,12 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
     transform: [{ translateY: 6 }],
+  },
+  inicio2HeroStaticTitle: {
+    maxWidth: "76%",
+    fontSize: 18,
+    lineHeight: 23,
+    transform: [],
   },
   inicio2HeroCategory: {
     marginBottom: 10,
@@ -3087,6 +3119,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "rgba(249,249,249,0.5)",
     transform: [{ translateY: 15 }],
+  },
+  inicio2HeroStaticActionButton: {
+    marginTop: 14,
+    minWidth: 104,
+    paddingHorizontal: 18,
+    paddingVertical: 4,
+    transform: [],
   },
   inicio2HeroActionButtonText: {
     fontFamily: "Manrope",
