@@ -108,7 +108,7 @@ const MEMBERSHIP_PLANS = [
   {
     id: "premium",
     name: "Tu Premium",
-    eyebrow: "Gestiona tu suscripción y descubre tus beneficios de Resonancia Premium",
+    eyebrow: "Gestiona tu suscripción y beneficios",
     icon: "star" as const,
     colors: MEMBERSHIP_AURORA.premium,
     benefits: [
@@ -119,7 +119,7 @@ const MEMBERSHIP_PLANS = [
   },
   {
     id: "plus",
-    name: "Desbloquea Premium Plus",
+    name: "Usuario Premium Plus",
     eyebrow: "Lleva tu experiencia al siguiente nivel",
     icon: "diamond" as const,
     colors: MEMBERSHIP_AURORA.plus,
@@ -131,9 +131,7 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
-// Premium Plus queda configurado para una futura reactivación, pero por ahora
-// Perfil muestra únicamente el plan Premium.
-const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id === "premium");
+const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS;
 
 function ProfileMembershipModules({
   secondaryTextColor,
@@ -181,7 +179,10 @@ function ProfileMembershipModules({
                   <Text style={[styles.membershipPlanName, { color: plan.colors.accent }]}>
                     {plan.name}
                   </Text>
-                  <Text style={[styles.membershipPlanEyebrow, secondaryTextColor && { color: secondaryTextColor }]}>
+                  <Text
+                    style={[styles.membershipPlanEyebrow, secondaryTextColor && { color: secondaryTextColor }]}
+                    numberOfLines={1}
+                  >
                     {plan.eyebrow}
                   </Text>
                 </View>
@@ -1215,11 +1216,6 @@ export function ProfileScreenBase({
                     <Feather name="map-pin" size={12} color={secondaryAccent} />
                     <Text style={[styles.locationText, { color: secondaryAccent }]}>{location}</Text>
                   </View>
-                ) : null}
-                {description.trim() ? (
-                  <Text style={[styles.bioText, styles.bioTextLeft, { color: secondaryAccent }]}>
-                    {description.trim()}
-                  </Text>
                 ) : null}
               </Pressable>
               <Pressable

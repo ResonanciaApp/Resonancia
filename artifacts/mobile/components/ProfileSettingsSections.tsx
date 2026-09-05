@@ -159,7 +159,7 @@ export function ProfileSettingsSections({
                     style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
                   >
                     <View style={styles.iconBox}>
-                      <Feather name={row.icon} size={21} color={row.accent ? "#D8B56A" : themeAccent} />
+                      <Feather name={row.icon} size={21} color={row.accent ? "#D8B56A" : "#F9F9F9"} />
                     </View>
                     <View style={styles.rowCopy}>
                       <Text style={[styles.rowLabel, { color: rowColor }]}>{row.label}</Text>
