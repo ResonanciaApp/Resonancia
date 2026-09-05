@@ -33,7 +33,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { startOfWeek, dayKey } from "@/utils/stats";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
   visible: boolean;
@@ -129,6 +129,14 @@ export function MoodPickerSheet({
   );
   const currentMood = selectedMoods[surveyIndex];
   const currentAnswer = currentMood ? answers[currentMood.id] : undefined;
+  const themeAccent = theme.accent ?? colors.light.accent;
+  const themeCardBackground = theme.id === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : theme.id === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : theme.id === "indigo2"
+        ? "rgba(255,255,255,0.025)"
+        : "rgba(255,255,255,0.05)";
   const recommendations = useMemo(
     () => getRecommendations(selected),
     [selected, catalogVersion],
@@ -327,12 +335,14 @@ export function MoodPickerSheet({
               contentContainerStyle={[styles.content, { paddingBottom: bottomPad + 28 }]}
             >
               <Text style={styles.title}>¿Por qué te sientes de esta manera?</Text>
-              <Text style={styles.subtitle}>Depende de ti si quieres compartir esto</Text>
+              <Text style={[styles.subtitle, { color: themeAccent }]}>
+                Depende de ti si quieres compartir esto
+              </Text>
               <View style={styles.activeMoodPill}>
                 <Text style={styles.activeMoodEmoji}>{currentMood.emoji}</Text>
                 <Text style={styles.activeMoodLabel}>{currentMood.label}</Text>
               </View>
-              <View style={styles.optionsCard}>
+              <View style={[styles.optionsCard, { backgroundColor: themeCardBackground }]}>
                 {MOOD_SURVEY_OPTIONS[currentMood.id].map((option, index) => {
                   const isSelected = currentAnswer === option.id;
                   return (
