@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useStreak } from "@/hooks/useStreak";
 import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeMaxStreak } from "@/utils/stats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
@@ -341,8 +341,8 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { maxStreak } = useStreak();
   const todayKey = useDayRollover();
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -358,21 +358,27 @@ export function ProfileScreenBase({
   const personalStats = useMemo(() => {
     const rangeStart = new Date();
     rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - 29);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
     const rangeStartTime = rangeStart.getTime();
     const now = Date.now();
     let totalMinutes = 0;
     let completedSessions = 0;
+    const rangeEvents = [];
 
     for (const event of statEvents) {
       const playedAt = new Date(event.playedAt).getTime();
       if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      rangeEvents.push(event);
       totalMinutes += event.minutes;
       if (event.completed === true) completedSessions += 1;
     }
 
-    return { totalMinutes: Math.round(totalMinutes), completedSessions };
-  }, [statEvents, todayKey]);
+    return {
+      totalMinutes: Math.round(totalMinutes),
+      completedSessions,
+      maxStreak: computeMaxStreak(rangeEvents),
+    };
+  }, [statEvents, statsRangeDays, todayKey]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -1248,9 +1254,40 @@ export function ProfileScreenBase({
                 },
               ]}
             >
-              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                Estadísticas personales
-              </Text>
+              <View style={styles.personalStatsHeader}>
+                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                  Estadísticas personales
+                </Text>
+                <View style={styles.personalStatsRange}>
+                  {([7, 30, 90] as const).map((days) => {
+                    const selected = statsRangeDays === days;
+                    return (
+                      <Pressable
+                        key={days}
+                        onPress={() => setStatsRangeDays(days)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        accessibilityLabel={`Mostrar estadísticas de ${days} días`}
+                        style={[
+                          styles.personalStatsRangeButton,
+                          {
+                            backgroundColor: selected ? "#F9F9F9" : "transparent",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.personalStatsRangeText,
+                            { color: selected ? "#0E0E17" : secondaryAccent },
+                          ]}
+                        >
+                          {days}D
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
                   <MaterialCommunityIcons name="spa" size={22} color="#F9F9F9" />
@@ -1271,7 +1308,7 @@ export function ProfileScreenBase({
                 <View style={styles.personalStatItem}>
                   <Feather name="flag" size={20} color="#F9F9F9" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {maxStreak} {maxStreak === 1 ? "día" : "días"}
+                    {personalStats.maxStreak} {personalStats.maxStreak === 1 ? "día" : "días"}
                   </Text>
                   <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>RACHA{"\n"}MÁXIMA</Text>
                 </View>
@@ -2193,6 +2230,31 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
+  personalStatsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  personalStatsRange: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  personalStatsRangeButton: {
+    minWidth: 34,
+    height: 26,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  personalStatsRangeText: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
+  },
   personalStatsValues: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -2212,7 +2274,7 @@ const styles = StyleSheet.create({
   },
   personalStatValue: {
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: "600",
   },
   personalStatLabel: {
