@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
   },
   tabChipInactiveIndigo: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   tabText: { fontFamily: "Manrope", color: "#FBFBFB", fontSize: 14, fontWeight: "700", textAlign: "center" },
   tabTextActive: { color: "#0D0A1E", fontWeight: "600" },

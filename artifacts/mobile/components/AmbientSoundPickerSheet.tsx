@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     marginBottom: 22,
   },
   noSoundChipSelected: {
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     height: 31,
     borderRadius: 999,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -965,7 +965,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 130,
     position: "relative",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   popupBody: {
     padding: 16,

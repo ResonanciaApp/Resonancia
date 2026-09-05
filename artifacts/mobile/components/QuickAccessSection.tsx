@@ -257,10 +257,10 @@ export function QuickAccessSection({
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(activeSceneId)
-        ? "rgba(255,255,255,0.05)"
+        ? "rgba(181,211,255,0.045)"
         : activeSceneId === "indigo2"
           ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)"
+        : "rgba(181,211,255,0.045)"
   );
 
   const handlePress = useCallback((id: AccessId) => {
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     paddingHorizontal: 8,
   },
   horizontalCard: {

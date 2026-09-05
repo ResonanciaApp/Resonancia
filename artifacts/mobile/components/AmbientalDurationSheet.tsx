@@ -192,8 +192,8 @@ export function AmbientalDurationSheet({
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(theme.id)
-        ? "rgba(255,255,255,0.05)"
-        : "rgba(255,255,255,0.05)";
+        ? "rgba(181,211,255,0.045)"
+        : "rgba(181,211,255,0.045)";
   const enterCustomMode = () => {
     setCustomMode(true);
     Animated.parallel([

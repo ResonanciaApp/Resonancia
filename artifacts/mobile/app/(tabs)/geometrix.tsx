@@ -6784,7 +6784,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -6792,7 +6792,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   catChipIndigo: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   catChipText: {
     fontFamily: "Manrope",

@@ -39,10 +39,10 @@ export default function ProgresoScreen() {
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
+      ? "rgba(181,211,255,0.045)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)";
+        : "rgba(181,211,255,0.045)";
   const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
 
   const personalStats = useMemo(() => {

@@ -198,10 +198,10 @@ export function RecommendedForYouSection({
   const tabBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
+      ? "rgba(181,211,255,0.045)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)";
+        : "rgba(181,211,255,0.045)";
   return (
     <View
       style={[styles.root, { marginBottom }]}

@@ -925,7 +925,7 @@ const styles = StyleSheet.create({
 
   /* ── Sección Resonador ── */
   resonadorSection: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderRadius: 18,
     padding: 16,
     gap: 16,
@@ -958,7 +958,7 @@ const styles = StyleSheet.create({
 
   /* ── Cards de sección ── */
   card: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderRadius: 18,
     padding: 16,
     gap: 12,

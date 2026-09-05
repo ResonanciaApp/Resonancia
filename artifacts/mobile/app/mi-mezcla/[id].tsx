@@ -254,8 +254,8 @@ export default function MiMezclaScreen() {
   const profileBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
-      : "rgba(255,255,255,0.05)";
+      ? "rgba(181,211,255,0.045)"
+      : "rgba(181,211,255,0.045)";
   const listenNowBtnColors: [string, string, ...string[]] = isIndigoThemeId(activeSceneId)
     ? ["#784576", "#50326E"]
     : ["#F9F9F9", "#F9F9F9"];

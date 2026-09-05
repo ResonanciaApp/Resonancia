@@ -187,8 +187,8 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
-      : "rgba(255,255,255,0.05)";
+      ? "rgba(181,211,255,0.045)"
+      : "rgba(181,211,255,0.045)";
   const title = category?.title ?? "Categoría";
 
   const goBack = backOverride ?? (() => router.back());
@@ -318,7 +318,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(255,255,255,0.05)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.045)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -379,7 +379,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(255,255,255,0.05)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.045)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${title}`}
@@ -490,10 +490,10 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
   chipIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",

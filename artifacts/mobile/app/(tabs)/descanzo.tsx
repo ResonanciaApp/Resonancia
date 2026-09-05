@@ -141,7 +141,7 @@ export default function DescansoScreen() {
   const bgGradient = sceneTheme.id === "resonancia"
     ? RESONANCE_SLEEP_BACKGROUND_GRADIENT
     : SLEEP_BACKGROUND_GRADIENT;
-  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(255,255,255,0.05)" : undefined;
+  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(181,211,255,0.045)" : undefined;
 
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
@@ -660,12 +660,12 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  sleepPillIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
+  sleepPillIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
   sleepPillIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",

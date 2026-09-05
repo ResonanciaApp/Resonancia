@@ -787,8 +787,8 @@ export default function MezcladorScreen() {
                       theme.id === "tibet"
                         ? "rgba(0,0,0,0.15)"
                         : isIndigoThemeId(theme.id)
-                          ? "rgba(255,255,255,0.05)"
-                          : "rgba(255,255,255,0.05)"
+                          ? "rgba(181,211,255,0.045)"
+                          : "rgba(181,211,255,0.045)"
                     }
                     iconOffsetX={-1}
                     style={{ transform: [{ translateX: -1 }] }}
@@ -1093,11 +1093,11 @@ const styles = StyleSheet.create({
     height: 43,
     borderRadius: 24,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 0,
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillTabIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
+  pillTabIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},
@@ -1131,7 +1131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.13)",
     gap: 10,
@@ -1173,7 +1173,7 @@ const styles = StyleSheet.create({
     height: 31,
     borderRadius: 999,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },

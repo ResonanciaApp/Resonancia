@@ -605,10 +605,10 @@ export function ExploreScreen({
                         activeSceneId === "tibet"
                           ? "rgba(0,0,0,0.15)"
                           : isIndigoThemeId(activeSceneId)
-                            ? "rgba(255,255,255,0.05)"
+                            ? "rgba(181,211,255,0.045)"
                             : activeSceneId === "indigo2"
                               ? "rgba(255,255,255,0.025)"
-                              : "rgba(255,255,255,0.05)",
+                              : "rgba(181,211,255,0.045)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -821,7 +821,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
   },
   discoverPillIndigo: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   discoverPillIndigo2: {
     backgroundColor: "rgba(255,255,255,0.025)",
@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.12)",
   },
   searchBoxIndigo: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderColor: "rgba(170,170,196,0.18)",
   },
   searchBoxIndigo2: {
@@ -1058,7 +1058,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   heroImageContainer: {
     width: "100%",

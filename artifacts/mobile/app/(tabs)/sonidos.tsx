@@ -118,7 +118,7 @@ export default function SonidosScreen() {
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(255,255,255,0.05)" : undefined;
+  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.045)" : undefined;
   const slideX = useRef(new Animated.Value(W)).current;
 
   const collections = useMemo(

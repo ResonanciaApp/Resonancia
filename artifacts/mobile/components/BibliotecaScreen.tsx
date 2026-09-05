@@ -71,8 +71,8 @@ const MUTED = "#c2c2c2";
 
 function getLibraryTabSurface(sceneId: SceneId): string {
   if (sceneId === "tibet") return "rgba(0,0,0,0.15)";
-  if (isIndigoThemeId(sceneId)) return "rgba(255,255,255,0.05)";
-  return "rgba(255,255,255,0.05)";
+  if (isIndigoThemeId(sceneId)) return "rgba(181,211,255,0.045)";
+  return "rgba(181,211,255,0.045)";
 }
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
@@ -2218,11 +2218,11 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     justifyContent: "center",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
   chipIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderWidth: 1,
@@ -2544,7 +2544,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     alignItems: "center",
     justifyContent: "center",
   },

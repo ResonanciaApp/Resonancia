@@ -293,10 +293,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.045)" },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "400", letterSpacing: 0.3 },
 

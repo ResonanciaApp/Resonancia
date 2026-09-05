@@ -411,12 +411,12 @@ export function ProfileScreenBase({
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
+      ? "rgba(181,211,255,0.045)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)";
+        : "rgba(181,211,255,0.045)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(255,255,255,0.05)"
+    ? "rgba(181,211,255,0.045)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
@@ -1634,27 +1634,27 @@ export function ProfileScreenBase({
               <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingBottom: 8 }}>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Especialidades (separadas por coma)</Text>
-                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0 }]}>
                     <TextInput value={epSpecialties} onChangeText={setEpSpecialties} placeholder="Cuencos Tibetanos, Yoga" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
                   </View>
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Descripción de servicios</Text>
-                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0, minHeight: 90, alignItems: "flex-start" }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0, minHeight: 90, alignItems: "flex-start" }]}>
                     <TextInput value={epDescription} onChangeText={setEpDescription} placeholder="Describe lo que ofrecés..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground, textAlignVertical: "top", paddingTop: 2 }]} multiline numberOfLines={4} />
                   </View>
                 </View>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <View style={[styles.fieldWrap, { flex: 1 }]}>
                     <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Teléfono</Text>
-                    <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
+                    <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0 }]}>
                       <Feather name="phone" size={15} color={colors.mutedForeground} />
                       <TextInput value={epPhone} onChangeText={setEpPhone} placeholder="+54 11 1234" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="phone-pad" />
                     </View>
                   </View>
                   <View style={[styles.fieldWrap, { flex: 1 }]}>
                     <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email</Text>
-                    <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
+                    <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0 }]}>
                       <Feather name="mail" size={15} color={colors.mutedForeground} />
                       <TextInput value={epEmail} onChangeText={setEpEmail} placeholder="tu@email.com" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="email-address" autoCapitalize="none" />
                     </View>
@@ -1662,14 +1662,14 @@ export function ProfileScreenBase({
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Instagram (URL)</Text>
-                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0 }]}>
                     <Feather name="instagram" size={15} color={colors.mutedForeground} />
                     <TextInput value={epInstagram} onChangeText={setEpInstagram} placeholder="https://instagram.com/tu_usuario" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} autoCapitalize="none" />
                   </View>
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Frase / Quote</Text>
-                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(181,211,255,0.045)", borderWidth: 0 }]}>
                     <TextInput value={epQuote} onChangeText={setEpQuote} placeholder="Tu frase inspiracional..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
                   </View>
                 </View>
@@ -1836,7 +1836,7 @@ const styles = StyleSheet.create({
     borderRadius: 20.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
   },
   giftIcon: {
     width: 35,
@@ -1960,7 +1960,7 @@ const styles = StyleSheet.create({
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -1976,7 +1976,7 @@ const styles = StyleSheet.create({
     minHeight: 42,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderRadius: 10,
     borderWidth: 0,
   },
@@ -2062,7 +2062,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -2133,7 +2133,7 @@ const styles = StyleSheet.create({
   profileCardDivider: {
     height: 1,
     width: "100%",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(181,211,255,0.045)",
     marginTop: 20,
     marginBottom: 4,
   },
@@ -2547,7 +2547,7 @@ const styles = StyleSheet.create({
     borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
   },
   dvGalleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
-  dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
+  dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(181,211,255,0.045)" },
   dvQuoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8, marginBottom: 16 },
   dvQuoteText: {
     fontFamily: "Manrope",

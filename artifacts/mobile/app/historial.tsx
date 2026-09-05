@@ -26,7 +26,7 @@ export default function HistorialScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = insets.bottom + 24;
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(255,255,255,0.05)"
+    ? "rgba(181,211,255,0.045)"
     : "rgba(255,255,255,0.12)";
 
   return (

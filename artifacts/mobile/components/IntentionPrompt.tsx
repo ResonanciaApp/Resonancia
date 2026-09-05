@@ -23,10 +23,10 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
   const cardBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(255,255,255,0.05)"
+      ? "rgba(181,211,255,0.045)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)";
+        : "rgba(181,211,255,0.045)";
 
   useEffect(() => {
     const blink = Animated.loop(

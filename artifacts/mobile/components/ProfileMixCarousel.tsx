@@ -33,10 +33,10 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const cardBackground = theme.id === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.05)"
+      ? "rgba(181,211,255,0.045)"
       : theme.id === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : "rgba(255,255,255,0.05)";
+        : "rgba(181,211,255,0.045)";
 
   const newestPresets = useMemo(
     () =>

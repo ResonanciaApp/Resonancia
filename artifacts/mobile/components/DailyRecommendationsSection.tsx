@@ -66,16 +66,16 @@ export function DailyRecommendationsSection({
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(theme.id)
-        ? "rgba(255,255,255,0.05)"
-        : "rgba(255,255,255,0.05)";
+        ? "rgba(181,211,255,0.045)"
+        : "rgba(181,211,255,0.045)";
   const refreshButtonBackground =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
       : isIndigoThemeId(theme.id)
-        ? "rgba(255,255,255,0.05)"
+        ? "rgba(181,211,255,0.045)"
         : theme.id === "indigo2"
           ? "rgba(255,255,255,0.025)"
-          : "rgba(255,255,255,0.05)";
+          : "rgba(181,211,255,0.045)";
 
   if (recommendations.length < 3) return null;
 
