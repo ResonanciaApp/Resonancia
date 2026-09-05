@@ -2408,13 +2408,7 @@ export default function HomeScreen2({
               locations={activeTheme.gradientLocations}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
-              style={{
-                position: "absolute",
-                top: -INICIO2_HERO_HEIGHT,
-                left: 0,
-                right: 0,
-                height,
-              }}
+              style={StyleSheet.absoluteFill}
             />
           </View>
         )}
