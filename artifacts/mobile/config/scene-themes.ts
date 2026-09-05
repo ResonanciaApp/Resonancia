@@ -82,7 +82,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
     solid: "#000000",
-    accent: "#C7C7C7",
+    accent: "#E8E8E8",
     radialGlows: [
       {
         cx: 50,
