@@ -2260,7 +2260,7 @@ const styles = StyleSheet.create({
   personalStatsRangeDropdown: {
     position: "relative",
     alignSelf: "flex-start",
-    marginTop: 8,
+    marginTop: 2,
     zIndex: 2,
   },
   personalStatsRangeTrigger: {
