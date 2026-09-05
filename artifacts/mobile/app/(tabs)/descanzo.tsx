@@ -31,9 +31,6 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
-import {
-  CONTENT_CAROUSEL_GAP,
-} from "@/constants/carousel";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -113,9 +110,6 @@ function SleepPill({
 const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
-const SLEEP_CAROUSEL_CARD_W = Math.round(
-  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.85,
-);
 const SOUND_CARD_W  = 120;
 
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
@@ -375,14 +369,8 @@ export default function DescansoScreen() {
                 isPremium={isPremium}
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
-                cardWidth={SLEEP_CAROUSEL_CARD_W}
-                allowOversizedCardWidth
+                presentation="sleep-category"
                 titleSize={19}
-                squareCards
-                showCardMetadata={false}
-                showAuthor
-                showDurationBadge
-                hideAmbientalTitleInSquareRecent
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}

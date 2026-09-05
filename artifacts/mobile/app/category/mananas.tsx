@@ -43,7 +43,6 @@ import {
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
-const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_H = Math.round(187 * CONTENT_CAROUSEL_HEIGHT_SCALE);
 const ICON_COLOR = "#f4c993";
@@ -482,9 +481,7 @@ export default function MananasScreen() {
                     isPremium={isPremium}
                     onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                     style={{ marginTop: 24, marginBottom: 0 }}
-                    cardWidth={RECENT_CARD_W}
-                    showAuthor={false}
-                    showMetaBelow
+                    presentation="sleep-category"
                   />
                 )}
                 {filteredSessions.length === 0 ? (

@@ -136,6 +136,8 @@ type SessionCarouselProps = {
   cardVariant?: "ambiental";
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
+  /** Shared square, below-metadata presentation for Dormir category carousels. */
+  presentation?: "sleep-category";
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -167,6 +169,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
+  presentation,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -174,22 +177,40 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
+  const isSleepCategoryPresentation = presentation === "sleep-category";
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
     (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
-  const requestedCardWidth = isAmbientalCarousel
+  const sleepCategoryCardWidth = Math.round(
+    (viewportWidth - 16 - CONTENT_CAROUSEL_GAP) / 1.85,
+  );
+  const requestedCardWidth = isSleepCategoryPresentation
+    ? sleepCategoryCardWidth
+    : isAmbientalCarousel
     ? ambientalCarouselCardWidth
     : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
-  const cw = allowOversizedCardWidth
+  const effectiveAllowOversizedCardWidth =
+    isSleepCategoryPresentation || allowOversizedCardWidth;
+  const cw = effectiveAllowOversizedCardWidth
     ? requestedCardWidth
     : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
+  const effectiveShowCardMetadata =
+    isSleepCategoryPresentation ? false : showCardMetadata;
+  const effectiveSquareCards = isSleepCategoryPresentation || squareCards;
+  const effectiveShowAuthor = isSleepCategoryPresentation ? true : showAuthor;
+  const effectiveShowCollectionBelow =
+    isSleepCategoryPresentation ? false : showCollectionBelow;
+  const effectiveShowMetaBelow =
+    isSleepCategoryPresentation ? false : showMetaBelow;
+  const effectiveShowDurationBadge =
+    isSleepCategoryPresentation ? true : showDurationBadge;
   const baseCardHeight = cardHeight ?? cw;
-  const originalCardHeight = showCardMetadata
+  const originalCardHeight = effectiveShowCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
-  const ch = squareCards
+  const ch = effectiveSquareCards
     ? cw
     : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
   const cardStyle = { width: cw };
@@ -199,7 +220,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   // recientes" de Inicio. Otros carruseles cuadrados con metadata inferior
   // conservan el título superpuesto sobre la imagen.
   const shouldHideAmbientalTitle =
-    hideAmbientalTitleInSquareRecent && squareCards;
+    (isSleepCategoryPresentation || hideAmbientalTitleInSquareRecent) &&
+    effectiveSquareCards;
   const ambientalCardBackground = "rgba(181,211,255,0.057)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
@@ -242,7 +264,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
           const hasSecondaryMeta =
-            showMetaBelow || showCollectionBelow || (showAuthor && Boolean(authorName));
+            effectiveShowMetaBelow ||
+            effectiveShowCollectionBelow ||
+            (effectiveShowAuthor && Boolean(authorName));
           return (
             <PressScale
               key={s.id}
@@ -285,29 +309,29 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
                       />
                     )}
-                    {durationInsideWithMeta && showDurationBadge && (
+                    {durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
                           styles.durBadge,
-                          !showAuthor && styles.durBadgeLower,
-                          { bottom: (showAuthor ? 8 : 4) + durationLift },
+                          !effectiveShowAuthor && styles.durBadgeLower,
+                          { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
                         ]}
                         textStyle={styles.durText}
                       />
                     )}
                   </>
-                ) : showCardMetadata ? (
+                ) : effectiveShowCardMetadata ? (
                   <SessionCardMetadataOverlay
                     categoryId={s.categoryId}
                     durationLabel={s.durationLabel}
                     title={s.title}
                     titleNumberOfLines={metadataTitleNumberOfLines}
-                    authorName={showAuthor && !showCollectionBelow ? authorName : undefined}
-                    showAuthor={showAuthor && !showCollectionBelow}
-                    showCategoryPill={!showMetaBelow && (showImageCategoryPill || !showCollectionBelow)}
-                    showCategoryBelow={showMetaBelow || showCollectionBelow}
-                    showDuration={showDurationBadge && !showMetaBelow}
+                    authorName={effectiveShowAuthor && !effectiveShowCollectionBelow ? authorName : undefined}
+                    showAuthor={effectiveShowAuthor && !effectiveShowCollectionBelow}
+                    showCategoryPill={!effectiveShowMetaBelow && (showImageCategoryPill || !effectiveShowCollectionBelow)}
+                    showCategoryBelow={effectiveShowMetaBelow || effectiveShowCollectionBelow}
+                    showDuration={effectiveShowDurationBadge && !effectiveShowMetaBelow}
                     durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
                     metaBottom={hasSecondaryMeta ? 15 : 20}
                     metaLeft={hasSecondaryMeta ? 10 : 18}
@@ -315,16 +339,16 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {(!showMetaBelow || durationInsideWithMeta) && showImageCategoryPill && (
+                    {(!effectiveShowMetaBelow || durationInsideWithMeta) && showImageCategoryPill && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
-                    {showDurationBadge && (!showMetaBelow || durationInsideWithMeta) && (
+                    {effectiveShowDurationBadge && (!effectiveShowMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
                           styles.durBadge,
-                          !showAuthor && styles.durBadgeLower,
-                          { bottom: (showAuthor ? 8 : 4) + durationLift },
+                          !effectiveShowAuthor && styles.durBadgeLower,
+                          { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
                         ]}
                         textStyle={styles.durText}
                       />
@@ -339,7 +363,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 )}
               </View>
-              {!showCardMetadata && (
+              {!effectiveShowCardMetadata && (
                 <>
                   <Text
                     style={[
@@ -353,21 +377,21 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   >
                     {s.title}
                   </Text>
-                  {showMetaBelow && !durationInsideWithMeta ? (
+                  {effectiveShowMetaBelow && !durationInsideWithMeta ? (
                     <Text
                       style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}
                     >
                       {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
                     </Text>
-                  ) : showCollectionBelow && s.categoryLabel ? (
+                  ) : effectiveShowCollectionBelow && s.categoryLabel ? (
                     <Text
                       style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}
                     >
                       {s.categoryLabel}
                     </Text>
-                  ) : showAuthor && authorName ? (
+                  ) : effectiveShowAuthor && authorName ? (
                     <Text
                       style={[styles.cardAuthor, { color: viewAllAccent }]}
                       numberOfLines={1}

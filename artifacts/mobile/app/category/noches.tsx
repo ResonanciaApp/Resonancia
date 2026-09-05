@@ -32,7 +32,6 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 const H_PAD   = 14;
 const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
-const RECENT_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const ICON_COLOR = "#C87BB5";
 const GOLD    = "#F9F9F9";
@@ -358,11 +357,8 @@ export default function NochesScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
-              cardWidth={RECENT_CARD_W}
+              presentation="sleep-category"
               titleSize={19}
-              showCardMetadata
-              showAuthor={false}
-              showMetaBelow
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -375,10 +371,8 @@ export default function NochesScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
-              cardWidth={RECENT_CARD_W}
+              presentation="sleep-category"
               titleSize={19}
-              showCardMetadata
-              showAuthor={false}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -398,10 +392,8 @@ export default function NochesScreen() {
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
-                  cardWidth={RECENT_CARD_W}
+                  presentation="sleep-category"
                   titleSize={19}
-                  showCardMetadata
-                  showAuthor={false}
                   onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
                 />
                 {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}

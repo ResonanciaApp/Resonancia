@@ -10,7 +10,6 @@ import {
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
-  getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -41,7 +40,6 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
-const RECENT_CARD_W = getTwoCardCarouselCardWidth(width, H_PAD);
 const FEATURED_CARD_W = getContentCarouselCardWidth(width, H_PAD);
 const GOLD  = "#F9F9F9";
 
@@ -536,13 +534,10 @@ export default function SonidosAncestalesScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                style={{ marginTop: 33, marginBottom: 0 }}
-              cardWidth={RECENT_CARD_W}
-              allowOversizedCardWidth
+              presentation="sleep-category"
               titleSize={19}
               titleOffset={10}
               titleSpacing={17}
-              squareCards
-              showMetaBelow
             />
           </>
         )}
@@ -561,10 +556,8 @@ export default function SonidosAncestalesScreen() {
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                    style={{ marginTop: idx === 0 ? 33 : 53, marginBottom: 0 }}
-                  cardWidth={RECENT_CARD_W}
+                  presentation="sleep-category"
                   titleSize={18}
-                  showCardMetadata
-                  showAuthor={false}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
               </React.Fragment>

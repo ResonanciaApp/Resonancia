@@ -26,7 +26,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
-import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
@@ -36,7 +35,6 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 20) / 2;
-const CAROUSEL_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -243,12 +241,10 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
                 onPress={handleSessionPress}
                 onViewAll={tabSessions.length > 5 ? () => setActiveTab(tab) : undefined}
                 style={{ marginTop: index === 0 ? 13 : 53, marginBottom: 0 }}
-                cardWidth={CAROUSEL_CARD_W}
-                allowOversizedCardWidth
+                presentation="sleep-category"
                 titleSize={19}
                 titleOffset={10}
                 titleSpacing={17}
-                squareCards
                 showImageCategoryPill
                 cardVariant={id === "ambientales" ? "ambiental" : undefined}
               />
