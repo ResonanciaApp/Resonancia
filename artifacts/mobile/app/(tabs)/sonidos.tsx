@@ -22,7 +22,6 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -120,30 +119,7 @@ export default function SonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(255,255,255,0.05)" : undefined;
-  const titleProgress = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(W)).current;
-  const compactRef = useRef(false);
-  const [fixedHeaderHeight, setFixedHeaderHeight] = useState(0);
-  const stickyHeaderSurfaceOpacity = titleProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.96],
-  });
-  const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
-
-  const handleScroll = useCallback((event: {
-    nativeEvent: { contentOffset: { y: number } };
-  }) => {
-    const y = event.nativeEvent.contentOffset.y;
-    const compact = y > 8;
-    if (compact !== compactRef.current) {
-      compactRef.current = compact;
-      Animated.timing(titleProgress, {
-        toValue: compact ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [titleProgress]);
 
   const collections = useMemo(
     () =>
@@ -243,39 +219,16 @@ export default function SonidosScreen() {
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
-        <View
-          style={[
-            styles.fixedHeader,
-            useDiscoverStickyStyle && styles.fixedHeaderFadeOverflow,
-            { paddingTop: topPad + 2 },
-          ]}
-          onLayout={(event) => setFixedHeaderHeight(event.nativeEvent.layout.height)}
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          showsVerticalScrollIndicator={false}
         >
-          <StickyHeaderSurface
-            opacity={stickyHeaderSurfaceOpacity}
-            tint={theme.gradient[0] as string}
-            showTint={!useDiscoverStickyStyle}
-            showDivider={!useDiscoverStickyStyle}
-            blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-            showBlackTint={!useDiscoverStickyStyle}
-            strongBlur={useDiscoverStickyStyle}
-            fadeBottom={useDiscoverStickyStyle}
-          />
+          <View style={{ paddingTop: topPad + 2 }}>
           <View style={styles.titleRow}>
-            <Animated.Text
-              style={[
-                styles.heroTitle,
-                {
-                  color: colors.foreground,
-                  opacity: titleProgress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-                },
-              ]}
-            >
+            <Text style={[styles.heroTitle, { color: colors.foreground }]}>
               Sonidos
-            </Animated.Text>
-            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: titleProgress }]}>
-              <Text style={[styles.compactPageTitle, { color: colors.foreground }]}>Sonidos</Text>
-            </Animated.View>
+            </Text>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -303,15 +256,7 @@ export default function SonidosScreen() {
               ))}
             </ScrollView>
           </View>
-        </View>
-
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingTop: fixedHeaderHeight, paddingBottom: 140 + bottomPad }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={handleScroll}
-        >
+          </View>
         <View style={[styles.contentStart, { marginTop: -3 }]}>
         {allSessions.length === 0 ? (
           <View style={styles.empty}>
@@ -448,15 +393,6 @@ export default function SonidosScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
-  fixedHeader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-    backgroundColor: "transparent",
-  },
-  fixedHeaderFadeOverflow: { overflow: "visible" },
   titleRow: {
     position: "relative",
     flexDirection: "row",
@@ -474,18 +410,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginTop: 0,
     transform: [{ translateY: 1 }],
-  },
-  compactTitleOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  compactPageTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "800",
-    letterSpacing: 0.2,
-    textAlign: "center",
   },
   headerSearchButton: {
     width: 40,
