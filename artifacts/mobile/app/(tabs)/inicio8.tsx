@@ -1247,12 +1247,14 @@ function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  backgroundColor,
 }: {
   topInset: number;
   isPremium: boolean;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  backgroundColor: string;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
@@ -1267,7 +1269,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={styles.inicio2Hero}
+      style={[styles.inicio2Hero, { backgroundColor }]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -2287,6 +2289,7 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
               onOpenProfile={() => router.push("/(tabs)/profile" as never)}
+              backgroundColor={activeTheme.gradient[0] as string}
             />
           </>
         ) : showAnimatedScene ? (
