@@ -637,7 +637,7 @@ export function ExploreScreen({
                     transition={IMAGE_TRANSITION}
                   />
                   <LinearGradient
-                    colors={["rgba(0,0,0,0.15)", "rgba(0,0,0,0.15)"]}
+                    colors={["rgba(0,0,0,0.4)", "rgba(0,0,0,0.4)"]}
                     locations={[0, 1]}
                     style={StyleSheet.absoluteFill}
                   />
