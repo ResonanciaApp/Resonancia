@@ -3032,7 +3032,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   inicio2HeroEmotionAddText: {
-    color: "#130E24",
+    color: "#150D2E",
     fontFamily: "Manrope",
     fontSize: 25,
     lineHeight: 28,
