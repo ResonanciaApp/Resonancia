@@ -20,6 +20,9 @@ export type SceneTheme = {
   gradient: readonly [string, string, ...string[]];
   /** Posiciones opcionales de los stops del degradado, expresadas entre 0 y 1. */
   gradientLocations?: readonly [number, number, ...number[]];
+  /** Dirección opcional del degradado lineal base. */
+  gradientStart?: { x: number; y: number };
+  gradientEnd?: { x: number; y: number };
   /** Color sólido de fondo — contenedores raíz, tab bar, sheets. */
   solid: string;
   /** Imagen de fondo opcional (require). Se muestra en variant="gradient" con overlay oscuro. */
@@ -36,6 +39,13 @@ export type SceneTheme = {
    * offset: 0–1, color: hex, opacity: 0–1.
    */
   radialStops?: Array<{ offset: number; color: string; opacity: number }>;
+  /** Luces radiales ambientales posicionables, compuestas sobre el degradado base. */
+  radialGlows?: Array<{
+    cx: number;
+    cy: number;
+    r: number;
+    stops: Array<{ offset: number; color: string; opacity: number }>;
+  }>;
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
@@ -67,9 +77,34 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    gradient: ["#000000", "#000000"],
+    gradient: ["#111827", "#16213A", "#18264A"],
+    gradientLocations: [0, 0.45, 1],
+    gradientStart: { x: 0, y: 0 },
+    gradientEnd: { x: 1, y: 1 },
     solid: "#000000",
     accent: "#868887",
+    radialGlows: [
+      {
+        cx: 80,
+        cy: 10,
+        r: 58,
+        stops: [
+          { offset: 0, color: "#5F69FF", opacity: 0.32 },
+          { offset: 0.28, color: "#4650B4", opacity: 0.16 },
+          { offset: 0.58, color: "#4650B4", opacity: 0 },
+        ],
+      },
+      {
+        cx: 25,
+        cy: 100,
+        r: 60,
+        stops: [
+          { offset: 0, color: "#6946FF", opacity: 0.2 },
+          { offset: 0.3, color: "#463CAA", opacity: 0.1 },
+          { offset: 0.6, color: "#463CAA", opacity: 0 },
+        ],
+      },
+    ],
   },
 };
 

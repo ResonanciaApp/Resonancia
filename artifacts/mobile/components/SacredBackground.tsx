@@ -63,8 +63,45 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
         <LinearGradient
           colors={theme.gradient}
           locations={theme.gradientLocations}
+          start={theme.gradientStart}
+          end={theme.gradientEnd}
           style={StyleSheet.absoluteFill}
         />
+        {theme.radialGlows != null && (
+          <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="none">
+            <Defs>
+              {theme.radialGlows.map((glow, glowIndex) => (
+                <SvgRadialGradient
+                  key={glowIndex}
+                  id={`sceneThemeAmbientGlow${glowIndex}`}
+                  cx={glow.cx}
+                  cy={glow.cy}
+                  r={glow.r}
+                  gradientUnits="userSpaceOnUse"
+                >
+                  {glow.stops.map((stop, stopIndex) => (
+                    <Stop
+                      key={stopIndex}
+                      offset={stop.offset}
+                      stopColor={stop.color}
+                      stopOpacity={stop.opacity}
+                    />
+                  ))}
+                </SvgRadialGradient>
+              ))}
+            </Defs>
+            {theme.radialGlows.map((_, glowIndex) => (
+              <Rect
+                key={glowIndex}
+                x="0"
+                y="0"
+                width="100"
+                height="100"
+                fill={`url(#sceneThemeAmbientGlow${glowIndex})`}
+              />
+            ))}
+          </Svg>
+        )}
         {/* Brillo radial — N stops (radialStops) o 2 stops legacy (radialCenter/radialOuter) */}
         {theme.radialStops != null ? (
           <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
