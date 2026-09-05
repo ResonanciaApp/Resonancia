@@ -120,6 +120,24 @@ export default function SonidosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.045)" : undefined;
   const slideX = useRef(new Animated.Value(W)).current;
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyHeaderActiveRef = useRef(false);
+  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+
+  const handleMainScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 8;
+    if (active === stickyHeaderActiveRef.current) return;
+    stickyHeaderActiveRef.current = active;
+    setStickyHeaderActive(active);
+    stickyHeaderOpacity.stopAnimation();
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyHeaderOpacity]);
 
   const collections = useMemo(
     () =>
@@ -219,10 +237,39 @@ export default function SonidosScreen() {
       <StatusBar hidden />
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
+        <Animated.View
+          pointerEvents={stickyHeaderActive ? "auto" : "none"}
+          style={[
+            styles.stickyHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: theme.gradient[0] as string,
+              opacity: stickyHeaderOpacity,
+            },
+          ]}
+        >
+          <View style={styles.titleRow}>
+            <Text style={[styles.stickyTitle, { color: colors.foreground }]}>
+              Sonidos
+            </Text>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Sonidos"
+            >
+              <Feather name="search" size={24} color={colors.foreground} />
+            </Pressable>
+          </View>
+        </Animated.View>
+
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={handleMainScroll}
         >
           <View style={{ paddingTop: topPad + 2 }}>
           <View style={styles.titleRow}>
@@ -393,6 +440,13 @@ export default function SonidosScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+  },
   titleRow: {
     position: "relative",
     flexDirection: "row",
@@ -409,6 +463,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     textAlign: "left",
     marginTop: 0,
+    transform: [{ translateY: 1 }],
+  },
+  stickyTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+    textAlign: "left",
     transform: [{ translateY: 1 }],
   },
   headerSearchButton: {
