@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   card: {
-    borderRadius: 23,
+    borderRadius: 17,
     borderWidth: 0,
     overflow: "hidden",
   },
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   versionCard: {
-    borderRadius: 23,
+    borderRadius: 17,
     borderWidth: 1,
     alignItems: "center",
     paddingVertical: 22,

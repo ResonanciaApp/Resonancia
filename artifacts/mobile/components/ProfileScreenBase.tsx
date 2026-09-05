@@ -1239,7 +1239,7 @@ export function ProfileScreenBase({
         {/* ── Estadísticas personales (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <IntentionPrompt style={{ marginBottom: 15 }} />
+            <IntentionPrompt style={{ marginBottom: 19 }} />
             <View
               style={[
                 styles.personalStatsSection,
@@ -1253,7 +1253,7 @@ export function ProfileScreenBase({
               </Text>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
-                  <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_SOLID} />
+                  <MaterialCommunityIcons name="spa" size={22} color="#F4F4F4" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
                   </Text>
@@ -1261,7 +1261,7 @@ export function ProfileScreenBase({
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="clock" size={20} color={WIDGET_GREEN_SOLID} />
+                  <Feather name="clock" size={20} color="#F4F4F4" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {personalStats.completedSessions}
                   </Text>
@@ -1269,7 +1269,7 @@ export function ProfileScreenBase({
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="flag" size={20} color={WIDGET_GREEN_SOLID} />
+                  <Feather name="flag" size={20} color="#F4F4F4" />
                   <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
                     {maxStreak} {maxStreak === 1 ? "día" : "días"}
                   </Text>
@@ -2001,12 +2001,13 @@ const styles = StyleSheet.create({
 
   // Profile card
   profileCard: {
-    borderRadius: 23,
+    borderRadius: 17,
     paddingTop: 24,
     paddingBottom: 24,
     alignItems: "stretch",
     overflow: "hidden",
-    marginBottom: 15,
+    marginTop: 15,
+    marginBottom: 19,
     gap: 0,
   },
   profileIdentityRow: {
@@ -2183,7 +2184,7 @@ const styles = StyleSheet.create({
 
   // Estadísticas personales
   personalStatsSection: {
-    borderRadius: 23,
+    borderRadius: 17,
     padding: 16,
     marginBottom: 16,
   },
