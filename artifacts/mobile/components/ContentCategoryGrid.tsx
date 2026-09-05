@@ -280,7 +280,7 @@ export function ContentCategoryGrid({
               category,
               DISCOVER_SECONDARY_CARD_SIZE,
               true,
-              DISCOVER_SECONDARY_CARD_SIZE + 20,
+              DISCOVER_SECONDARY_CARD_SIZE + 10,
             ),
           )}
         </ScrollView>
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     paddingRight: GRID_PAD + 18,
   },
   discoverCard: {
-    borderRadius: 31,
+    borderRadius: 13,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
