@@ -1243,7 +1243,7 @@ export function ProfileScreenBase({
         {/* ── Estadísticas personales (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <IntentionPrompt style={{ marginBottom: 53 }} />
+            <IntentionPrompt style={{ marginBottom: 15 }} />
             <View
               style={[
                 styles.personalStatsSection,
@@ -2005,7 +2005,7 @@ const styles = StyleSheet.create({
 
   // Profile card
   profileCard: {
-    borderRadius: 24,
+    borderRadius: 23,
     paddingTop: 24,
     paddingBottom: 24,
     alignItems: "stretch",
@@ -2187,7 +2187,7 @@ const styles = StyleSheet.create({
 
   // Estadísticas personales
   personalStatsSection: {
-    borderRadius: 18,
+    borderRadius: 23,
     padding: 16,
     marginBottom: 16,
   },
