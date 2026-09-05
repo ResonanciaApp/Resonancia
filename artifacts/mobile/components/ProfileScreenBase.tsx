@@ -54,7 +54,6 @@ import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
-import { useDayRollover } from "@/hooks/useDayRollover";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
@@ -65,7 +64,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
-import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
@@ -396,7 +394,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites, statEvents } = usePlayer();
+  const { favorites } = usePlayer();
   const {
     username,
     lastName,
@@ -408,10 +406,7 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
+  const { currentStreak, weekFlags, todayIndex } = useStreak();
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : activeSceneId === "indigo"
@@ -831,29 +826,6 @@ export function ProfileScreenBase({
     }
   };
 
-
-  const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    let totalMinutes = 0;
-    let completedSessions = 0;
-
-    for (const event of statEvents) {
-      const playedAt = new Date(event.playedAt).getTime();
-      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
-
-      totalMinutes += event.minutes;
-      if (event.completed === true) completedSessions += 1;
-    }
-
-    return {
-      totalMinutes: Math.round(totalMinutes),
-      completedSessions,
-    };
-  }, [statEvents, statsRangeDays, todayKey]);
 
   // ── Favorite sessions ─────────────────────────────────────────────────────
   const favSessions = favorites
@@ -1390,100 +1362,6 @@ export function ProfileScreenBase({
               />
             </View>
 
-            <View
-              style={[
-                styles.personalStatsSection,
-                {
-                  backgroundColor: resourceBlockBackground,
-                  borderWidth: 0,
-                },
-              ]}
-            >
-              <View style={styles.personalStatsHeader}>
-                <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                  Estadísticas personales
-                </Text>
-                <Pressable
-                  onPress={() => setStatsFilterOpen((open) => !open)}
-                  style={styles.statsFilterTrigger}
-                  accessibilityRole="button"
-                  accessibilityLabel="Elegir filtro de días"
-                  accessibilityState={{ expanded: statsFilterOpen }}
-                >
-                  <Text style={[styles.statsFilterText, { color: progressAccent }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather name="chevron-down" size={17} color={progressAccent} />
-                </Pressable>
-                {statsFilterOpen && (
-                  <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground }]}>
-                    {([7, 30, 90] as const).map((days) => (
-                      <Pressable
-                        key={days}
-                        onPress={() => {
-                          setStatsRangeDays(days);
-                          setStatsFilterOpen(false);
-                        }}
-                        style={[
-                          styles.statsFilterOption,
-                          statsRangeDays === days && { backgroundColor: "rgba(152,93,212,0.16)" },
-                        ]}
-                      >
-                        <Text style={[styles.statsFilterText, { color: progressAccent }]}>
-                          Últimos {days} días
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-              </View>
-
-              <View style={styles.personalStatsValues}>
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatMetricRow}>
-                    <View style={styles.personalStatIcon}>
-                      <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_SOLID} />
-                    </View>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
-                    </Text>
-                  </View>
-                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                    TIEMPO DE{"\n"}BIENESTAR
-                  </Text>
-                </View>
-                <View style={[styles.personalStatDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatMetricRow}>
-                    <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={20} color={WIDGET_GREEN_SOLID} />
-                    </View>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.completedSessions}
-                    </Text>
-                  </View>
-                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                    SESIONES{"\n"}COMPLETADAS
-                  </Text>
-                </View>
-                <View style={[styles.personalStatDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatMetricRow}>
-                    <View style={styles.personalStatIcon}>
-                      <Feather name="flag" size={20} color={WIDGET_GREEN_SOLID} />
-                    </View>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {maxStreak} {maxStreak === 1 ? "día" : "días"}
-                    </Text>
-                  </View>
-                  <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                    RACHA{"\n"}MÁXIMA
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            <HistorialCalendar embedded />
             <View style={{ marginTop: 32 }}>
               <ProfileMixCarousel marginBottom={32} />
             </View>
@@ -2476,46 +2354,6 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     marginTop: -1,
   },
-  personalStatsSection: {
-    borderRadius: 18,
-    borderWidth: 1,
-    padding: 16,
-    marginBottom: 15,
-  },
-  personalStatsHeader: { gap: 7 },
-  personalStatsTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  statsFilterTrigger: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 4,
-    paddingVertical: 1,
-  },
-  statsFilterMenu: {
-    alignSelf: "flex-start",
-    minWidth: 148,
-    borderRadius: 12,
-    overflow: "hidden",
-    marginTop: 1,
-  },
-  statsFilterOption: { paddingHorizontal: 12, paddingVertical: 9 },
-  statsFilterText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700" },
-  personalStatsValues: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: 24,
-  },
-  personalStatItem: { flex: 1, minWidth: 0, alignItems: "center", gap: 8 },
-  personalStatMetricRow: { flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4 },
-  personalStatIcon: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  personalStatDivider: { width: 1, height: 58, marginHorizontal: 4 },
-  personalStatValue: { fontFamily: "Manrope", fontSize: 22, fontWeight: "600" },
-  personalStatLabel: { fontFamily: "Manrope", fontSize: 10, lineHeight: 15, letterSpacing: 0.35, textAlign: "center" },
   // Membresía
   membershipRow: {
     borderRadius: 18,
