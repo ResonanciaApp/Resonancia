@@ -1497,14 +1497,7 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
-  const emotionWidgetBackground =
-    activeSceneId === "tibet"
-      ? "#1A2453"
-      : isIndigoThemeId(activeSceneId)
-        ? "#212033"
-        : activeSceneId === "indigo2"
-          ? activeTheme.solid
-          : "#3B2A47";
+  const emotionWidgetBackground = "#0E0E17";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(181,211,255,0.057)";
