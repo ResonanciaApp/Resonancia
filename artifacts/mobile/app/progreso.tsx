@@ -1,11 +1,7 @@
-import { Feather } from "@expo/vector-icons";
-import { useMilestones } from "@/context/MilestonesContext";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { dayKey } from "@/utils/stats";
-import { useStreak } from "@/hooks/useStreak";
-import { router } from "expo-router";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
+import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Platform,
@@ -18,642 +14,228 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
-import { SessionCard } from "@/components/SessionCard";
+import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { usePlayer } from "@/context/PlayerContext";
-import { getSessionById } from "@/data/sessions";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
-
-// ── Date helpers ──────────────────────────────────────────────────────────────
-
-
-function startOfDay(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  return copy;
-}
-
-function daysAgo(n: number): Date {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return startOfDay(d);
-}
-
-function relativeLabel(iso: string): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (days === 0) return "Hoy";
-  if (days === 1) return "Ayer";
-  return new Date(iso).toLocaleDateString("es", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
-
-// ── Streak helpers ────────────────────────────────────────────────────────────
-
-
-
-// ── Heat-map ──────────────────────────────────────────────────────────────────
-
-/** Returns 0-3 intensity level for a given day */
-function heatLevel(minutesByDay: Map<string, number>, key: string): number {
-  const m = minutesByDay.get(key) ?? 0;
-  if (m === 0) return 0;
-  if (m < 10) return 1;
-  if (m < 30) return 2;
-  return 3;
-}
-
-const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
-
-// Day-of-week index Mon=0 … Sun=6 (ISO aligned)
-function isoDow(d: Date): number {
-  return (d.getDay() + 6) % 7;
-}
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
+import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { statEvents, history } = usePlayer();
-  const { statuses: milestones, previewMilestone } = useMilestones();
+  const { statEvents } = usePlayer();
+  const { activeSceneId, theme } = useSceneTheme();
+  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
   const todayKey = useDayRollover();
-  const [tab, setTab] = useState<"logros" | "historial">("logros");
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const resourceBlockBackground = activeSceneId === "tibet"
+    ? "rgba(0,0,0,0.15)"
+    : activeSceneId === "indigo"
+      ? "rgba(42,40,64,0.65)"
+      : activeSceneId === "indigo2"
+        ? "rgba(255,255,255,0.025)"
+        : "rgba(255,255,255,0.05)";
+  const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
 
-  // Racha canónica (server-authoritative con fallback local) via useStreak.
-  const { currentStreak, maxStreak, weekFlags } = useStreak();
+  const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    let totalMinutes = 0;
+    let completedSessions = 0;
 
-  // ── Derived stats ─────────────────────────────────────────────────────────
-  const stats = useMemo(() => {
-    const totalSessions = statEvents.length;
-    const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
-    const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const weeklyMinutes = Math.round(
-      statEvents.filter((e) => new Date(e.playedAt).getTime() >= weekCutoff)
-        .reduce((s, e) => s + e.minutes, 0)
-    );
-    const categoriesUsed = new Set(statEvents.map((e) => e.categoryId)).size;
-
-    const minutesByDay = new Map<string, number>();
-    for (const e of statEvents) {
-      const k = dayKey(new Date(e.playedAt));
-      minutesByDay.set(k, (minutesByDay.get(k) ?? 0) + e.minutes);
-    }
-
-    // This-week day activity (Mon=0..Sun=6) — misma meta diaria que la racha
-    const weekActivity = weekFlags;
-
-    // Heat-map grid: 8 cols (weeks, oldest left) × 7 rows (Mon-Sun)
-    // Anchor: today is the last real cell; future cells in current column are empty
-    const NUM_WEEKS = 8;
-    const today = new Date();
-    const todayDowIdx = isoDow(today); // 0=Mon, 6=Sun
-    const totalDaysInGrid = NUM_WEEKS * 7;
-    // The grid ends on Sunday of the current week
-    // Offset from today to that Sunday = 6 - todayDowIdx
-    const daysFromTodayToGridEnd = 6 - todayDowIdx;
-
-    const heatGrid: number[][] = Array.from({ length: NUM_WEEKS }, () =>
-      Array(7).fill(-1)
-    );
-    for (let weekCol = 0; weekCol < NUM_WEEKS; weekCol++) {
-      for (let dayRow = 0; dayRow < 7; dayRow++) {
-        const daysFromEnd =
-          (NUM_WEEKS - 1 - weekCol) * 7 + (6 - dayRow) - daysFromTodayToGridEnd;
-        if (daysFromEnd < 0) {
-          // future cell
-          heatGrid[weekCol][dayRow] = -1;
-          continue;
-        }
-        const cellDay = daysAgo(daysFromEnd);
-        if (daysFromEnd > totalDaysInGrid) {
-          heatGrid[weekCol][dayRow] = -1;
-        } else {
-          heatGrid[weekCol][dayRow] = heatLevel(minutesByDay, dayKey(cellDay));
-        }
-      }
+    for (const event of statEvents) {
+      const playedAt = new Date(event.playedAt).getTime();
+      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      totalMinutes += event.minutes;
+      if (event.completed === true) completedSessions += 1;
     }
 
     return {
-      currentStreak,
-      maxStreak,
-      totalSessions,
-      totalMinutes,
-      weeklyMinutes,
-      categoriesUsed,
-      weekActivity,
-      heatGrid,
+      totalMinutes: Math.round(totalMinutes),
+      completedSessions,
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statEvents, todayKey]);
-
-  // ── Recent history ────────────────────────────────────────────────────────
-  const recentSessions = useMemo(() => {
-    const seen = new Set<string>();
-    return history
-      .slice(0, 20)
-      .map((e) => {
-        const session = getSessionById(e.sessionId);
-        return session ? { session, playedAt: e.playedAt } : null;
-      })
-      .filter((x): x is NonNullable<typeof x> => {
-        if (!x) return false;
-        const key = x.session.id + dayKey(new Date(x.playedAt));
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .slice(0, 10);
-  }, [history]);
-
-  // ── Total hours/minutes display ───────────────────────────────────────────
-  const timeDisplay =
-    stats.totalMinutes >= 60
-      ? `${Math.floor(stats.totalMinutes / 60)}h ${stats.totalMinutes % 60}m`
-      : `${stats.totalMinutes} min`;
+  }, [statEvents, statsRangeDays, todayKey]);
 
   return (
     <LinearGradient
-
       style={styles.root}
-
-      colors={BG_GRADIENT}
-
-      locations={[0, 0.5, 1]}
-
-      start={{ x: 0, y: 0 }}
-
-      end={{ x: 0, y: 1 }}
-
+      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      locations={theme.gradientLocations as unknown as [number, number, ...number[]] | undefined}
     >
-      <StatusBar hidden />
-      <SacredBackground />
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+
+      <View style={[styles.header, { paddingTop: topPad }]}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={10}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Volver"
+        >
+          <Feather name="arrow-left" size={23} color={colors.foreground} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>Tu progreso</Text>
+        <View style={styles.headerSpacer} />
+      </View>
 
       <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{
-          paddingBottom: 120 + bottomPad,
-          paddingTop: topPad + 12,
-          paddingHorizontal: 20,
-        }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: bottomPad + 32 },
+        ]}
       >
-        {/* ── Header ── */}
-        <View style={styles.headerRow}>
-          <Pressable
-            onPress={() =>
-              router.canGoBack()
-                ? router.back()
-                : router.replace("/(tabs)/profile" as never)
-            }
-            hitSlop={10}
-            style={[
-              styles.backBtn,
-              { backgroundColor: "rgba(74,12,12,0.08)" },
-            ]}
-          >
-            <Feather name="arrow-left" size={18} color={colors.foreground} />
-          </Pressable>
-          <View style={styles.headerTitleRow}>
-            <Text style={{ fontSize: 20 }}>🏆</Text>
-            <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-              Tu progreso
-            </Text>
-          </View>
-          <View style={{ width: 38 }} />
-        </View>
-
-        {/* ── Tabs ── */}
         <View
-          style={[styles.tabBar, { borderBottomColor: colors.border }]}
+          style={[
+            styles.streakSection,
+            { backgroundColor: resourceBlockBackground },
+          ]}
         >
-          {(["logros", "historial"] as const).map((t) => (
-            <Pressable
-              key={t}
-              onPress={() => setTab(t)}
-              style={styles.tabBtn}
-            >
-              <Text
-                style={[
-                  styles.tabLabel,
-                  {
-                    color:
-                      tab === t ? colors.foreground : colors.mutedForeground,
-                    fontWeight: tab === t ? "700" : "500",
-                  },
-                ]}
-              >
-                {t === "logros" ? "Logros" : "Historial"}
-              </Text>
-              {tab === t && (
-                <GoldGradient style={styles.tabIndicator} />
-              )}
-            </Pressable>
-          ))}
-        </View>
-
-        {/* ══════════════════ TAB: LOGROS ══════════════════ */}
-        {tab === "logros" && (
-          <View style={styles.tabContent}>
-
-            {/* Racha card */}
-            <View style={[styles.card, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
-              <View style={styles.streakTop}>
-                <View style={[styles.flameBubble, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
-                  <Text style={styles.flameEmoji}>
-                    {stats.currentStreak > 0 ? "🔥" : "✨"}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.streakValue, { color: colors.foreground }]}>
-                    {stats.currentStreak > 0
-                      ? `${stats.currentStreak} día${stats.currentStreak !== 1 ? "s" : ""} de racha`
-                      : "Comienza tu racha"}
-                  </Text>
-                  <Text style={[styles.streakSub, { color: colors.mutedForeground }]}>
-                    {stats.currentStreak > 0
-                      ? "Sigue así, no pierdas tu constancia"
-                      : "Escucha una sesión hoy para empezar"}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Week day circles */}
-              <View style={styles.weekRow}>
-                {WEEK_INITIALS.map((label, i) => {
-                  const done = stats.weekActivity[i];
-                  const isToday = i === isoDow(new Date());
-                  return (
-                    <View key={i} style={styles.dayPill}>
-                      <Text
-                        style={[
-                          styles.dayLabel,
-                          { color: isToday ? colors.foreground : colors.mutedForeground },
-                        ]}
-                      >
-                        {label}
-                      </Text>
-                      <View
-                        style={[
-                          styles.dayCircle,
-                          {
-                            backgroundColor: done
-                              ? colors.primary
-                              : "transparent",
-                            borderColor: done
-                              ? colors.primary
-                              : isToday
-                              ? colors.foreground
-                              : colors.border,
-                          },
-                        ]}
-                      >
-                        {done && (
-                          <Feather name="check" size={13} color="#1B060F" />
-                        )}
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-
-              {/* Max streak row */}
-              <View style={[styles.maxStreakRow, { borderTopColor: colors.border }]}>
-                <View
-                  style={[
-                    styles.maxStreakIcon,
-                    { backgroundColor: "rgba(212,175,55,0.10)" },
-                  ]}
+          <View style={styles.streakHeadingRow}>
+            <View style={styles.streakHeadingMain}>
+              <View style={styles.streakLotusIcon}>
+                <MaskedView
+                  style={styles.streakLotusMask}
+                  maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
                 >
-                  <Text style={{ fontSize: 16 }}>🛡️</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.maxStreakLabel, { color: colors.foreground }]}>
-                    Racha máxima
+                  <LinearGradient
+                    colors={["#CFCFCF", "#E3E3E3"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                </MaskedView>
+              </View>
+              <View style={styles.streakHeadingCopy}>
+                <View style={styles.streakTitleRow}>
+                  <Text style={[styles.streakCountText, { color: colors.foreground }]}>
+                    {currentStreak}
                   </Text>
-                  <Text style={[styles.maxStreakSub, { color: colors.mutedForeground }]}>
-                    Tu récord personal
+                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                    Días de racha
                   </Text>
                 </View>
-                <Text style={[styles.maxStreakValue, { color: colors.primary }]}>
-                  {stats.maxStreak > 0 ? `${stats.maxStreak} días` : "—"}
+                <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
+                  Expande tu consciencia todos los días
                 </Text>
               </View>
-            </View>
-
-            {/* Stats 3-col */}
-            <View style={styles.statsRow}>
-              {[
-                {
-                  icon: "🧘",
-                  value: stats.totalSessions.toString(),
-                  line1: "Sesiones",
-                  line2: "completadas",
-                },
-                {
-                  icon: "⏱️",
-                  value: timeDisplay,
-                  line1: "Tiempo",
-                  line2: "total",
-                },
-                {
-                  icon: "🏆",
-                  value: stats.maxStreak > 0 ? `${stats.maxStreak} d` : "—",
-                  line1: "Racha",
-                  line2: "máxima",
-                },
-              ].map((s) => (
-                <View
-                  key={s.line1}
-                  style={[
-                    styles.statCard,
-                    { backgroundColor: "rgba(74,12,12,0.08)" },
-                  ]}
-                >
-                  <Text style={styles.statIcon}>{s.icon}</Text>
-                  <Text style={[styles.statValue, { color: colors.accent }]}>
-                    {s.value || "—"}
-                  </Text>
-                  <Text
-                    style={[styles.statLabel, { color: colors.mutedForeground }]}
-                  >
-                    {s.line1}{"\n"}{s.line2}
-                  </Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Hitos */}
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Hitos
-            </Text>
-            {milestones.map((c) => {
-              const completed = !!c.unlockedAt;
-              const pct = Math.min(c.progress / c.threshold, 1);
-              return (
-                <Pressable
-                  key={c.id}
-                  onPress={() => previewMilestone(c.id)}
-                  style={[
-                    styles.challengeCard,
-                    { backgroundColor: "rgba(74,12,12,0.08)" },
-                  ]}
-                >
-                  <View style={styles.challengeTop}>
-                    <View
-                      style={[
-                        styles.challengeIconBubble,
-                        {
-                          backgroundColor: completed
-                            ? "rgba(212,175,55,0.15)"
-                            : "rgba(74,12,12,0.08)",
-                        },
-                      ]}
-                    >
-                      <Text style={{ fontSize: 16 }}>
-                        {completed ? "✓" : c.icon}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={[
-                          styles.challengeLabel,
-                          {
-                            color: completed
-                              ? colors.accent
-                              : colors.foreground,
-                          },
-                        ]}
-                      >
-                        {c.title}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.challengeProgress,
-                          { color: colors.mutedForeground },
-                        ]}
-                      >
-                        {completed && c.unlockedAt
-                          ? `Conseguido el ${new Date(c.unlockedAt).toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" })}`
-                          : `${c.progress} / ${c.threshold}`}
-                      </Text>
-                    </View>
-                  </View>
-                  {!completed && (
-                    <View
-                      style={[
-                        styles.progressBar,
-                        { backgroundColor: colors.border },
-                      ]}
-                    >
-                      <GoldGradient
-                        style={[
-                          styles.progressFill,
-                          { width: `${pct * 100}%` as never },
-                        ]}
-                      />
-                    </View>
-                  )}
-                </Pressable>
-              );
-            })}
-
-            <View
-              style={[
-                styles.comingSoonCard,
-                { backgroundColor: "rgba(212,175,55,0.07)", borderColor: "rgba(212,175,55,0.22)" },
-              ]}
-            >
-              <Text style={[styles.comingSoonLabel, { color: colors.primary }]}>
-                {"PRÓXIMAMENTE"}
-              </Text>
-              <Text style={[styles.comingSoonText, { color: colors.mutedForeground }]}>
-                {"Insignias, compartir tu progreso y ranking de la comunidad llegan en futuras versiones."}
-              </Text>
             </View>
           </View>
-        )}
 
-        {/* ══════════════════ TAB: HISTORIAL ══════════════════ */}
-        {tab === "historial" && (
-          <View style={styles.tabContent}>
+          <SonicStreakDays
+            activeFlags={weekFlags}
+            todayIndex={todayIndex}
+            idPrefix="progress-screen-streak"
+            daysMarginTop={4}
+            circleSize={37}
+            edgeAligned
+            dayLabelColor={theme.accent ?? colors.primary}
+            activeBorderColor={WIDGET_GREEN_SOLID}
+            activeBorderWidth={2.9}
+          />
+        </View>
 
-            {/* Heat-map */}
-            <View
-              style={[
-                styles.card,
-                { backgroundColor: "rgba(74,12,12,0.08)" },
-              ]}
-            >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>
-                Actividad — últimas 8 semanas
-              </Text>
-              <Text style={[styles.cardSub, { color: colors.mutedForeground }]}>
-                Cada celda equivale a un día de escucha
-              </Text>
-
-              <View style={styles.heatmapContainer}>
-                {/* Day labels */}
-                <View style={styles.heatmapDayLabels}>
-                  {WEEK_INITIALS.map((d, i) => (
-                    <Text
-                      key={i}
-                      style={[styles.heatDayLabel, { color: colors.mutedForeground }]}
-                    >
-                      {d}
-                    </Text>
-                  ))}
-                </View>
-                {/* Grid columns */}
-                <View style={styles.heatmapGrid}>
-                  {stats.heatGrid.map((col, wi) => (
-                    <View key={wi} style={styles.heatCol}>
-                      {col.map((level, di) => (
-                        <View
-                          key={di}
-                          style={[
-                            styles.heatCell,
-                            {
-                              backgroundColor:
-                                level < 0
-                                  ? "transparent"
-                                  : level === 0
-                                  ? colors.card === "rgba(74,12,12,0.08)"
-                                    ? "#1C2230"
-                                    : colors.border
-                                  : level === 1
-                                  ? "rgba(212,175,55,0.25)"
-                                  : level === 2
-                                  ? "rgba(212,175,55,0.55)"
-                                  : colors.primary,
-                            },
-                          ]}
-                        />
-                      ))}
-                    </View>
-                  ))}
-                </View>
-              </View>
-
-              {/* Legend */}
-              <View style={styles.heatLegend}>
-                <Text style={[styles.heatLegendLabel, { color: colors.mutedForeground }]}>
-                  Menos
-                </Text>
-                {[0, 1, 2, 3].map((l) => (
-                  <View
-                    key={l}
-                    style={[
-                      styles.heatLegendCell,
-                      {
-                        backgroundColor:
-                          l === 0
-                            ? "#1C2230"
-                            : l === 1
-                            ? "rgba(212,175,55,0.25)"
-                            : l === 2
-                            ? "rgba(212,175,55,0.55)"
-                            : colors.primary,
-                      },
-                    ]}
-                  />
-                ))}
-                <Text style={[styles.heatLegendLabel, { color: colors.mutedForeground }]}>
-                  Más
-                </Text>
-              </View>
-            </View>
-
-            {/* Weekly summary */}
-            <View style={styles.statsRow}>
-              {[
-                {
-                  icon: "🗓️",
-                  value: `${stats.weekActivity.filter(Boolean).length} días`,
-                  line1: "Esta",
-                  line2: "semana",
-                },
-                {
-                  icon: "⏱️",
-                  value:
-                    stats.weeklyMinutes >= 60
-                      ? `${Math.floor(stats.weeklyMinutes / 60)}h ${stats.weeklyMinutes % 60}m`
-                      : `${stats.weeklyMinutes} min`,
-                  line1: "Minutos",
-                  line2: "esta semana",
-                },
-              ].map((s) => (
-                <View
-                  key={s.line1}
-                  style={[
-                    styles.statCard,
-                    { backgroundColor: "rgba(74,12,12,0.08)", flex: 1 },
-                  ]}
-                >
-                  <Text style={styles.statIcon}>{s.icon}</Text>
-                  <Text style={[styles.statValue, { color: colors.accent }]}>
-                    {s.value}
-                  </Text>
-                  <Text
-                    style={[styles.statLabel, { color: colors.mutedForeground }]}
-                  >
-                    {s.line1}{"\n"}{s.line2}
-                  </Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Recent sessions */}
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              Sesiones recientes
+        <View
+          style={[
+            styles.personalStatsSection,
+            { backgroundColor: resourceBlockBackground },
+          ]}
+        >
+          <View style={styles.personalStatsHeader}>
+            <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+              Estadísticas personales
             </Text>
-
-            {recentSessions.length === 0 ? (
-              <View
-                style={[
-                  styles.emptyState,
-                  { backgroundColor: "rgba(74,12,12,0.08)" },
-                ]}
-              >
-                <Feather
-                  name="headphones"
-                  size={28}
-                  color="rgba(212,175,55,0.30)"
-                />
-                <Text
-                  style={[
-                    styles.emptyStateText,
-                    { color: colors.mutedForeground },
-                  ]}
-                >
-                  Tu historial aparecerá{"\n"}después de tu primera sesión.
-                </Text>
-              </View>
-            ) : (
-              recentSessions.map(({ session, playedAt }) => (
-                <View key={session.id + playedAt} style={styles.historyItem}>
-                  <View style={styles.historyMeta}>
-                    <Text
-                      style={[
-                        styles.historyDate,
-                        { color: colors.mutedForeground },
-                      ]}
-                    >
-                      {relativeLabel(playedAt)}
+            <Pressable
+              onPress={() => setStatsFilterOpen((open) => !open)}
+              style={styles.statsFilterTrigger}
+              accessibilityRole="button"
+              accessibilityLabel="Elegir filtro de días"
+              accessibilityState={{ expanded: statsFilterOpen }}
+            >
+              <Text style={[styles.statsFilterText, { color: progressAccent }]}>
+                Últimos {statsRangeDays} días
+              </Text>
+              <Feather name="chevron-down" size={17} color={progressAccent} />
+            </Pressable>
+            {statsFilterOpen && (
+              <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground }]}>
+                {([7, 30, 90] as const).map((days) => (
+                  <Pressable
+                    key={days}
+                    onPress={() => {
+                      setStatsRangeDays(days);
+                      setStatsFilterOpen(false);
+                    }}
+                    style={[
+                      styles.statsFilterOption,
+                      statsRangeDays === days && styles.statsFilterOptionSelected,
+                    ]}
+                  >
+                    <Text style={[styles.statsFilterText, { color: progressAccent }]}>
+                      Últimos {days} días
                     </Text>
-                  </View>
-                  <SessionCard session={session} />
-                </View>
-              ))
+                  </Pressable>
+                ))}
+              </View>
             )}
           </View>
-        )}
+
+          <View style={styles.personalStatsValues}>
+            <View style={styles.personalStatItem}>
+              <View style={styles.personalStatMetricRow}>
+                <View style={styles.personalStatIcon}>
+                  <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_SOLID} />
+                </View>
+                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                  {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
+                </Text>
+              </View>
+              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                TIEMPO DE{"\n"}BIENESTAR
+              </Text>
+            </View>
+            <View style={styles.personalStatDivider} />
+            <View style={styles.personalStatItem}>
+              <View style={styles.personalStatMetricRow}>
+                <View style={styles.personalStatIcon}>
+                  <Feather name="clock" size={20} color={WIDGET_GREEN_SOLID} />
+                </View>
+                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                  {personalStats.completedSessions}
+                </Text>
+              </View>
+              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                SESIONES{"\n"}COMPLETADAS
+              </Text>
+            </View>
+            <View style={styles.personalStatDivider} />
+            <View style={styles.personalStatItem}>
+              <View style={styles.personalStatMetricRow}>
+                <View style={styles.personalStatIcon}>
+                  <Feather name="flag" size={20} color={WIDGET_GREEN_SOLID} />
+                </View>
+                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                  {maxStreak} {maxStreak === 1 ? "día" : "días"}
+                </Text>
+              </View>
+              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                RACHA{"\n"}MÁXIMA
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <HistorialCalendar embedded />
       </ScrollView>
     </LinearGradient>
   );
@@ -661,181 +243,150 @@ export default function ProgresoScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  scroll: { flex: 1 },
-
-  // Header
-  headerRow: {
+  header: {
+    minHeight: 96,
+    paddingHorizontal: 20,
+    paddingBottom: 15,
     flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 20,
+    alignItems: "flex-end",
   },
-  backBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    borderWidth: 1,
+  backButton: {
+    width: 42,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitleRow: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
-  headerTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700" },
-
-  // Tabs
-  tabBar: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    marginBottom: 20,
-  },
-  tabBtn: {
+  headerTitle: {
     flex: 1,
-    paddingVertical: 12,
-    alignItems: "center",
-    position: "relative",
+    fontFamily: "Manrope",
+    fontSize: 20,
+    lineHeight: 42,
+    fontWeight: "700",
+    textAlign: "center",
   },
-  tabLabel: { fontFamily: "Manrope", fontSize: 15 },
-  tabIndicator: {
-    position: "absolute",
-    bottom: 0,
-    left: "25%",
-    right: "25%",
-    height: 2,
-    borderRadius: 1,
+  headerSpacer: { width: 42, height: 42 },
+  content: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
   },
-
-  tabContent: { gap: 12 },
-
-  // Card
-  card: {
+  streakSection: {
     borderRadius: 18,
-    padding: 18,
-    backgroundColor: "rgba(74,12,12,0.08)",
+    padding: 16,
+    marginBottom: 15,
   },
-  cardTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", marginBottom: 2 },
-  cardSub: { fontFamily: "Manrope", fontSize: 11, marginBottom: 14 },
-
-  // Racha
-  streakTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
-  flameBubble: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flameEmoji: { fontFamily: "Manrope", fontSize: 24 },
-  streakValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 3 },
-  streakSub: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16 },
-
-  weekRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 2,
-  },
-  dayPill: { alignItems: "center", gap: 5 },
-  dayLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
-  dayCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  maxStreakRow: {
+  streakHeadingRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    marginTop: 16,
-    paddingTop: 14,
-    borderTopWidth: 1,
+    marginBottom: 18,
   },
-  maxStreakIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
+  streakHeadingMain: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  streakLotusIcon: {
+    width: 61,
+    height: 61,
     alignItems: "center",
     justifyContent: "center",
   },
-  maxStreakLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  maxStreakSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
-  maxStreakValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-
-  // Stats
-  statsRow: { flexDirection: "row", gap: 10 },
-  statCard: {
-    flex: 1,
-    borderRadius: 14,
-    padding: 14,
-    alignItems: "center",
-    backgroundColor: "rgba(74,12,12,0.08)",
+  streakLotusMask: { width: 61, height: 61 },
+  streakHeadingCopy: { flex: 1, gap: 1 },
+  streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  streakCountText: {
+    fontFamily: "Manrope",
+    fontSize: 21,
+    fontWeight: "700",
   },
-  statIcon: { fontFamily: "Manrope", fontSize: 22, marginBottom: 6 },
-  statValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  statLabel: {
+  sectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  streakSubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  personalStatsSection: {
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 15,
+  },
+  personalStatsHeader: { gap: 7 },
+  personalStatsTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  statsFilterTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 4,
+    paddingVertical: 1,
+  },
+  statsFilterMenu: {
+    alignSelf: "flex-start",
+    minWidth: 148,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: 1,
+  },
+  statsFilterOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  statsFilterOptionSelected: {
+    backgroundColor: "rgba(152,93,212,0.16)",
+  },
+  statsFilterText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  personalStatsValues: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginTop: 24,
+  },
+  personalStatItem: {
+    flex: 1,
+    minWidth: 0,
+    alignItems: "center",
+    gap: 8,
+  },
+  personalStatMetricRow: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  personalStatIcon: {
+    width: 28,
+    height: 28,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  personalStatDivider: {
+    width: 1,
+    height: 58,
+    marginHorizontal: 4,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  personalStatValue: {
+    fontFamily: "Manrope",
+    fontSize: 22,
+    fontWeight: "600",
+  },
+  personalStatLabel: {
     fontFamily: "Manrope",
     fontSize: 10,
+    lineHeight: 15,
+    letterSpacing: 0.35,
     textAlign: "center",
-    marginTop: 3,
-    lineHeight: 14,
   },
-
-  // Challenges
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginTop: 8, marginBottom: 4 },
-  challengeCard: {
-    borderRadius: 14,
-    padding: 14,
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  challengeTop: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 8 },
-  challengeIconBubble: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  challengeLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
-  challengeProgress: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
-  progressBar: { height: 4, borderRadius: 2 },
-  progressFill: { height: "100%", borderRadius: 2 },
-
-  // Heat-map
-  heatmapContainer: { flexDirection: "row", alignItems: "flex-start", gap: 5 },
-  heatmapDayLabels: { flexDirection: "column", gap: 4, paddingTop: 1 },
-  heatDayLabel: { fontFamily: "Manrope", fontSize: 8, height: 11, lineHeight: 11 },
-  heatmapGrid: { flex: 1, flexDirection: "row", gap: 4 },
-  heatCol: { flex: 1, flexDirection: "column", gap: 4 },
-  heatCell: { height: 11, borderRadius: 2 },
-  heatLegend: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    marginTop: 12,
-    justifyContent: "flex-end",
-  },
-  heatLegendLabel: { fontFamily: "Manrope", fontSize: 9 },
-  heatLegendCell: { width: 10, height: 10, borderRadius: 2 },
-
-  // History
-  historyItem: { gap: 6 },
-  historyMeta: { flexDirection: "row", alignItems: "center", gap: 6, paddingLeft: 4 },
-  historyDate: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
-
-  // Empty
-  emptyState: {
-    borderRadius: 14,
-    padding: 32,
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  emptyStateText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 20 },
-
-  // Coming soon
-  comingSoonCard: { borderRadius: 14, padding: 16, backgroundColor: "rgba(74,12,12,0.08)" },
-  comingSoonLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 6 },
-  comingSoonText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19 },
 });
