@@ -1342,7 +1342,7 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <View style={{ marginTop: 53 }}>
+            <View>
               <ProfileMixCarousel marginBottom={53} />
             </View>
             <ProfileSettingsSections
@@ -2250,7 +2250,7 @@ const styles = StyleSheet.create({
   personalStatsSection: {
     borderRadius: 17,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 19,
   },
   personalStatsTitle: {
     fontFamily: "Manrope",
