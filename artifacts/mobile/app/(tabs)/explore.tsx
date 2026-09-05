@@ -466,8 +466,13 @@ export function ExploreScreen({
         contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        stickyHeaderIndices={[0]}
       >
         <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
+          <LinearGradient
+            colors={activeTheme.gradient}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.titleRow}>
             <Text style={styles.pageTitle}>{screenTitle}</Text>
           </View>
@@ -775,7 +780,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { marginTop: -3 },
 
-  fixedHeader:  { zIndex: 10, paddingBottom: 15 },
+  fixedHeader:  { zIndex: 10, paddingBottom: 10, overflow: "hidden" },
   overlayHeader: {
     position: "absolute",
     top: 0,
@@ -828,7 +833,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#F4F4F4",
   },
-  titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
+  titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "center", paddingHorizontal: H_PAD, paddingBottom: 6, paddingTop: 7 },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
@@ -841,8 +846,8 @@ const styles = StyleSheet.create({
   },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
-  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, color: "#F4F4F4", textAlign: "center", marginTop: 0, transform: [{ translateY: 1 }] },
+  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 15, borderWidth: 0, paddingHorizontal: 18, height: 45 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {
