@@ -99,7 +99,6 @@ type SessionCarouselProps = {
   cardVariant?: "ambiental";
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
-  ambientalCardBackgroundColor?: string;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -131,7 +130,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
-  ambientalCardBackgroundColor,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -158,12 +156,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   // conservan el título superpuesto sobre la imagen.
   const shouldHideAmbientalTitle =
     hideAmbientalTitleInSquareRecent && squareCards;
-  const ambientalCardBackground = ambientalCardBackgroundColor
-    ?? (theme.id === "indigo"
+  const ambientalCardBackground =
+    theme.id === "indigo"
       ? "rgba(42,40,64,0.65)"
       : theme.id === "indigo2"
         ? "rgba(255,255,255,0.025)"
-        : colors.card);
+        : colors.card;
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
