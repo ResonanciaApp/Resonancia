@@ -49,7 +49,7 @@ const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
-const RESONANCIA_CARD_SURFACE = "#202B3A";
+const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.055)";
 
 function CollectionPill({
   label,
