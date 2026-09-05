@@ -101,9 +101,8 @@ export function DailyRecommendationsSection({
             <SessionRow
               session={session}
               imageSize={84}
-              showCategoryPill
-              categoryPillPlain={false}
-              categoryPillOutlineColor={sleepTabSurface}
+              hideMeta
+              secondaryText={session.categoryLabel}
               showDurationBadge
               showChevron
               authorColor={themeAccent}

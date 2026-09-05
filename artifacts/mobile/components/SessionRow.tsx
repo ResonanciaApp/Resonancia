@@ -32,6 +32,8 @@ type Props = {
   showChevron?: boolean;
   authorColor?: string;
   authorFontSize?: number;
+  hideMeta?: boolean;
+  secondaryText?: string;
   chevronColor?: string;
   onActionsPress?: () => void;
   onPress?: () => void;
@@ -50,6 +52,8 @@ export function SessionRow({
   showChevron = false,
   authorColor,
   authorFontSize,
+  hideMeta = false,
+  secondaryText,
   chevronColor,
   onActionsPress,
   onPress,
@@ -106,28 +110,30 @@ export function SessionRow({
         </View>
 
         <View style={styles.sessionContent}>
-          {showCategoryPill ? (
-            <View style={styles.sessionMeta}>
-              <SessionCategoryPill
-                categoryId={session.categoryId}
-                inline
-                plain={categoryPillPlain}
-                outlineColor={categoryPillOutlineColor}
-              />
-            </View>
-          ) : (
-            <View style={styles.sessionMeta}>
-              {metaText ? (
-                <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
-              ) : (
-                <>
-                  <Feather name="star" size={11} color={colors.mutedForeground} />
-                  <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-                    {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
-                  </Text>
-                </>
-              )}
-            </View>
+          {!hideMeta && (
+            showCategoryPill ? (
+              <View style={styles.sessionMeta}>
+                <SessionCategoryPill
+                  categoryId={session.categoryId}
+                  inline
+                  plain={categoryPillPlain}
+                  outlineColor={categoryPillOutlineColor}
+                />
+              </View>
+            ) : (
+              <View style={styles.sessionMeta}>
+                {metaText ? (
+                  <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
+                ) : (
+                  <>
+                    <Feather name="star" size={11} color={colors.mutedForeground} />
+                    <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+                      {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
+                    </Text>
+                  </>
+                )}
+              </View>
+            )
           )}
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
@@ -140,7 +146,7 @@ export function SessionRow({
             ]}
             numberOfLines={1}
           >
-            {author}
+            {secondaryText ?? author}
           </Text>
         </View>
         {showChevron && (
