@@ -252,7 +252,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                 style={[
                   styles.cardTitle,
                   styles.ambientalCardTitle,
-                  { color: colors.foreground },
+                  { color: "#F9F9F9" },
                 ]}
                 numberOfLines={2}
               >

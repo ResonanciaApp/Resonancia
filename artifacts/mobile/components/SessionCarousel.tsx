@@ -281,7 +281,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
-                        color={colors.foreground}
+                        color="#F9F9F9"
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
                       />
                     )}

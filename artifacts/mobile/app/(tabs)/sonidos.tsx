@@ -514,7 +514,8 @@ const styles = StyleSheet.create({
     gap: 12,
     overflow: "hidden",
     backgroundColor: "rgba(181,211,255,0.057)",
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pillText: {
     fontFamily: "Manrope",
