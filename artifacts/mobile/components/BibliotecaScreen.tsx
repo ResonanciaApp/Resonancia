@@ -71,7 +71,7 @@ const MUTED = "#c2c2c2";
 
 function getLibraryTabSurface(sceneId: SceneId): string {
   if (sceneId === "tibet") return "rgba(0,0,0,0.15)";
-  if (isIndigoThemeId(sceneId)) return "rgba(42,40,64,0.65)";
+  if (isIndigoThemeId(sceneId)) return "rgba(255,255,255,0.05)";
   return "rgba(255,255,255,0.05)";
 }
 
@@ -2222,7 +2222,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  chipIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   chipIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderWidth: 1,

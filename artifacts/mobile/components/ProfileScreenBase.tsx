@@ -411,12 +411,12 @@ export function ProfileScreenBase({
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
         : "rgba(255,255,255,0.05)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(42,40,64,0.65)"
+    ? "rgba(255,255,255,0.05)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
@@ -1960,7 +1960,7 @@ const styles = StyleSheet.create({
     color: "#AAAAC4",
   },
   accountFieldValueBox: {
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -1976,7 +1976,7 @@ const styles = StyleSheet.create({
     minHeight: 42,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 10,
     borderWidth: 0,
   },

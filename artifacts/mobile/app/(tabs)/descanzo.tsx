@@ -127,7 +127,7 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;
-  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(42,40,64,0.65)" : undefined;
+  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(255,255,255,0.05)" : undefined;
 
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  sleepPillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  sleepPillIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   sleepPillIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",

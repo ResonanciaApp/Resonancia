@@ -600,7 +600,7 @@ export function ExploreScreen({
                         activeSceneId === "tibet"
                           ? "rgba(0,0,0,0.15)"
                           : isIndigoThemeId(activeSceneId)
-                            ? "rgba(42,40,64,0.65)"
+                            ? "rgba(255,255,255,0.05)"
                             : activeSceneId === "indigo2"
                               ? "rgba(255,255,255,0.025)"
                               : "rgba(255,255,255,0.05)",
@@ -816,7 +816,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
   },
   discoverPillIndigo: {
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   discoverPillIndigo2: {
     backgroundColor: "rgba(255,255,255,0.025)",
@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.12)",
   },
   searchBoxIndigo: {
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderColor: "rgba(170,170,196,0.18)",
   },
   searchBoxIndigo2: {

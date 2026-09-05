@@ -120,7 +120,7 @@ export function ToolsGrid({
   const pillBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : activeSceneId === "indigo2"
         ? "rgba(255,255,255,0.025)"
       : "rgba(255,255,255,0.05)";

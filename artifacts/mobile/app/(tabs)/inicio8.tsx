@@ -1520,7 +1520,7 @@ export default function HomeScreen2({
     ? "rgba(0,0,0,0.15)"
     : "rgba(255,255,255,0.05)";
   const durationPillBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(42,40,64,0.65)"
+    ? "rgba(255,255,255,0.05)"
     : activeSceneId === "indigo2"
       ? "rgba(255,255,255,0.025)"
       : cardBg;
@@ -1529,7 +1529,7 @@ export default function HomeScreen2({
       ? durationPillBg
       : "rgba(255,255,255,0.025)";
   const recommendationSurfaceBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(42,40,64,0.65)"
+    ? "rgba(255,255,255,0.05)"
     : cardBg;
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):

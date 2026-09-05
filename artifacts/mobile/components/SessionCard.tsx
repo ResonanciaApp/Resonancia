@@ -120,7 +120,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
   const ambientalCardBackground =
     isIndigoThemeId(theme.id)
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : theme.id === "indigo2"
         ? "rgba(255,255,255,0.025)"
         : colors.card;

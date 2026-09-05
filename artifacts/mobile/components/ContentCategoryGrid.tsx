@@ -188,7 +188,7 @@ export function ContentCategoryGrid({
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId) && isDiscoverGrid
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : activeSceneId === "indigo2" && isDiscoverGrid
         ? "rgba(255,255,255,0.025)"
       : isIndigoThemeId(activeSceneId)

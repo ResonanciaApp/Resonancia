@@ -27,7 +27,7 @@ export function DailyWisdomCard() {
     <View
       style={[
         styles.card,
-        isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
+        isIndigoThemeId(theme.id) && { backgroundColor: "rgba(255,255,255,0.05)" },
       ]}
       testID="inicio2-daily-wisdom"
     >

@@ -6792,7 +6792,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   catChipIndigo: {
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   catChipText: {
     fontFamily: "Manrope",

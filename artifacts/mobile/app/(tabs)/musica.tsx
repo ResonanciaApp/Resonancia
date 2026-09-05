@@ -787,7 +787,7 @@ export default function MezcladorScreen() {
                       theme.id === "tibet"
                         ? "rgba(0,0,0,0.15)"
                         : isIndigoThemeId(theme.id)
-                          ? "rgba(42,40,64,0.65)"
+                          ? "rgba(255,255,255,0.05)"
                           : "rgba(255,255,255,0.05)"
                     }
                     iconOffsetX={-1}
@@ -1097,7 +1097,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillTabIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  pillTabIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},

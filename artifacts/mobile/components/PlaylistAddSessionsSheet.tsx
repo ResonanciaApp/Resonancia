@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
   },
   tabChipInactiveIndigo: {
-    backgroundColor: "rgba(42,40,64,0.65)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   tabText: { fontFamily: "Manrope", color: "#FBFBFB", fontSize: 14, fontWeight: "700", textAlign: "center" },
   tabTextActive: { color: "#0D0A1E", fontWeight: "600" },

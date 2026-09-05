@@ -131,7 +131,7 @@ export default function SonidosScreen() {
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(42,40,64,0.65)" : undefined;
+  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(255,255,255,0.05)" : undefined;
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(W)).current;
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  pillIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   pillIndigo2: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",

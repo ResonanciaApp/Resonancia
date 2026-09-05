@@ -29,13 +29,13 @@ const ROUTINE_SCENE_SURFACES = {
     ticketSurface: "#311F3D",
   },
   indigo: {
-    surface: "rgba(42,40,64,0.65)",
+    surface: "rgba(255,255,255,0.05)",
     surfaceElevated: "#292735",
     divider: "rgba(172,172,193,0.18)",
     ticketSurface: "#1C1B28",
   },
   resonancia: {
-    surface: "rgba(42,40,64,0.65)",
+    surface: "rgba(255,255,255,0.05)",
     surfaceElevated: "#292735",
     divider: "rgba(172,172,193,0.18)",
     ticketSurface: "#1C1B28",

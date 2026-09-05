@@ -57,7 +57,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : "rgba(255,255,255,0.05)";
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);

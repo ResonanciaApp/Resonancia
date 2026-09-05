@@ -286,7 +286,7 @@ export default function MusicaSonidosScreen() {
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
-      ? "rgba(42,40,64,0.65)"
+      ? "rgba(255,255,255,0.05)"
       : "rgba(255,255,255,0.05)";
 
   const TABS = useMemo(() => {
@@ -507,7 +507,7 @@ export default function MusicaSonidosScreen() {
             hitSlop={10}
             style={[
               styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
+              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(255,255,255,0.05)" },
               { position: "absolute", right: H_PAD, top: topPad + 3 },
             ]}
             accessibilityRole="button"
@@ -579,7 +579,7 @@ export default function MusicaSonidosScreen() {
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(42,40,64,0.65)" },
+                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(255,255,255,0.05)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Música"
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
    chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  chipIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   chipIndigo2Inactive: { backgroundColor: "rgba(255,255,255,0.025)", borderColor: "rgba(255,255,255,0.04)" },
   chipBorder: {},
   chipBorderSel: {},

@@ -124,7 +124,7 @@ export default function FavoritosTodosScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(42,40,64,0.65)"
+    ? "rgba(255,255,255,0.05)"
     : "rgba(255,255,255,0.12)";
 
   const [activeTab, setActiveTab] = useState<FavTabId>("sesiones");
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
   pillSel: { borderWidth: 0 },
-  pillIndigo: { backgroundColor: "rgba(42,40,64,0.65)" },
+  pillIndigo: { backgroundColor: "rgba(255,255,255,0.05)" },
   pillIndigo2Inactive: {
     backgroundColor: "rgba(255,255,255,0.025)",
     borderColor: "rgba(255,255,255,0.04)",

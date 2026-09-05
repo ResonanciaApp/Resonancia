@@ -55,7 +55,7 @@ const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 const DEFAULT_PANEL_BG = "transparent";
 const PLAYLIST_CONTROL_BG = WIDGET_GREEN_SOLID;
-const PLAYLIST_CARD_BG = "rgba(42,40,64,0.65)";
+const PLAYLIST_CARD_BG = "rgba(255,255,255,0.05)";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
 const ACCENT_PALETTE: readonly string[] = [
