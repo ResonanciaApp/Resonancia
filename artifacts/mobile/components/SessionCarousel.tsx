@@ -156,7 +156,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   // conservan el título superpuesto sobre la imagen.
   const shouldHideAmbientalTitle =
     hideAmbientalTitleInSquareRecent && squareCards;
-  const ambientalCardBackground = "rgba(240,246,250,0.12)";
+  const ambientalCardBackground = "rgba(222,236,255,0.06)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   const sectionDescriptionColor = theme.id === "indigo2" ? colors.accent : "#acaac2";
