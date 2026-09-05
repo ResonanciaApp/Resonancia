@@ -253,13 +253,13 @@ const ActivityRow = React.memo(function ActivityRow({
               {
                 backgroundColor: completing
                   ? "rgba(255,255,255,0.92)"
-                  : routineTheme.ticketSurface,
+                  : "#BE9650",
                 opacity: pressed ? 0.58 : 1,
               },
             ]}
           >
             {!completing ? (
-              <Feather name="check" size={20} color={routineTheme.completion} />
+              <Feather name="check" size={20} color="#0E0E17" />
             ) : null}
           </Pressable>
         </Reanimated.View>
@@ -521,13 +521,13 @@ export function MiRutinaSection({ style }: Props) {
         style={({ pressed }) => [
           styles.addButton,
           {
-            borderColor: routineTheme.completion,
+            borderColor: "#BE9650",
             opacity: pressed ? 0.72 : 1,
           },
         ]}
       >
-        <Feather name="plus" size={20} color={routineTheme.completion} />
-        <Text style={[styles.addButtonText, { color: routineTheme.completion }]}>
+        <Feather name="plus" size={20} color="#BE9650" />
+        <Text style={[styles.addButtonText, { color: "#BE9650" }]}>
           Añadir una actividad
         </Text>
       </Pressable>

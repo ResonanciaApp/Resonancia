@@ -36,7 +36,7 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const ACTIVE_COLOR   = "#FFFFFF";
+const ACTIVE_COLOR   = "#BE9650";
 const INACTIVE_COLOR = "#A9A9C3";
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
@@ -106,7 +106,7 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
-  const activeCol   = lightNeutralColors ? "#F9F9F9" : ACTIVE_COLOR;
+  const activeCol   = ACTIVE_COLOR;
   const inactiveCol = inactiveColorOverride ?? "#E3F1FF";
 
   const makeIcon = useCallback((active: boolean) => {
