@@ -350,26 +350,18 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {isSleepCategoryPresentation && effectiveShowDurationBadge && (
-                      <View pointerEvents="none" style={styles.sleepBadgeRow}>
-                        <SessionDurationBadge
-                          label={s.durationLabel}
-                          textStyle={styles.durText}
-                        />
-                        <SessionCategoryPill
-                          categoryId={s.categoryId}
-                          inline
-                          textOnly
-                        />
-                      </View>
+                    {isSleepCategoryPresentation && (
+                      <SessionCategoryPill
+                        categoryId={s.categoryId}
+                        textOnly
+                      />
                     )}
                     {!isSleepCategoryPresentation &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) &&
                       showImageCategoryPill && (
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
-                    {!isSleepCategoryPresentation &&
-                      effectiveShowDurationBadge &&
+                    {effectiveShowDurationBadge &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
@@ -561,15 +553,6 @@ const styles = StyleSheet.create({
   },
   durBadgeLower: {
     bottom: 4,
-  },
-  sleepBadgeRow: {
-    position: "absolute",
-    bottom: 8,
-    left: 8,
-    right: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
   cardTitleWrap: {
