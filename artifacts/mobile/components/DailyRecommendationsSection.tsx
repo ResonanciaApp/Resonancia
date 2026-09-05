@@ -100,7 +100,7 @@ export function DailyRecommendationsSection({
           <React.Fragment key={session.id}>
             <SessionRow
               session={session}
-              imageSize={84}
+              imageSize={97}
               hideMeta
               secondaryText={session.categoryLabel}
               showDurationBadge

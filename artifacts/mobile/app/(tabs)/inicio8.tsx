@@ -2508,9 +2508,11 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <QuickAccessSection
-            title="Mis herramientas y servicios"
+            title="Herramientas"
             accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
             horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
+            leftPillIds={["library", "mixer"]}
+            rightPillIds={["sessions", "encounters"]}
             cardGap={9}
             cardCornerRadius={13}
             cardHeightOffset={3}

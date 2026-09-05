@@ -84,6 +84,7 @@ function QuickAccessCard({
   cardBorderWidth,
   cardBorderColor,
   cardCornerRadius,
+  roundedSide,
   joinedContentCorners,
   horizontal,
   largeLabel,
@@ -101,6 +102,7 @@ function QuickAccessCard({
   cardBorderWidth: number;
   cardBorderColor: string;
   cardCornerRadius: number;
+  roundedSide?: "left" | "right";
   joinedContentCorners: boolean;
   horizontal: boolean;
   largeLabel: boolean;
@@ -157,6 +159,17 @@ function QuickAccessCard({
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
             borderRadius: cardCornerRadius,
+            ...(roundedSide === "left"
+              ? {
+                  borderTopLeftRadius: 999,
+                  borderBottomLeftRadius: 999,
+                }
+              : roundedSide === "right"
+                ? {
+                    borderTopRightRadius: 999,
+                    borderBottomRightRadius: 999,
+                  }
+                : null),
             ...(joinedContentCorners
               ? {
                   borderTopLeftRadius: access.id === "encounters" ? 0 : 25,
@@ -209,6 +222,8 @@ export function QuickAccessSection({
   cardBorderWidth = 1,
   cardBorderColor = "rgba(255,255,255,0.1)",
   cardCornerRadius = 16,
+  leftPillIds,
+  rightPillIds,
   joinedContentCorners = false,
   cardBackgroundColor,
   cardOpacity = 1,
@@ -230,6 +245,8 @@ export function QuickAccessSection({
   cardBorderWidth?: number;
   cardBorderColor?: string;
   cardCornerRadius?: number;
+  leftPillIds?: AccessId[];
+  rightPillIds?: AccessId[];
   joinedContentCorners?: boolean;
   cardBackgroundColor?: string;
   cardOpacity?: number;
@@ -341,6 +358,13 @@ export function QuickAccessSection({
                   cardBorderWidth={cardBorderWidth}
                   cardBorderColor={cardBorderColor}
                   cardCornerRadius={cardCornerRadius}
+                  roundedSide={
+                    leftPillIds?.includes(access.id)
+                      ? "left"
+                      : rightPillIds?.includes(access.id)
+                        ? "right"
+                        : undefined
+                  }
                   joinedContentCorners={false}
                   horizontal
                   largeLabel={largeLabelIds?.includes(access.id) ?? false}
@@ -374,6 +398,13 @@ export function QuickAccessSection({
               cardBorderWidth={cardBorderWidth}
               cardBorderColor={cardBorderColor}
               cardCornerRadius={cardCornerRadius}
+              roundedSide={
+                leftPillIds?.includes(access.id)
+                  ? "left"
+                  : rightPillIds?.includes(access.id)
+                    ? "right"
+                    : undefined
+              }
               joinedContentCorners={joinedContentCorners}
               horizontal={horizontalIds?.includes(access.id) ?? false}
               largeLabel={largeLabelIds?.includes(access.id) ?? false}
