@@ -1247,14 +1247,12 @@ function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
-  backgroundColor,
 }: {
   topInset: number;
   isPremium: boolean;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
-  backgroundColor: string;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
@@ -1269,7 +1267,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={[styles.inicio2Hero, { backgroundColor }]}
+      style={styles.inicio2Hero}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -2289,7 +2287,6 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
               onOpenProfile={() => router.push("/(tabs)/profile" as never)}
-              backgroundColor={activeTheme.gradient[0] as string}
             />
           </>
         ) : showAnimatedScene ? (
@@ -2396,24 +2393,8 @@ export default function HomeScreen2({
         ) : null}
 
         <View
-          style={[
-            isInicio2 && styles.inicio2ContentPanel,
-            isInicio2 && {
-              backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
-            },
-          ]}
+          style={isInicio2 && styles.inicio2ContentPanel}
         >
-        {isInicio2 && (
-          <View pointerEvents="none" style={styles.inicio2ContentGradientClip}>
-            <LinearGradient
-              colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-              locations={activeTheme.gradientLocations}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </View>
-        )}
         {isInicio2 && (
           <View
             style={[
@@ -2896,7 +2877,7 @@ const styles = StyleSheet.create({
     height: INICIO2_HERO_HEIGHT,
     width: "100%",
     overflow: "visible",
-    backgroundColor: "#060A0F",
+    backgroundColor: "transparent",
   },
   inicio2ContentPanel: {
     position: "relative",
@@ -2905,17 +2886,11 @@ const styles = StyleSheet.create({
     marginTop: -1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    overflow: "hidden",
+    backgroundColor: "transparent",
   },
   inicio2ToolsSection: {
     marginBottom: INICIO2_SECTION_GAP,
     paddingHorizontal: GRID_PAD,
-  },
-  inicio2ContentGradientClip: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: "hidden",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
   inicio2HeroImageLayer: {
     ...StyleSheet.absoluteFillObject,
