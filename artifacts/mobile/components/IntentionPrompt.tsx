@@ -10,7 +10,6 @@ import {
   View,
 } from "react-native";
 
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useIntencion } from "@/context/IntencionContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -71,6 +70,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     minHeight: 108,
     borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
   },
   super: {
@@ -95,13 +96,13 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Manrope",
     fontSize: 20,
-    color: "rgba(255,255,255,0.9)",
+    color: "#F9F9F9",
     fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
   },
   placeholderText: {
-    color: WIDGET_GREEN_SOLID,
+    color: "#F9F9F9",
     fontSize: 15,
     fontWeight: "700",
   },

@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useStreak } from "@/hooks/useStreak";
+import { useDayRollover } from "@/hooks/useDayRollover";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
@@ -32,7 +33,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
-import Svg, { Circle } from "react-native-svg";
 
 import {
   useGetMe,
@@ -68,7 +68,6 @@ import { BibliotecaScreen, type LibHeaderActions } from "@/components/Biblioteca
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
-import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
   gradientColors,
   type GeoSettings,
@@ -135,71 +134,6 @@ const MEMBERSHIP_PLANS = [
 // Premium Plus queda configurado para una futura reactivación, pero por ahora
 // Perfil muestra únicamente el plan Premium.
 const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id === "premium");
-
-function WeeklyStreakProgress({
-  days,
-  completedDays,
-  textColor,
-}: {
-  days: number;
-  completedDays: number;
-  textColor: string;
-}) {
-  const size = 132;
-  const strokeWidth = 10;
-  const radius = 50;
-  const center = size / 2;
-  const circumference = 2 * Math.PI * radius;
-  const gap = 16;
-  const segmentLength = (circumference - gap * 3) / 3;
-  const filledSegments = Math.max(0, Math.min(3, completedDays));
-
-  return (
-    <View style={styles.weeklyStreakSummary}>
-      <Text style={[styles.weeklyStreakTitle, { color: textColor }]}>ESTA SEMANA</Text>
-      <View style={{ width: size, height: size }}>
-        <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          {[0, 1, 2].map((index) => {
-            const isFilled = index < filledSegments;
-            const rotation = -90 + index * 120;
-            return (
-              <React.Fragment key={index}>
-                <Circle
-                  cx={center}
-                  cy={center}
-                  r={radius}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.14)"
-                  strokeWidth={strokeWidth}
-                  strokeLinecap="round"
-                  strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
-                  transform={`rotate(${rotation} ${center} ${center})`}
-                />
-                {isFilled && (
-                  <Circle
-                    cx={center}
-                    cy={center}
-                    r={radius}
-                    fill="none"
-                    stroke="#F4F4F4"
-                    strokeWidth={strokeWidth}
-                    strokeLinecap="round"
-                    strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
-                    transform={`rotate(${rotation} ${center} ${center})`}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </Svg>
-        <View style={styles.weeklyStreakCounter}>
-          <Text style={[styles.weeklyStreakNumber, { color: textColor }]}>{days}</Text>
-          <Text style={[styles.weeklyStreakDaysLabel, { color: textColor }]}>Días</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
 
 function ProfileMembershipModules({
   secondaryTextColor,
@@ -394,7 +328,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites } = usePlayer();
+  const { favorites, statEvents } = usePlayer();
   const {
     username,
     lastName,
@@ -406,7 +340,8 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const { maxStreak } = useStreak();
+  const todayKey = useDayRollover();
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -419,6 +354,24 @@ export function ProfileScreenBase({
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
+  const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - 29);
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    let totalMinutes = 0;
+    let completedSessions = 0;
+
+    for (const event of statEvents) {
+      const playedAt = new Date(event.playedAt).getTime();
+      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      totalMinutes += event.minutes;
+      if (event.completed === true) completedSessions += 1;
+    }
+
+    return { totalMinutes: Math.round(totalMinutes), completedSessions };
+  }, [statEvents, todayKey]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -1287,71 +1240,46 @@ export function ProfileScreenBase({
           />
         </View>
 
-        {/* ── Racha (solo en el Perfil dedicado) ── */}
+        {/* ── Estadísticas personales (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
             <IntentionPrompt style={{ marginBottom: 53 }} />
-            <View style={[styles.weeklyStreakIntro, { marginTop: 0 }]}>
-              <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Estadísticas personales</Text>
-            </View>
             <View
               style={[
-                styles.streakSection,
+                styles.personalStatsSection,
                 {
                   backgroundColor: resourceBlockBackground,
-                  borderWidth: 0,
-                  marginBottom: 0,
                 },
               ]}
             >
-              <View style={styles.streakHeadingRow}>
-                <View style={styles.streakHeadingMain}>
-                  <View style={styles.streakLotusIcon}>
-                    <MaskedView
-                      style={styles.streakLotusMask}
-                      maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
-                    >
-                      <LinearGradient
-                        colors={["#CFCFCF", "#E3E3E3"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={StyleSheet.absoluteFill}
-                      />
-                    </MaskedView>
-                  </View>
-                  <View style={styles.streakHeadingCopy}>
-                    <View style={styles.streakTitleRow}>
-                      <Text
-                        style={[
-                          styles.streakCountText,
-                          styles.streakCountInline,
-                          { color: colors.foreground },
-                        ]}
-                      >
-                        {currentStreak}
-                      </Text>
-                      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                        Días de racha
-                      </Text>
-                    </View>
-                    <Text style={[styles.streakSubtitle, { color: secondaryAccent }]}>
-                      Expande tu consciencia todos los días
-                    </Text>
-                  </View>
+              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                Estadísticas personales
+              </Text>
+              <View style={styles.personalStatsValues}>
+                <View style={styles.personalStatItem}>
+                  <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_SOLID} />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>TIEMPO DE{"\n"}BIENESTAR</Text>
+                </View>
+                <View style={styles.personalStatDivider} />
+                <View style={styles.personalStatItem}>
+                  <Feather name="clock" size={20} color={WIDGET_GREEN_SOLID} />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.completedSessions}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>SESIONES{"\n"}COMPLETADAS</Text>
+                </View>
+                <View style={styles.personalStatDivider} />
+                <View style={styles.personalStatItem}>
+                  <Feather name="flag" size={20} color={WIDGET_GREEN_SOLID} />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {maxStreak} {maxStreak === 1 ? "día" : "días"}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>RACHA{"\n"}MÁXIMA</Text>
                 </View>
               </View>
-
-              <SonicStreakDays
-                activeFlags={weekFlags}
-                todayIndex={todayIndex}
-                idPrefix="profile-streak"
-                daysMarginTop={4}
-                circleSize={37}
-                edgeAligned
-                dayLabelColor={activeTheme.accent ?? colors.primary}
-                activeBorderColor={WIDGET_GREEN_SOLID}
-                activeBorderWidth={2.9}
-              />
             </View>
 
             <View style={{ marginTop: 53 }}>
@@ -2257,81 +2185,45 @@ const styles = StyleSheet.create({
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
   planMejorarText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
-  // Racha y estadísticas personales
-  streakSection: {
+  // Estadísticas personales
+  personalStatsSection: {
     borderRadius: 18,
-    borderWidth: 1,
     padding: 16,
     marginBottom: 16,
   },
-  streakHeadingRow: {
+  personalStatsTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  personalStatsValues: {
     flexDirection: "row",
+    alignItems: "flex-start",
+    marginTop: 24,
+  },
+  personalStatItem: {
+    flex: 1,
+    minWidth: 0,
     alignItems: "center",
-    gap: 12,
-    marginBottom: 18,
+    gap: 8,
   },
-  streakHeadingMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 16 },
-  streakLotusIcon: {
-    width: 61,
-    height: 61,
-    alignItems: "center",
-    justifyContent: "center",
+  personalStatDivider: {
+    width: 1,
+    height: 58,
+    marginHorizontal: 4,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
-  streakLotusMask: {
-    width: 61,
-    height: 61,
-  },
-  streakHeadingCopy: { flex: 1, gap: 1 },
-  streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2 },
-  streakSubtitle: { fontFamily: "Manrope", fontSize: 12, lineHeight: 17 },
-  streakCountInline: { fontSize: 21 },
-  streakCountText: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
-  weeklyStreakSummary: {
-    alignItems: "center",
-  },
-  weeklyStreakIntro: {
-    width: "100%",
-    paddingHorizontal: 2,
-    marginTop: 15,
-    marginBottom: 12,
-  },
-  weeklyStreakIntroTitle: {
+  personalStatValue: {
     fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 4,
+    fontSize: 22,
+    fontWeight: "600",
   },
-  weeklyStreakIntroDescription: {
+  personalStatLabel: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
-    color: MEMBERSHIP_AURORA.textMuted,
-  },
-  weeklyStreakTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "700",
-    letterSpacing: 0.9,
-    marginBottom: 8,
-  },
-  weeklyStreakCounter: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: 10 }],
-  },
-  weeklyStreakNumber: {
-    fontFamily: "Manrope",
-    fontSize: 40,
-    lineHeight: 43,
-    fontWeight: "500",
-  },
-  weeklyStreakDaysLabel: {
-    fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 10,
     lineHeight: 15,
-    marginTop: -1,
+    letterSpacing: 0.35,
+    textAlign: "center",
   },
   // Membresía
   membershipRow: {
@@ -2602,93 +2494,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── Racha Stats Card ──────────────────────────────────────────────────────
-  rachaStatsCard: {
-    borderRadius: 18,
-    borderWidth: 1,
-    marginBottom: 20,
-    overflow: "hidden",
-  },
-  rachaStatsHeader: {
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.06)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  rachaStatsTitle: {
-    fontFamily: "Manrope",
-    fontSize: 22,
-    fontWeight: "700",
-    letterSpacing: 0.4,
-    marginRight: 4,
-  },
-  rachaWeekPills: {
-    flexDirection: "row",
-    gap: 6,
-    flex: 1,
-  },
-  rachaWeekPill: {
-    flex: 1,
-    aspectRatio: 1,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-  },
-  rachaWeekPillText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  rachaWeekSub: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "500",
-  },
-  rachaStatsRow: {
-    flexDirection: "row",
-    paddingVertical: 14,
-  },
-  rachaStatCol: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 4,
-    position: "relative",
-  },
-  rachaStatDivider: {
-    position: "absolute",
-    left: 0,
-    top: "15%",
-    bottom: "15%",
-    width: 1,
-  },
-  rachaStatEmoji: {
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  rachaStatVal: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-  },
-  rachaStatLabel: {
-    fontFamily: "Manrope",
-    fontSize: 10,
-    fontWeight: "500",
-    textAlign: "center",
-    marginTop: 2,
-  },
-  rachaStatSub: {
-    fontFamily: "Manrope",
-    fontSize: 9,
-    marginTop: 1,
-  },
 });

@@ -85,7 +85,7 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
       style={[
         styles.ambientalTitleWrap,
         {
-          height: numberOfLines * 18,
+          height: numberOfLines * 20,
           transform: [{ translateY: lineCount >= 3 ? 5 : 0 }],
         },
       ]}
@@ -513,9 +513,9 @@ const styles = StyleSheet.create({
   },
   ambientalTitle: {
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "300",
-    lineHeight: 18,
+    fontSize: 15,
+    fontWeight: "600",
+    lineHeight: 20,
     textAlign: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },

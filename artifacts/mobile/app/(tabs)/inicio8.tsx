@@ -1,7 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
-import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -422,7 +421,6 @@ function Inicio2HeroSlider({
   topInset,
   focused,
   scrollY,
-  currentStreak,
   giftScale,
   onOpenDrawer,
   onOpenProfile,
@@ -430,7 +428,6 @@ function Inicio2HeroSlider({
   topInset: number;
   focused: boolean;
   scrollY: SharedValue<number>;
-  currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
@@ -845,18 +842,17 @@ function Inicio2HeroSlider({
         </View>
 
         <Pressable
-          onPress={() => router.push("/progreso" as never)}
+          onPress={onOpenProfile}
           onPressIn={() => Animated.spring(giftScale, { toValue: 0.84, speed: 30, bounciness: 0, useNativeDriver: ND }).start()}
           onPressOut={() => Animated.spring(giftScale, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: ND }).start()}
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi racha"
-          testID="inicio2-open-streak"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
-              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
               <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
           </Animated.View>
@@ -920,7 +916,6 @@ function Inicio2HeroSliderRebuilt({
   topInset,
   focused,
   scrollY,
-  currentStreak,
   giftScale,
   onOpenDrawer,
   onOpenProfile,
@@ -928,7 +923,6 @@ function Inicio2HeroSliderRebuilt({
   topInset: number;
   focused: boolean;
   scrollY: SharedValue<number>;
-  currentStreak: number;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
@@ -1166,7 +1160,7 @@ function Inicio2HeroSliderRebuilt({
         </View>
 
         <Pressable
-          onPress={() => router.push("/progreso" as never)}
+          onPress={onOpenProfile}
           onPressIn={() =>
             Animated.spring(giftScale, {
               toValue: 0.84,
@@ -1186,12 +1180,11 @@ function Inicio2HeroSliderRebuilt({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi racha"
-          testID="inicio2-open-streak"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
-              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
               <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
           </Animated.View>
@@ -1251,14 +1244,12 @@ function Inicio2HeroSliderRebuilt({
 
 function Inicio2HeroStatic({
   topInset,
-  currentStreak,
   isPremium,
   giftScale,
   onOpenDrawer,
   onOpenProfile,
 }: {
   topInset: number;
-  currentStreak: number;
   isPremium: boolean;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
@@ -1356,7 +1347,7 @@ function Inicio2HeroStatic({
         </View>
 
         <Pressable
-          onPress={() => router.push("/progreso" as never)}
+          onPress={onOpenProfile}
           onPressIn={() =>
             Animated.spring(giftScale, {
               toValue: 0.84,
@@ -1376,12 +1367,11 @@ function Inicio2HeroStatic({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi racha"
-          testID="inicio2-open-streak"
+          accessibilityLabel="Abrir mi perfil"
+          testID="inicio2-open-profile-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
-              <Text style={styles.inicio2HeroStreak}>{currentStreak}</Text>
               <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
             </View>
           </Animated.View>
@@ -1490,7 +1480,6 @@ export default function HomeScreen2({
   const { previewFlow: previewStreakFlow } = useStreakCelebration();
 
   const todayKey = useDayRollover();
-  const { currentStreak: currentStreakDisplay } = useStreak();
 
   const { isPremium } = usePremium();
   const { videos } = useVideos();
@@ -2234,7 +2223,7 @@ export default function HomeScreen2({
         {/* Centro: espacio */}
         <View style={{ flex: 1 }} pointerEvents="none" />
 
-        {/* Derecha: Racha */}
+        {/* Derecha: acceso al perfil */}
         <Pressable
           hitSlop={8}
           style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 10, flexDirection: "row", alignItems: "center" }]}
@@ -2256,15 +2245,8 @@ export default function HomeScreen2({
               borderRadius: 20,
               height: 36,
               paddingHorizontal: 10,
-              flexDirection: "row",
               alignItems: "center",
-              gap: 5,
             }}>
-              {currentStreakDisplay > 0 && (
-                <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
-                  {currentStreakDisplay}
-                </Text>
-              )}
               <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
             </View>
           </Animated.View>
@@ -2302,7 +2284,6 @@ export default function HomeScreen2({
           <>
             <Inicio2HeroStatic
               topInset={topPad}
-              currentStreak={currentStreakDisplay}
               isPremium={isPremium}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
@@ -3038,18 +3019,16 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio2HeroLotusButton: {
-    minWidth: 54,
+    width: 36,
     height: 36,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
   },
   inicio2HeroLotusContent: {
-    flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    justifyContent: "center",
   },
   inicio2HeroEmotionWidget: {
     width: 72,
@@ -3138,15 +3117,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#0D0A1E",
     textAlign: "center",
-  },
-  inicio2HeroStreak: {
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
-    textShadowColor: "rgba(0,0,0,0.72)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
   },
   inicio2HeroControls: {
     position: "absolute",
