@@ -1298,8 +1298,8 @@ export function ProfileScreenBase({
         {/* ── Racha (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <IntentionPrompt style={{ marginBottom: 32 }} />
-            <View style={styles.weeklyStreakIntro}>
+            <IntentionPrompt style={{ marginBottom: 53 }} />
+            <View style={[styles.weeklyStreakIntro, { marginTop: 0 }]}>
               <Text style={[styles.weeklyStreakIntroTitle, { color: colors.foreground }]}>Tu progreso</Text>
             </View>
             <View
@@ -1308,7 +1308,7 @@ export function ProfileScreenBase({
                 {
                   backgroundColor: resourceBlockBackground,
                   borderWidth: 0,
-                  marginBottom: 15,
+                  marginBottom: 0,
                 },
               ]}
             >
@@ -1362,8 +1362,8 @@ export function ProfileScreenBase({
               />
             </View>
 
-            <View style={{ marginTop: 32 }}>
-              <ProfileMixCarousel marginBottom={32} />
+            <View style={{ marginTop: 53 }}>
+              <ProfileMixCarousel marginBottom={53} />
             </View>
             <ProfileSettingsSections
               sceneId={activeSceneId}
