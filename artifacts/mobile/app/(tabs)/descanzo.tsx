@@ -385,7 +385,7 @@ export default function DescansoScreen() {
                   squareCards={isSleepMusic}
                   showCardMetadata={!isSleepMusic}
                   showAuthor={isSleepMusic}
-                  showDurationBadge={!isSleepMusic}
+                  showDurationBadge
                   hideAmbientalTitleInSquareRecent={isSleepMusic}
                   onViewAll={sleepCarouselViewAllHandlers[collection.id]}
                 />
