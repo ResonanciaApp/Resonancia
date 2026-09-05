@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -143,6 +144,8 @@ type SessionCarouselProps = {
   eagerRender?: boolean;
   /** Shared tall, below-metadata presentation for Dormir category carousels. */
   presentation?: "sleep-category";
+  /** Places title and author over the image for selected Dormir carousels. */
+  sleepMetadataInside?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -177,6 +180,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
+  sleepMetadataInside = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -185,6 +189,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
+  const useSleepOverlayMetadata =
+    isSleepCategoryPresentation && sleepMetadataInside;
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
@@ -298,6 +304,30 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 {!isAmbiental && (
                   <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
                 )}
+                {useSleepOverlayMetadata && (
+                  <>
+                    <LinearGradient
+                      colors={[
+                        "rgba(0,0,0,0)",
+                        "rgba(0,0,0,0.18)",
+                        "rgba(0,0,0,0.82)",
+                      ]}
+                      locations={[0.28, 0.58, 1]}
+                      style={StyleSheet.absoluteFill}
+                      pointerEvents="none"
+                    />
+                    <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
+                      <Text style={styles.sleepOverlayTitle} numberOfLines={2}>
+                        {s.title}
+                      </Text>
+                      {authorName ? (
+                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                          {authorName}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </>
+                )}
                 {isAmbiental ? (
                   <>
                     <CarouselImage
@@ -362,7 +392,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.durBadge,
                           !effectiveShowAuthor && styles.durBadgeLower,
-                          { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
+                          useSleepOverlayMetadata
+                            ? styles.sleepOverlayDuration
+                            : { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
                         ]}
                         textStyle={styles.durText}
                       />
@@ -377,7 +409,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 )}
               </View>
-              {!effectiveShowCardMetadata && (
+              {!effectiveShowCardMetadata && !useSleepOverlayMetadata && (
                 <>
                   <Text
                     style={[
@@ -549,6 +581,37 @@ const styles = StyleSheet.create({
     bottom: 4,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  sleepOverlayMetadata: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    bottom: 13,
+  },
+  sleepOverlayTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 19,
+    fontWeight: "700",
+    color: "#F9F9F9",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  sleepOverlayAuthor: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.82)",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  sleepOverlayDuration: {
+    top: 10,
+    bottom: undefined,
+  },
   cardTitleWrap: {
     width: CARD_W,
     backgroundColor: "rgba(27,6,15,0.30)",
