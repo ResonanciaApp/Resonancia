@@ -44,7 +44,7 @@ import {
 } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const H_PAD = 14;
+const H_PAD = 16;
 const { width: W } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);

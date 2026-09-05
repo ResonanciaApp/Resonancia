@@ -46,7 +46,7 @@ import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 14;
+const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;

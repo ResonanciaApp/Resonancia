@@ -69,6 +69,43 @@ const CarouselImage = React.memo(function CarouselImage({
   );
 });
 
+const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
+  title,
+  color,
+  numberOfLines,
+}: {
+  title: string;
+  color: string;
+  numberOfLines: number;
+}) {
+  const [lineCount, setLineCount] = React.useState(1);
+
+  return (
+    <View
+      style={[
+        styles.ambientalTitleWrap,
+        {
+          height: numberOfLines * 18,
+          transform: [{ translateY: lineCount >= 3 ? 5 : 0 }],
+        },
+      ]}
+    >
+      <Text
+        style={[styles.ambientalTitle, { color }]}
+        numberOfLines={numberOfLines}
+        onTextLayout={(event) => {
+          const nextLineCount = event.nativeEvent.lines?.length ?? 1;
+          setLineCount((previous) =>
+            previous === nextLineCount ? previous : nextLineCount
+          );
+        }}
+      >
+        {title}
+      </Text>
+    </View>
+  );
+});
+
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
   title: string;
@@ -245,21 +282,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       ]}
                     />
                     {!shouldHideAmbientalTitle && (
-                      <View
-                        style={[
-                          styles.ambientalTitleWrap,
-                          {
-                            height: (metadataTitleNumberOfLines ?? 2) * 18,
-                          },
-                        ]}
-                      >
-                        <Text
-                          style={[styles.ambientalTitle, { color: colors.foreground }]}
-                          numberOfLines={metadataTitleNumberOfLines ?? 2}
-                        >
-                          {s.title}
-                        </Text>
-                      </View>
+                      <AmbientalCardTitle
+                        title={s.title}
+                        color={colors.foreground}
+                        numberOfLines={metadataTitleNumberOfLines ?? 2}
+                      />
                     )}
                     {durationInsideWithMeta && showDurationBadge && (
                       <SessionDurationBadge

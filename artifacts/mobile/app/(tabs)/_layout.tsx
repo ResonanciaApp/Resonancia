@@ -167,16 +167,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const barHeight = PILL_H + pb;
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
-  const { activeSceneId, theme } = useSceneTheme();
-  const { brightMode } = useBrightness();
+  const { activeSceneId } = useSceneTheme();
   const indigo2Mode = activeSceneId === "indigo2";
-  const tabBarBackground = activeSceneId === "resonancia"
-    ? "#12121E"
-    : indigo2Mode
-      ? theme.solid
-      : brightMode
-        ? applyBrightSat(theme.gradient[0])
-        : theme.gradient[0];
+  const tabBarBackground = "#0E0E17";
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";

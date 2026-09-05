@@ -108,7 +108,7 @@ function SleepPill({
   );
 }
 
-const H_PAD = 14;
+const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const CARD_W = getContentCarouselCardWidth(W, H_PAD);

@@ -1204,7 +1204,7 @@ export function ProfileScreenBase({
         contentContainerStyle={{
           paddingBottom: 160 + bottomPad,
           paddingTop: Math.max(profileStickyHeaderHeight, topPad + 56),
-          paddingHorizontal: 14,
+          paddingHorizontal: 16,
         }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
@@ -1827,7 +1827,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingBottom: 10,
   },
   gearBtn: {
