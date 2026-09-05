@@ -136,11 +136,19 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const { openForSession } = useAmbientalDuration();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
-  const requestedCardWidth = cardWidth ?? getContentCarouselCardWidth(viewportWidth);
+  const forceAmbientalVariant = cardVariant === "ambiental";
+  const isAmbientalCarousel =
+    forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
+  const ambientalCarouselCardWidth = Math.floor(
+    (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 3 - 10) / 3,
+  );
+  const requestedCardWidth = isAmbientalCarousel
+    ? ambientalCarouselCardWidth
+    : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
   const cw = allowOversizedCardWidth
     ? requestedCardWidth
     : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
-  const baseCardHeight = cardHeight ?? requestedCardWidth;
+  const baseCardHeight = cardHeight ?? cw;
   const originalCardHeight = showCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
@@ -150,7 +158,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
-  const forceAmbientalVariant = cardVariant === "ambiental";
   // Esta excepción se activa únicamente desde el carrusel de "Sesiones
   // recientes" de Inicio. Otros carruseles cuadrados con metadata inferior
   // conservan el título superpuesto sobre la imagen.
@@ -231,14 +238,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2,
+                          top: (ch - ambientalImageSize) / 2 - 15,
                         },
                       ]}
                     />
-                    {(!showMetaBelow || durationInsideWithMeta) &&
-                      (showImageCategoryPill || !showCollectionBelow) && (
-                      <SessionCategoryPill categoryId={s.categoryId} />
-                    )}
                     {!shouldHideAmbientalTitle && (
                       <Text
                         style={[styles.ambientalTitle, { color: colors.foreground }]}
@@ -439,13 +442,14 @@ const styles = StyleSheet.create({
   },
   ambientalTitle: {
     position: "absolute",
-    left: 18,
-    right: 14,
-    bottom: 16,
+    left: 8,
+    right: 8,
+    bottom: 23,
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     lineHeight: 21,
+    textAlign: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {

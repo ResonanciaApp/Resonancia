@@ -25,7 +25,6 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
-  SessionCategoryPill,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
 import { PressScale } from "@/components/PressScale";
@@ -215,14 +214,13 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   height: ambientalImageSize,
                   borderRadius: ambientalImageSize / 2,
                   left: (width - ambientalImageSize) / 2,
-                  top: (ambientalCardHeight - ambientalImageSize) / 2,
+                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 15,
                 },
               ]}
               contentFit="cover"
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
             />
-            <SessionCategoryPill categoryId={session.categoryId} />
           </>
         ) : showCardMetadata ? (
           <SessionCardMetadataOverlay
@@ -248,7 +246,14 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       </View>
       {!showCardMetadata && (
         <>
-          <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+          <Text
+            style={[
+              styles.cardTitle,
+              { color: colors.foreground },
+              isAmbiental && styles.ambientalCardTitle,
+            ]}
+            numberOfLines={2}
+          >
             {session.title}
           </Text>
           {!!authorName && (
@@ -295,6 +300,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     lineHeight: 21,
+  },
+  ambientalCardTitle: {
+    textAlign: "center",
+    transform: [{ translateY: -7 }],
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
