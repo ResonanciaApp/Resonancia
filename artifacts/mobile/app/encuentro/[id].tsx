@@ -167,12 +167,12 @@ export default function EncuentroDetalle() {
           <Pressable
             style={({ pressed }) => [
               styles.calBtn,
-              { backgroundColor: "#BE9650", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "#F9F9F9", opacity: pressed ? 0.8 : 1 },
             ]}
             onPress={() => setCalSheet(true)}
           >
-            <Feather name="calendar" size={16} color={theme.gradient[0]} style={{ marginRight: 8 }} />
-            <Text style={[styles.calBtnText, { color: "#F9F9F9" }]}>Añadir a mi calendario</Text>
+            <Feather name="calendar" size={16} color="#0E0E17" style={{ marginRight: 8 }} />
+            <Text style={[styles.calBtnText, { color: "#0E0E17" }]}>Añadir a mi calendario</Text>
           </Pressable>
         </View>
       </ScrollView>

@@ -4016,6 +4016,7 @@ function InicioMoodRecommendations({
   openCategory,
 }: InicioMoodRecommendationsProps) {
   const { openForSession } = useAmbientalDuration();
+  const showRecommendedSection = false;
   return (
     <>
       {/* ── ESTADO DE ÁNIMO ── */}
@@ -4087,68 +4088,72 @@ function InicioMoodRecommendations({
         </Pressable>
       )}
 
-      {/* ── RECOMENDADO PARA TI ── */}
-      <View style={{ paddingHorizontal: GRID_PAD }}>
-        <Text
-          style={[
-            styles.sectionTitle,
-            titleSize !== undefined && { fontSize: titleSize },
-            titleSpacing !== undefined && { marginBottom: titleSpacing },
-            { marginTop: 24 },
-          ]}
-        >
-          {selectedMoods.length ? "Para tus estados de ánimo" : "Recomendado para ti"}
-        </Text>
-      </View>
-      <View style={styles.recoSection}>
-        {moodRecommended.slice(0, maxItems ?? 3).map((session) => (
-          <View key={session.id} style={styles.recoCard}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
-            <SessionRow
-              session={session}
-              imageSize={84}
-              showCategoryPill
-              onPress={() => {
-                if (session.isPremium && !isPremium) {
-                  router.push("/membresia" as never);
-                  return;
-                }
-                if (openForSession(session)) return;
-                if (session.skipMiniPlayer) {
-                  onPlaySession(session);
-                  return;
-                }
-                if (session.skipDetail) {
-                  onPlaySession(session);
-                  router.push("/player" as never);
-                  return;
-                }
-                openCategory(`/session/${session.id}`);
-              }}
-            />
+      {showRecommendedSection && (
+        <>
+          {/* ── RECOMENDADO PARA TI ── */}
+          <View style={{ paddingHorizontal: GRID_PAD }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                titleSize !== undefined && { fontSize: titleSize },
+                titleSpacing !== undefined && { marginBottom: titleSpacing },
+                { marginTop: 24 },
+              ]}
+            >
+              {selectedMoods.length ? "Para tus estados de ánimo" : "Recomendado para ti"}
+            </Text>
           </View>
-        ))}
-      </View>
+          <View style={styles.recoSection}>
+            {moodRecommended.slice(0, maxItems ?? 3).map((session) => (
+              <View key={session.id} style={styles.recoCard}>
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
+                <SessionRow
+                  session={session}
+                  imageSize={84}
+                  showCategoryPill
+                  onPress={() => {
+                    if (session.isPremium && !isPremium) {
+                      router.push("/membresia" as never);
+                      return;
+                    }
+                    if (openForSession(session)) return;
+                    if (session.skipMiniPlayer) {
+                      onPlaySession(session);
+                      return;
+                    }
+                    if (session.skipDetail) {
+                      onPlaySession(session);
+                      router.push("/player" as never);
+                      return;
+                    }
+                    openCategory(`/session/${session.id}`);
+                  }}
+                />
+              </View>
+            ))}
+          </View>
 
-      <Pressable
-        onPress={onRefreshRecommendations}
-        style={({ pressed }) => ({
-          marginTop: -40,
-          marginHorizontal: GRID_PAD,
-          marginBottom: 0,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-          paddingVertical: 12,
-          borderRadius: 100,
-          backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
-        })}
-      >
-        <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
-          Actualizar recomendaciones
-        </Text>
-      </Pressable>
+          <Pressable
+            onPress={onRefreshRecommendations}
+            style={({ pressed }) => ({
+              marginTop: -40,
+              marginHorizontal: GRID_PAD,
+              marginBottom: 0,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              paddingVertical: 12,
+              borderRadius: 100,
+              backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
+            })}
+          >
+            <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
+              Actualizar recomendaciones
+            </Text>
+          </Pressable>
+        </>
+      )}
     </>
   );
 }
