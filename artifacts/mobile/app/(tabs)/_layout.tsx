@@ -88,12 +88,14 @@ function TabItem({
   onPress,
   tibetMode = false,
   lightNeutralColors = false,
+  inactiveColorOverride,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
   tibetMode?: boolean;
   lightNeutralColors?: boolean;
+  inactiveColorOverride?: string;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -105,7 +107,8 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = lightNeutralColors ? "#F9F9F9" : ACTIVE_COLOR;
-  const inactiveCol = lightNeutralColors ? "#F0F0F0" : tibetMode ? "#A9A9C3" : INACTIVE_COLOR;
+  const inactiveCol = inactiveColorOverride
+    ?? (lightNeutralColors ? "#F0F0F0" : tibetMode ? "#A9A9C3" : INACTIVE_COLOR);
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
@@ -169,7 +172,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { brightMode } = useBrightness();
   const indigo2Mode = activeSceneId === "indigo2";
   const tabBarBackground = activeSceneId === "resonancia"
-    ? "#0D0C11"
+    ? "#12121E"
     : indigo2Mode
       ? theme.solid
       : brightMode
@@ -317,6 +320,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 tibetMode={activeSceneId === "tibet"}
                 lightNeutralColors={
                   indigo2Mode || activeSceneId === "resonancia"
+                }
+                inactiveColorOverride={
+                  activeSceneId === "resonancia" ? "#A6A6A6" : undefined
                 }
               />
             );

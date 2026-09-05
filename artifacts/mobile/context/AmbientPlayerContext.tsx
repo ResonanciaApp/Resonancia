@@ -47,7 +47,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "resonancia",
     label: "Resonancia",
-    colors: ["#213047", "#0D0C11"] as const,
+    colors: ["#213047", "#12121E"] as const,
     icon: "layers",
     image: require("@/assets/images/ambient/zafiro.png"),
   },
