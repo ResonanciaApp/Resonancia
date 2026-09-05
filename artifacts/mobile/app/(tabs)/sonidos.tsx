@@ -125,7 +125,7 @@ export default function SonidosScreen() {
   const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
   const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: [6, 0],
+    outputRange: [20, 0],
   });
 
   const handleMainScroll = useCallback((event: {
