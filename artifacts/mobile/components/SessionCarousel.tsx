@@ -350,12 +350,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 ) : (
                   <>
-                    {isSleepCategoryPresentation && (
-                      <SessionCategoryPill
-                        categoryId={s.categoryId}
-                        textOnly
-                      />
-                    )}
                     {!isSleepCategoryPresentation &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) &&
                       showImageCategoryPill && (
