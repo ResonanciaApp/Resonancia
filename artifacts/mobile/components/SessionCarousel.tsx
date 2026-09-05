@@ -31,6 +31,7 @@ import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
+  getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 
 const CARD_W = 150;
@@ -140,7 +141,7 @@ type SessionCarouselProps = {
   ambientalCardBackground?: string;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
-  /** Shared square, below-metadata presentation for Dormir category carousels. */
+  /** Shared tall, below-metadata presentation for Dormir category carousels. */
   presentation?: "sleep-category";
 };
 
@@ -189,9 +190,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalCarouselCardWidth = Math.floor(
     (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
-  const sleepCategoryCardWidth = Math.round(
-    (viewportWidth - 16 - CONTENT_CAROUSEL_GAP) / 1.85,
-  );
+  const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(viewportWidth, GRID_PAD);
   const requestedCardWidth = isSleepCategoryPresentation
     ? sleepCategoryCardWidth
     : isAmbientalCarousel
@@ -204,7 +203,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
   const effectiveShowCardMetadata =
     isSleepCategoryPresentation ? false : showCardMetadata;
-  const effectiveSquareCards = isSleepCategoryPresentation || squareCards;
+  const effectiveSquareCards = isSleepCategoryPresentation ? false : squareCards;
   const effectiveShowAuthor = isSleepCategoryPresentation ? true : showAuthor;
   const effectiveShowCollectionBelow =
     isSleepCategoryPresentation ? false : showCollectionBelow;
@@ -216,9 +215,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const originalCardHeight = effectiveShowCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
-  const ch = effectiveSquareCards
-    ? cw
-    : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
+  const sleepCategoryCardHeight = Math.round(
+    (cw + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE,
+  );
+  const ch = isSleepCategoryPresentation
+    ? sleepCategoryCardHeight
+    : effectiveSquareCards
+      ? cw
+      : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
