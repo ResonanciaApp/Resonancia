@@ -2903,7 +2903,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 18,
-    borderRadius: 15,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     overflow: "hidden",
   },
   inicio2HeroImage: {
