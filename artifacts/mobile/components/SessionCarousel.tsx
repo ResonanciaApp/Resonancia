@@ -140,7 +140,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
-    (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 3 - 10) / 3,
+    (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
   const requestedCardWidth = isAmbientalCarousel
     ? ambientalCarouselCardWidth
@@ -238,17 +238,19 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 - 15,
+                          top: (ch - ambientalImageSize) / 2 - 22,
                         },
                       ]}
                     />
                     {!shouldHideAmbientalTitle && (
-                      <Text
-                        style={[styles.ambientalTitle, { color: colors.foreground }]}
-                        numberOfLines={2}
-                      >
-                        {s.title}
-                      </Text>
+                      <View style={styles.ambientalTitleWrap}>
+                        <Text
+                          style={[styles.ambientalTitle, { color: colors.foreground }]}
+                          numberOfLines={2}
+                        >
+                          {s.title}
+                        </Text>
+                      </View>
                     )}
                     {durationInsideWithMeta && showDurationBadge && (
                       <SessionDurationBadge
@@ -440,15 +442,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     overflow: "hidden",
   },
-  ambientalTitle: {
+  ambientalTitleWrap: {
     position: "absolute",
     left: 8,
     right: 8,
     bottom: 23,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ambientalTitle: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "700",
-    lineHeight: 21,
+    lineHeight: 18,
     textAlign: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },

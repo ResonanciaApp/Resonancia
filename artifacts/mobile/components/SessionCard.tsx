@@ -214,7 +214,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   height: ambientalImageSize,
                   borderRadius: ambientalImageSize / 2,
                   left: (width - ambientalImageSize) / 2,
-                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 15,
+                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 22,
                 },
               ]}
               contentFit="cover"
@@ -246,16 +246,24 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       </View>
       {!showCardMetadata && (
         <>
-          <Text
-            style={[
-              styles.cardTitle,
-              { color: colors.foreground },
-              isAmbiental && styles.ambientalCardTitle,
-            ]}
-            numberOfLines={2}
-          >
-            {session.title}
-          </Text>
+          {isAmbiental ? (
+            <View style={styles.ambientalCardTitleWrap}>
+              <Text
+                style={[
+                  styles.cardTitle,
+                  styles.ambientalCardTitle,
+                  { color: colors.foreground },
+                ]}
+                numberOfLines={2}
+              >
+                {session.title}
+              </Text>
+            </View>
+          ) : (
+            <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
+              {session.title}
+            </Text>
+          )}
           {!!authorName && (
             <View style={styles.cardAuthorRow}>
               {showAuthorAvatar && (
@@ -301,9 +309,17 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 21,
   },
-  ambientalCardTitle: {
-    textAlign: "center",
+  ambientalCardTitleWrap: {
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
     transform: [{ translateY: -7 }],
+  },
+  ambientalCardTitle: {
+    marginTop: 0,
+    fontSize: 10,
+    lineHeight: 15,
+    textAlign: "center",
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
