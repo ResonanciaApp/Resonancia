@@ -109,7 +109,11 @@ function SleepPill({
 }
 
 const H_PAD = 16;
-const MUSIC_SLEEP_CARD_W = getTwoCardCarouselCardWidth(Dimensions.get("window").width, H_PAD);
+const MUSIC_SLEEP_CARD_W = getTwoCardCarouselCardWidth(
+  Dimensions.get("window").width,
+  H_PAD,
+  35,
+);
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SOUND_CARD_W  = 120;

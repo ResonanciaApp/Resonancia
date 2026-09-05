@@ -28,6 +28,7 @@ export function getContentCarouselCardWidth(
 export function getTwoCardCarouselCardWidth(
   viewportWidth: number,
   horizontalPadding = 14,
+  trailingPeek = CONTENT_CAROUSEL_TRAILING_PEEK,
 ): number {
   return Math.max(
     120,
@@ -35,7 +36,7 @@ export function getTwoCardCarouselCardWidth(
       (viewportWidth
         - horizontalPadding
         - CONTENT_CAROUSEL_GAP * 2
-        - CONTENT_CAROUSEL_TRAILING_PEEK)
+        - trailingPeek)
         / 2,
     ),
   );
