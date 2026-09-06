@@ -186,7 +186,7 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${category.id}`}
               style={({ pressed }) => [
                 styles.tab,
-                 { backgroundColor: tabBackground },
+                { backgroundColor: selected ? "#F9F9F9" : tabBackground },
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   tabTextSelected: {
-    color: "#FFFFFF",
+    color: "#060A0F",
   },
   carousel: {
     marginTop: 8,
