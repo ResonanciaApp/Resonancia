@@ -1260,7 +1260,6 @@ function Inicio2HeroStatic({
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
-  const { theme } = useSceneTheme();
   const displayName =
     username
     || clerkUser?.firstName
@@ -1296,20 +1295,6 @@ function Inicio2HeroStatic({
           ]}
           locations={[0, 0.48, 1]}
           style={styles.inicio2HeroImage}
-        />
-      </View>
-
-      <View
-        pointerEvents="none"
-        style={[
-          styles.inicio2HeroHeaderBackground,
-          { height: topInset + 66 },
-        ]}
-      >
-        <LinearGradient
-          colors={theme.gradient as unknown as [string, string, ...string[]]}
-          locations={theme.gradientLocations}
-          style={[StyleSheet.absoluteFill, { height: INICIO2_HERO_HEIGHT }]}
         />
       </View>
 
@@ -2913,16 +2898,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 18,
-    overflow: "hidden",
-  },
-  inicio2HeroHeaderBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 2,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     overflow: "hidden",
   },
   inicio2HeroImage: {
