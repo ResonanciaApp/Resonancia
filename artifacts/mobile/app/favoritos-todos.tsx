@@ -265,6 +265,7 @@ export default function FavoritosTodosScreen() {
                   width={CARD_W}
                   style={{ marginRight: 0 }}
                   showCardMetadata
+                  showCategoryPill={false}
                   showAuthorAvatar={false}
                   overridePress={() => openSession(session)}
                   playing={currentSession?.id === session.id}
@@ -358,9 +359,9 @@ const styles = StyleSheet.create({
   pill: {
     alignItems: "center",
     justifyContent: "center",
-    height: 31,
+    height: 46,
     paddingHorizontal: 16,
-    borderRadius: 16,
+    borderRadius: 23,
     overflow: "hidden",
     backgroundColor: "rgba(181,211,255,0.057)",
     borderWidth: 1,

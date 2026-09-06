@@ -97,10 +97,6 @@ function Chip({
           style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
         />
       )}
-      {sel && (chipTheme?.id === "tibet"
-        ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        : <LinearGradient colors={["rgb(218,212,236)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-      )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -557,9 +553,9 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.057)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
-  chipSel: { borderWidth: 0 },
+  chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "400" },
+  chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },
 
   featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 10 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },

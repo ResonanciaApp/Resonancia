@@ -89,16 +89,11 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 
 function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; sel: boolean; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onPress:()=>void }) {
   const { theme } = useSceneTheme();
-  const selectedBorderColor = theme.id === "indigo2"
-    ? "rgba(255,255,255,0.8)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.8)"
-      : "transparent";
 
   return (
     <Pressable onPress={onPress} style={({pressed})=>({opacity:pressed?0.7:1})}>
-      <Animated.View style={[styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive, !sel && theme.id === "indigo2" && indigo2BackgroundColor && { backgroundColor: indigo2BackgroundColor }, sel && { borderWidth: 2, borderColor: selectedBorderColor }]}>
-        <Text style={styles.chipText}>{label}</Text>
+      <Animated.View style={[styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive, !sel && theme.id === "indigo2" && indigo2BackgroundColor && { backgroundColor: indigo2BackgroundColor }, sel && styles.chipSel]}>
+        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </Animated.View>
     </Pressable>
   );
@@ -644,9 +639,9 @@ const styles = StyleSheet.create({
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
-   chipSel: { borderWidth: 0 },
+    chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
   sectionLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },

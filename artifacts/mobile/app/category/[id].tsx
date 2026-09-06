@@ -50,11 +50,6 @@ function Chip({
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
-  const selectedBorderColor = theme.id === "indigo2"
-    ? "rgba(255,255,255,0.8)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.8)"
-      : "transparent";
 
   return (
     <Pressable
@@ -70,10 +65,12 @@ function Chip({
           !selected && theme.id === "indigo2" && indigo2BackgroundColor && {
             backgroundColor: indigo2BackgroundColor,
           },
-          selected && { borderWidth: 2, borderColor: selectedBorderColor },
+          selected && styles.chipSelected,
         ]}
       >
-        <Text style={styles.chipText}>{label}</Text>
+        <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+          {label}
+        </Text>
       </Animated.View>
     </Pressable>
   );
@@ -494,12 +491,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(191,207,255,0.096)",
     borderColor: "rgba(255,255,255,0.04)",
   },
+  chipSelected: {
+    backgroundColor: "#F9F9F9",
+    borderWidth: 0,
+  },
   chipText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
     textAlign: "center",
+  },
+  chipTextSelected: {
+    color: "#060A0F",
   },
   content: { minHeight: 200 },
   sessionGrid: {

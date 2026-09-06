@@ -143,21 +143,16 @@ function Chip({
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
-  const selectedBorderColor = theme.id === "indigo2"
-    ? "rgba(255,255,255,0.8)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(255,255,255,0.8)"
-      : "transparent";
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && { borderWidth: 2, borderColor: selectedBorderColor }, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {theme.id === "indigo2" && !sel && indigo2BackgroundColor && (
         <Animated.View
           pointerEvents="none"
           style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
         />
       )}
-      <Text style={styles.chipText}>{label}</Text>
+      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
 }
@@ -792,9 +787,9 @@ const styles = StyleSheet.create({
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
-   chipSel: { borderWidth: 0 },
+    chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
+  chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },
   chipTextIndigoSel: { color: "#F9F9F9" },
 
   /* ── Content ── */
