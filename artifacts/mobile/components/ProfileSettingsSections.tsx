@@ -82,6 +82,8 @@ export function ProfileSettingsSections({
       rows: [
         { icon: "activity", label: "Terapia en línea", onPress: () => comingSoon("Terapia en línea") },
         { icon: "gift", label: "Canjear cupón", onPress: () => comingSoon("Canjear cupón") },
+        { icon: "calendar", label: "Sesiones", onPress: () => router.push("/mis-sesiones" as never) },
+        { icon: "users", label: "Encuentros", onPress: () => router.push("/(tabs)/explore" as never) },
       ],
     },
     {

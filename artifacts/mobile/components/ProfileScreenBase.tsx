@@ -65,7 +65,6 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { useStreak } from "@/hooks/useStreak";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
@@ -1194,29 +1193,6 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <QuickAccessSection
-              title="Herramientas"
-              accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
-              horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
-              leftPillIds={["library", "mixer"]}
-              rightPillIds={["sessions", "encounters"]}
-              cardGap={9}
-              cardCornerRadius={13}
-              cardHeightOffset={3}
-              horizontalPadding={16}
-              twoRowCarousel
-              twoRowThirdCardPeek={15}
-              cardBackgroundColor={resourceBlockBackground}
-              showCardBorders={false}
-              style={styles.profileToolsSection}
-            />
-
-            <MiRutinaSection style={styles.profileRoutineSection} />
-
-            <View>
-              <ProfileMixCarousel marginBottom={53} />
-            </View>
-
             <View style={styles.profileNotificationsSection}>
               <Text style={[styles.profileNotificationsTitle, { color: colors.foreground }]}>
                 Notificaciones
@@ -1250,6 +1226,12 @@ export function ProfileScreenBase({
                   color={activeTheme.accent ?? colors.primary}
                 />
               </Pressable>
+            </View>
+
+            <MiRutinaSection style={styles.profileRoutineSection} />
+
+            <View>
+              <ProfileMixCarousel marginBottom={53} />
             </View>
 
             <ProfileSettingsSections
@@ -2177,11 +2159,6 @@ const styles = StyleSheet.create({
   profileRoutineSection: {
     marginHorizontal: 0,
     marginBottom: 53,
-  },
-  profileToolsSection: {
-    marginTop: 0,
-    marginBottom: 53,
-    paddingHorizontal: 0,
   },
   profileNotificationsSection: {
     marginBottom: 53,
