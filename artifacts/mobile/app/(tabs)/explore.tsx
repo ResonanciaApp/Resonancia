@@ -41,6 +41,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import {
   useGetPinnedFeatured,
@@ -744,7 +745,11 @@ export function ExploreScreen({
 
           <ResonadoresSection
             marginTop={25}
+            marginBottom={0}
+          />
+          <EncuentrosResonadoresSection
             marginBottom={SECTION_GAP}
+            titleMarginTop={25}
           />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}

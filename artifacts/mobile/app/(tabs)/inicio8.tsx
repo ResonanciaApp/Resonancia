@@ -102,7 +102,6 @@ import {
   getDailyRecommendationSurface,
 } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
-import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -2640,12 +2639,6 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             marginBottom={INICIO2_SECTION_GAP}
-          />
-        )}
-        {isInicio2 && (
-          <EncuentrosResonadoresSection
-            marginBottom={INICIO2_SECTION_GAP}
-            titleMarginTop={0}
           />
         )}
         {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
