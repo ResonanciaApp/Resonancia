@@ -76,9 +76,9 @@ type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" 
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
-const LIB_TABS: { id: LibTab; label: string }[] = [
-  { id: "playlists", label: "Mis playlist" },
-  { id: "mezclas", label: "Mis mezclas" },
+const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
+  { id: "playlists", label: "Mis playlist", icon: "list" },
+  { id: "mezclas", label: "Mis mezclas", icon: "sliders" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -156,17 +156,19 @@ function MixRow({
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
 function LibChip({
   label,
+  icon,
   sel,
   onPress,
 }: {
   label: string;
+  icon: React.ComponentProps<typeof Feather>["name"];
   sel: boolean;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
 
   return (
-    <Pressable onPress={onPress} style={styles.libraryTabColumn}>
+    <Pressable onPress={onPress} style={styles.libraryTabPress}>
       {({ pressed }) => (
         <Animated.View
           style={[
@@ -179,6 +181,7 @@ function LibChip({
             { opacity: pressed ? 0.7 : 1 },
           ]}
         >
+          <Feather name={icon} size={22} color={sel ? "#0E0E17" : "#F4F4F4"} />
           <Text style={[styles.chipText, sel && styles.chipTextSel, sel && isIndigoThemeId(theme.id) && styles.chipTextIndigoSel]} numberOfLines={1}>
             {label}
           </Text>
@@ -188,22 +191,71 @@ function LibChip({
   );
 }
 
-// ── Tabs principales de Biblioteca ────────────────────────────────────────────
-function LibraryTabRow({
+// ── Fila de chips animada ─────────────────────────────────────────────────────
+const CHIP_ANIM_DURATION = 600;
+const CLOSE_SLOT = 38;
+
+function AnimatedChipRow({
   tabs,
   activeTab,
   onSelect,
+  onClear,
   onSearch,
   onAdd,
 }: {
-  tabs: { id: LibTab; label: string }[];
-  activeTab: LibTab;
+  tabs: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[];
+  activeTab: LibTab | null;
   onSelect: (id: LibTab) => void;
+  onClear: () => void;
   onSearch?: () => void;
   onAdd?: () => void;
 }) {
+  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
+  const offsetsRef = useRef<Record<string, number>>({});
+  const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
+  const [colorTab, setColorTab] = useState<LibTab | null>(activeTab);
+  const [targetTranslate, setTargetTranslate] = useState(0);
+  const filtered = displayTab !== null;
+
+  const animate = (toValue: number, onDone?: () => void) => {
+    Animated.timing(progress, {
+      toValue,
+      duration: CHIP_ANIM_DURATION,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) onDone?.();
+    });
+  };
+
+  const handleSelect = (id: LibTab) => {
+    const visualLeft = offsetsRef.current[id] ?? 0;
+    setTargetTranslate(CLOSE_SLOT - visualLeft);
+    setDisplayTab(id);
+    setColorTab(id);
+    onSelect(id);
+    animate(1);
+  };
+
+  const handleClear = () => {
+    setColorTab(null);
+    onClear();
+    animate(0, () => setDisplayTab(null));
+  };
+
+  useEffect(() => () => progress.stopAnimation(), [progress]);
+
   return (
     <View style={styles.animChipWrap}>
+      <Animated.View
+        pointerEvents={filtered ? "auto" : "none"}
+        style={[styles.animCloseBtn, { opacity: progress }]}
+      >
+        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
+          <Feather name="x" size={22} color={MUTED} />
+        </Pressable>
+      </Animated.View>
+
       {(onSearch || onAdd) && (
         <View pointerEvents="auto" style={styles.chipRowActions}>
           {onSearch && (
@@ -221,12 +273,39 @@ function LibraryTabRow({
 
       <View style={[styles.chipRow, (onSearch || onAdd) && styles.chipRowWithActions]}>
         {tabs.map((tab) => (
-          <LibChip
+          <Animated.View
             key={tab.id}
-            label={tab.label}
-            sel={activeTab === tab.id}
-            onPress={() => onSelect(tab.id)}
-          />
+            pointerEvents={filtered && displayTab !== tab.id ? "none" : "auto"}
+            onLayout={(event) => {
+              offsetsRef.current[tab.id] = event.nativeEvent.layout.x;
+            }}
+            style={[
+              styles.libraryTabColumn,
+              displayTab === tab.id
+                ? {
+                    opacity: 1,
+                    transform: [{
+                      translateX: progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, targetTranslate],
+                      }),
+                    }],
+                  }
+                : {
+                    opacity: progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0],
+                    }),
+                  },
+            ]}
+          >
+            <LibChip
+              label={tab.label}
+              icon={tab.icon}
+              sel={colorTab === tab.id}
+              onPress={() => (displayTab === tab.id ? handleClear() : handleSelect(tab.id))}
+            />
+          </Animated.View>
         ))}
       </View>
     </View>
@@ -1019,8 +1098,8 @@ export function BibliotecaScreen({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab, setActiveTab] = useState<LibTab>(
-    initialTab === "mezclas" ? "mezclas" : "playlists",
+  const [activeTab, setActiveTab] = useState<LibTab | null>(
+    initialTab === "geometrix" ? null : initialTab ?? null,
   );
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
@@ -1799,10 +1878,11 @@ export function BibliotecaScreen({
             ? styles.embeddedTabsHeader
             : { marginTop: -52 + (Platform.OS !== "web" && insets.top < 40 ? 31 : 0), marginBottom: -4 }}
         >
-          <LibraryTabRow
+          <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
+            onClear={() => setActiveTab(null)}
             onSearch={onHeaderActions ? undefined : () => setSearchVisible(true)}
             onAdd={onHeaderActions ? undefined : () => setCreateVisible(true)}
           />
@@ -2006,9 +2086,11 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
+  animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRow: { flex: 1, flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipRowWithActions: { paddingRight: 104 },
   libraryTabColumn: { flex: 1, flexBasis: 0, height: 51 },
+  libraryTabPress: { width: "100%", height: 51 },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
