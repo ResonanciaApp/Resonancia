@@ -58,6 +58,9 @@ const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
 );
+const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
+  (width - H_PAD * 2 - 56) * 0.85,
+);
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
   { label: "10 min", displayLabel: "10 minutos" },
@@ -538,6 +541,65 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
+              </Text>
+              <Pressable
+                hitSlop={8}
+                onPress={() => openCategory("/category/meditaciones-guiadas")}
+                accessibilityRole="button"
+                accessibilityLabel="Ver todas las sesiones nuevas"
+              >
+                <Text style={styles.newInResonanceViewAll}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {recientesMeditaciones.map((session) => (
+                <Pressable
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={({ pressed }) => [
+                    styles.newInResonanceCard,
+                    { opacity: pressed ? 0.82 : 1 },
+                  ]}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                    {session.durationLabel ? (
+                      <View style={styles.newInResonanceDuration}>
+                        <Text style={styles.newInResonanceDurationText}>
+                          {session.durationLabel}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                    {session.title}
+                  </Text>
+                  <Text style={styles.newInResonanceAuthor} numberOfLines={1}>
+                    {getSessionAuthor(session)}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -834,6 +896,67 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
+  },
+  newInResonanceSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: SECTION_GAP,
+  },
+  newInResonanceHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 17,
+  },
+  newInResonanceViewAll: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#c2c2c2",
+  },
+  newInResonanceRow: {
+    paddingHorizontal: H_PAD,
+    gap: 14,
+  },
+  newInResonanceCard: {
+    width: NEW_IN_RESONANCE_CARD_WIDTH,
+  },
+  newInResonanceImageWrap: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    borderRadius: 15,
+    overflow: "hidden",
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  newInResonanceDuration: {
+    position: "absolute",
+    left: 8,
+    bottom: 8,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    backgroundColor: "rgba(6,10,15,0.72)",
+  },
+  newInResonanceDurationText: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  newInResonanceTitle: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    marginTop: 8,
+    paddingHorizontal: 2,
+  },
+  newInResonanceAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    color: "#c2c2c2",
+    marginTop: 4,
+    paddingHorizontal: 2,
   },
   otherThemesHeader: {
     marginBottom: 17,

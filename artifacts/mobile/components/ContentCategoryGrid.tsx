@@ -490,9 +490,9 @@ const styles = StyleSheet.create({
   discoverCardLabel: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 19,
-    fontWeight: "700",
+    fontWeight: "600",
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
