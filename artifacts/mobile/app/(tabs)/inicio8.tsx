@@ -2642,13 +2642,13 @@ export default function HomeScreen2({
             marginBottom={INICIO2_SECTION_GAP}
           />
         )}
-        {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginBottom={INICIO2_SECTION_GAP}
             titleMarginTop={0}
           />
         )}
+        {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
