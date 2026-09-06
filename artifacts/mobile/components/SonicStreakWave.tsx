@@ -5,8 +5,11 @@ import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, {
   Circle,
+  Defs,
   G,
+  LinearGradient as SvgLinearGradient,
   Path,
+  Stop,
 } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -72,6 +75,7 @@ export function SonicStreakDays({
   edgeAligned = false,
   dayLabelColor,
   activeBorderColor = WIDGET_GREEN_SOLID,
+  activeBorderGradient,
   activeBorderWidth = 1.9,
 }: {
   activeFlags: boolean[];
@@ -82,6 +86,7 @@ export function SonicStreakDays({
   edgeAligned?: boolean;
   dayLabelColor?: string;
   activeBorderColor?: string;
+  activeBorderGradient?: readonly string[];
   activeBorderWidth?: number;
 }) {
   const inactiveCircleSize = circleSize - 2;
@@ -99,6 +104,10 @@ export function SonicStreakDays({
       {DAY_LABELS.map((label, i) => {
         const met = activeFlags[i];
         const isToday = i === todayIndex;
+        const borderGradientId = `streak-day-border-${i}`;
+        const borderStroke = activeBorderGradient?.length
+          ? `url(#${borderGradientId})`
+          : activeBorderColor;
         return (
           <View
             key={i}
@@ -110,14 +119,48 @@ export function SonicStreakDays({
             {met ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
+                  {activeBorderGradient?.length ? (
+                    <Defs>
+                      <SvgLinearGradient id={borderGradientId} x1="0" y1="0" x2="1" y2="1">
+                        {activeBorderGradient.map((color, stopIndex) => (
+                          <Stop
+                            key={`${color}-${stopIndex}`}
+                            offset={
+                              activeBorderGradient.length === 1
+                                ? "0"
+                                : `${stopIndex / (activeBorderGradient.length - 1)}`
+                            }
+                            stopColor={color}
+                          />
+                        ))}
+                      </SvgLinearGradient>
+                    </Defs>
+                  ) : null}
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
             ) : isToday ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={activeBorderColor} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
+                  {activeBorderGradient?.length ? (
+                    <Defs>
+                      <SvgLinearGradient id={borderGradientId} x1="0" y1="0" x2="1" y2="1">
+                        {activeBorderGradient.map((color, stopIndex) => (
+                          <Stop
+                            key={`${color}-${stopIndex}`}
+                            offset={
+                              activeBorderGradient.length === 1
+                                ? "0"
+                                : `${stopIndex / (activeBorderGradient.length - 1)}`
+                            }
+                            stopColor={color}
+                          />
+                        ))}
+                      </SvgLinearGradient>
+                    </Defs>
+                  ) : null}
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
                 </Svg>
               </View>
             ) : (

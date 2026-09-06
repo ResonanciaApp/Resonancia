@@ -55,7 +55,12 @@ export function useRoutineTheme(): RoutineThemeTokens {
 
   return {
     background: theme.solid,
-    surface: "rgba(181,211,255,0.057)",
+    surface:
+      activeSceneId === "indigo2"
+        ? "rgba(21,13,46,0.7)"
+        : activeSceneId === "resonancia"
+          ? "rgba(9,11,23,0.7)"
+          : "rgba(14,14,23,0.7)",
     surfaceElevated: scene.surfaceElevated,
     divider: scene.divider,
     ticketSurface: scene.ticketSurface,

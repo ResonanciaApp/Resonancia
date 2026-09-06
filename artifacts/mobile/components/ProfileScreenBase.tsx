@@ -130,7 +130,7 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
-const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS;
+const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus");
 
 function ProfileMembershipModules({
   secondaryTextColor,
@@ -1188,6 +1188,7 @@ export function ProfileScreenBase({
                   todayIndex={todayIndex}
                   edgeAligned
                   daysMarginTop={7}
+                  activeBorderGradient={activeTheme.gradient}
                 />
               </View>
             </View>

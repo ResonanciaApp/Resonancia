@@ -437,7 +437,7 @@ export function MiRutinaSection({ style }: Props) {
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
       <View style={styles.headerRow}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina</Text>
+        <Text style={[styles.title, { color: colors.foreground }]}>Mi rutina expansiva</Text>
         <View style={styles.headerActions}>
           <Pressable
             onPress={openCalendar}
