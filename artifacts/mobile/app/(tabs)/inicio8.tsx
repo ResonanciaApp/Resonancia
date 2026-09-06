@@ -103,6 +103,7 @@ import {
 } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
+import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2628,6 +2629,17 @@ export default function HomeScreen2({
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,
             }}
+          />
+        )}
+        {isInicio2 && (
+          <RecommendedForYouSection
+            selectedMoods={selectedMoods}
+            generation={recoOffset}
+            catalogStatus={catalogStatus}
+            catalogVersion={catalogVersion}
+            isPremium={isPremium}
+            onPress={handleSessionCarouselPress}
+            marginBottom={INICIO2_SECTION_GAP}
           />
         )}
         {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
