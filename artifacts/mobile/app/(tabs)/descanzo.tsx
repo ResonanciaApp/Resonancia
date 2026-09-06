@@ -30,6 +30,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -244,6 +245,7 @@ export default function DescansoScreen() {
   }, [history, allDescansoIds]);
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
+  const musicForSleepCardWidth = getTwoCardCarouselCardWidth(W, 14, 45);
 
   // ── "Todas las sesiones" Modal ──
   const [allVisible,      setAllVisible]      = useState(false);
@@ -370,6 +372,14 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
+                cardWidth={
+                  collection.id === "musica-para-dormir"
+                    ? musicForSleepCardWidth
+                    : undefined
+                }
+                cardHeightAdjustment={
+                  collection.id === "musica-para-dormir" ? -25 : undefined
+                }
                 titleSize={19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />

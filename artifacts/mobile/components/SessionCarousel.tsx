@@ -118,6 +118,7 @@ type SessionCarouselProps = {
   titleOffset?: number;
   cardWidth?: number;
   cardHeight?: number;
+  cardHeightAdjustment?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
   titleSpacing?: number;
@@ -157,6 +158,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   titleOffset,
   cardWidth,
   cardHeight,
+  cardHeightAdjustment = 0,
   allowOversizedCardWidth = false,
   titleSize,
   titleSpacing,
@@ -200,7 +202,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   );
   const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(viewportWidth, GRID_PAD);
   const requestedCardWidth = isTallOverlayPresentation
-    ? sleepCategoryCardWidth
+    ? cardWidth ?? sleepCategoryCardWidth
     : isAmbientalCarousel
     ? ambientalCardWidth ?? ambientalCarouselCardWidth
     : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
@@ -224,8 +226,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
   const sleepCategoryCardHeight = Math.round(
-    (cw + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE,
-  );
+    (sleepCategoryCardWidth + 50) *
+      SESSION_CARD_METADATA_HEIGHT_SCALE *
+      CONTENT_CAROUSEL_HEIGHT_SCALE,
+  ) + cardHeightAdjustment;
   const ch = isTallOverlayPresentation
     ? sleepCategoryCardHeight
     : effectiveSquareCards
