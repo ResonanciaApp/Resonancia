@@ -262,6 +262,13 @@ const ActivityRow = React.memo(function ActivityRow({
               <Feather name="check" size={20} color="#F9F9F9" />
             ) : null}
           </Pressable>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.ticketCutout,
+              { backgroundColor: routineTheme.background },
+            ]}
+          />
         </Reanimated.View>
       </GestureDetector>
     </Reanimated.View>
@@ -632,6 +639,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+  },
+  ticketCutout: {
+    position: "absolute",
+    right: -15,
+    top: "50%",
+    width: 30,
+    height: 30,
+    marginTop: -15,
+    borderRadius: 15,
   },
   completeState: {
     minHeight: 76,
