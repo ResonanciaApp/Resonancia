@@ -22,6 +22,7 @@ import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } 
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
@@ -30,7 +31,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -245,7 +245,10 @@ export default function DescansoScreen() {
   }, [history, allDescansoIds]);
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
-  const compactSleepCardWidth = getTwoCardCarouselCardWidth(W, 14, 45);
+  const sleepDetailCardWidth = (W - 20 * 2 - 12) / 2;
+  const sleepDetailCardHeight = Math.round(
+    (sleepDetailCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
+  );
 
   // ── "Todas las sesiones" Modal ──
   const [allVisible,      setAllVisible]      = useState(false);
@@ -372,8 +375,8 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
-                cardWidth={compactSleepCardWidth}
-                cardHeightAdjustment={-25}
+                cardWidth={sleepDetailCardWidth}
+                fixedCardHeight={sleepDetailCardHeight}
                 overlayDurationTopLeft
                 titleSize={19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
