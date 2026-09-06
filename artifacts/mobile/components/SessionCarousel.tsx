@@ -88,7 +88,7 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
         styles.ambientalTitleWrap,
         {
           height: numberOfLines * 20,
-          transform: [{ translateY: lineCount >= 3 ? 9 : 10 }],
+          transform: [{ translateY: lineCount >= 3 ? 17 : 18 }],
         },
       ]}
     >
@@ -328,7 +328,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 - 32,
+                          top: (ch - ambientalImageSize) / 2 - 24,
                         },
                       ]}
                     />

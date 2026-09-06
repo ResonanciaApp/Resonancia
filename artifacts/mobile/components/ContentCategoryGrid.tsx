@@ -31,7 +31,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(181,211,255,0.057)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const DISCOVER_GRID_GAP = 14;
+const DISCOVER_GRID_GAP = 12;
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
