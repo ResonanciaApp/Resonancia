@@ -2632,6 +2632,7 @@ export default function HomeScreen2({
             durationInsideWithMeta
           />
         )}
+        {isInicio2 && <ProfileMixCarousel marginBottom={INICIO2_SECTION_GAP} />}
         {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && (
           <EncuentrosResonadoresSection

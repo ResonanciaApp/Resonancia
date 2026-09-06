@@ -63,7 +63,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
-import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { useStreak } from "@/hooks/useStreak";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
@@ -1229,10 +1228,6 @@ export function ProfileScreenBase({
             </View>
 
             <MiRutinaSection style={styles.profileRoutineSection} />
-
-            <View>
-              <ProfileMixCarousel marginBottom={53} />
-            </View>
 
             <ProfileSettingsSections
               sceneId={activeSceneId}
