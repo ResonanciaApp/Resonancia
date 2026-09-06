@@ -307,6 +307,18 @@ export default function DescansoScreen() {
             >
               Dormir
             </Animated.Text>
+            <Animated.Text
+              numberOfLines={1}
+              style={[
+                styles.stickySubtitle,
+                {
+                  color: sceneTheme.accent ?? colors.accent,
+                  transform: [{ translateY: stickyTitleTranslateY }],
+                },
+              ]}
+            >
+              Sueño y descanso profundo
+            </Animated.Text>
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
@@ -665,6 +677,14 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "left",
+  },
+  stickySubtitle: {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 8,
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "500",
   },
   sleepTabsHeader: {
     marginTop: 9,
