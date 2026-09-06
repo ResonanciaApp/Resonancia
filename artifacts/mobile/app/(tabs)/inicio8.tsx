@@ -332,7 +332,7 @@ function InicioAtmosphericTestCard() {
             ry="112%"
           >
             <SvgStop offset="0" stopColor="#FFAA68" stopOpacity={0.13} />
-            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.7} />
+            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.07} />
             <SvgStop offset="0.78" stopColor="#FF8A55" stopOpacity={0} />
           </SvgRadialGradient>
           <SvgRadialGradient
