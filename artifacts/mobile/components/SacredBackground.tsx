@@ -37,7 +37,11 @@ export function SacredBackground({
   const ambientGlows = ambientGlowMode === "all"
     ? theme.radialGlows
     : ambientGlowMode === "top"
-      ? theme.radialGlows?.slice(0, 1)
+      ? theme.radialGlows?.slice(0, 1).map((glow) => ({
+          ...glow,
+          cy: -8,
+          r: 42,
+        }))
       : undefined;
 
   if (variant === "solid") {

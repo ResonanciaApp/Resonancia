@@ -867,7 +867,7 @@ export function ProfileScreenBase({
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         />
-        <SacredBackground variant="gradient" noImage ambientGlowMode="top" />
+        <SacredBackground variant="gradient" noImage />
         <StatusBar barStyle="light-content" />
 
         <View style={styles.accountContent}>
@@ -1028,7 +1028,11 @@ export function ProfileScreenBase({
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="gradient" noImage ambientGlowMode="top" />
+      <SacredBackground
+        variant="gradient"
+        noImage
+        ambientGlowMode={dedicated ? "top" : "none"}
+      />
       <GeometrixOverlay active={profileGeoActive} />
 
       <View style={styles.contentShift}>
