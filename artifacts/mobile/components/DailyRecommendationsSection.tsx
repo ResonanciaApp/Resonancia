@@ -16,45 +16,12 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 
 type Props = {
   sessions: Session[];
-  dayKey: string;
   onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
-const WEEKDAYS = [
-  "domingo",
-  "lunes",
-  "martes",
-  "miércoles",
-  "jueves",
-  "viernes",
-  "sábado",
-];
-
-const MONTHS = [
-  "ene.",
-  "feb.",
-  "mar.",
-  "abr.",
-  "may.",
-  "jun.",
-  "jul.",
-  "ago.",
-  "sep.",
-  "oct.",
-  "nov.",
-  "dic.",
-];
-
-function formatDailyDate(dayKey: string): string {
-  const [year, month, day] = dayKey.split("-").map(Number);
-  const date = new Date(year, (month || 1) - 1, day || 1);
-  return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} ${MONTHS[date.getMonth()]}`;
-}
-
 export function DailyRecommendationsSection({
   sessions,
-  dayKey,
   onRefreshRecommendations,
   style,
 }: Props) {
@@ -83,9 +50,6 @@ export function DailyRecommendationsSection({
     <View style={[styles.section, style]} testID="inicio2-daily-recommendations">
       <Text style={[styles.title, { color: colors.foreground }]}>
         Recomendaciones diarias
-      </Text>
-      <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
-        {formatDailyDate(dayKey)}
       </Text>
 
       <View
@@ -148,12 +112,6 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.2,
-    marginBottom: 4,
-  },
-  date: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "400",
     marginBottom: 27,
   },
   card: {
