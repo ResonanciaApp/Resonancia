@@ -48,6 +48,12 @@ import {
   getGetPopularSessionsQueryKey,
 } from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
+import {
+  buildOtherThemeCards,
+  keepLastExploreSections,
+  parseExploreSectionsCache,
+  type ExploreSection,
+} from "@/lib/explore-other-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 16;
@@ -326,9 +332,7 @@ export function ExploreScreen({
   // ── Orden y visibilidad de las cards de Otras temáticas desde la API ──
   // null = todavía cargando (no mostrar nada aún)
   // [] o array = respuesta recibida (respetar visibilidad)
-  const [exploreSections, setExploreSections] = React.useState<
-    { slug: string; label: string; visible: boolean; sortOrder: number }[] | null
-  >(null);
+  const [exploreSections, setExploreSections] = React.useState<ExploreSection[] | null>(null);
   React.useEffect(() => {
     let cancelled = false;
     void (async () => {
@@ -337,10 +341,8 @@ export function ExploreScreen({
       // sin activar tags locales ni saltarse la visibilidad elegida en Admin.
       try {
         const raw = await AsyncStorage.getItem(EXPLORE_SECTIONS_CACHE_KEY);
-        if (raw && !cancelled) {
-          const cached = JSON.parse(raw);
-          if (Array.isArray(cached)) setExploreSections(cached);
-        }
+        const cached = parseExploreSectionsCache(raw);
+        if (cached && !cancelled) setExploreSections(cached);
       } catch {
         // Caché ausente/corrupto: esperamos la respuesta de red.
       }
@@ -360,7 +362,7 @@ export function ExploreScreen({
       } catch {
         // Conservar el último valor válido del servidor si existe. Solo cuando
         // nunca hubo respuesta ni caché se muestra la lista vacía.
-        if (!cancelled) setExploreSections((current) => current ?? []);
+        if (!cancelled) setExploreSections(keepLastExploreSections);
       }
     })();
     return () => {
@@ -368,35 +370,17 @@ export function ExploreScreen({
     };
   }, []);
 
-  const otherThemeCards = React.useMemo(() => {
-    // Mientras carga o si la respuesta no trae configuración, no inventar
-    // visibilidades locales: el caché o Admin son la fuente de verdad.
-    if (exploreSections === null || exploreSections.length === 0) return [];
-
-    const seen = new Set<string>();
-    return exploreSections
-      .filter((section) => {
-        if (!section.visible || isChakraTag(section.label) || seen.has(section.slug)) return false;
-        seen.add(section.slug);
-        return true;
-      })
-      .map((section) => {
-        const localCard = TAG_CARDS.find((card) => card.id === section.slug);
-        const matchingSession = SESSIONS.find((session) =>
-          (session.themeTag as readonly string[] | undefined)?.some(
-            (tag) => tag === section.label || slugifyThemeTag(tag) === section.slug,
-          ),
-        );
-        return {
-          id: section.slug,
-          label: localCard?.label ?? section.label,
-          description:
-            localCard?.description ??
-            `Sesiones para explorar ${section.label.toLocaleLowerCase("es")}.`,
-          image: localCard?.image ?? matchingSession?.image,
-        };
-      });
-  }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
+  const otherThemeCards = React.useMemo(
+    () =>
+      buildOtherThemeCards({
+        sections: exploreSections,
+        localCards: TAG_CARDS,
+        sessions: SESSIONS,
+        isExcludedLabel: isChakraTag,
+        slugifyLabel: slugifyThemeTag,
+      }),
+    [catalogVersion, exploreSections], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: popularData } = useGetPopularSessions(
