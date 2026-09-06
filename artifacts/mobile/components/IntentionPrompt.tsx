@@ -51,14 +51,16 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
     >
       <Text style={styles.super}>{currentIntention ? "Hoy voy a…" : "Hoy quiero…"}</Text>
       <View style={styles.row}>
-        <Animated.View style={[styles.cursor, { opacity: cursorOpacity }]} />
+        {!currentIntention ? (
+          <Animated.View style={[styles.cursor, { opacity: cursorOpacity }]} />
+        ) : null}
         {currentIntention ? (
           <Text style={[styles.text, styles.savedText]} numberOfLines={2}>{currentIntention}</Text>
         ) : (
           <Text style={[styles.text, styles.placeholderText]}>Proyecta tu propósito</Text>
         )}
       </View>
-      {currentIntention ? <Text style={styles.affirmation}>Que así sea</Text> : null}
+      {currentIntention ? <View style={styles.affirmationSpacer} /> : null}
     </Pressable>
   );
 }
@@ -108,11 +110,8 @@ const styles = StyleSheet.create({
   savedText: {
     fontSize: 15,
   },
-  affirmation: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
-    color: "rgba(237,225,211,0.45)",
+  affirmationSpacer: {
+    height: 16,
     marginTop: 7,
   },
 });

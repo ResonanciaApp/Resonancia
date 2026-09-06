@@ -1103,6 +1103,8 @@ export function ProfileScreenBase({
             marginBottom: 19,
             backgroundColor: "rgba(0,0,0,0.15)",
             borderRadius: 17,
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.7)",
             transform: [{ translateY: 21 }],
           }}
         />
