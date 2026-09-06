@@ -88,7 +88,7 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
         styles.ambientalTitleWrap,
         {
           height: numberOfLines * 20,
-          transform: [{ translateY: lineCount >= 3 ? 5 : 10 }],
+          transform: [{ translateY: lineCount >= 3 ? 9 : 10 }],
         },
       ]}
     >
