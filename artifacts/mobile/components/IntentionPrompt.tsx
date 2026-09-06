@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   super: {
     fontFamily: "Manrope",
     fontSize: 13,
-    color: "rgba(237,225,211,0.45)",
+    color: "#C8C8C8",
     marginBottom: 8,
     letterSpacing: 0.3,
   },

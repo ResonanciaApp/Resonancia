@@ -2418,18 +2418,6 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD }}
           />
         )}
-        {isInicio2 && (
-          <IntentionPrompt
-            style={{
-              marginHorizontal: GRID_PAD,
-              marginBottom: INICIO2_SECTION_GAP,
-              backgroundColor: "rgba(0,0,0,0.15)",
-              borderRadius: 17,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.7)",
-            }}
-          />
-        )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 17 }]}>
@@ -2510,6 +2498,18 @@ export default function HomeScreen2({
               })()}
             </Pressable>
           </View>
+        )}
+        {isInicio2 && (
+          <IntentionPrompt
+            style={{
+              marginHorizontal: GRID_PAD,
+              marginBottom: INICIO2_SECTION_GAP,
+              backgroundColor: "rgba(0,0,0,0.15)",
+              borderRadius: 100,
+              borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.7)",
+            }}
+          />
         )}
         {isInicio2 && (
           <QuickAccessSection
