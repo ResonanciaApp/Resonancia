@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { CategoryAtmosphericCard } from "@/components/CategoryAtmosphericCard";
 import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -29,12 +30,6 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const sleepTabSurface =
-    theme.id === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(theme.id)
-        ? "rgba(181,211,255,0.057)"
-        : "rgba(181,211,255,0.057)";
   const refreshButtonBackground =
     theme.id === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -52,16 +47,12 @@ export function DailyRecommendationsSection({
         Recomendaciones diarias
       </Text>
 
-      <View
-        style={[
-          styles.card,
-          {
-            borderColor: sleepTabSurface,
-          },
-        ]}
-      >
-        {recommendations.map((session, index) => (
-          <React.Fragment key={session.id}>
+      <View style={styles.recommendationsList}>
+        {recommendations.map((session) => (
+          <CategoryAtmosphericCard
+            key={session.id}
+            categoryId={session.categoryId}
+          >
             <SessionRow
               session={session}
               imageSize={97}
@@ -74,31 +65,25 @@ export function DailyRecommendationsSection({
               chevronColor={theme.id === "indigo2" ? themeAccent : undefined}
               style={styles.row}
             />
-            {index < recommendations.length - 1 && (
-              <View style={[styles.divider, { backgroundColor: sleepTabSurface }]} />
-            )}
-          </React.Fragment>
+          </CategoryAtmosphericCard>
         ))}
-        {onRefreshRecommendations && (
-          <>
-            <View style={[styles.divider, { backgroundColor: sleepTabSurface }]} />
-            <Pressable
-              onPress={onRefreshRecommendations}
-              accessibilityRole="button"
-              accessibilityLabel="Actualizar recomendaciones"
-              style={({ pressed }) => [
-                styles.refreshButton,
-                {
-                  backgroundColor: refreshButtonBackground,
-                  opacity: pressed ? 0.72 : 1,
-                },
-              ]}
-            >
-              <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
-            </Pressable>
-          </>
-        )}
       </View>
+      {onRefreshRecommendations && (
+        <Pressable
+          onPress={onRefreshRecommendations}
+          accessibilityRole="button"
+          accessibilityLabel="Actualizar recomendaciones"
+          style={({ pressed }) => [
+            styles.refreshButton,
+            {
+              backgroundColor: refreshButtonBackground,
+              opacity: pressed ? 0.72 : 1,
+            },
+          ]}
+        >
+          <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -114,24 +99,17 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     marginBottom: 27,
   },
-  card: {
-    borderWidth: 1.5,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    overflow: "hidden",
-    backgroundColor: "transparent",
+  recommendationsList: {
+    gap: 15,
   },
   row: {
     paddingVertical: 16,
-  },
-  divider: {
-    height: 1,
-    opacity: 0.75,
+    paddingHorizontal: 16,
   },
   refreshButton: {
     height: 45,
     borderRadius: 15,
-    marginVertical: 16,
+    marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",
     justifyContent: "center",

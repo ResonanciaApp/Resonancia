@@ -41,10 +41,6 @@ import RAnimated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, {
   Circle as SvgCircle,
-  Defs as SvgDefs,
-  RadialGradient as SvgRadialGradient,
-  Rect as SvgRect,
-  Stop as SvgStop,
 } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -308,52 +304,6 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
-
-function InicioAtmosphericTestCard() {
-  return (
-    <View
-      pointerEvents="none"
-      style={styles.inicioAtmosphericTestCard}
-      testID="inicio-atmospheric-test-card"
-    >
-      <Svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 60"
-        preserveAspectRatio="none"
-        style={StyleSheet.absoluteFill}
-      >
-        <SvgDefs>
-          <SvgRadialGradient
-            id="atmosphericOrange"
-            cx="78%"
-            cy="18%"
-            rx="76%"
-            ry="112%"
-          >
-            <SvgStop offset="0" stopColor="#FFAA68" stopOpacity={0.13} />
-            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.07} />
-            <SvgStop offset="0.78" stopColor="#FF8A55" stopOpacity={0} />
-          </SvgRadialGradient>
-          <SvgRadialGradient
-            id="atmosphericRed"
-            cx="18%"
-            cy="92%"
-            rx="82%"
-            ry="120%"
-          >
-            <SvgStop offset="0" stopColor="#FF665A" stopOpacity={0.12} />
-            <SvgStop offset="0.32" stopColor="#E85045" stopOpacity={0.05} />
-            <SvgStop offset="0.8" stopColor="#E85045" stopOpacity={0} />
-          </SvgRadialGradient>
-        </SvgDefs>
-        <SvgRect width="100" height="60" fill="rgba(255,255,255,0.045)" />
-        <SvgRect width="100" height="60" fill="url(#atmosphericOrange)" />
-        <SvgRect width="100" height="60" fill="url(#atmosphericRed)" />
-      </Svg>
-    </View>
-  );
-}
 
 function Inicio2HeroControl({
   active,
@@ -2459,7 +2409,6 @@ export default function HomeScreen2({
             <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
           </View>
         )}
-        {isInicio2 && <InicioAtmosphericTestCard />}
         {isInicio2 && (
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
@@ -3191,14 +3140,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
-  inicioAtmosphericTestCard: {
-    height: 100,
-    marginHorizontal: GRID_PAD,
-    marginBottom: 24,
-    borderRadius: 14,
-    overflow: "hidden",
-    backgroundColor: "transparent",
-  },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
