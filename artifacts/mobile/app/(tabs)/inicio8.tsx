@@ -1271,7 +1271,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={styles.inicio2Hero}
+      style={[styles.inicio2Hero, styles.inicio2HeroRoundedEnd]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -2874,6 +2874,11 @@ const styles = StyleSheet.create({
     overflow: "visible",
     backgroundColor: "transparent",
   },
+  inicio2HeroRoundedEnd: {
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    overflow: "hidden",
+  },
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
@@ -2897,7 +2902,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 18,
+    bottom: 0,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: "hidden",
