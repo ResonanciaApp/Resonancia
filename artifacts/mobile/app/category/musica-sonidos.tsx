@@ -230,6 +230,7 @@ function CategoryCard({
           categoryId={session.categoryId}
           durationLabel={session.durationLabel}
           title={session.title}
+          showCategoryPill={false}
           showAuthor={false}
           durationBottom={52}
           metaBottom={20}
