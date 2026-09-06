@@ -2421,14 +2421,12 @@ export default function HomeScreen2({
         {isInicio2 && (
           <IntentionPrompt
             style={{
-              marginTop: 10,
               marginHorizontal: GRID_PAD,
-              marginBottom: 19,
+              marginBottom: INICIO2_SECTION_GAP,
               backgroundColor: "rgba(0,0,0,0.15)",
               borderRadius: 17,
               borderWidth: 1,
               borderColor: "rgba(255,255,255,0.7)",
-              transform: [{ translateY: 21 }],
             }}
           />
         )}
