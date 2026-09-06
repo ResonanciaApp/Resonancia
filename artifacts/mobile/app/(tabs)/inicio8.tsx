@@ -39,7 +39,14 @@ import RAnimated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Svg, { Circle as SvgCircle } from "react-native-svg";
+import Svg, {
+  Circle as SvgCircle,
+  Defs as SvgDefs,
+  LinearGradient as SvgLinearGradient,
+  RadialGradient as SvgRadialGradient,
+  Rect as SvgRect,
+  Stop as SvgStop,
+} from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GreetingHeader } from "@/components/GreetingHeader";
@@ -302,6 +309,57 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
+
+function InicioAtmosphericTestCard() {
+  return (
+    <View
+      pointerEvents="none"
+      style={styles.inicioAtmosphericTestCard}
+      testID="inicio-atmospheric-test-card"
+    >
+      <Svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 60"
+        preserveAspectRatio="none"
+        style={StyleSheet.absoluteFill}
+      >
+        <SvgDefs>
+          <SvgLinearGradient id="atmosphericBase" x1="0" y1="0" x2="1" y2="1">
+            <SvgStop offset="0" stopColor="#111827" />
+            <SvgStop offset="0.45" stopColor="#16213A" />
+            <SvgStop offset="1" stopColor="#18264A" />
+          </SvgLinearGradient>
+          <SvgRadialGradient
+            id="atmosphericIndigo"
+            cx="80%"
+            cy="10%"
+            rx="72%"
+            ry="105%"
+          >
+            <SvgStop offset="0" stopColor="#5F69FF" stopOpacity={0.32} />
+            <SvgStop offset="0.28" stopColor="#4650B4" stopOpacity={0.16} />
+            <SvgStop offset="0.72" stopColor="#4650B4" stopOpacity={0} />
+          </SvgRadialGradient>
+          <SvgRadialGradient
+            id="atmosphericViolet"
+            cx="25%"
+            cy="100%"
+            rx="76%"
+            ry="115%"
+          >
+            <SvgStop offset="0" stopColor="#6946FF" stopOpacity={0.2} />
+            <SvgStop offset="0.3" stopColor="#463CAA" stopOpacity={0.1} />
+            <SvgStop offset="0.75" stopColor="#463CAA" stopOpacity={0} />
+          </SvgRadialGradient>
+        </SvgDefs>
+        <SvgRect width="100" height="60" fill="url(#atmosphericBase)" />
+        <SvgRect width="100" height="60" fill="url(#atmosphericIndigo)" />
+        <SvgRect width="100" height="60" fill="url(#atmosphericViolet)" />
+      </Svg>
+    </View>
+  );
+}
 
 function Inicio2HeroControl({
   active,
@@ -2407,6 +2465,7 @@ export default function HomeScreen2({
             <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
           </View>
         )}
+        {isInicio2 && <InicioAtmosphericTestCard />}
         {isInicio2 && (
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
@@ -3138,6 +3197,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
+  inicioAtmosphericTestCard: {
+    height: 60,
+    marginHorizontal: GRID_PAD,
+    marginBottom: 24,
+    borderRadius: 18,
+    overflow: "hidden",
+    backgroundColor: "#111827",
+  },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
