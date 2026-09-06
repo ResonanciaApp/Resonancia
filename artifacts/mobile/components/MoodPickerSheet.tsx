@@ -402,7 +402,7 @@ export function MoodPickerSheet({
               contentContainerStyle={[styles.completeContent, { paddingBottom: bottomPad + 28 }]}
             >
               <Text style={styles.completeTitle}>¡Verificación de estado de ánimo completada!</Text>
-              <Text style={styles.completeSubtitle}>
+              <Text style={[styles.completeSubtitle, { color: themeAccent }]}>
                 Estas son algunas recomendaciones que querrás tomar
               </Text>
 
@@ -741,8 +741,8 @@ const styles = StyleSheet.create({
     maxWidth: 340,
     fontFamily: "Manrope",
     color: FG,
-    fontSize: 27,
-    lineHeight: 34,
+    fontSize: 21,
+    lineHeight: 28,
     fontWeight: "800",
     letterSpacing: -0.4,
     marginBottom: 8,
@@ -829,7 +829,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 13,
-    backgroundColor: MOOD_GREEN,
+    backgroundColor: "#372065",
   },
   diaryIcon: {
     width: 44,
@@ -874,7 +874,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
     borderRadius: 18,
     padding: 18,
-    backgroundColor: "rgba(55,55,60,0.90)",
+    backgroundColor: "rgba(181,211,255,0.057)",
   },
   weekTitle: {
     fontFamily: "Manrope",
