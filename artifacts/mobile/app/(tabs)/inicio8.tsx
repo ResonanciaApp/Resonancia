@@ -100,6 +100,7 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import {
@@ -2415,6 +2416,20 @@ export default function HomeScreen2({
             dayKey={todayKey}
             onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
             style={{ paddingHorizontal: GRID_PAD }}
+          />
+        )}
+        {isInicio2 && (
+          <IntentionPrompt
+            style={{
+              marginTop: 10,
+              marginHorizontal: GRID_PAD,
+              marginBottom: 19,
+              backgroundColor: "rgba(0,0,0,0.15)",
+              borderRadius: 17,
+              borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.7)",
+              transform: [{ translateY: 21 }],
+            }}
           />
         )}
         {isInicio2 && featuredMoment && (

@@ -64,7 +64,6 @@ import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
-import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { useStreak } from "@/hooks/useStreak";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
@@ -1097,18 +1096,6 @@ export function ProfileScreenBase({
           </Pressable>
         </View>
 
-        <IntentionPrompt
-          style={{
-            marginTop: 10,
-            marginBottom: 19,
-            backgroundColor: "rgba(0,0,0,0.15)",
-            borderRadius: 17,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.7)",
-            transform: [{ translateY: 21 }],
-          }}
-        />
-
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
@@ -1183,22 +1170,23 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
-              <Text style={[styles.profileProgressSectionTitle, { color: colors.foreground }]}>
-                Tu progreso
-              </Text>
               <View
                 style={[
                   styles.profileProgressCard,
                   { backgroundColor: resourceBlockBackground },
                 ]}
               >
-                <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
-                  Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
-                </Text>
+                <View style={styles.profileProgressHeader}>
+                  <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
+                    Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
+                  </Text>
+                  <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+                </View>
                 <SonicStreakDays
                   activeFlags={weekFlags}
                   todayIndex={todayIndex}
                   edgeAligned
+                  daysMarginTop={7}
                 />
               </View>
             </View>
@@ -2102,14 +2090,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 19,
-  },
-  profileProgressSectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    marginBottom: 15,
+    marginBottom: 53,
   },
   profileProgressCard: {
     borderRadius: 17,
@@ -2117,15 +2098,22 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     paddingBottom: 16,
   },
+  profileProgressHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 18,
+  },
   profileProgressHeadline: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
-    marginBottom: 18,
+    flex: 1,
+    paddingRight: 12,
   },
   profileRoutineSection: {
     marginHorizontal: 0,
-    marginBottom: 19,
+    marginBottom: 53,
   },
 
   // Estadísticas personales (ocultas; estilos conservados para reutilización)
