@@ -28,6 +28,8 @@ type Props = {
   showCategoryPill?: boolean;
   categoryPillPlain?: boolean;
   categoryPillOutlineColor?: string;
+  categoryPillShowIconGlyph?: boolean;
+  categoryPillIconSize?: number;
   showDurationBadge?: boolean;
   showChevron?: boolean;
   authorColor?: string;
@@ -48,6 +50,8 @@ export function SessionRow({
   showCategoryPill = false,
   categoryPillPlain = true,
   categoryPillOutlineColor,
+  categoryPillShowIconGlyph = true,
+  categoryPillIconSize = 19,
   showDurationBadge = false,
   showChevron = false,
   authorColor,
@@ -118,6 +122,8 @@ export function SessionRow({
                   inline
                   plain={categoryPillPlain}
                   outlineColor={categoryPillOutlineColor}
+                  showIconGlyph={categoryPillShowIconGlyph}
+                  iconSize={categoryPillIconSize}
                 />
               </View>
             ) : (

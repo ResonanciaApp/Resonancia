@@ -63,6 +63,8 @@ export function SessionCategoryPill({
   inline = false,
   plain = false,
   textOnly = false,
+  showIconGlyph = true,
+  iconSize = 19,
   outlineColor,
   leftInset,
 }: {
@@ -70,6 +72,8 @@ export function SessionCategoryPill({
   inline?: boolean;
   plain?: boolean;
   textOnly?: boolean;
+  showIconGlyph?: boolean;
+  iconSize?: number;
   outlineColor?: string;
   leftInset?: number;
 }) {
@@ -90,7 +94,13 @@ export function SessionCategoryPill({
       ]}
     >
       {!plain && !outlineColor && <SessionBadgeGlass />}
-      {!textOnly && <SessionCategoryIcon categoryId={categoryId} />}
+      {!textOnly && (
+        <SessionCategoryIcon
+          categoryId={categoryId}
+          size={iconSize}
+          showGlyph={showIconGlyph}
+        />
+      )}
       <Text style={[styles.categoryLabel, !plain && styles.categoryLabelCard]} numberOfLines={1}>
         {category.label.toUpperCase()}
       </Text>
@@ -102,10 +112,12 @@ export function SessionCategoryIcon({
   categoryId,
   style,
   size = 19,
+  showGlyph = true,
 }: {
   categoryId?: string;
   style?: object;
   size?: number;
+  showGlyph?: boolean;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -113,9 +125,9 @@ export function SessionCategoryIcon({
 
   return (
     <View style={[styles.categoryCircle, { width: size, height: size, borderRadius: size / 2 }, style, { backgroundColor: category.color }]}>
-      {category.materialIcon ? (
+      {showGlyph && category.materialIcon ? (
         <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
-      ) : category.icon ? (
+      ) : showGlyph && category.icon ? (
         <Image source={category.icon} style={[styles.categoryIcon, { width: iconSize, height: iconSize }]} resizeMode="contain" />
       ) : null}
     </View>

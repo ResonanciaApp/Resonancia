@@ -95,6 +95,8 @@ export function DailyRecommendationsSection({
               session={session}
               imageSize={97}
               showCategoryPill
+              categoryPillShowIconGlyph={false}
+              categoryPillIconSize={15}
               showDurationBadge
               showChevron
               authorColor={themeAccent}
@@ -150,8 +152,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   refreshButton: {
-    height: 45,
-    borderRadius: 15,
+    height: 55,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.15)",
     marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",
