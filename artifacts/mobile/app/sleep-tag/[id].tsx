@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
@@ -15,7 +16,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { PremiumBadge } from "@/components/PremiumBadge";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
@@ -85,9 +85,19 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View
+      style={[
+        styles.root,
+        { backgroundColor: theme.gradient[theme.gradient.length - 1] as string },
+      ]}
+    >
       <StatusBar hidden />
-      <SacredBackground />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -182,6 +192,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
                          categoryId={session.categoryId}
                          durationLabel={session.durationLabel}
                          title={session.title}
+                         categoryPillTextOnly
                          authorName={
                            session.guideId
                              ? getGuide(session.guideId).name
