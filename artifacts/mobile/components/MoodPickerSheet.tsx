@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255,255,255,0.16)",
   },
   optionRowSelected: {
-    backgroundColor: "rgba(41,139,115,0.25)",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   radio: {
     width: 26,
