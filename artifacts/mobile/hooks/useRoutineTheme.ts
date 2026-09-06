@@ -55,7 +55,7 @@ export function useRoutineTheme(): RoutineThemeTokens {
 
   return {
     background: theme.solid,
-    surface: "rgba(0,0,0,0.15)",
+    surface: "rgba(181,211,255,0.057)",
     surfaceElevated: scene.surfaceElevated,
     divider: scene.divider,
     ticketSurface: scene.ticketSurface,
