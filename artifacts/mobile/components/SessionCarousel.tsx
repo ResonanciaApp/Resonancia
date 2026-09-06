@@ -364,15 +364,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       <SessionCategoryPill categoryId={s.categoryId} />
                     )}
                     {effectiveShowDurationBadge &&
+                      !useOverlayMetadata &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
                           styles.durBadge,
                           !effectiveShowAuthor && styles.durBadgeLower,
-                          useOverlayMetadata
-                            ? styles.sleepOverlayDuration
-                            : { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
+                           { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
                         ]}
                         textStyle={styles.durText}
                       />
@@ -392,6 +391,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       pointerEvents="none"
                     />
                     <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
+                      {effectiveShowDurationBadge ? (
+                        <SessionDurationBadge
+                          label={s.durationLabel}
+                          style={[styles.durBadge, styles.sleepOverlayDurationInline]}
+                          textStyle={styles.durText}
+                        />
+                      ) : null}
                       <Text style={styles.sleepOverlayTitle} numberOfLines={2}>
                         {s.title}
                       </Text>
@@ -610,9 +616,12 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
-  sleepOverlayDuration: {
-    top: 10,
+  sleepOverlayDurationInline: {
+    position: "relative",
+    left: undefined,
     bottom: undefined,
+    alignSelf: "flex-start",
+    marginBottom: 5,
   },
   cardTitleWrap: {
     width: CARD_W,
