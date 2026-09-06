@@ -67,6 +67,7 @@ import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { useStreak } from "@/hooks/useStreak";
+import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import {
   gradientColors,
@@ -1146,6 +1147,8 @@ export function ProfileScreenBase({
           </Pressable>
         </View>
 
+        <IntentionPrompt style={{ marginBottom: 19 }} />
+
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
           <View style={styles.profileIdentityRow}>
@@ -1232,39 +1235,14 @@ export function ProfileScreenBase({
                 <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
                   Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
                 </Text>
-                <View style={styles.profileProgressWeek}>
-                  {["L", "M", "X", "J", "V", "S", "D"].map((label, index) => {
-                    const completed = weekFlags[index];
-                    const isToday = index === todayIndex;
-                    return (
-                      <View key={label} style={styles.profileProgressDay}>
-                        <View
-                          style={[
-                            styles.profileProgressCircle,
-                            completed && styles.profileProgressCircleCompleted,
-                            !completed && isToday && styles.profileProgressCircleToday,
-                          ]}
-                        >
-                          {completed ? (
-                            <Feather name="check" size={15} color="#FFFFFF" />
-                          ) : null}
-                        </View>
-                        <Text
-                          style={[
-                            styles.profileProgressDayLabel,
-                            { color: completed || isToday ? colors.foreground : secondaryAccent },
-                          ]}
-                        >
-                          {label}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
+                <SonicStreakDays
+                  activeFlags={weekFlags}
+                  todayIndex={todayIndex}
+                  edgeAligned
+                />
               </View>
             </View>
 
-            <IntentionPrompt style={{ marginBottom: 19 }} />
             <MiRutinaSection style={styles.profileRoutineSection} />
 
             <View>
@@ -2193,39 +2171,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     marginBottom: 18,
-  },
-  profileProgressWeek: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  profileProgressDay: {
-    flex: 1,
-    alignItems: "center",
-    gap: 7,
-  },
-  profileProgressCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  profileProgressCircleCompleted: {
-    borderColor: WIDGET_GREEN_SOLID,
-    backgroundColor: WIDGET_GREEN_SOLID,
-  },
-  profileProgressCircleToday: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.72)",
-  },
-  profileProgressDayLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
   },
   profileRoutineSection: {
     marginHorizontal: 0,
