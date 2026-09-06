@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
   },
   moodCardSelected: {
     borderColor: MOOD_GREEN,
-    backgroundColor: "rgba(41,139,115,0.22)",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   moodEmoji: {
     fontSize: 28,
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     fontFamily: "Manrope",
-    color: "#FFFFFF",
+    color: "#060A0F",
     fontSize: 16,
     fontWeight: "700",
   },
