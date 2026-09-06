@@ -630,6 +630,11 @@ export function ExploreScreen({
                         {meta?.description ?? card.description}
                       </Text>
                     </View>
+                    <Feather
+                      name="chevron-right"
+                      size={23}
+                      color="rgba(255,255,255,0.72)"
+                    />
                   </Pressable>
                 );
               })}

@@ -31,7 +31,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(181,211,255,0.057)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const DISCOVER_GRID_GAP = 11;
+const DISCOVER_GRID_GAP = 14;
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
@@ -245,50 +245,24 @@ export function ContentCategoryGrid({
                   styles.discoverCard,
                   {
                     width: cardWidth,
-                    height: cardHeight,
-                    backgroundColor: catBlockBg,
                     opacity: pressed ? 0.78 : 1,
                   },
                 ]}
               >
-                {image && (
-                  <ExpoImage
-                    source={image}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                    transition={180}
-                  />
-                )}
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={[
-                    "rgba(4,5,12,0.02)",
-                    "rgba(4,5,12,0.18)",
-                    "rgba(4,5,12,0.82)",
-                  ]}
-                  locations={[0, 0.42, 1]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <View style={styles.discoverCardContent}>
-                  <View style={styles.discoverCardCopy}>
-                    <Text style={styles.discoverCardLabel} numberOfLines={1}>
-                      {category.label}
-                    </Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.discoverChevron,
-                      { backgroundColor: `${category.cardColor}59` },
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name="chevron-right"
-                      size={22}
-                      color="#FFFFFF"
-                    />
-                  </View>
-                </View>
+                 <View style={[styles.discoverCardImage, { height: cardHeight }]}>
+                   {image && (
+                     <ExpoImage
+                       source={image}
+                       style={StyleSheet.absoluteFill}
+                       contentFit="cover"
+                       cachePolicy="memory-disk"
+                       transition={180}
+                     />
+                   )}
+                 </View>
+                 <Text style={styles.discoverCardLabel} numberOfLines={1}>
+                   {category.label}
+                 </Text>
               </Pressable>
             );
           })}
@@ -469,23 +443,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   discoverCard: {
-    borderRadius: 13,
+    borderRadius: 14,
+  },
+  discoverCardImage: {
+    width: "100%",
+    borderRadius: 14,
     overflow: "hidden",
-  },
-  discoverCardContent: {
-    ...StyleSheet.absoluteFillObject,
-    top: undefined,
-    minHeight: 58,
-    bottom: 0,
-    paddingHorizontal: 12,
-    paddingBottom: 11,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 6,
-  },
-  discoverCardCopy: {
-    flex: 1,
-    minWidth: 0,
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   discoverCardLabel: {
     color: "#FFFFFF",
@@ -493,17 +457,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     fontWeight: "600",
-    textShadowColor: "rgba(0,0,0,0.85)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  discoverChevron: {
-    width: 31,
-    height: 31,
-    borderRadius: 15.5,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 1,
+    marginTop: 8,
+    paddingHorizontal: 1,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,
