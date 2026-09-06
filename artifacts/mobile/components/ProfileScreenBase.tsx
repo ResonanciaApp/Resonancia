@@ -1193,15 +1193,20 @@ export function ProfileScreenBase({
                   <View style={styles.profileProgressLotus}>
                     <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
                   </View>
-                  <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
-                    Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
-                  </Text>
+                  <View style={styles.profileProgressCopy}>
+                    <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
+                      Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
+                    </Text>
+                    <Text style={[styles.profileProgressSubtitle, { color: secondaryAccent }]}>
+                      Medita todos los días y transforma tu vida
+                    </Text>
+                  </View>
                 </View>
                 <SonicStreakDays
                   activeFlags={weekFlags}
                   todayIndex={todayIndex}
                   edgeAligned
-                  daysMarginTop={7}
+                  daysMarginTop={-6}
                   activeBorderGradient={activeTheme.gradient.map((color) =>
                     brightenHexColor(color, 0.55),
                   )}
@@ -2157,11 +2162,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
   },
+  profileProgressCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
   profileProgressHeadline: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
-    flex: 1,
+  },
+  profileProgressSubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "400",
+    marginTop: 2,
   },
   profileRoutineSection: {
     marginHorizontal: 0,
