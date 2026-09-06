@@ -1147,7 +1147,14 @@ export function ProfileScreenBase({
           </Pressable>
         </View>
 
-        <IntentionPrompt style={{ marginBottom: 19 }} />
+        <IntentionPrompt
+          style={{
+            marginTop: 10,
+            marginBottom: 19,
+            backgroundColor: "rgba(0,0,0,0.15)",
+            transform: [{ translateY: 15 }],
+          }}
+        />
 
         {/* ── Profile Card ── */}
           <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
