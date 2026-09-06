@@ -143,11 +143,28 @@ export function SonicStreakDays({
             ) : isToday ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>
                 <Svg width={circleSize} height={circleSize} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                  {activeBorderGradient?.length ? (
+                    <Defs>
+                      <SvgLinearGradient id={borderGradientId} x1="0" y1="0" x2="1" y2="1">
+                        {activeBorderGradient.map((color, stopIndex) => (
+                          <Stop
+                            key={`${color}-${stopIndex}`}
+                            offset={
+                              activeBorderGradient.length === 1
+                                ? "0"
+                                : `${stopIndex / (activeBorderGradient.length - 1)}`
+                            }
+                            stopColor={color}
+                          />
+                        ))}
+                      </SvgLinearGradient>
+                    </Defs>
+                  ) : null}
                   <Circle
                     cx={circleCenter}
                     cy={circleCenter}
                     r={circleRadius}
-                    stroke="#F9F9F9"
+                    stroke={borderStroke}
                     strokeWidth={activeBorderWidth}
                     fill="rgba(255,255,255,0.18)"
                   />
