@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
   },
   themeGridCard: {
     width: "100%",
-    minHeight: 84,
+    minHeight: 92,
     borderRadius: 14,
     flexDirection: "row",
     alignItems: "center",
@@ -966,8 +966,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   themeGridThumbnail: {
-    width: 56,
-    height: 56,
+    width: 64,
+    height: 64,
     borderRadius: 12,
     marginRight: 20,
   },
