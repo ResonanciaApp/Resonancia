@@ -226,7 +226,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
     : baseCardHeight;
   const sleepCategoryCardHeight = Math.round(
-    (sleepCategoryCardWidth + 50) *
+    (cw + 50) *
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) + cardHeightAdjustment;
