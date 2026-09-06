@@ -267,15 +267,16 @@ export default function SonidosScreen() {
         >
           <View style={styles.titleRow}>
             <Animated.Text
+              numberOfLines={1}
               style={[
-                styles.stickyTitle,
+                styles.stickySubtitle,
                 {
-                  color: colors.foreground,
+                  color: theme.accent ?? colors.accent,
                   transform: [{ translateY: stickyTitleTranslateY }],
                 },
               ]}
             >
-              Sonidos
+              Frecuencias únicas y sonidos ambientales
             </Animated.Text>
             <Pressable
               onPress={() => setSearchVisible(true)}
@@ -494,12 +495,12 @@ const styles = StyleSheet.create({
     marginTop: 0,
     transform: [{ translateY: 1 }],
   },
-  stickyTitle: {
+  stickySubtitle: {
+    flex: 1,
+    marginRight: 8,
     fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "800",
-    letterSpacing: 0.2,
-    textAlign: "left",
+    fontSize: 16,
+    fontWeight: "500",
   },
   headerSearchButton: {
     width: 40,
