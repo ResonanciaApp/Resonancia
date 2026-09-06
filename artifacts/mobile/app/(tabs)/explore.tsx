@@ -615,13 +615,14 @@ export function ExploreScreen({
                       },
                     ]}
                   >
-                    <View style={styles.themeGridIcon}>
-                      <Feather
-                        name={meta?.icon ?? "circle"}
-                        size={27}
-                        color={meta?.color ?? "#C8A6FF"}
-                      />
-                    </View>
+                    <Image
+                      source={card.image}
+                      style={styles.themeGridThumbnail}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
                     <View style={styles.themeGridCopy}>
                       <Text style={styles.themeGridLabel} numberOfLines={1}>
                         {card.label}
@@ -956,18 +957,18 @@ const styles = StyleSheet.create({
   },
   themeGridCard: {
     width: "100%",
-    minHeight: 76,
+    minHeight: 84,
     borderRadius: 14,
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 16,
     paddingRight: 13,
-    paddingVertical: 13,
+    paddingVertical: 14,
   },
-  themeGridIcon: {
-    width: 34,
-    alignItems: "center",
-    justifyContent: "center",
+  themeGridThumbnail: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
     marginRight: 20,
   },
   themeGridCopy: {
