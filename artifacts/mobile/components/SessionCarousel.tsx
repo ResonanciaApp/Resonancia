@@ -147,6 +147,8 @@ type SessionCarouselProps = {
   presentation?: "sleep-category" | "tall-overlay";
   /** Places title and author over the image without a category pill. */
   overlayMetadataInside?: boolean;
+  /** Keeps the duration pill in the image's upper-left corner. */
+  overlayDurationTopLeft?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -183,6 +185,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   eagerRender = false,
   presentation,
   overlayMetadataInside = false,
+  overlayDurationTopLeft = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -394,8 +397,15 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       style={StyleSheet.absoluteFill}
                       pointerEvents="none"
                     />
+                    {effectiveShowDurationBadge && overlayDurationTopLeft ? (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[styles.durBadge, styles.sleepOverlayDurationTopLeft]}
+                        textStyle={styles.durText}
+                      />
+                    ) : null}
                     <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
-                      {effectiveShowDurationBadge ? (
+                      {effectiveShowDurationBadge && !overlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
                           style={[styles.durBadge, styles.sleepOverlayDurationInline]}
@@ -626,6 +636,11 @@ const styles = StyleSheet.create({
     bottom: undefined,
     alignSelf: "flex-start",
     marginBottom: 5,
+  },
+  sleepOverlayDurationTopLeft: {
+    top: 8,
+    bottom: undefined,
+    left: 8,
   },
   cardTitleWrap: {
     width: CARD_W,

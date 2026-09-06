@@ -380,6 +380,7 @@ export default function DescansoScreen() {
                 cardHeightAdjustment={
                   collection.id === "musica-para-dormir" ? -25 : undefined
                 }
+                overlayDurationTopLeft={collection.id === "musica-para-dormir"}
                 titleSize={19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
