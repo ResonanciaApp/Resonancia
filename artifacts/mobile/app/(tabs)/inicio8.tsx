@@ -1503,7 +1503,7 @@ export default function HomeScreen2({
   const tabBarBottomOffset =
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
-  const emotionWidgetBackground = "#150D2E";
+  const emotionWidgetBackground = "#2D4082";
   const cardBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : "rgba(181,211,255,0.057)";
