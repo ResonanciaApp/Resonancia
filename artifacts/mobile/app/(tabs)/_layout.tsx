@@ -18,6 +18,12 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, {
+  Defs as SvgDefs,
+  RadialGradient as SvgRadialGradient,
+  Rect as SvgRect,
+  Stop as SvgStop,
+} from "react-native-svg";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
@@ -256,6 +262,43 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             { backgroundColor: tabBarBackground },
           ]}
         />
+        {indigo2Mode && (
+          <Svg
+            pointerEvents="none"
+            width="100%"
+            height="100%"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={StyleSheet.absoluteFill}
+          >
+            <SvgDefs>
+              <SvgRadialGradient
+                id="tabBarVioletGlow"
+                cx="82%"
+                cy="12%"
+                rx="70%"
+                ry="130%"
+              >
+                <SvgStop offset="0" stopColor="#8A63C7" stopOpacity={0.09} />
+                <SvgStop offset="0.34" stopColor="#7656B5" stopOpacity={0.04} />
+                <SvgStop offset="0.82" stopColor="#7656B5" stopOpacity={0} />
+              </SvgRadialGradient>
+              <SvgRadialGradient
+                id="tabBarIndigoGlow"
+                cx="15%"
+                cy="95%"
+                rx="78%"
+                ry="140%"
+              >
+                <SvgStop offset="0" stopColor="#566CC4" stopOpacity={0.075} />
+                <SvgStop offset="0.36" stopColor="#3D4B9A" stopOpacity={0.03} />
+                <SvgStop offset="0.84" stopColor="#3D4B9A" stopOpacity={0} />
+              </SvgRadialGradient>
+            </SvgDefs>
+            <SvgRect width="100" height="100" fill="url(#tabBarVioletGlow)" />
+            <SvgRect width="100" height="100" fill="url(#tabBarIndigoGlow)" />
+          </Svg>
+        )}
         <View
           style={[
             styles.row,
