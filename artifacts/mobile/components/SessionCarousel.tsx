@@ -75,10 +75,12 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
   title,
   color,
   numberOfLines,
+  offsetY,
 }: {
   title: string;
   color: string;
   numberOfLines: number;
+  offsetY: number;
 }) {
   const [lineCount, setLineCount] = React.useState(1);
 
@@ -88,7 +90,7 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
         styles.ambientalTitleWrap,
         {
           height: numberOfLines * 20,
-          transform: [{ translateY: lineCount >= 3 ? 17 : 18 }],
+          transform: [{ translateY: (lineCount >= 3 ? 17 : 18) + offsetY }],
         },
       ]}
     >
@@ -142,6 +144,10 @@ type SessionCarouselProps = {
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
   ambientalCardBackground?: string;
+  /** Vertical offset for the circular image inside Ambiental cards. */
+  ambientalImageOffsetY?: number;
+  /** Vertical offset for Ambiental titles, regardless of line count. */
+  ambientalTitleOffsetY?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
@@ -183,6 +189,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
+  ambientalImageOffsetY = -24,
+  ambientalTitleOffsetY = 0,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -328,7 +336,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 - 24,
+                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY,
                         },
                       ]}
                     />
@@ -337,6 +345,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         title={s.title}
                         color="#F9F9F9"
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
+                        offsetY={ambientalTitleOffsetY}
                       />
                     )}
                     {durationInsideWithMeta && effectiveShowDurationBadge && (
