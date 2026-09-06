@@ -65,8 +65,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { useStreak } from "@/hooks/useStreak";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeMaxStreak } from "@/utils/stats";
+import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
   gradientColors,
@@ -356,9 +355,6 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -372,29 +368,14 @@ export function ProfileScreenBase({
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
   const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    let totalMinutes = 0;
-    let completedSessions = 0;
-    const rangeEvents = [];
-
-    for (const event of statEvents) {
-      const playedAt = new Date(event.playedAt).getTime();
-      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
-      rangeEvents.push(event);
-      totalMinutes += event.minutes;
-      if (event.completed === true) completedSessions += 1;
-    }
-
     return {
-      totalMinutes: Math.round(totalMinutes),
-      completedSessions,
-      maxStreak: computeMaxStreak(rangeEvents),
+      totalMinutes: Math.round(
+        statEvents.reduce((total, event) => total + (event.minutes ?? 0), 0),
+      ),
+      activeDays: computeActiveDays(statEvents),
+      maxStreak: computeMaxStreak(statEvents),
     };
-  }, [statEvents, statsRangeDays, todayKey]);
+  }, [statEvents]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1251,92 +1232,73 @@ export function ProfileScreenBase({
               <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
                 Estadísticas personales
               </Text>
-              <View style={styles.personalStatsRangeDropdown}>
-                <Pressable
-                  onPress={() => setStatsRangeOpen((open) => !open)}
-                  accessibilityRole="button"
-                  accessibilityState={{ expanded: statsRangeOpen }}
-                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
-                  style={styles.personalStatsRangeTrigger}
-                >
-                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather
-                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
-                    size={14}
-                    color={secondaryAccent}
-                  />
-                </Pressable>
-                {statsRangeOpen && (
-                  <View
-                    style={[
-                      styles.personalStatsRangeMenu,
-                      {
-                        backgroundColor: activeTheme.gradient[0],
-                        borderColor: "rgba(255,255,255,0.12)",
-                      },
-                    ]}
-                  >
-                    {([7, 30, 90] as const).map((days) => {
-                      const selected = statsRangeDays === days;
-                      return (
-                        <Pressable
-                          key={days}
-                          onPress={() => {
-                            setStatsRangeDays(days);
-                            setStatsRangeOpen(false);
-                          }}
-                          accessibilityRole="menuitem"
-                          accessibilityState={{ selected }}
-                          style={[
-                            styles.personalStatsRangeOption,
-                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
-                          ]}
-                        >
-                          <Text
-                            style={[
-                              styles.personalStatsRangeOptionText,
-                              { color: selected ? "#F9F9F9" : secondaryAccent },
-                            ]}
-                          >
-                            Últimos {days} días
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                )}
-              </View>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
-                  <MaterialCommunityIcons name="spa" size={22} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                    TIEMPO DE{"\n"}BIENESTAR
-                  </Text>
+                  <View style={styles.personalStatIcon}>
+                    <Feather name="clock" size={20} color="#F9F9F9" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.totalMinutes}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      MINUTOS TOTALES
+                    </Text>
+                  </View>
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="clock" size={20} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.completedSessions}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                    SESIONES{"\n"}COMPLETADAS
-                  </Text>
+                  <View style={styles.personalStatIcon}>
+                    <Feather name="calendar" size={20} color="#F9F9F9" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.activeDays}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      DÍAS ACTIVOS
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.personalStatsSection,
+                { backgroundColor: resourceBlockBackground },
+              ]}
+            >
+              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                Rachas
+              </Text>
+              <View style={styles.personalStatsValues}>
+                <View style={styles.personalStatItem}>
+                  <View style={styles.personalStatIcon}>
+                    <Feather name="zap" size={20} color="#F9F9F9" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {currentStreak}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      RACHA ACTUAL
+                    </Text>
+                  </View>
                 </View>
                 <View style={styles.personalStatDivider} />
                 <View style={styles.personalStatItem}>
-                  <Feather name="flag" size={20} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.maxStreak} {personalStats.maxStreak === 1 ? "día" : "días"}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                    RACHA{"\n"}MÁXIMA
-                  </Text>
+                  <View style={styles.personalStatIcon}>
+                    <Feather name="award" size={20} color="#F9F9F9" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.maxStreak}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      RACHA MÁS LARGA
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -2301,7 +2263,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
 
-  // Estadísticas personales (ocultas; estilos conservados para reutilización)
+  // Estadísticas personales
   personalStatsSection: {
     borderRadius: 17,
     padding: 16,
@@ -2312,60 +2274,36 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
-  personalStatsRangeDropdown: {
-    position: "relative",
-    alignSelf: "flex-start",
-    marginTop: 2,
-    zIndex: 2,
-  },
-  personalStatsRangeTrigger: {
-    minHeight: 28,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  personalStatsRangeLabel: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "500",
-  },
-  personalStatsRangeMenu: {
-    position: "absolute",
-    top: 30,
-    left: 0,
-    width: 142,
-    padding: 4,
-    borderRadius: 10,
-    borderWidth: 1,
-    zIndex: 10,
-    elevation: 10,
-  },
-  personalStatsRangeOption: {
-    minHeight: 34,
-    borderRadius: 7,
-    paddingHorizontal: 10,
-    justifyContent: "center",
-  },
-  personalStatsRangeOptionText: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "500",
-  },
   personalStatsValues: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: 24,
+    alignItems: "center",
+    marginTop: 18,
   },
   personalStatItem: {
     flex: 1,
     minWidth: 0,
+    minHeight: 46,
+    flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 10,
+  },
+  personalStatIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  personalStatCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   personalStatDivider: {
     width: 1,
-    height: 58,
-    marginHorizontal: 4,
+    height: 42,
+    marginHorizontal: 10,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   personalStatValue: {
@@ -2376,9 +2314,9 @@ const styles = StyleSheet.create({
   personalStatLabel: {
     fontFamily: "Manrope",
     fontSize: 10,
-    lineHeight: 15,
+    lineHeight: 14,
     letterSpacing: 0.35,
-    textAlign: "center",
+    marginTop: 2,
   },
   // Membresía
   membershipRow: {
