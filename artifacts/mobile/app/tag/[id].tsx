@@ -309,6 +309,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 width={CARD_W}
                 style={{ marginRight: 0 }}
                 showCardMetadata
+                showAuthor={false}
                 showAuthorAvatar={false}
                 categoryPillTextOnly
                 overridePress={() => openSession(session)}
