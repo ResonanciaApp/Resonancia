@@ -58,10 +58,6 @@ const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
 );
-const THEME_GRID_GAP = 9;
-const THEME_GRID_CARD_WIDTH = Math.floor(
-  (width - H_PAD * 2 - THEME_GRID_GAP) / 2,
-);
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
   { label: "10 min", displayLabel: "10 minutos" },
@@ -69,6 +65,21 @@ const DURATION_SLOTS = [
   { label: "30 min", displayLabel: "30 minutos" },
   { label: "60 min", displayLabel: "60 minutos" },
 ] as const;
+
+const OTHER_THEME_META: Record<string, {
+  icon: React.ComponentProps<typeof Feather>["name"];
+  color: string;
+  description: string;
+}> = {
+  "para-la-ansiedad": { icon: "heart", color: "#CE7FA3", description: "Calma tu mente y recupera la paz" },
+  "energiza-tus-mananas": { icon: "sunrise", color: "#E3A657", description: "Activa tu energía para comenzar" },
+  "foco-concentracion": { icon: "crosshair", color: "#72A0DA", description: "Claridad para sostener tu atención" },
+  "suelto-la-rabia": { icon: "zap", color: "#DC7164", description: "Libera y transforma lo que sientes" },
+  "crecimiento-personal": { icon: "trending-up", color: "#70BE8D", description: "Expande tu conciencia y tus recursos" },
+  "armonia-familiar": { icon: "users", color: "#D08DAA", description: "Fortalece vínculos y crea armonía" },
+  "respiracion-consciente": { icon: "wind", color: "#59BBC0", description: "Regresa al presente con tu respiración" },
+  "meditaciones-activas": { icon: "activity", color: "#DE9467", description: "Conecta cuerpo y mente en movimiento" },
+};
 
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
@@ -223,6 +234,14 @@ export function ExploreScreen({
   const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const durationSurfaceColor =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : isIndigoThemeId(activeSceneId)
+        ? "rgba(181,211,255,0.057)"
+        : activeSceneId === "indigo2"
+          ? "rgba(191,207,255,0.096)"
+          : "rgba(181,211,255,0.057)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -508,14 +527,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor:
-                        activeSceneId === "tibet"
-                          ? "rgba(0,0,0,0.15)"
-                          : isIndigoThemeId(activeSceneId)
-                            ? "rgba(181,211,255,0.057)"
-                            : activeSceneId === "indigo2"
-                              ? "rgba(191,207,255,0.096)"
-                              : "rgba(181,211,255,0.057)",
+                      backgroundColor: durationSurfaceColor,
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -533,32 +545,45 @@ export function ExploreScreen({
               </Text>
             </View>
             <View style={styles.themeGrid}>
-              {TAG_CARDS.slice(0, 8).map((card) => (
-                <Pressable
-                  key={card.id}
-                  onPress={() => openCategory(`/tag/${encodeURIComponent(card.id)}`)}
-                  style={({ pressed }) => [
-                    styles.themeGridCard,
-                    { opacity: pressed ? 0.82 : 1 },
-                  ]}
-                >
-                  <Image
-                    source={card.image}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <LinearGradient
-                    colors={["rgba(0,0,0,0.4)", "rgba(0,0,0,0.4)"]}
-                    locations={[0, 1]}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.themeGridLabel} numberOfLines={2}>
-                    {card.label}
-                  </Text>
-                </Pressable>
-              ))}
+              {TAG_CARDS.slice(0, 8).map((card) => {
+                const meta = OTHER_THEME_META[card.id];
+                return (
+                  <Pressable
+                    key={card.id}
+                    onPress={() => openCategory(`/tag/${encodeURIComponent(card.id)}`)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${card.label}. ${meta?.description ?? card.description}`}
+                    style={({ pressed }) => [
+                      styles.themeGridCard,
+                      {
+                        backgroundColor: durationSurfaceColor,
+                        opacity: pressed ? 0.72 : 1,
+                      },
+                    ]}
+                  >
+                    <View style={styles.themeGridIcon}>
+                      <Feather
+                        name={meta?.icon ?? "circle"}
+                        size={27}
+                        color={meta?.color ?? "#C8A6FF"}
+                      />
+                    </View>
+                    <View style={styles.themeGridCopy}>
+                      <Text style={styles.themeGridLabel} numberOfLines={1}>
+                        {card.label}
+                      </Text>
+                      <Text style={styles.themeGridDescription} numberOfLines={1}>
+                        {meta?.description ?? card.description}
+                      </Text>
+                    </View>
+                    <Feather
+                      name="chevron-right"
+                      size={23}
+                      color="rgba(255,255,255,0.72)"
+                    />
+                  </Pressable>
+                );
+              })}
             </View>
             <Pressable
               onPress={() => openCategory("/todas-las-tematicas")}
@@ -818,31 +843,43 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   themeGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: THEME_GRID_GAP,
+    gap: 10,
   },
   themeGridCard: {
-    width: THEME_GRID_CARD_WIDTH,
-    height: 116,
+    width: "100%",
+    minHeight: 76,
     borderRadius: 14,
-    overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 16,
+    paddingRight: 13,
+    paddingVertical: 13,
+  },
+  themeGridIcon: {
+    width: 34,
     alignItems: "center",
     justifyContent: "center",
-    padding: 12,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    marginRight: 20,
+  },
+  themeGridCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   themeGridLabel: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
-    fontSize: 14,
-    lineHeight: 18,
+    fontSize: 15,
+    lineHeight: 19,
     fontWeight: "700",
-    textAlign: "center",
     letterSpacing: 0.2,
-    textShadowColor: "rgba(0,0,0,0.65)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+  },
+  themeGridDescription: {
+    fontFamily: "Manrope",
+    color: "rgba(255,255,255,0.62)",
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: "400",
+    marginTop: 1,
   },
   themeViewAllButton: {
     marginTop: 16,
