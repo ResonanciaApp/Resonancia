@@ -36,7 +36,7 @@ const EXTRA_ACCESS_CARDS = [
   { id: "library", label: "Biblioteca", icon: "book-open-variant", route: "__biblioteca_overlay" },
   { id: "mixer", label: "Mezclador", icon: "tune-variant", route: "__mixer_panel" },
   { id: "breathing", label: "Respiración", icon: "weather-windy", route: "/respiracion" },
-  { id: "journal", label: "Diario", icon: "book-open-page-variant-outline", route: "/diario" },
+  { id: "journal", label: "Mis notas", icon: "book-open-page-variant-outline", route: "/diario" },
 ] as const;
 
 const ACCESS_CARDS_WITH_EXTRAS = [

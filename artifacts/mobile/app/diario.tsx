@@ -83,12 +83,12 @@ export default function DiarioScreen() {
 
   const handleMenu = () => {
     if (entries.length === 0) return;
-    Alert.alert("Diario", undefined, [
+    Alert.alert("Mis notas", undefined, [
       {
-        text: "Borrar todo el diario",
+        text: "Borrar todas mis notas",
         style: "destructive",
         onPress: () =>
-          Alert.alert("Borrar todo", "¿Eliminar todas las entradas de tu diario?", [
+          Alert.alert("Borrar todo", "¿Eliminar todas tus notas?", [
             { text: "Cancelar", style: "cancel" },
             { text: "Borrar todo", style: "destructive", onPress: () => deleteAll() },
           ]),
@@ -158,7 +158,7 @@ export default function DiarioScreen() {
       </View>
 
       {/* Title */}
-      <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Diario</Text>
+      <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Mis notas</Text>
 
       {/* Body */}
       {loading ? (
@@ -169,7 +169,7 @@ export default function DiarioScreen() {
         <View style={styles.emptyWrap}>
           <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>No hay entradas</Text>
           <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>
-            Toca "Añade entrada" para comenzar una entrada en tu diario.
+            Toca "Añade entrada" para comenzar a guardar tus notas.
           </Text>
         </View>
       ) : (
@@ -191,12 +191,6 @@ export default function DiarioScreen() {
             { opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <LinearGradient
-            colors={["#784576", "#50326E"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={StyleSheet.absoluteFill}
-          />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
@@ -260,6 +254,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+    backgroundColor: "#F9F9F9",
   },
-  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#FFFFFF" },
+  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#060A0F" },
 });
