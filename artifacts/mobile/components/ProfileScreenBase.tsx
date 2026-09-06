@@ -1221,16 +1221,8 @@ export function ProfileScreenBase({
                     brightenHexColor(color, 0.55),
                   )}
                 />
-              </View>
-            </View>
-
-            <View
-              style={[
-                styles.personalStatsSection,
-                { backgroundColor: resourceBlockBackground },
-              ]}
-            >
-              <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
+                <View style={styles.streakStatsDivider} />
+                <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatIcon}>
                     <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
@@ -1257,6 +1249,7 @@ export function ProfileScreenBase({
                       RACHA MÁS LARGA
                     </Text>
                   </View>
+                </View>
                 </View>
               </View>
             </View>
@@ -2444,6 +2437,12 @@ const styles = StyleSheet.create({
   menuCard: {
     borderRadius: 18,
     overflow: "hidden",
+  },
+  streakStatsDivider: {
+    height: 1,
+    width: "100%",
+    marginVertical: 16,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   menuRow: {
     flexDirection: "row",
