@@ -91,7 +91,7 @@ export default function ExplorarPage() {
       const data = await res.json();
       setSections(data.sections);
       setDirty(false);
-      toast.success("Orden guardado");
+      toast.success("Orden de Otras temáticas guardado");
     } catch {
       toast.error("No se pudo guardar");
     } finally {
@@ -111,9 +111,9 @@ export default function ExplorarPage() {
     <div className="max-w-xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Explorar — secciones</h1>
+          <h1 className="text-2xl font-bold">Explorar — Otras temáticas</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Arrastrá para reordenar. Tocá el ojo para mostrar u ocultar un carrusel.
+            Arrastrá para ordenar las cards. Tocá el ojo para mostrarlas u ocultarlas en Descubrir.
           </p>
         </div>
         <Button onClick={save} disabled={!dirty || saving} size="sm">
@@ -148,7 +148,7 @@ export default function ExplorarPage() {
               type="button"
               onClick={() => toggleVisible(section.id)}
               className="p-1.5 rounded hover:bg-secondary transition-colors"
-              title={section.visible ? "Ocultar carrusel" : "Mostrar carrusel"}
+              title={section.visible ? "Ocultar card" : "Mostrar card"}
             >
               {section.visible ? (
                 <Eye className="w-4 h-4 text-primary" />

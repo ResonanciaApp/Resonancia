@@ -21,7 +21,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
@@ -33,7 +32,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { PLAYLISTS } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
-import { TAG_CARDS } from "@/data/tags";
+import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -54,8 +53,6 @@ const { width } = Dimensions.get("window");
 const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
-const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
-const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 const FEATURED_MOMENT_HEIGHT = 320;
 const SHOW_FEATURED_MOMENT = false;
@@ -228,7 +225,6 @@ function DiscoverPill({
 
 export function ExploreScreen({
   screenTitle = "Descubrir",
-  collapseCategoryHeader = false,
 }: {
   screenTitle?: string;
   categoryVisualVariant?: "default" | "watercolor";
@@ -327,7 +323,7 @@ export function ExploreScreen({
     return list;
   }, [history, catalogVersion]);
 
-  // ── Orden de carruseles desde la API ──
+  // ── Orden y visibilidad de las cards de Otras temáticas desde la API ──
   // null = todavía cargando (no mostrar nada aún)
   // [] o array = respuesta recibida (respetar visibilidad)
   const [exploreSections, setExploreSections] = React.useState<
@@ -337,7 +333,7 @@ export function ExploreScreen({
     let cancelled = false;
     void (async () => {
       // El caché contiene exclusivamente la última configuración recibida del
-      // servidor. Evita que un corte transitorio haga desaparecer carruseles,
+      // servidor. Evita que un corte transitorio haga desaparecer las cards,
       // sin activar tags locales ni saltarse la visibilidad elegida en Admin.
       try {
         const raw = await AsyncStorage.getItem(EXPLORE_SECTIONS_CACHE_KEY);
@@ -372,31 +368,34 @@ export function ExploreScreen({
     };
   }, []);
 
-  const themeCarousels = React.useMemo(() => {
-    // Mientras carga o si la respuesta no trae configuración, no mostrar
-    // carruseles. Nunca activar todos los tags locales como fallback, porque
-    // eso ignora las visibilidades elegidas en Admin.
+  const otherThemeCards = React.useMemo(() => {
+    // Mientras carga o si la respuesta no trae configuración, no inventar
+    // visibilidades locales: el caché o Admin son la fuente de verdad.
     if (exploreSections === null || exploreSections.length === 0) return [];
-
-    const sessionLabels: string[] = Array.from(
-      new Set<string>(SESSIONS.flatMap((s) => s.themeTag ?? [])),
-    ).filter((t) => !isChakraTag(t));
 
     const seen = new Set<string>();
     return exploreSections
-      .filter((sec) => {
-        if (!sec.visible || !sessionLabels.includes(sec.label)) return false;
-        if (seen.has(sec.label)) return false;
-        seen.add(sec.label);
+      .filter((section) => {
+        if (!section.visible || isChakraTag(section.label) || seen.has(section.slug)) return false;
+        seen.add(section.slug);
         return true;
       })
-      .map((sec) => ({
-        slug: sec.slug,
-        label: sec.label,
-        sessions: SESSIONS.filter((s) =>
-          (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
-        ).sort(sortSessionsNewestFirst),
-      }));
+      .map((section) => {
+        const localCard = TAG_CARDS.find((card) => card.id === section.slug);
+        const matchingSession = SESSIONS.find((session) =>
+          (session.themeTag as readonly string[] | undefined)?.some(
+            (tag) => tag === section.label || slugifyThemeTag(tag) === section.slug,
+          ),
+        );
+        return {
+          id: section.slug,
+          label: localCard?.label ?? section.label,
+          description:
+            localCard?.description ??
+            `Sesiones para explorar ${section.label.toLocaleLowerCase("es")}.`,
+          image: localCard?.image ?? matchingSession?.image,
+        };
+      });
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
@@ -706,7 +705,7 @@ export function ExploreScreen({
               </Text>
             </View>
             <View style={styles.themeGrid}>
-              {TAG_CARDS.slice(0, 8).map((card) => {
+              {otherThemeCards.map((card) => {
                 const meta = OTHER_THEME_META[card.id];
                 return (
                   <Pressable
@@ -723,11 +722,22 @@ export function ExploreScreen({
                     ]}
                   >
                     <View style={styles.themeGridIcon}>
-                      <Feather
-                        name={meta?.icon ?? "circle"}
-                        size={27}
-                        color={meta?.color ?? "#C8A6FF"}
-                      />
+                      {meta ? (
+                        <Feather
+                          name={meta.icon}
+                          size={27}
+                          color={meta.color}
+                        />
+                      ) : card.image ? (
+                        <Image
+                          source={card.image}
+                          style={styles.themeGridDynamicImage}
+                          contentFit="cover"
+                          cachePolicy="memory-disk"
+                        />
+                      ) : (
+                        <Feather name="circle" size={27} color="#C8A6FF" />
+                      )}
                     </View>
                     <View style={styles.themeGridCopy}>
                       <Text style={styles.themeGridLabel} numberOfLines={1}>
@@ -747,34 +757,6 @@ export function ExploreScreen({
               })}
             </View>
           </View>
-
-          {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
-          {themeCarousels.map((carousel, index) => (
-            <View key={carousel.slug}>
-              <SessionCarousel
-                title={carousel.label}
-                sessions={carousel.sessions}
-                isPremium={isPremium}
-                onPress={(s) => handleSessionPress(s)}
-                style={{
-                  marginTop:
-                    index === 0
-                      ? collapseCategoryHeader
-                        ? COLLAPSED_FIRST_CAROUSEL_GAP
-                        : FIRST_DISCOVER_CAROUSEL_GAP
-                      : 0,
-                  ...(carousel.slug === "para-la-ansiedad"
-                    ? { transform: [{ translateY: -13 }] }
-                    : {}),
-                  marginBottom: SECTION_GAP,
-                  paddingHorizontal: H_PAD,
-                }}
-                titleSize={19}
-                presentation="tall-overlay"
-                onViewAll={() => openCategory(`/tag/${encodeURIComponent(carousel.slug)}`)}
-              />
-            </View>
-          ))}
 
           <ResonadoresSection
             marginTop={25}
@@ -1119,6 +1101,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 20,
+  },
+  themeGridDynamicImage: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
   },
   themeGridCopy: {
     flex: 1,
