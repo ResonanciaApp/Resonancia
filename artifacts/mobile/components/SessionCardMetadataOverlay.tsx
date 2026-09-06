@@ -101,7 +101,14 @@ export function SessionCategoryPill({
           showGlyph={showIconGlyph}
         />
       )}
-      <Text style={[styles.categoryLabel, !plain && styles.categoryLabelCard]} numberOfLines={1}>
+      <Text
+        style={[
+          styles.categoryLabel,
+          !plain && styles.categoryLabelCard,
+          textOnly && styles.categoryLabelTextOnly,
+        ]}
+        numberOfLines={1}
+      >
         {category.label.toUpperCase()}
       </Text>
     </View>
@@ -142,6 +149,7 @@ type Props = {
   authorAvatar?: ImageSourcePropType;
   showAuthor?: boolean;
   showCategoryPill?: boolean;
+  categoryPillTextOnly?: boolean;
   showCategoryBelow?: boolean;
   showMetaBelow?: boolean;
   titleFontSize?: number;
@@ -161,6 +169,7 @@ export function SessionCardMetadataOverlay({
   authorAvatar,
   showAuthor = true,
   showCategoryPill = true,
+  categoryPillTextOnly = false,
   showCategoryBelow = false,
   showMetaBelow = false,
   titleFontSize,
@@ -187,7 +196,11 @@ export function SessionCardMetadataOverlay({
         style={styles.bottomGradient}
       />
       {showCategoryPill && (
-        <SessionCategoryPill categoryId={categoryId} leftInset={contentLeft} />
+        <SessionCategoryPill
+          categoryId={categoryId}
+          leftInset={contentLeft}
+          textOnly={categoryPillTextOnly}
+        />
       )}
       {showDuration && (
         <SessionDurationBadge
@@ -269,6 +282,8 @@ const styles = StyleSheet.create({
   },
   categoryPillTextOnly: {
     gap: 0,
+    justifyContent: "center",
+    paddingHorizontal: 9,
   },
   categoryPillOutlined: {
     borderWidth: 2,
@@ -295,6 +310,9 @@ const styles = StyleSheet.create({
   },
   categoryLabelCard: {
     fontWeight: "900",
+  },
+  categoryLabelTextOnly: {
+    textAlign: "center",
   },
   durationBadge: {
     position: "absolute",
