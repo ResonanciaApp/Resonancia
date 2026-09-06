@@ -24,6 +24,7 @@ import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
@@ -49,6 +50,10 @@ const MAIN_ITEMS: MenuItem[] = [
   { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
   { label: "Mis favoritos", icon: "heart",     route: "__overlay:/favoritos-todos" },
   { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
+  { label: "Biblioteca",    icon: "book-open", route: "__biblioteca_overlay" },
+  { label: "Mezclador",     icon: "sliders",   route: "__mixer_panel" },
+  { label: "Mis Notas",     icon: "edit-3",    route: "__overlay:/diario" },
+  { label: "Ejercicios de respiración", icon: "wind", route: "__cat:/respiracion" },
   { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
   { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },
 ];
@@ -95,6 +100,7 @@ export function DrawerMenu() {
   const { escenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { openGeometrix } = useGeometrixPanel();
+  const { openMixer } = useMixerPanel();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -172,6 +178,11 @@ export function DrawerMenu() {
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLib(); return; }
+    if (route === "__mixer_panel") {
+      onClose();
+      openMixer();
+      return;
+    }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
