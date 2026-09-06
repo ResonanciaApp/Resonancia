@@ -245,6 +245,12 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const searchTabBarSurface =
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -516,6 +522,7 @@ export function ExploreScreen({
                       ? styles.searchBoxIndigo2
                       : null,
                 styles.searchBoxWhiteBorder,
+                { backgroundColor: searchTabBarSurface },
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
@@ -947,6 +954,9 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
+    // pageHeader aporta 10 px y scrollContent compensa -3 px:
+    // 33 + 10 - 3 = 40 px efectivos desde el buscador.
+    marginTop: 33,
     marginBottom: SECTION_GAP,
   },
   categoryBlocksTitle: {
