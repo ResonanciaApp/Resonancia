@@ -63,6 +63,12 @@ export function CategoryAtmosphericCard({
   const glow = categoryId
     ? CATEGORY_GLOW_COLORS[categoryId] ?? FALLBACK_GLOW_COLORS
     : FALLBACK_GLOW_COLORS;
+  const emphasizeGlow =
+    categoryId === "meditaciones-guiadas" || categoryId === "musica-sonidos";
+  const primaryCenterOpacity = emphasizeGlow ? 0.18 : 0.13;
+  const primaryDiffuseOpacity = emphasizeGlow ? 0.1 : 0.07;
+  const secondaryCenterOpacity = emphasizeGlow ? 0.16 : 0.12;
+  const secondaryDiffuseOpacity = emphasizeGlow ? 0.07 : 0.05;
 
   return (
     <View style={[styles.card, style]}>
@@ -82,8 +88,8 @@ export function CategoryAtmosphericCard({
             rx="76%"
             ry="112%"
           >
-            <Stop offset="0" stopColor={glow.primary} stopOpacity={0.13} />
-            <Stop offset="0.3" stopColor={glow.primary} stopOpacity={0.07} />
+            <Stop offset="0" stopColor={glow.primary} stopOpacity={primaryCenterOpacity} />
+            <Stop offset="0.3" stopColor={glow.primary} stopOpacity={primaryDiffuseOpacity} />
             <Stop offset="0.78" stopColor={glow.primary} stopOpacity={0} />
           </RadialGradient>
           <RadialGradient
@@ -93,8 +99,8 @@ export function CategoryAtmosphericCard({
             rx="82%"
             ry="120%"
           >
-            <Stop offset="0" stopColor={glow.diffuse} stopOpacity={0.12} />
-            <Stop offset="0.32" stopColor={glow.diffuse} stopOpacity={0.05} />
+            <Stop offset="0" stopColor={glow.diffuse} stopOpacity={secondaryCenterOpacity} />
+            <Stop offset="0.32" stopColor={glow.diffuse} stopOpacity={secondaryDiffuseOpacity} />
             <Stop offset="0.8" stopColor={glow.diffuse} stopOpacity={0} />
           </RadialGradient>
         </Defs>
