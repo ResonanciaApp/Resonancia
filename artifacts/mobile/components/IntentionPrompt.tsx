@@ -58,7 +58,7 @@ export function IntentionPrompt({ style }: { style?: StyleProp<ViewStyle> }) {
           <Text style={[styles.text, styles.placeholderText]}>Proyecta tu propósito</Text>
         )}
       </View>
-      {currentIntention ? <Text style={styles.affirmation}>¡Que así sea!</Text> : null}
+      {currentIntention ? <Text style={styles.affirmation}>Que así sea</Text> : null}
     </Pressable>
   );
 }
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
-    color: "#F0F0F0",
+    color: "rgba(237,225,211,0.45)",
     marginTop: 7,
   },
 });
