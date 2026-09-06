@@ -132,6 +132,20 @@ const MEMBERSHIP_PLANS = [
 
 const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus");
 
+function brightenHexColor(color: string, amount = 0.5): string {
+  const hex = color.replace("#", "");
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return color;
+  const value = Number.parseInt(hex, 16);
+  const brighten = (channel: number) =>
+    Math.round(channel + (255 - channel) * amount);
+  const red = brighten((value >> 16) & 0xff);
+  const green = brighten((value >> 8) & 0xff);
+  const blue = brighten(value & 0xff);
+  return `#${[red, green, blue]
+    .map((channel) => channel.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
 function ProfileMembershipModules({
   secondaryTextColor,
   foregroundColor,
@@ -1177,7 +1191,7 @@ export function ProfileScreenBase({
               >
                 <View style={styles.profileProgressHeader}>
                   <View style={styles.profileProgressLotus}>
-                    <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
                   </View>
                   <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
                     Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
@@ -1188,7 +1202,9 @@ export function ProfileScreenBase({
                   todayIndex={todayIndex}
                   edgeAligned
                   daysMarginTop={7}
-                  activeBorderGradient={activeTheme.gradient}
+                  activeBorderGradient={activeTheme.gradient.map((color) =>
+                    brightenHexColor(color, 0.5),
+                  )}
                 />
               </View>
             </View>
@@ -2135,10 +2151,8 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   profileProgressLotus: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
