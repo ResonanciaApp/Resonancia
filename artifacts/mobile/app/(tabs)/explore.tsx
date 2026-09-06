@@ -640,25 +640,6 @@ export function ExploreScreen({
                 );
               })}
             </View>
-            <Pressable
-              onPress={() => openCategory("/todas-las-tematicas")}
-              accessibilityRole="button"
-              accessibilityLabel="Ver todas las temáticas"
-              style={({ pressed }) => [
-                styles.searchBox,
-                styles.themeViewAllButton,
-                activeSceneId === "tibet"
-                  ? styles.searchBoxTibet
-                  : isIndigoThemeId(activeSceneId)
-                    ? styles.searchBoxIndigo
-                    : activeSceneId === "indigo2"
-                      ? styles.searchBoxIndigo2
-                      : null,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-            >
-              <Text style={styles.themeViewAllText}>Ver todas</Text>
-            </Pressable>
           </View>
 
           {/* ── Carruseles configurados en Explorar — orden y visibilidad desde Admin ── */}
@@ -990,18 +971,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontWeight: "400",
     marginTop: 1,
-  },
-  themeViewAllButton: {
-    marginTop: 16,
-    justifyContent: "center",
-  },
-  themeViewAllText: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#F9F9F9",
-    textAlign: "center",
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
