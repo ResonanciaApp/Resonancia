@@ -92,6 +92,12 @@ export function ProfileSettingsSections({
       title: "Preferencias",
       compactTitle: true,
       rows: [
+        {
+          icon: "bell",
+          label: "Recordatorios de práctica",
+          description: "Mañana, tarde y noche",
+          onPress: () => router.push("/notificaciones-practica" as never),
+        },
         { icon: "heart", label: "Conectar HealthKit", toggle: true, onPress: () => comingSoon("HealthKit") },
         { icon: "moon", label: "Tema", value: isIndigo2 ? "Índigo 2" : isIndigo ? "Índigo" : "Actual", onPress: () => comingSoon("Tema") },
         { icon: "globe", label: "Idioma", value: "Español", onPress: () => comingSoon("Idioma") },
@@ -134,11 +140,7 @@ export function ProfileSettingsSections({
       ],
     },
   ];
-  const visibleSections = sections.filter((section) =>
-    placement === "profile"
-      ? section.title === "Tu suscripción" || section.title === "Comparte bienestar"
-      : section.title !== "Tu suscripción" && section.title !== "Comparte bienestar",
-  );
+  const visibleSections = sections;
 
   return (
     <View style={styles.root}>

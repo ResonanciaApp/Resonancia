@@ -65,8 +65,9 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { useStreak } from "@/hooks/useStreak";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeMaxStreak } from "@/utils/stats";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
-import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import {
   gradientColors,
   type GeoSettings,
@@ -342,7 +343,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites } = usePlayer();
+  const { favorites, statEvents } = usePlayer();
   const {
     username,
     lastName,
@@ -355,6 +356,9 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const todayKey = useDayRollover();
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -367,6 +371,30 @@ export function ProfileScreenBase({
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
+  const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    let totalMinutes = 0;
+    let completedSessions = 0;
+    const rangeEvents = [];
+
+    for (const event of statEvents) {
+      const playedAt = new Date(event.playedAt).getTime();
+      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      rangeEvents.push(event);
+      totalMinutes += event.minutes;
+      if (event.completed === true) completedSessions += 1;
+    }
+
+    return {
+      totalMinutes: Math.round(totalMinutes),
+      completedSessions,
+      maxStreak: computeMaxStreak(rangeEvents),
+    };
+  }, [statEvents, statsRangeDays, todayKey]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1214,49 +1242,106 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <View style={styles.profileNotificationsSection}>
-              <Pressable
-                onPress={() => router.push("/notificaciones-practica" as never)}
-                accessibilityRole="button"
-                accessibilityLabel="Administrar notificaciones"
-                style={({ pressed }) => [
-                  styles.profileNotificationsCard,
-                  {
-                    backgroundColor: resourceBlockBackground,
-                    opacity: pressed ? 0.72 : 1,
-                  },
-                ]}
-              >
-                <View style={styles.profileNotificationsIcon}>
-                  <Feather name="bell" size={21} color="#F9F9F9" />
-                </View>
-                <View style={styles.profileNotificationsCopy}>
-                  <Text style={[styles.profileNotificationsLabel, { color: colors.foreground }]}>
-                    Recordatorios de práctica
+            <View
+              style={[
+                styles.personalStatsSection,
+                { backgroundColor: resourceBlockBackground },
+              ]}
+            >
+              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                Estadísticas personales
+              </Text>
+              <View style={styles.personalStatsRangeDropdown}>
+                <Pressable
+                  onPress={() => setStatsRangeOpen((open) => !open)}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: statsRangeOpen }}
+                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
+                  style={styles.personalStatsRangeTrigger}
+                >
+                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
+                    Últimos {statsRangeDays} días
                   </Text>
-                  <Text style={[styles.profileNotificationsDescription, { color: secondaryAccent }]}>
-                    Mañana, tarde y noche
+                  <Feather
+                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
+                    size={14}
+                    color={secondaryAccent}
+                  />
+                </Pressable>
+                {statsRangeOpen && (
+                  <View
+                    style={[
+                      styles.personalStatsRangeMenu,
+                      {
+                        backgroundColor: activeTheme.gradient[0],
+                        borderColor: "rgba(255,255,255,0.12)",
+                      },
+                    ]}
+                  >
+                    {([7, 30, 90] as const).map((days) => {
+                      const selected = statsRangeDays === days;
+                      return (
+                        <Pressable
+                          key={days}
+                          onPress={() => {
+                            setStatsRangeDays(days);
+                            setStatsRangeOpen(false);
+                          }}
+                          accessibilityRole="menuitem"
+                          accessibilityState={{ selected }}
+                          style={[
+                            styles.personalStatsRangeOption,
+                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.personalStatsRangeOptionText,
+                              { color: selected ? "#F9F9F9" : secondaryAccent },
+                            ]}
+                          >
+                            Últimos {days} días
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+              <View style={styles.personalStatsValues}>
+                <View style={styles.personalStatItem}>
+                  <MaterialCommunityIcons name="spa" size={22} color="#F9F9F9" />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                    TIEMPO DE{"\n"}BIENESTAR
                   </Text>
                 </View>
-                <Feather
-                  name="chevron-right"
-                  size={20}
-                  color={activeTheme.accent ?? colors.primary}
-                />
-              </Pressable>
+                <View style={styles.personalStatDivider} />
+                <View style={styles.personalStatItem}>
+                  <Feather name="clock" size={20} color="#F9F9F9" />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.completedSessions}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                    SESIONES{"\n"}COMPLETADAS
+                  </Text>
+                </View>
+                <View style={styles.personalStatDivider} />
+                <View style={styles.personalStatItem}>
+                  <Feather name="flag" size={20} color="#F9F9F9" />
+                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                    {personalStats.maxStreak} {personalStats.maxStreak === 1 ? "día" : "días"}
+                  </Text>
+                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                    RACHA{"\n"}MÁXIMA
+                  </Text>
+                </View>
+              </View>
             </View>
 
             <MiRutinaSection style={styles.profileRoutineSection} />
-
-            <ProfileSettingsSections
-              placement="profile"
-              sceneId={activeSceneId}
-              foreground={colors.foreground}
-              mutedForeground={secondaryAccent}
-              accent={activeTheme.accent ?? colors.primary}
-              cardBackground={resourceBlockBackground}
-              onLogout={handleProfileLogout}
-            />
 
           </>
         )}
