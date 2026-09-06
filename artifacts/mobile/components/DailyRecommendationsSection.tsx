@@ -17,12 +17,47 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 
 type Props = {
   sessions: Session[];
+  dayKey?: string;
   onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
+const WEEKDAYS = [
+  "domingo",
+  "lunes",
+  "martes",
+  "miércoles",
+  "jueves",
+  "viernes",
+  "sábado",
+];
+
+const MONTHS = [
+  "ene.",
+  "feb.",
+  "mar.",
+  "abr.",
+  "may.",
+  "jun.",
+  "jul.",
+  "ago.",
+  "sep.",
+  "oct.",
+  "nov.",
+  "dic.",
+];
+
+function formatDailyDate(dayKey?: string): string {
+  const parts = dayKey?.split("-").map(Number);
+  const date = parts?.length === 3
+    ? new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1)
+    : new Date();
+  return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} ${MONTHS[date.getMonth()]}`;
+}
+
 export function DailyRecommendationsSection({
   sessions,
+  dayKey,
   onRefreshRecommendations,
   style,
 }: Props) {
@@ -45,6 +80,9 @@ export function DailyRecommendationsSection({
     <View style={[styles.section, style]} testID="inicio2-daily-recommendations">
       <Text style={[styles.title, { color: colors.foreground }]}>
         Recomendaciones diarias
+      </Text>
+      <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
+        {formatDailyDate(dayKey)}
       </Text>
 
       <View style={styles.recommendationsList}>
@@ -96,6 +134,12 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.2,
+    marginBottom: 4,
+  },
+  date: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "400",
     marginBottom: 27,
   },
   recommendationsList: {
