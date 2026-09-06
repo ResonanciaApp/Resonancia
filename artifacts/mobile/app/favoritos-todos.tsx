@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -28,48 +28,33 @@ import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
-import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
-const LISTEN_PURPLE_GRADIENT = getListenNowButtonColors(true);
-
 const FAV_TABS = [
-  { id: "meditaciones", label: "Meditaciones", icon: "compass",     categoryId: "meditaciones-guiadas" },
-  { id: "sesiones",     label: "Sonoterapia",  icon: "radio",       categoryId: "sonidos-ancestrales" },
-  { id: "musica",       label: "Música",       icon: "music",       categoryId: "musica-sonidos" },
-  { id: "ambientales",  label: "Ambientales",  icon: "leaf",        categoryId: "ambientales" },
-  { id: "historias",    label: "Historias",    icon: "book-open",   categoryId: "historias" },
-  { id: "charlas",      label: "Charlas",      icon: "message-circle", categoryId: "charlas" },
-  { id: "videos",       label: "Videos",       icon: "play-circle", categoryId: null },
+  { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
+  { id: "sesiones",     label: "Sonoterapia",  categoryId: "sonidos-ancestrales" },
+  { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
+  { id: "ambientales",  label: "Ambientales",  categoryId: "ambientales" },
+  { id: "historias",    label: "Historias",    categoryId: "historias" },
+  { id: "charlas",      label: "Charlas",      categoryId: "charlas" },
+  { id: "videos",       label: "Videos",       categoryId: null },
 ] as const;
 
 type FavTabId = typeof FAV_TABS[number]["id"];
 
 function FavPill({
-  tabId, sel, label, icon, indigo2BackgroundColor, onPress,
+  sel, label, indigo2BackgroundColor, onPress,
 }: {
-  tabId: FavTabId;
   sel: boolean;
   label: string;
-  icon: string;
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
-  const selectedColors: [string, string] =
-    tabId === "meditaciones" || tabId === "videos" ? LISTEN_PURPLE_GRADIENT
-      : tabId === "sesiones" ? ["#8C4912", "#7A3C0A"]
-      : tabId === "musica" ? ["#307E91", "#1A5863"]
-        : tabId === "ambientales" ? ["#357849", "#23522F"]
-          : tabId === "historias" ? ["#8F227F", "#691E5E"]
-            : tabId === "charlas" ? ["#953732", "#78221E"]
-              : isIndigoThemeId(theme.id) ? ["#784576", "#50326E"]
-                : ["#FFFFFF", "#F5F5F5"];
-  const contentColor = sel ? "#F9F9F9" : "#F4F4F4";
-  const selectedTextColor = sel ? "#F9F9F9" : "#F4F4F4";
+  const selectedTextColor = sel ? "#060A0F" : "#F4F4F4";
 
   return (
     <Pressable onPress={onPress}>
@@ -87,19 +72,6 @@ function FavPill({
             { opacity: pressed ? 0.7 : 1 },
           ]}
         >
-          {sel && (
-            <LinearGradient
-              colors={selectedColors}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFill}
-            />
-          )}
-          {tabId === "ambientales" ? (
-            <MaterialCommunityIcons name="leaf" size={22} color={contentColor} />
-          ) : (
-            <Feather name={icon as never} size={22} color={contentColor} />
-          )}
           <Text style={[styles.pillText, { color: selectedTextColor }]} numberOfLines={1}>
             {label}
           </Text>
@@ -238,10 +210,8 @@ export default function FavoritosTodosScreen() {
               {FAV_TABS.map((tab) => (
                 <FavPill
                   key={tab.id}
-                  tabId={tab.id}
                   sel={activeTab === tab.id}
                   label={tab.label}
-                  icon={tab.icon}
                    indigo2BackgroundColor={indigo2TabsBackgroundColor}
                   onPress={() => setActiveTab(tab.id)}
                 />
@@ -386,19 +356,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   pill: {
-    flexDirection: "row",
     alignItems: "center",
-    height: 51,
+    justifyContent: "center",
+    height: 31,
     paddingHorizontal: 16,
-    borderRadius: 27,
-    gap: 12,
+    borderRadius: 16,
     overflow: "hidden",
     backgroundColor: "rgba(181,211,255,0.057)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  pillSel: { borderWidth: 0 },
+  pillSel: { backgroundColor: "#FFFFFF", borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
   pillIndigo2Inactive: {
     backgroundColor: "rgba(191,207,255,0.096)",
