@@ -745,11 +745,11 @@ export function ExploreScreen({
 
           <ResonadoresSection
             marginTop={25}
-            marginBottom={0}
+            marginBottom={SECTION_GAP}
           />
           <EncuentrosResonadoresSection
             marginBottom={SECTION_GAP}
-            titleMarginTop={25}
+            titleMarginTop={0}
           />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
