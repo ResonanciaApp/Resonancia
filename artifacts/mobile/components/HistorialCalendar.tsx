@@ -179,6 +179,8 @@ function DayCell({
             {
               color: embedded && isFuture
                 ? "rgba(255,255,255,0.24)"
+                 : embedded && isSelected
+                   ? "#060A0F"
                 : isToday
                   ? "#FFFFFF"
                   : color,
