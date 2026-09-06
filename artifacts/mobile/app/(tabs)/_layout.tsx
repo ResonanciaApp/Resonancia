@@ -279,8 +279,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 rx="70%"
                 ry="130%"
               >
-                <SvgStop offset="0" stopColor="#8A63C7" stopOpacity={0.09} />
-                <SvgStop offset="0.34" stopColor="#7656B5" stopOpacity={0.04} />
+                <SvgStop offset="0" stopColor="#8A63C7" stopOpacity={0.16} />
+                <SvgStop offset="0.34" stopColor="#7656B5" stopOpacity={0.08} />
                 <SvgStop offset="0.82" stopColor="#7656B5" stopOpacity={0} />
               </SvgRadialGradient>
               <SvgRadialGradient
@@ -290,8 +290,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 rx="78%"
                 ry="140%"
               >
-                <SvgStop offset="0" stopColor="#566CC4" stopOpacity={0.075} />
-                <SvgStop offset="0.36" stopColor="#3D4B9A" stopOpacity={0.03} />
+                <SvgStop offset="0" stopColor="#566CC4" stopOpacity={0.13} />
+                <SvgStop offset="0.36" stopColor="#3D4B9A" stopOpacity={0.06} />
                 <SvgStop offset="0.84" stopColor="#3D4B9A" stopOpacity={0} />
               </SvgRadialGradient>
             </SvgDefs>
