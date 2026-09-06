@@ -271,12 +271,12 @@ export function ExploreScreen({
     [catalogVersion],
   );
 
-  // ── Recientes (últimas meditaciones agregadas) ──
+  // ── Nuevo en Resonancia (últimas 3 meditaciones agregadas) ──
   const recientesMeditaciones = React.useMemo(() => {
     return SESSIONS
       .filter((s) => s.categoryId === "meditaciones-guiadas")
       .sort((a, b) => parseInt(b.id) - parseInt(a.id))
-      .slice(0, 10);
+      .slice(0, 3);
   }, [catalogVersion]);
 
   // ── Escuchadas recientemente (historial local, más reciente primero) ──
@@ -546,14 +546,6 @@ export function ExploreScreen({
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
                 Nuevo en Resonancia
               </Text>
-              <Pressable
-                hitSlop={8}
-                onPress={() => openCategory("/category/meditaciones-guiadas")}
-                accessibilityRole="button"
-                accessibilityLabel="Ver todas las sesiones nuevas"
-              >
-                <Text style={styles.newInResonanceViewAll}>Ver todos</Text>
-              </Pressable>
             </View>
             <ScrollView
               horizontal
@@ -638,11 +630,6 @@ export function ExploreScreen({
                         {meta?.description ?? card.description}
                       </Text>
                     </View>
-                    <Feather
-                      name="chevron-right"
-                      size={23}
-                      color="rgba(255,255,255,0.72)"
-                    />
                   </Pressable>
                 );
               })}
@@ -906,12 +893,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 17,
-  },
-  newInResonanceViewAll: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#c2c2c2",
   },
   newInResonanceRow: {
     paddingHorizontal: H_PAD,
