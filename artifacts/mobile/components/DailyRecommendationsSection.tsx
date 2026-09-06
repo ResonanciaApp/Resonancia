@@ -100,6 +100,7 @@ export function DailyRecommendationsSection({
               session={session}
               imageSize={97}
               showCategoryPill
+              categoryPillTextOnly
               categoryPillShowIconGlyph={false}
               categoryPillIconSize={15}
               showDurationBadge
