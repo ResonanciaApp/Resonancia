@@ -1,4 +1,3 @@
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -67,7 +66,7 @@ export function useRoutineTheme(): RoutineThemeTokens {
     accent: theme.accent ?? colors.primary,
     text: colors.foreground,
     textMuted: colors.mutedForeground,
-    completion: WIDGET_GREEN_SOLID,
+    completion: "#2E1C50",
     completionSoft: "rgba(41,139,115,0.18)",
   };
 }

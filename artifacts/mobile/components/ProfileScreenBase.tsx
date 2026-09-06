@@ -1203,7 +1203,7 @@ export function ProfileScreenBase({
                   edgeAligned
                   daysMarginTop={7}
                   activeBorderGradient={activeTheme.gradient.map((color) =>
-                    brightenHexColor(color, 0.5),
+                    brightenHexColor(color, 0.3),
                   )}
                 />
               </View>

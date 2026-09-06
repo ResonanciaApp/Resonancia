@@ -252,7 +252,7 @@ const ActivityRow = React.memo(function ActivityRow({
               styles.checkButton,
               {
                 backgroundColor: completing
-                  ? "#2E1C50"
+                  ? "rgba(255,255,255,0.92)"
                   : "transparent",
                 opacity: pressed ? 0.58 : 1,
               },

@@ -136,7 +136,7 @@ export function SonicStreakDays({
                       </SvgLinearGradient>
                     </Defs>
                   ) : null}
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="transparent" />
                 </Svg>
                 <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
               </View>
@@ -160,7 +160,7 @@ export function SonicStreakDays({
                       </SvgLinearGradient>
                     </Defs>
                   ) : null}
-                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="transparent" />
                 </Svg>
               </View>
             ) : (
