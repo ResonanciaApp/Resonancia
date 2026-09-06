@@ -1985,7 +1985,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   membershipSection: {
-    marginTop: 7,
+    marginTop: 0,
     marginBottom: 0,
   },
   membershipCard: {
@@ -2013,8 +2013,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   membershipCardHeaderPremium: {
-    minHeight: 66,
-    paddingVertical: 6,
+    minHeight: 56,
+    paddingVertical: 1,
     paddingRight: 24,
   },
   membershipCardHeaderPlus: {
