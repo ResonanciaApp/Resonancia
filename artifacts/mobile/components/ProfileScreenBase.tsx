@@ -1962,7 +1962,7 @@ const styles = StyleSheet.create({
   profileCard: {
     borderRadius: 17,
     paddingTop: 24,
-    paddingBottom: 24,
+    paddingBottom: 7,
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 15,
@@ -1985,7 +1985,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   membershipSection: {
-    marginTop: 0,
+    marginTop: 7,
     marginBottom: 0,
   },
   membershipCard: {
@@ -2013,8 +2013,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   membershipCardHeaderPremium: {
-    minHeight: 56,
-    paddingVertical: 1,
+    minHeight: 66,
+    paddingVertical: 6,
     paddingRight: 24,
   },
   membershipCardHeaderPlus: {
