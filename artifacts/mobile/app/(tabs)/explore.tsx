@@ -26,6 +26,7 @@ import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   SESSIONS,
+  getSessionById,
   sortSessionsNewestFirst,
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
@@ -42,7 +43,11 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import {
+  useGetPinnedFeatured,
+  useGetPopularSessions,
+  getGetPopularSessionsQueryKey,
+} from "@workspace/api-client-react";
 import { getContentCarouselCardWidth } from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
@@ -52,6 +57,7 @@ const SECTION_GAP = 53;
 const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
+const FEATURED_MOMENT_HEIGHT = 320;
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
@@ -236,6 +242,7 @@ export function ExploreScreen({
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const durationSurfaceColor =
     activeSceneId === "tibet"
@@ -270,6 +277,24 @@ export function ExploreScreen({
     () => SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10),
     [catalogVersion],
   );
+
+  const featuredMoment = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter(
+      (session) =>
+        session.categoryId === "meditaciones-guiadas" &&
+        session.isFeatured &&
+        !session.isPlaceholder,
+    );
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]);
 
   // ── Nuevo en Resonancia (últimas 3 meditaciones agregadas) ──
   const recientesMeditaciones = React.useMemo(() => {
@@ -501,7 +526,80 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
+          {featuredMoment && (
+            <View style={styles.featuredMomentSection}>
+              <Text style={styles.sectionTitle}>Para este momento</Text>
+              <Pressable
+                onPress={() => handleSessionPress(featuredMoment)}
+                accessibilityRole="button"
+                accessibilityLabel={featuredMoment.title}
+                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+              >
+                <View style={styles.featuredMomentImageContainer}>
+                  <Image
+                    source={featuredMoment.image}
+                    style={styles.featuredMomentImage}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                  <SessionDurationBadge
+                    label={featuredMoment.durationLabel}
+                    style={styles.featuredMomentDuration}
+                  />
+                </View>
+                {(() => {
+                  const guide = featuredMoment.guideId
+                    ? getGuide(featuredMoment.guideId)
+                    : undefined;
+                  const artist = featuredMoment.artistId
+                    ? getArtist(featuredMoment.artistId)
+                    : undefined;
+                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const authorPhoto = guide?.photo ?? artist?.photo;
+                  return (
+                    <View style={styles.featuredMomentInfo}>
+                      {authorPhoto && (
+                        <Image
+                          source={authorPhoto}
+                          style={styles.featuredMomentAvatar}
+                          contentFit="cover"
+                          cachePolicy="memory-disk"
+                        />
+                      )}
+                      <View style={styles.featuredMomentCopy}>
+                        <Text
+                          style={[
+                            styles.featuredMomentMeta,
+                            { color: activeTheme.accent },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {featuredMoment.categoryLabel}
+                        </Text>
+                        <Text style={styles.featuredMomentTitle} numberOfLines={2}>
+                          {featuredMoment.title}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.featuredMomentAuthor,
+                            { color: activeTheme.accent },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {authorName}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })()}
+              </Pressable>
+            </View>
+          )}
+
           <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Descubre por categoría
+            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
@@ -844,8 +942,64 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
+    marginBottom: SECTION_GAP,
+  },
+  categoryBlocksTitle: {
+    paddingHorizontal: H_PAD,
+  },
+  featuredMomentSection: {
+    paddingHorizontal: H_PAD,
     marginTop: 30,
     marginBottom: SECTION_GAP,
+  },
+  featuredMomentImageContainer: {
+    width: "100%",
+    height: FEATURED_MOMENT_HEIGHT,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  featuredMomentImage: {
+    width: "100%",
+    height: "100%",
+  },
+  featuredMomentDuration: {
+    position: "absolute",
+    left: 12,
+    bottom: 12,
+  },
+  featuredMomentInfo: {
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  featuredMomentAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(181,211,255,0.057)",
+  },
+  featuredMomentCopy: {
+    flex: 1,
+  },
+  featuredMomentMeta: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 14,
+    marginBottom: 6,
+  },
+  featuredMomentTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+    color: "#FBFBFB",
+    marginBottom: 4,
+  },
+  featuredMomentAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    marginTop: 2,
   },
   durationSection: {
     marginBottom: SECTION_GAP,
