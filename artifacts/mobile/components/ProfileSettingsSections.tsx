@@ -91,7 +91,6 @@ export function ProfileSettingsSections({
         { icon: "heart", label: "Conectar HealthKit", toggle: true, onPress: () => comingSoon("HealthKit") },
         { icon: "moon", label: "Tema", value: isIndigo2 ? "Índigo 2" : isIndigo ? "Índigo" : "Actual", onPress: () => comingSoon("Tema") },
         { icon: "globe", label: "Idioma", value: "Español", onPress: () => comingSoon("Idioma") },
-        { icon: "bell", label: "Notificaciones", onPress: () => router.push("/notificaciones-practica" as never) },
         { icon: "download", label: "Descargas", onPress: () => comingSoon("Descargas") },
         { icon: "flag", label: "Hitos", value: milestonesOpen ? "Ocultar" : undefined, onPress: toggleMilestones },
       ],

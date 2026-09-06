@@ -1216,6 +1216,42 @@ export function ProfileScreenBase({
             <View>
               <ProfileMixCarousel marginBottom={53} />
             </View>
+
+            <View style={styles.profileNotificationsSection}>
+              <Text style={[styles.profileNotificationsTitle, { color: colors.foreground }]}>
+                Notificaciones
+              </Text>
+              <Pressable
+                onPress={() => router.push("/notificaciones-practica" as never)}
+                accessibilityRole="button"
+                accessibilityLabel="Administrar notificaciones"
+                style={({ pressed }) => [
+                  styles.profileNotificationsCard,
+                  {
+                    backgroundColor: resourceBlockBackground,
+                    opacity: pressed ? 0.72 : 1,
+                  },
+                ]}
+              >
+                <View style={styles.profileNotificationsIcon}>
+                  <Feather name="bell" size={21} color="#F9F9F9" />
+                </View>
+                <View style={styles.profileNotificationsCopy}>
+                  <Text style={[styles.profileNotificationsLabel, { color: colors.foreground }]}>
+                    Recordatorios de práctica
+                  </Text>
+                  <Text style={[styles.profileNotificationsDescription, { color: secondaryAccent }]}>
+                    Mañana, tarde y noche
+                  </Text>
+                </View>
+                <Feather
+                  name="chevron-right"
+                  size={20}
+                  color={activeTheme.accent ?? colors.primary}
+                />
+              </Pressable>
+            </View>
+
             <ProfileSettingsSections
               sceneId={activeSceneId}
               foreground={colors.foreground}
@@ -2146,6 +2182,45 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 53,
     paddingHorizontal: 0,
+  },
+  profileNotificationsSection: {
+    marginBottom: 53,
+  },
+  profileNotificationsTitle: {
+    fontFamily: "Manrope",
+    fontSize: 19,
+    lineHeight: 24,
+    fontWeight: "700",
+    marginBottom: 16,
+  },
+  profileNotificationsCard: {
+    minHeight: 66,
+    borderRadius: 17,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profileNotificationsIcon: {
+    width: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 11,
+  },
+  profileNotificationsCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  profileNotificationsLabel: {
+    fontFamily: "Manrope",
+    fontSize: 15.5,
+    lineHeight: 21,
+    fontWeight: "600",
+  },
+  profileNotificationsDescription: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
   },
 
   // Estadísticas personales (ocultas; estilos conservados para reutilización)
