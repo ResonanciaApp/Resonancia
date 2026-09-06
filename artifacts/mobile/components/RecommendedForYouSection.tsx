@@ -9,10 +9,10 @@ import {
 } from "react-native";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
 import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
-import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -149,7 +149,10 @@ export function RecommendedForYouSection({
 
   if (!hasRecommendations) return null;
 
-  const sleepCardWidth = getTwoCardCarouselCardWidth(width, HORIZONTAL_PAD, 45);
+  const sleepCardWidth = (width - 20 * 2 - 12) / 2;
+  const sleepCardHeight = Math.round(
+    (sleepCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
+  );
   const tabBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -207,8 +210,7 @@ export function RecommendedForYouSection({
           style={styles.carousel}
           presentation="sleep-category"
           cardWidth={sleepCardWidth}
-          cardHeightAdjustment={-25}
-          overlayDurationTopLeft
+          fixedCardHeight={sleepCardHeight}
           showHeader={false}
         />
       ) : (

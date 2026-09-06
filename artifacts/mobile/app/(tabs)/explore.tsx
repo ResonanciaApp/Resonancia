@@ -744,7 +744,7 @@ export function ExploreScreen({
           </View>
 
           <ResonadoresSection
-            marginTop={25}
+            marginTop={0}
             marginBottom={SECTION_GAP}
           />
           <EncuentrosResonadoresSection
@@ -1070,7 +1070,7 @@ const styles = StyleSheet.create({
   },
   otherThemesSection: {
     paddingHorizontal: H_PAD,
-    marginBottom: 28,
+    marginBottom: SECTION_GAP,
   },
   themeGrid: {
     gap: 10,
