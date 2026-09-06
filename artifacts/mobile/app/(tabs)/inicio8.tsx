@@ -60,6 +60,7 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
+import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -2633,6 +2634,14 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <ProfileMixCarousel marginBottom={INICIO2_SECTION_GAP} />}
+        {isInicio2 && (
+          <MiRutinaSection
+            style={{
+              marginHorizontal: GRID_PAD,
+              marginBottom: INICIO2_SECTION_GAP,
+            }}
+          />
+        )}
         {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && (
           <EncuentrosResonadoresSection

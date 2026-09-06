@@ -63,7 +63,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
-import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { useStreak } from "@/hooks/useStreak";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -1213,28 +1212,52 @@ export function ProfileScreenBase({
                   { backgroundColor: resourceBlockBackground },
                 ]}
               >
-                <View style={styles.profileProgressHeader}>
-                  <View style={styles.profileProgressLotus}>
-                    <MaterialCommunityIcons name="spa" size={44} color="#FFFFFF" />
-                  </View>
-                  <View style={styles.profileProgressCopy}>
-                    <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
-                      Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
-                    </Text>
-                    <Text style={[styles.profileProgressSubtitle, { color: secondaryAccent }]}>
-                      Medita todos los días y transforma tu vida
-                    </Text>
-                  </View>
-                </View>
                 <SonicStreakDays
                   activeFlags={weekFlags}
                   todayIndex={todayIndex}
                   edgeAligned
-                  daysMarginTop={-6}
+                  daysMarginTop={0}
                   activeBorderGradient={activeTheme.gradient.map((color) =>
                     brightenHexColor(color, 0.55),
                   )}
                 />
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.personalStatsSection,
+                { backgroundColor: resourceBlockBackground },
+              ]}
+            >
+              <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
+                <View style={styles.personalStatItem}>
+                  <View style={styles.personalStatIcon}>
+                    <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {currentStreak}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      RACHA ACTUAL
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.personalStatDivider} />
+                <View style={styles.personalStatItem}>
+                  <View style={styles.personalStatIcon}>
+                    <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
+                  </View>
+                  <View style={styles.personalStatCopy}>
+                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                      {personalStats.maxStreak}
+                    </Text>
+                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                      RACHA MÁS LARGA
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
 
@@ -1335,46 +1358,7 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <View
-              style={[
-                styles.personalStatsSection,
-                { backgroundColor: resourceBlockBackground },
-              ]}
-            >
-              <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <Feather name="zap" size={20} color="#F9F9F9" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {currentStreak}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      RACHA ACTUAL
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.personalStatDivider} />
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <Feather name="award" size={20} color="#F9F9F9" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.maxStreak}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      RACHA MÁS LARGA
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
             <HistorialCalendar embedded />
-
-            <MiRutinaSection style={styles.profileRoutineSection} />
 
           </>
         )}
@@ -2296,10 +2280,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: "400",
     marginTop: 2,
-  },
-  profileRoutineSection: {
-    marginHorizontal: 0,
-    marginBottom: 53,
   },
   profileNotificationsSection: {
     marginBottom: 53,
