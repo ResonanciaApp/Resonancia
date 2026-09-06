@@ -24,7 +24,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
+import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useAuth } from "@/context/AuthContext";
@@ -36,10 +36,10 @@ import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
 import { removeLocalAccountData } from "@/lib/accountData";
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -67,6 +67,7 @@ const SLEEP_OPTIONS: { label: string; value: number | null }[] = [
 
 export default function ConfiguracionesScreen() {
   const colors = useColors();
+  const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const { forceAnimate, refetchCount } = useNotifications();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -82,6 +83,23 @@ export default function ConfiguracionesScreen() {
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
   const [accountAction, setAccountAction] = useState<"export" | "delete" | null>(null);
+  const settingsCardBackground =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.15)"
+      : isIndigoThemeId(activeSceneId)
+        ? "rgba(181,211,255,0.057)"
+        : activeSceneId === "indigo2"
+          ? "rgba(191,207,255,0.096)"
+          : "rgba(181,211,255,0.057)";
+  const settingsBorderColor = isIndigoThemeId(activeSceneId)
+    ? "rgba(170,170,196,0.16)"
+    : activeSceneId === "indigo2"
+      ? "rgba(255,255,255,0.08)"
+      : "rgba(255,255,255,0.1)";
+  const settingsGradientLocations =
+    activeTheme.gradientLocations?.length === activeTheme.gradient.length
+      ? activeTheme.gradientLocations
+      : undefined;
 
   useEffect(() => {
     (async () => {
@@ -298,10 +316,10 @@ export default function ConfiguracionesScreen() {
     return (
       <LinearGradient
         style={styles.root}
-        colors={BG_GRADIENT}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+        colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+        locations={settingsGradientLocations}
+        start={activeTheme.gradientStart ?? { x: 0.5, y: 0 }}
+        end={activeTheme.gradientEnd ?? { x: 0.5, y: 1 }}
       />
     );
   }
@@ -309,13 +327,12 @@ export default function ConfiguracionesScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
+      colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+      locations={settingsGradientLocations}
+      start={activeTheme.gradientStart ?? { x: 0.5, y: 0 }}
+      end={activeTheme.gradientEnd ?? { x: 0.5, y: 1 }}
     >
       <StatusBar hidden />
-      <SacredBackground variant="solid" />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
@@ -329,6 +346,17 @@ export default function ConfiguracionesScreen() {
 
         <Text style={[styles.title, { color: colors.foreground }]}>Configuraciones</Text>
 
+        <ProfileSettingsSections
+          placement="settings"
+          sceneId={activeSceneId}
+          foreground={colors.foreground}
+          mutedForeground={activeTheme.accent ?? colors.accent}
+          accent={activeTheme.accent ?? colors.primary}
+          cardBackground={settingsCardBackground}
+          onLogout={handleLogout}
+        />
+
+        {false && (<>
         {/* ── Notificaciones ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>NOTIFICACIONES</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -370,7 +398,9 @@ export default function ConfiguracionesScreen() {
             />
           </View>
         </View>
+        </>)}
 
+        {false && (<>
         {/* ── Reproductor ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>REPRODUCTOR</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -420,7 +450,9 @@ export default function ConfiguracionesScreen() {
             </View>
           </View>
         </View>
+        </>)}
 
+        {false && (<>
         {/* ── Cuenta ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CUENTA</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -464,9 +496,10 @@ export default function ConfiguracionesScreen() {
             />
           )}
         </View>
+        </>)}
 
         {/* ── Creadores ── */}
-        {(isCreator || isAdmin) && (
+        {false && (isCreator || isAdmin) && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CREADORES</Text>
             <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -514,6 +547,7 @@ export default function ConfiguracionesScreen() {
           </>
         )}
 
+        {false && (<>
         {/* ── Apariencia ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APARIENCIA</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -537,7 +571,9 @@ export default function ConfiguracionesScreen() {
             </View>
           </View>
         </View>
+        </>)}
 
+        {false && (<>
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -555,12 +591,11 @@ export default function ConfiguracionesScreen() {
             danger
           />
         </View>
+        </>)}
 
         {/* ── Soporte ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>SOPORTE</Text>
-        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+        <View style={[styles.group, { backgroundColor: settingsCardBackground, borderColor: settingsBorderColor }]}>
           <ActionRow
             icon="mail"
             label="Contactar al equipo"
@@ -576,6 +611,7 @@ export default function ConfiguracionesScreen() {
           />
         </View>
 
+        {false && (<>
         {/* ── Inicio ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>INICIO</Text>
         <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
@@ -597,14 +633,13 @@ export default function ConfiguracionesScreen() {
             />
           </View>
         </View>
+        </>)}
 
         {/* ── Dev (solo testing premium) ── */}
         {__DEV__ && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
-            <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+            <View style={[styles.group, { backgroundColor: settingsCardBackground, borderColor: settingsBorderColor }]}>
               <View style={styles.row}>
                 <RowIcon icon="star" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>
@@ -722,17 +757,6 @@ export default function ConfiguracionesScreen() {
           </>
         )}
 
-        {/* Logout */}
-        <Pressable
-          onPress={handleLogout}
-          style={({ pressed }) => [
-            styles.logoutBtn,
-            { borderColor: "#C0392B33", backgroundColor: "#C0392B11", opacity: pressed ? 0.75 : 1 },
-          ]}
-        >
-          <Feather name="log-out" size={16} color="#E07060" />
-          <Text style={[styles.logoutText, { color: "#E07060" }]}>Cerrar sesión</Text>
-        </Pressable>
       </ScrollView>
     </LinearGradient>
   );

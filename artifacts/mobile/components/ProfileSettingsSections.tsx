@@ -35,6 +35,7 @@ type MenuSection = {
 };
 
 type ProfileSettingsSectionsProps = {
+  placement?: "profile" | "settings";
   sceneId: SceneId;
   foreground: string;
   mutedForeground: string;
@@ -44,6 +45,7 @@ type ProfileSettingsSectionsProps = {
 };
 
 export function ProfileSettingsSections({
+  placement = "settings",
   sceneId,
   foreground,
   mutedForeground,
@@ -132,10 +134,15 @@ export function ProfileSettingsSections({
       ],
     },
   ];
+  const visibleSections = sections.filter((section) =>
+    placement === "profile"
+      ? section.title === "Tu suscripción" || section.title === "Comparte bienestar"
+      : section.title !== "Tu suscripción" && section.title !== "Comparte bienestar",
+  );
 
   return (
     <View style={styles.root}>
-      {sections.map((section) => (
+      {visibleSections.map((section) => (
         <View key={section.title} style={styles.section}>
           <Text
             style={[
@@ -198,25 +205,29 @@ export function ProfileSettingsSections({
         </View>
       ))}
 
-      <Pressable
-        onPress={onLogout}
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar sesión"
-        style={({ pressed }) => [
-          styles.logoutButton,
-          { borderColor: themeAccent, opacity: pressed ? 0.7 : 1 },
-        ]}
-      >
-        <Feather name="log-out" size={21} color={themeAccent} />
-        <Text style={[styles.logoutText, { color: foreground }]}>Cerrar sesión</Text>
-      </Pressable>
+      {placement === "settings" && (
+        <>
+          <Pressable
+            onPress={onLogout}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar sesión"
+            style={({ pressed }) => [
+              styles.logoutButton,
+              { borderColor: themeAccent, opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Feather name="log-out" size={21} color={themeAccent} />
+            <Text style={[styles.logoutText, { color: foreground }]}>Cerrar sesión</Text>
+          </Pressable>
 
-      <View style={[styles.versionCard, { backgroundColor: cardBackground, borderColor }]}>
-        <Text style={[styles.versionText, { color: mutedForeground }]}>
-          Versión {Application.nativeApplicationVersion ?? "1.0.0"} ({Application.nativeBuildVersion ?? "—"})
-        </Text>
-        <Text style={[styles.versionText, { color: mutedForeground }]}>RESONANCE · Casa del Cuenco</Text>
-      </View>
+          <View style={[styles.versionCard, { backgroundColor: cardBackground, borderColor }]}>
+            <Text style={[styles.versionText, { color: mutedForeground }]}>
+              Versión {Application.nativeApplicationVersion ?? "1.0.0"} ({Application.nativeBuildVersion ?? "—"})
+            </Text>
+            <Text style={[styles.versionText, { color: mutedForeground }]}>RESONANCE · Casa del Cuenco</Text>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -242,7 +253,7 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 17,
-    borderWidth: 0,
+    borderWidth: 1,
     overflow: "hidden",
   },
   divider: {

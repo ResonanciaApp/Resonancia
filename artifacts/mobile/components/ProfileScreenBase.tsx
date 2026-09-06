@@ -1249,6 +1249,7 @@ export function ProfileScreenBase({
             <MiRutinaSection style={styles.profileRoutineSection} />
 
             <ProfileSettingsSections
+              placement="profile"
               sceneId={activeSceneId}
               foreground={colors.foreground}
               mutedForeground={secondaryAccent}
