@@ -1,7 +1,16 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import {
   CONTENT_CAROUSEL_GAP,
@@ -23,12 +32,6 @@ const SECTION_GAP = 60;
 const CARD_BG = "rgba(181,211,255,0.057)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
 const DISCOVER_GRID_GAP = 11;
-const DISCOVER_PRIMARY_CARD_SIZE = Math.floor(
-  (Dimensions.get("window").width - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
-);
-const DISCOVER_SECONDARY_CARD_SIZE = Math.floor(
-  (Dimensions.get("window").width - GRID_PAD * 2 - DISCOVER_GRID_GAP * 3) / 3.2,
-);
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
@@ -58,6 +61,17 @@ const WATERCOLOR_CATEGORY_IMAGES: Partial<
   ambientales: require("@/assets/images/discover2-category-ambientales.jpg"),
   historias: require("@/assets/images/discover2-category-historias.jpg"),
   charlas: require("@/assets/images/discover2-category-charlas.jpg"),
+};
+
+const DISCOVER_CATEGORY_IMAGES: Partial<
+  Record<ContentCategoryDefinition["id"], number>
+> = {
+  "meditaciones-guiadas": require("@/assets/images/discover3-category-meditaciones.jpg"),
+  "sonidos-ancestrales": require("@/assets/images/discover3-category-sonoterapia.jpg"),
+  "musica-sonidos": require("@/assets/images/discover3-category-musica.jpg"),
+  ambientales: require("@/assets/images/discover3-category-ambientales.jpg"),
+  historias: require("@/assets/images/discover3-category-historias.jpg"),
+  charlas: require("@/assets/images/discover3-category-charlas.jpg"),
 };
 
 function renderCategoryIcon(
@@ -184,6 +198,7 @@ export function ContentCategoryGrid({
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
+  const { width: windowWidth } = useWindowDimensions();
   const isDiscoverGrid = hiddenIds.includes("__mezcla__") && hiddenIds.includes("__geometrix__");
   const catBlockBg = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -205,85 +220,79 @@ export function ContentCategoryGrid({
   };
 
   if (discoverTieredLayout) {
-    const primaryCategories = visibleCategories.filter(
-      (category) =>
-        category.id === "meditaciones-guiadas" ||
-        category.id === "sonidos-ancestrales",
+    const cardWidth = Math.floor(
+      (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
     );
-    const secondaryCategories = visibleCategories.filter(
-      (category) =>
-        category.id === "musica-sonidos" ||
-        category.id === "ambientales" ||
-        category.id === "historias" ||
-        category.id === "charlas",
-    );
-
-    const renderDiscoverCard = (
-      category: ContentCategoryDefinition,
-      width: number,
-      secondary: boolean,
-      height = width,
-    ) => {
-      return (
-        <Pressable
-          key={category.id}
-          testID={`content-category-${category.id}`}
-          onPress={() => openContentCategory(category)}
-          style={({ pressed }) => [
-            styles.discoverCard,
-            {
-              width,
-              height,
-              backgroundColor: catBlockBg,
-              opacity: pressed ? 0.75 : 1,
-            },
-          ]}
-        >
-          <View style={styles.discoverCardIcon}>
-            {renderCategoryIcon(category, false, false, 9)}
-          </View>
-          <Text
-            style={[
-              styles.discoverCardLabel,
-              secondary && styles.discoverSecondaryCardLabel,
-            ]}
-            numberOfLines={2}
-          >
-            {category.label}
-          </Text>
-        </Pressable>
-      );
-    };
+    const cardHeight = Math.round(cardWidth * 0.66);
 
     return (
       <View
         style={{ marginTop, marginBottom }}
         testID="content-category-grid"
       >
-        <View style={styles.discoverPrimaryRow}>
-          {primaryCategories.map((category) =>
-            renderDiscoverCard(
-              category,
-              DISCOVER_PRIMARY_CARD_SIZE,
-              false,
-              DISCOVER_PRIMARY_CARD_SIZE - 40,
-            ),
-          )}
+        <View style={styles.discoverGrid}>
+          {visibleCategories.map((category) => {
+            const image = DISCOVER_CATEGORY_IMAGES[category.id];
+
+            return (
+              <Pressable
+                key={category.id}
+                testID={`content-category-${category.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={category.label}
+                onPress={() => openContentCategory(category)}
+                style={({ pressed }) => [
+                  styles.discoverCard,
+                  {
+                    width: cardWidth,
+                    height: cardHeight,
+                    backgroundColor: catBlockBg,
+                    opacity: pressed ? 0.78 : 1,
+                  },
+                ]}
+              >
+                {image && (
+                  <ExpoImage
+                    source={image}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                    transition={180}
+                  />
+                )}
+                <LinearGradient
+                  pointerEvents="none"
+                  colors={[
+                    "rgba(4,5,12,0.02)",
+                    "rgba(4,5,12,0.18)",
+                    "rgba(4,5,12,0.82)",
+                  ]}
+                  locations={[0, 0.42, 1]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.discoverCardContent}>
+                  <View style={styles.discoverCardCopy}>
+                    <Text style={styles.discoverCardLabel} numberOfLines={1}>
+                      {category.label}
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.discoverChevron,
+                      { backgroundColor: `${category.cardColor}59` },
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name="chevron-right"
+                      size={22}
+                      color="#FFFFFF"
+                    />
+                  </View>
+                </View>
+              </Pressable>
+            );
+          })}
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.discoverSecondaryRow}
-        >
-          {secondaryCategories.map((category) =>
-            renderDiscoverCard(
-              category,
-              DISCOVER_SECONDARY_CARD_SIZE,
-              true,
-              DISCOVER_SECONDARY_CARD_SIZE + 10,
-            ),
-          )}
-        </ScrollView>
       </View>
     );
   }
@@ -453,42 +462,48 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 5,
   },
-  discoverPrimaryRow: {
+  discoverGrid: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: DISCOVER_GRID_GAP,
     paddingHorizontal: GRID_PAD,
-    marginBottom: DISCOVER_GRID_GAP,
-  },
-  discoverSecondaryRow: {
-    gap: DISCOVER_GRID_GAP,
-    paddingHorizontal: GRID_PAD,
-    paddingRight: GRID_PAD + 18,
   },
   discoverCard: {
     borderRadius: 13,
     overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    padding: 12,
   },
-  discoverCardIcon: {
-    width: 39,
-    height: 39,
-    alignItems: "center",
-    justifyContent: "center",
+  discoverCardContent: {
+    ...StyleSheet.absoluteFillObject,
+    top: undefined,
+    minHeight: 58,
+    bottom: 0,
+    paddingHorizontal: 12,
+    paddingBottom: 11,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 6,
+  },
+  discoverCardCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   discoverCardLabel: {
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 15,
-    lineHeight: 20,
+    lineHeight: 19,
     fontWeight: "700",
-    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.85)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
-  discoverSecondaryCardLabel: {
-    fontSize: 12,
-    lineHeight: 16,
+  discoverChevron: {
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 1,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,
