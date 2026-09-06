@@ -23,10 +23,22 @@ type SacredBackgroundProps = {
   solidColor?: string;
   /** Si es true, omite la imagen de fondo aunque el tema la tenga (solo aplica con variant="gradient"). */
   noImage?: boolean;
+  /** Luces ambientales radiales del tema. Se omiten por defecto; Perfil conserva solo la superior. */
+  ambientGlowMode?: "none" | "top" | "all";
 };
 
-export function SacredBackground({ variant = "solid", solidColor, noImage = false }: SacredBackgroundProps) {
+export function SacredBackground({
+  variant = "solid",
+  solidColor,
+  noImage = false,
+  ambientGlowMode = "none",
+}: SacredBackgroundProps) {
   const { theme } = useSceneTheme();
+  const ambientGlows = ambientGlowMode === "all"
+    ? theme.radialGlows
+    : ambientGlowMode === "top"
+      ? theme.radialGlows?.slice(0, 1)
+      : undefined;
 
   if (variant === "solid") {
     return (
@@ -67,10 +79,10 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
           end={theme.gradientEnd}
           style={StyleSheet.absoluteFill}
         />
-        {theme.radialGlows != null && (
+        {ambientGlows != null && ambientGlows.length > 0 && (
           <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="none">
             <Defs>
-              {theme.radialGlows.map((glow, glowIndex) => (
+              {ambientGlows.map((glow, glowIndex) => (
                 <SvgRadialGradient
                   key={glowIndex}
                   id={`sceneThemeAmbientGlow${glowIndex}`}
@@ -90,7 +102,7 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
                 </SvgRadialGradient>
               ))}
             </Defs>
-            {theme.radialGlows.map((_, glowIndex) => (
+            {ambientGlows.map((_, glowIndex) => (
               <Rect
                 key={glowIndex}
                 x="0"
