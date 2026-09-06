@@ -22,6 +22,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
@@ -39,15 +40,21 @@ import {
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 import {
-  getContentCarouselCardWidth,
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const H_PAD = 16;
 const { width: W } = Dimensions.get("window");
-const CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const RECENT_CARD_W = getTwoCardCarouselCardWidth(W, H_PAD);
+const COMPACT_CARD_W = getTwoCardCarouselCardWidth(W, 14, 45);
+const COMPACT_CARD_H =
+  Math.round(
+    (COMPACT_CARD_W + 50) *
+      SESSION_CARD_METADATA_HEIGHT_SCALE *
+      CONTENT_CAROUSEL_HEIGHT_SCALE,
+  ) - 25;
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.096)";
 
@@ -358,8 +365,9 @@ export default function SonidosScreen() {
                 isPremium={isPremium}
                 onPress={openSession}
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
-                cardWidth={CARD_W}
-                ambientalCardWidth={RECENT_CARD_W}
+                cardWidth={COMPACT_CARD_W}
+                fixedCardHeight={COMPACT_CARD_H}
+                ambientalCardWidth={COMPACT_CARD_W}
                 ambientalCardBackground={indigo2ResonanciaSurface}
                 titleSize={19}
                 showCardMetadata

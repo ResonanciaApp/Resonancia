@@ -119,6 +119,7 @@ type SessionCarouselProps = {
   cardWidth?: number;
   cardHeight?: number;
   cardHeightAdjustment?: number;
+  fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
   titleSpacing?: number;
@@ -161,6 +162,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardWidth,
   cardHeight,
   cardHeightAdjustment = 0,
+  fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
   titleSpacing,
@@ -233,11 +235,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) + cardHeightAdjustment;
-  const ch = isTallOverlayPresentation
-    ? sleepCategoryCardHeight
-    : effectiveSquareCards
-      ? cw
-      : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE);
+  const ch = fixedCardHeight ?? (
+    isTallOverlayPresentation
+      ? sleepCategoryCardHeight
+      : effectiveSquareCards
+        ? cw
+        : Math.round(originalCardHeight * CONTENT_CAROUSEL_HEIGHT_SCALE)
+  );
   const cardStyle = { width: cw };
   const thumbStyle = { width: cw, height: ch };
   const titleFontSize = titleSize ?? 17;
