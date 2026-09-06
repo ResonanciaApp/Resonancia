@@ -494,7 +494,7 @@ export function MoodPickerSheet({
                   accessibilityLabel="Ver todo el historial de emociones"
                 >
                   <Text style={styles.historyButtonText}>Ver todo</Text>
-                  <Feather name="chevron-right" size={16} color="#5C417E" />
+                  <Feather name="chevron-right" size={16} color="#060A0F" />
                 </Pressable>
               </View>
 
@@ -865,7 +865,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.94)",
-    color: MOOD_GREEN,
+    color: "#060A0F",
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
@@ -941,7 +941,7 @@ const styles = StyleSheet.create({
   },
   historyButtonText: {
     fontFamily: "Manrope",
-    color: "#5C417E",
+    color: "#060A0F",
     fontSize: 14,
     fontWeight: "700",
   },
