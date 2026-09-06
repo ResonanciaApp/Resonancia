@@ -377,7 +377,6 @@ export default function DescansoScreen() {
                 presentation="sleep-category"
                 cardWidth={sleepDetailCardWidth}
                 fixedCardHeight={sleepDetailCardHeight}
-                overlayDurationTopLeft
                 titleSize={19}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />

@@ -55,6 +55,10 @@ const COMPACT_CARD_H =
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) - 25;
+const AMBIENTAL_CARD_W = (W - 20 * 2 - 12) / 2;
+const AMBIENTAL_CARD_H = Math.round(
+  (AMBIENTAL_CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
+);
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
 const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.096)";
 
@@ -366,8 +370,12 @@ export default function SonidosScreen() {
                 onPress={openSession}
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                 cardWidth={COMPACT_CARD_W}
-                fixedCardHeight={COMPACT_CARD_H}
-                ambientalCardWidth={COMPACT_CARD_W}
+                fixedCardHeight={
+                  collection.sessions.every((session) => session.categoryId === "ambientales")
+                    ? AMBIENTAL_CARD_H
+                    : COMPACT_CARD_H
+                }
+                ambientalCardWidth={AMBIENTAL_CARD_W}
                 ambientalCardBackground={indigo2ResonanciaSurface}
                 titleSize={19}
                 showCardMetadata
