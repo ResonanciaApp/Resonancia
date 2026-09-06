@@ -76,9 +76,9 @@ type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" 
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
-const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
-  { id: "playlists", label: "Mis playlist", icon: "list" },
-  { id: "mezclas", label: "Mis mezclas", icon: "sliders" },
+const LIB_TABS: { id: LibTab; label: string }[] = [
+  { id: "playlists", label: "Mis playlist" },
+  { id: "mezclas", label: "Mis mezclas" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -156,17 +156,14 @@ function MixRow({
 // ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
 function LibChip({
   label,
-  icon,
   sel,
   onPress,
 }: {
   label: string;
-  icon: React.ComponentProps<typeof Feather>["name"];
   sel: boolean;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
-  const contentColor = sel ? "#0E0E17" : "#F4F4F4";
 
   return (
     <Pressable onPress={onPress} style={styles.libraryTabColumn}>
@@ -182,7 +179,6 @@ function LibChip({
             { opacity: pressed ? 0.7 : 1 },
           ]}
         >
-          <Feather name={icon} size={22} color={contentColor} />
           <Text style={[styles.chipText, sel && styles.chipTextSel, sel && isIndigoThemeId(theme.id) && styles.chipTextIndigoSel]} numberOfLines={1}>
             {label}
           </Text>
@@ -200,7 +196,7 @@ function LibraryTabRow({
   onSearch,
   onAdd,
 }: {
-  tabs: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[];
+  tabs: { id: LibTab; label: string }[];
   activeTab: LibTab;
   onSelect: (id: LibTab) => void;
   onSearch?: () => void;
@@ -228,7 +224,6 @@ function LibraryTabRow({
           <LibChip
             key={tab.id}
             label={tab.label}
-            icon={tab.icon}
             sel={activeTab === tab.id}
             onPress={() => onSelect(tab.id)}
           />
@@ -1793,7 +1788,6 @@ export function BibliotecaScreen({
           styles.stickyHeader,
           {
             paddingTop: embedded ? 0 : topPad - 34,
-            backgroundColor: sceneTheme.gradient[0] as string,
           },
         ]}
       >
@@ -1994,7 +1988,7 @@ const styles = StyleSheet.create({
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 5, marginTop: 0 },
+  animChipWrap: { width: "100%", flexDirection: "row", alignItems: "center", marginBottom: 5, marginTop: 0 },
   chipRowActions: {
     flexDirection: "row",
     alignItems: "center",
@@ -2014,7 +2008,7 @@ const styles = StyleSheet.create({
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   chipRow: { flex: 1, flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipRowWithActions: { paddingRight: 104 },
-  libraryTabColumn: { flex: 1 },
+  libraryTabColumn: { flex: 1, flexBasis: 0, height: 51 },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -2030,7 +2024,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    flex: 1,
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     height: 51,
