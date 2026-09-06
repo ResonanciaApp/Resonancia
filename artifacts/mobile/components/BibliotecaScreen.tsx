@@ -18,8 +18,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Modal,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -57,7 +55,6 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -80,9 +77,8 @@ type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
-  { id: "playlists", label: "Playlists", icon: "list" },
-  { id: "mezclas", label: "Mezclas", icon: "sliders" },
-  { id: "geometrix", label: "Geometrías", icon: "hexagon" },
+  { id: "playlists", label: "Mis playlist", icon: "list" },
+  { id: "mezclas", label: "Mis mezclas", icon: "sliders" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -162,20 +158,18 @@ function LibChip({
   label,
   icon,
   sel,
-  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   icon: React.ComponentProps<typeof Feather>["name"];
   sel: boolean;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   const { theme } = useSceneTheme();
   const contentColor = sel ? "#0E0E17" : "#F4F4F4";
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={styles.libraryTabColumn}>
       {({ pressed }) => (
         <Animated.View
           style={[
@@ -183,9 +177,6 @@ function LibChip({
             theme.id === "tibet" && styles.chipTibet,
             isIndigoThemeId(theme.id) && styles.chipIndigo,
             !sel && theme.id === "indigo2" && styles.chipIndigo2Inactive,
-            !sel && theme.id === "indigo2" && indigo2BackgroundColor && {
-              backgroundColor: indigo2BackgroundColor,
-            },
             sel && styles.chipSel,
             sel && { backgroundColor: WIDGET_GREEN_SOLID },
             { opacity: pressed ? 0.7 : 1 },
@@ -201,91 +192,24 @@ function LibChip({
   );
 }
 
-// ── Fila de chips animada ─────────────────────────────────────────────────────
-// Al filtrar: el chip elegido se desliza (lento) al margen izquierdo mientras los
-// demás hacen fade out. Al quitar el filtro: vuelve a su lugar a la misma
-// velocidad y los demás reaparecen con fade in.
-const CHIP_ANIM_DURATION = 600;
-const CLOSE_SLOT = 38; // ancho de la X (30) + gap (8)
-
-function AnimatedChipRow({
+// ── Tabs principales de Biblioteca ────────────────────────────────────────────
+function LibraryTabRow({
   tabs,
   activeTab,
   onSelect,
-  onClear,
   onSearch,
   onAdd,
-  indigo2BackgroundColor,
 }: {
   tabs: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[];
-  activeTab: LibTab | null;
+  activeTab: LibTab;
   onSelect: (id: LibTab) => void;
-  onClear: () => void;
   onSearch?: () => void;
   onAdd?: () => void;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
 }) {
-  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
-  const offsetsRef = useRef<Record<string, number>>({});
-  const scrollXRef = useRef(0);
-  // Chip que se está mostrando como seleccionado (se conserva durante el
-  // regreso para que pueda volver a su lugar antes de desmontarse).
-  const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
-  // Chip que se ve en color "seleccionado" (oro). Se desacopla de displayTab:
-  // al deseleccionar cambia el color de inmediato, mientras el chip sigue
-  // animando de vuelta a su posición.
-  const [colorTab, setColorTab] = useState<LibTab | null>(activeTab);
-  // Desplazamiento (px) hacia el margen del chip seleccionado.
-  const [targetTranslate, setTargetTranslate] = useState(0);
-
-  const filtered = displayTab !== null;
-
-  const animate = (toValue: number, onDone?: () => void) => {
-    Animated.timing(progress, {
-      toValue,
-      duration: CHIP_ANIM_DURATION,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) onDone?.();
-    });
-  };
-
-  const handleSelect = (id: LibTab) => {
-    const off = offsetsRef.current[id] ?? 0;
-    const visualLeft = off - scrollXRef.current;
-    setTargetTranslate(CLOSE_SLOT - visualLeft); // negativo: lo lleva al margen
-    setDisplayTab(id);
-    setColorTab(id); // se pone oro al instante
-    onSelect(id);
-    animate(1);
-  };
-
-  const handleClear = () => {
-    setColorTab(null); // vuelve a gris al instante del tap, antes de moverse
-    onClear();
-    animate(0, () => setDisplayTab(null));
-  };
-
-  // Cleanup: detener la animación si el componente se desmonta a mitad de
-  // transición (evita callbacks tardíos sobre estado ya desmontado).
-  useEffect(() => () => progress.stopAnimation(), [progress]);
-
   return (
     <View style={styles.animChipWrap}>
-      {/* Botón X (cierra el filtro) — aparece con fade in en el margen */}
-      <Animated.View
-        pointerEvents={filtered ? "auto" : "none"}
-        style={[styles.animCloseBtn, { opacity: progress }]}
-      >
-        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
-          <Feather name="x" size={22} color={MUTED} />
-        </Pressable>
-      </Animated.View>
-
-      {/* Lupa + Más — a la derecha, siempre visibles (también con tab seleccionado) */}
       {(onSearch || onAdd) && (
-        <Animated.View pointerEvents="auto" style={styles.chipRowActions}>
+        <View pointerEvents="auto" style={styles.chipRowActions}>
           {onSearch && (
             <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
               <Feather name="search" size={22} color="#f9f9f9" />
@@ -296,62 +220,20 @@ function AnimatedChipRow({
               <Feather name="plus" size={24} color="#f9f9f9" />
             </Pressable>
           )}
-        </Animated.View>
+        </View>
       )}
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={!filtered}
-        scrollEventThrottle={16}
-        onScroll={(e) => {
-          scrollXRef.current = e.nativeEvent.contentOffset.x;
-        }}
-        style={styles.chipRow}
-        contentContainerStyle={styles.chipRowContent}
-      >
-        {tabs.map((t) => {
-          const isSelected = displayTab === t.id;
-          const chipStyle = isSelected
-            ? {
-                opacity: 1,
-                transform: [
-                  {
-                    translateX: progress.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, targetTranslate],
-                    }),
-                  },
-                ],
-              }
-            : {
-                // Los demás se desvanecen mientras el seleccionado se desplaza.
-                opacity: progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 0],
-                }),
-              };
-
-          return (
-            <Animated.View
-              key={t.id}
-              pointerEvents={filtered && !isSelected ? "none" : "auto"}
-              onLayout={(e) => {
-                offsetsRef.current[t.id] = e.nativeEvent.layout.x;
-              }}
-              style={chipStyle}
-            >
-              <LibChip
-                label={t.label}
-                icon={t.icon}
-                sel={colorTab === t.id}
-                indigo2BackgroundColor={indigo2BackgroundColor}
-                onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
-              />
-            </Animated.View>
-          );
-        })}
-      </ScrollView>
+      <View style={[styles.chipRow, (onSearch || onAdd) && styles.chipRowWithActions]}>
+        {tabs.map((tab) => (
+          <LibChip
+            key={tab.id}
+            label={tab.label}
+            icon={tab.icon}
+            sel={activeTab === tab.id}
+            onPress={() => onSelect(tab.id)}
+          />
+        ))}
+      </View>
     </View>
   );
 }
@@ -1139,43 +1021,12 @@ export function BibliotecaScreen({
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
 
-  // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
-  // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
-  // (independiente del sticky header de Perfil / sus demás pestañas)
-  const HEADER_BORDER_THRESHOLD_PX = 8;
-  const headerBorderActiveRef = useRef(false);
-  const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
-  const stickyHeaderSurfaceOpacity = headerBorderAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.96],
-  });
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
-  });
-  const handleHeaderScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = e.nativeEvent.contentOffset.y;
-    const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
-    if (shouldShowBorder !== headerBorderActiveRef.current) {
-      headerBorderActiveRef.current = shouldShowBorder;
-      Animated.timing(headerBorderAnim, {
-        toValue: shouldShowBorder ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(indigo2TabsSurfaceAnim, {
-        toValue: shouldShowBorder ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    }
-  };
-
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab, setActiveTab] = useState<LibTab | null>(initialTab ?? null);
+  const [activeTab, setActiveTab] = useState<LibTab>(
+    initialTab === "mezclas" ? "mezclas" : "playlists",
+  );
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -1940,22 +1791,12 @@ export function BibliotecaScreen({
       <View
         style={[
           styles.stickyHeader,
-          (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && styles.stickyHeaderFade,
-          { paddingTop: embedded ? 0 : topPad - 34 },
+          {
+            paddingTop: embedded ? 0 : topPad - 34,
+            backgroundColor: sceneTheme.gradient[0] as string,
+          },
         ]}
       >
-        {(isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && (
-          <StickyHeaderSurface
-            opacity={stickyHeaderSurfaceOpacity}
-            tint={sceneTheme.gradient[0] as string}
-            showTint={false}
-            showDivider={false}
-            blurIntensity={85}
-            showBlackTint={false}
-            strongBlur
-            fadeBottom
-          />
-        )}
         {/* Fila 2: chips de tab (animados) */}
         {/* En Android/tablet el inset real es chico (piso 40): dar más aire
             entre el título y los tabs para igualar la altura del header de iPhone */}
@@ -1964,24 +1805,14 @@ export function BibliotecaScreen({
             ? styles.embeddedTabsHeader
             : { marginTop: -52 + (Platform.OS !== "web" && insets.top < 40 ? 31 : 0), marginBottom: -4 }}
         >
-          <AnimatedChipRow
+          <LibraryTabRow
             tabs={LIB_TABS}
             activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
-            onClear={() => setActiveTab(null)}
             onSearch={onHeaderActions ? undefined : () => setSearchVisible(true)}
             onAdd={onHeaderActions ? undefined : () => setCreateVisible(true)}
-            indigo2BackgroundColor={indigo2TabsBackgroundColor}
           />
         </View>
-
-        {!embedded && !isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
-          <LinearGradient
-            colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
-            style={styles.stickyHeaderShadow}
-            pointerEvents="none"
-          />
-        )}
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1989,8 +1820,6 @@ export function BibliotecaScreen({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: embedded ? 0 : 23 }}
         showsVerticalScrollIndicator={false}
-        onScroll={handleHeaderScroll}
-        scrollEventThrottle={16}
       >
         {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") &&
           !(activeTab === "playlists" && userPlaylists.length === 0 && userFolders.length === 0) &&
@@ -2139,16 +1968,6 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
   },
-  stickyHeaderFade: {
-    overflow: "visible",
-  },
-  stickyHeaderShadow: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: -12,
-    height: 12,
-  },
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
@@ -2193,9 +2012,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
-  animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
-  chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chipRow: { flex: 1, flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chipRowWithActions: { paddingRight: 104 },
+  libraryTabColumn: { flex: 1 },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -2211,6 +2030,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     height: 51,
