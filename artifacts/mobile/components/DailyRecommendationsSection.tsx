@@ -56,8 +56,7 @@ export function DailyRecommendationsSection({
             <SessionRow
               session={session}
               imageSize={97}
-              hideMeta
-              secondaryText={session.categoryLabel}
+              showCategoryPill
               showDurationBadge
               showChevron
               authorColor={themeAccent}
