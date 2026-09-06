@@ -240,6 +240,13 @@ const ActivityRow = React.memo(function ActivityRow({
               </Text>
             </View>
           </Pressable>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.ticketCutout,
+              { backgroundColor: routineTheme.background },
+            ]}
+          />
           <Pressable
             onPress={completeFromTicket}
             disabled={completing}
@@ -262,13 +269,6 @@ const ActivityRow = React.memo(function ActivityRow({
               <Feather name="check" size={20} color="#F9F9F9" />
             ) : null}
           </Pressable>
-          <View
-            pointerEvents="none"
-            style={[
-              styles.ticketCutout,
-              { backgroundColor: routineTheme.background },
-            ]}
-          />
         </Reanimated.View>
       </GestureDetector>
     </Reanimated.View>
@@ -639,15 +639,17 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 2,
   },
   ticketCutout: {
     position: "absolute",
-    right: -15,
+    right: 6,
     top: "50%",
-    width: 30,
-    height: 30,
-    marginTop: -15,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    marginTop: -22,
+    borderRadius: 22,
+    zIndex: 1,
   },
   completeState: {
     minHeight: 76,
