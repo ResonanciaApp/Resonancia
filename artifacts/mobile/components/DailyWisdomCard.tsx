@@ -5,7 +5,11 @@ import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 import { getDailyWisdomQuote } from "@/data/dailyWisdomQuotes";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
-export function DailyWisdomCard() {
+export function DailyWisdomCard({
+  backgroundColor,
+}: {
+  backgroundColor?: string;
+}) {
   const routineTheme = useRoutineTheme();
   const quote = useMemo(() => getDailyWisdomQuote(), []);
   const accent = routineTheme.accent;
@@ -24,7 +28,7 @@ export function DailyWisdomCard() {
     <View
       style={[
         styles.card,
-        { backgroundColor: routineTheme.surface },
+        { backgroundColor: backgroundColor ?? routineTheme.surface },
       ]}
       testID="inicio2-daily-wisdom"
     >

@@ -97,8 +97,10 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
-import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
-import { IntentionPrompt } from "@/components/IntentionPrompt";
+import {
+  DailyRecommendationsSection,
+  getDailyRecommendationSurface,
+} from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import {
@@ -1499,6 +1501,7 @@ export default function HomeScreen2({
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const carouselViewAllColor = activeTheme.accent ?? colors.accent;
+  const recommendationSurface = getDailyRecommendationSurface(activeTheme.id);
   // La tab bar flotante usa la misma separación inferior que su propio layout.
   // El widget queda 25 px por encima de la parte superior de esa barra.
   const tabBarBottomOffset =
@@ -2492,37 +2495,6 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <IntentionPrompt
-            style={{
-              marginHorizontal: GRID_PAD,
-              marginBottom: INICIO2_SECTION_GAP,
-              backgroundColor: "rgba(0,0,0,0.15)",
-              borderRadius: 100,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.7)",
-            }}
-          />
-        )}
-        {isInicio2 && videos.length > 0 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
-              </Pressable>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
-            >
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
-        {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
             sessions={filteredListened}
@@ -2630,15 +2602,35 @@ export default function HomeScreen2({
             durationInsideWithMeta
           />
         )}
+        {isInicio2 && videos.length > 0 && (
+          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
+              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
+            >
+              {videos.slice(0, 8).map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
         {isInicio2 && (
           <MiRutinaSection
+            cardBackgroundColor={recommendationSurface}
             style={{
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,
             }}
           />
         )}
-        {isInicio2 && <DailyWisdomCard />}
+        {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
         {isInicio2 && (
           <EncuentrosResonadoresSection
             marginBottom={INICIO2_SECTION_GAP}

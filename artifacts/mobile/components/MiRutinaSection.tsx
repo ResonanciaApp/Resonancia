@@ -33,6 +33,7 @@ import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
+  cardBackgroundColor?: string;
 };
 
 const ROUTINE_CARD_HEIGHT = 74;
@@ -55,6 +56,7 @@ const ActivityRow = React.memo(function ActivityRow({
   onOpen,
   onComplete,
   onDragEnd,
+  cardBackgroundColor,
 }: {
   activity: RoutineActivity;
   completing: boolean;
@@ -68,6 +70,7 @@ const ActivityRow = React.memo(function ActivityRow({
   onOpen: (activityId: string) => void;
   onComplete: (activity: RoutineActivity) => void;
   onDragEnd: (from: number, to: number) => void;
+  cardBackgroundColor?: string;
 }) {
   const routineTheme = useRoutineTheme();
   const completionProgress = useSharedValue(completing ? 1 : 0);
@@ -192,7 +195,7 @@ const ActivityRow = React.memo(function ActivityRow({
     backgroundColor: interpolateColor(
       completionProgress.value,
       [0, 1],
-      [routineTheme.surface, routineTheme.completion],
+      [cardBackgroundColor ?? routineTheme.surface, routineTheme.completion],
     ),
   }));
 
@@ -268,7 +271,7 @@ const ActivityRow = React.memo(function ActivityRow({
   );
 });
 
-export function MiRutinaSection({ style }: Props) {
+export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
   const todayKey = useDayRollover();
@@ -484,6 +487,7 @@ export function MiRutinaSection({ style }: Props) {
               onOpen={openActivity}
               onComplete={handleComplete}
               onDragEnd={handleDragEnd}
+              cardBackgroundColor={cardBackgroundColor}
             />
           ))}
         </View>
