@@ -16,9 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -91,16 +89,6 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
     () => TAG_CARDS.find((candidate) => candidate.id === slug),
     [slug],
   );
-  const inactiveFilterBackground =
-    theme.id === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(theme.id)
-        ? "rgba(181,211,255,0.057)"
-        : "rgba(181,211,255,0.057)";
-  const inactiveFilterBorder =
-    theme.id === "indigo2"
-      ? "rgba(255,255,255,0.04)"
-      : "rgba(255,255,255,0.1)";
   const sessions = useMemo(
     () =>
       tagLabel
@@ -158,9 +146,19 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
   if (!tagLabel) return null;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View
+      style={[
+        styles.root,
+        { backgroundColor: theme.gradient[theme.gradient.length - 1] as string },
+      ]}
+    >
       <StatusBar hidden />
-      <SacredBackground />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -238,8 +236,8 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
               durationFilter === null
                 ? null
                 : {
-                    backgroundColor: inactiveFilterBackground,
-                    borderColor: inactiveFilterBorder,
+                    backgroundColor: "rgba(181,211,255,0.057)",
+                    borderColor: "rgba(255,255,255,0.1)",
                   },
             ]}
           >
@@ -264,8 +262,8 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                   active
                     ? null
                     : {
-                        backgroundColor: inactiveFilterBackground,
-                        borderColor: inactiveFilterBorder,
+                        backgroundColor: "rgba(181,211,255,0.057)",
+                        borderColor: "rgba(255,255,255,0.1)",
                       },
                 ]}
               >
@@ -424,7 +422,8 @@ const styles = StyleSheet.create({
     borderColor: WIDGET_GREEN_SOLID,
   },
   filterPillIdle: {
-    borderColor: "rgba(255,255,255,0.16)",
+    backgroundColor: "rgba(181,211,255,0.057)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   filterLabel: {
     fontFamily: "Manrope",
