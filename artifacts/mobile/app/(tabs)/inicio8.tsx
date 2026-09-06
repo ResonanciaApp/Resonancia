@@ -331,8 +331,8 @@ function InicioAtmosphericTestCard() {
             rx="76%"
             ry="112%"
           >
-            <SvgStop offset="0" stopColor="#FFAA68" stopOpacity={0.36} />
-            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.2} />
+            <SvgStop offset="0" stopColor="#FFAA68" stopOpacity={0.13} />
+            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.7} />
             <SvgStop offset="0.78" stopColor="#FF8A55" stopOpacity={0} />
           </SvgRadialGradient>
           <SvgRadialGradient
@@ -342,12 +342,12 @@ function InicioAtmosphericTestCard() {
             rx="82%"
             ry="120%"
           >
-            <SvgStop offset="0" stopColor="#FF665A" stopOpacity={0.3} />
-            <SvgStop offset="0.32" stopColor="#E85045" stopOpacity={0.15} />
+            <SvgStop offset="0" stopColor="#FF665A" stopOpacity={0.12} />
+            <SvgStop offset="0.32" stopColor="#E85045" stopOpacity={0.05} />
             <SvgStop offset="0.8" stopColor="#E85045" stopOpacity={0} />
           </SvgRadialGradient>
         </SvgDefs>
-        <SvgRect width="100" height="60" fill="rgba(255,255,255,0.10)" />
+        <SvgRect width="100" height="60" fill="rgba(255,255,255,0.045)" />
         <SvgRect width="100" height="60" fill="url(#atmosphericOrange)" />
         <SvgRect width="100" height="60" fill="url(#atmosphericRed)" />
       </Svg>
