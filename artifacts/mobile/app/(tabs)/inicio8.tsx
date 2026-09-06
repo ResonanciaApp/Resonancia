@@ -42,7 +42,6 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, {
   Circle as SvgCircle,
   Defs as SvgDefs,
-  LinearGradient as SvgLinearGradient,
   RadialGradient as SvgRadialGradient,
   Rect as SvgRect,
   Stop as SvgStop,
@@ -325,37 +324,32 @@ function InicioAtmosphericTestCard() {
         style={StyleSheet.absoluteFill}
       >
         <SvgDefs>
-          <SvgLinearGradient id="atmosphericBase" x1="0" y1="0" x2="1" y2="1">
-            <SvgStop offset="0" stopColor="#111827" />
-            <SvgStop offset="0.45" stopColor="#16213A" />
-            <SvgStop offset="1" stopColor="#18264A" />
-          </SvgLinearGradient>
           <SvgRadialGradient
-            id="atmosphericIndigo"
-            cx="80%"
-            cy="10%"
-            rx="72%"
-            ry="105%"
+            id="atmosphericOrange"
+            cx="78%"
+            cy="18%"
+            rx="76%"
+            ry="112%"
           >
-            <SvgStop offset="0" stopColor="#5F69FF" stopOpacity={0.32} />
-            <SvgStop offset="0.28" stopColor="#4650B4" stopOpacity={0.16} />
-            <SvgStop offset="0.72" stopColor="#4650B4" stopOpacity={0} />
+            <SvgStop offset="0" stopColor="#FFAA68" stopOpacity={0.36} />
+            <SvgStop offset="0.3" stopColor="#FF8A55" stopOpacity={0.2} />
+            <SvgStop offset="0.78" stopColor="#FF8A55" stopOpacity={0} />
           </SvgRadialGradient>
           <SvgRadialGradient
-            id="atmosphericViolet"
-            cx="25%"
-            cy="100%"
-            rx="76%"
-            ry="115%"
+            id="atmosphericRed"
+            cx="18%"
+            cy="92%"
+            rx="82%"
+            ry="120%"
           >
-            <SvgStop offset="0" stopColor="#6946FF" stopOpacity={0.2} />
-            <SvgStop offset="0.3" stopColor="#463CAA" stopOpacity={0.1} />
-            <SvgStop offset="0.75" stopColor="#463CAA" stopOpacity={0} />
+            <SvgStop offset="0" stopColor="#FF665A" stopOpacity={0.3} />
+            <SvgStop offset="0.32" stopColor="#E85045" stopOpacity={0.15} />
+            <SvgStop offset="0.8" stopColor="#E85045" stopOpacity={0} />
           </SvgRadialGradient>
         </SvgDefs>
-        <SvgRect width="100" height="60" fill="url(#atmosphericBase)" />
-        <SvgRect width="100" height="60" fill="url(#atmosphericIndigo)" />
-        <SvgRect width="100" height="60" fill="url(#atmosphericViolet)" />
+        <SvgRect width="100" height="60" fill="rgba(255,255,255,0.10)" />
+        <SvgRect width="100" height="60" fill="url(#atmosphericOrange)" />
+        <SvgRect width="100" height="60" fill="url(#atmosphericRed)" />
       </Svg>
     </View>
   );
@@ -3198,12 +3192,12 @@ const styles = StyleSheet.create({
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   inicioAtmosphericTestCard: {
-    height: 60,
+    height: 100,
     marginHorizontal: GRID_PAD,
     marginBottom: 24,
-    borderRadius: 18,
+    borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "#111827",
+    backgroundColor: "transparent",
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
