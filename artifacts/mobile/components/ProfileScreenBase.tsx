@@ -1,6 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeMaxStreak } from "@/utils/stats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File as FSFile, Paths } from "expo-file-system";
 import { Image } from "expo-image";
@@ -67,6 +65,8 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
+import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { useStreak } from "@/hooks/useStreak";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import {
   gradientColors,
@@ -329,7 +329,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites, statEvents } = usePlayer();
+  const { favorites } = usePlayer();
   const {
     username,
     lastName,
@@ -341,9 +341,7 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
+  const { currentStreak, weekFlags, todayIndex } = useStreak();
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -356,31 +354,6 @@ export function ProfileScreenBase({
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
-  const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    let totalMinutes = 0;
-    let completedSessions = 0;
-    const rangeEvents = [];
-
-    for (const event of statEvents) {
-      const playedAt = new Date(event.playedAt).getTime();
-      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
-      rangeEvents.push(event);
-      totalMinutes += event.minutes;
-      if (event.completed === true) completedSessions += 1;
-    }
-
-    return {
-      totalMinutes: Math.round(totalMinutes),
-      completedSessions,
-      maxStreak: computeMaxStreak(rangeEvents),
-    };
-  }, [statEvents, statsRangeDays, todayKey]);
-
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1243,104 +1216,56 @@ export function ProfileScreenBase({
           />
         </View>
 
-        {/* ── Estadísticas personales (solo en el Perfil dedicado) ── */}
+        {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <IntentionPrompt style={{ marginBottom: 19 }} />
-            <View
-              style={[
-                styles.personalStatsSection,
-                {
-                  backgroundColor: resourceBlockBackground,
-                },
-              ]}
-            >
-              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                Estadísticas personales
+            <View style={styles.profileProgressSection}>
+              <Text style={[styles.profileProgressSectionTitle, { color: colors.foreground }]}>
+                Tu progreso
               </Text>
-              <View style={styles.personalStatsRangeDropdown}>
-                <Pressable
-                  onPress={() => setStatsRangeOpen((open) => !open)}
-                  accessibilityRole="button"
-                  accessibilityState={{ expanded: statsRangeOpen }}
-                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
-                  style={styles.personalStatsRangeTrigger}
-                >
-                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather
-                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
-                    size={14}
-                    color={secondaryAccent}
-                  />
-                </Pressable>
-                {statsRangeOpen && (
-                  <View
-                    style={[
-                      styles.personalStatsRangeMenu,
-                      {
-                        backgroundColor: activeTheme.gradient[0],
-                        borderColor: "rgba(255,255,255,0.12)",
-                      },
-                    ]}
-                  >
-                    {([7, 30, 90] as const).map((days) => {
-                      const selected = statsRangeDays === days;
-                      return (
-                        <Pressable
-                          key={days}
-                          onPress={() => {
-                            setStatsRangeDays(days);
-                            setStatsRangeOpen(false);
-                          }}
-                          accessibilityRole="menuitem"
-                          accessibilityState={{ selected }}
+              <View
+                style={[
+                  styles.profileProgressCard,
+                  { backgroundColor: resourceBlockBackground },
+                ]}
+              >
+                <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
+                  Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
+                </Text>
+                <View style={styles.profileProgressWeek}>
+                  {["L", "M", "X", "J", "V", "S", "D"].map((label, index) => {
+                    const completed = weekFlags[index];
+                    const isToday = index === todayIndex;
+                    return (
+                      <View key={label} style={styles.profileProgressDay}>
+                        <View
                           style={[
-                            styles.personalStatsRangeOption,
-                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
+                            styles.profileProgressCircle,
+                            completed && styles.profileProgressCircleCompleted,
+                            !completed && isToday && styles.profileProgressCircleToday,
                           ]}
                         >
-                          <Text
-                            style={[
-                              styles.personalStatsRangeOptionText,
-                              { color: selected ? "#F9F9F9" : secondaryAccent },
-                            ]}
-                          >
-                            Últimos {days} días
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                )}
-              </View>
-              <View style={styles.personalStatsValues}>
-                <View style={styles.personalStatItem}>
-                  <MaterialCommunityIcons name="spa" size={22} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>TIEMPO DE{"\n"}BIENESTAR</Text>
-                </View>
-                <View style={styles.personalStatDivider} />
-                <View style={styles.personalStatItem}>
-                  <Feather name="clock" size={20} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.completedSessions}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>SESIONES{"\n"}COMPLETADAS</Text>
-                </View>
-                <View style={styles.personalStatDivider} />
-                <View style={styles.personalStatItem}>
-                  <Feather name="flag" size={20} color="#F9F9F9" />
-                  <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                    {personalStats.maxStreak} {personalStats.maxStreak === 1 ? "día" : "días"}
-                  </Text>
-                  <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>RACHA{"\n"}MÁXIMA</Text>
+                          {completed ? (
+                            <Feather name="check" size={15} color="#FFFFFF" />
+                          ) : null}
+                        </View>
+                        <Text
+                          style={[
+                            styles.profileProgressDayLabel,
+                            { color: completed || isToday ? colors.foreground : secondaryAccent },
+                          ]}
+                        >
+                          {label}
+                        </Text>
+                      </View>
+                    );
+                  })}
                 </View>
               </View>
             </View>
+
+            <IntentionPrompt style={{ marginBottom: 19 }} />
+            <MiRutinaSection style={styles.profileRoutineSection} />
 
             <View>
               <ProfileMixCarousel marginBottom={53} />
@@ -2246,7 +2171,68 @@ const styles = StyleSheet.create({
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
   planMejorarText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
-  // Estadísticas personales
+  // Progreso semanal compacto
+  profileProgressSection: {
+    marginBottom: 19,
+  },
+  profileProgressSectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    marginBottom: 15,
+  },
+  profileProgressCard: {
+    borderRadius: 17,
+    paddingHorizontal: 16,
+    paddingTop: 17,
+    paddingBottom: 16,
+  },
+  profileProgressHeadline: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+    marginBottom: 18,
+  },
+  profileProgressWeek: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  profileProgressDay: {
+    flex: 1,
+    alignItems: "center",
+    gap: 7,
+  },
+  profileProgressCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profileProgressCircleCompleted: {
+    borderColor: WIDGET_GREEN_SOLID,
+    backgroundColor: WIDGET_GREEN_SOLID,
+  },
+  profileProgressCircleToday: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.72)",
+  },
+  profileProgressDayLabel: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  profileRoutineSection: {
+    marginHorizontal: 0,
+    marginBottom: 19,
+  },
+
+  // Estadísticas personales (ocultas; estilos conservados para reutilización)
   personalStatsSection: {
     borderRadius: 17,
     padding: 16,
