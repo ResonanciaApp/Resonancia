@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   categoryPillTextOnly: {
     gap: 0,
     justifyContent: "center",
-    paddingHorizontal: 9,
+    paddingHorizontal: 0,
   },
   categoryPillOutlined: {
     borderWidth: 2,
@@ -312,6 +312,8 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
   categoryLabelTextOnly: {
+    width: "100%",
+    paddingHorizontal: 9,
     textAlign: "center",
   },
   durationBadge: {
