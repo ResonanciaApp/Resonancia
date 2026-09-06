@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import {
   Alert,
@@ -12,6 +13,8 @@ import {
 } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -24,6 +27,10 @@ const TOOLS = [
   { id: "mood-register", label: "Registro de ánimo", icon: "emoticon-happy-outline", color: "#8ED9FF" },
   { id: "favorites", label: "Favoritos", icon: "heart-outline", color: "#E6BE67" },
   { id: "history", label: "Historial", icon: "history", color: "#C8A6FF" },
+  { id: "library", label: "Biblioteca", icon: "bookshelf", color: "#E6BE67" },
+  { id: "mixer", label: "Mezclador", icon: "tune-vertical", color: "#8ED9FF" },
+  { id: "notes", label: "Mis Notas", icon: "notebook-outline", color: "#C8A6FF" },
+  { id: "breathing", label: "Ejercicios de respiración", icon: "weather-windy", color: "#8ED9FF" },
   { id: "downloads", label: "Descargas", icon: "download-outline", color: "#E7A36E" },
   { id: "mood-history", label: "Historial de estado de ánimo", icon: "chart-timeline-variant", color: "#8ED9FF" },
 ] as const;
@@ -116,6 +123,8 @@ export function ToolsGrid({
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
+  const { openCategory } = useCategoryOverlay();
+  const { openMixer } = useMixerPanel();
 
   const pillBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -135,6 +144,18 @@ export function ToolsGrid({
       case "history":
         openOverlay("/historial");
         break;
+      case "library":
+        router.push("/(tabs)/biblioteca" as never);
+        break;
+      case "mixer":
+        openMixer();
+        break;
+      case "notes":
+        openOverlay("/diario");
+        break;
+      case "breathing":
+        openCategory("/respiracion");
+        break;
       case "downloads":
         Alert.alert("Descargas", "La descarga estará disponible próximamente.");
         break;
@@ -142,7 +163,7 @@ export function ToolsGrid({
         openOverlay("/historial-emociones");
         break;
     }
-  }, [onOpenMoodPicker, openOverlay]);
+  }, [onOpenMoodPicker, openCategory, openMixer, openOverlay]);
 
   return (
     <ScrollView
