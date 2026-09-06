@@ -58,6 +58,7 @@ const COLLAPSED_FIRST_CAROUSEL_GAP = 14;
 const FIRST_DISCOVER_CAROUSEL_GAP = 0;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 const FEATURED_MOMENT_HEIGHT = 320;
+const SHOW_FEATURED_MOMENT = false;
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
@@ -514,6 +515,7 @@ export function ExploreScreen({
                     : activeSceneId === "indigo2"
                       ? styles.searchBoxIndigo2
                       : null,
+                styles.searchBoxWhiteBorder,
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
@@ -526,7 +528,7 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
-          {featuredMoment && (
+          {SHOW_FEATURED_MOMENT && featuredMoment && (
             <View style={styles.featuredMomentSection}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
               <Pressable
@@ -912,7 +914,10 @@ const styles = StyleSheet.create({
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
-  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 0, paddingHorizontal: 18, height: 55 },
+  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 55 },
+  searchBoxWhiteBorder: {
+    borderColor: "rgba(255,255,255,0.7)",
+  },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {
     backgroundColor: "rgba(0,0,0,0.15)",
