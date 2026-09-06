@@ -1193,9 +1193,6 @@ export function ProfileScreenBase({
             </View>
 
             <View style={styles.profileNotificationsSection}>
-              <Text style={[styles.profileNotificationsTitle, { color: colors.foreground }]}>
-                Notificaciones
-              </Text>
               <Pressable
                 onPress={() => router.push("/notificaciones-practica" as never)}
                 accessibilityRole="button"
@@ -2123,7 +2120,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 53,
+    marginBottom: 19,
   },
   profileProgressCard: {
     borderRadius: 17,
@@ -2157,13 +2154,6 @@ const styles = StyleSheet.create({
   },
   profileNotificationsSection: {
     marginBottom: 53,
-  },
-  profileNotificationsTitle: {
-    fontFamily: "Manrope",
-    fontSize: 19,
-    lineHeight: 24,
-    fontWeight: "700",
-    marginBottom: 16,
   },
   profileNotificationsCard: {
     minHeight: 66,
