@@ -64,7 +64,9 @@ import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { useStreak } from "@/hooks/useStreak";
+import { useDayRollover } from "@/hooks/useDayRollover";
 import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
@@ -355,6 +357,9 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const todayKey = useDayRollover();
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -368,14 +373,24 @@ export function ProfileScreenBase({
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
   const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    const rangeEvents = statEvents.filter((event) => {
+      const playedAt = new Date(event.playedAt).getTime();
+      return Number.isFinite(playedAt) && playedAt >= rangeStartTime && playedAt <= now;
+    });
+
     return {
       totalMinutes: Math.round(
-        statEvents.reduce((total, event) => total + (event.minutes ?? 0), 0),
+        rangeEvents.reduce((total, event) => total + (event.minutes ?? 0), 0),
       ),
-      activeDays: computeActiveDays(statEvents),
+      activeDays: computeActiveDays(rangeEvents),
       maxStreak: computeMaxStreak(statEvents),
     };
-  }, [statEvents]);
+  }, [statEvents, statsRangeDays, todayKey]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1232,6 +1247,63 @@ export function ProfileScreenBase({
               <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
                 Estadísticas personales
               </Text>
+              <View style={styles.personalStatsRangeDropdown}>
+                <Pressable
+                  onPress={() => setStatsRangeOpen((open) => !open)}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: statsRangeOpen }}
+                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
+                  style={styles.personalStatsRangeTrigger}
+                >
+                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
+                    Últimos {statsRangeDays} días
+                  </Text>
+                  <Feather
+                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
+                    size={14}
+                    color={secondaryAccent}
+                  />
+                </Pressable>
+                {statsRangeOpen && (
+                  <View
+                    style={[
+                      styles.personalStatsRangeMenu,
+                      {
+                        backgroundColor: activeTheme.gradient[0],
+                        borderColor: "rgba(255,255,255,0.12)",
+                      },
+                    ]}
+                  >
+                    {([7, 30, 90] as const).map((days) => {
+                      const selected = statsRangeDays === days;
+                      return (
+                        <Pressable
+                          key={days}
+                          onPress={() => {
+                            setStatsRangeDays(days);
+                            setStatsRangeOpen(false);
+                          }}
+                          accessibilityRole="menuitem"
+                          accessibilityState={{ selected }}
+                          style={[
+                            styles.personalStatsRangeOption,
+                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.personalStatsRangeOptionText,
+                              { color: selected ? "#F9F9F9" : secondaryAccent },
+                            ]}
+                          >
+                            Últimos {days} días
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
               <View style={styles.personalStatsValues}>
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatIcon}>
@@ -1269,10 +1341,7 @@ export function ProfileScreenBase({
                 { backgroundColor: resourceBlockBackground },
               ]}
             >
-              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                Rachas
-              </Text>
-              <View style={styles.personalStatsValues}>
+              <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
                 <View style={styles.personalStatItem}>
                   <View style={styles.personalStatIcon}>
                     <Feather name="zap" size={20} color="#F9F9F9" />
@@ -1302,6 +1371,8 @@ export function ProfileScreenBase({
                 </View>
               </View>
             </View>
+
+            <HistorialCalendar embedded />
 
             <MiRutinaSection style={styles.profileRoutineSection} />
 
@@ -2274,10 +2345,52 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
+  personalStatsRangeDropdown: {
+    position: "relative",
+    alignSelf: "flex-start",
+    marginTop: 2,
+    zIndex: 2,
+  },
+  personalStatsRangeTrigger: {
+    minHeight: 28,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  personalStatsRangeLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  personalStatsRangeMenu: {
+    position: "absolute",
+    top: 30,
+    left: 0,
+    width: 142,
+    padding: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    zIndex: 10,
+    elevation: 10,
+  },
+  personalStatsRangeOption: {
+    minHeight: 34,
+    borderRadius: 7,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+  },
+  personalStatsRangeOptionText: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "500",
+  },
   personalStatsValues: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: 18,
+  },
+  personalStatsValuesNoTitle: {
+    marginTop: 0,
   },
   personalStatItem: {
     flex: 1,
