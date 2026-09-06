@@ -297,17 +297,6 @@ export default function DescansoScreen() {
         >
           <View style={styles.titleRow}>
             <Animated.Text
-              style={[
-                styles.stickyTitle,
-                {
-                  color: colors.foreground,
-                  transform: [{ translateY: stickyTitleTranslateY }],
-                },
-              ]}
-            >
-              Dormir
-            </Animated.Text>
-            <Animated.Text
               numberOfLines={1}
               style={[
                 styles.stickySubtitle,
@@ -671,16 +660,8 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 10,
   },
-  stickyTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "800",
-    letterSpacing: 0.2,
-    textAlign: "left",
-  },
   stickySubtitle: {
     flex: 1,
-    marginLeft: 12,
     marginRight: 8,
     fontFamily: "Manrope",
     fontSize: 16,
