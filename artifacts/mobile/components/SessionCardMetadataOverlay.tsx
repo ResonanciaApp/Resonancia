@@ -86,8 +86,8 @@ export function SessionCategoryPill({
       style={[
         styles.categoryPill,
         inline && styles.categoryPillInline,
-        plain && styles.categoryPillPlain,
         textOnly && styles.categoryPillTextOnly,
+        plain && styles.categoryPillPlain,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
         leftInset !== undefined ? { left: leftInset } : null,
