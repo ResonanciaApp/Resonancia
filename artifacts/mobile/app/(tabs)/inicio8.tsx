@@ -59,7 +59,6 @@ import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
@@ -2397,9 +2396,7 @@ export default function HomeScreen2({
           <View
             style={[
               styles.inicio2ToolsSection,
-              // Los tabs bajan 6 px; el espacio siguiente se reduce 11 px
-              // para que Recomendaciones diarias y lo que sigue suban 5 px.
-              { marginTop: 31, marginBottom: INICIO2_SECTION_GAP - 11 },
+              { marginTop: 21, marginBottom: INICIO2_SECTION_GAP - 11 },
             ]}
           >
             <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
@@ -2410,7 +2407,7 @@ export default function HomeScreen2({
             sessions={dailyRecommendations}
             dayKey={todayKey}
             onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
-            style={{ paddingHorizontal: GRID_PAD }}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -5 }}
           />
         )}
         {isInicio2 && featuredMoment && (
@@ -2633,7 +2630,6 @@ export default function HomeScreen2({
             durationInsideWithMeta
           />
         )}
-        {isInicio2 && <ProfileMixCarousel marginBottom={INICIO2_SECTION_GAP} />}
         {isInicio2 && (
           <MiRutinaSection
             style={{
@@ -2711,8 +2707,6 @@ export default function HomeScreen2({
             showMetaBelow
           />
         )}
-        {!isInicio2 && <ProfileMixCarousel />}
-
         {/* ── FAVORITOS ── */}
         {!isInicio2 && (
           <SessionCarousel
@@ -3057,7 +3051,7 @@ const styles = StyleSheet.create({
     right: GRID_PAD,
     bottom: 18,
     zIndex: 10,
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 18,
     paddingVertical: 20,
@@ -3076,8 +3070,9 @@ const styles = StyleSheet.create({
   },
   inicio2HeroStaticTitle: {
     maxWidth: "76%",
-    fontSize: 18,
-    lineHeight: 23,
+    fontSize: 24,
+    lineHeight: 29,
+    textAlign: "center",
     transform: [],
   },
   inicio2HeroCategory: {
