@@ -255,9 +255,7 @@ export function AmbientalDurationSheet({
           style={[
             styles.sheet,
             {
-              // `colors.card` es translúcido en la paleta global. El sheet
-              // necesita una superficie opaca del mismo tema que Inicio.
-              backgroundColor: theme.gradient[0],
+              backgroundColor: "#222258",
               paddingBottom: Math.max(insets.bottom, 16),
               transform: [{ translateY: sheetY }],
             },
@@ -293,7 +291,7 @@ export function AmbientalDurationSheet({
                         {
                           backgroundColor: sleepTabSurface,
                           borderColor: selected
-                            ? "#F9F9F9"
+                            ? "rgba(255,255,255,0.15)"
                             : "transparent",
                         },
                       ]}
@@ -485,7 +483,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    borderWidth: 1.5,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
   },
