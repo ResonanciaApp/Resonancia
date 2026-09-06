@@ -65,6 +65,7 @@ import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { MiRutinaSection } from "@/components/MiRutinaSection";
+import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { useStreak } from "@/hooks/useStreak";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
@@ -1177,10 +1178,12 @@ export function ProfileScreenBase({
                 ]}
               >
                 <View style={styles.profileProgressHeader}>
+                  <View style={styles.profileProgressLotus}>
+                    <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+                  </View>
                   <Text style={[styles.profileProgressHeadline, { color: colors.foreground }]}>
                     Llevas {currentStreak} {currentStreak === 1 ? "día" : "días"} de racha
                   </Text>
-                  <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
                 </View>
                 <SonicStreakDays
                   activeFlags={weekFlags}
@@ -1190,6 +1193,23 @@ export function ProfileScreenBase({
                 />
               </View>
             </View>
+
+            <QuickAccessSection
+              title="Herramientas"
+              accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
+              horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
+              leftPillIds={["library", "mixer"]}
+              rightPillIds={["sessions", "encounters"]}
+              cardGap={9}
+              cardCornerRadius={13}
+              cardHeightOffset={3}
+              horizontalPadding={16}
+              twoRowCarousel
+              twoRowThirdCardPeek={15}
+              cardBackgroundColor={resourceBlockBackground}
+              showCardBorders={false}
+              style={styles.profileToolsSection}
+            />
 
             <MiRutinaSection style={styles.profileRoutineSection} />
 
@@ -2101,19 +2121,31 @@ const styles = StyleSheet.create({
   profileProgressHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     marginBottom: 18,
+  },
+  profileProgressLotus: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
   },
   profileProgressHeadline: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     flex: 1,
-    paddingRight: 12,
   },
   profileRoutineSection: {
     marginHorizontal: 0,
     marginBottom: 53,
+  },
+  profileToolsSection: {
+    marginTop: 0,
+    marginBottom: 53,
+    paddingHorizontal: 0,
   },
 
   // Estadísticas personales (ocultas; estilos conservados para reutilización)

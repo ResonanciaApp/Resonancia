@@ -98,8 +98,6 @@ import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
-import { MiRutinaSection } from "@/components/MiRutinaSection";
 import { IntentionPrompt } from "@/components/IntentionPrompt";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
@@ -1515,10 +1513,6 @@ export default function HomeScreen2({
     : activeSceneId === "indigo2"
       ? "rgba(191,207,255,0.096)"
       : cardBg;
-  const quickAccessBg =
-    isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"
-      ? durationPillBg
-      : "rgba(255,255,255,0.025)";
   const recommendationSurfaceBg = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
     : cardBg;
@@ -2511,27 +2505,6 @@ export default function HomeScreen2({
             }}
           />
         )}
-        {isInicio2 && (
-          <QuickAccessSection
-            title="Herramientas"
-            accessIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
-            horizontalIds={["library", "mixer", "breathing", "journal", "sessions", "encounters"]}
-            leftPillIds={["library", "mixer"]}
-            rightPillIds={["sessions", "encounters"]}
-            cardGap={9}
-            cardCornerRadius={13}
-            cardHeightOffset={3}
-            horizontalPadding={GRID_PAD}
-            twoRowCarousel
-            cardBackgroundColor={quickAccessBg}
-            showCardBorders={false}
-            style={{
-              marginTop: 0,
-              marginBottom: INICIO2_SECTION_GAP,
-              paddingHorizontal: GRID_PAD,
-            }}
-          />
-        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2659,7 +2632,6 @@ export default function HomeScreen2({
             durationInsideWithMeta
           />
         )}
-        {isInicio2 && <MiRutinaSection />}
         {isInicio2 && <DailyWisdomCard />}
         {isInicio2 && (
           <EncuentrosResonadoresSection

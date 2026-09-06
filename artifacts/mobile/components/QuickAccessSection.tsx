@@ -235,6 +235,7 @@ export function QuickAccessSection({
   cardHeightOffset = 0,
   horizontalPadding = GRID_PAD,
   twoRowCarousel = false,
+  twoRowThirdCardPeek,
   style,
 }: {
   includeExtras?: boolean;
@@ -258,6 +259,7 @@ export function QuickAccessSection({
   cardHeightOffset?: number;
   horizontalPadding?: number;
   twoRowCarousel?: boolean;
+  twoRowThirdCardPeek?: number;
   style?: object;
 }) {
   const { width } = useWindowDimensions();
@@ -273,7 +275,9 @@ export function QuickAccessSection({
   );
   const twoRowCardWidth = Math.max(
     0,
-    Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 2.25) + 10,
+    twoRowThirdCardPeek == null
+      ? Math.floor((width - horizontalPadding * 2 - cardGap * 2) / 2.25) + 10
+      : (width - horizontalPadding * 2 - cardGap * 2 - twoRowThirdCardPeek) / 2,
   );
   const cardBackground = cardBackgroundColor ?? (
     activeSceneId === "tibet"

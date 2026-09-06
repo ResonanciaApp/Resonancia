@@ -2,16 +2,13 @@ import { Feather } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { Pressable, Share, StyleSheet, Text, View } from "react-native";
 
-import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { getDailyWisdomQuote } from "@/data/dailyWisdomQuotes";
-import { useColors } from "@/hooks/useColors";
+import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
 export function DailyWisdomCard() {
-  const colors = useColors();
-  const { theme } = useSceneTheme();
+  const routineTheme = useRoutineTheme();
   const quote = useMemo(() => getDailyWisdomQuote(), []);
-  const accent = theme.accent ?? colors.primary;
+  const accent = routineTheme.accent;
 
   const shareQuote = async () => {
     try {
@@ -27,7 +24,7 @@ export function DailyWisdomCard() {
     <View
       style={[
         styles.card,
-        isIndigoThemeId(theme.id) && { backgroundColor: "rgba(181,211,255,0.057)" },
+        { backgroundColor: routineTheme.surface },
       ]}
       testID="inicio2-daily-wisdom"
     >
