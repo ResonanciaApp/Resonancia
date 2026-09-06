@@ -1260,6 +1260,7 @@ function Inicio2HeroStatic({
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
+  const { theme } = useSceneTheme();
   const displayName =
     username
     || clerkUser?.firstName
@@ -1271,7 +1272,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={[styles.inicio2Hero, styles.inicio2HeroRoundedEnd]}
+      style={styles.inicio2Hero}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -1295,6 +1296,20 @@ function Inicio2HeroStatic({
           ]}
           locations={[0, 0.48, 1]}
           style={styles.inicio2HeroImage}
+        />
+      </View>
+
+      <View pointerEvents="none" style={styles.inicio2HeroContentCap}>
+        <LinearGradient
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          locations={theme.gradientLocations}
+          style={{
+            position: "absolute",
+            top: -(INICIO2_HERO_HEIGHT - 24),
+            left: 0,
+            right: 0,
+            height,
+          }}
         />
       </View>
 
@@ -2874,11 +2889,6 @@ const styles = StyleSheet.create({
     overflow: "visible",
     backgroundColor: "transparent",
   },
-  inicio2HeroRoundedEnd: {
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    overflow: "hidden",
-  },
   inicio2ContentPanel: {
     position: "relative",
     zIndex: 1,
@@ -2903,6 +2913,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    overflow: "hidden",
+  },
+  inicio2HeroContentCap: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 24,
+    zIndex: 3,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: "hidden",
