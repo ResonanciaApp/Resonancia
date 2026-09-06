@@ -942,7 +942,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "400",
-    color: "rgba(249,249,249,0.62)",
+    color: "#C0C0C0",
   },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
