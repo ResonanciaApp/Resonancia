@@ -5,6 +5,7 @@ import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -1434,15 +1435,22 @@ function InicioEmotionWidget({
         {
           right: 18,
           bottom,
-          backgroundColor,
+           backgroundColor: "transparent",
           opacity: pressed ? 0.82 : 1,
           borderWidth: borderColor ? 2 : 0,
           borderColor: borderColor ?? "transparent",
         },
       ]}
     >
+      <BlurView
+        pointerEvents="none"
+        intensity={38}
+        tint="light"
+        experimentalBlurMethod="dimezisBlurView"
+        style={styles.inicio2HeroEmotionGlass}
+      />
       <Text style={styles.inicio2HeroEmotionEmoji}>😌</Text>
-      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#F9F9F9" }]}>
+      <View style={[styles.inicio2HeroEmotionAdd, { backgroundColor: "#2E1D53" }]}>
         <Text style={styles.inicio2HeroEmotionAddText}>+</Text>
       </View>
     </Pressable>
@@ -2642,7 +2650,7 @@ export default function HomeScreen2({
             marginBottom={INICIO2_SECTION_GAP}
           />
         )}
-        {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
+        {isInicio2 && <DailyWisdomCard backgroundColor="#2E1D53" />}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
@@ -3009,6 +3017,12 @@ const styles = StyleSheet.create({
     fontSize: 31,
     lineHeight: 38,
   },
+  inicio2HeroEmotionGlass: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 36,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.10)",
+  },
   inicio2HeroEmotionAdd: {
     position: "absolute",
     top: -4,
@@ -3022,7 +3036,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   inicio2HeroEmotionAddText: {
-    color: "#150D2E",
+    color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 25,
     lineHeight: 28,
