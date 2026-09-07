@@ -269,7 +269,7 @@ export default function SonidosScreen() {
             },
           ]}
         >
-          <View style={styles.titleRow}>
+          <View style={[styles.titleRow, styles.stickyTitleRow]}>
             <Animated.Text
               style={[
                 styles.stickyTitle,
@@ -509,16 +509,16 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   stickyTitle: {
-    position: "absolute",
-    top: 16,
-    left: 0,
-    right: 0,
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "center",
+  },
+  stickyTitleRow: {
+    minHeight: 54,
+    justifyContent: "center",
   },
   stickySearchButton: {
     position: "absolute",
