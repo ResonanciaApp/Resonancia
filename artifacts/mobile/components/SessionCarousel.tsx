@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
   thumbWrap: {
     width: CARD_W,
     height: CARD_W,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: "hidden",
   },
   thumb: { width: CARD_W, height: CARD_W },
