@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Requerimientos de consolidación y prelanzamiento — RESONANCIA</title>
+  <style>
+    @page { size: A4; margin: 17mm 17mm 18mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #20283A;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.8pt;
+      line-height: 1.46;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .cover {
+      min-height: 250mm;
+      background: linear-gradient(145deg, #060A0F 0%, #111827 72%, #251F35 100%);
+      color: #FFF;
+      margin: -17mm -17mm -18mm;
+      padding: 55mm 24mm 28mm;
+      position: relative;
+      page-break-after: always;
+    }
+    .cover:before {
+      content: "";
+      position: absolute;
+      width: 130mm;
+      height: 130mm;
+      right: -42mm;
+      top: -34mm;
+      border: 1px solid rgba(190,150,80,.55);
+      border-radius: 50%;
+      box-shadow: 0 0 0 18mm rgba(190,150,80,.04), 0 0 0 40mm rgba(130,96,181,.035);
+    }
+    .brand {
+      color: #BE9650;
+      font-size: 9pt;
+      font-weight: 700;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+    }
+    .cover h1 {
+      font-size: 32pt;
+      line-height: 1.08;
+      margin: 13mm 0 7mm;
+      max-width: 145mm;
+    }
+    .cover .lead {
+      color: #D8D5E8;
+      font-size: 13pt;
+      line-height: 1.5;
+      max-width: 143mm;
+    }
+    .cover .meta {
+      bottom: 27mm;
+      color: #BAB1E1;
+      font-size: 9pt;
+      left: 24mm;
+      position: absolute;
+    }
+    header {
+      border-bottom: 2px solid #BE9650;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+    }
+    .eyebrow {
+      color: #8260B5;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+    h1 { color: #060A0F; font-size: 23pt; line-height: 1.12; margin: 4px 0; }
+    h2 { color: #101827; font-size: 15pt; line-height: 1.2; margin: 0; }
+    h3 {
+      color: #8260B5;
+      font-size: 10.3pt;
+      letter-spacing: .25px;
+      margin: 12px 0 5px 38px;
+      text-transform: uppercase;
+    }
+    p { margin: 0 0 7px; }
+    ul { margin: 4px 0 8px 17px; padding: 0; }
+    li { margin-bottom: 4px; padding-left: 2px; }
+    strong { color: #101827; }
+    .intro {
+      background: #F7F5FB;
+      border-left: 4px solid #8260B5;
+      border-radius: 0 8px 8px 0;
+      padding: 11px 13px;
+      margin-bottom: 16px;
+    }
+    .section { margin-bottom: 18px; }
+    .section-head {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .number {
+      align-items: center;
+      background: #060A0F;
+      border-radius: 50%;
+      color: #FFF;
+      display: inline-flex;
+      flex: 0 0 28px;
+      font-size: 11pt;
+      font-weight: 700;
+      height: 28px;
+      justify-content: center;
+      width: 28px;
+    }
+    .indent { margin-left: 38px; }
+    .result {
+      background: rgba(190,150,80,.09);
+      border: 1px solid rgba(190,150,80,.28);
+      border-radius: 8px;
+      margin: 11px 0 0 38px;
+      padding: 9px 11px;
+    }
+    .result b {
+      color: #8B6A2C;
+      display: block;
+      font-size: 8.3pt;
+      letter-spacing: .7px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .page-break { page-break-before: always; }
+    .criteria {
+      border-collapse: collapse;
+      margin: 7px 0 8px 38px;
+      width: calc(100% - 38px);
+    }
+    .criteria td {
+      border-bottom: 1px solid #E3E5EB;
+      padding: 6px 5px;
+      vertical-align: top;
+    }
+    .criteria td:first-child { color: #8260B5; font-weight: 700; width: 23px; }
+    .phase {
+      background: #F8F9FB;
+      border: 1px solid #E2E5EA;
+      border-radius: 8px;
+      break-inside: avoid;
+      margin: 9px 0;
+      padding: 11px 13px;
+    }
+    .phase h3 { margin: 0 0 6px; }
+    footer {
+      border-top: 1px solid #D9DDE6;
+      color: #71798A;
+      font-size: 8pt;
+      margin-top: 18px;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="brand">RESONANCIA</div>
+    <h1>Requerimientos de consolidación y prelanzamiento</h1>
+    <p class="lead">Documento de alcance para estabilización funcional, refinamiento visual, monetización y preparación técnica de la aplicación para su publicación.</p>
+    <div class="meta">Documento de trabajo · Alcance sujeto a validación técnica y de diseño</div>
+  </section>
+
+  <header>
+    <div class="eyebrow">Objetivo general</div>
+    <h1>Alcance del proyecto</h1>
+  </header>
+  <div class="intro">
+    Completar y estabilizar funcionalidades clave de RESONANCIA antes de su publicación
+    en App Store y Google Play. El trabajo contempla seis áreas: rachas, sistema visual
+    Liquid Glass, slider principal de Inicio, experiencia para nuevos usuarios,
+    suscripciones e infraestructura de producción.
+  </div>
+
+  <section class="section">
+    <div class="section-head"><span class="number">1</span><h2>Consolidación del sistema de rachas</h2></div>
+    <div class="indent">
+      <p>La aplicación ya cuenta con una implementación inicial. Se requiere revisar, depurar y consolidar su funcionamiento para garantizar cálculos, sincronización y presentación consistentes.</p>
+    </div>
+    <h3>Alcance</h3>
+    <ul class="indent">
+      <li>Auditar la lógica actual de cálculo y eliminar inconsistencias o implementaciones duplicadas.</li>
+      <li>Verificar cambios de día, zonas horarias, periodos sin conexión, reinstalaciones, actualizaciones y uso en distintos dispositivos.</li>
+      <li>Revisar la sincronización entre estado local y servidor, evitando pérdidas o regresiones de información.</li>
+      <li>Depurar las celebraciones existentes e implementar los estados visuales de avance diario, nueva racha, hitos especiales e interrupción.</li>
+      <li>Integrar las animaciones en las pantallas correspondientes sin bloquear la navegación ni afectar el rendimiento.</li>
+      <li>Realizar pruebas funcionales y visuales en dispositivos reales.</li>
+    </ul>
+    <div class="result"><b>Resultado esperado</b>Sistema de rachas estable, consistente y sincronizado, con mensajes y animaciones de celebración correctamente integrados.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><span class="number">2</span><h2>Estandarización visual con Liquid Glass</h2></div>
+    <div class="indent">
+      <p>Actualizar componentes seleccionados mediante una familia visual inspirada en Liquid Glass o Liquid Glassmorphism, manteniendo la identidad gráfica de RESONANCIA.</p>
+    </div>
+    <h3>Componentes considerados</h3>
+    <ul class="indent">
+      <li>Barra de navegación inferior.</li>
+      <li>Botones y accesos de búsqueda.</li>
+      <li>Fondos de íconos y botones flotantes.</li>
+      <li>Botones de reproducción y pausa.</li>
+      <li>Controles de reproductores y otros elementos equivalentes acordados durante el diseño.</li>
+    </ul>
+    <h3>Alcance</h3>
+    <ul class="indent">
+      <li>Definir transparencia, desenfoque, reflejos, bordes, profundidad, sombras y estados activos.</li>
+      <li>Crear variantes reutilizables según tamaño, jerarquía y contexto.</li>
+      <li>Garantizar legibilidad, contraste y accesibilidad.</li>
+      <li>Optimizar los efectos para evitar problemas de rendimiento, especialmente en Android de gama media.</li>
+      <li>Aplicar progresivamente el sistema a los componentes seleccionados.</li>
+    </ul>
+    <div class="result"><b>Resultado esperado</b>Familia coherente de componentes Liquid Glass, reutilizable en toda la aplicación y alineada con la identidad de RESONANCIA.</div>
+  </section>
+
+  <section class="section page-break">
+    <div class="section-head"><span class="number">3</span><h2>Rediseño y optimización del slider principal de Inicio</h2></div>
+    <div class="indent">
+      <p>Refinar el slider de Inicio e implementar una transición con profundidad y parallax, asegurando una experiencia fluida en iOS y Android.</p>
+    </div>
+    <h3>Comportamiento visual esperado</h3>
+    <ul class="indent">
+      <li>Al avanzar, el slide actual permanece temporalmente en segundo plano.</li>
+      <li>La imagen o fondo siguiente se desplaza por encima de la anterior.</li>
+      <li>Las capas se mueven a velocidades ligeramente diferentes para generar profundidad.</li>
+      <li>La transición puede combinar desplazamiento, escala y opacidad de forma sutil.</li>
+      <li>Los textos y botones acompañan el movimiento sin competir con la animación principal.</li>
+      <li>El cambio debe funcionar tanto de forma automática como mediante gesto manual.</li>
+    </ul>
+    <h3>Optimización técnica</h3>
+    <ul class="indent">
+      <li>Revisar la implementación anterior, que presentaba pérdida de fluidez.</li>
+      <li>Mantener montadas las capas necesarias durante el cambio y evitar reconstruir imágenes en cada transición.</li>
+      <li>Precargar imágenes próximas y utilizar caché persistente.</li>
+      <li>Ejecutar las animaciones principales en el hilo de interfaz y evitar actualizaciones de React en cada cuadro.</li>
+      <li>Limitar capas, sombras y desenfoques activos simultáneamente.</li>
+      <li>Detener animaciones cuando Inicio pierda el foco o la app pase a segundo plano.</li>
+      <li>Ofrecer una transición simplificada en dispositivos con rendimiento limitado y respetar la reducción de movimiento.</li>
+    </ul>
+    <h3>Criterios de aceptación</h3>
+    <table class="criteria">
+      <tr><td>✓</td><td>La capa anterior queda visualmente detrás y la nueva pasa por encima.</td></tr>
+      <tr><td>✓</td><td>El parallax es perceptible, elegante y no distractor.</td></tr>
+      <tr><td>✓</td><td>No aparecen cuadros negros, imágenes vacías, parpadeos ni remontajes innecesarios.</td></tr>
+      <tr><td>✓</td><td>El gesto responde inmediatamente y el slider se detiene al abandonar la pantalla.</td></tr>
+      <tr><td>✓</td><td>La experiencia se mantiene fluida en los dispositivos definidos como objetivo.</td></tr>
+    </table>
+    <div class="result"><b>Resultado esperado</b>Slider distintivo, fluido y alineado con la identidad de RESONANCIA, con profundidad visual y parallax sin afectar el rendimiento general.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><span class="number">4</span><h2>Experiencia inicial para nuevos usuarios</h2></div>
+    <div class="indent">
+      <p>Diseñar e implementar el recorrido que verá una persona al instalar y abrir la aplicación por primera vez, combinando presentación, personalización y bienvenida.</p>
+    </div>
+    <h3>Alcance</h3>
+    <ul class="indent">
+      <li>Definir la estructura, cantidad de pantallas, narrativa y orden de contenidos.</li>
+      <li>Crear pantallas de presentación con textos, imágenes, videos o animaciones.</li>
+      <li>Diseñar un cuestionario inicial sobre necesidades, intereses u objetivos.</li>
+      <li>Guardar las respuestas para personalizar la experiencia posterior.</li>
+      <li>Permitir avanzar, retroceder u omitir etapas cuando corresponda.</li>
+      <li>Registrar la finalización para evitar que el flujo vuelva a aparecer indebidamente.</li>
+      <li>Diseñar la bienvenida final y la transición hacia la aplicación.</li>
+      <li>Definir el momento adecuado para permisos, creación de cuenta y presentación de Premium.</li>
+    </ul>
+    <h3>Definiciones pendientes</h3>
+    <ul class="indent">
+      <li>Número definitivo de pantallas y complejidad de las animaciones.</li>
+      <li>Contenido, redacción, preguntas y medios audiovisuales.</li>
+      <li>Grado de personalización derivado de las respuestas.</li>
+      <li>Ubicación del registro y de la oferta de suscripción.</li>
+    </ul>
+    <div class="result"><b>Resultado esperado</b>Flujo de bienvenida atractivo, claro y medible, que comunique el valor de RESONANCIA y personalice la experiencia inicial.</div>
+  </section>
+
+  <section class="section page-break">
+    <div class="section-head"><span class="number">5</span><h2>Implementación del sistema de suscripciones</h2></div>
+    <div class="indent">
+      <p>Completar y dejar operativo el sistema de suscripciones antes de la publicación de la aplicación.</p>
+    </div>
+    <h3>Alcance</h3>
+    <ul class="indent">
+      <li>Definir planes, precios, periodos de prueba y beneficios asociados.</li>
+      <li>Configurar los productos de suscripción para iOS y Android.</li>
+      <li>Integrar las compras dentro de la aplicación y diseñar el paywall.</li>
+      <li>Gestionar usuarios gratuitos, Premium, periodos de prueba, vencimientos, pagos pendientes y cancelaciones.</li>
+      <li>Implementar restauración de compras.</li>
+      <li>Sincronizar el estado entre las tiendas, el servidor y la aplicación.</li>
+      <li>Proteger el contenido Premium desde el servidor, evitando depender únicamente de la interfaz.</li>
+      <li>Incorporar términos, privacidad y acceso a la administración de la suscripción.</li>
+      <li>Probar compras, renovaciones, cancelaciones y restauraciones en los entornos de Apple y Google.</li>
+    </ul>
+    <div class="result"><b>Resultado esperado</b>Sistema de suscripciones funcional y seguro, validado mediante compras de prueba en ambas plataformas y preparado para la revisión de las tiendas.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><span class="number">6</span><h2>Preparación para publicación y despliegue</h2></div>
+    <div class="indent">
+      <p>Definir y configurar la infraestructura de producción y completar la preparación técnica para App Store y Google Play. Ya existe una cuenta de desarrollador y trabajo adelantado de compilación; primero se auditará lo realizado.</p>
+    </div>
+    <h3>Alcance</h3>
+    <ul class="indent">
+      <li>Revisar la configuración actual de compilación y completar únicamente lo pendiente.</li>
+      <li>Definir la ubicación de API, base de datos, archivos, audios, autenticación, monitoreo y registros.</li>
+      <li>Evaluar la continuidad de la infraestructura actual o la migración de servicios específicos.</li>
+      <li>Separar y configurar correctamente desarrollo, pruebas y producción.</li>
+      <li>Revisar variables de entorno, credenciales, permisos y políticas de acceso.</li>
+      <li>Configurar identificadores, certificados y perfiles requeridos por Apple y Google.</li>
+      <li>Generar compilaciones internas para iOS y Android.</li>
+      <li>Distribuir versiones mediante TestFlight y los canales de prueba de Google Play.</li>
+      <li>Resolver incidencias y preparar los elementos técnicos para la revisión de las tiendas.</li>
+    </ul>
+    <div class="result"><b>Resultado esperado</b>Infraestructura de producción definida y documentada, con versiones estables listas para pruebas internas y posterior publicación.</div>
+  </section>
+
+  <header class="page-break">
+    <div class="eyebrow">Plan de ejecución</div>
+    <h1>Etapas recomendadas</h1>
+  </header>
+  <div class="phase">
+    <h3>Etapa 1 · Definición y auditoría</h3>
+    <ul>
+      <li>Auditoría del sistema de rachas y sus celebraciones.</li>
+      <li>Revisión técnica del slider y pruebas de rendimiento.</li>
+      <li>Auditoría del sistema de suscripciones, compilaciones e infraestructura.</li>
+      <li>Definición del sistema visual Liquid Glass.</li>
+      <li>Diseño del flujo inicial, contenidos y cuestionario.</li>
+      <li>Elaboración del alcance definitivo, cronograma y presupuesto.</li>
+    </ul>
+  </div>
+  <div class="phase">
+    <h3>Etapa 2 · Implementación y validación</h3>
+    <ul>
+      <li>Desarrollo y depuración de las funcionalidades aprobadas.</li>
+      <li>Integración visual y optimización de animaciones.</li>
+      <li>Configuración y validación de suscripciones.</li>
+      <li>Preparación de infraestructura y ambientes.</li>
+      <li>Pruebas en dispositivos reales y compilaciones internas.</li>
+      <li>Correcciones finales y entrega para publicación.</li>
+    </ul>
+  </div>
+  <div class="intro" style="margin-top:16px">
+    Este enfoque permite separar claramente lo que ya está implementado de aquello que
+    necesita diseño, estabilización o desarrollo adicional, reduciendo incertidumbre antes
+    de definir costos y fechas definitivas.
+  </div>
+  <footer>RESONANCIA · Documento de requerimientos de consolidación y prelanzamiento</footer>
+</body>
+</html>

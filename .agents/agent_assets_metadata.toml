@@ -2839,3 +2839,17 @@ mtime_ms = 1788806277495
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/defe9ed3-9132-4e93-84b9-f7233edcec69/52323923-70fa-4658-a6f1-29a2d68a1227"
 storage_version_token = "1788806282067141"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "7yvaj1l95-aXW9932axmO"
+uri = "file://deliverables/requerimientos-prelanzamiento-resonancia.pdf"
+type = "pdf"
+title = "Requerimientos de consolidación y prelanzamiento — RESONANCIA"
+description = "Documento profesional con las seis áreas de trabajo: rachas, Liquid Glass, slider de Inicio con parallax, onboarding, suscripciones y despliegue."
+logical_id = "5be2131a-a1bd-4fb7-b69c-fe1eab76bc93"
+content_hash = "sha256:9850b88e900aeea2c4cd505d715d8beb28c65d13f06565b981391639e29bf874"
+size = 164716
+mtime_ms = 1788809474768
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/5be2131a-a1bd-4fb7-b69c-fe1eab76bc93/d20952f3-f7ca-409d-a34d-47bf48610ab8"
+storage_version_token = "1788809479407255"
+content_type = "application/pdf"
