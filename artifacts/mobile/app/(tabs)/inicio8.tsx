@@ -55,7 +55,10 @@ import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
-import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
+import {
+  SessionCategoryPill,
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+} from "@/components/SessionCardMetadataOverlay";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
@@ -174,9 +177,10 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 const INICIO2_SESSION_CARD_W = Math.max(
   getTwoCardCarouselCardWidth(width, GRID_PAD),
 );
-// Una card completa y aproximadamente 85% de la siguiente.
-const INICIO2_RECENT_CARD_W = Math.round(
-  (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.85,
+// Misma medida exacta usada por los carruseles de Dormir.
+const INICIO2_SLEEP_CARD_W = (width - 20 * 2 - 12) / 2;
+const INICIO2_SLEEP_CARD_H = Math.round(
+  (INICIO2_SLEEP_CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
 );
 const INICIO2_SCROLL_START_THRESHOLD = 8;
 
@@ -2510,17 +2514,13 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            titleOffset={10}
-            cardWidth={INICIO2_RECENT_CARD_W}
-            allowOversizedCardWidth
+            presentation="sleep-category"
+            cardWidth={INICIO2_SLEEP_CARD_W}
+            fixedCardHeight={INICIO2_SLEEP_CARD_H}
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
-            squareCards
-            showAuthor={false}
-            showDurationBadge={false}
-            hideAmbientalTitleInSquareRecent
             eagerRender
           />
         )}
@@ -2598,17 +2598,13 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            titleOffset={10}
-            cardWidth={INICIO2_RECENT_CARD_W}
-            allowOversizedCardWidth
+            presentation="sleep-category"
+            cardWidth={INICIO2_SLEEP_CARD_W}
+            fixedCardHeight={INICIO2_SLEEP_CARD_H}
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
-            squareCards
-            showAuthor={false}
-            showCollectionBelow
-            durationInsideWithMeta
           />
         )}
         {isInicio2 && videos.length > 0 && (
