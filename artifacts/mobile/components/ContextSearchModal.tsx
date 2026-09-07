@@ -292,17 +292,16 @@ export function ContextSearchModal({
             <View style={styles.menuSection}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Búsquedas populares</Text>
               <View style={styles.popularList}>
-                {displayedPopularTerms.map((term, index) => (
+                {displayedPopularTerms.map((term) => (
                   <Pressable
                     key={term}
                     onPress={() => setQuery(term)}
-                    style={({ pressed }) => [styles.popularRow, { opacity: pressed ? 0.65 : 1 }]}
+                    style={({ pressed }) => [styles.durationRow, { opacity: pressed ? 0.6 : 1 }]}
                     accessibilityRole="button"
                     accessibilityLabel={`Buscar ${term}`}
                   >
-                    <Text style={[styles.popularRank, { color: colors.mutedForeground }]}>{index + 1}</Text>
-                    <Text style={[styles.popularTerm, { color: colors.foreground }]}>{term}</Text>
-                    <Feather name="arrow-up-right" size={18} color={colors.mutedForeground} />
+                    <Text style={[styles.durationText, { color: colors.foreground }]}>{term}</Text>
+                    <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
                   </Pressable>
                 ))}
               </View>
@@ -484,7 +483,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 22,
     fontWeight: "700",
   },
   clearLabel: {
@@ -508,29 +507,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
   },
   popularList: {
-    borderRadius: 18,
-    paddingHorizontal: 15,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  popularRow: {
-    minHeight: 51,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 13,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.13)",
-  },
-  popularRank: {
-    width: 18,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  popularTerm: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
+    width: "100%",
   },
   durationList: {
     width: "100%",
