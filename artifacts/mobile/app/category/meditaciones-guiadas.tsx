@@ -467,7 +467,7 @@ export default function MeditacionesGuiadasScreen() {
       >
 
         {/* ── Header ── */}
-        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+        <View style={[styles.header, { paddingTop: topPad + 9 }]}>
           <Pressable
             onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
@@ -596,7 +596,7 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  header: { paddingHorizontal: H_PAD, paddingBottom: 12, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
+  header: { paddingHorizontal: H_PAD, paddingBottom: 10, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
 
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: 6, paddingHorizontal: H_PAD },
+  chipsArea: { paddingTop: 0, paddingBottom: 15, overflow: "visible", marginTop: 9, paddingHorizontal: H_PAD },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRowWrapper: { position: "relative", marginHorizontal: -H_PAD },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
