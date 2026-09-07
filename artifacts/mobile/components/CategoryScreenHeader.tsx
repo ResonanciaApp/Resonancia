@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: 24,
+    lineHeight: 30,
     fontWeight: "800",
     color: "#FBFBFB",
     letterSpacing: 0.3,
