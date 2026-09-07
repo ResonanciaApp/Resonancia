@@ -2825,3 +2825,17 @@ mtime_ms = 1788378091226
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/0860c547-aac0-469e-b99b-d47195d94a06/eacaaf6c-1020-41fb-b80a-b3b3141503d7"
 storage_version_token = "1788378102385863"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "wvp3fyPPLAnWZj_yzPOrc"
+uri = "file://deliverables/evaluacion-informe-tecnico-resonancia.pdf"
+type = "pdf"
+title = "Evaluación del informe técnico — RESONANCIA"
+description = "PDF profesional con la evaluación de los seis puntos: seguridad, carga de contenido, audio, motor de reproducción, suscripción y plataforma."
+logical_id = "defe9ed3-9132-4e93-84b9-f7233edcec69"
+content_hash = "sha256:cddec8479b3483342c35b3e4b0efcfac48d8bbdf1220664b350521b00fde028c"
+size = 84215
+mtime_ms = 1788806277495
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/defe9ed3-9132-4e93-84b9-f7233edcec69/52323923-70fa-4658-a6f1-29a2d68a1227"
+storage_version_token = "1788806282067141"
+content_type = "application/pdf"
