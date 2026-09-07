@@ -424,11 +424,22 @@ export function ProfileScreenBase({
   const HEADER_BORDER_THRESHOLD_PX = 8;
   const headerBorderActiveRef = useRef(false);
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
+  const profileStickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const [profileStickyHeaderActive, setProfileStickyHeaderActive] = useState(false);
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
     const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
+      if (dedicated) {
+        setProfileStickyHeaderActive(shouldShowBorder);
+        profileStickyHeaderOpacity.stopAnimation();
+        Animated.timing(profileStickyHeaderOpacity, {
+          toValue: shouldShowBorder ? 1 : 0,
+          duration: 220,
+          useNativeDriver: true,
+        }).start();
+      }
       Animated.timing(headerBorderAnim, {
         toValue: shouldShowBorder ? 1 : 0,
         duration: 300,
@@ -1031,11 +1042,56 @@ export function ProfileScreenBase({
       <SacredBackground
         variant="gradient"
         noImage
-        ambientGlowMode={dedicated ? "top" : "none"}
+        ambientGlowMode="none"
       />
       <GeometrixOverlay active={profileGeoActive} />
 
       <View style={styles.contentShift}>
+      {dedicated && (
+        <Animated.View
+          pointerEvents={profileStickyHeaderActive ? "auto" : "none"}
+          style={[
+            styles.profileStickyHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: activeTheme.gradient[0] as string,
+              opacity: profileStickyHeaderOpacity,
+            },
+          ]}
+        >
+          <View style={styles.profileStickyHeaderRow}>
+            <Animated.Text
+              style={[
+                styles.profileStickyHeaderTitle,
+                {
+                  color: colors.foreground,
+                  transform: [{
+                    translateY: profileStickyHeaderOpacity.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [20, 0],
+                    }),
+                  }],
+                },
+              ]}
+            >
+              Perfil
+            </Animated.Text>
+            <Pressable
+              hitSlop={10}
+              onPress={() => router.push("/configuraciones")}
+              style={[
+                styles.dedicatedSettingsButton,
+                styles.profileStickySettingsButton,
+                { backgroundColor: resourceBlockBackground },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir configuraciones"
+            >
+              <Feather name="settings" size={23} color={colors.foreground} />
+            </Pressable>
+          </View>
+        </Animated.View>
+      )}
       {!dedicated && (
         <View
           style={[styles.stickyHeader, { paddingTop: asTab ? topPad + 8 : topPad + 2 }]}
@@ -1770,6 +1826,34 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
+  },
+  profileStickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+  },
+  profileStickyHeaderRow: {
+    position: "relative",
+    minHeight: 54,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingTop: 7,
+    paddingBottom: 10,
+  },
+  profileStickyHeaderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+    textAlign: "center",
+  },
+  profileStickySettingsButton: {
+    position: "absolute",
+    right: 16,
+    top: 7,
   },
   stickyHeaderBorder: {
     position: "absolute",
