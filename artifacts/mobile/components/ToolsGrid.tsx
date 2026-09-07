@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import {
   Alert,
   Animated,
@@ -13,12 +13,10 @@ import {
 } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
-import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 const PILLS_PAD = 19;
 const PILLS_GAP = 8;
@@ -50,10 +48,8 @@ function ToolCard({
   onPress: (id: ToolId) => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
-  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
-    setIsPressed(true);
     scale.stopAnimation();
     Animated.timing(scale, {
       toValue: 0.97,
@@ -63,7 +59,6 @@ function ToolCard({
   };
 
   const handlePressOut = () => {
-    setIsPressed(false);
     scale.stopAnimation();
     Animated.spring(scale, {
       toValue: 1,
@@ -90,7 +85,7 @@ function ToolCard({
           tool.id === "mood-register" && styles.firstCard,
           tool.id === "mood-history" && styles.lastCard,
           {
-            backgroundColor: isPressed ? WIDGET_GREEN_SOLID : pillBackground,
+            backgroundColor: pillBackground,
             transform: [{ scale }],
           },
         ]}
@@ -99,11 +94,11 @@ function ToolCard({
           <MaterialCommunityIcons
             name={tool.icon}
             size={22}
-            color={isPressed ? "#0E0E17" : "#FFFFFF"}
+            color="#FFFFFF"
           />
         </Animated.View>
         <Text
-          style={[styles.label, { color: isPressed ? "#0E0E17" : foregroundColor }]}
+          style={[styles.label, { color: foregroundColor }]}
           numberOfLines={1}
         >
           {tool.label}
@@ -123,7 +118,6 @@ export function ToolsGrid({
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
   const { openOverlay } = useDrawer();
-  const { openCategory } = useCategoryOverlay();
   const { openMixer } = useMixerPanel();
 
   const pillBackground = activeSceneId === "tibet"
@@ -154,16 +148,16 @@ export function ToolsGrid({
         openOverlay("/diario");
         break;
       case "breathing":
-        openCategory("/respiracion");
+        router.push("/respiracion" as never);
         break;
       case "downloads":
         Alert.alert("Descargas", "La descarga estará disponible próximamente.");
         break;
       case "mood-history":
-        openOverlay("/historial-emociones");
+        router.push("/historial-emociones" as never);
         break;
     }
-  }, [onOpenMoodPicker, openCategory, openMixer, openOverlay]);
+  }, [onOpenMoodPicker, openMixer, openOverlay]);
 
   return (
     <ScrollView
