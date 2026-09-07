@@ -2650,7 +2650,7 @@ export default function HomeScreen2({
             marginBottom={INICIO2_SECTION_GAP}
           />
         )}
-        {isInicio2 && <DailyWisdomCard backgroundColor="#226668" />}
+        {isInicio2 && <DailyWisdomCard backgroundColor="rgba(34,102,104,0.9)" />}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
