@@ -1,4 +1,3 @@
-import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -18,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ND = Platform.OS !== "web";
 const CIRCLE_SIZE = 210;
@@ -81,6 +81,7 @@ function getPhaseStartScale(pattern: PatternConfig, idx: number): number {
 
 export default function RespiracionScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { pattern } = useLocalSearchParams<{ pattern?: string }>();
 
@@ -181,10 +182,10 @@ export default function RespiracionScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
-      <SacredBackground />
+      <SacredBackground variant="gradient" />
 
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(190,150,80,0.16)" iconOffsetX={-1} />
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Respiración</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -209,12 +210,12 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#F9F9F9" : "rgba(61,14,22,0.40)",
-                      backgroundColor: active ? "rgba(212,175,55,0.18)" : "rgba(74,12,12,0.08)",
+                      borderColor: active ? "#BE9650" : "rgba(190,150,80,0.24)",
+                      backgroundColor: active ? "rgba(190,150,80,0.18)" : "rgba(190,150,80,0.05)",
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: active ? "#F9F9F9" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: active ? "#E8C986" : colors.mutedForeground }]}>
                     {p.name}
                   </Text>
                 </Pressable>
@@ -230,15 +231,18 @@ export default function RespiracionScreen() {
 
         {/* Circle area */}
         <View style={styles.circleContainer}>
-          <View style={[styles.ghostRing, { borderColor: "rgba(212,175,55,0.12)" }]} />
+          <View style={[styles.ghostRing, { borderColor: "rgba(190,150,80,0.20)" }]} />
           <Animated.View
             style={[
               styles.circle,
-              { borderColor: "rgba(212,175,55,0.6)", transform: [{ scale }] },
+              { borderColor: "rgba(190,150,80,0.72)", transform: [{ scale }] },
             ]}
           >
             <LinearGradient
-              colors={["#4A0C0C", "#27070E", "#1B060F"]}
+              colors={[
+                theme.gradient[0],
+                theme.gradient[theme.gradient.length - 1],
+              ] as [string, string]}
               style={StyleSheet.absoluteFill}
             />
 
@@ -249,7 +253,7 @@ export default function RespiracionScreen() {
               </View>
             )}
             {!running && !completed && (
-              <Feather name="wind" size={34} color="rgba(212,175,55,0.65)" />
+              <Feather name="wind" size={34} color="#BE9650" />
             )}
             {completed && (
               <Text style={styles.completedIcon}>✓</Text>
@@ -267,10 +271,10 @@ export default function RespiracionScreen() {
                 {
                   backgroundColor:
                     i < cycles
-                      ? "#F9F9F9"
+                      ? "#BE9650"
                       : i === cycles && running
-                        ? "rgba(212,175,55,0.45)"
-                        : "rgba(61,14,22,0.40)",
+                        ? "rgba(190,150,80,0.50)"
+                        : "rgba(190,150,80,0.18)",
                 },
               ]}
             />
@@ -294,10 +298,10 @@ export default function RespiracionScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: active ? undefined : "rgba(74,12,12,0.35)", overflow: "hidden" },
+                    { backgroundColor: active ? undefined : "rgba(190,150,80,0.20)", overflow: "hidden" },
                   ]}
                 >
-                  {active && <GoldGradientFill />}
+                  {active && <View style={[StyleSheet.absoluteFill, styles.activeLegendDot]} />}
                 </View>
                 <Text style={[styles.legendText, { color: active ? colors.foreground : colors.mutedForeground }]}>
                   {p.label} {p.duration}s
@@ -313,7 +317,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#4A0C0C", "#27070E", "#1B060F"]}
+            colors={["#D2AD67", "#BE9650"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}
@@ -321,7 +325,7 @@ export default function RespiracionScreen() {
           <Feather
             name={btnIcon}
             size={22}
-            color="#1B060F"
+            color="#060A0F"
             style={!running && !completed ? { marginLeft: 3 } : undefined}
           />
           <Text style={styles.mainBtnText}>{btnLabel}</Text>
@@ -403,7 +407,7 @@ const styles = StyleSheet.create({
   completedIcon: {
     fontFamily: "Manrope",
     fontSize: 44,
-    color: "#F9F9F9",
+    color: "#BE9650",
   },
 
   cycleRow: {
@@ -425,6 +429,7 @@ const styles = StyleSheet.create({
   },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 7 },
   legendDot: { width: 6, height: 6, borderRadius: 3 },
+  activeLegendDot: { backgroundColor: "#BE9650" },
   legendText: { fontFamily: "Manrope", fontSize: 12.5 },
 
   mainBtn: {
@@ -442,7 +447,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
-    color: "#1B060F",
+    color: "#060A0F",
     letterSpacing: 0.3,
   },
 });
