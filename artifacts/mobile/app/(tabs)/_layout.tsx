@@ -42,8 +42,8 @@ import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryO
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
-const ACTIVE_COLOR   = "#F9F9F9";
-const INACTIVE_COLOR = "#CFCFCF";
+const ACTIVE_COLOR   = "#FFFFFF";
+const INACTIVE_COLOR = "#BAB1E1";
 const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
