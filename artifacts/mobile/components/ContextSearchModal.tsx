@@ -78,7 +78,6 @@ export function ContextSearchModal({
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const inputRef = useRef<TextInput>(null);
-  const focusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [query, setQuery] = useState("");
   const [durationRangeId, setDurationRangeId] = useState<SearchDurationRangeId | null>(null);
   const [recentId, setRecentId] = useState<string | null>(null);
@@ -112,29 +111,15 @@ export function ContextSearchModal({
 
   useEffect(() => {
     if (!visible) {
-      if (focusTimerRef.current) {
-        clearTimeout(focusTimerRef.current);
-        focusTimerRef.current = null;
-      }
       setQuery("");
       setDurationRangeId(null);
       Keyboard.dismiss();
       return;
     }
-    focusTimerRef.current = setTimeout(() => {
-      inputRef.current?.focus();
-      focusTimerRef.current = null;
-    }, 120);
     if (!recentStorageKey) return;
     AsyncStorage.getItem(recentStorageKey)
       .then((value) => setRecentId(value))
       .catch(() => setRecentId(null));
-    return () => {
-      if (focusTimerRef.current) {
-        clearTimeout(focusTimerRef.current);
-        focusTimerRef.current = null;
-      }
-    };
   }, [recentStorageKey, visible]);
 
   const results = useMemo(() => {
@@ -206,13 +191,6 @@ export function ContextSearchModal({
       transparent
       statusBarTranslucent
       onRequestClose={close}
-      onShow={() => {
-        if (focusTimerRef.current) clearTimeout(focusTimerRef.current);
-        focusTimerRef.current = setTimeout(() => {
-          inputRef.current?.focus();
-          focusTimerRef.current = null;
-        }, 120);
-      }}
     >
       <KeyboardAvoidingView style={styles.root} behavior="padding" keyboardVerticalOffset={0}>
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor }]}>
@@ -234,7 +212,11 @@ export function ContextSearchModal({
             },
           ]}
         >
-          <View style={styles.searchBar}>
+          <Pressable
+            style={styles.searchBar}
+            onPress={() => inputRef.current?.focus()}
+            accessibilityRole="search"
+          >
             <Feather name="search" size={17} color={colors.foreground} />
             <TextInput
               ref={inputRef}
@@ -244,7 +226,6 @@ export function ContextSearchModal({
               value={query}
               onChangeText={setQuery}
               returnKeyType="search"
-              autoFocus
               autoCorrect={false}
               autoCapitalize="none"
               accessibilityLabel={placeholder}
@@ -254,7 +235,7 @@ export function ContextSearchModal({
                 <Feather name="x" size={17} color={colors.mutedForeground} />
               </Pressable>
             )}
-          </View>
+          </Pressable>
           <Pressable onPress={close} hitSlop={10} style={styles.closeButton} accessibilityLabel="Cerrar búsqueda">
             <Feather name="x" size={19} color={colors.foreground} />
           </Pressable>
