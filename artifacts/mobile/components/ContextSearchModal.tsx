@@ -75,7 +75,7 @@ export function ContextSearchModal({
   onSearchSelection,
 }: ContextSearchModalProps) {
   const colors = useColors();
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const inputRef = useRef<TextInput>(null);
   const [query, setQuery] = useState("");
@@ -183,6 +183,12 @@ export function ContextSearchModal({
   };
 
   const backgroundColor = theme.gradient[0] as string;
+  const searchBarSurface =
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
 
   return (
     <Modal
@@ -212,8 +218,17 @@ export function ContextSearchModal({
             },
           ]}
         >
+          <View style={styles.headerTitleRow}>
+            <Text style={[styles.headerTitle, { color: colors.foreground }]}>Buscar</Text>
+            <Pressable onPress={close} hitSlop={10} style={styles.closeButton} accessibilityLabel="Cerrar búsqueda">
+              <Feather name="x" size={22} color={colors.foreground} />
+            </Pressable>
+          </View>
           <Pressable
-            style={styles.searchBar}
+            style={[
+              styles.searchBar,
+              { backgroundColor: searchBarSurface },
+            ]}
             onPress={() => inputRef.current?.focus()}
             accessibilityRole="search"
           >
@@ -235,9 +250,6 @@ export function ContextSearchModal({
                 <Feather name="x" size={17} color={colors.mutedForeground} />
               </Pressable>
             )}
-          </Pressable>
-          <Pressable onPress={close} hitSlop={10} style={styles.closeButton} accessibilityLabel="Cerrar búsqueda">
-            <Feather name="x" size={19} color={colors.foreground} />
           </Pressable>
         </View>
 
@@ -298,23 +310,17 @@ export function ContextSearchModal({
 
             <View style={styles.menuSection}>
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Según la duración</Text>
-              <View style={styles.durationGrid}>
+              <View style={styles.durationList}>
                 {SEARCH_DURATION_RANGES.map((range) => (
                   <Pressable
                     key={range.id}
                     onPress={() => setDurationRangeId(range.id)}
-                    style={({ pressed }) => [
-                      styles.durationPill,
-                      {
-                        borderColor: "rgba(255,255,255,0.3)",
-                        backgroundColor: "rgba(255,255,255,0.07)",
-                        opacity: pressed ? 0.65 : 1,
-                      },
-                    ]}
+                    style={({ pressed }) => [styles.durationRow, { opacity: pressed ? 0.6 : 1 }]}
                     accessibilityRole="button"
                     accessibilityLabel={`Filtrar por ${range.label}`}
                   >
                     <Text style={[styles.durationText, { color: colors.foreground }]}>{range.label}</Text>
+                    <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
                   </Pressable>
                 ))}
               </View>
@@ -397,23 +403,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
     paddingHorizontal: 16,
     paddingBottom: 14,
   },
-  searchBar: {
-    flex: 1,
+  headerTitleRow: {
+    minHeight: 42,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    minHeight: 45,
-    borderRadius: 12,
-    paddingHorizontal: 12,
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  headerTitle: {
+    fontFamily: "Manrope",
+    fontSize: 28,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+  },
+  searchBar: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    height: 55,
+    borderRadius: 999,
+    paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.8)",
-    backgroundColor: "rgba(255,255,255,0.09)",
+    borderColor: "rgba(255,255,255,0.7)",
   },
   input: {
     flex: 1,
@@ -517,21 +532,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
   },
-  durationGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 9,
+  durationList: {
+    width: "100%",
   },
-  durationPill: {
-    minHeight: 42,
-    justifyContent: "center",
-    paddingHorizontal: 15,
-    borderRadius: 21,
-    borderWidth: 1,
+  durationRow: {
+    minHeight: 48,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
   },
   durationText: {
+    flex: 1,
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
   },
   filterHeader: {
