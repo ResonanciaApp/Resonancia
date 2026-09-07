@@ -55,4 +55,5 @@ export * from "./user-milestones";
 export * from "./user-library";
 export * from "./resonadores";
 export * from "./account-deletions";
+export * from "./search-trend-buckets";
 

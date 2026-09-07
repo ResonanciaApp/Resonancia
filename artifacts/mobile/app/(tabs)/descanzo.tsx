@@ -169,12 +169,12 @@ export default function DescansoScreen() {
     (s: Parameters<typeof playSession>[0]) => {
       if (s.isPremium && !isPremium) {
         router.push("/membresia" as never);
-        return;
+        return false;
       }
-      if (openForSession(s)) return;
+      if (openForSession(s)) return false;
       if (s.skipMiniPlayer) {
         if (currentSession?.id !== s.id) playSession(s);
-        return;
+        return true;
       }
       const goToPlayer =
         s.skipDetail !== false &&
@@ -182,9 +182,10 @@ export default function DescansoScreen() {
       if (goToPlayer) {
         if (currentSession?.id !== s.id) playSession(s);
         router.push("/player" as never);
-        return;
+        return true;
       }
       openCategory(`/session/${s.id}`);
+      return true;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentSession, isPremium, openCategory, openForSession, playSession],
@@ -275,6 +276,7 @@ export default function DescansoScreen() {
         subtitle: session.subtitle ?? undefined,
         searchText: [session.title, session.categoryLabel, session.subtitle ?? ""].join(" "),
         image: session.image as number,
+        duration: session.duration,
       })),
     [allDormiSessions],
   );
@@ -398,8 +400,9 @@ export default function DescansoScreen() {
         emptySubtitle="Busca historias, ASMR y sonidos para dormir"
         onSelect={(item) => {
           const session = allDormiSessions.find((candidate) => candidate.id === item.id);
-          if (session) handleSessionTap(session);
+          return session ? handleSessionTap(session) : false;
         }}
+        scope="sleep"
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}

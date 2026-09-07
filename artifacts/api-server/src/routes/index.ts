@@ -22,6 +22,7 @@ import descansoRouter from "./descanso";
 import calendarRouter from "./calendar";
 import communityRouter from "./community";
 import resonadoresRouter from "./resonadores";
+import searchTrendsRouter from "./search-trends";
 
 const router: IRouter = Router();
 
@@ -48,5 +49,6 @@ router.use(descansoRouter);
 router.use(calendarRouter);
 router.use(communityRouter);
 router.use(resonadoresRouter);
+router.use(searchTrendsRouter);
 
 export default router;

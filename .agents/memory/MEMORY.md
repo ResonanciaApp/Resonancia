@@ -129,3 +129,4 @@
 - [Sticky headers Índigo](indigo-sticky-headers.md) — navegación y Perfil comparten vidrio puro; tabs y barra inferior respetan las superficies de Índigo 2
 - [Animated drivers no se mezclan por View](animated-driver-view-mixing.md) — separar en capas los estilos JS (color) y native (transform), aunque usen Animated.Value distintos
 - [Carruseles anidados en Dormir](nested-carousel-clipping.md) — no usar clipping ni virtualización vertical; igualar Sonidos y evitar PanResponder/toggles de fondo durante scroll
+- [Drizzle y aritmética timestamptz](drizzle-timestamptz-arithmetic.md) — parámetros Date en SQL crudo pueden tiparse como interval; castear ISO explícitamente a timestamptz antes de restar intervalos

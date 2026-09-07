@@ -920,6 +920,40 @@ export interface CatalogResponse {
   playlists?: CatalogPlaylist[];
 }
 
+export type SearchTrendContext = typeof SearchTrendContext[keyof typeof SearchTrendContext];
+
+
+export const SearchTrendContext = {
+  discover: 'discover',
+  sleep: 'sleep',
+} as const;
+
+export interface SearchTrendOpenBody {
+  context: SearchTrendContext;
+  /**
+     * Término de búsqueda que produjo el resultado abierto.
+     * @minLength 1
+     * @maxLength 100
+     */
+  term: string;
+  /**
+     * @minLength 1
+     * @maxLength 128
+     */
+  sessionId: string;
+}
+
+export interface SearchTrend {
+  term: string;
+  /** @minimum 1 */
+  count: number;
+}
+
+export interface SearchTrendsResponse {
+  /** @maxItems 3 */
+  terms: SearchTrend[];
+}
+
 export interface PinnedFeaturedResponse {
   session: CatalogSession | null;
 }
@@ -2096,6 +2130,10 @@ export type GetPopularSessionsParams = {
  * @maximum 50
  */
 limit?: number;
+};
+
+export type GetSearchTrendsParams = {
+context: SearchTrendContext;
 };
 
 export type GetPendingSubmissionsParams = {

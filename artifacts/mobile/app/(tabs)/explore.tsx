@@ -410,6 +410,7 @@ export function ExploreScreen({
           getSessionAuthor(session),
         ].join(" "),
         image: session.image as number,
+        duration: session.duration,
       })),
     [catalogVersion],
   );
@@ -420,11 +421,12 @@ export function ExploreScreen({
 
   const handleSessionPress = React.useCallback((s: Session) => {
     const locked = s.isPremium && !isPremium;
-    if (locked) { router.push("/membresia" as never); return; }
-    if (openForSession(s)) return;
-    if (s.skipMiniPlayer) { playSession(s); return; }
-    if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+    if (locked) { router.push("/membresia" as never); return false; }
+    if (openForSession(s)) return false;
+    if (s.skipMiniPlayer) { playSession(s); return true; }
+    if (s.skipDetail) { playSession(s); router.push("/player" as never); return true; }
     openCategory(`/session/${s.id}`);
+    return true;
   }, [isPremium, openCategory, openForSession, playSession]);
 
   function renderCarousel(title: string, sessions: Session[], categoryRoute: string, contentPaddingTop = 0) {
@@ -804,8 +806,9 @@ export function ExploreScreen({
         emptySubtitle="Busca sesiones, voces guía, artistas o temas"
         onSelect={(item) => {
           const session = SESSIONS.find((candidate) => candidate.id === item.id);
-          if (session) handleSessionPress(session);
+          return session ? handleSessionPress(session) : false;
         }}
+        scope="discover"
       />
 
     </View>

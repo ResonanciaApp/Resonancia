@@ -1669,6 +1669,63 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PopularSessionsResponse"
+  /catalog/search-trends:
+    get:
+      operationId: getSearchTrends
+      tags: [catalog]
+      summary: Obtener hasta tres búsquedas populares anónimas de los últimos 30 días
+      parameters:
+        - name: context
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/SearchTrendContext"
+      responses:
+        "200":
+          description: Términos con volumen mínimo, ordenados por aperturas exitosas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchTrendsResponse"
+        "400":
+          description: Consulta inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/search-trends/open:
+    post:
+      operationId: recordSearchTrendOpen
+      tags: [catalog]
+      summary: Registrar anónimamente la apertura exitosa de un resultado de búsqueda
+      description: No persiste identidad, dirección IP ni el texto original; el término se normaliza y agrega por día.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchTrendOpenBody"
+      responses:
+        "204":
+          description: Apertura agregada
+        "400":
+          description: Datos inválidos o sesión no publicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sesión no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Límite de frecuencia excedido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /catalog/submissions:
     post:
       operationId: createSubmission
@@ -4927,6 +4984,43 @@ components:
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
       required: [categories, sessions]
+    SearchTrendContext:
+      type: string
+      enum: [discover, sleep]
+    SearchTrendOpenBody:
+      type: object
+      additionalProperties: false
+      properties:
+        context:
+          $ref: "#/components/schemas/SearchTrendContext"
+        term:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Término de búsqueda que produjo el resultado abierto.
+        sessionId:
+          type: string
+          minLength: 1
+          maxLength: 128
+      required: [context, term, sessionId]
+    SearchTrend:
+      type: object
+      properties:
+        term:
+          type: string
+        count:
+          type: integer
+          minimum: 1
+      required: [term, count]
+    SearchTrendsResponse:
+      type: object
+      properties:
+        terms:
+          type: array
+          maxItems: 3
+          items:
+            $ref: "#/components/schemas/SearchTrend"
+      required: [terms]
     PinnedFeaturedResponse:
       type: object
       properties:

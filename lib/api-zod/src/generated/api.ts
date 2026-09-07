@@ -1508,6 +1508,43 @@ export const GetPopularSessionsResponse = zod.object({
 
 
 /**
+ * @summary Obtener hasta tres búsquedas populares anónimas de los últimos 30 días
+ */
+export const GetSearchTrendsQueryParams = zod.object({
+  "context": zod.enum(['discover', 'sleep'])
+})
+
+
+export const getSearchTrendsResponseTermsMax = 3;
+
+
+
+export const GetSearchTrendsResponse = zod.object({
+  "terms": zod.array(zod.object({
+  "term": zod.string(),
+  "count": zod.number().min(1)
+})).max(getSearchTrendsResponseTermsMax)
+})
+
+
+/**
+ * No persiste identidad, dirección IP ni el texto original; el término se normaliza y agrega por día.
+ * @summary Registrar anónimamente la apertura exitosa de un resultado de búsqueda
+ */
+export const recordSearchTrendOpenBodyTermMax = 100;
+
+export const recordSearchTrendOpenBodySessionIdMax = 128;
+
+
+
+export const RecordSearchTrendOpenBody = zod.object({
+  "context": zod.enum(['discover', 'sleep']),
+  "term": zod.string().min(1).max(recordSearchTrendOpenBodyTermMax).describe('Término de búsqueda que produjo el resultado abierto.'),
+  "sessionId": zod.string().min(1).max(recordSearchTrendOpenBodySessionIdMax)
+})
+
+
+/**
  * @summary Crear una pieza de contenido (creador) — queda pendiente de revisión
  */
 export const createSubmissionBodyTitleMax = 120;

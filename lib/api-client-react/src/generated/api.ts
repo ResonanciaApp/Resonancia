@@ -87,6 +87,7 @@ import type {
   GetMyStreakParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
+  GetSearchTrendsParams,
   GetSessionPlayCount200,
   GetSharedGlyphsParams,
   GetSharedMixesParams,
@@ -118,6 +119,8 @@ import type {
   ReviewRejectBody,
   SceneAnimation,
   SceneAnimationsListResponse,
+  SearchTrendOpenBody,
+  SearchTrendsResponse,
   SearchUsersParams,
   SendDirectMessageBody,
   SetPinnedFeatured200,
@@ -5248,6 +5251,162 @@ export function useGetPopularSessions<TData = Awaited<ReturnType<typeof getPopul
 
 
 
+
+export const getGetSearchTrendsUrl = (params: GetSearchTrendsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/catalog/search-trends?${stringifiedParams}` : `/api/catalog/search-trends`
+}
+
+/**
+ * @summary Obtener hasta tres búsquedas populares anónimas de los últimos 30 días
+ */
+export const getSearchTrends = async (params: GetSearchTrendsParams, options?: RequestInit): Promise<SearchTrendsResponse> => {
+
+  return customFetch<SearchTrendsResponse>(getGetSearchTrendsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSearchTrendsQueryKey = (params?: GetSearchTrendsParams,) => {
+    return [
+    `/api/catalog/search-trends`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSearchTrendsQueryOptions = <TData = Awaited<ReturnType<typeof getSearchTrends>>, TError = ErrorType<ErrorResponse>>(params: GetSearchTrendsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSearchTrends>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSearchTrendsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSearchTrends>>> = ({ signal }) => getSearchTrends(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSearchTrends>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSearchTrendsQueryResult = NonNullable<Awaited<ReturnType<typeof getSearchTrends>>>
+export type GetSearchTrendsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Obtener hasta tres búsquedas populares anónimas de los últimos 30 días
+ */
+
+export function useGetSearchTrends<TData = Awaited<ReturnType<typeof getSearchTrends>>, TError = ErrorType<ErrorResponse>>(
+ params: GetSearchTrendsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSearchTrends>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSearchTrendsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getRecordSearchTrendOpenUrl = () => {
+
+
+
+
+  return `/api/catalog/search-trends/open`
+}
+
+/**
+ * No persiste identidad, dirección IP ni el texto original; el término se normaliza y agrega por día.
+ * @summary Registrar anónimamente la apertura exitosa de un resultado de búsqueda
+ */
+export const recordSearchTrendOpen = async (searchTrendOpenBody: SearchTrendOpenBody, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getRecordSearchTrendOpenUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      searchTrendOpenBody,)
+  }
+);}
+
+
+
+
+export const getRecordSearchTrendOpenMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordSearchTrendOpen>>, TError,{data: BodyType<SearchTrendOpenBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof recordSearchTrendOpen>>, TError,{data: BodyType<SearchTrendOpenBody>}, TContext> => {
+
+const mutationKey = ['recordSearchTrendOpen'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recordSearchTrendOpen>>, {data: BodyType<SearchTrendOpenBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  recordSearchTrendOpen(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RecordSearchTrendOpenMutationResult = NonNullable<Awaited<ReturnType<typeof recordSearchTrendOpen>>>
+    export type RecordSearchTrendOpenMutationBody = BodyType<SearchTrendOpenBody>
+    export type RecordSearchTrendOpenMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Registrar anónimamente la apertura exitosa de un resultado de búsqueda
+ */
+export const useRecordSearchTrendOpen = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordSearchTrendOpen>>, TError,{data: BodyType<SearchTrendOpenBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof recordSearchTrendOpen>>,
+        TError,
+        {data: BodyType<SearchTrendOpenBody>},
+        TContext
+      > => {
+      return useMutation(getRecordSearchTrendOpenMutationOptions(options));
+    }
 
 export const getCreateSubmissionUrl = () => {
 
