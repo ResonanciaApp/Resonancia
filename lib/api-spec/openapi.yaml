@@ -4986,7 +4986,7 @@ components:
       required: [categories, sessions]
     SearchTrendContext:
       type: string
-      enum: [discover, sleep]
+      enum: [discover, sleep, sounds]
     SearchTrendOpenBody:
       type: object
       additionalProperties: false

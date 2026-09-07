@@ -926,6 +926,7 @@ export type SearchTrendContext = typeof SearchTrendContext[keyof typeof SearchTr
 export const SearchTrendContext = {
   discover: 'discover',
   sleep: 'sleep',
+  sounds: 'sounds',
 } as const;
 
 export interface SearchTrendOpenBody {

@@ -168,8 +168,11 @@ router.post("/catalog/search-trends/open", async (req, res) => {
     const [session] = await db
       .select({
         id: catalogSessionsTable.id,
+        categoryId: catalogSessionsTable.categoryId,
         descansoTags: catalogSessionsTable.descansoTags,
         sleepTag: catalogSessionsTable.sleepTag,
+        soundTag: catalogSessionsTable.soundTag,
+        ancestralTag: catalogSessionsTable.ancestralTag,
       })
       .from(catalogSessionsTable)
       .where(
@@ -190,6 +193,15 @@ router.post("/catalog/search-trends/open", async (req, res) => {
       !session.sleepTag
     ) {
       res.status(400).json({ error: "La sesión no pertenece al contexto Dormir" });
+      return;
+    }
+    if (
+      parsed.data.context === "sounds" &&
+      !session.soundTag &&
+      !session.ancestralTag &&
+      !["ambientales", "sonidos-ancestrales", "musica-sonidos"].includes(session.categoryId)
+    ) {
+      res.status(400).json({ error: "La sesión no pertenece al contexto Sonidos" });
       return;
     }
 

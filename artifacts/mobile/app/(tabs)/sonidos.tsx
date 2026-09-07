@@ -212,15 +212,15 @@ export default function SonidosScreen() {
   const openSession = useCallback((session: Session) => {
     if (session.isPremium && !isPremium) {
       router.push("/membresia" as never);
-      return;
+      return false;
     }
-    if (openForSession(session)) return;
+    if (openForSession(session)) return false;
     const playWithQueue = () => {
       if (currentSession?.id !== session.id) playSessionInPlaylist(session, allIds);
     };
     if (session.skipMiniPlayer) {
       playWithQueue();
-      return;
+      return true;
     }
     const directPlayer =
       session.skipDetail !== false &&
@@ -229,9 +229,10 @@ export default function SonidosScreen() {
     if (directPlayer) {
       playWithQueue();
       router.push("/player" as never);
-      return;
+      return true;
     }
     openCategory(`/session/${session.id}`);
+    return true;
   }, [
     allIds,
     currentSession?.id,
@@ -405,8 +406,10 @@ export default function SonidosScreen() {
         emptySubtitle="Busca naturaleza, lluvia, frecuencias o música"
         onSelect={(item) => {
           const session = allSessions.find((candidate) => candidate.id === item.id);
-          if (session) openSession(session);
+          return session ? openSession(session) : false;
         }}
+        scope="sounds"
+        showDurationFilters={false}
       />
 
       <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>

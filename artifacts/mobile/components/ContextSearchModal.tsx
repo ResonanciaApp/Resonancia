@@ -40,7 +40,7 @@ export type ContextSearchItem = {
   duration?: number;
 };
 
-export type ContextSearchScope = "sleep" | "discover";
+export type ContextSearchScope = "sleep" | "discover" | "sounds";
 
 type ContextSearchModalProps = {
   visible: boolean;
@@ -53,6 +53,7 @@ type ContextSearchModalProps = {
   scope?: ContextSearchScope;
   popularTerms?: string[];
   onSearchSelection?: (term: string, item: ContextSearchItem) => void;
+  showDurationFilters?: boolean;
 };
 
 function normalize(value: string): string {
@@ -73,6 +74,7 @@ export function ContextSearchModal({
   scope,
   popularTerms,
   onSearchSelection,
+  showDurationFilters = true,
 }: ContextSearchModalProps) {
   const colors = useColors();
   const { theme, activeSceneId } = useSceneTheme();
@@ -97,6 +99,8 @@ export function ContextSearchModal({
   const fallbackPopularTerms =
     scope === "sleep"
       ? ["Dormir profundamente", "Ruido blanco", "Historias para dormir"]
+      : scope === "sounds"
+        ? ["Lluvia", "Océano", "Cuencos"]
       : ["Ansiedad", "Meditación", "Cuencos"];
   const serverPopularTerms = trendData?.terms.map(({ term }) =>
     term.length > 0 ? `${term[0].toLocaleUpperCase("es")}${term.slice(1)}` : term,
@@ -307,23 +311,25 @@ export function ContextSearchModal({
               </View>
             </View>
 
-            <View style={styles.menuSection}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Según la duración</Text>
-              <View style={styles.durationList}>
-                {SEARCH_DURATION_RANGES.map((range) => (
-                  <Pressable
-                    key={range.id}
-                    onPress={() => setDurationRangeId(range.id)}
-                    style={({ pressed }) => [styles.durationRow, { opacity: pressed ? 0.6 : 1 }]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Filtrar por ${range.label}`}
-                  >
-                    <Text style={[styles.durationText, { color: colors.foreground }]}>{range.label}</Text>
-                    <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-                  </Pressable>
-                ))}
+            {showDurationFilters ? (
+              <View style={styles.menuSection}>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Según la duración</Text>
+                <View style={styles.durationList}>
+                  {SEARCH_DURATION_RANGES.map((range) => (
+                    <Pressable
+                      key={range.id}
+                      onPress={() => setDurationRangeId(range.id)}
+                      style={({ pressed }) => [styles.durationRow, { opacity: pressed ? 0.6 : 1 }]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Filtrar por ${range.label}`}
+                    >
+                      <Text style={[styles.durationText, { color: colors.foreground }]}>{range.label}</Text>
+                      <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+                    </Pressable>
+                  ))}
+                </View>
               </View>
-            </View>
+            ) : null}
           </ScrollView>
         ) : query.trim().length === 0 && durationRangeId === null ? (
           <View style={styles.empty}>

@@ -1511,7 +1511,7 @@ export const GetPopularSessionsResponse = zod.object({
  * @summary Obtener hasta tres búsquedas populares anónimas de los últimos 30 días
  */
 export const GetSearchTrendsQueryParams = zod.object({
-  "context": zod.enum(['discover', 'sleep'])
+  "context": zod.enum(['discover', 'sleep', 'sounds'])
 })
 
 
@@ -1538,7 +1538,7 @@ export const recordSearchTrendOpenBodySessionIdMax = 128;
 
 
 export const RecordSearchTrendOpenBody = zod.object({
-  "context": zod.enum(['discover', 'sleep']),
+  "context": zod.enum(['discover', 'sleep', 'sounds']),
   "term": zod.string().min(1).max(recordSearchTrendOpenBodyTermMax).describe('Término de búsqueda que produjo el resultado abierto.'),
   "sessionId": zod.string().min(1).max(recordSearchTrendOpenBodySessionIdMax)
 })
