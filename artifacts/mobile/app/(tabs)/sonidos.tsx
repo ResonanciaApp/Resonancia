@@ -284,7 +284,11 @@ export default function SonidosScreen() {
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
-              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+            style={[
+              styles.headerSearchButton,
+              styles.stickySearchButton,
+              indigoSurface && { backgroundColor: indigoSurface },
+            ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonidos"
             >
@@ -505,11 +509,21 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   stickyTitle: {
+    position: "absolute",
+    top: 16,
+    left: 0,
+    right: 0,
     fontFamily: "Manrope",
     fontSize: 18,
+    lineHeight: 22,
     fontWeight: "800",
     letterSpacing: 0.2,
-    textAlign: "left",
+    textAlign: "center",
+  },
+  stickySearchButton: {
+    position: "absolute",
+    top: 7,
+    right: H_PAD,
   },
   headerSearchButton: {
     width: 40,
