@@ -102,6 +102,7 @@ import {
   getDailyRecommendationSurface,
 } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
+import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -2642,6 +2643,7 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && <DailyWisdomCard backgroundColor={recommendationSurface} />}
+        {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
