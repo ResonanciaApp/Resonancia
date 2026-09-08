@@ -56,7 +56,7 @@ export default function SlideFinanzas1() {
           borderBottom: "1px solid rgba(255,255,255,0.35)",
           marginBottom: "0.3vh",
         }}>
-            {["Período", "Altas", "Registros", "Activos", "Fase", "Ing. rec.", "Cursos", "Otros costos", "Mkt. P&L", "Resultado"].map((h) => (
+            {["Período", "Altas", "Registros", "Activos", "Fase", "Ing. rec.", "Cursos", "Costos Op.", "Mkt. P&L", "Resultado"].map((h) => (
             <div key={h} style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.05em" }}>{h}</div>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function SlideFinanzas1() {
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
-         Reconciliación año 1: ingresos {formatMillions(FINANCIAL_TOTALS.recurringRevenueM + FINANCIAL_TOTALS.courseRevenueM)} − otros costos {formatMillions(FINANCIAL_TOTALS.nonMarketingCostM)} − marketing P&amp;L {formatMillions(FINANCIAL_TOTALS.marketingExpenseM)} = neto {formatMillions(FINANCIAL_TOTALS.netResultM, 1, true)}. Incluye $2,0M post-lanzamiento financiado por ronda + $9,6M operativo.
+         Reconciliación año 1: ingresos {formatMillions(FINANCIAL_TOTALS.recurringRevenueM + FINANCIAL_TOTALS.courseRevenueM)} − costos Op. {formatMillions(FINANCIAL_TOTALS.nonMarketingCostM)} − marketing P&amp;L {formatMillions(FINANCIAL_TOTALS.marketingExpenseM)} = neto {formatMillions(FINANCIAL_TOTALS.netResultM, 1, true)}. Incluye $2,0M post-lanzamiento financiado por ronda + $9,6M operativo.
       </div>
     </div>
   );
