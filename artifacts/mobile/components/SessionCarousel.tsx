@@ -264,7 +264,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (isSleepCategoryPresentation || hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
-    ambientalCardBackgroundOverride ?? "rgba(181,211,255,0.057)";
+    ambientalCardBackgroundOverride ?? "rgba(181,211,255,0.1)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
