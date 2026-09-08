@@ -856,8 +856,8 @@ function Inicio2HeroSlider({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile-control"
+          accessibilityLabel="Abrir Tu progreso"
+          testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -1188,8 +1188,8 @@ function Inicio2HeroSliderRebuilt({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile-control"
+          accessibilityLabel="Abrir Tu progreso"
+          testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -1378,8 +1378,8 @@ function Inicio2HeroStatic({
           hitSlop={12}
           style={styles.inicio2HeroLotusButton}
           accessibilityRole="button"
-          accessibilityLabel="Abrir mi perfil"
-          testID="inicio2-open-profile-control"
+          accessibilityLabel="Abrir Tu progreso"
+          testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
             <View style={styles.inicio2HeroLotusContent}>
@@ -2292,7 +2292,7 @@ export default function HomeScreen2({
               accessibilityLabel="Pulso"
             />
             <Pressable
-              onPress={() => router.push("/(tabs)/profile" as never)}
+              onPress={() => router.push("/progreso" as never)}
               onPressIn={() =>
                 Animated.spring(giftScaleAnim, {
                   toValue: 0.84,
@@ -2312,8 +2312,8 @@ export default function HomeScreen2({
               hitSlop={12}
               style={styles.inicio2HeroLotusButton}
               accessibilityRole="button"
-              accessibilityLabel="Abrir mi perfil"
-              testID="inicio-sticky-open-profile"
+              accessibilityLabel="Abrir Tu progreso"
+              testID="inicio-sticky-open-progress"
             >
               <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
                 <View style={styles.inicio2HeroLotusContent}>
@@ -2358,7 +2358,7 @@ export default function HomeScreen2({
               isPremium={isPremium}
               giftScale={giftScaleAnim}
               onOpenDrawer={openDrawer}
-              onOpenProfile={() => router.push("/(tabs)/profile" as never)}
+              onOpenProfile={() => router.push("/progreso" as never)}
             />
           </>
         ) : showAnimatedScene ? (

@@ -1416,7 +1416,7 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <HistorialCalendar embedded backgroundColor={profileSectionBackground} />
+            <HistorialCalendar embedded backgroundColor={PROFILE_SECTION_BACKGROUND} />
             <View style={{ marginTop: 16, gap: 12 }}>
               <View style={{ borderRadius: 18, padding: 16, backgroundColor: profileSectionBackground }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
