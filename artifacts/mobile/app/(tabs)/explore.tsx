@@ -22,6 +22,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   SESSIONS,
@@ -603,20 +604,35 @@ export function ExploreScreen({
                       transition={IMAGE_TRANSITION}
                       cachePolicy="memory-disk"
                     />
-                    {session.durationLabel ? (
-                      <View style={styles.newInResonanceDuration}>
-                        <Text style={styles.newInResonanceDurationText}>
-                          {session.durationLabel}
-                        </Text>
-                      </View>
-                    ) : null}
+                     <LinearGradient
+                       pointerEvents="none"
+                       colors={["transparent", "rgba(0,0,0,0.82)"]}
+                       locations={[0.25, 1]}
+                       style={StyleSheet.absoluteFill}
+                     />
+                     <SessionCategoryPill
+                       categoryId={session.categoryId}
+                       textOnly
+                       tinted
+                       leftInset={18}
+                       topInset={18}
+                     />
+                     <View pointerEvents="none" style={styles.newInResonanceMeta}>
+                       {session.durationLabel ? (
+                         <View style={styles.newInResonanceDuration}>
+                           <Text style={styles.newInResonanceDurationText}>
+                             {session.durationLabel}
+                           </Text>
+                         </View>
+                       ) : null}
+                       <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                         {session.title}
+                       </Text>
+                       <Text style={styles.newInResonanceAuthor} numberOfLines={1}>
+                         {getSessionAuthor(session)}
+                       </Text>
+                     </View>
                   </View>
-                  <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                    {session.title}
-                  </Text>
-                  <Text style={styles.newInResonanceAuthor} numberOfLines={1}>
-                    {getSessionAuthor(session)}
-                  </Text>
                 </Pressable>
               ))}
             </ScrollView>
@@ -1017,13 +1033,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,12,12,0.08)",
   },
   newInResonanceDuration: {
-    position: "absolute",
-    left: 8,
-    bottom: 8,
+    alignSelf: "flex-start",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
     backgroundColor: "rgba(6,10,15,0.72)",
+    marginBottom: 6,
   },
   newInResonanceDurationText: {
     fontFamily: "Manrope",
@@ -1037,15 +1052,18 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "600",
     color: "#FBFBFB",
-    marginTop: 8,
-    paddingHorizontal: 2,
   },
   newInResonanceAuthor: {
     fontFamily: "Manrope",
     fontSize: 11,
     color: "#c2c2c2",
     marginTop: 4,
-    paddingHorizontal: 2,
+  },
+  newInResonanceMeta: {
+    position: "absolute",
+    left: 18,
+    right: 18,
+    bottom: 14,
   },
   otherThemesHeader: {
     marginBottom: 17,
