@@ -2701,7 +2701,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <MiRutinaSection
-            cardBackgroundColor={recommendationSurface}
+            cardBackgroundColor="rgba(18,10,33,0.37)"
             style={{
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,
