@@ -2634,6 +2634,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <RecommendedForYouSection
+            selectedMoods={selectedMoods}
             catalogVersion={catalogVersion}
             onPress={handleSessionCarouselPress}
             marginBottom={INICIO2_SECTION_GAP}

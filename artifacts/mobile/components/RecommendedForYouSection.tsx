@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -20,6 +20,7 @@ import {
   sortSessionsNewestFirst,
   type Session,
 } from "@/data/sessions";
+import type { Mood } from "@/data/moods";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -32,17 +33,20 @@ const RECOMMENDATION_TABS = [
   { id: "new-content", label: "Nuevo contenido" },
   { id: "anxiety-sos", label: "Ansiedad S.O.S" },
   { id: "popular", label: "Populares" },
+  { id: "by-mood", label: "Según tu estado de ánimo" },
 ] as const;
 
 type RecommendationTabId = (typeof RECOMMENDATION_TABS)[number]["id"];
 
 type Props = {
+  selectedMoods: Mood[];
   catalogVersion: number;
   onPress: (session: Session) => void;
   marginBottom?: number;
 };
 
 export function RecommendedForYouSection({
+  selectedMoods = [],
   catalogVersion,
   onPress,
   marginBottom = 0,
@@ -52,6 +56,19 @@ export function RecommendedForYouSection({
   const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
     RECOMMENDATION_TABS[0].id,
   );
+  const moodSelectionKey = selectedMoods.map((mood) => mood.id).sort().join("|");
+  const previousMoodSelectionKey = useRef(moodSelectionKey);
+
+  useEffect(() => {
+    if (
+      moodSelectionKey &&
+      moodSelectionKey !== previousMoodSelectionKey.current
+    ) {
+      setActiveTabId("by-mood");
+    }
+    previousMoodSelectionKey.current = moodSelectionKey;
+  }, [moodSelectionKey]);
+
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
     {
@@ -76,6 +93,36 @@ export function RecommendedForYouSection({
     const anxiety = newest
       .filter((session) => session.themeTag?.includes("Para la ansiedad"))
       .slice(0, CARDS_PER_TAB);
+    const moodThemes = new Set(
+      selectedMoods.flatMap((mood) => mood.themeTags),
+    );
+    const moodCategories = new Set(
+      selectedMoods.flatMap((mood) => mood.categoryIds),
+    );
+    const byMood = moodSelectionKey
+      ? available
+        .map((session) => ({
+          session,
+          themeMatches:
+            session.themeTag?.filter((tag) => moodThemes.has(tag)).length ?? 0,
+          categoryMatch: moodCategories.has(session.categoryId) ? 1 : 0,
+        }))
+        .filter(
+          ({ themeMatches, categoryMatch }) =>
+            themeMatches > 0 || categoryMatch > 0,
+        )
+        .sort((left, right) => {
+          if (left.themeMatches !== right.themeMatches) {
+            return right.themeMatches - left.themeMatches;
+          }
+          if (left.categoryMatch !== right.categoryMatch) {
+            return right.categoryMatch - left.categoryMatch;
+          }
+          return sortSessionsNewestFirst(left.session, right.session);
+        })
+        .slice(0, CARDS_PER_TAB)
+        .map(({ session }) => session)
+      : [];
     const popular = (popularData?.sessions ?? [])
       .map((session) => getSessionById(session.id))
       .filter(
@@ -89,8 +136,9 @@ export function RecommendedForYouSection({
       "new-content": newest.slice(0, CARDS_PER_TAB),
       "anxiety-sos": anxiety,
       popular,
+      "by-mood": byMood,
     };
-  }, [catalogVersion, popularData]);
+  }, [catalogVersion, moodSelectionKey, popularData, selectedMoods]);
 
   const activeSessions = recommendations[activeTabId];
   const hasRecommendations = Object.values(recommendations).some(
@@ -179,7 +227,11 @@ export function RecommendedForYouSection({
           ))}
         </View>
       ) : (
-        <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>No hay recomendaciones disponibles.</Text>
+        <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>
+          {activeTabId === "by-mood" && !moodSelectionKey
+            ? "Cuéntanos cómo te sientes hoy para recomendarte tres sesiones."
+            : "No hay recomendaciones disponibles."}
+        </Text>
       )}
     </View>
   );
