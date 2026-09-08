@@ -191,11 +191,6 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] as string }]} />
             )}
-            <LinearGradient
-              colors={["rgba(6,6,12,0)", "rgba(6,6,12,0.28)", theme.gradient[0] as string]}
-              locations={[0, 0.68, 1]}
-              style={StyleSheet.absoluteFill}
-            />
             <Pressable
               onPress={goBack}
               hitSlop={10}
@@ -216,7 +211,11 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
               {tagLabel}
             </Text>
             {tag?.description ? (
-              <Text style={[styles.pageDescription, { color: colors.foreground }]}>
+              <Text
+                style={[styles.pageDescription, { color: colors.foreground }]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {tag.description}
               </Text>
             ) : null}
@@ -281,7 +280,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
         </ScrollView>
 
         {sessions.length === 0 ? (
-          <View style={[styles.emptySlot, { borderColor: colors.border }]}>
+          <View style={[styles.emptySlot, { borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="inbox" size={28} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
               Aún no hay sesiones
