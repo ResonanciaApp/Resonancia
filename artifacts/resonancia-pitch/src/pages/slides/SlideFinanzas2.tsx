@@ -116,7 +116,7 @@ export default function SlideFinanzas2() {
                       borderRadius: "9999px"
                     }} />
                   </div>
-                  <div style={{ fontSize: "0.68vw", color: "#F4F4F4", minWidth: "3vw", textAlign: "right" }}>{d.subs.toLocaleString()}</div>
+                  <div style={{ fontSize: "0.68vw", color: "#F4F4F4", minWidth: "3vw", textAlign: "right" }}>{Math.round(d.subs).toLocaleString("es-CL")}</div>
                 </div>
               ))}
             </div>
