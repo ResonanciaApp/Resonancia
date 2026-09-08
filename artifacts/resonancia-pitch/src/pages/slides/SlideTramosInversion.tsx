@@ -1,38 +1,28 @@
 import { FINANCIAL_MONTHS, formatMillions } from "../../data/financialModel";
 
+const FIRST_MILLION_EQUITY = 805 / 1092;
+const MARGINAL_STEP_PP = 47 / 2184;
+
+const equityForInvestment = (investmentM: number) =>
+  FIRST_MILLION_EQUITY * investmentM +
+  MARGINAL_STEP_PP * investmentM * (investmentM - 1) / 2;
+
+const fmtPct = (n: number, decimals = 2) =>
+  n.toFixed(decimals).replace(".", ",") + "%";
+
+const fmtMoney = (n: number, decimals = 1) =>
+  n.toFixed(decimals).replace(".", ",") + "M";
+
 export default function SlideTramosInversion() {
   const arrM12 = FINANCIAL_MONTHS[11].recurringRevenueM * 12;
-  const VAL_M12 = arrM12 * 4;
-
-  const tramos = [
-    { inv: 3,  equity: 2.0 },
-    { inv: 6,  equity: 4.5 },
-    { inv: 8,  equity: 6.5 },
-    { inv: 21.05, equity: 17.6 },
-  ].map(({ inv, equity }) => {
-    const postMoney = inv / (equity / 100);
-    const stakeM12 = (equity / 100) * VAL_M12;
-    const retorno = stakeM12 / inv;
-    const tasaMM = equity / inv;
-    return { inv, equity, postMoney, stakeM12, retorno, tasaMM };
+  const valuationM12 = arrM12 * 4;
+  const scenarios = Array.from({ length: 21 }, (_, index) => {
+    const investmentM = index + 1;
+    const equity = equityForInvestment(investmentM);
+    const postMoney = investmentM / (equity / 100);
+    return { investmentM, equity, postMoney };
   });
-
-  const fmt = (n: number, dec = 1) =>
-    n.toFixed(dec).replace(".", ",") + "M";
-  const fmtPct = (n: number) => n.toFixed(1).replace(".", ",") + "%";
-  const fmtX = (n: number) => n.toFixed(1).replace(".", ",") + "×";
-  const fmtInv = (inv: number) => {
-    if (inv % 1 === 0) return inv.toFixed(0);
-    return inv < 20 ? inv.toFixed(1).replace(".", ",") : inv.toFixed(2).replace(".", ",");
-  };
-
-  const COL_HEADERS = [
-    "INVERSIÓN",
-    "EQUITY",
-    "VALUACIÓN IMPLÍCITA",
-    "VALOR EST. PARTICIPACIÓN · M12",
-    "RETORNO EST.",
-  ];
+  const groups = [scenarios.slice(0, 7), scenarios.slice(7, 14), scenarios.slice(14, 21)];
 
   return (
     <div
@@ -40,142 +30,115 @@ export default function SlideTramosInversion() {
       style={{
         background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)",
         color: "#F4F4F4",
-        padding: "7vh 6vw 5vh",
+        padding: "5.6vh 5.2vw 4.2vh",
         boxSizing: "border-box",
-        gap: "2.4vh",
+        gap: "2vh",
       }}
     >
-      {/* Header */}
-      <div style={{ flexShrink: 0 }}>
-        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.45)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
-          RONDA OBJETIVO · $21,05M CLP
+      <div style={{ flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: "4vw" }}>
+        <div>
+          <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "rgba(244,244,244,0.45)", letterSpacing: "0.14em", marginBottom: "0.7vh" }}>
+            ESCALA DE INVERSIÓN · $1M A $21M CLP
+          </div>
+          <div style={{ fontSize: "3.1vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+            Más aporte,{" "}
+            <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              mejor participación.
+            </span>
+          </div>
         </div>
-        <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Oportunidad de{" "}
-          <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            inversión.
-          </span>
-        </div>
-        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Prima por escala · el tramo lead cubre el 100% de la ronda y recibe una valorización más favorable
+        <div style={{ maxWidth: "32vw", padding: "1.25vh 1.2vw", border: "1px solid rgba(214,164,92,0.28)", borderRadius: "0.7vw", background: "rgba(214,164,92,0.07)" }}>
+          <div style={{ fontSize: "0.76vw", fontWeight: 700, letterSpacing: "0.1em", color: "#D6A45C", marginBottom: "0.35vh" }}>
+            PRIMA PROGRESIVA POR ESCALA
+          </div>
+          <div style={{ fontSize: "0.92vw", color: "rgba(244,244,244,0.63)", lineHeight: 1.45 }}>
+            Cada nuevo millón suma <strong style={{ color: "#F4F4F4" }}>0,0215 pp más</strong> de equity que el millón anterior.
+          </div>
         </div>
       </div>
 
-      {/* Table header */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
-          gap: "0.5vw",
-          flexShrink: 0,
-          paddingBottom: "1vh",
-          borderBottom: "1px solid rgba(255,255,255,0.20)",
-        }}
-      >
-        {COL_HEADERS.map((h) => (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.25vw", flex: 1, minHeight: 0 }}>
+        {groups.map((group, groupIndex) => (
           <div
-            key={h}
+            key={groupIndex}
             style={{
-              fontSize: h === "VALOR EST. PARTICIPACIÓN · M12" ? "0.70vw" : "0.82vw",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              color: "#FFFFFF",
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+              borderRadius: "0.85vw",
+              border: "1px solid rgba(255,255,255,0.11)",
+              background: "rgba(4,7,23,0.16)",
+              overflow: "hidden",
             }}
           >
-            {h}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "0.9fr 0.8fr 1.15fr",
+                padding: "0.8vh 1vw",
+                borderBottom: "1px solid rgba(255,255,255,0.12)",
+                fontSize: "0.68vw",
+                fontWeight: 700,
+                letterSpacing: "0.09em",
+                color: "rgba(244,244,244,0.42)",
+              }}
+            >
+              <div>APORTE</div>
+              <div>EQUITY</div>
+              <div>VAL. POST-MONEY</div>
+            </div>
+            {group.map((scenario) => {
+              const isAnchor = scenario.investmentM === 8 || scenario.investmentM === 21;
+              return (
+                <div
+                  key={scenario.investmentM}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "0.9fr 0.8fr 1.15fr",
+                    alignItems: "center",
+                    flex: 1,
+                    padding: "0 1vw",
+                    borderBottom: scenario.investmentM % 7 === 0 ? "none" : "1px solid rgba(255,255,255,0.055)",
+                    background: isAnchor
+                      ? scenario.investmentM === 21
+                        ? "linear-gradient(90deg, rgba(110,196,154,0.16), rgba(110,196,154,0.06))"
+                        : "linear-gradient(90deg, rgba(214,164,92,0.15), rgba(214,164,92,0.05))"
+                      : "transparent",
+                    boxShadow: isAnchor ? "inset 3px 0 0 " + (scenario.investmentM === 21 ? "#6EC49A" : "#D6A45C") : "none",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.3vw" }}>
+                    <span style={{ fontSize: isAnchor ? "1.35vw" : "1.12vw", fontWeight: 700, color: isAnchor ? "#FFFFFF" : "rgba(244,244,244,0.78)" }}>
+                      ${scenario.investmentM}M
+                    </span>
+                    {isAnchor && (
+                      <span style={{ fontSize: "0.58vw", fontWeight: 700, letterSpacing: "0.07em", color: scenario.investmentM === 21 ? "#6EC49A" : "#D6A45C" }}>
+                        ANCLA
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: isAnchor ? "1.42vw" : "1.16vw", fontWeight: 700, color: scenario.investmentM === 21 ? "#6EC49A" : isAnchor ? "#D6A45C" : "#F4F4F4" }}>
+                    {fmtPct(scenario.equity)}
+                  </div>
+                  <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.43)" }}>
+                    ~${fmtMoney(scenario.postMoney, 0)}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
 
-      {/* Rows */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
-        {tramos.map((t, i) => {
-          const isHighlight = i === tramos.length - 1; // Tramo lead: cubre la ronda completa.
-          const rowBg = ["rgba(0,0,0,0.12)", "rgba(0,0,0,0.15)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.20)"];
-          return (
-            <div
-              key={i}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
-                gap: "0.5vw",
-                alignItems: "center",
-                backgroundColor: isHighlight ? "#181C3E" : rowBg[i],
-                border: isHighlight
-                  ? "1.5px solid rgba(255,255,255,0.55)"
-                  : "1px solid rgba(255,255,255,0.06)",
-                borderRadius: "0.7vw",
-                padding: "1.4vh 1.2vw",
-              }}
-            >
-              {/* Inversión */}
-              <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
-                <div style={{
-                  fontSize: isHighlight ? "1.8vw" : "1.6vw",
-                  fontWeight: 700,
-                  color: isHighlight ? "#F4F4F4" : "rgba(244,244,244,0.70)",
-                }}>
-                  ${fmtInv(t.inv)}M CLP
-                </div>
-              </div>
-
-              {/* Equity + tasa */}
-              <div>
-                <div style={{
-                  fontSize: isHighlight ? "2.0vw" : "1.7vw",
-                  fontWeight: 700,
-                  background: isHighlight
-                    ? "linear-gradient(90deg, #FFFFFF, #FFFFFF)"
-                    : "none",
-                  WebkitBackgroundClip: isHighlight ? "text" : "unset",
-                  WebkitTextFillColor: isHighlight ? "transparent" : "unset",
-                  backgroundClip: isHighlight ? "text" : "unset",
-                  color: isHighlight ? undefined : "rgba(244,244,244,0.65)",
-                }}>
-                  {fmtPct(t.equity)}
-                </div>
-                <div style={{ fontSize: "0.78vw", color: "rgba(255,255,255,0.55)", marginTop: "0.15vh" }}>
-                  {t.tasaMM.toFixed(2).replace(".", ",")}%/M
-                </div>
-              </div>
-
-              {/* Valuación implícita */}
-              <div style={{ fontSize: "1.3vw", color: "rgba(244,244,244,0.50)" }}>
-                ~${fmt(t.postMoney, 0)} CLP
-              </div>
-
-              {/* Stake M12 */}
-              <div style={{ display: "flex", alignItems: "baseline", gap: "0.5vw" }}>
-                <div style={{
-                  fontSize: isHighlight ? "1.9vw" : "1.6vw",
-                  fontWeight: 700,
-                  color: "#6EC49A",
-                }}>
-                  ~${fmt(t.stakeM12)}
-                </div>
-                <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
-              </div>
-
-              {/* Retorno */}
-              <div style={{
-                fontSize: isHighlight ? "1.9vw" : "1.6vw",
-                fontWeight: 700,
-                color: isHighlight ? "#FFFFFF" : "rgba(244,244,244,0.55)",
-              }}>
-                {fmtX(t.retorno)}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Footer note */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
-        <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
-           Estimación a M12 sobre el caso base: 4.400 suscriptores activos (churn mensual 15%), ARR recurrente anualizado {formatMillions(arrM12)} y valoración ilustrativa de 4× ARR ({formatMillions(VAL_M12)} CLP). Retorno estimado, referencial y sujeto a acuerdo definitivo.
+      <div style={{ flexShrink: 0, display: "flex", justifyContent: "space-between", gap: "2vw", paddingTop: "0.9vh", borderTop: "1px solid rgba(255,255,255,0.11)" }}>
+        <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.34)", lineHeight: 1.45 }}>
+          Curva progresiva con aceleración marginal constante. Anclajes exactos: <strong style={{ color: "#D6A45C" }}>$8M = 6,5%</strong> y <strong style={{ color: "#6EC49A" }}>$21M = 20%</strong>.
+        </div>
+        <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.28)", textAlign: "right", lineHeight: 1.45 }}>
+          Referencia M12: ARR {formatMillions(arrM12)} · valoración ilustrativa 4× ARR {formatMillions(valuationM12)}.<br />
+          Escenarios sujetos a acuerdo definitivo.
         </div>
       </div>
-
     </div>
   );
 }

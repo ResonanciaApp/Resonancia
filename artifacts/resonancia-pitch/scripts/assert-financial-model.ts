@@ -63,6 +63,24 @@ assert(
   Math.abs(M3_EXAMPLE.subscriptionCashM - 8.17073361764706) < 0.000001,
   "M3 example revenue, net result, and subscription cash must remain unchanged",
 );
+const firstMillionEquity = 805 / 1092;
+const marginalStepPp = 47 / 2184;
+const investmentEquity = (investmentM: number) =>
+  firstMillionEquity * investmentM +
+  marginalStepPp * investmentM * (investmentM - 1) / 2;
+assert(
+  Math.abs(investmentEquity(8) - 6.5) < 0.000001 &&
+  Math.abs(investmentEquity(21) - 20) < 0.000001,
+  "Investment equity curve must preserve the $8M/6.5% and $21M/20% anchors",
+);
+for (let investmentM = 2; investmentM <= 20; investmentM += 1) {
+  const priorIncrement = investmentEquity(investmentM) - investmentEquity(investmentM - 1);
+  const nextIncrement = investmentEquity(investmentM + 1) - investmentEquity(investmentM);
+  assert(
+    Math.abs((nextIncrement - priorIncrement) - marginalStepPp) < 0.000001,
+    `Investment equity curve must keep constant marginal acceleration at $${investmentM}M`,
+  );
+}
 assert(
   Math.abs(m2.annualActiveSubscribers - (1_000 * 0.30 + m2.grossAdditions * 0.35)) < 0.000001,
   "Annual cohorts must remain active for their full paid term",
