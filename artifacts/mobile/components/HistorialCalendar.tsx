@@ -188,7 +188,7 @@ function DayCell({
                   : embedded && isToday
                     ? "#F9F9F9"
                     : embedded && isSelected
-                      ? "#060A0F"
+                      ? "#F9F9F9"
                       : isToday
                         ? "#FFFFFF"
                         : color,
