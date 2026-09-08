@@ -723,7 +723,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: durationSurfaceColor,
+                      backgroundColor: "rgba(18,10,33,0.37)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -1086,6 +1086,8 @@ const styles = StyleSheet.create({
     minWidth: DURATION_CARD_WIDTH,
     height: 44,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,

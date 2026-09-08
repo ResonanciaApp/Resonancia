@@ -1415,7 +1415,7 @@ export function ProfileScreenBase({
 
             <HistorialCalendar embedded backgroundColor={PROFILE_SECTION_BACKGROUND} />
             <View style={{ marginTop: 16, gap: 12 }}>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND, borderWidth: 1, borderColor: resourceBlockBorder }}>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
                   <Pressable onPress={() => router.push("/descargas" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
@@ -1424,7 +1424,7 @@ export function ProfileScreenBase({
                   {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
                 </View> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
               </View>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND, borderWidth: 1, borderColor: resourceBlockBorder }}>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
                   <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>

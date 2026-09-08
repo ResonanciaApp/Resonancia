@@ -27,7 +27,6 @@ import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePremium } from "@/context/PremiumContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import {
@@ -39,6 +38,7 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
