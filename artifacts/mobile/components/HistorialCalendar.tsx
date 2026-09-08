@@ -212,9 +212,11 @@ function formatSelectedDate(date: Date, today: Date): string {
 export function HistorialCalendar({
   containerPadding = 0,
   embedded = false,
+  backgroundColor,
 }: {
   containerPadding?: number;
   embedded?: boolean;
+  backgroundColor?: string;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -312,7 +314,7 @@ export function HistorialCalendar({
         </View>
       )}
 
-      <View style={[styles.calendarCard, { backgroundColor: calendarBackground }, p ? { marginHorizontal: p } : undefined]}>
+      <View style={[styles.calendarCard, { backgroundColor: backgroundColor ?? calendarBackground }, p ? { marginHorizontal: p } : undefined]}>
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />

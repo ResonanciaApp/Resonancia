@@ -132,6 +132,8 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
+const PROFILE_SECTION_BACKGROUND = "rgba(18,10,33,0.37)";
+
 function brightenHexColor(color: string, amount = 0.5): string {
   const hex = color.replace("#", "");
   if (!/^[0-9a-fA-F]{6}$/.test(hex)) return color;
@@ -1193,7 +1195,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={[styles.profileCard, { backgroundColor: "rgba(18,10,33,0.37)" }]}>
+          <View style={[styles.profileCard, { backgroundColor: PROFILE_SECTION_BACKGROUND }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
@@ -1268,7 +1270,7 @@ export function ProfileScreenBase({
             <View
               style={[
                 styles.personalStatsSection,
-                { backgroundColor: resourceBlockBackground },
+                { backgroundColor: PROFILE_SECTION_BACKGROUND },
               ]}
             >
               <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
@@ -1366,7 +1368,7 @@ export function ProfileScreenBase({
               <View
                 style={[
                   styles.profileProgressCard,
-                  { backgroundColor: resourceBlockBackground },
+                  { backgroundColor: PROFILE_SECTION_BACKGROUND },
                 ]}
               >
                 <SonicStreakDays
@@ -1411,9 +1413,9 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <HistorialCalendar embedded />
+            <HistorialCalendar embedded backgroundColor={PROFILE_SECTION_BACKGROUND} />
             <View style={{ marginTop: 16, gap: 12 }}>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: resourceBlockBackground, borderWidth: 1, borderColor: resourceBlockBorder }}>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND, borderWidth: 1, borderColor: resourceBlockBorder }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
                   <Pressable onPress={() => router.push("/descargas" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
@@ -1422,7 +1424,7 @@ export function ProfileScreenBase({
                   {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
                 </View> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
               </View>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: resourceBlockBackground, borderWidth: 1, borderColor: resourceBlockBorder }}>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: PROFILE_SECTION_BACKGROUND, borderWidth: 1, borderColor: resourceBlockBorder }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
                   <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
