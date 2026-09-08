@@ -368,9 +368,10 @@ export function ProfileScreenBase({
       : activeSceneId === "indigo2"
         ? "rgba(191,207,255,0.096)"
         : "rgba(181,211,255,0.057)";
-  const profileSectionBackground = isIndigoThemeId(activeSceneId)
+  const profileUserSectionBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
     : PROFILE_SECTION_BACKGROUND;
+  const profileSectionBackground = "rgba(181,211,255,0.1)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
     : "rgba(255,255,255,0.12)";
@@ -1198,7 +1199,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={[styles.profileCard, { backgroundColor: profileSectionBackground }]}>
+          <View style={[styles.profileCard, { backgroundColor: profileUserSectionBackground }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
