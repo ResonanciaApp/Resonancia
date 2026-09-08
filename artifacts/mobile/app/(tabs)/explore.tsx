@@ -247,6 +247,28 @@ export function ExploreScreen({
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyHeaderActiveRef = useRef(false);
+  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+  const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [20, 0],
+  });
+
+  const handleMainScroll = React.useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 8;
+    if (active === stickyHeaderActiveRef.current) return;
+    stickyHeaderActiveRef.current = active;
+    setStickyHeaderActive(active);
+    stickyHeaderOpacity.stopAnimation();
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyHeaderOpacity]);
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
@@ -483,11 +505,50 @@ export function ExploreScreen({
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar hidden />
 
+      <Animated.View
+        pointerEvents={stickyHeaderActive ? "auto" : "none"}
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 2,
+            backgroundColor: activeTheme.gradient[0] as string,
+            opacity: stickyHeaderOpacity,
+          },
+        ]}
+      >
+        <View style={[styles.titleRow, styles.stickyTitleRow]}>
+          <Animated.Text
+            style={[
+              styles.stickyTitle,
+              { transform: [{ translateY: stickyTitleTranslateY }] },
+            ]}
+          >
+            {screenTitle}
+          </Animated.Text>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={[
+              styles.headerSearchButton,
+              styles.stickySearchButton,
+              { backgroundColor: durationSurfaceColor },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={`Buscar en ${screenTitle}`}
+            testID="discover-sticky-search-button"
+          >
+            <Feather name="search" size={24} color="#F4F4F4" />
+          </Pressable>
+        </View>
+      </Animated.View>
+
       <Animated.ScrollView
         style={styles.contentShift}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+        onScroll={handleMainScroll}
       >
         <View style={[styles.pageHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
@@ -825,6 +886,13 @@ const styles = StyleSheet.create({
   contentShift: { flex: 1, transform: [{ translateY: -5 }] },
   scroll: { flex: 1 },
   scrollContent: { marginTop: -3 },
+  stickyHeader: {
+    position: "absolute",
+    top: -5,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+  },
 
   pageHeader: { paddingBottom: 10 },
   overlayHeader: {
@@ -880,6 +948,24 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
+  stickyTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    lineHeight: 22,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+    color: "#F4F4F4",
+    textAlign: "center",
+  },
+  stickyTitleRow: {
+    minHeight: 54,
+    justifyContent: "center",
+  },
+  stickySearchButton: {
+    position: "absolute",
+    top: 7,
+    right: H_PAD,
+  },
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
