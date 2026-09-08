@@ -10,6 +10,7 @@ import {
   OPERATING_MARKETING_M,
   ROUND_FUNDED_MARKETING_M,
   M3_EXAMPLE,
+  INVESTMENT,
   MONTHLY_CHURN,
   MONTHLY_COHORT_ARPU,
   NET_REVENUE_FACTOR,
@@ -72,6 +73,10 @@ assert(
   Math.abs(investmentEquity(8) - 6.5) < 0.000001 &&
   Math.abs(investmentEquity(21) - 20) < 0.000001,
   "Investment equity curve must preserve the $8M/6.5% and $21M/20% anchors",
+);
+assert(
+  Math.abs(INVESTMENT.totalM - 21.05) < 0.000001,
+  "The operating plan must retain the $21.05M funding requirement",
 );
 for (let investmentM = 2; investmentM <= 20; investmentM += 1) {
   const priorIncrement = investmentEquity(investmentM) - investmentEquity(investmentM - 1);

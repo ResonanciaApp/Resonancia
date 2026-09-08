@@ -14,7 +14,7 @@ export default function SlideConclusionFinanciera() {
   const fases = [
     {
       t: "ANTES DEL M1 · CONSTRUCCIÓN",
-      d: "La ronda activa aprobada es $13,4M CLP. Financia el plan visible de inversión —contenido, marketing, runway reducido, externos, equipamiento y otros— sin crear una segunda ronda ni alterar los tramos aprobados.",
+      d: "La ronda objetivo es cercana a $21M CLP. Financia el plan visible de inversión —contenido, marketing, runway reducido, externos, equipamiento y otros— con una escala progresiva de participación de hasta 20%.",
       tint: "rgba(224,112,112,0.9)",
     },
     {

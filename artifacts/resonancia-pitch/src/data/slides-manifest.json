@@ -137,7 +137,7 @@
     "position": 18,
     "filepath": "src/pages/slides/SlideTramosInversion.tsx",
     "title": "Oportunidad de inversión",
-    "description": "Oferta activa: tramos CLP 3M/2%, 6M/4,5%, 8M/6,5% y ronda completa de 21,05M/17,6%; retorno estimado a M12.",
+    "description": "Escala progresiva de 21 escenarios entre CLP 1M y 21M; anclajes de 8M/6,5% y 21M/20%, con valor estimado de cada participación a M12.",
     "speakerNotes": ""
   },
   {
@@ -145,7 +145,7 @@
     "position": 19,
     "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
     "title": "Anexo · Valoración estimada",
-    "description": "Tramo lead activo CLP 13,4M por 12%, pre/post-money y escenarios de retorno M12.",
+    "description": "Tramo máximo CLP 21M por 20%; valoración pre-money de 84M, post-money de 105M y escenarios de retorno a M12.",
     "speakerNotes": ""
   },
   {

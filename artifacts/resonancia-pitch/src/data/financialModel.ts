@@ -193,7 +193,7 @@ export const BASE_CASE = {
 };
 
 export const INVESTMENT = {
-  totalM: 13.4,
+  totalM: 21.05,
   prelaunchRunwayMonths: 4,
   prelaunchRunwayTotalM: 1.95,
   launchMarketingReserveM: 2,

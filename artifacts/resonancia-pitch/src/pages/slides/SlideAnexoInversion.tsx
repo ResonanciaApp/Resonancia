@@ -48,7 +48,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-         <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE LEAD 12,0% VALE</div>
+         <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE LEAD 20,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -66,8 +66,10 @@ function ScenarioCard({
 }
 
 export default function SlideAnexoInversion() {
-  const investmentM = 13.4;
-  const equity = 0.12;
+  const investmentM = 21;
+  const equity = 0.20;
+  const postMoneyM = investmentM / equity;
+  const preMoneyM = postMoneyM - investmentM;
   const figures = (scenario: typeof BASE_SCENARIO, multiple: number) => {
     const subscribers = scenario.months[11].activeSubscribers;
     const arrM = scenario.months[11].recurringRevenueM * 12;
@@ -116,8 +118,8 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-             <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$98,3M CLP</div>
-             <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>tramo lead aprobado: $13,4M por 12,0%</div>
+             <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>${preMoneyM.toFixed(0)}M CLP</div>
+             <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>tramo máximo: $21M por 20,0%</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4F4F4", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
@@ -129,23 +131,23 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                 $13,4M ÷ post-money $111,7M ={" "}
-                 <span style={{ color: "#FFFFFF", fontWeight: 700 }}>12,0%</span> (tramo lead)
+                 $21M ÷ post-money ${postMoneyM.toFixed(0)}M ={" "}
+                 <span style={{ color: "#FFFFFF", fontWeight: 700 }}>20,0%</span> (tramo máximo)
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión máx.</div>
-                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$13,4M</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$21M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Equity</div>
-                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>12,0%</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>20,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$111,7M</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>${postMoneyM.toFixed(0)}M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
