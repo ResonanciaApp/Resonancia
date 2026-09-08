@@ -214,7 +214,7 @@ export default function SonidosScreen() {
       router.push("/membresia" as never);
       return false;
     }
-    if (openForSession(session)) return false;
+    if (openForSession(session)) return true;
     const playWithQueue = () => {
       if (currentSession?.id !== session.id) playSessionInPlaylist(session, allIds);
     };
