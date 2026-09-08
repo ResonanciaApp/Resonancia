@@ -149,7 +149,35 @@ export default function Slide11Inversion() {
       </div>
 
       {/* Three detail tables */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.4fr", gap: "1.2vw", flex: 1 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: "1.2vw", flex: 1 }}>
+
+        {/* Contenido */}
+        <div style={tableCard}>
+          <div style={colHdr}>CONTENIDO · DESGLOSE</div>
+          {/* Sub-header */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.6vw", marginBottom: "0.3vh" }}>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em" }}></div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "4.5vw" }}>VALOR</div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "3vw" }}>CANT.</div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "5vw" }}>TOTAL</div>
+          </div>
+          {contenido.map((it) => (
+            <div key={it.label} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.6vw", alignItems: "baseline" }}>
+              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "4.5vw" }}>{it.valor}</div>
+              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "3vw" }}>×{it.cantidad}</div>
+              <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "#F4F4F4", textAlign: "right", minWidth: "5vw" }}>{it.total}</div>
+            </div>
+          ))}
+          <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.6vw", alignItems: "baseline", marginTop: "0.2vh" }}>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total contenido</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.300.000</div>
+          </div>
+          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
+            90 piezas de audio producidas para lanzamiento
+          </div>
+        </div>
 
         {/* RH – Runway Operativo */}
         <div style={tableCard}>
@@ -189,33 +217,6 @@ export default function Slide11Inversion() {
           </div>
         </div>
 
-        {/* Contenido */}
-        <div style={tableCard}>
-          <div style={colHdr}>CONTENIDO · DESGLOSE</div>
-          {/* Sub-header */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.6vw", marginBottom: "0.3vh" }}>
-            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em" }}></div>
-            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "4.5vw" }}>VALOR</div>
-            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "3vw" }}>CANT.</div>
-            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "5vw" }}>TOTAL</div>
-          </div>
-          {contenido.map((it) => (
-            <div key={it.label} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.6vw", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
-              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "4.5vw" }}>{it.valor}</div>
-              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "3vw" }}>×{it.cantidad}</div>
-              <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "#F4F4F4", textAlign: "right", minWidth: "5vw" }}>{it.total}</div>
-            </div>
-          ))}
-          <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.6vw", alignItems: "baseline", marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total contenido</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.300.000</div>
-          </div>
-          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            90 piezas de audio producidas para lanzamiento
-          </div>
-        </div>
       </div>
 
     </div>
