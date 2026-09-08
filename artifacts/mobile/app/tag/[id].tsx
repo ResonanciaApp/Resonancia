@@ -311,6 +311,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 showAuthor={false}
                 showAuthorAvatar={false}
                 categoryPillTextOnly
+                categoryPillTinted
                 overridePress={() => openSession(session)}
               />
             ))}

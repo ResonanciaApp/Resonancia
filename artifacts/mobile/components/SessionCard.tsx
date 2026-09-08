@@ -48,6 +48,7 @@ type Props = {
   showCardMetadata?: boolean;
   showCategoryPill?: boolean;
   categoryPillTextOnly?: boolean;
+  categoryPillTinted?: boolean;
   titleFontSize?: number;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -93,7 +94,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -238,6 +239,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             showDuration={showDuration}
             showCategoryPill={showCategoryPill}
             categoryPillTextOnly={categoryPillTextOnly}
+            categoryPillTinted={categoryPillTinted}
           />
         ) : showDuration ? (
           <SessionDurationBadge

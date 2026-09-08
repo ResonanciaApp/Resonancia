@@ -63,6 +63,7 @@ export function SessionCategoryPill({
   inline = false,
   plain = false,
   textOnly = false,
+  tinted = false,
   showIconGlyph = true,
   iconSize = 19,
   outlineColor,
@@ -72,6 +73,7 @@ export function SessionCategoryPill({
   inline?: boolean;
   plain?: boolean;
   textOnly?: boolean;
+  tinted?: boolean;
   showIconGlyph?: boolean;
   iconSize?: number;
   outlineColor?: string;
@@ -88,12 +90,13 @@ export function SessionCategoryPill({
         inline && styles.categoryPillInline,
         textOnly && styles.categoryPillTextOnly,
         plain && styles.categoryPillPlain,
+        tinted ? { backgroundColor: `${category.color}66` } : null,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
         leftInset !== undefined ? { left: leftInset } : null,
       ]}
     >
-      {!plain && !outlineColor && <SessionBadgeGlass />}
+      {!plain && !outlineColor && !tinted && <SessionBadgeGlass />}
       {!textOnly && (
         <SessionCategoryIcon
           categoryId={categoryId}
@@ -150,6 +153,7 @@ type Props = {
   showAuthor?: boolean;
   showCategoryPill?: boolean;
   categoryPillTextOnly?: boolean;
+  categoryPillTinted?: boolean;
   showCategoryBelow?: boolean;
   showMetaBelow?: boolean;
   titleFontSize?: number;
@@ -170,6 +174,7 @@ export function SessionCardMetadataOverlay({
   showAuthor = true,
   showCategoryPill = true,
   categoryPillTextOnly = false,
+  categoryPillTinted = false,
   showCategoryBelow = false,
   showMetaBelow = false,
   titleFontSize,
@@ -200,6 +205,7 @@ export function SessionCardMetadataOverlay({
           categoryId={categoryId}
           leftInset={contentLeft}
           textOnly={categoryPillTextOnly}
+          tinted={categoryPillTinted}
         />
       )}
       {showDuration && (
