@@ -24,12 +24,10 @@ const PILLS_GAP = 8;
 const TOOLS = [
   { id: "mood-register", label: "Registro de ánimo", icon: "emoticon-happy-outline", color: "#8ED9FF" },
   { id: "favorites", label: "Favoritos", icon: "heart-outline", color: "#E6BE67" },
-  { id: "history", label: "Historial", icon: "history", color: "#C8A6FF" },
   { id: "library", label: "Biblioteca", icon: "bookshelf", color: "#E6BE67" },
   { id: "mixer", label: "Mezclador", icon: "tune-vertical", color: "#8ED9FF" },
   { id: "notes", label: "Mis Notas", icon: "notebook-outline", color: "#C8A6FF" },
   { id: "breathing", label: "Ejercicios de respiración", icon: "weather-windy", color: "#8ED9FF" },
-  { id: "downloads", label: "Descargas", icon: "download-outline", color: "#E7A36E" },
   { id: "mood-history", label: "Historial de estado de ánimo", icon: "chart-timeline-variant", color: "#8ED9FF" },
 ] as const;
 
@@ -135,9 +133,6 @@ export function ToolsGrid({
       case "favorites":
         openOverlay("/favoritos-todos");
         break;
-      case "history":
-        openOverlay("/historial");
-        break;
       case "library":
         router.push("/(tabs)/biblioteca" as never);
         break;
@@ -149,9 +144,6 @@ export function ToolsGrid({
         break;
       case "breathing":
         router.push("/respiracion" as never);
-        break;
-      case "downloads":
-        router.push("/descargas" as never);
         break;
       case "mood-history":
         router.push("/historial-emociones" as never);

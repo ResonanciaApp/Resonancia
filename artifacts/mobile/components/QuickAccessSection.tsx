@@ -333,13 +333,18 @@ export function QuickAccessSection({
       ? ACCESS_CARDS_WITH_VIDEOS
       : ACCESS_CARDS_WITH_EXTRAS;
   const allAccessCards = [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS];
-  const visibleAccessCards = accessIds
+  const selectedAccessCards = accessIds
     ? accessIds
         .map((id) => allAccessCards.find((access) => access.id === id))
         .filter((access): access is (typeof allAccessCards)[number] => Boolean(access))
     : includeExtras
       ? accessCards
       : ACCESS_CARDS;
+  const visibleAccessCards = profileLayout
+    ? selectedAccessCards
+    : selectedAccessCards.filter(
+        (access) => access.id !== "history" && access.id !== "downloads",
+      );
   const twoRowColumns = Array.from(
     { length: Math.ceil(visibleAccessCards.length / 2) },
     (_, index) => visibleAccessCards.slice(index * 2, index * 2 + 2),
