@@ -132,7 +132,6 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
-const PROFILE_SECTION_BACKGROUND = "rgba(18,10,33,0.37)";
 
 function brightenHexColor(color: string, amount = 0.5): string {
   const hex = color.replace("#", "");
@@ -368,9 +367,7 @@ export function ProfileScreenBase({
       : activeSceneId === "indigo2"
         ? "rgba(191,207,255,0.096)"
         : "rgba(181,211,255,0.057)";
-  const profileUserSectionBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : PROFILE_SECTION_BACKGROUND;
+  const profileUserSectionBackground = "rgba(255,255,255,0.1)";
   const profileSectionBackground = "rgba(181,211,255,0.1)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
