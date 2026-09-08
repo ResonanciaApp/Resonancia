@@ -384,6 +384,9 @@ export default function DescansoScreen() {
                 cardWidth={sleepDetailCardWidth}
                 fixedCardHeight={sleepDetailCardHeight}
                 titleSize={19}
+                showImageCategoryPill
+                categoryPillTextOnly
+                categoryPillTinted
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}
