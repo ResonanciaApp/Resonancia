@@ -1193,7 +1193,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={[styles.profileCard, { backgroundColor: resourceBlockBackground }]}>
+          <View style={[styles.profileCard, { backgroundColor: "rgba(18,10,33,0.37)" }]}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
