@@ -19,8 +19,8 @@ export default function SlideTramosInversion() {
   const scenarios = Array.from({ length: 21 }, (_, index) => {
     const investmentM = index + 1;
     const equity = equityForInvestment(investmentM);
-    const postMoney = investmentM / (equity / 100);
-    return { investmentM, equity, postMoney };
+    const stakeValueM12 = (equity / 100) * valuationM12;
+    return { investmentM, equity, stakeValueM12 };
   });
   const groups = [scenarios.slice(0, 7), scenarios.slice(7, 14), scenarios.slice(14, 21)];
 
@@ -74,7 +74,7 @@ export default function SlideTramosInversion() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "0.9fr 0.8fr 1.15fr",
+                gridTemplateColumns: "0.8fr 0.72fr 1.28fr",
                 padding: "0.8vh 1vw",
                 borderBottom: "1px solid rgba(255,255,255,0.12)",
                 fontSize: "0.68vw",
@@ -85,7 +85,7 @@ export default function SlideTramosInversion() {
             >
               <div>APORTE</div>
               <div>EQUITY</div>
-              <div>VAL. POST-MONEY</div>
+              <div>VALOR EST. EN M12</div>
             </div>
             {group.map((scenario) => {
               const isAnchor = scenario.investmentM === 8 || scenario.investmentM === 21;
@@ -94,7 +94,7 @@ export default function SlideTramosInversion() {
                   key={scenario.investmentM}
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "0.9fr 0.8fr 1.15fr",
+                    gridTemplateColumns: "0.8fr 0.72fr 1.28fr",
                     alignItems: "center",
                     flex: 1,
                     padding: "0 1vw",
@@ -120,8 +120,8 @@ export default function SlideTramosInversion() {
                   <div style={{ fontSize: isAnchor ? "1.42vw" : "1.16vw", fontWeight: 700, color: scenario.investmentM === 21 ? "#6EC49A" : isAnchor ? "#D6A45C" : "#F4F4F4" }}>
                     {fmtPct(scenario.equity)}
                   </div>
-                  <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.43)" }}>
-                    ~${fmtMoney(scenario.postMoney, 0)}
+                  <div style={{ fontSize: isAnchor ? "1.16vw" : "1.03vw", fontWeight: isAnchor ? 700 : 500, color: isAnchor ? "#6EC49A" : "rgba(110,196,154,0.72)" }}>
+                    ~${fmtMoney(scenario.stakeValueM12)}
                   </div>
                 </div>
               );
