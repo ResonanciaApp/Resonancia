@@ -642,18 +642,6 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Descubre por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              discoverTieredLayout
-            />
-          </View>
-
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
               Explora según tu tiempo
@@ -683,6 +671,18 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
+          </View>
+
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Descubre por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              discoverTieredLayout
+            />
           </View>
 
           <View style={styles.otherThemesSection}>
@@ -1015,6 +1015,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
+    marginTop: 25,
     marginBottom: SECTION_GAP,
   },
   newInResonanceHeader: {
