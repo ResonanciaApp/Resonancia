@@ -3225,7 +3225,8 @@ const styles = StyleSheet.create({
   },
   inicioStickyHeaderRow: {
     minHeight: 54,
-    paddingHorizontal: 18,
+    paddingLeft: 0,
+    paddingRight: 18,
     paddingTop: 7,
     paddingBottom: 10,
     flexDirection: "row",
@@ -3233,8 +3234,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   inicioStickyLogo: {
-    width: 146,
-    height: 21,
+    width: 177,
+    height: 33,
+    marginLeft: -32,
   },
   scroll: { flex: 1 },
 
