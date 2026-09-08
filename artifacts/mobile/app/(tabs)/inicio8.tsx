@@ -2643,11 +2643,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <RecommendedForYouSection
-            selectedMoods={selectedMoods}
-            generation={recoOffset}
-            catalogStatus={catalogStatus}
             catalogVersion={catalogVersion}
-            isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             marginBottom={INICIO2_SECTION_GAP}
           />

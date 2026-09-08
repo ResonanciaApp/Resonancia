@@ -1,158 +1,104 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 
-import { SessionCarousel } from "@/components/SessionCarousel";
-import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
-import { DISCOVER_CONTENT_CATEGORIES } from "@/data/content-categories";
-import { getSessionById, SESSIONS, type Session } from "@/data/sessions";
-import type { Mood } from "@/data/moods";
+import {
+  getGetPopularSessionsQueryKey,
+  useGetPopularSessions,
+} from "@workspace/api-client-react";
+
+import { CategoryAtmosphericCard } from "@/components/CategoryAtmosphericCard";
+import { SessionRow } from "@/components/SessionRow";
+import {
+  getSessionById,
+  SESSIONS,
+  sortSessionsNewestFirst,
+  type Session,
+} from "@/data/sessions";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 
 const HORIZONTAL_PAD = 14;
-const CARDS_PER_TAB = 5;
+const CARDS_PER_TAB = 3;
 
-type RecommendationsByCategory = Record<string, string[]>;
+const RECOMMENDATION_TABS = [
+  { id: "short-meditations", label: "Meditaciones cortas" },
+  { id: "new-content", label: "Nuevo contenido" },
+  { id: "anxiety-sos", label: "Ansiedad S.O.S" },
+  { id: "popular", label: "Populares" },
+] as const;
+
+type RecommendationTabId = (typeof RECOMMENDATION_TABS)[number]["id"];
 
 type Props = {
-  selectedMoods: Mood[];
-  generation: number;
-  catalogStatus: "bundled" | "cached" | "remote";
   catalogVersion: number;
-  isPremium: boolean;
   onPress: (session: Session) => void;
   marginBottom?: number;
 };
 
-function hashText(value: string): number {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function buildRecommendations(
-  selectedMoods: Mood[],
-  generation: number,
-  previous?: RecommendationsByCategory,
-): RecommendationsByCategory {
-  const moodKey = selectedMoods.map((mood) => mood.id).sort().join("|") || "initial";
-  const preferredCategories = new Set(
-    selectedMoods.flatMap((mood) => mood.categoryIds),
-  );
-  const preferredThemes = new Set(
-    selectedMoods.flatMap((mood) => mood.themeTags),
-  );
-
-  return Object.fromEntries(
-    DISCOVER_CONTENT_CATEGORIES.map((category) => {
-      const rankedIds = SESSIONS
-        .filter(
-          (session) =>
-            session.categoryId === category.id && !session.isPlaceholder,
-        )
-        .map((session) => ({
-          session,
-          themeMatches:
-            session.themeTag?.filter((tag) => preferredThemes.has(tag)).length ?? 0,
-          categoryMatch: preferredCategories.has(category.id) ? 1 : 0,
-          order: hashText(
-            `${category.id}|${moodKey}|${generation}|${session.id}`,
-          ),
-        }))
-        .sort((left, right) => {
-          if (left.themeMatches !== right.themeMatches) {
-            return right.themeMatches - left.themeMatches;
-          }
-          if (left.categoryMatch !== right.categoryMatch) {
-            return right.categoryMatch - left.categoryMatch;
-          }
-          return left.order - right.order;
-        })
-        .map(({ session }) => session.id);
-
-      let ids = rankedIds.slice(0, CARDS_PER_TAB);
-      const previousIds = previous?.[category.id] ?? [];
-      const sameSelection =
-        ids.length === previousIds.length &&
-        ids.every((id) => previousIds.includes(id));
-
-      if (sameSelection && rankedIds.length > CARDS_PER_TAB) {
-        const replacement = rankedIds.find((id) => !previousIds.includes(id));
-        if (replacement) {
-          ids = [...ids.slice(0, CARDS_PER_TAB - 1), replacement];
-        }
-      }
-
-      return [category.id, ids];
-    }),
-  );
-}
-
 export function RecommendedForYouSection({
-  selectedMoods,
-  generation,
-  catalogStatus,
   catalogVersion,
-  isPremium,
   onPress,
   marginBottom = 0,
 }: Props) {
-  const { width } = useWindowDimensions();
   const { activeSceneId, theme } = useSceneTheme();
   const colors = useColors();
-  const [activeCategoryId, setActiveCategoryId] = useState(
-    DISCOVER_CONTENT_CATEGORIES[0]?.id ?? "",
+  const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
+    RECOMMENDATION_TABS[0].id,
   );
-  const [recommendationIds, setRecommendationIds] =
-    useState<RecommendationsByCategory>(() =>
-      buildRecommendations(selectedMoods, generation),
-    );
-  const appliedGeneration = useRef(generation);
-  const hydratedCatalogApplied = useRef(catalogStatus !== "bundled");
-
-  useEffect(() => {
-    if (appliedGeneration.current === generation) return;
-    appliedGeneration.current = generation;
-    setRecommendationIds((current) =>
-      buildRecommendations(selectedMoods, generation, current),
-    );
-  }, [generation, selectedMoods]);
-
-  useEffect(() => {
-    if (hydratedCatalogApplied.current || catalogStatus === "bundled") return;
-    hydratedCatalogApplied.current = true;
-    setRecommendationIds(buildRecommendations(selectedMoods, generation));
-  }, [catalogStatus, catalogVersion, generation, selectedMoods]);
-
-  const activeSessions = useMemo(
-    () =>
-      (recommendationIds[activeCategoryId] ?? [])
-        .map((id) => getSessionById(id))
-        .filter((session): session is Session => Boolean(session)),
-    [activeCategoryId, recommendationIds],
+  const { data: popularData } = useGetPopularSessions(
+    { limit: 30 },
+    {
+      query: {
+        queryKey: getGetPopularSessionsQueryKey({ limit: 30 }),
+        staleTime: 5 * 60_000,
+      },
+    },
   );
 
-  const hasRecommendations = Object.values(recommendationIds).some(
-    (ids) => ids.length > 0,
+  const recommendations = useMemo<Record<RecommendationTabId, Session[]>>(() => {
+    const available = SESSIONS.filter((session) => !session.isPlaceholder);
+    const newest = [...available].sort(sortSessionsNewestFirst);
+    const shortMeditations = available
+      .filter((session) => session.categoryId === "meditaciones-guiadas")
+      .sort((left, right) =>
+        left.duration !== right.duration
+          ? left.duration - right.duration
+          : sortSessionsNewestFirst(left, right),
+      )
+      .slice(0, CARDS_PER_TAB);
+    const anxiety = newest
+      .filter((session) => session.themeTag?.includes("Para la ansiedad"))
+      .slice(0, CARDS_PER_TAB);
+    const popular = (popularData?.sessions ?? [])
+      .map((session) => getSessionById(session.id))
+      .filter(
+        (session): session is Session =>
+          Boolean(session) && !session?.isPlaceholder,
+      )
+      .slice(0, CARDS_PER_TAB);
+
+    return {
+      "short-meditations": shortMeditations,
+      "new-content": newest.slice(0, CARDS_PER_TAB),
+      "anxiety-sos": anxiety,
+      popular,
+    };
+  }, [catalogVersion, popularData]);
+
+  const activeSessions = recommendations[activeTabId];
+  const hasRecommendations = Object.values(recommendations).some(
+    (sessions) => sessions.length > 0,
   );
 
   if (!hasRecommendations) return null;
 
-  const sleepCardWidth = (width - 20 * 2 - 12) / 2;
-  const sleepCardHeight = Math.round(
-    (sleepCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
-  );
   const tabBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -168,7 +114,7 @@ export function RecommendedForYouSection({
       <View style={styles.header}>
         <Text style={styles.title}>Recomendado para ti</Text>
         <Text style={[styles.description, { color: theme.accent ?? colors.accent }]}>
-          En base a tus preferencia y estados de ánimo.
+          Contenido seleccionado para acompañar tu momento.
         </Text>
       </View>
 
@@ -178,15 +124,15 @@ export function RecommendedForYouSection({
         contentContainerStyle={styles.tabs}
         accessibilityRole="tablist"
       >
-        {DISCOVER_CONTENT_CATEGORIES.map((category) => {
-          const selected = category.id === activeCategoryId;
+        {RECOMMENDATION_TABS.map((tab) => {
+          const selected = tab.id === activeTabId;
           return (
             <Pressable
-              key={category.id}
-              onPress={() => setActiveCategoryId(category.id)}
+              key={tab.id}
+              onPress={() => setActiveTabId(tab.id)}
               accessibilityRole="tab"
               accessibilityState={{ selected }}
-              testID={`inicio2-recommended-tab-${category.id}`}
+              testID={`inicio2-recommended-tab-${tab.id}`}
               style={({ pressed }) => [
                 styles.tab,
                 { backgroundColor: selected ? "#F9F9F9" : tabBackground },
@@ -194,7 +140,7 @@ export function RecommendedForYouSection({
               ]}
             >
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
-                {category.label}
+                {tab.label}
               </Text>
             </Pressable>
           );
@@ -202,17 +148,36 @@ export function RecommendedForYouSection({
       </ScrollView>
 
       {activeSessions.length > 0 ? (
-        <SessionCarousel
-          title=""
-          sessions={activeSessions}
-          isPremium={isPremium}
-          onPress={onPress}
-          style={styles.carousel}
-          presentation="sleep-category"
-          cardWidth={sleepCardWidth}
-          fixedCardHeight={sleepCardHeight}
-          showHeader={false}
-        />
+        <View style={styles.recommendationsList}>
+          {activeSessions.map((session) => (
+            <CategoryAtmosphericCard
+              key={session.id}
+              categoryId={session.categoryId}
+            >
+              <SessionRow
+                session={session}
+                imageSize={97}
+                showCategoryPill
+                categoryPillPlain={false}
+                categoryPillTextOnly
+                categoryPillTinted
+                categoryPillShowIconGlyph={false}
+                categoryPillIconSize={15}
+                showDurationBadge
+                showChevron
+                authorColor={theme.accent ?? colors.accent}
+                authorFontSize={theme.id === "indigo2" ? 11 : undefined}
+                chevronColor={
+                  theme.id === "indigo2"
+                    ? theme.accent ?? colors.accent
+                    : undefined
+                }
+                onPress={() => onPress(session)}
+                style={styles.row}
+              />
+            </CategoryAtmosphericCard>
+          ))}
+        </View>
       ) : (
         <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>No hay recomendaciones disponibles.</Text>
       )}
@@ -266,10 +231,13 @@ const styles = StyleSheet.create({
   tabTextSelected: {
     color: "#060A0F",
   },
-  carousel: {
-    marginTop: 8,
-    marginBottom: 0,
+  recommendationsList: {
     paddingHorizontal: HORIZONTAL_PAD,
+    gap: 15,
+  },
+  row: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   empty: {
     minHeight: 80,
