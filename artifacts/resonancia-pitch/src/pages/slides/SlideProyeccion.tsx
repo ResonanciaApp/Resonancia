@@ -37,7 +37,7 @@ function ScenarioCard({
       </div>
       <div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES MES 12</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{subs}</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#D6A45C", lineHeight: 1 }}>{subs}</div>
       </div>
     </div>
   );
