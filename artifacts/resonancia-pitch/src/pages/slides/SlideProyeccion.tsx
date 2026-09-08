@@ -1,4 +1,4 @@
-import { ARPU_NORMAL, BASE_CASE, YEAR_ONE_SCENARIOS } from "../../data/financialModel";
+import { BASE_CASE, YEAR_ONE_SCENARIOS } from "../../data/financialModel";
 
 function ScenarioCard({
   label,
@@ -86,32 +86,6 @@ export default function SlideProyeccion() {
 
       {/* Assumptions */}
       <div>
-        {/* Key figures row */}
-        <div style={{ display: "flex", gap: "1.2vw", alignItems: "stretch", marginBottom: "1.4vh" }}>
-          {[
-             { label: "Lanzamiento M1", value: "$1.990 / $19.990", note: "Premium · 70% mensual / 30% anual" },
-             { label: "Premium normal M2+", value: "$4.990 / $39.990", note: "65% mensual / 35% anual" },
-             { label: "M3+ con Premium Plus", value: `~$${Math.round(ARPU_NORMAL).toLocaleString("es-CL")}/mes`, note: "65% Premium / 35% Plus · churn 15%" },
-          ].map((k) => (
-            <div
-              key={k.label}
-              style={{
-                flex: 1,
-                backgroundColor: "rgba(0,0,0,0.23)",
-                border: "1px solid rgba(255,255,255,0.20)",
-                borderRadius: "0.6vw",
-                padding: "1.0vh 1.1vw",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.3vh",
-              }}
-            >
-              <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.08em" }}>{k.label.toUpperCase()}</div>
-              <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.1 }}>{k.value}</div>
-              <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)" }}>{k.note}</div>
-            </div>
-          ))}
-        </div>
         {/* Short disclaimer */}
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
            Instalaciones estimadas de referencia: 80.000 / 120.000 / 180.000. Base: 1.000 altas brutas M1; ~{base.grossM2toM11}/mes M2–M11 y ajuste M12 para 4.400 activos. Registros pagados acumulados ≠ activos: churn mensual 15%. Equilibrio M{BASE_CASE.firstPositiveMonth}; recuperación M{BASE_CASE.cumulativeRecoveryMonth}. Escenarios ilustrativos, no garantizados.
