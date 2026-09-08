@@ -1,8 +1,9 @@
-import { FINANCIAL_TOTALS, formatMillions } from "../../data/financialModel";
+import { BLENDED_CAC, CAC_MARKETING_M, FINANCIAL_TOTALS, MONTHLY_COHORT_ARPU, PAYBACK_MONTHS, formatMillions } from "../../data/financialModel";
 
 export default function SlideCAC() {
-  const totalMarketingM = 1 + FINANCIAL_TOTALS.roundFundedMarketingM + FINANCIAL_TOTALS.operatingMarketingM;
-  const blendedCac = totalMarketingM * 1_000_000 / 3_600;
+  const totalMarketingM = CAC_MARKETING_M;
+  const blendedCac = BLENDED_CAC;
+  const paybackMonths = PAYBACK_MONTHS;
 
   const drivers = [
     {
@@ -34,16 +35,16 @@ export default function SlideCAC() {
         ANEXO FINANCIERO · COSTO POR ADQUISICIÓN
       </div>
       <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-        Cada suscriptor se paga <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>en ~1,1 meses.</span>
+         Cada alta se paga <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>en ~{paybackMonths.toFixed(1).replace(".", ",")} meses.</span>
       </div>
 
       {/* KPI row */}
       <div style={{ display: "flex", gap: "1.6vw", marginTop: "4.5vh" }}>
         {[
-          { k: "CAC BLENDED AÑO 1", v: `≈ $${(Math.round(blendedCac / 10) * 10).toLocaleString("es-CL")}`, s: "por suscriptor (rango $3.100–$4.000)" },
+           { k: "CAC BLENDED AÑO 1", v: `≈ $${(Math.round(blendedCac / 10) * 10).toLocaleString("es-CL")}`, s: "por alta pagada (numerador: marketing total)" },
           { k: "INVERSIÓN EN MARKETING AÑO 1", v: `≈ ${formatMillions(totalMarketingM)}`, s: "pre-lanzamiento + ramp-up M1–M12" },
-          { k: "SUSCRIPTORES AÑO 1", v: "3.600", s: "300 nuevos subs/mes (caso base)" },
-          { k: "PAYBACK DEL CAC", v: "1,1 meses", s: "CAC ÷ ARPU recurrente $3.238/mes" },
+           { k: "ALTAS PAGADAS AÑO 1", v: Math.round(FINANCIAL_TOTALS.grossAdditions).toLocaleString("es-CL"), s: `${Math.round(FINANCIAL_TOTALS.cumulativeRegistrations).toLocaleString("es-CL")} signups pagados acumulados; 4.400 activos M12` },
+           { k: "PAYBACK DEL CAC", v: `${paybackMonths.toFixed(1).replace(".", ",")} meses`, s: `CAC ÷ ARPU neto cohorte mensual $${Math.round(MONTHLY_COHORT_ARPU).toLocaleString("es-CL")}/mes` },
         ].map((c) => (
           <div
             key={c.k}
@@ -75,8 +76,7 @@ export default function SlideCAC() {
 
       {/* Footnote */}
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        CAC blended = marketing total año 1 (pre-lanzamiento $1M · M1–M3 $2,5M de la ronda · M4–M6 $0 orgánico · M7–M12 $9,6M operativo) ÷ 3.600 suscriptores del caso base.
-        Payback sobre ARPU recurrente blended $3.238 (neto de IVA y comisión de tienda). Cifras en CLP, consistentes con el anexo de flujo de caja.
+         CAC blended = marketing total de adquisición $12,6M (pre-lanzamiento $1M + P&amp;L año 1 $11,6M) ÷ altas pagadas año 1; no usa descargas genéricas. Payback sobre ARPU neto de cohorte mensual (IVA 19% y comisión tienda 30% descontados). Cifras en CLP.
       </div>
     </div>
   );

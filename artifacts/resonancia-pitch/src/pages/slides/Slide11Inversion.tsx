@@ -37,8 +37,8 @@ export default function Slide11Inversion() {
   ];
 
   const rrhh = [
-    { label: "Super admin / Atención al cliente", monto: "$350.000" },
-    { label: "Gerente general",                   monto: "$300.000" },
+    { label: "Super admin / Atención al cliente", monto: "$1.050.000" },
+    { label: "Gerente general",                   monto: "$900.000" },
   ];
 
   const equipos = [
@@ -161,11 +161,11 @@ export default function Slide11Inversion() {
           ))}
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total mensual</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$650.000</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total runway reducido</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$1.950.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            Presupuesto de runway operativo: $1.950.000
+            Bolsa total prorrateada durante 4 meses
           </div>
         </div>
 

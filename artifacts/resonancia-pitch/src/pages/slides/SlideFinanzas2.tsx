@@ -11,10 +11,10 @@ export default function SlideFinanzas2() {
     subs: month.subscribers,
     launch: month.phase === "lanzamiento",
     cursos: month.courseUnits,
-    cumulative: month.cumulativeResultM,
+     cumulative: month.cumulativeCashM,
   }));
 
-  const maxSubs  = 3600;
+  const maxSubs  = 4400;
   const allCum   = data.map((d) => d.cumulative);
   const minCum   = Math.min(...allCum);
   const maxCum   = Math.max(...allCum);
@@ -42,7 +42,7 @@ export default function SlideFinanzas2() {
           Caja acumulada y <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          Caja <strong style={{ color: "#FFFFFF" }}>acumulada desde M1</strong> (suma de los resultados mensuales de la hoja 1, no el resultado de cada mes) · <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+
+           Caja <strong style={{ color: "#FFFFFF" }}>real acumulada desde M1</strong>: anuales cobrados por adelantado + cobros mensuales de cohortes sobrevivientes − gastos de caja (incluye marketing de ronda) · <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export default function SlideFinanzas2() {
 
         {/* Right panel */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.9vh", minHeight: 0, overflow: "hidden" }}>
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>ESCENARIOS AÑO 1 · TOTALES</div>
+           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>ESCENARIOS P&amp;L AÑO 1 · DEVENGADO</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6vh" }}>
             {scenarios.map((s) => (
               <div key={s.label} style={{
@@ -93,10 +93,10 @@ export default function SlideFinanzas2() {
               }}>
                 <div>
                   <div style={{ fontSize: "1.1vw", fontWeight: 700, color: s.highlight ? "#6EC49A" : "#F4F4F4" }}>{s.label}</div>
-                  <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.45)" }}>{s.subs12} subs · {s.cursos6m} cursos</div>
+                  <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.45)" }}>{s.subs12} activos · {s.registrations} reg. acum.</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal}</div>
+                   <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal} ing.</div>
                   <div style={{ fontSize: "1.05vw", fontWeight: 700, color: s.negative ? "rgba(224,112,112,0.9)" : "#6EC49A" }}>{s.neto} neto</div>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export default function SlideFinanzas2() {
           </div>
 
           <div style={{ marginTop: "auto" }}>
-            <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.08em", marginBottom: "0.6vh" }}>CURVA BASE · SUSCRIPTORES (+300/mes)</div>
+            <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.08em", marginBottom: "0.6vh" }}>CURVA BASE · ACTIVOS (churn 15%)</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.22vh" }}>
               {data.map((d) => (
                 <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "0.5vw" }}>
@@ -125,8 +125,7 @@ export default function SlideFinanzas2() {
       </div>
 
       <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
-        Base: 300 nuevos subs/mes · Blend 35/65% (sin lifetime) · ARPU rec. $3.238 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
-        Marketing operativo escalonado desde M7 · Valle conservador ≈ {formatMillions(BASE_CASE.conservativeValleyM)} en M5 · Primer mes en equilibrio M{BASE_CASE.firstPositiveMonth} · Recuperación de caja acumulada M{BASE_CASE.cumulativeRecoveryMonth} · El marketing de lanzamiento M1–M3 ($2,5M) está financiado por la ronda y fuera de esta curva · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
+         Base: 1.000 altas brutas M1, ~{YEAR_ONE_SCENARIOS[0].grossM2toM11}/mes M2–M11 y ajuste M12 para 4.400 activos; churn mensual 15% solo en mensualidades. Optimista y agresivo calculan sus curvas para 7.000 y 9.000 activos. M3+: 65% Premium / 35% Premium Plus; cada plan 65% mensual / 35% anual. Cursos $15.294/venta · caja mínima {formatMillions(BASE_CASE.cashValleyM)} · recuperación de caja M{BASE_CASE.cashRecoveryMonth}. El anual se cobra al alta y permanece activo durante su término; mensual incluye renovaciones de cohortes sobrevivientes.
       </div>
     </div>
   );

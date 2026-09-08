@@ -1,15 +1,15 @@
-import { BASE_CASE, YEAR_ONE_SCENARIOS, formatMillions } from "../../data/financialModel";
+import { ARPU_NORMAL, BASE_CASE, YEAR_ONE_SCENARIOS, formatMillions } from "../../data/financialModel";
 
 function ScenarioCard({
   label,
   highlight,
-  installs,
+  paidSignups,
   subs,
   revenue,
 }: {
   label: string;
   highlight?: boolean;
-  installs: string;
+  paidSignups: string;
   subs: string;
   revenue: string;
 }) {
@@ -28,8 +28,8 @@ function ScenarioCard({
         {label}
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INSTALACIONES</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{installs}</div>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>REGISTROS PAGADOS ACUM.</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{paidSignups}</div>
       </div>
       <div style={{ marginBottom: "2vh" }}>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES MES 12</div>
@@ -66,20 +66,20 @@ export default function SlideProyeccion() {
         <ScenarioCard
           label="Base"
           highlight
-          installs="36.000"
-          subs="3.600"
+          paidSignups={base.registrations}
+          subs={base.subs12}
           revenue={`${formatMillions(base.netM, 1, true)} CLP`}
         />
         <ScenarioCard
           label="Optimista"
-          installs="45.000"
-          subs="4.500"
+          paidSignups={optimistic.registrations}
+          subs={optimistic.subs12}
           revenue={`${formatMillions(optimistic.netM, 0, true)} CLP`}
         />
         <ScenarioCard
           label="Agresivo"
-          installs="60.000"
-          subs="6.000"
+          paidSignups={aggressive.registrations}
+          subs={aggressive.subs12}
           revenue={`${formatMillions(aggressive.netM, 0, true)} CLP`}
         />
       </div>
@@ -89,9 +89,9 @@ export default function SlideProyeccion() {
         {/* Key figures row */}
         <div style={{ display: "flex", gap: "1.2vw", alignItems: "stretch", marginBottom: "1.4vh" }}>
           {[
-            { label: "Lanzamiento M1",    value: "$5.990 / $39.990", note: "Mensual · Anual" },
-            { label: "Normal M2+",        value: "$7.990 / $49.990", note: "Mensual · Anual" },
-            { label: "Blend (35/65%)", value: "~$3.238/mes/sub", note: "ARPU recurrente blended (M2+)" },
+             { label: "Lanzamiento M1", value: "$1.990 / $19.990", note: "Premium · 70% mensual / 30% anual" },
+             { label: "Premium normal M2+", value: "$4.990 / $39.990", note: "65% mensual / 35% anual" },
+             { label: "M3+ con Premium Plus", value: `~$${Math.round(ARPU_NORMAL).toLocaleString("es-CL")}/mes`, note: "65% Premium / 35% Plus · churn 15%" },
           ].map((k) => (
             <div
               key={k.label}
@@ -114,7 +114,7 @@ export default function SlideProyeccion() {
         </div>
         {/* Short disclaimer */}
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
-          Base: 300 suscriptores nuevos/mes · Primer mes en equilibrio M{BASE_CASE.firstPositiveMonth} · Recuperación de caja acumulada M{BASE_CASE.cumulativeRecoveryMonth}. Escenarios ilustrativos, no garantizados.
+           Base: 1.000 altas brutas M1; ~{base.grossM2toM11}/mes M2–M11 y ajuste M12 para 4.400 activos. Registros acumulados ≠ activos: churn mensual 15%. Equilibrio M{BASE_CASE.firstPositiveMonth}; recuperación M{BASE_CASE.cumulativeRecoveryMonth}. Escenarios ilustrativos, no garantizados.
         </div>
       </div>
 

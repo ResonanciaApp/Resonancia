@@ -1,6 +1,8 @@
+import { FINANCIAL_MONTHS, formatMillions } from "../../data/financialModel";
+
 export default function SlideTramosInversion() {
-  // Valorización ilustrativa a M12: 3.600 suscriptores × ARPU recurrente anualizado × 4× ARR.
-  const VAL_M12 = 560; // millones CLP
+  const arrM12 = FINANCIAL_MONTHS[11].recurringRevenueM * 12;
+  const VAL_M12 = arrM12 * 4;
 
   const tramos = [
     { inv: 3,  equity: 2.0 },
@@ -169,7 +171,7 @@ export default function SlideTramosInversion() {
       {/* Footer note */}
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
         <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
-          Estimación a M12 sobre el caso base: 3.600 suscriptores, ARR recurrente anualizado cercano a $140M y valoración ilustrativa de 4× ARR (~$560M CLP). Retorno estimado, referencial y sujeto a acuerdo definitivo.
+           Estimación a M12 sobre el caso base: 4.400 suscriptores activos (churn mensual 15%), ARR recurrente anualizado {formatMillions(arrM12)} y valoración ilustrativa de 4× ARR ({formatMillions(VAL_M12)} CLP). Retorno estimado, referencial y sujeto a acuerdo definitivo.
         </div>
       </div>
 

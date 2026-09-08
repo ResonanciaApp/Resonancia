@@ -1,7 +1,8 @@
 import {
   BASE_CASE,
-  FIXED_MONTHLY_COST_M,
+  FINANCIAL_MONTHS,
   INVESTMENT,
+  PRICING,
   formatMillions,
 } from "../../data/financialModel";
 
@@ -14,10 +15,9 @@ export default function SlideContingencia() {
       tint: "#6EC49A",
       d: (
         <>
-          El 65% de las altas elige el plan anual y lo paga <span style={{ color: "#FFFFFF", fontWeight: 700 }}>completo por adelantado</span>:
-          ~195 anuales × $23.500 netos ≈ <span style={{ color: "#FFFFFF", fontWeight: 700 }}>$4,6M</span> + ~$0,4M de mensuales
-          = <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$5,0M de ingreso real</span> contra {formatMillions(FIXED_MONTHLY_COST_M, 2)} de costos.
-          El mes 1 prácticamente se paga solo, con la campaña de lanzamiento ($2,5M de la ronda: $1M + $1M + $0,5M en M1–M3) ya financiada.
+           El 30% de las altas M1 elige Premium anual y lo paga <span style={{ color: "#FFFFFF", fontWeight: 700 }}>completo por adelantado</span>:
+           300 anuales + 700 mensuales = <span style={{ color: "#FFFFFF", fontWeight: 700 }}>{formatMillions(FINANCIAL_MONTHS[0].subscriptionCashM)} de ingreso real</span> contra {formatMillions(FINANCIAL_MONTHS[0].cashExpensesM, 2)} de gastos incurridos.
+          El mes 1 prácticamente se paga solo, con la campaña post-lanzamiento de la ronda ($2,0M: $1M M1 + $1M M2; M3 $0) ya financiada.
         </>
       ),
     },
@@ -26,10 +26,11 @@ export default function SlideContingencia() {
       tint: "rgba(224,112,112,0.9)",
       d: (
         <>
-          Que el mix anual tarde: en una app nueva es común probar primero el plan mensual.
-          Si el anual queda <span style={{ color: "#FFFFFF", fontWeight: 700 }}>bajo el 50%</span> de las altas,
-          la caja real se acerca a la vista conservadora de las hojas 1–2
-          (valle de hasta <span style={{ color: "#FFFFFF", fontWeight: 700 }}>≈ {formatMillions(BASE_CASE.conservativeValleyM)}</span> en M5).
+           Que el mix anual tarde: en una app nueva es común probar primero el plan mensual.
+           Si el anual queda <span style={{ color: "#FFFFFF", fontWeight: 700 }}>bajo el 30% M1 o 35% M2+</span> de las altas,
+           La hoja 1 muestra un proxy acumulado de P&amp;L devengado, cuyo valle es
+           <span style={{ color: "#FFFFFF", fontWeight: 700 }}> {formatMillions(BASE_CASE.conservativeValleyM)} en M{BASE_CASE.valleyMonth}</span>.
+           No es caja: en la hoja 2 la caja real base permanece positiva, con mínimo de {formatMillions(BASE_CASE.cashValleyM)} en M{BASE_CASE.cashValleyMonth}.
         </>
       ),
     },
@@ -39,8 +40,8 @@ export default function SlideContingencia() {
       d: (
         <>
           Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~{formatMillions(contingencyLineM)}</span> ({formatMillions(Math.abs(BASE_CASE.conservativeValleyM))} de valle − {formatMillions(INVESTMENT.launchMarketingReserveM)} de campaña ya financiados).
-          Solo se gira si el mix anual no alcanza el 50% en los primeros 3 meses.
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> No es parte de la ronda ni diluye</span>: es un puente que la propia operación devuelve hacia M11.
+           Solo se gira si el mix anual no alcanza el supuesto en los primeros 3 meses.
+           <span style={{ color: "#FFFFFF", fontWeight: 700 }}> No es parte de la ronda ni diluye</span>: es un puente contingente.
         </>
       ),
     },
@@ -89,13 +90,13 @@ export default function SlideContingencia() {
           <div style={{ fontSize: "0.9vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>GATILLO Y MONITOREO</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
             Indicador único: <span style={{ color: "#FFFFFF", fontWeight: 700 }}>% de suscripciones anuales sobre altas nuevas</span>, revisado mes a mes en M1–M3.
-            Si el mix es ≥ 50%, la línea no se usa y la operación se autofinancia de principio a fin.
+             Si el mix alcanza 30% en M1 y 35% desde M2, la línea no se usa y la operación se autofinancia de principio a fin.
           </div>
         </div>
       </div>
 
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        Neto anual por adelantado = $39.990 ÷ 1,19 × 70% ≈ $23.500 (lanzamiento) · Vista conservadora en hojas 1–2 (anual reconocido mes a mes) ·
+         Neto anual M1 por adelantado = ${PRICING.launchPremium.annual.toLocaleString("es-CL")} ÷ 1,19 × 70%; desde M2 Premium normal = ${PRICING.premium.annual.toLocaleString("es-CL")} y Premium Plus desde M3 = ${PRICING.premiumPlus.annual.toLocaleString("es-CL")}. Vista P&amp;L reconoce anual mes a mes ·
         La línea de contingencia es un compromiso de los socios fundadores, externo a la ronda. Cifras en CLP.
       </div>
     </div>

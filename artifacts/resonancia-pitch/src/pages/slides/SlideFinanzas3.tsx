@@ -18,7 +18,7 @@ export default function SlideFinanzas3() {
     { rango: "Pre-lanzamiento", valor: "$1,0M", desc: "Pauta previa al lanzamiento (de la ronda)" },
     { rango: "Mes 1",     valor: "$1M",        desc: "Campaña de lanzamiento (de la ronda)" },
     { rango: "Mes 2",     valor: "$1M",        desc: "Campaña de lanzamiento (de la ronda)" },
-    { rango: "Mes 3",     valor: "$0,5M",      desc: "Cierre de la campaña de lanzamiento (de la ronda)" },
+    { rango: "Mes 3",     valor: "$0",         desc: "Orgánico + comunidad; sin pauta de la ronda" },
     { rango: "Mes 4–6",   valor: "$0",         desc: "Orgánico + comunidad (escalonado: sin pauta paga)" },
     { rango: "Mes 7–8",   valor: "$1M",        desc: "Pauta + influencers nicho wellness" },
     { rango: "Mes 9–10",  valor: "$1,8M",      desc: "Escala fuerte con caja mensual positiva" },
@@ -28,7 +28,7 @@ export default function SlideFinanzas3() {
 
   const phases = [
     { fase: "M1–M2",   fijo: "$2,58M", cont: "$0,45M", mkt: "$1,0M*", total: "$4,03M*" },
-    { fase: "M3",      fijo: "$2,58M", cont: "$0,45M", mkt: "$0,5M*", total: "$3,53M*" },
+    { fase: "M3",      fijo: "$2,58M", cont: "$0,45M", mkt: "$0",     total: "$3,03M" },
     { fase: "M4–M6",   fijo: "$2,58M", cont: "$0,45M", mkt: "$0",     total: "$3,03M" },
     { fase: "M7–M8",   fijo: "$2,58M", cont: "$0,45M", mkt: "$1,0M",  total: "$4,03M" },
     { fase: "M9–M10",  fijo: "$2,58M", cont: "$0,45M", mkt: "$1,8M",  total: "$4,83M" },
@@ -126,7 +126,7 @@ export default function SlideFinanzas3() {
             ))}
           </div>
           <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)", marginTop: "0.4vh", lineHeight: 1.3 }}>
-            * Marketing M1–M3 financiado con la ronda y excluido del P&amp;L operativo de las hojas 1–2. Presupuesto total de lanzamiento: $3,5M ($1M pre-lanzamiento + $1M M1 + $1M M2 + $0,5M M3). Desde M7 el marketing sí forma parte del costo operativo.
+             * Marketing total de la ronda: $3,0M ($1M pre-lanzamiento + $1M M1 + $1M M2; M3 $0). Los $2,0M incurridos en M1–M2 están incluidos en el P&amp;L y la caja de las hojas 1–2. Desde M7 el marketing operativo sigue formando parte del costo.
           </div>
         </div>
       </div>

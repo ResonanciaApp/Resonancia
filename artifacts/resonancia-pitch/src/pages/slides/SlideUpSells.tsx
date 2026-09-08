@@ -1,3 +1,5 @@
+import { FINANCIAL_TOTALS, formatMillions } from "../../data/financialModel";
+
 export default function SlideUpSells() {
   // Neto por curso:
   // $40.000 / 1.19 (IVA) × 0.70 (Apple 30%) = $23.529 neto post-tienda
@@ -152,12 +154,13 @@ export default function SlideUpSells() {
             marginTop: "1.2vh", backgroundColor: "rgba(110,196,154,0.07)", border: "1px solid rgba(110,196,154,0.25)",
             borderRadius: "0.6vw", padding: "1vh 1.2vw",
           }}>
-            <div style={{ fontSize: "0.85vw", color: "#6EC49A", fontWeight: 700, marginBottom: "0.3vh" }}>IMPACTO EN FLUJO AÑO 1</div>
+            <div style={{ fontSize: "0.85vw", color: "#6EC49A", fontWeight: 700, marginBottom: "0.3vh" }}>IMPACTO P&amp;L AÑO 1 · DEVENGADO</div>
             <div style={{ fontSize: "0.90vw", color: "rgba(244,244,244,0.60)", lineHeight: 1.4 }}>
-              Suscripciones <span style={{ color: "#F4F4F4", fontWeight: 700 }}>~$115M</span> +
-              Cursos <span style={{ color: "#F4F4F4", fontWeight: 700 }}>~{formatM(totalNeto)}</span> =
-              Total <span style={{ color: "#6EC49A", fontWeight: 700 }}>~$124M CLP</span> ·
-              Neto estimado <span style={{ color: "#6EC49A", fontWeight: 700 }}>+$54M CLP</span>
+              Suscripciones <span style={{ color: "#F4F4F4", fontWeight: 700 }}>{formatMillions(FINANCIAL_TOTALS.recurringRevenueM, 2)}</span> +
+              cursos <span style={{ color: "#F4F4F4", fontWeight: 700 }}>{formatMillions(FINANCIAL_TOTALS.courseRevenueM, 2)}</span> =
+              ingresos <span style={{ color: "#6EC49A", fontWeight: 700 }}>{formatMillions(FINANCIAL_TOTALS.recurringRevenueM + FINANCIAL_TOTALS.courseRevenueM, 2)}</span> ·
+              gastos <span style={{ color: "#F4F4F4", fontWeight: 700 }}>{formatMillions(FINANCIAL_TOTALS.totalOperatingCostM, 2)}</span> ·
+              neto <span style={{ color: "#6EC49A", fontWeight: 700 }}>{formatMillions(FINANCIAL_TOTALS.netResultM, 2, true)}</span>
             </div>
           </div>
         </div>

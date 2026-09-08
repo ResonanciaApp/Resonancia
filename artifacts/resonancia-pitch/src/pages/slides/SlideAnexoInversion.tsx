@@ -1,3 +1,5 @@
+import { AGGRESSIVE_SCENARIO, BASE_SCENARIO, OPTIMISTIC_SCENARIO } from "../../data/financialModel";
+
 function Bullet({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: "0.7vw", marginBottom: "0.6vh" }}>
@@ -46,7 +48,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 8,5% VALE</div>
+         <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE LEAD 12,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -64,6 +66,24 @@ function ScenarioCard({
 }
 
 export default function SlideAnexoInversion() {
+  const investmentM = 13.4;
+  const equity = 0.12;
+  const figures = (scenario: typeof BASE_SCENARIO, multiple: number) => {
+    const subscribers = scenario.months[11].activeSubscribers;
+    const arrM = scenario.months[11].recurringRevenueM * 12;
+    const value = arrM * multiple;
+    const stake = value * equity;
+    return {
+      subscribers: subscribers.toLocaleString("es-CL"),
+      arr: `$${arrM.toFixed(0)}M CLP`,
+      valuation: `$${value.toFixed(0)}M`,
+      stake: `$${stake.toFixed(1).replace(".", ",")}M CLP`,
+      returnX: `${(stake / investmentM).toFixed(1).replace(".", ",")}×`,
+    };
+  };
+  const base = figures(BASE_SCENARIO, 4);
+  const optimistic = figures(OPTIMISTIC_SCENARIO, 5);
+  const aggressive = figures(AGGRESSIVE_SCENARIO, 6);
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
@@ -96,36 +116,36 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$107,6M CLP</div>
-            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>ciento siete millones seiscientos mil</div>
+             <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$98,3M CLP</div>
+             <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>tramo lead aprobado: $13,4M por 12,0%</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4F4F4", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
-              <Bullet text="+1.000.000 seguidores activos = distribución con costo de adquisición casi nulo" />
+              <Bullet text="≈839.500 seguidores combinados = base propia de comunidad y distribución" />
               <Bullet text="180 pistas de audio listas al lanzar (activo de contenido producido)" />
               <Bullet text="App funcional con auth, player, suscripciones y back-office construidos" />
-              <Bullet text="Precios $7.990/mes · $49.990/año (validados en segmento objetivo)" />
+               <Bullet text="Premium $4.990/mes · $39.990/año; Premium Plus desde M3" />
             </div>
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                $10M ÷ post-money $117,6M ={" "}
-                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>8,5%</span> (tramo máx.)
+                 $13,4M ÷ post-money $111,7M ={" "}
+                 <span style={{ color: "#FFFFFF", fontWeight: 700 }}>12,0%</span> (tramo lead)
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión máx.</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$10M</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$13,4M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>8,5%</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>12,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$117,6M</div>
+                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$111,7M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -144,36 +164,33 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 3.600 subs × $3.238 × 12 × 4× = $560M → 8,5% = $47.6M → 47.6/10 = 4.8× */}
             <ScenarioCard
               label="Base"
               highlight
-              subs="3.600"
-              arr="$140M CLP"
+               subs={base.subscribers}
+               arr={base.arr}
               multiple="4× ARR"
-              valuation="$560M"
-              stakeVal="$47,6M CLP"
-              returnX="4,8×"
+               valuation={base.valuation}
+               stakeVal={base.stake}
+               returnX={base.returnX}
             />
-            {/* Optimista: 4.500 × $3.238 × 12 × 5× = $874M → 8,5% = $74.3M → 74.3/10 = 7.4× */}
             <ScenarioCard
               label="Optimista"
-              subs="4.500"
-              arr="$175M CLP"
+               subs={optimistic.subscribers}
+               arr={optimistic.arr}
               multiple="5× ARR"
-              valuation="$874M"
-              stakeVal="$74,3M CLP"
-              returnX="7,4×"
+               valuation={optimistic.valuation}
+               stakeVal={optimistic.stake}
+               returnX={optimistic.returnX}
             />
-            {/* Agresivo: 6.000 × $3.238 × 12 × 6× = $1.399M → 8,5% = $119M → 119/10 = 11.9× */}
             <ScenarioCard
               label="Agresivo"
-              subs="6.000"
-              arr="$233M CLP"
+               subs={aggressive.subscribers}
+               arr={aggressive.arr}
               multiple="6× ARR"
-              valuation="$1.399M"
-              stakeVal="$119M CLP"
-              returnX="11,9×"
+               valuation={aggressive.valuation}
+               stakeVal={aggressive.stake}
+               returnX={aggressive.returnX}
             />
           </div>
         </div>
@@ -181,7 +198,7 @@ export default function SlideAnexoInversion() {
 
       {/* Footer */}
       <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.45, marginTop: "1.5vh" }}>
-        El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR recurrente = suscriptores M12 × ARPU rec. $3.238 × 12 (blend 35/65%, solo planes recurrentes) · Base: 300 subs nuevos/mes ·
+         El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR recurrente = ingreso recurrente neto M12 anualizado, calculado por cohorte según su precio/tier de adquisición; base con churn mensual 15% ·
         Múltiplos de referencia para consumer subscription en etapa temprana (Calm valuó en ~4–8× ARR en rondas tempranas) ·
         Valoración estimada ilustrativa, no garantizada. El retorno real depende del exit y dilución en rondas futuras.
       </div>

@@ -1,33 +1,26 @@
+import { BLENDED_CAC, MONTHLY_CHURN, MONTHLY_COHORT_ARPU } from "../../data/financialModel";
+
 export default function SlideRetencion() {
-  // 300 subs nuevos/mes · subs M12 = 300·(1-(1-c)^12)/c
-  // c=15%: ≈1.720 · c=20%: ≈1.400
-  // LTV = ARPU $3.238 / churn → 15%: ≈$21.600 · 20%: ≈$16.200
+  const cac = BLENDED_CAC;
+  const ltv15 = MONTHLY_COHORT_ARPU / MONTHLY_CHURN;
+  const ltv20 = MONTHLY_COHORT_ARPU / 0.20;
   const scenarios = [
     {
-      t: "CASO BASE ACTUAL",
-      churn: "0% de churn",
-      subs: "3.600",
-      ltv: "—",
-      ratio: "—",
-      note: "Supuesto optimista: nadie cancela. Es el escenario de las proyecciones anteriores.",
-      highlight: false,
-    },
-    {
-      t: "CHURN REALISTA",
+       t: "CASO BASE ACTIVO",
       churn: "15% mensual",
-      subs: "≈ 1.720",
-      ltv: "≈ $21.600",
-      ratio: "≈ 6,0x",
-      note: "Escenario realista para una app nueva de suscripción: retención mensual del 85%.",
+       subs: "4.400",
+       ltv: `≈ $${Math.round(ltv15).toLocaleString("es-CL")}`,
+       ratio: `≈ ${(ltv15 / cac).toFixed(1).replace(".", ",")}x`,
+       note: "Las cohortes mensuales retienen 85% mensual; las anuales se mantienen activas durante su término pagado.",
       highlight: true,
     },
     {
       t: "CHURN EXIGENTE",
       churn: "20% mensual",
-      subs: "≈ 1.400",
-      ltv: "≈ $16.200",
-      ratio: "≈ 4,5x",
-      note: "Escenario de estrés: aun perdiendo 1 de cada 5 suscriptores al mes, cada uno devuelve más de 4 veces su costo de adquisición.",
+       subs: "Sensibilidad",
+       ltv: `≈ $${Math.round(ltv20).toLocaleString("es-CL")}`,
+       ratio: `≈ ${(ltv20 / cac).toFixed(1).replace(".", ",")}x`,
+       note: "Con el mismo ARPU, una vida media menor reduce directamente el LTV.",
       highlight: false,
     },
   ];
@@ -49,8 +42,7 @@ export default function SlideRetencion() {
         ¿Y si los usuarios cancelan? <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>El modelo igual se sostiene.</span>
       </div>
       <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.55)", marginTop: "1.6vh", lineHeight: 1.5, maxWidth: "58vw" }}>
-        Las proyecciones del caso base asumen que ningún suscriptor cancela. Aquí sensibilizamos ese supuesto con
-        tasas de cancelación (churn) realistas de la industria.
+         El caso base ya incorpora churn mensual de 15%. Aquí se muestra su economía unitaria y una sensibilidad más exigente.
       </div>
 
       {/* Scenario cards */}
@@ -74,7 +66,7 @@ export default function SlideRetencion() {
 
             {[
               ["Suscriptores a M12", s.subs],
-              ["LTV por suscriptor", s.ltv],
+               ["LTV mensual por suscriptor", s.ltv],
               ["LTV / CAC", s.ratio],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.9vh" }}>
@@ -91,8 +83,7 @@ export default function SlideRetencion() {
       </div>
 
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        Suscriptores M12 = 300 nuevos subs/mes acumulados con la tasa de churn de cada escenario · LTV = ARPU recurrente
-        blended $3.238 ÷ churn mensual · LTV/CAC sobre CAC blended ≈ $3.600 (diapositiva anterior). Cifras en CLP.
+         Activos M12 = cohortes anuales vigentes + cohortes mensuales sobrevivientes; registros acumulados y activos no son equivalentes. LTV de cohorte mensual = ARPU neto mensual $${Math.round(MONTHLY_COHORT_ARPU).toLocaleString("es-CL")} ÷ churn · LTV/CAC usa el mismo CAC de marketing total ÷ altas pagadas. No se proyecta churn/LTV anual: el contrato se retiene durante su término pagado.
       </div>
     </div>
   );
