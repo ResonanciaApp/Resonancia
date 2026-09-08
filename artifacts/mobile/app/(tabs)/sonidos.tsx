@@ -383,7 +383,7 @@ export default function SonidosScreen() {
                 ambientalCardWidth={AMBIENTAL_CARD_W}
                 ambientalImageOffsetY={-36}
                 ambientalTitleOffsetY={-20}
-                ambientalCardBackground="rgba(0,0,0,0.15)"
+                ambientalCardBackground="rgba(18,10,33,0.37)"
                 titleSize={19}
                 showCardMetadata
                  metadataTitleNumberOfLines={3}
