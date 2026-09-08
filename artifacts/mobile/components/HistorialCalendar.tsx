@@ -142,30 +142,28 @@ function DayCell({
       : isSelected && !isToday
         ? "rgba(255,255,255,0.16)"
         : undefined
-    : isToday
-      ? WIDGET_GREEN_SOLID
-      : undefined;
+    : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
   const showCompletedBorder = embedded && hasCompleted;
 
   return (
     <Pressable
       onPress={handlePress}
-      disabled={embedded && isFuture}
+        disabled={isFuture}
       style={styles.dayCell}
       accessibilityRole="button"
       accessibilityLabel={`${d.toLocaleDateString("es-CL", { day: "numeric", month: "long" })}${hasCompleted ? ", con sesión completada" : ""}`}
-      accessibilityState={{ selected: isSelected, disabled: embedded && isFuture }}
+        accessibilityState={{ selected: isSelected, disabled: isFuture }}
     >
       <Animated.View
         style={[
           styles.dayCircle,
-          !(embedded && isFuture) && dayFill && { backgroundColor: dayFill },
+          !isFuture && dayFill && { backgroundColor: dayFill },
           showCompletedBorder && {
             borderWidth: 1.5,
             borderColor: "#F9F9F9",
           },
-          embedded && isToday && !showCompletedBorder && {
+          isToday && !showCompletedBorder && {
             borderWidth: 1.5,
             borderColor: "#F9F9F9",
             borderStyle: "dotted",
@@ -181,7 +179,7 @@ function DayCell({
           style={[
             styles.dayNum,
             {
-              color: embedded && isFuture
+              color: isFuture
                 ? "rgba(255,255,255,0.24)"
                 : embedded && hasCompleted
                    ? "#060A0F"
