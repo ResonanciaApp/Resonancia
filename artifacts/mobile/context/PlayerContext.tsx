@@ -34,6 +34,8 @@ import { syncActivity } from "@/lib/cloudSync";
 import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { sendHeartbeat } from "@/lib/communityApi";
 import { getArtist } from "@/data/artists";
+import { downloadOwnerScope, getValidLocalUri } from "@/lib/downloadRepository";
+import { useAuth as useClerkAuth } from "@clerk/expo";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -167,6 +169,8 @@ function resolveArtworkUrl(session: Session): string | undefined {
 }
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
+  const { userId } = useClerkAuth();
+  const downloadOwner = downloadOwnerScope(userId);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -289,8 +293,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const isPlayingRef = useRef(false);
   /** true una vez que setAudioModeAsync corrió exitosamente (eager o lazy) */
   const audioModeReadyRef = useRef(false);
-  /** id de la sesión cuyo replace() se disparó en onPressIn, sin play todavía */
-  const prewarmSessionIdRef = useRef<string | null>(null);
+  const downloadOwnerRef = useRef(downloadOwner);
+  downloadOwnerRef.current = downloadOwner;
+  const previousDownloadOwnerRef = useRef(downloadOwner);
+  const mainLocalOwnerRef = useRef<string | null>(null);
+  /** Precarga exacta cuyo replace() se disparó en onPressIn, sin play todavía. */
+  const prewarmRef = useRef<{
+    owner: string;
+    sessionId: string;
+    sourceKey: string;
+  } | null>(null);
   isPlayingRef.current = isPlaying;
 
   /** Session currently accruing real listen time (flushed to statEvents on end) */
@@ -761,15 +773,38 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     (session: Session) => {
       if (!audioModeReadyRef.current) return; // audio session aún no configurada
       if (isPlayingRef.current) return;       // no interrumpir reproducción activa
-      const audioFile =
-        (session.audioUri ? { uri: session.audioUri } : undefined) ??
-        AUDIO_MAP[session.id];
-      if (!audioFile) return;
-      prewarmSessionIdRef.current = session.id;
-      const main = ensureMainPlayer();
-      try { main.replace(audioFile); } catch (_) {}
+      void (async () => {
+        const capturedOwner = downloadOwner;
+        const localUri = await getValidLocalUri(capturedOwner, session);
+        if (
+          isPlayingRef.current
+          || downloadOwnerRef.current !== capturedOwner
+        ) return;
+        const audioFile =
+          (localUri
+            ? { uri: localUri }
+            : session.audioUri
+              ? { uri: session.audioUri }
+              : undefined) ?? AUDIO_MAP[session.id];
+        if (!audioFile) return;
+        const sourceKey = localUri
+          ? `local:${localUri}`
+          : session.audioUri
+            ? `remote:${session.audioUri}`
+            : `bundle:${session.id}`;
+        prewarmRef.current = {
+          owner: capturedOwner,
+          sessionId: session.id,
+          sourceKey,
+        };
+        const main = ensureMainPlayer();
+        try {
+          main.replace(audioFile);
+          mainLocalOwnerRef.current = localUri ? capturedOwner : null;
+        } catch (_) {}
+      })();
     },
-    [ensureMainPlayer],
+    [downloadOwner, ensureMainPlayer],
   );
 
   /** Stop the gapless engine loop voice (if any) and clear the loop flags */
@@ -802,6 +837,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     } catch (_) {}
     voicePlayerRef.current?.pause();
   }, []);
+
+  useEffect(() => {
+    const previousOwner = previousDownloadOwnerRef.current;
+    if (previousOwner === downloadOwner) return;
+    previousDownloadOwnerRef.current = downloadOwner;
+    prewarmRef.current = null;
+    if (mainLocalOwnerRef.current && mainLocalOwnerRef.current !== downloadOwner) {
+      ++playGenRef.current;
+      teardownPlayback();
+      teardownLayers();
+      mainLocalOwnerRef.current = null;
+      lastPlayingRef.current = false;
+      switchingRef.current = false;
+      setIsPlaying(false);
+      setIsLoading(false);
+    }
+  }, [downloadOwner, teardownLayers, teardownPlayback]);
 
   useEffect(() => {
     return () => {
@@ -1315,7 +1367,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
       // Preferir el audio subido a la BD (audioUri) sobre el bundle cuando el
       // admin lo haya reemplazado; caer al AUDIO_MAP solo si no hay URI de BD.
-      const audioFile = (session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
+      const localUri = await getValidLocalUri(downloadOwner, session);
+      if (downloadOwnerRef.current !== downloadOwner) {
+        switchingRef.current = false;
+        return;
+      }
+      const audioFile = (localUri ? { uri: localUri } : session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
 
       if (audioFile) {
         setIsLoading(true);
@@ -1348,9 +1405,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           mainPlayerGenRef.current = gen; // belt-and-suspenders
           // Si onPressIn ya llamó prewarmSession() con esta misma sesión, el
           // replace() corrió antes y el buffer lleva ventaja: ir directo a play().
-          const alreadyPrewarmed = prewarmSessionIdRef.current === session.id;
-          prewarmSessionIdRef.current = null;
+          const sourceKey = localUri
+            ? `local:${localUri}`
+            : session.audioUri
+              ? `remote:${session.audioUri}`
+              : `bundle:${session.id}`;
+          const alreadyPrewarmed =
+            prewarmRef.current?.sessionId === session.id
+            && prewarmRef.current.owner === downloadOwner
+            && prewarmRef.current.sourceKey === sourceKey;
+          prewarmRef.current = null;
           if (!alreadyPrewarmed) main.replace(audioFile);
+          mainLocalOwnerRef.current = localUri ? downloadOwner : null;
           main.volume = mainVolumeRef.current;
           main.play();
 
@@ -1443,7 +1509,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }
       }
     },
-    [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers, makeSessionListener],
+    [addToHistory, downloadOwner, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers, makeSessionListener],
   );
 
   // Mantener la ref de playSession actualizada (usada por advancePlaylist).
@@ -1502,8 +1568,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Preferir el audio subido a la BD sobre el bundle (igual que el path normal).
       // Los loops con URI remota degradan al loop nativo del main si el motor
       // requiere asset bundleado.
+      const localUri = await getValidLocalUri(downloadOwner, session);
+      if (downloadOwnerRef.current !== downloadOwner) {
+        switchingRef.current = false;
+        return;
+      }
       const audioFile =
-        (session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
+        (localUri ? { uri: localUri } : session.audioUri ? { uri: session.audioUri } : undefined) ?? AUDIO_MAP[session.id];
       const isLoopSession = session.isLoop === true || LOOP_SESSIONS.has(session.id);
 
       if (audioFile) {
@@ -1544,6 +1615,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             statusSubRef.current = main.addListener("playbackStatusUpdate", makeSessionListener(gen));
             mainPlayerGenRef.current = gen; // belt-and-suspenders
             main.replace(audioFile);
+            mainLocalOwnerRef.current = localUri ? downloadOwner : null;
             main.volume = 0; // ancla muda: el audio audible sale del motor
             main.play();
 
@@ -1624,6 +1696,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             statusSubRef.current = main.addListener("playbackStatusUpdate", makeSessionListener(gen));
             mainPlayerGenRef.current = gen; // belt-and-suspenders
             main.replace(audioFile);
+            mainLocalOwnerRef.current = localUri ? downloadOwner : null;
             main.volume = mainVolumeRef.current;
             main.play();
 
@@ -1700,6 +1773,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     },
     [
       addToHistory,
+      downloadOwner,
       flushActiveStat,
       startStatTracking,
       markPlayStarted,

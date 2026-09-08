@@ -293,7 +293,7 @@ export function QuickAccessSection({
     const access = [...ACCESS_CARDS, ...EXTRA_ACCESS_CARDS].find((item) => item.id === id);
     if (!access) return;
     if (id === "downloads") {
-      Alert.alert("Descargas", "La descarga estará disponible próximamente.");
+      router.push("/descargas" as never);
       return;
     }
     if (id === "library") {

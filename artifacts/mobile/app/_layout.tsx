@@ -61,6 +61,7 @@ import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
 import { NotificationsProvider } from "@/context/NotificationsContext";
 import { DescansoPlayerProvider } from "@/context/DescansoPlayerContext";
+import { DownloadProvider } from "@/context/DownloadContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -321,6 +322,7 @@ function NavStack() {
           name="historial"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="descargas" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen
           name="historial-emociones"
           options={{ headerShown: false, animation: "slide_from_right" }}
@@ -535,6 +537,7 @@ export default function RootLayout() {
               <AuthProvider>
                 <NotificationsProvider>
                 <PremiumProvider>
+                <DownloadProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
                     <DescansoPlayerProvider>
@@ -583,6 +586,7 @@ export default function RootLayout() {
                     </DescansoPlayerProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>
+                </DownloadProvider>
                 </PremiumProvider>
               </NotificationsProvider>
               </AuthProvider>

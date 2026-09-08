@@ -151,7 +151,7 @@ export function ToolsGrid({
         router.push("/respiracion" as never);
         break;
       case "downloads":
-        Alert.alert("Descargas", "La descarga estará disponible próximamente.");
+        router.push("/descargas" as never);
         break;
       case "mood-history":
         router.push("/historial-emociones" as never);

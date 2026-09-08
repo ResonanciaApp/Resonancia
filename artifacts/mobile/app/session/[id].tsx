@@ -44,6 +44,7 @@ import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { GhostPill } from "@/components/GhostPill";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { useDownloads } from "@/context/DownloadContext";
 
 const BLACK_GHOST_TINT = "rgba(0,0,0,0.45)";
 const PLAY_BUTTON_BACKGROUND = "rgba(255,255,255,0.07)";
@@ -96,6 +97,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     progress,
     clearSessionProgress,
   } = usePlayer();
+  const { downloads, download, remove } = useDownloads();
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
   const { requestHide, showMenu, setRevealHandleHidden } = useTabBarVisibility();
@@ -301,9 +303,18 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     handlePlay();
   };
 
-  const handleDownload = () => {
+  const downloadItem = downloads.find((item) => item.sessionId === session.id);
+  const downloadProgress = Math.round((downloadItem?.progress ?? 0) * 100);
+  const handleDownload = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.");
+    try {
+      if (downloadItem?.status === "complete" || downloadItem?.status === "downloading") {
+        await remove(session.id);
+      }
+      else await download(session);
+    } catch (error) {
+      Alert.alert("No se pudo descargar", error instanceof Error ? error.message : "Revisa tu conexión e inténtalo de nuevo.");
+    }
   };
 
   const handleShare = async () => {
@@ -407,11 +418,35 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
 
         <GhostPill style={styles.blackGhostGroup}>
           <CircleActionButton
-            label="Descargar"
+            label={
+              downloadItem?.status === "complete"
+                ? "Eliminar descarga"
+                : downloadItem?.status === "downloading"
+                  ? "Cancelar descarga"
+                  : downloadItem?.status === "failed"
+                    ? "Reintentar descarga"
+                    : "Descargar"
+            }
             testID="session-detail-download-button"
-            onPress={handleDownload}
+            onPress={() => void handleDownload()}
           >
-            <Feather name="download" size={19} color={colors.foreground} />
+            {downloadItem?.status === "downloading" ? (
+              <Text style={{ color: colors.foreground, fontSize: 10, fontWeight: "800" }}>
+                {downloadProgress}%
+              </Text>
+            ) : (
+              <Feather
+                name={
+                  downloadItem?.status === "complete"
+                    ? "check"
+                    : downloadItem?.status === "failed"
+                      ? "refresh-cw"
+                      : "download"
+                }
+                size={19}
+                color={colors.foreground}
+              />
+            )}
           </CircleActionButton>
           <CircleActionButton
             label={fav ? "Quitar de Me gusta" : "Me gusta"}
@@ -592,9 +627,30 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
               {/* Descargar */}
-              <Pressable style={styles.optRow} onPress={handleDownload}>
-                <Feather name="download" size={18} color="#FBFBFB" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Descargar</Text>
+              <Pressable style={styles.optRow} onPress={() => void handleDownload()}>
+                <Feather
+                  name={
+                    downloadItem?.status === "complete"
+                      ? "trash-2"
+                      : downloadItem?.status === "downloading"
+                        ? "x"
+                        : downloadItem?.status === "failed"
+                          ? "refresh-cw"
+                          : "download"
+                  }
+                  size={18}
+                  color="#FBFBFB"
+                  style={styles.optIcon}
+                />
+                <Text style={styles.optRowText}>
+                  {downloadItem?.status === "complete"
+                    ? "Eliminar descarga"
+                    : downloadItem?.status === "downloading"
+                      ? `Cancelar descarga (${downloadProgress}%)`
+                      : downloadItem?.status === "failed"
+                        ? "Reintentar descarga"
+                        : "Descargar"}
+                </Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
               {/* Agregar a favoritos */}

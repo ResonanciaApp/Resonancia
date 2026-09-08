@@ -51,6 +51,7 @@ import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
+import { useDownloads } from "@/context/DownloadContext";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const HERO_HEIGHT = SCREEN_HEIGHT * 0.63 + 35;
@@ -97,6 +98,7 @@ export default function PlayerScreen() {
     playlistPrev,
     toggleShuffle,
   } = usePlayer();
+  const { downloads, download, remove } = useDownloads();
 
   // En modo playlist los controles de ±15s y ajustes se reemplazan
   const isInPlaylist = !!activePlaylistIds?.length;
@@ -389,6 +391,18 @@ export default function PlayerScreen() {
   if (!currentSession) {
     return <View style={[styles.root, { backgroundColor: "transparent" }]} />;
   }
+  const downloadItem = downloads.find((item) => item.sessionId === currentSession.id);
+  const downloadProgress = Math.round((downloadItem?.progress ?? 0) * 100);
+  const handleDownload = async () => {
+    try {
+      if (downloadItem?.status === "complete" || downloadItem?.status === "downloading") {
+        await remove(currentSession.id);
+      }
+      else await download(currentSession);
+    } catch (error) {
+      Alert.alert("No se pudo descargar", error instanceof Error ? error.message : "Revisa tu conexión e inténtalo de nuevo.");
+    }
+  };
 
   const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas"];
   const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
@@ -562,14 +576,28 @@ export default function PlayerScreen() {
           <Pressable
             style={styles.topCircleBtn}
             hitSlop={8}
-            onPress={() => Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.")}
+            onPress={() => void handleDownload()}
           >
             {Platform.OS !== "web" ? (
               <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
             ) : (
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
             )}
-            <Feather name="download-cloud" size={20} color="#FBFBFB" />
+            {downloadItem?.status === "downloading" ? (
+              <Text style={styles.downloadProgressText}>{downloadProgress}%</Text>
+            ) : (
+              <Feather
+                name={
+                  downloadItem?.status === "complete"
+                    ? "check"
+                    : downloadItem?.status === "failed"
+                      ? "refresh-cw"
+                      : "download-cloud"
+                }
+                size={20}
+                color="#FBFBFB"
+              />
+            )}
           </Pressable>
         </View>
 
@@ -1004,10 +1032,31 @@ export default function PlayerScreen() {
               {/* Descargar */}
               <Pressable
                 style={styles.optRow}
-                onPress={() => Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.")}
+                onPress={() => void handleDownload()}
               >
-                <Feather name="download" size={18} color="#FBFBFB" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Descargar</Text>
+                <Feather
+                  name={
+                    downloadItem?.status === "complete"
+                      ? "trash-2"
+                      : downloadItem?.status === "downloading"
+                        ? "x"
+                        : downloadItem?.status === "failed"
+                          ? "refresh-cw"
+                          : "download"
+                  }
+                  size={18}
+                  color="#FBFBFB"
+                  style={styles.optIcon}
+                />
+                <Text style={styles.optRowText}>
+                  {downloadItem?.status === "complete"
+                    ? "Eliminar descarga"
+                    : downloadItem?.status === "downloading"
+                      ? `Cancelar descarga (${downloadProgress}%)`
+                      : downloadItem?.status === "failed"
+                        ? "Reintentar descarga"
+                        : "Descargar"}
+                </Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
 
@@ -1205,6 +1254,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.15)",
+  },
+  downloadProgressText: {
+    color: "#FBFBFB",
+    fontSize: 9,
+    fontWeight: "800",
   },
 
   // Columna de contenido principal (ocupa toda la pantalla)

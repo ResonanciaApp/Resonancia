@@ -76,6 +76,7 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { useDownloads } from "@/context/DownloadContext";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -343,7 +344,8 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites, statEvents } = usePlayer();
+  const { favorites, statEvents, history } = usePlayer();
+  const { downloads } = useDownloads();
   const {
     username,
     lastName,
@@ -1412,6 +1414,24 @@ export function ProfileScreenBase({
             </View>
 
             <HistorialCalendar embedded />
+            <View style={{ marginTop: 16, gap: 12 }}>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: resourceBlockBackground, borderWidth: 1, borderColor: resourceBlockBorder }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
+                  <Pressable onPress={() => router.push("/descargas" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
+                </View>
+                {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={{ flexDirection: "row", gap: 9 }}>
+                  {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
+                </View> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
+              </View>
+              <View style={{ borderRadius: 18, padding: 16, backgroundColor: resourceBlockBackground, borderWidth: 1, borderColor: resourceBlockBorder }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
+                  <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
+                </View>
+                {(() => { const entry = history.slice().sort((a,b) => +new Date(b.playedAt) - +new Date(a.playedAt))[0]; const session = entry && getSessionById(entry.sessionId); return session ? <Pressable onPress={() => router.push(`/session/${session.id}` as never)} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><View><Image source={session.image as never} style={{ width: 68, height: 68, borderRadius: 10 }} contentFit="cover"/><Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>{session.durationLabel}</Text></View><Text style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }} numberOfLines={2}>{session.title}</Text></Pressable> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>; })()}
+              </View>
+            </View>
 
           </>
         )}
