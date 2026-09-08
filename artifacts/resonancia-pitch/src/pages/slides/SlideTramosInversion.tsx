@@ -8,7 +8,7 @@ export default function SlideTramosInversion() {
     { inv: 3,  equity: 2.0 },
     { inv: 6,  equity: 4.5 },
     { inv: 8,  equity: 6.5 },
-    { inv: 13.4, equity: 12.0 },
+    { inv: 21.05, equity: 17.6 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -22,7 +22,8 @@ export default function SlideTramosInversion() {
   const fmtPct = (n: number) => n.toFixed(1).replace(".", ",") + "%";
   const fmtX = (n: number) => n.toFixed(1).replace(".", ",") + "×";
   const fmtInv = (inv: number) => {
-    return inv % 1 === 0 ? inv.toFixed(0) : inv.toFixed(1).replace(".", ",");
+    if (inv % 1 === 0) return inv.toFixed(0);
+    return inv < 20 ? inv.toFixed(1).replace(".", ",") : inv.toFixed(2).replace(".", ",");
   };
 
   const COL_HEADERS = [
@@ -47,7 +48,7 @@ export default function SlideTramosInversion() {
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
         <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.45)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
-          RONDA OBJETIVO · $13,4M CLP
+          RONDA OBJETIVO · $21,05M CLP
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Oportunidad de{" "}
