@@ -2633,19 +2633,19 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
+          <RecommendedForYouSection
+            catalogVersion={catalogVersion}
+            onPress={handleSessionCarouselPress}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
+        )}
+        {isInicio2 && (
           <MiRutinaSection
             cardBackgroundColor={recommendationSurface}
             style={{
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,
             }}
-          />
-        )}
-        {isInicio2 && (
-          <RecommendedForYouSection
-            catalogVersion={catalogVersion}
-            onPress={handleSessionCarouselPress}
-            marginBottom={INICIO2_SECTION_GAP}
           />
         )}
         {isInicio2 && <DailyWisdomCard backgroundColor="rgba(34,102,104,0.9)" />}
