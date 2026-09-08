@@ -2701,7 +2701,11 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <MiRutinaSection
-            cardBackgroundColor="rgba(18,10,33,0.37)"
+            cardBackgroundColor={
+              isIndigoThemeId(activeSceneId)
+                ? "rgba(181,211,255,0.057)"
+                : "rgba(18,10,33,0.37)"
+            }
             style={{
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,

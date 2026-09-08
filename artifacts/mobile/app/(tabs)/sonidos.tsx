@@ -383,7 +383,11 @@ export default function SonidosScreen() {
                 ambientalCardWidth={AMBIENTAL_CARD_W}
                 ambientalImageOffsetY={-36}
                 ambientalTitleOffsetY={-20}
-                ambientalCardBackground="rgba(18,10,33,0.37)"
+                ambientalCardBackground={
+                  isIndigoThemeId(theme.id)
+                    ? "rgba(181,211,255,0.057)"
+                    : "rgba(18,10,33,0.37)"
+                }
                 titleSize={19}
                 showCardMetadata
                  metadataTitleNumberOfLines={3}

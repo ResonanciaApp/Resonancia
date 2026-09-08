@@ -723,7 +723,9 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: "rgba(18,10,33,0.37)",
+                      backgroundColor: isIndigoThemeId(activeSceneId)
+                        ? "rgba(181,211,255,0.057)"
+                        : "rgba(18,10,33,0.37)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -764,7 +766,9 @@ export function ExploreScreen({
                     style={({ pressed }) => [
                       styles.themeGridCard,
                       {
-                        backgroundColor: "rgba(18,10,33,0.37)",
+                        backgroundColor: isIndigoThemeId(activeSceneId)
+                          ? "rgba(181,211,255,0.057)"
+                          : "rgba(18,10,33,0.37)",
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}
