@@ -95,7 +95,6 @@ function SleepPill({
           theme.id === "tibet" && styles.sleepPillTibet,
           isIndigoThemeId(theme.id) && styles.sleepPillIndigo,
           !sel && theme.id === "indigo2" && styles.sleepPillIndigo2Inactive,
-          { backgroundColor: "rgba(18,10,33,0.37)" },
           sel && styles.sleepPillSel,
         ]}
       >
