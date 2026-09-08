@@ -10,7 +10,7 @@ export const PRICING = {
 } as const;
 
 export const NET_COURSE_REVENUE = 15_294;
-export const FIXED_MONTHLY_COST_M = 2.58;
+export const FIXED_MONTHLY_COSTS_M = [2.58, 2.58, 2.58, 2.58, 4.15, 4.15, 4.15, 4.15, 4.15, 4.15, 4.15, 4.15] as const;
 export const CONTENT_COSTS_M = [0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45] as const;
 export const OPERATING_MARKETING_M = [0, 0, 0, 0, 0, 0, 1, 1, 1.8, 1.8, 2, 2] as const;
 export const ROUND_FUNDED_MARKETING_M = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] as const;
@@ -109,7 +109,7 @@ function buildScenario(label: string, targetActiveM12: number, courseUnits = COU
     const annualActiveSubscribers = sum(survivingCohorts.map(({ cohort }) => cohort.annualSubscribers));
     const activeSubscribers = monthlyActiveSubscribers + annualActiveSubscribers;
     const courseRevenueM = courseUnits[index] * NET_COURSE_REVENUE / 1_000_000;
-    const nonMarketingCostM = FIXED_MONTHLY_COST_M + CONTENT_COSTS_M[index];
+    const nonMarketingCostM = FIXED_MONTHLY_COSTS_M[index] + CONTENT_COSTS_M[index];
     const operatingMarketingM = OPERATING_MARKETING_M[index];
     const totalOperatingCostM = nonMarketingCostM + operatingMarketingM + ROUND_FUNDED_MARKETING_M[index];
     const netResultM = recurringRevenueM + courseRevenueM - totalOperatingCostM;

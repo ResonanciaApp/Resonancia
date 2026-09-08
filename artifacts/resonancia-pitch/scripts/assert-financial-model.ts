@@ -5,6 +5,11 @@ import {
   CAC_MARKETING_M,
   FINANCIAL_TOTALS,
   FINANCIAL_MONTHS,
+  FIXED_MONTHLY_COSTS_M,
+  CONTENT_COSTS_M,
+  OPERATING_MARKETING_M,
+  ROUND_FUNDED_MARKETING_M,
+  M3_EXAMPLE,
   MONTHLY_CHURN,
   MONTHLY_COHORT_ARPU,
   NET_REVENUE_FACTOR,
@@ -34,6 +39,30 @@ assert(
   "M2 monthly cash must include surviving monthly renewals from the M1 cohort",
 );
 assert(MONTHLY_CHURN === 0.15, "Monthly churn must remain 15%");
+assert(
+  FIXED_MONTHLY_COSTS_M.every((cost, index) => cost === (index < 4 ? 2.58 : 4.15)),
+  "Fixed costs must be $2.58M in M1-M4 and $4.15M from M5 onward",
+);
+assert(
+  CONTENT_COSTS_M.every((cost) => cost === 0.45),
+  "Monthly content investment must remain $0.45M throughout year one",
+);
+assert(
+  Math.abs(FINANCIAL_TOTALS.nonMarketingCostM - 48.92) < 0.000001,
+  `Expected $48.92M of year-one fixed + content costs, got $${FINANCIAL_TOTALS.nonMarketingCostM}M`,
+);
+assert(
+  JSON.stringify(OPERATING_MARKETING_M) === JSON.stringify([0, 0, 0, 0, 0, 0, 1, 1, 1.8, 1.8, 2, 2]) &&
+  JSON.stringify(ROUND_FUNDED_MARKETING_M) === JSON.stringify([1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+  "Marketing calendar and amounts must remain unchanged",
+);
+assert(M3_EXAMPLE.grossAdditions === 534, "M3 example must retain 534 new paid signups");
+assert(
+  Math.abs(M3_EXAMPLE.recurringRevenueM - 3.7427306764705886) < 0.000001 &&
+  Math.abs(M3_EXAMPLE.netResultM - 0.7127306764705885) < 0.000001 &&
+  Math.abs(M3_EXAMPLE.subscriptionCashM - 8.17073361764706) < 0.000001,
+  "M3 example revenue, net result, and subscription cash must remain unchanged",
+);
 assert(
   Math.abs(m2.annualActiveSubscribers - (1_000 * 0.30 + m2.grossAdditions * 0.35)) < 0.000001,
   "Annual cohorts must remain active for their full paid term",
