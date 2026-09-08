@@ -248,12 +248,6 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const searchTabBarSurface =
-    activeSceneId === "indigo2"
-      ? "rgba(21,13,46,0.7)"
-      : activeSceneId === "resonancia"
-        ? "rgba(9,11,23,0.7)"
-        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.15)"
@@ -493,29 +487,15 @@ export function ExploreScreen({
         <View style={[styles.pageHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
             <Text style={styles.pageTitle}>{screenTitle}</Text>
-          </View>
-
-          <View style={styles.searchWrap}>
             <Pressable
               onPress={() => setSearchVisible(true)}
-              style={[
-                styles.searchBox,
-                activeSceneId === "tibet"
-                  ? styles.searchBoxTibet
-                  : isIndigoThemeId(activeSceneId)
-                    ? styles.searchBoxIndigo
-                    : activeSceneId === "indigo2"
-                      ? styles.searchBoxIndigo2
-                      : null,
-                styles.searchBoxWhiteBorder,
-                { backgroundColor: searchTabBarSurface },
-              ]}
+              hitSlop={10}
+              style={styles.headerSearchButton}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
             >
-              <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
-              <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
+              <Feather name="search" size={24} color="#F4F4F4" />
             </Pressable>
           </View>
         </View>
@@ -927,9 +907,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    // pageHeader aporta 10 px y scrollContent compensa -3 px:
-    // 33 + 10 - 3 = 40 px efectivos desde el buscador.
-    marginTop: 33,
+    marginTop: 0,
     marginBottom: SECTION_GAP,
   },
   categoryBlocksTitle: {
