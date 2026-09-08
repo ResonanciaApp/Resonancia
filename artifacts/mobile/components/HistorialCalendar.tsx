@@ -136,10 +136,14 @@ function DayCell({
     if (isToday || isSelected || hasCompleted) bounce();
   };
 
-  const dayFill = isToday
-    ? WIDGET_GREEN_SOLID
-    : embedded && !hasCompleted && isSelected
-      ? "rgba(255,255,255,0.16)"
+  const dayFill = embedded
+    ? hasCompleted
+      ? "#F9F9F9"
+      : isSelected && !isToday
+        ? "rgba(255,255,255,0.16)"
+        : undefined
+    : isToday
+      ? WIDGET_GREEN_SOLID
       : undefined;
   const showLegacySelectedOutline = !embedded && isSelected && !isToday;
   const showCompletedBorder = embedded && hasCompleted;
@@ -159,11 +163,11 @@ function DayCell({
           !(embedded && isFuture) && dayFill && { backgroundColor: dayFill },
           showCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: WIDGET_GREEN_SOLID,
+            borderColor: "#F9F9F9",
           },
           embedded && isToday && !showCompletedBorder && {
             borderWidth: 1.5,
-            borderColor: WIDGET_GREEN_SOLID,
+            borderColor: "#F9F9F9",
             borderStyle: "dotted",
           },
           showLegacySelectedOutline && {
@@ -179,11 +183,15 @@ function DayCell({
             {
               color: embedded && isFuture
                 ? "rgba(255,255,255,0.24)"
-                 : embedded && isSelected
+                : embedded && hasCompleted
                    ? "#060A0F"
-                : isToday
-                  ? "#FFFFFF"
-                  : color,
+                  : embedded && isToday
+                    ? "#F9F9F9"
+                    : embedded && isSelected
+                      ? "#060A0F"
+                      : isToday
+                        ? "#FFFFFF"
+                        : color,
             },
           ]}
         >
