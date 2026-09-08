@@ -1913,6 +1913,7 @@ export default function HomeScreen2({
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
+  const inicioStickyHeaderAnim = useRef(new Animated.Value(0)).current;
 
 
   // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
@@ -1936,7 +1937,12 @@ export default function HomeScreen2({
     if (shouldBeActive !== stickyActiveRef.current) {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
-      // loto permanece visible — sin fade al activar sticky header
+      inicioStickyHeaderAnim.stopAnimation();
+      Animated.timing(inicioStickyHeaderAnim, {
+        toValue: shouldBeActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
@@ -1947,7 +1953,7 @@ export default function HomeScreen2({
         useNativeDriver: true,
       }).start();
     }
-  }, [updateSearchBtnVisibility, headerBorderAnim]);
+  }, [updateSearchBtnVisibility, headerBorderAnim, inicioStickyHeaderAnim]);
 
   const { greetingVisible } = useGreetingVisible();
   const backdropAnim = useRef(new Animated.Value(1)).current;
@@ -2264,6 +2270,59 @@ export default function HomeScreen2({
           </Animated.View>
         </Pressable>
       </View>
+      )}
+
+      {isInicio2 && (
+        <Animated.View
+          pointerEvents={stickyActive ? "auto" : "none"}
+          style={[
+            styles.inicioStickyHeader,
+            {
+              paddingTop: topPad + 2,
+              backgroundColor: activeTheme.gradient[0] as string,
+              opacity: inicioStickyHeaderAnim,
+            },
+          ]}
+        >
+          <View style={styles.inicioStickyHeaderRow}>
+            <ExpoImage
+              source={require("@/assets/images/logo-resonancia-text.png")}
+              style={styles.inicioStickyLogo}
+              contentFit="contain"
+              accessibilityLabel="Resonancia"
+            />
+            <Pressable
+              onPress={() => router.push("/(tabs)/profile" as never)}
+              onPressIn={() =>
+                Animated.spring(giftScaleAnim, {
+                  toValue: 0.84,
+                  speed: 30,
+                  bounciness: 0,
+                  useNativeDriver: ND,
+                }).start()
+              }
+              onPressOut={() =>
+                Animated.spring(giftScaleAnim, {
+                  toValue: 1,
+                  speed: 8,
+                  bounciness: 16,
+                  useNativeDriver: ND,
+                }).start()
+              }
+              hitSlop={12}
+              style={styles.inicio2HeroLotusButton}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir mi perfil"
+              testID="inicio-sticky-open-profile"
+            >
+              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+                <View style={styles.inicio2HeroLotusContent}>
+                  <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+                </View>
+              </Animated.View>
+            </Pressable>
+          </View>
+        </Animated.View>
       )}
 
       <RAnimated.ScrollView
@@ -3156,6 +3215,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
+  },
+  inicioStickyHeader: {
+    position: "absolute",
+    top: -5,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+  },
+  inicioStickyHeaderRow: {
+    minHeight: 54,
+    paddingHorizontal: 18,
+    paddingTop: 7,
+    paddingBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  inicioStickyLogo: {
+    width: 151,
+    height: 22,
   },
   scroll: { flex: 1 },
 
