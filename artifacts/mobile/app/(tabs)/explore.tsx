@@ -70,8 +70,12 @@ const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
 );
+const NEW_IN_RESONANCE_BASE_WIDTH = (width - H_PAD * 2 - 56) * 0.85;
 const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
-  (width - H_PAD * 2 - 56) * 0.85,
+  NEW_IN_RESONANCE_BASE_WIDTH * 1.25,
+);
+const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
+  (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
 );
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
@@ -1027,7 +1031,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceImageWrap: {
     width: "100%",
-    aspectRatio: 16 / 9,
+    height: NEW_IN_RESONANCE_CARD_HEIGHT,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
