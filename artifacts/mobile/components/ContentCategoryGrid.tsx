@@ -273,10 +273,8 @@ export function ContentCategoryGrid({
                       textOnly
                       tinted
                       leftInset={12}
+                      bottomInset={12}
                     />
-                    <Text style={styles.discoverCardLabel} numberOfLines={1}>
-                      {category.label}
-                    </Text>
                  </View>
               </Pressable>
             );
@@ -465,20 +463,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.04)",
-  },
-  discoverCardLabel: {
-    position: "absolute",
-    left: 12,
-    right: 12,
-    bottom: 11,
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 19,
-    fontWeight: "700",
-    textShadowColor: "rgba(0,0,0,0.7)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,

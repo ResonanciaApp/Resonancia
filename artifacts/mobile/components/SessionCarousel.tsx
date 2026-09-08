@@ -427,6 +427,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          textOnly={categoryPillTextOnly}
                          tinted={categoryPillTinted}
                          leftInset={18}
+                         topInset={18}
                        />
                      ) : null}
                     <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
