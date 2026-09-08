@@ -74,7 +74,7 @@ export default function HistorialScreen() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <HistorialCalendar />
+          <HistorialCalendar backgroundColor="rgba(18,10,33,0.37)" />
         </ScrollView>
       </View>
     </LinearGradient>
