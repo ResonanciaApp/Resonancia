@@ -9,12 +9,12 @@ export default function SlideEjemploIngresos() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
-      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4", padding: "4.5vh 6vw 3.5vh", boxSizing: "border-box", gap: "1.4vh" }}
+      style={{ background: "linear-gradient(160deg, #10242B 0%, #142735 34%, #17243A 68%, #1A1F38 100%)", color: "#F4F4F4", padding: "4.5vh 6vw 3.5vh", boxSizing: "border-box", gap: "1.4vh" }}
     >
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
         <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "0.6vh" }}>
-          MODELO DE NEGOCIO
+          ANEXO FINANCIERO · EJEMPLO M3
         </div>
         <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Cómo se construye el <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>ingreso.</span>

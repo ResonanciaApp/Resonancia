@@ -46,7 +46,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000011",
-		"position": 13,
+    "position": 12,
 		"filepath": "src/pages/slides/Slide11Inversion.tsx",
 		"title": "La inversión",
 		"description": "Ronda objetivo previa a la operación de CLP 21,05M: contenido, marketing, runway de 3 meses, externos, equipamiento y otros.",
@@ -62,15 +62,15 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000031",
-		"position": 8,
+    "position": 16,
 		"filepath": "src/pages/slides/SlideEjemploIngresos.tsx",
-		"title": "Ingresos y Caja · Ejemplo M3",
+    "title": "Anexo Financiero · Ingresos y Caja M3",
 		"description": "Explicación práctica de cómo se construye el ingreso en M3: altas nuevas vs retención, devengado P&L vs caja adelantada anual.",
 		"speakerNotes": "Para M3 tenemos 534 nuevas altas. Premium mensual es $0,66M. Se suman M1 y M2 sobrevivientes. P&L neto es de $0,71M positivo, y la caja es de $8,17M por los prepagos anuales."
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000022",
-		"position": 9,
+    "position": 8,
 		"filepath": "src/pages/slides/SlideUpSells.tsx",
 		"title": "Segunda fuente · Cursos y talleres",
 		"description": "Up-sells de cursos: desglose de precio, curva M7-M12 e impacto en P&L devengado anual reconciliado con el modelo central.",
@@ -78,7 +78,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000017",
-		"position": 10,
+    "position": 9,
 		"filepath": "src/pages/slides/SlideFinanzas3.tsx",
 		"title": "Anexo Financiero · Desglose de costos mensuales",
 		"description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
@@ -86,7 +86,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000015",
-		"position": 11,
+    "position": 10,
 		"filepath": "src/pages/slides/SlideFinanzas1.tsx",
 		"title": "Anexo Financiero · Flujo de caja año 1",
 		"description": "P&L mensual por cohortes: altas pagadas, registros, activos, ingresos devengados, cursos, costos y resultado.",
@@ -94,7 +94,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000016",
-		"position": 12,
+    "position": 11,
 		"filepath": "src/pages/slides/SlideFinanzas2.tsx",
 		"title": "Anexo Financiero · Curva de crecimiento y escenarios",
 		"description": "Caja real acumulada por cohortes, con prepagos anuales, renovaciones mensuales y gastos de caja; tres escenarios activos M12.",
@@ -134,7 +134,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000019",
-		"position": 14,
+    "position": 13,
 		"filepath": "src/pages/slides/SlideTramosInversion.tsx",
 		"title": "Oportunidad de inversión",
 		"description": "Escala progresiva de 21 escenarios entre CLP 1M y 21M; anclajes de 8M/6,5% y 21M/20%, con valor estimado de cada participación a M12.",
@@ -142,7 +142,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-		"position": 15,
+    "position": 14,
 		"filepath": "src/pages/slides/SlideAnexoInversion.tsx",
 		"title": "Anexo · Valoración estimada",
 		"description": "Tramo máximo CLP 21M por 20%; valoración pre-money de 84M, post-money de 105M y escenarios de retorno a M12.",
@@ -150,7 +150,7 @@
 	},
 	{
 		"id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-		"position": 16,
+    "position": 15,
 		"filepath": "src/pages/slides/SlideContacto.tsx",
 		"title": "Contacto",
 		"description": "Slide de cierre con datos de contacto.",
