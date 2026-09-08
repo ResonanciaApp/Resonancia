@@ -63,7 +63,7 @@ const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 const FEATURED_MOMENT_HEIGHT = 320;
-const SHOW_FEATURED_MOMENT = false;
+const SHOW_FEATURED_MOMENT = true;
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
