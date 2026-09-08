@@ -591,49 +591,6 @@ export function ExploreScreen({
             </View>
           )}
 
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Descubre por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
-              discoverTieredLayout
-            />
-          </View>
-
-          <View style={styles.durationSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durationRow}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() =>
-                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={slot.displayLabel}
-                  style={({ pressed }) => [
-                    styles.durationCard,
-                    {
-                      backgroundColor: durationSurfaceColor,
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -680,6 +637,49 @@ export function ExploreScreen({
                   <Text style={styles.newInResonanceAuthor} numberOfLines={1}>
                     {getSessionAuthor(session)}
                   </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Descubre por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              discoverTieredLayout
+            />
+          </View>
+
+          <View style={styles.durationSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor: durationSurfaceColor,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
                 </Pressable>
               ))}
             </ScrollView>
