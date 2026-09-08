@@ -1267,55 +1267,6 @@ export function ProfileScreenBase({
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <View style={styles.profileProgressSection}>
-              <View
-                style={[
-                  styles.profileProgressCard,
-                  { backgroundColor: resourceBlockBackground },
-                ]}
-              >
-                <SonicStreakDays
-                  activeFlags={weekFlags}
-                  todayIndex={todayIndex}
-                  edgeAligned
-                  daysMarginTop={0}
-                  activeBorderGradient={activeTheme.gradient.map((color) =>
-                    brightenHexColor(color, 0.55),
-                  )}
-                />
-                <View style={styles.streakStatsDivider} />
-                <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {currentStreak}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      RACHA ACTUAL
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.personalStatDivider} />
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.maxStreak}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      RACHA MÁS LARGA
-                    </Text>
-                  </View>
-                </View>
-                </View>
-              </View>
-            </View>
-
             <View
               style={[
                 styles.personalStatsSection,
@@ -1408,6 +1359,55 @@ export function ProfileScreenBase({
                     <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
                       DÍAS ACTIVOS
                     </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.profileProgressSection}>
+              <View
+                style={[
+                  styles.profileProgressCard,
+                  { backgroundColor: resourceBlockBackground },
+                ]}
+              >
+                <SonicStreakDays
+                  activeFlags={weekFlags}
+                  todayIndex={todayIndex}
+                  edgeAligned
+                  daysMarginTop={0}
+                  activeBorderGradient={activeTheme.gradient.map((color) =>
+                    brightenHexColor(color, 0.55),
+                  )}
+                />
+                <View style={styles.streakStatsDivider} />
+                <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
+                  <View style={styles.personalStatItem}>
+                    <View style={styles.personalStatIcon}>
+                      <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
+                    </View>
+                    <View style={styles.personalStatCopy}>
+                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                        {currentStreak}
+                      </Text>
+                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                        RACHA ACTUAL
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.personalStatDivider} />
+                  <View style={styles.personalStatItem}>
+                    <View style={styles.personalStatIcon}>
+                      <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
+                    </View>
+                    <View style={styles.personalStatCopy}>
+                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                        {personalStats.maxStreak}
+                      </Text>
+                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                        RACHA MÁS LARGA
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -2502,7 +2502,7 @@ const styles = StyleSheet.create({
   },
   personalStatValue: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 22,
     fontWeight: "600",
   },
   personalStatLabel: {
