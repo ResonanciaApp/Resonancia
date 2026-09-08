@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
   },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 30,
+    marginTop: 15,
     marginBottom: SECTION_GAP,
   },
   featuredMomentImageContainer: {
@@ -1013,7 +1013,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 25,
+    marginTop: 0,
     marginBottom: SECTION_GAP,
   },
   newInResonanceHeader: {
