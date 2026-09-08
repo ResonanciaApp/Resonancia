@@ -60,7 +60,7 @@ const AMBIENTAL_CARD_H = Math.round(
   (AMBIENTAL_CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
 );
 const ALL_CARD_W = (W - H_PAD * 2 - 14) / 2;
-const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.096)";
+const RESONANCIA_CARD_SURFACE = "rgba(191,207,255,0.1)";
 
 function CollectionPill({
   label,
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     gap: 12,
     overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(181,211,255,0.1)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
