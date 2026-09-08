@@ -29,11 +29,11 @@ const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 3;
 
 const RECOMMENDATION_TABS = [
+  { id: "by-mood", label: "Según tu estado de ánimo" },
   { id: "short-meditations", label: "Meditaciones cortas" },
   { id: "new-content", label: "Nuevo contenido" },
   { id: "anxiety-sos", label: "Ansiedad S.O.S" },
   { id: "popular", label: "Populares" },
-  { id: "by-mood", label: "Según tu estado de ánimo" },
 ] as const;
 
 type RecommendationTabId = (typeof RECOMMENDATION_TABS)[number]["id"];

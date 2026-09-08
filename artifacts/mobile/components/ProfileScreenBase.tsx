@@ -132,8 +132,6 @@ const MEMBERSHIP_PLANS = [
   },
 ] as const;
 
-const VISIBLE_MEMBERSHIP_PLANS = MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus");
-
 function brightenHexColor(color: string, amount = 0.5): string {
   const hex = color.replace("#", "");
   if (!/^[0-9a-fA-F]{6}$/.test(hex)) return color;
@@ -157,7 +155,7 @@ function ProfileMembershipModules({
 }) {
   return (
     <View style={styles.membershipSection}>
-      {VISIBLE_MEMBERSHIP_PLANS.map((plan, index) => {
+      {MEMBERSHIP_PLANS.map((plan, index) => {
         const isPremium = plan.id === "premium";
 
         return (
