@@ -77,7 +77,7 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const refreshButtonBackground = getDailyRecommendationSurface(theme.id);
+  const refreshButtonBackground = "rgba(18,10,33,0.37)";
 
   if (recommendations.length < 3) return null;
 
