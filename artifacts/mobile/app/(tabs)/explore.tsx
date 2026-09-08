@@ -764,7 +764,7 @@ export function ExploreScreen({
                     style={({ pressed }) => [
                       styles.themeGridCard,
                       {
-                        backgroundColor: durationSurfaceColor,
+                        backgroundColor: "rgba(18,10,33,0.37)",
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}

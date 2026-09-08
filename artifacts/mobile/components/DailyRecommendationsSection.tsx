@@ -95,6 +95,7 @@ export function DailyRecommendationsSection({
           <CategoryAtmosphericCard
             key={session.id}
             categoryId={session.categoryId}
+            style={{ backgroundColor: "rgba(18,10,33,0.37)" }}
           >
             <SessionRow
               session={session}
