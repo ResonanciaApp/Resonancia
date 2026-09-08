@@ -65,10 +65,11 @@ export function CategoryAtmosphericCard({
     : FALLBACK_GLOW_COLORS;
   const emphasizeGlow =
     categoryId === "meditaciones-guiadas" || categoryId === "musica-sonidos";
-  const primaryCenterOpacity = emphasizeGlow ? 0.18 : 0.13;
-  const primaryDiffuseOpacity = emphasizeGlow ? 0.1 : 0.07;
-  const secondaryCenterOpacity = emphasizeGlow ? 0.16 : 0.12;
-  const secondaryDiffuseOpacity = emphasizeGlow ? 0.07 : 0.05;
+  const emphasizeMusic = categoryId === "musica-sonidos";
+  const primaryCenterOpacity = emphasizeMusic ? 0.3 : emphasizeGlow ? 0.18 : 0.13;
+  const primaryDiffuseOpacity = emphasizeMusic ? 0.17 : emphasizeGlow ? 0.1 : 0.07;
+  const secondaryCenterOpacity = emphasizeMusic ? 0.25 : emphasizeGlow ? 0.16 : 0.12;
+  const secondaryDiffuseOpacity = emphasizeMusic ? 0.12 : emphasizeGlow ? 0.07 : 0.05;
 
   return (
     <View style={[styles.card, style]}>

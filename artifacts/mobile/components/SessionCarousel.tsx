@@ -128,6 +128,8 @@ type SessionCarouselProps = {
   description?: string;
   squareCards?: boolean;
   showImageCategoryPill?: boolean;
+  categoryPillTextOnly?: boolean;
+  categoryPillTinted?: boolean;
   onViewAll?: () => void;
   viewAllColor?: string;
   showCardMetadata?: boolean;
@@ -175,6 +177,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   description,
   squareCards = false,
   showImageCategoryPill = false,
+  categoryPillTextOnly = false,
+  categoryPillTinted = false,
   onViewAll,
   viewAllColor,
   showCardMetadata = false,
@@ -417,6 +421,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     ) : null}
+                     {showImageCategoryPill ? (
+                       <SessionCategoryPill
+                         categoryId={s.categoryId}
+                         textOnly={categoryPillTextOnly}
+                         tinted={categoryPillTinted}
+                       />
+                     ) : null}
                     <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
                       {effectiveShowDurationBadge && !overlayDurationTopLeft ? (
                         <SessionDurationBadge

@@ -2519,6 +2519,9 @@ export default function HomeScreen2({
             fixedCardHeight={INICIO2_SLEEP_CARD_H}
             titleSize={19}
             titleSpacing={17}
+            showImageCategoryPill
+            categoryPillTextOnly
+            categoryPillTinted
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             eagerRender
@@ -2603,6 +2606,9 @@ export default function HomeScreen2({
             fixedCardHeight={INICIO2_SLEEP_CARD_H}
             titleSize={19}
             titleSpacing={17}
+            showImageCategoryPill
+            categoryPillTextOnly
+            categoryPillTinted
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
           />
