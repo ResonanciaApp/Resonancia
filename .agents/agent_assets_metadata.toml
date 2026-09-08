@@ -2853,3 +2853,17 @@ mtime_ms = 1788809574617
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/5be2131a-a1bd-4fb7-b69c-fe1eab76bc93/032d3045-b737-4988-b409-a0fe706d4f5a"
 storage_version_token = "1788809578977510"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "ehAxQTmwrrjmiOgk7X-aV"
+uri = "file://exports/pendientes-app-resonancia.pdf"
+type = "pdf"
+title = "RESONANCIA — Pendientes de la app"
+description = "Documento vivo iniciado con los pendientes 326 y 327. Se actualizará sobre el mismo formato cuando se incorporen o resuelvan temas."
+logical_id = "aaa8b2e5-ad78-4e25-a0a5-6c755231898f"
+content_hash = "sha256:d7df5a615b806046219d7b74ccfc9520bbedeea247a82191afc6330b7a52378e"
+size = 77832
+mtime_ms = 1788828900780
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/aaa8b2e5-ad78-4e25-a0a5-6c755231898f/87ce9d27-1668-4ac8-b36c-77782382a229"
+storage_version_token = "1788828918043315"
+content_type = "application/pdf"
