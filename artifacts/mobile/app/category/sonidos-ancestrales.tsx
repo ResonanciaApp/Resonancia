@@ -443,7 +443,7 @@ export default function SonidosAncestalesScreen() {
   const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
+    outputRange: ["rgba(191,207,255,0.1)", "rgba(191,207,255,0.1)"],
   });
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
@@ -782,9 +782,9 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.057)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
+   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},

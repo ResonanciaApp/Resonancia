@@ -175,7 +175,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.096)", "rgba(191,207,255,0.096)"],
+    outputRange: ["rgba(191,207,255,0.1)", "rgba(191,207,255,0.1)"],
   });
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
@@ -483,12 +483,12 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(181,211,255,0.1)",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(191,207,255,0.096)",
+    backgroundColor: "rgba(191,207,255,0.1)",
     borderColor: "rgba(255,255,255,0.04)",
   },
   chipSelected: {
