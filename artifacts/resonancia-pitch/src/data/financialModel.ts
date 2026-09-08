@@ -204,3 +204,43 @@ export function formatMillions(value: number, digits = 1, signed = false) {
   const sign = value < 0 ? "−" : signed && value > 0 ? "+" : "";
   return `${sign}$${Math.abs(value).toFixed(digits).replace(".", ",")}M`;
 }
+
+export const M3_EXAMPLE = (() => {
+  const m3 = BASE_SCENARIO.months[2];
+
+  const m1Gross = BASE_SCENARIO.grossAdditions[0];
+  const m1MonthlyRev = m1Gross * 0.70 * (PRICING.launchPremium.monthly * NET_REVENUE_FACTOR);
+  const m1AnnualRev = m1Gross * 0.30 * (PRICING.launchPremium.annual * NET_REVENUE_FACTOR / 12);
+  const m1RevInM3 = (1 - MONTHLY_CHURN) ** 2 * m1MonthlyRev + m1AnnualRev;
+
+  const m2Gross = BASE_SCENARIO.grossAdditions[1];
+  const m2MonthlyRev = m2Gross * 0.65 * (PRICING.premium.monthly * NET_REVENUE_FACTOR);
+  const m2AnnualRev = m2Gross * 0.35 * (PRICING.premium.annual * NET_REVENUE_FACTOR / 12);
+  const m2RevInM3 = (1 - MONTHLY_CHURN) ** 1 * m2MonthlyRev + m2AnnualRev;
+
+  const m3Gross = BASE_SCENARIO.grossAdditions[2];
+  const m3PremiumMonthlyUsers = m3Gross * 0.65 * 0.65;
+  const m3PremiumAnnualUsers = m3Gross * 0.65 * 0.35;
+  const m3PlusMonthlyUsers = m3Gross * 0.35 * 0.65;
+  const m3PlusAnnualUsers = m3Gross * 0.35 * 0.35;
+
+  const m3PremiumMonthlyRev = m3PremiumMonthlyUsers * (PRICING.premium.monthly * NET_REVENUE_FACTOR);
+  const m3PremiumAnnualRev = m3PremiumAnnualUsers * (PRICING.premium.annual * NET_REVENUE_FACTOR / 12);
+  const m3PlusMonthlyRev = m3PlusMonthlyUsers * (PRICING.premiumPlus.monthly * NET_REVENUE_FACTOR);
+  const m3PlusAnnualRev = m3PlusAnnualUsers * (PRICING.premiumPlus.annual * NET_REVENUE_FACTOR / 12);
+
+  return {
+    ...m3,
+    cohortContributionsM: {
+      m1: m1RevInM3 / 1_000_000,
+      m2: m2RevInM3 / 1_000_000,
+      m3Total: (m3PremiumMonthlyRev + m3PremiumAnnualRev + m3PlusMonthlyRev + m3PlusAnnualRev) / 1_000_000,
+    },
+    m3NewUsers: {
+      premiumMonthly: { users: m3PremiumMonthlyUsers, revM: m3PremiumMonthlyRev / 1_000_000 },
+      premiumAnnual: { users: m3PremiumAnnualUsers, revM: m3PremiumAnnualRev / 1_000_000 },
+      plusMonthly: { users: m3PlusMonthlyUsers, revM: m3PlusMonthlyRev / 1_000_000 },
+      plusAnnual: { users: m3PlusAnnualUsers, revM: m3PlusAnnualRev / 1_000_000 },
+    }
+  };
+})();
