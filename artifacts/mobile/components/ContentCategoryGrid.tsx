@@ -16,7 +16,10 @@ import {
   CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
 } from "@/constants/carousel";
-import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
+import {
+  SESSION_CARD_METADATA_HEIGHT_SCALE,
+  SessionCategoryPill,
+} from "@/components/SessionCardMetadataOverlay";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
@@ -259,10 +262,22 @@ export function ContentCategoryGrid({
                        transition={180}
                      />
                    )}
+                    <LinearGradient
+                      pointerEvents="none"
+                      colors={["transparent", "rgba(0,0,0,0.72)"]}
+                      locations={[0.35, 1]}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <SessionCategoryPill
+                      categoryId={category.id}
+                      textOnly
+                      tinted
+                      leftInset={12}
+                    />
+                    <Text style={styles.discoverCardLabel} numberOfLines={1}>
+                      {category.label}
+                    </Text>
                  </View>
-                 <Text style={styles.discoverCardLabel} numberOfLines={1}>
-                   {category.label}
-                 </Text>
               </Pressable>
             );
           })}
@@ -452,13 +467,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   discoverCardLabel: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    bottom: 11,
     color: "#FFFFFF",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 19,
-    fontWeight: "600",
-    marginTop: 8,
-    paddingHorizontal: 1,
+    fontWeight: "700",
+    textShadowColor: "rgba(0,0,0,0.7)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,
