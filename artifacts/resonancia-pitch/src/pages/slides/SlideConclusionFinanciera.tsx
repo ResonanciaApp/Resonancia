@@ -33,7 +33,7 @@ export default function SlideConclusionFinanciera() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)",
+        background: "linear-gradient(160deg, #10242B 0%, #142735 34%, #17243A 68%, #1A1F38 100%)",
         color: "#F4F4F4",
         padding: "7vh 6vw",
         boxSizing: "border-box",

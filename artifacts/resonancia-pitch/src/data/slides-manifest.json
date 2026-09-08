@@ -46,7 +46,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000011",
-    "position": 17,
+    "position": 13,
     "filepath": "src/pages/slides/Slide11Inversion.tsx",
     "title": "La inversión",
     "description": "Ronda objetivo previa a la operación de CLP 21,05M: contenido, marketing, runway de 3 meses, externos, equipamiento y otros.",
@@ -102,7 +102,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e19",
-    "position": 13,
+    "position": 17,
     "filepath": "src/pages/slides/SlideCAC.tsx",
     "title": "Anexo Financiero · Costo por adquisición",
     "description": "CAC blended sobre altas pagadas, payback y economía unitaria año 1.",
@@ -110,7 +110,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e20",
-    "position": 14,
+    "position": 18,
     "filepath": "src/pages/slides/SlideRetencion.tsx",
     "title": "Anexo Financiero · Retención",
     "description": "Caso base con churn mensual 15%, LTV y sensibilidad de retención.",
@@ -118,7 +118,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e21",
-    "position": 15,
+    "position": 19,
     "filepath": "src/pages/slides/SlideConclusionFinanciera.tsx",
     "title": "Anexo Financiero · Conclusión",
     "description": "Conclusión de P&L y caja real: prepagos anuales, renovaciones mensuales y operación post-lanzamiento.",
@@ -126,7 +126,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e22",
-    "position": 16,
+    "position": 20,
     "filepath": "src/pages/slides/SlideContingencia.tsx",
     "title": "Anexo Financiero · Plan de contingencia",
     "description": "Caja real con prepagos anuales; contingencia si el mix anual queda bajo 30% en M1 o 35% desde M2.",
@@ -134,7 +134,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000019",
-    "position": 18,
+    "position": 14,
     "filepath": "src/pages/slides/SlideTramosInversion.tsx",
     "title": "Oportunidad de inversión",
     "description": "Escala progresiva de 21 escenarios entre CLP 1M y 21M; anclajes de 8M/6,5% y 21M/20%, con valor estimado de cada participación a M12.",
@@ -142,7 +142,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-    "position": 19,
+    "position": 15,
     "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
     "title": "Anexo · Valoración estimada",
     "description": "Tramo máximo CLP 21M por 20%; valoración pre-money de 84M, post-money de 105M y escenarios de retorno a M12.",
@@ -150,7 +150,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-    "position": 20,
+    "position": 16,
     "filepath": "src/pages/slides/SlideContacto.tsx",
     "title": "Contacto",
     "description": "Slide de cierre con datos de contacto.",
