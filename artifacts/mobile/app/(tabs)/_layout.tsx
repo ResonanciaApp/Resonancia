@@ -37,6 +37,8 @@ import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CategoryOverlayProvider, useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { CategoryOverlay } from "@/components/CategoryOverlay";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
+import { RoutineCompletionBannerProvider } from "@/context/RoutineCompletionBannerContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "#BAB1E1";
@@ -48,6 +50,14 @@ const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
+
+function getTabBarBackground(activeSceneId: string) {
+  return activeSceneId === "indigo2"
+    ? "#150D2E"
+    : activeSceneId === "resonancia"
+      ? "#090B17"
+      : "#0E0E17";
+}
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas", "explore"]);
@@ -171,12 +181,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
   const indigo2Mode = activeSceneId === "indigo2";
-  const tabBarBackground =
-    indigo2Mode
-      ? "#150D2E"
-      : activeSceneId === "resonancia"
-        ? "#090B17"
-        : "#0E0E17";
+  const tabBarBackground = getTabBarBackground(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -383,11 +388,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
 function TabLayoutInner() {
   const { activeSounds }   = useMixer();
+  const pathname           = usePathname();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
   const tabBarHeight       = PILL_H + bottomPb;
   const { hidden }         = useTabBarVisibility();
+  const { libOpen }        = useDrawer();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
   const { isGeometrixOpen, hasOpenedGeometrix, closeGeometrix, panelAnim: geoPanelAnim } = useGeometrixPanel();
@@ -400,7 +407,7 @@ function TabLayoutInner() {
     inputRange:  [0, 1],
     outputRange: [0, 0.55],
   });
-  const { theme } = useSceneTheme();
+  const { activeSceneId, theme } = useSceneTheme();
   const { brightMode } = useBrightness();
   const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
 
@@ -415,7 +422,19 @@ function TabLayoutInner() {
 
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
   // cuando entra un panel derecha→izquierda (estilo Insight Timer).
-  const { parallaxAnim: overlayParallax } = useCategoryOverlay();
+  const { parallaxAnim: overlayParallax, stack: categoryStack } = useCategoryOverlay();
+  const sessionOverlayOpen = categoryStack.some((entry) => entry.route.startsWith("/session/"));
+  const routeForcesTabBarHidden =
+    pathname === "/player" ||
+    pathname.startsWith("/session/") ||
+    sessionOverlayOpen;
+  const completionBannerVisible =
+    !hidden &&
+    !libOpen &&
+    barProps?.state?.routes?.[barProps.state.index]?.name !== "biblioteca" &&
+    !routeForcesTabBarHidden &&
+    !isMixerOpen &&
+    !isGeometrixOpen;
   const bgParallaxX = Animated.add(
     Animated.add(
       panelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -56], extrapolate: "clamp" }),
@@ -459,6 +478,11 @@ function TabLayoutInner() {
           con parallax: la barra no debe tener ancestros con transform (el blur
           de Android duplica la barra) y las capas ya no necesitan compensar. */}
       <CategoryOverlay />
+      <RoutineCompletionBanner
+        bottom={tabBarHeight - 8}
+        backgroundColor={getTabBarBackground(activeSceneId)}
+        visible={completionBannerVisible}
+      />
       {barProps && <CustomTabBar {...barProps} />}
 
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
@@ -521,7 +545,9 @@ export default function TabLayout() {
   return (
     <CategoryOverlayProvider>
       <TabBarVisibilityProvider>
-        <TabLayoutInner />
+        <RoutineCompletionBannerProvider>
+          <TabLayoutInner />
+        </RoutineCompletionBannerProvider>
       </TabBarVisibilityProvider>
     </CategoryOverlayProvider>
   );
@@ -534,6 +560,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     overflow: "hidden",
+    zIndex: 50,
   },
   row: {
     height: PILL_H,

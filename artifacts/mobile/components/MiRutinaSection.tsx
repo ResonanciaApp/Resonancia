@@ -31,6 +31,7 @@ import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -309,6 +310,7 @@ const ActivityRow = React.memo(function ActivityRow({
 export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
+  const { announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const {
     activities,
@@ -326,6 +328,20 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 
   const today = useMemo(() => new Date(), [todayKey]);
   const dateKey = getRoutineDateKey(today);
+  const completedTodayCount = useMemo(
+    () =>
+      activities.filter((activity) => activity.completedDates.includes(dateKey)).length,
+    [activities, dateKey],
+  );
+  const completedTodayCountRef = useRef(completedTodayCount);
+  const completedTodayDateRef = useRef(dateKey);
+  if (completedTodayDateRef.current !== dateKey) {
+    completedTodayDateRef.current = dateKey;
+    completedTodayCountRef.current = completedTodayCount;
+  }
+  useEffect(() => {
+    completedTodayCountRef.current = completedTodayCount;
+  }, [completedTodayCount]);
   const todayActivities = useMemo(
     () =>
       activities.filter((activity) => {
@@ -422,12 +438,17 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const handleComplete = useCallback(
     (activity: RoutineActivity) => {
       if (completingIdsRef.current.has(activity.id)) return;
+      if (activity.completedDates.includes(dateKey)) return;
+      if (!isRoutineActivityScheduledForDate(activity, today)) return;
       const nextCompleting = new Set(completingIdsRef.current);
       nextCompleting.add(activity.id);
       completingIdsRef.current = nextCompleting;
+      const previousCount = completedTodayCountRef.current;
+      const nextCount = previousCount + 1;
+      completedTodayCountRef.current = nextCount;
       completeActivity(activity.id, dateKey);
       setCompletingIds(nextCompleting);
-      showToast("Actividad finalizada");
+      announceCompletion(previousCount, nextCount);
       const existingTimer = exitTimersRef.current.get(activity.id);
       if (existingTimer) clearTimeout(existingTimer);
       exitTimersRef.current.set(
@@ -441,7 +462,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
         }, COMPLETION_EXIT_DELAY),
       );
     },
-    [completeActivity, dateKey, showToast],
+    [announceCompletion, completeActivity, dateKey, today],
   );
 
   const todayActivityIdsRef = useRef(todayActivityIds);
