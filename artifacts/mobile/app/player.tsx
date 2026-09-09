@@ -45,8 +45,10 @@ import Svg, { Path, Rect } from "react-native-svg";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
+import { GhostPill } from "@/components/GhostPill";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
+import { SOUNDS } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 import { useDownloads } from "@/context/DownloadContext";
@@ -367,6 +369,8 @@ export default function PlayerScreen() {
   };
 
   const catId = currentSession.categoryId;
+  const selectedAmbientSoundName =
+    SOUNDS.find((sound) => sound.id === selectedAmbientSoundId)?.name ?? "Seleccionar sonido";
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
   const isNature = !!getNatureSounds(currentSession.id);
@@ -618,17 +622,25 @@ export default function PlayerScreen() {
           <View style={[styles.bottomActions, { bottom: bottomPad + 35 }]}>
             <View style={styles.bottomActionsLeft}>
               {catId === "meditaciones-guiadas" && (
-                <Pressable
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setShowAmbientPicker(true);
-                  }}
-                  style={styles.actionBtn}
-                  hitSlop={8}
-                  accessibilityLabel="Música ambiente"
-                >
-                  <Feather name="music" size={22} color="rgba(255,255,255,0.92)" />
-                </Pressable>
+                <GhostPill style={styles.ambientGhostPill}>
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setShowAmbientPicker(true);
+                    }}
+                    style={styles.ambientPillContent}
+                    hitSlop={8}
+                    accessibilityLabel={`Sonido de fondo: ${selectedAmbientSoundName}`}
+                  >
+                    <Feather name="image" size={22} color="#F4EEFF" />
+                    <View style={styles.ambientPillText}>
+                      <Text style={styles.ambientPillTitle}>Sonido de fondo</Text>
+                      <Text style={styles.ambientPillSound} numberOfLines={1}>
+                        {selectedAmbientSoundName}
+                      </Text>
+                    </View>
+                  </Pressable>
+                </GhostPill>
               )}
             </View>
             <View style={styles.bottomActionsRight}>
@@ -1081,14 +1093,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bottomActionsLeft: {
-    minWidth: 46,
-    minHeight: 46,
+    flex: 1,
+    minHeight: 52,
+    marginRight: 10,
     alignItems: "flex-start",
   },
   bottomActionsRight: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  ambientGhostPill: {
+    width: "100%",
+    maxWidth: 180,
+    height: 52,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    backgroundColor: "rgba(130,96,181,0.32)",
+  },
+  ambientPillContent: {
+    flex: 1,
+    width: "100%",
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  ambientPillText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  ambientPillTitle: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "700",
+    color: "#F4EEFF",
+  },
+  ambientPillSound: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 13,
+    fontWeight: "400",
+    color: "rgba(244,238,255,0.72)",
   },
   actionBtn: {
     width: 46,
