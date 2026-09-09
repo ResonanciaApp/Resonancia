@@ -254,7 +254,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   // recientes" de Inicio. Otros carruseles cuadrados con metadata inferior
   // conservan el título superpuesto sobre la imagen.
   const shouldHideAmbientalTitle =
-    (isSleepCategoryPresentation || hideAmbientalTitleInSquareRecent) &&
+    (useSleepMetadataBelow ||
+      isSleepCategoryPresentation ||
+      hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
     ambientalCardBackgroundOverride ?? "rgba(255,255,255,0.1)";
@@ -343,7 +345,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
                       />
                     )}
-                    {(!useOverlayMetadata || !showImageCategoryPill) && (
+                    {!useSleepMetadataBelow &&
+                      (!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
                         categoryId={s.categoryId}
                         leftInset={18}

@@ -16,15 +16,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
-import {
-  SESSION_CARD_METADATA_HEIGHT_SCALE,
-  SessionCardMetadataOverlay,
-} from "@/components/SessionCardMetadataOverlay";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
 import {
   getSessionsBySonidosTag,
   getSonidosVisibleSessions,
@@ -35,12 +29,16 @@ import { useColors } from "@/hooks/useColors";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import {
+  CONTENT_CAROUSEL_GAP,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const GAP = 12;
-const CARD_W = (width - H_PAD * 2 - GAP) / 2;
-const CARD_H = Math.round((CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE);
+const GAP = CONTENT_CAROUSEL_GAP;
+const CARD_W = getTwoCardCarouselCardWidth(width, 14, 25);
+const AMBIENTAL_IMAGE_SIZE = Math.round(CARD_W * 0.72);
 
 export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -146,20 +144,20 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
                   { width: CARD_W, opacity: pressed ? 0.82 : 1 },
                 ]}
               >
-                <View style={[styles.image, { height: CARD_H, backgroundColor: colors.card }]}>
-                  <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
-                  <SessionCardMetadataOverlay
-                    categoryId={session.categoryId}
-                    durationLabel={session.durationLabel}
-                    title={session.title}
-                    authorName={
-                      session.guideId
-                        ? getGuide(session.guideId).name
-                        : getArtist(session.artistId).name
-                    }
+                <View style={styles.image}>
+                  <Image
+                    source={session.image}
+                    style={styles.ambientalImage}
+                    contentFit="cover"
                   />
                   <PremiumBadge session={session} />
                 </View>
+                <Text
+                  style={[styles.cardTitle, { color: colors.foreground }]}
+                  numberOfLines={2}
+                >
+                  {session.title}
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -202,11 +200,32 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "center",
     columnGap: GAP,
     rowGap: 18,
   },
   card: { marginBottom: 4 },
-  image: { borderRadius: 14, overflow: "hidden" },
+  image: {
+    width: CARD_W,
+    height: CARD_W,
+    borderRadius: 18,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  ambientalImage: {
+    width: AMBIENTAL_IMAGE_SIZE,
+    height: AMBIENTAL_IMAGE_SIZE,
+    borderRadius: AMBIENTAL_IMAGE_SIZE / 2,
+  },
+  cardTitle: {
+    marginTop: 8,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
+  },
   empty: {
     marginHorizontal: H_PAD,
     marginTop: 32,
