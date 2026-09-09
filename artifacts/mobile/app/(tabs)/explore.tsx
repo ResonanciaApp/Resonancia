@@ -739,7 +739,13 @@ export function ExploreScreen({
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
-              hiddenIds={["__descanzo__", "__mezcla__", "__geometrix__"]}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+                "ambientales",
+                "charlas",
+              ]}
               discoverTieredLayout
             />
           </View>
