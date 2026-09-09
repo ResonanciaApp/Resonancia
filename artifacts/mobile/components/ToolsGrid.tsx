@@ -16,7 +16,6 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 
 const PILLS_PAD = 19;
 const PILLS_GAP = 8;
@@ -118,13 +117,11 @@ export function ToolsGrid({
   const { openOverlay } = useDrawer();
   const { openMixer } = useMixerPanel();
 
-  const pillBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.1)"
-      : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.1)"
-        : "rgba(181,211,255,0.1)";
+  const pillBackground = theme.id === "indigo2"
+    ? "rgba(21,13,46,0.5)"
+    : theme.id === "resonancia"
+      ? "rgba(9,11,23,0.5)"
+      : "rgba(14,14,23,0.5)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
       case "mood-register":
