@@ -206,12 +206,8 @@ const ActivityRow = React.memo(function ActivityRow({
     };
   });
 
-  const completionStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      completionProgress.value,
-      [0, 1],
-      [cardBackgroundColor ?? routineTheme.surface, routineTheme.completion],
-    ),
+  const completionOverlayStyle = useAnimatedStyle(() => ({
+    opacity: completionProgress.value,
   }));
   const ticketCircleColor = theme.gradient[0];
   const ticketCircleCompletedColor = useMemo(
@@ -240,7 +236,20 @@ const ActivityRow = React.memo(function ActivityRow({
       testID={`routine-activity-${activity.id}`}
     >
       <GestureDetector gesture={pan}>
-        <Reanimated.View style={[styles.activityCard, completionStyle]}>
+        <Reanimated.View
+          style={[
+            styles.activityCard,
+            { backgroundColor: cardBackgroundColor ?? routineTheme.surface },
+          ]}
+        >
+          <Reanimated.View
+            pointerEvents="none"
+            style={[
+              styles.completionOverlay,
+              { backgroundColor: routineTheme.completion },
+              completionOverlayStyle,
+            ]}
+          />
           <Pressable
             onPress={() => onOpen(activityId)}
             disabled={completing}
@@ -629,6 +638,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 11,
     overflow: "hidden",
+  },
+  completionOverlay: {
+    ...StyleSheet.absoluteFillObject,
   },
   activityOpenArea: {
     flex: 1,
