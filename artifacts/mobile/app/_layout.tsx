@@ -60,7 +60,6 @@ import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
 import { NotificationsProvider } from "@/context/NotificationsContext";
-import { DescansoPlayerProvider } from "@/context/DescansoPlayerContext";
 import { DownloadProvider } from "@/context/DownloadContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -540,7 +539,6 @@ export default function RootLayout() {
                 <DownloadProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
-                    <DescansoPlayerProvider>
                     <MixerProvider>
                     <MilestonesProvider>
                     <StreakCelebrationProvider>
@@ -583,7 +581,6 @@ export default function RootLayout() {
                     <MilestoneCelebration />
                     </MilestonesProvider>
                     </MixerProvider>
-                    </DescansoPlayerProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>
                 </DownloadProvider>

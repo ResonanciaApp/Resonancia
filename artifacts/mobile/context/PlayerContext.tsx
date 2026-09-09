@@ -25,7 +25,6 @@ const RANDOM_ADVANCE_CATEGORIES = new Set(["musica-sonidos", "sonidos-ancestrale
 import {
   registerSessionStopper,
   stopMixPlayback,
-  stopSoundPlayback,
   stopChatPlayback,
 } from "@/context/audioBridge";
 import { useAuth } from "@/context/AuthContext";
@@ -1271,7 +1270,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // deben caer en el fallback de simulación/voz mientras falta el audio final.
       if (session.isPlaceholder) {
         stopMixPlayback();
-        stopSoundPlayback();
         stopChatPlayback();
         flushActiveStat();
         clearSim();
@@ -1339,7 +1337,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setInfiniteLoop(false);
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
-      stopSoundPlayback();
       stopChatPlayback();
       flushActiveStat();
       clearSim();
@@ -1522,7 +1519,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       const gen = ++playGenRef.current;
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
-      stopSoundPlayback();
       stopChatPlayback();
       flushActiveStat();
       clearSim();

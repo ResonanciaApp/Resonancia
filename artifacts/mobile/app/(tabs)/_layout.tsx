@@ -26,11 +26,7 @@ import Svg, {
 } from "react-native-svg";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
-import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
-import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { useMixer } from "@/context/MixerContext";
-import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
-import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import {
   TabBarVisibilityProvider,
   useTabBarVisibility,
@@ -417,31 +413,6 @@ function TabLayoutInner() {
     outputRange: [0, 0.55],
   });
 
-  const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
-  const topPad         = isWeb ? 67 : Math.max(insets.top, 40);
-
-  const descansoPlayer = useDescansoPlayerContext();
-  const selectedSound = descansoPlayer.selectedId
-    ? (DESCANSO_SOUNDS.find((s) => s.id === descansoPlayer.selectedId) ?? null)
-    : null;
-  const { isExpanded, setIsExpanded } = descansoPlayer;
-
-  // Navegar entre sonidos de Dormir desde el reproductor expandido
-  const dormirSoundIdx = descansoPlayer.selectedId
-    ? DESCANSO_SOUNDS.findIndex((s) => s.id === descansoPlayer.selectedId)
-    : -1;
-  const handleDormirPrev = useCallback(() => {
-    if (dormirSoundIdx < 0) return;
-    const prev = DESCANSO_SOUNDS[(dormirSoundIdx - 1 + DESCANSO_SOUNDS.length) % DESCANSO_SOUNDS.length];
-    descansoPlayer.toggle(prev.id, prev.audioUri ?? null);
-  }, [dormirSoundIdx, descansoPlayer]);
-  const handleDormirNext = useCallback(() => {
-    if (dormirSoundIdx < 0) return;
-    const next = DESCANSO_SOUNDS[(dormirSoundIdx + 1) % DESCANSO_SOUNDS.length];
-    descansoPlayer.toggle(next.id, next.audioUri ?? null);
-  }, [dormirSoundIdx, descansoPlayer]);
-
-
   // Parallax sutil: el contenido de fondo se corre un poco a la izquierda
   // cuando entra un panel derecha→izquierda (estilo Insight Timer).
   const { parallaxAnim: overlayParallax } = useCategoryOverlay();
@@ -526,41 +497,6 @@ function TabLayoutInner() {
           </Animated.View>
         </>
       )}
-
-
-      {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
-      {selectedSound && (
-        <>
-          <DormirMiniPlayer
-            sound={selectedSound}
-            isPlaying={descansoPlayer.isPlaying}
-            isLoading={descansoPlayer.isLoading}
-            onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
-            onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
-            bottomOffset={miniPlayerBottom}
-            closeColor="#ffffff"
-            isExpanded={isExpanded}
-            topOffset={topPad}
-            onExpand={() => setIsExpanded(true)}
-          />
-          <DormirExpandedPlayer
-            sound={selectedSound}
-            isPlaying={descansoPlayer.isPlaying}
-            isLoading={descansoPlayer.isLoading}
-            isExpanded={isExpanded}
-            onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
-            onCollapse={() => setIsExpanded(false)}
-            onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
-            onPrev={handleDormirPrev}
-            onNext={handleDormirNext}
-            timerMinutes={descansoPlayer.timerMinutes}
-            onSetTimer={descansoPlayer.setTimerMinutes}
-            bottomInset={bottomPb}
-            topInset={topPad}
-          />
-        </>
-      )}
-
 
     </View>
   );
