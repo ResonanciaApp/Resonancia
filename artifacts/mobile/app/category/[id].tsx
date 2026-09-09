@@ -240,6 +240,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             showCardMetadata
             showAuthorAvatar={false}
             squareMetaBelow
+            categoryGridPresentation
             overridePress={() => handleSessionPress(session)}
             cardVariant={id === "ambientales" ? "ambiental" : undefined}
           />

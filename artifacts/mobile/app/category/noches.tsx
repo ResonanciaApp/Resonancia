@@ -190,6 +190,7 @@ function CategoryCard({
       showCardMetadata
       showAuthorAvatar={false}
       squareMetaBelow
+      categoryGridPresentation
       onLongPress={onLongPress}
       overridePress={handlePress}
     />

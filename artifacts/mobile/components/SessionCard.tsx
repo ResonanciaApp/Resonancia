@@ -59,6 +59,7 @@ type Props = {
   playing?: boolean;
   cardVariant?: "ambiental";
   squareMetaBelow?: boolean;
+  categoryGridPresentation?: boolean;
 };
 
 function PlayingDot() {
@@ -96,7 +97,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -245,7 +246,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             categoryPillTinted={categoryPillTinted}
             categoryPillTopInset={categoryPillTopInset}
           />
-        ) : showDuration && !squareMetaBelow ? (
+        ) : showDuration && (!squareMetaBelow || categoryGridPresentation) ? (
           <SessionDurationBadge
             label={session.durationLabel}
             style={styles.durationBadge}
@@ -256,9 +257,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       </View>
       {squareMetaBelow ? (
         <View style={styles.squareMeta}>
-          <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
-            {[categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
-          </Text>
+          {!categoryGridPresentation && (
+            <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
+              {[categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
+            </Text>
+          )}
           <Text style={[styles.squareTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
