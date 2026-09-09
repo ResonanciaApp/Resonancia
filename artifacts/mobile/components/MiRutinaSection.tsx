@@ -30,6 +30,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -42,6 +43,19 @@ const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
 const COMPLETION_EXIT_DELAY = 1000;
 const TOAST_DURATION = 2400;
 const HANDLE_COLOR = "#7F7F7F";
+
+function lightenHexColor(color: string, amount = 0.1) {
+  const match = /^#([0-9a-f]{6})$/i.exec(color);
+  if (!match) return color;
+  const value = Number.parseInt(match[1], 16);
+  const channel = (shift: number) => {
+    const original = (value >> shift) & 0xff;
+    return Math.round(original + (255 - original) * amount);
+  };
+  return `#${[channel(16), channel(8), channel(0)]
+    .map((part) => part.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
 
 const ActivityRow = React.memo(function ActivityRow({
   activity,
@@ -73,6 +87,7 @@ const ActivityRow = React.memo(function ActivityRow({
   cardBackgroundColor?: string;
 }) {
   const routineTheme = useRoutineTheme();
+  const { theme } = useSceneTheme();
   const completionProgress = useSharedValue(completing ? 1 : 0);
   const didActivate = useSharedValue(0);
   const activityId = activity.id;
@@ -198,6 +213,18 @@ const ActivityRow = React.memo(function ActivityRow({
       [cardBackgroundColor ?? routineTheme.surface, routineTheme.completion],
     ),
   }));
+  const ticketCircleColor = theme.gradient[0];
+  const ticketCircleCompletedColor = useMemo(
+    () => lightenHexColor(ticketCircleColor, 0.1),
+    [ticketCircleColor],
+  );
+  const ticketCircleStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      completionProgress.value,
+      [0, 1],
+      [ticketCircleColor, ticketCircleCompletedColor],
+    ),
+  }));
 
   const completeFromTicket = useCallback(
     (event: GestureResponderEvent) => {
@@ -243,28 +270,27 @@ const ActivityRow = React.memo(function ActivityRow({
               </Text>
             </View>
           </Pressable>
-          <Pressable
-            onPress={completeFromTicket}
-            disabled={completing}
-            accessibilityRole="checkbox"
-            accessibilityState={{ checked: completing }}
-            accessibilityLabel={`Completar ${activity.title}`}
-            testID={`routine-toggle-${activity.id}`}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.checkButton,
-              {
-                backgroundColor: completing
-                  ? "rgba(255,255,255,0.92)"
-                  : "transparent",
-                opacity: pressed ? 0.58 : 1,
-              },
-            ]}
-          >
-            {!completing ? (
+          <View style={styles.checkButtonWrap}>
+            <Reanimated.View
+              pointerEvents="none"
+              style={[styles.checkButtonCircle, ticketCircleStyle]}
+            />
+            <Pressable
+              onPress={completeFromTicket}
+              disabled={completing}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: completing }}
+              accessibilityLabel={`Completar ${activity.title}`}
+              testID={`routine-toggle-${activity.id}`}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.checkButton,
+                { opacity: pressed ? 0.58 : 1 },
+              ]}
+            >
               <Feather name="check" size={20} color="#F9F9F9" />
-            ) : null}
-          </Pressable>
+            </Pressable>
+          </View>
         </Reanimated.View>
       </GestureDetector>
     </Reanimated.View>
@@ -633,9 +659,17 @@ const styles = StyleSheet.create({
   checkButton: {
     width: 34,
     height: 34,
-    borderRadius: 14,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
+  },
+  checkButtonWrap: {
+    width: 34,
+    height: 34,
+  },
+  checkButtonCircle: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 17,
   },
   completeState: {
     minHeight: 76,
