@@ -677,17 +677,12 @@ export function ExploreScreen({
                       transition={IMAGE_TRANSITION}
                       cachePolicy="memory-disk"
                     />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      style={styles.categoryDurationBadge}
+                    />
                   </View>
                   <View style={styles.newInResonanceMeta}>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: activeTheme.accent ?? "#c2c2c2" },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {[session.categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
-                    </Text>
                     <Text style={styles.newInResonanceTitle} numberOfLines={2}>
                       {session.title}
                     </Text>
@@ -1138,6 +1133,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  categoryDurationBadge: {
+    position: "absolute",
+    left: 8,
+    bottom: 8,
+    paddingHorizontal: 9,
   },
   newInResonanceDuration: {
     alignSelf: "flex-start",

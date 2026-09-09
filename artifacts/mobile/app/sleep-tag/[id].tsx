@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
@@ -184,15 +185,13 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
                       />
+                      <SessionDurationBadge
+                        label={session.durationLabel}
+                        style={styles.categoryDurationBadge}
+                      />
                       <PremiumBadge session={session} />
                     </View>
                      <View style={styles.cardMetadata}>
-                       <Text
-                         style={[styles.cardSecondary, { color: accentColor }]}
-                         numberOfLines={1}
-                       >
-                         {[session.categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
-                       </Text>
                        <Text
                          style={[styles.cardTitle, { color: colors.foreground }]}
                          numberOfLines={2}
@@ -342,6 +341,12 @@ const styles = StyleSheet.create({
   cardImg: {
     borderRadius: 14,
     overflow: "hidden",
+  },
+  categoryDurationBadge: {
+    position: "absolute",
+    left: 8,
+    bottom: 8,
+    paddingHorizontal: 9,
   },
   cardMetadata: {
     marginTop: 8,

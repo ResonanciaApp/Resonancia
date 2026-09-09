@@ -382,6 +382,7 @@ export default function DescansoScreen() {
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
                 sleepMetadataBelow
+                categoryGridPresentation
                 titleSize={19}
                 showImageCategoryPill
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}

@@ -204,6 +204,7 @@ export function RecommendedForYouSection({
           onPress={onPress}
           showHeader={false}
           squareTitleAuthorBelow
+          categoryGridPresentation
           style={styles.carousel}
         />
       ) : (

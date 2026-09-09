@@ -310,6 +310,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 showCardMetadata
                 showAuthorAvatar={false}
                 squareMetaBelow
+                categoryGridPresentation
                 overridePress={() => openSession(session)}
               />
             ))}
