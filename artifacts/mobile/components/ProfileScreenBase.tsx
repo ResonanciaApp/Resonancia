@@ -372,7 +372,7 @@ export function ProfileScreenBase({
     : isIndigoThemeId(activeSceneId)
       ? "rgba(181,211,255,0.1)"
       : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.1)"
+        ? "rgba(0,0,0,0.25)"
         : "rgba(181,211,255,0.1)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
