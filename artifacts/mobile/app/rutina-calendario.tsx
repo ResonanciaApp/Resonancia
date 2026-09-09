@@ -118,8 +118,12 @@ function CalendarActivityRow({
               ? routineTheme.completion
               : skipped
                 ? routineTheme.surfaceElevated
-                : routineTheme.ticketSurface,
-            borderColor: completed ? routineTheme.completion : routineTheme.divider,
+                : "#F9F9F9",
+            borderColor: completed
+              ? routineTheme.completion
+              : skipped
+                ? routineTheme.divider
+                : "#F9F9F9",
           },
         ]}
       >
@@ -131,7 +135,7 @@ function CalendarActivityRow({
               ? "#FFFFFF"
               : skipped
                 ? routineTheme.textMuted
-                : routineTheme.accent
+                : "#060A0F"
           }
         />
       </View>

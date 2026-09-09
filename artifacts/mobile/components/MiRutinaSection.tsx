@@ -209,10 +209,10 @@ const ActivityRow = React.memo(function ActivityRow({
   const completionOverlayStyle = useAnimatedStyle(() => ({
     opacity: completionProgress.value,
   }));
-  const ticketCircleColor = theme.gradient[0];
+  const ticketCircleColor = "#F9F9F9";
   const ticketCircleCompletedColor = useMemo(
-    () => lightenHexColor(ticketCircleColor, 0.1),
-    [ticketCircleColor],
+    () => lightenHexColor(theme.gradient[0], 0.1),
+    [theme.gradient],
   );
   const ticketCircleStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
@@ -297,7 +297,7 @@ const ActivityRow = React.memo(function ActivityRow({
                 { opacity: pressed ? 0.58 : 1 },
               ]}
             >
-              <Feather name="check" size={20} color="#F9F9F9" />
+              <Feather name="check" size={20} color={completing ? "#F9F9F9" : "#060A0F"} />
             </Pressable>
           </View>
         </Reanimated.View>
