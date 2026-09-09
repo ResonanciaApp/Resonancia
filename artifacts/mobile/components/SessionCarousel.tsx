@@ -324,9 +324,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {(!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
                         categoryId={s.categoryId}
+                        textOnly
+                        tinted
                         plainIcon
-                        leftInset={8}
-                        topInset={8}
+                        leftInset={18}
+                        topInset={18}
                       />
                     )}
                     {durationInsideWithMeta && effectiveShowDurationBadge && (
