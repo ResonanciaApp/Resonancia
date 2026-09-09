@@ -220,6 +220,7 @@ export default function RutinaCalendarioScreen() {
           {weekDays.map((date, index) => {
             const dateKey = getRoutineDateKey(date);
             const selected = dateKey === selectedKey;
+            const isToday = dateKey === todayKey;
             const hasCompletion = activities.some((activity) =>
               activity.completedDates.includes(dateKey),
             );
@@ -250,9 +251,15 @@ export default function RutinaCalendarioScreen() {
                     styles.dayCircle,
                     {
                       backgroundColor: selected
-                        ? routineTheme.completion
+                         ? "#F9F9F9"
                          : "rgba(255,255,255,0.1)",
-                      borderColor: selected ? routineTheme.completion : routineTheme.divider,
+                       borderColor:
+                         isToday && !selected
+                           ? "#FFFFFF"
+                           : selected
+                             ? "#F9F9F9"
+                             : routineTheme.divider,
+                       borderWidth: isToday && !selected ? 1 : StyleSheet.hairlineWidth,
                     },
                   ]}
                 >
@@ -261,7 +268,7 @@ export default function RutinaCalendarioScreen() {
                       styles.dayNumber,
                       {
                         color: selected
-                          ? "#FFFFFF"
+                           ? "#060A0F"
                            : routineTheme.text,
                       },
                     ]}
