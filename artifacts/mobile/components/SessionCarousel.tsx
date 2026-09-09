@@ -269,12 +269,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalCardBackground =
     ambientalCardBackgroundOverride ?? (
       theme.id === "tibet"
-        ? "rgba(0,0,0,0.1)"
-        : isIndigoThemeId(theme.id)
-          ? "rgba(181,211,255,0.1)"
-          : theme.id === "indigo2"
-            ? "rgba(0,0,0,0.18)"
-            : "rgba(181,211,255,0.1)"
+        ? "rgba(0,0,0,0.14)"
+        : theme.id === "indigo2"
+          ? "rgba(191,207,255,0.14)"
+          : isIndigoThemeId(theme.id)
+            ? "rgba(181,211,255,0.14)"
+            : "rgba(181,211,255,0.14)"
     );
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;

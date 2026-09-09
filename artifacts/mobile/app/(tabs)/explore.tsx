@@ -276,15 +276,13 @@ export function ExploreScreen({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const durationSurfaceColor =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.1)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.1)"
-        : activeSceneId === "indigo2"
-          ? "rgba(191,207,255,0.1)"
-          : "rgba(181,211,255,0.1)";
-  const contentCardSurfaceColor = activeSceneId === "indigo2"
-    ? "rgba(0,0,0,0.18)"
-    : durationSurfaceColor;
+      ? "rgba(0,0,0,0.14)"
+      : activeSceneId === "indigo2"
+        ? "rgba(191,207,255,0.14)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(181,211,255,0.14)"
+          : "rgba(181,211,255,0.14)";
+  const contentCardSurfaceColor = durationSurfaceColor;
   const otherThemeDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : "rgba(255,255,255,0.62)";
