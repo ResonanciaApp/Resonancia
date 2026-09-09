@@ -333,7 +333,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   thumbStyle,
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
-                    borderWidth: 2,
+                    borderWidth: 1,
                     borderColor: "rgba(255,255,255,0.1)",
                   },
                 ]}
@@ -351,8 +351,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           width: ambientalImageSize,
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
-                          left: (cw - ambientalImageSize) / 2 - 2,
-                          top: (ch - ambientalImageSize) / 2 - 2,
+                          left: (cw - ambientalImageSize) / 2 - 1,
+                          top: (ch - ambientalImageSize) / 2 - 1,
                         },
                       ]}
                     />
