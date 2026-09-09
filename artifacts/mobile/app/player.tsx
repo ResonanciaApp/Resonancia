@@ -39,7 +39,6 @@ import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { usePlayer } from "@/context/PlayerContext";
-import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getNatureSounds } from "@/config/nature-base-map";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -49,12 +48,12 @@ import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
-import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 import { useDownloads } from "@/context/DownloadContext";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const HERO_HEIGHT = SCREEN_HEIGHT * 0.63 + 35;
+const IS_COMPACT_PLAYER = SCREEN_HEIGHT <= 650;
 const RATINGS_KEY = "@resonance_ratings";
 
 function formatTime(seconds: number): string {
@@ -77,31 +76,17 @@ export default function PlayerScreen() {
     actualDurationSeconds,
     infiniteLoop,
     pauseResume,
-    stop,
     isFavorite,
     toggleFavorite,
     seekTo,
-    sleepTimerRemaining,
-    setSleepTimer,
     hasRealAudio,
     mainVolume,
     setMainVolume,
     hasVoiceTrack,
     voiceVolume,
     setVoiceVolume,
-    activePlaylistIds,
-    queueImplicit,
-    queueRandom,
-    toggleQueueRandom,
-    shuffleMode,
-    playlistNext,
-    playlistPrev,
-    toggleShuffle,
   } = usePlayer();
   const { downloads, download, remove } = useDownloads();
-
-  // En modo playlist los controles de ±15s y ajustes se reemplazan
-  const isInPlaylist = !!activePlaylistIds?.length;
 
   // Options sheet
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
@@ -143,7 +128,6 @@ export default function PlayerScreen() {
     }).start();
   }, [uiShown, uiOpacity]);
 
-  const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
   const [repeatMode, setRepeatMode] = useState(false);
 
@@ -268,25 +252,6 @@ export default function PlayerScreen() {
   }, [setVoiceVolume]);
 
 
-  const { isPremium } = usePremium();
-
-  const handleSelectTimer = useCallback((minutes: number | null) => {
-    if (minutes !== null && minutes > FREE_TIMER_MAX_MINUTES && !isPremium) {
-      showPremiumGate(
-        `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`
-      );
-      return;
-    }
-    setSelectedTimerMinutes(minutes);
-    setSleepTimer(minutes);
-  }, [setSleepTimer, isPremium]);
-
-  useEffect(() => {
-    if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
-      setSelectedTimerMinutes(null);
-    }
-  }, [sleepTimerRemaining]);
-
   useEffect(() => {
     if (showOptionsSheet) {
       sheetProgress.value = withTiming(1, { duration: DURATION.SHEET_OPEN, easing: easeOutCubicRA });
@@ -380,9 +345,6 @@ export default function PlayerScreen() {
 
   const scaleHeart    = useRef(new RNAnimated.Value(1)).current;
   const scaleShare    = useRef(new RNAnimated.Value(1)).current;
-  const scalePlaylist = useRef(new RNAnimated.Value(1)).current;
-  const scaleTimer    = useRef(new RNAnimated.Value(1)).current;
-  const [showTimerSheet, setShowTimerSheet] = useState(false);
 
   // ─────────────────────────────────────────────────────────────────────────
   const topPad = Platform.OS === "web" ? 20 : (insets.top || 12);
@@ -404,51 +366,7 @@ export default function PlayerScreen() {
     }
   };
 
-  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas"];
-  const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
-
-  /* ── Icono izquierdo del reproductor por categoría (Tarea #191) ──
-     Música/Sesiones → aleatorio (al terminar suena otra al azar);
-     Meditaciones → icono de música que abre Sonido Ambiente directo;
-     Dormir → espacio vacío (sin icono);
-     resto → ajustes como antes. */
   const catId = currentSession.categoryId;
-  const leftSlot =
-    catId === "musica-sonidos" || catId === "sonidos-ancestrales" ? (
-      <Pressable
-        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleQueueRandom(); }}
-        style={styles.ctrlBtn}
-        hitSlop={10}
-      >
-        <Feather
-          name="shuffle"
-          size={25}
-          color={queueRandom ? "#BE9650" : "rgba(255,255,255,0.88)"}
-        />
-      </Pressable>
-    ) : catId === "meditaciones-guiadas" ? (
-      <Pressable
-        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowAmbientPicker(true); }}
-        style={styles.ctrlBtn}
-        hitSlop={10}
-      >
-        <Feather name="music" size={25} color="rgba(255,255,255,0.88)" />
-      </Pressable>
-    ) : catId === "descanso" ? (
-      <View style={styles.ctrlBtn} />
-    ) : (
-      <Pressable
-        onPress={isOptionsCategory ? openSheet : undefined}
-        style={styles.ctrlBtn}
-        hitSlop={10}
-      >
-        <Feather
-          name="sliders"
-          size={22}
-          color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
-        />
-      </Pressable>
-    );
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
   const isNature = !!getNatureSounds(currentSession.id);
@@ -457,21 +375,6 @@ export default function PlayerScreen() {
     (currentSession.soundTag === "Música Ambient" || currentSession.soundTag === "Música Enteógena");
   const isFixedMusic = showArtist;
   const artist = getArtist(currentSession.artistId);
-
-  const TIMER_OPTIONS: { label: string; minutes: number | null }[] = [
-    { label: "Sin timer", minutes: null },
-    { label: "5 min", minutes: 5 },
-    { label: "10 min", minutes: 10 },
-    { label: "20 min", minutes: 20 },
-    { label: "30 min", minutes: 30 },
-    { label: "50 min", minutes: 50 },
-  ];
-
-  const formatRemaining = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  };
 
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = infiniteLoop ? Infinity : totalSeconds - elapsed;
@@ -555,13 +458,10 @@ export default function PlayerScreen() {
         {/* Overlay oscuro */}
         <View style={[StyleSheet.absoluteFill, styles.darkOverlay]} pointerEvents="none" />
 
-        {/* ── Botones top: chevron + descarga ─────────────────────────────── */}
+        {/* ── Cierre ──────────────────────────────────────────────────────── */}
         <View style={[styles.topRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
           <Pressable
-            onPress={() => {
-              stop();
-              router.back();
-            }}
+            onPress={() => router.back()}
             style={styles.topCircleBtn}
             hitSlop={8}
           >
@@ -572,63 +472,46 @@ export default function PlayerScreen() {
             )}
             <Feather name="x" size={22} color="#FBFBFB" />
           </Pressable>
-
-          <Pressable
-            style={styles.topCircleBtn}
-            hitSlop={8}
-            onPress={() => void handleDownload()}
-          >
-            {Platform.OS !== "web" ? (
-              <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
-            )}
-            {downloadItem?.status === "downloading" ? (
-              <Text style={styles.downloadProgressText}>{downloadProgress}%</Text>
-            ) : (
-              <Feather
-                name={
-                  downloadItem?.status === "complete"
-                    ? "check"
-                    : downloadItem?.status === "failed"
-                      ? "refresh-cw"
-                      : "download-cloud"
-                }
-                size={20}
-                color="#FBFBFB"
-              />
-            )}
-          </Pressable>
         </View>
 
         {/* ── Contenido principal ──────────────────────────────────────────── */}
         <View
-          style={[styles.mainContent, { paddingTop: topPad + 68, paddingBottom: bottomPad + 12 }]}
+          style={[
+            styles.mainContent,
+            {
+              paddingTop: topPad + (IS_COMPACT_PLAYER ? 54 : 68),
+              paddingBottom: bottomPad + 245,
+            },
+          ]}
           pointerEvents="box-none"
         >
           {/* Avatar autor */}
           {authorPhoto && (
             <Pressable
               onPress={() => router.push(authorProfilePath as never)}
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, alignSelf: "center", marginBottom: 12 })}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+                alignSelf: "center",
+                marginBottom: IS_COMPACT_PLAYER ? 8 : 12,
+              })}
               hitSlop={8}
             >
               <ExpoImage
                 source={authorPhoto as never}
-                style={{ width: 52, height: 52, borderRadius: 26 }}
+                style={IS_COMPACT_PLAYER ? styles.compactAuthorPhoto : styles.authorPhoto}
                 contentFit="cover"
               />
             </Pressable>
           )}
 
           {/* Título */}
-          <Text style={styles.titleText} numberOfLines={3}>
+          <Text style={[styles.titleText, IS_COMPACT_PLAYER && styles.compactTitleText]} numberOfLines={IS_COMPACT_PLAYER ? 2 : 3}>
             {currentSession.title}
           </Text>
 
           {/* Descripción del reproductor (opcional) */}
           {!!currentSession.playerDescription && (
-            <Text style={styles.playerDesc} numberOfLines={3}>
+            <Text style={[styles.playerDesc, IS_COMPACT_PLAYER && styles.compactPlayerDesc]} numberOfLines={IS_COMPACT_PLAYER ? 1 : 3}>
               {currentSession.playerDescription}
             </Text>
           )}
@@ -644,64 +527,8 @@ export default function PlayerScreen() {
           {/* Spacer */}
           <View style={{ flex: 1 }} />
 
-          {/* ── Fila de acciones ─────────────────────────────────────────── */}
-          <View style={styles.actionRow}>
-            <Pressable
-              style={styles.actionBtn}
-              onPress={() => {
-                bounce(scaleHeart);
-                toggleFavorite(currentSession.id);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-              hitSlop={8}
-            >
-              <RNAnimated.View style={{ transform: [{ scale: scaleHeart }] }}>
-                <FontAwesome name="heart" size={20} color={fav ? "#F9F9F9" : "rgba(255,255,255,0.92)"} />
-              </RNAnimated.View>
-            </Pressable>
-            <Pressable
-              style={styles.actionBtn}
-              onPress={() => { bounce(scaleShare); handleShare(); }}
-              hitSlop={8}
-            >
-              <RNAnimated.View style={{ transform: [{ scale: scaleShare }] }}>
-                <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
-              </RNAnimated.View>
-            </Pressable>
-            {/* Playlist: oculto en Meditaciones y Dormir (Tarea #193) */}
-            {catId !== "meditaciones-guiadas" && catId !== "descanso" && (
-              <Pressable
-                style={styles.actionBtn}
-                onPress={() => { bounce(scalePlaylist); setShowPlaylistSheet(true); }}
-                hitSlop={8}
-              >
-                <RNAnimated.View style={{ transform: [{ scale: scalePlaylist }] }}>
-                  <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
-                </RNAnimated.View>
-              </Pressable>
-            )}
-            {/* Temporizador (Tarea #193) */}
-            <Pressable
-              style={styles.actionBtn}
-              onPress={() => {
-                bounce(scaleTimer);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setShowTimerSheet(true);
-              }}
-              hitSlop={8}
-            >
-              <RNAnimated.View style={{ transform: [{ scale: scaleTimer }] }}>
-                <Feather
-                  name="clock"
-                  size={22}
-                  color={sleepTimerRemaining !== null ? "#BE9650" : "rgba(255,255,255,0.92)"}
-                />
-              </RNAnimated.View>
-            </Pressable>
-          </View>
-
           {isPlaybackUnavailable && (
-            <View style={{ alignItems: "center", marginBottom: 16 }}>
+            <View style={styles.playbackUnavailable}>
               <Text style={{ color: "#F9F9F9", fontSize: 15, fontWeight: "700" }}>
                 {playbackUnavailableLabel}
               </Text>
@@ -713,183 +540,149 @@ export default function PlayerScreen() {
             </View>
           )}
 
-          {/* ── Fila de controles ─────────────────────────────────────────── */}
-          <View style={styles.controlsRow}>
-            {isInPlaylist ? (
-              /* ── Modo cola: (shuffle|ajustes) · prev · play · next · stop ──
-                 Playlist explícita → aleatorio; cola implícita (categoría,
-                 estilo Calm) → botón de ajustes como en el modo normal. */
-              <>
-                {queueImplicit ? (
-                  /* Cola implícita: icono izquierdo según categoría (Tarea #191) */
-                  leftSlot
-                ) : (
-                  /* Aleatorio */
-                  <Pressable
-                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleShuffle(); }}
-                    style={styles.ctrlBtn}
-                    hitSlop={10}
-                  >
-                    <Feather
-                      name="shuffle"
-                      size={22}
-                      color={shuffleMode ? "#BE9650" : "rgba(255,255,255,0.88)"}
-                    />
-                  </Pressable>
-                )}
+          {/* ── Controles principales centrados ───────────────────────────── */}
+          <View style={[styles.controlsRow, { bottom: bottomPad + 152 }]}>
+            <Pressable
+              onPress={skipBackward}
+              style={[styles.ctrlBtn, infiniteLoop && styles.hiddenControl]}
+              hitSlop={10}
+              disabled={infiniteLoop}
+            >
+              <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
+              <Text style={styles.ctrlSkipLabel}>15</Text>
+            </Pressable>
 
-                {/* Sesión anterior */}
-                <Pressable
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); playlistPrev(); }}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Feather name="skip-back" size={28} color="rgba(255,255,255,0.90)" />
-                </Pressable>
+            <Pressable
+              onPress={handlePlayPause}
+              disabled={isLoading || isPlaybackUnavailable}
+              style={[styles.playBtn, { opacity: isLoading || isPlaybackUnavailable ? 0.45 : 1 }]}
+              hitSlop={4}
+            >
+              {isLoading ? (
+                <Feather name="loader" size={36} color="#FBFBFB" />
+              ) : isPlaying ? (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                </Svg>
+              ) : (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                </Svg>
+              )}
+            </Pressable>
 
-                {/* Play / Pause */}
-                <Pressable
-                  onPress={handlePlayPause}
-                  disabled={isLoading || isPlaybackUnavailable}
-                  style={[styles.playBtn, { opacity: isLoading || isPlaybackUnavailable ? 0.45 : 1 }]}
-                  hitSlop={4}
-                >
-                  {isLoading ? (
-                    <Feather name="loader" size={36} color="#FBFBFB" />
-                  ) : isPlaying ? (
-                    <Svg width={36} height={36} viewBox="0 0 46 46">
-                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                    </Svg>
-                  ) : (
-                    <Svg width={36} height={36} viewBox="0 0 46 46">
-                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-                    </Svg>
-                  )}
-                </Pressable>
-
-                {/* Sesión siguiente */}
-                <Pressable
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); playlistNext(); }}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Feather name="skip-forward" size={28} color="rgba(255,255,255,0.90)" />
-                </Pressable>
-
-                {/* Stop */}
-                <Pressable
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    stop();
-                    router.back();
-                  }}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Svg width={27} height={27} viewBox="0 0 24 24">
-                    <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
-                  </Svg>
-                </Pressable>
-              </>
-            ) : (
-              /* ── Modo normal: icono por categoría · −15s · play · +15s · stop ── */
-              <>
-                {leftSlot}
-
-                {/* Retroceder 15s (oculto en loop infinito: no hay línea de tiempo) */}
-                <Pressable
-                  onPress={skipBackward}
-                  style={[styles.ctrlBtn, infiniteLoop && { opacity: 0 }]}
-                  hitSlop={10}
-                  disabled={infiniteLoop}
-                >
-                  <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
-                  <Text style={styles.ctrlSkipLabel}>15</Text>
-                </Pressable>
-
-                {/* Play / Pause */}
-                <Pressable
-                  onPress={handlePlayPause}
-                  disabled={isLoading || isPlaybackUnavailable}
-                  style={[styles.playBtn, { opacity: isLoading || isPlaybackUnavailable ? 0.45 : 1 }]}
-                  hitSlop={4}
-                >
-                  {isLoading ? (
-                    <Feather name="loader" size={36} color="#FBFBFB" />
-                  ) : isPlaying ? (
-                    <Svg width={36} height={36} viewBox="0 0 46 46">
-                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                    </Svg>
-                  ) : (
-                    <Svg width={36} height={36} viewBox="0 0 46 46">
-                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-                    </Svg>
-                  )}
-                </Pressable>
-
-                {/* Avanzar 15s (oculto en loop infinito) */}
-                <Pressable
-                  onPress={skipForward}
-                  style={[styles.ctrlBtn, infiniteLoop && { opacity: 0 }]}
-                  hitSlop={10}
-                  disabled={infiniteLoop}
-                >
-                  <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
-                  <Text style={styles.ctrlSkipLabel}>15</Text>
-                </Pressable>
-
-                {/* Stop */}
-                <Pressable
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    stop();
-                    router.back();
-                  }}
-                  style={styles.ctrlBtn}
-                  hitSlop={10}
-                >
-                  <Svg width={27} height={27} viewBox="0 0 24 24">
-                    <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
-                  </Svg>
-                </Pressable>
-              </>
-            )}
+            <Pressable
+              onPress={skipForward}
+              style={[styles.ctrlBtn, infiniteLoop && styles.hiddenControl]}
+              hitSlop={10}
+              disabled={infiniteLoop}
+            >
+              <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
+              <Text style={styles.ctrlSkipLabel}>15</Text>
+            </Pressable>
           </View>
 
-          {/* ── Barra de progreso (oculta en loops infinitos: no hay línea de tiempo) ── */}
+          {/* ── Progreso: barra a 100 px del fondo interior ──────────────── */}
           {!infiniteLoop && (
-          <View
-            ref={progressBarRef}
-            style={styles.progressTrack}
-            onLayout={(e: LayoutChangeEvent) => {
-              progressBarWidthShared.value = e.nativeEvent.layout.width;
-              progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
-                progressBarPageX.current = px;
-              });
-            }}
-            onStartShouldSetResponder={() => !infiniteLoop}
-            onMoveShouldSetResponder={() => !infiniteLoop}
-            onResponderGrant={handleProgressGrant}
-            onResponderMove={handleProgressMove}
-            onResponderRelease={handleProgressRelease}
-            onResponderTerminate={handleProgressRelease}
-          >
-            <View style={styles.progressBg}>
-              <Animated.View style={[styles.progressFill, fillAnimStyle]} />
-              <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
+            <View style={[styles.progressDock, { bottom: bottomPad + 68 }]}>
+              <View
+                ref={progressBarRef}
+                style={styles.progressTrack}
+                onLayout={(e: LayoutChangeEvent) => {
+                  progressBarWidthShared.value = e.nativeEvent.layout.width;
+                  progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
+                    progressBarPageX.current = px;
+                  });
+                }}
+                onStartShouldSetResponder={() => true}
+                onMoveShouldSetResponder={() => true}
+                onResponderGrant={handleProgressGrant}
+                onResponderMove={handleProgressMove}
+                onResponderRelease={handleProgressRelease}
+                onResponderTerminate={handleProgressRelease}
+              >
+                <View style={styles.progressBg}>
+                  <Animated.View style={[styles.progressFill, fillAnimStyle]} />
+                  <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
+                </View>
+              </View>
+              <View style={styles.timeLabels}>
+                <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
+                <Text style={styles.timeLabelText}>{formatTime(remaining)}</Text>
+              </View>
+            </View>
+          )}
+
+          {/* ── Acciones inferiores por categoría ────────────────────────── */}
+          <View style={[styles.bottomActions, { bottom: bottomPad + 10 }]}>
+            <View style={styles.bottomActionsLeft}>
+              {catId === "meditaciones-guiadas" && (
+                <Pressable
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowAmbientPicker(true);
+                  }}
+                  style={styles.actionBtn}
+                  hitSlop={8}
+                  accessibilityLabel="Música ambiente"
+                >
+                  <Feather name="music" size={22} color="rgba(255,255,255,0.92)" />
+                </Pressable>
+              )}
+            </View>
+            <View style={styles.bottomActionsRight}>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  bounce(scaleHeart);
+                  toggleFavorite(currentSession.id);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
+                hitSlop={8}
+                accessibilityLabel={fav ? "Quitar de favoritos" : "Añadir a favoritos"}
+              >
+                <RNAnimated.View style={{ transform: [{ scale: scaleHeart }] }}>
+                  <FontAwesome name="heart" size={20} color={fav ? "#F9F9F9" : "rgba(255,255,255,0.92)"} />
+                </RNAnimated.View>
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                hitSlop={8}
+                onPress={() => void handleDownload()}
+                accessibilityLabel="Descargar sesión"
+              >
+                {downloadItem?.status === "downloading" ? (
+                  <Text style={styles.downloadProgressText}>{downloadProgress}%</Text>
+                ) : (
+                  <Feather
+                    name={
+                      downloadItem?.status === "complete"
+                        ? "check"
+                        : downloadItem?.status === "failed"
+                          ? "refresh-cw"
+                          : "download-cloud"
+                    }
+                    size={21}
+                    color="#FBFBFB"
+                  />
+                )}
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  bounce(scaleShare);
+                  void handleShare();
+                }}
+                hitSlop={8}
+                accessibilityLabel="Compartir sesión"
+              >
+                <RNAnimated.View style={{ transform: [{ scale: scaleShare }] }}>
+                  <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
+                </RNAnimated.View>
+              </Pressable>
             </View>
           </View>
-          )}
-
-          {/* Etiquetas de tiempo (ocultas en loops infinitos) */}
-          {!infiniteLoop && (
-          <View style={styles.timeLabels}>
-            <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
-            <Text style={styles.timeLabelText}>{formatTime(remaining)}</Text>
-          </View>
-          )}
         </View>
       </RNAnimated.View>
 
@@ -1016,19 +809,6 @@ export default function PlayerScreen() {
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
 
-              {/* Temporizador */}
-              <Pressable
-                style={styles.optRow}
-                onPress={() => { closeSheet(); setTimeout(() => setShowTimerSheet(true), 300); }}
-              >
-                <Feather name="clock" size={18} color="#FBFBFB" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Temporizador</Text>
-                {selectedTimerMinutes !== null && (
-                  <Text style={styles.optRowBadge}>{selectedTimerMinutes} min</Text>
-                )}
-                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
-              </Pressable>
-
               {/* Descargar */}
               <Pressable
                 style={styles.optRow}
@@ -1124,56 +904,6 @@ export default function PlayerScreen() {
         </View>
       </Modal>
 
-      {/* ── Temporizador Sheet (Tarea #193) ───────────────────────────────── */}
-      <Modal
-        visible={showTimerSheet}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowTimerSheet(false)}
-        statusBarTranslucent
-      >
-        <View style={[StyleSheet.absoluteFill, { justifyContent: "flex-end" }]} pointerEvents="box-none">
-          <Pressable
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.45)" }]}
-            onPress={() => setShowTimerSheet(false)}
-          />
-          <View style={[styles.timerSheet, { paddingBottom: bottomPad + 16 }]}>
-            <LinearGradient
-              colors={theme.id === "tibet" ? ["#2d1c52", "#1f2a62"] : [theme.gradient[0] as string, theme.gradient[0] as string]}
-              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
-              pointerEvents="none"
-            />
-            <View style={styles.optHandle} />
-            <View style={styles.timerSheetHeader}>
-              <Feather name="clock" size={18} color="#FBFBFB" />
-              <Text style={styles.timerSheetTitle}>Temporizador</Text>
-              {sleepTimerRemaining !== null && (
-                <Text style={styles.timerSheetRemaining}>{formatRemaining(sleepTimerRemaining)}</Text>
-              )}
-            </View>
-            <View style={styles.timerChips}>
-              {TIMER_OPTIONS.map((opt) => {
-                const selected = selectedTimerMinutes === opt.minutes;
-                return (
-                  <Pressable
-                    key={opt.label}
-                    style={[styles.timerChip, selected && styles.timerChipSelected]}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      handleSelectTimer(opt.minutes);
-                    }}
-                  >
-                    <Text style={[styles.timerChipText, selected && styles.timerChipTextSelected]}>
-                      {opt.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-        </View>
-      </Modal>
-
       {/* ── Playlist Sheet ─────────────────────────────────────────────────── */}
       {currentSession && (
         <AddToPlaylistSheet
@@ -1241,7 +971,7 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
     zIndex: 20,
   },
@@ -1271,6 +1001,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     flexDirection: "column",
   },
+  authorPhoto: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+  },
+  compactAuthorPhoto: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
 
   // Título grande centrado
   titleText: {
@@ -1282,6 +1022,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
   },
+  compactTitleText: {
+    fontSize: 22,
+    lineHeight: 27,
+    marginBottom: 6,
+  },
 
   // Descripción corta del reproductor
   playerDesc: {
@@ -1292,6 +1037,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 14,
+  },
+  compactPlayerDesc: {
+    lineHeight: 18,
+    marginBottom: 8,
   },
 
   // Sección autor/voz
@@ -1316,13 +1065,30 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  // Fila de acciones (♥ compartir playlist)
-  actionRow: {
-    flexDirection: "row",
-    justifyContent: "center",
+  playbackUnavailable: {
+    position: "absolute",
+    left: 28,
+    right: 28,
+    bottom: 270,
     alignItems: "center",
-    gap: 36,
-    marginBottom: 28,
+  },
+  bottomActions: {
+    position: "absolute",
+    left: 28,
+    right: 28,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  bottomActionsLeft: {
+    minWidth: 46,
+    minHeight: 46,
+    alignItems: "flex-start",
+  },
+  bottomActionsRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   actionBtn: {
     width: 46,
@@ -1335,13 +1101,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Fila de controles (ajustes · back15 · play · fwd15 · stop)
+  // Fila de controles −15 · play/pausa · +15
   controlsRow: {
+    position: "absolute",
+    left: 56,
+    right: 56,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 4,
-    marginBottom: 20,
   },
   ctrlBtn: {
     alignItems: "center",
@@ -1357,6 +1124,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
   },
+  hiddenControl: {
+    opacity: 0,
+  },
   playBtn: {
     width: 68,
     height: 68,
@@ -1368,7 +1138,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Barra de progreso
+  // Barra de progreso: el dock sitúa visualmente la barra a 100 px del fondo.
+  progressDock: {
+    position: "absolute",
+    left: 28,
+    right: 28,
+  },
   progressTrack: {
     paddingVertical: 10,
   },
@@ -1439,56 +1214,6 @@ const styles = StyleSheet.create({
     marginLeft: -9,
     backgroundColor: "white",
   },
-
-  // Sleep timer
-  timerSection: { paddingTop: 28, marginTop: 8 },
-  timerHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 12 },
-  timerLabel: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(255,255,255,0.50)" },
-  timerCountdown: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
-  timerSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 10,
-    paddingHorizontal: 20,
-    overflow: "hidden",
-  },
-  timerSheetHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 14,
-    marginBottom: 16,
-  },
-  timerSheetTitle: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FBFBFB",
-    flex: 1,
-  },
-  timerSheetRemaining: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#BE9650",
-  },
-  timerChips: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingVertical: 2 },
-  timerChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.20)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  timerChipSelected: {
-    backgroundColor: "rgba(255,255,255,0.18)",
-    borderColor: "rgba(255,255,255,0.45)",
-  },
-  timerChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
-  timerChipTextSelected: { color: "#FBFBFB" },
 
   // Options sheet
   optSheet: {
