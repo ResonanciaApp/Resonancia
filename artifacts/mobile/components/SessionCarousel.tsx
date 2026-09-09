@@ -135,6 +135,8 @@ type SessionCarouselProps = {
   squareMetadataBelow?: boolean;
   /** Square card with only its title below the image. */
   squareTitleOnlyBelow?: boolean;
+  /** Square card with title and author below the image. */
+  squareTitleAuthorBelow?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -176,6 +178,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
+  squareTitleAuthorBelow = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -187,6 +190,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const useSleepMetadataBelow =
     squareMetadataBelow ||
     squareTitleOnlyBelow ||
+    squareTitleAuthorBelow ||
     (isSleepCategoryPresentation && sleepMetadataBelow);
   const isTallOverlayPresentation =
     isSleepCategoryPresentation || presentation === "tall-overlay";
@@ -458,7 +462,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </View>
               {useSleepMetadataBelow ? (
                 <View style={styles.sleepBelowMetadata}>
-                  {!squareTitleOnlyBelow ? (
+                  {!squareTitleOnlyBelow && !squareTitleAuthorBelow ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
                       numberOfLines={1}

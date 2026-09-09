@@ -205,8 +205,7 @@ export function RecommendedForYouSection({
               <SessionRow
                 session={session}
                 imageSize={97}
-                showCategoryPill
-                categoryPillPlain={false}
+                showCategoryText
                 showDurationBadge
                 showChevron
                 authorColor={theme.accent ?? colors.accent}

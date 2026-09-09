@@ -26,6 +26,7 @@ type Props = {
   imageSize?: number;
   metaText?: string;
   showCategoryPill?: boolean;
+  showCategoryText?: boolean;
   categoryPillPlain?: boolean;
   categoryPillOutlineColor?: string;
   categoryPillTextOnly?: boolean;
@@ -51,6 +52,7 @@ export function SessionRow({
   imageSize = 80,
   metaText,
   showCategoryPill = false,
+  showCategoryText = false,
   categoryPillPlain = true,
   categoryPillOutlineColor,
   categoryPillTextOnly = false,
@@ -121,7 +123,20 @@ export function SessionRow({
 
         <View style={styles.sessionContent}>
           {!hideMeta && (
-            showCategoryPill ? (
+            showCategoryText ? (
+              <View style={styles.sessionMeta}>
+                <Text
+                  style={[
+                    styles.sessionAuthor,
+                    { color: authorColor ?? colors.mutedForeground },
+                    authorFontSize !== undefined && { fontSize: authorFontSize },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {session.categoryLabel}
+                </Text>
+              </View>
+            ) : showCategoryPill ? (
               <View style={styles.sessionMeta}>
                 <SessionCategoryPill
                   categoryId={session.categoryId}

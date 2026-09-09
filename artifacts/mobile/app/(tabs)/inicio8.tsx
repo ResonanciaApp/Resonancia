@@ -2566,7 +2566,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             presentation="sleep-category"
-            squareMetadataBelow
+            squareTitleAuthorBelow
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
@@ -2749,7 +2749,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={originalSessionCarouselStyle}
             titleOffset={10}
-            squareMetadataBelow
+            squareTitleAuthorBelow
             titleSize={20}
           />
         )}
