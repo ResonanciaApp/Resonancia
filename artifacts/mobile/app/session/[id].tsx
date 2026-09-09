@@ -395,9 +395,9 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
         />
         <LinearGradient
           colors={[
-            "rgba(0,0,0,0.14)",
-            "rgba(0,0,0,0.34)",
-            "rgba(0,0,0,0.68)",
+            "rgba(0,0,0,0.28)",
+            "rgba(0,0,0,0.48)",
+            "rgba(0,0,0,0.82)",
           ]}
           locations={[0, 0.46, 1]}
           style={StyleSheet.absoluteFill}
