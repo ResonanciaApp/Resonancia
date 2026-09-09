@@ -351,8 +351,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           width: ambientalImageSize,
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
-                          left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2,
+                          left: (cw - ambientalImageSize) / 2 - 2,
+                          top: (ch - ambientalImageSize) / 2 - 2,
                         },
                       ]}
                     />
