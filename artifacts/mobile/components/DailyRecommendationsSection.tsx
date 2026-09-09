@@ -105,7 +105,7 @@ export function DailyRecommendationsSection({
               categoryPillPlain={false}
               categoryPillTextOnly
               categoryPillTinted
-              categoryPillShowIconGlyph={false}
+              categoryPillPlainIcon
               categoryPillIconSize={15}
               showDurationBadge
               showChevron
