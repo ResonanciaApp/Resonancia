@@ -530,49 +530,50 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           ))}
         </View>
       ) : hasScheduledToday ? (
+        <View style={styles.completeState}>
+          <View style={styles.completeCopy}>
+            <Text style={styles.completeTitle}>
+              Rutina completa
+            </Text>
+            <Text style={styles.completeSubtitle}>
+              Hasta mañana
+            </Text>
+          </View>
+          <Pressable
+            onPress={openCreate}
+            accessibilityRole="button"
+            accessibilityLabel="Añadir una actividad"
+            testID="mi-rutina-complete-add-button"
+            style={({ pressed }) => [
+              styles.completeAddButton,
+              { opacity: pressed ? 0.78 : 1 },
+            ]}
+          >
+            <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      {!(isHydrated && todayActivities.length === 0 && hasScheduledToday) ? (
         <Pressable
-          onPress={openCalendar}
-          style={[
-            styles.completeState,
+          onPress={openCreate}
+          accessibilityRole="button"
+          accessibilityLabel="Añadir una actividad"
+          testID="mi-rutina-add-button"
+          style={({ pressed }) => [
+            styles.addButton,
             {
-              backgroundColor: routineTheme.completionSoft,
-              borderColor: routineTheme.completion,
+              borderColor: "rgba(249,249,249,0.5)",
+              opacity: pressed ? 0.72 : 1,
             },
           ]}
         >
-          <View style={[styles.completeIcon, { backgroundColor: routineTheme.completion }]}>
-            <Feather name="check" size={16} color="#FFFFFF" />
-          </View>
-          <View style={styles.emptyCopy}>
-            <Text style={[styles.completeTitle, { color: routineTheme.text }]}>
-              Rutina del día completada
-            </Text>
-            <Text style={[styles.emptySubtitle, { color: routineTheme.textMuted }]}>
-              Revisa tu progreso en el calendario.
-            </Text>
-          </View>
-          <Feather name="chevron-right" size={18} color={routineTheme.accent} />
+          <Feather name="plus" size={20} color="#F9F9F9" />
+          <Text style={[styles.addButtonText, { color: "#F9F9F9" }]}>
+            Añadir una actividad
+          </Text>
         </Pressable>
       ) : null}
-
-      <Pressable
-        onPress={openCreate}
-        accessibilityRole="button"
-        accessibilityLabel="Añadir una actividad"
-        testID="mi-rutina-add-button"
-        style={({ pressed }) => [
-          styles.addButton,
-          {
-            borderColor: "rgba(249,249,249,0.5)",
-            opacity: pressed ? 0.72 : 1,
-          },
-        ]}
-      >
-        <Feather name="plus" size={20} color="#F9F9F9" />
-        <Text style={[styles.addButtonText, { color: "#F9F9F9" }]}>
-          Añadir una actividad
-        </Text>
-      </Pressable>
 
     </View>
   );
@@ -670,34 +671,48 @@ const styles = StyleSheet.create({
     borderRadius: 17,
   },
   completeState: {
-    minHeight: 76,
+    minHeight: 156,
     borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  completeIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    backgroundColor: "rgba(191,207,255,0.14)",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 18,
   },
-  emptyCopy: {
-    flex: 1,
+  completeCopy: {
+    alignItems: "center",
+    marginBottom: 17,
   },
   completeTitle: {
+    color: "#F0F0F0",
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "700",
+    textAlign: "center",
   },
-  emptySubtitle: {
+  completeSubtitle: {
+    color: "#F0F0F0",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 4,
+    textAlign: "center",
+  },
+  completeAddButton: {
+    alignSelf: "center",
+    height: 25,
+    borderRadius: 15,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14,
+  },
+  completeAddButtonText: {
+    color: "#060A0F",
     fontFamily: "Manrope",
     fontSize: 11,
-    lineHeight: 16,
-    marginTop: 3,
+    fontWeight: "700",
+    textAlign: "center",
   },
   addButton: {
     minHeight: 68,
