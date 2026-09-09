@@ -98,7 +98,7 @@ export function DailyRecommendationsSection({
           >
             <SessionRow
               session={session}
-              imageSize={97}
+              imageSize={82}
               showCategoryText
               showDurationBadge
               showChevron
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   row: {
-    paddingVertical: 16,
+    paddingVertical: 14,
     paddingHorizontal: 16,
   },
   refreshButton: {
