@@ -82,27 +82,19 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
   numberOfLines: number;
   offsetY: number;
 }) {
-  const [lineCount, setLineCount] = React.useState(1);
-
   return (
     <View
       style={[
         styles.ambientalTitleWrap,
         {
           height: numberOfLines * 20,
-          transform: [{ translateY: (lineCount >= 3 ? 17 : 18) + offsetY }],
+          transform: [{ translateY: 18 + offsetY }],
         },
       ]}
     >
       <Text
         style={[styles.ambientalTitle, { color }]}
         numberOfLines={numberOfLines}
-        onTextLayout={(event) => {
-          const nextLineCount = event.nativeEvent.lines?.length ?? 1;
-          setLineCount((previous) =>
-            previous === nextLineCount ? previous : nextLineCount
-          );
-        }}
       >
         {title}
       </Text>
@@ -340,7 +332,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY + 20,
+                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY + 35,
                         },
                       ]}
                     />
@@ -353,7 +345,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       />
                     )}
                     {(!useOverlayMetadata || !showImageCategoryPill) && (
-                      <SessionCategoryPill categoryId={s.categoryId} plainIcon />
+                      <SessionCategoryPill
+                        categoryId={s.categoryId}
+                        plainIcon
+                        leftInset={8}
+                        topInset={8}
+                      />
                     )}
                     {durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
@@ -605,7 +602,7 @@ const styles = StyleSheet.create({
     right: 8,
     bottom: 23,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   ambientalTitle: {
     fontFamily: "Manrope",
