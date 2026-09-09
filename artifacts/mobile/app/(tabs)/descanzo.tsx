@@ -22,7 +22,6 @@ import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } 
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { usePlayerBrowse } from "@/context/PlayerContext";
@@ -246,11 +245,6 @@ export default function DescansoScreen() {
   }, [history, allDescansoIds]);
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
-  const sleepDetailCardWidth = (W - 20 * 2 - 12) / 2;
-  const sleepDetailCardHeight = Math.round(
-    (sleepDetailCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
-  );
-
   // ── "Todas las sesiones" Modal ──
   const [allVisible,      setAllVisible]      = useState(false);
   const [allVisibleCount, setAllVisibleCount] = useState(20);
@@ -381,8 +375,7 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
-                cardWidth={sleepDetailCardWidth}
-                fixedCardHeight={sleepDetailCardHeight}
+                sleepMetadataBelow
                 titleSize={19}
                 showImageCategoryPill
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}

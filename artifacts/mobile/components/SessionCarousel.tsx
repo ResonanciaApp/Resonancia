@@ -129,6 +129,8 @@ type SessionCarouselProps = {
   overlayMetadataInside?: boolean;
   /** Keeps the duration pill in the image's upper-left corner. */
   overlayDurationTopLeft?: boolean;
+  /** Dormir-only square card with category, duration and author below the image. */
+  sleepMetadataBelow?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -167,6 +169,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   presentation,
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
+  sleepMetadataBelow = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -175,17 +178,25 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
+  const useSleepMetadataBelow =
+    isSleepCategoryPresentation && sleepMetadataBelow;
   const isTallOverlayPresentation =
     isSleepCategoryPresentation || presentation === "tall-overlay";
   const useOverlayMetadata =
-    isTallOverlayPresentation || overlayMetadataInside;
+    (isTallOverlayPresentation && !useSleepMetadataBelow) || overlayMetadataInside;
   const isAmbientalCarousel =
     forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
   const ambientalCarouselCardWidth = Math.floor(
     (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
-  const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(viewportWidth, GRID_PAD);
-  const requestedCardWidth = isTallOverlayPresentation
+  const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(
+    viewportWidth,
+    GRID_PAD,
+    useSleepMetadataBelow ? 25 : undefined,
+  );
+  const requestedCardWidth = useSleepMetadataBelow
+    ? sleepCategoryCardWidth
+    : isTallOverlayPresentation
     ? cardWidth ?? sleepCategoryCardWidth
     : isAmbientalCarousel
     ? ambientalCardWidth ?? ambientalCarouselCardWidth
@@ -197,14 +208,21 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     : Math.min(requestedCardWidth, getContentCarouselCardWidth(viewportWidth));
   const effectiveShowCardMetadata =
     isTallOverlayPresentation ? false : showCardMetadata;
-  const effectiveSquareCards = isTallOverlayPresentation ? false : squareCards;
+  const effectiveSquareCards = useSleepMetadataBelow
+    ? true
+    : isTallOverlayPresentation
+      ? false
+      : squareCards;
   const effectiveShowAuthor = isTallOverlayPresentation ? true : showAuthor;
   const effectiveShowCollectionBelow =
     isTallOverlayPresentation ? false : showCollectionBelow;
   const effectiveShowMetaBelow =
     isTallOverlayPresentation ? false : showMetaBelow;
-  const effectiveShowDurationBadge =
-    isTallOverlayPresentation ? true : showDurationBadge;
+  const effectiveShowDurationBadge = useSleepMetadataBelow
+    ? false
+    : isTallOverlayPresentation
+      ? true
+      : showDurationBadge;
   const baseCardHeight = cardHeight ?? cw;
   const originalCardHeight = effectiveShowCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
@@ -214,7 +232,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) + cardHeightAdjustment;
-  const ch = fixedCardHeight ?? (
+  const ch = useSleepMetadataBelow ? cw : fixedCardHeight ?? (
     isTallOverlayPresentation
       ? sleepCategoryCardHeight
       : effectiveSquareCards
@@ -427,7 +445,27 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   />
                 )}
               </View>
-              {!effectiveShowCardMetadata && !useOverlayMetadata && (
+              {useSleepMetadataBelow ? (
+                <View style={styles.sleepBelowMetadata}>
+                  <Text
+                    style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                    numberOfLines={1}
+                  >
+                    {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
+                  </Text>
+                  <Text style={styles.sleepBelowTitle} numberOfLines={2}>
+                    {s.title}
+                  </Text>
+                  {authorName ? (
+                    <Text
+                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                      numberOfLines={1}
+                    >
+                      {authorName}
+                    </Text>
+                  ) : null}
+                </View>
+              ) : !effectiveShowCardMetadata && !useOverlayMetadata && (
                 <>
                   <Text
                     style={[
@@ -610,6 +648,24 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.75)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  sleepBelowMetadata: {
+    marginTop: 8,
+  },
+  sleepBelowSecondary: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+  },
+  sleepBelowTitle: {
+    marginTop: 2,
+    marginBottom: 2,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
+    color: "#F9F9F9",
   },
   sleepOverlayDurationInline: {
     position: "relative",
