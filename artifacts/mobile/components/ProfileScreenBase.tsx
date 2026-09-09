@@ -372,12 +372,12 @@ export function ProfileScreenBase({
         ? "rgba(191,207,255,0.096)"
         : "rgba(181,211,255,0.057)";
   const profileSectionBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.1)"
-      : activeSceneId === "indigo2"
-        ? "rgba(0,0,0,0.18)"
-        : "rgba(181,211,255,0.1)";
+    ? "rgba(0,0,0,0.14)"
+    : activeSceneId === "indigo2"
+      ? "rgba(191,207,255,0.14)"
+      : isIndigoThemeId(activeSceneId)
+        ? "rgba(181,211,255,0.14)"
+        : "rgba(181,211,255,0.14)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
