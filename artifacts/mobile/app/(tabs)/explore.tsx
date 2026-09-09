@@ -282,6 +282,12 @@ export function ExploreScreen({
         : activeSceneId === "indigo2"
           ? "rgba(191,207,255,0.1)"
           : "rgba(181,211,255,0.1)";
+  const contentCardSurfaceColor = activeSceneId === "indigo2"
+    ? "rgba(0,0,0,0.18)"
+    : durationSurfaceColor;
+  const otherThemeDescriptionColor = activeSceneId === "indigo2"
+    ? "#F0F0F0"
+    : "rgba(255,255,255,0.62)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -720,7 +726,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: durationSurfaceColor,
+                      backgroundColor: contentCardSurfaceColor,
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -767,7 +773,7 @@ export function ExploreScreen({
                     style={({ pressed }) => [
                       styles.themeGridCard,
                       {
-                        backgroundColor: durationSurfaceColor,
+                        backgroundColor: contentCardSurfaceColor,
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}
@@ -794,7 +800,13 @@ export function ExploreScreen({
                       <Text style={styles.themeGridLabel} numberOfLines={1}>
                         {card.label}
                       </Text>
-                      <Text style={styles.themeGridDescription} numberOfLines={1}>
+                      <Text
+                        style={[
+                          styles.themeGridDescription,
+                          { color: otherThemeDescriptionColor },
+                        ]}
+                        numberOfLines={1}
+                      >
                         {meta?.description ?? card.description}
                       </Text>
                     </View>

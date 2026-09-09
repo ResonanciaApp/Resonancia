@@ -270,7 +270,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         : isIndigoThemeId(theme.id)
           ? "rgba(181,211,255,0.1)"
           : theme.id === "indigo2"
-            ? "rgba(191,207,255,0.1)"
+            ? "rgba(0,0,0,0.18)"
             : "rgba(181,211,255,0.1)"
     );
   const ambientalImageSize = Math.round(cw * 0.72);

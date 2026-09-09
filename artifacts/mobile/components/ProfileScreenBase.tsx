@@ -1276,6 +1276,7 @@ export function ProfileScreenBase({
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
+            <View style={{ flexDirection: "column-reverse" }}>
             <View
               style={[
                 styles.personalStatsSection,
@@ -1420,6 +1421,7 @@ export function ProfileScreenBase({
                   </View>
                 </View>
               </View>
+            </View>
             </View>
 
             <HistorialCalendar embedded backgroundColor={profileSectionBackground} />
