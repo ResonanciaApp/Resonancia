@@ -1124,11 +1124,17 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   ctrlSkipLabel: {
+    position: "absolute",
+    top: 17,
+    left: 0,
+    right: 0,
     fontFamily: "Manrope",
     color: "rgba(255,255,255,0.75)",
     fontSize: 10,
+    lineHeight: 10,
     fontWeight: "700",
     letterSpacing: 0.3,
+    textAlign: "center",
   },
   hiddenControl: {
     opacity: 0,
