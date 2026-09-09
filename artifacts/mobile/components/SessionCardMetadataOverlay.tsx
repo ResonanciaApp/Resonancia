@@ -94,10 +94,8 @@ export function SessionCategoryPill({
       style={[
         styles.categoryPill,
         inline && styles.categoryPillInline,
-        textOnly && styles.categoryPillTextOnly,
-        plainIcon && styles.categoryPillWithPlainIcon,
+        styles.categoryPillTextOnly,
         plain && styles.categoryPillPlain,
-        tinted ? { backgroundColor: `${category.color}66` } : null,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
         leftInset !== undefined ? { left: leftInset } : null,
@@ -105,20 +103,12 @@ export function SessionCategoryPill({
         bottomInset !== undefined ? { top: "auto", bottom: bottomInset } : null,
       ]}
     >
-      {!plain && !outlineColor && !tinted && <SessionBadgeGlass />}
-      {(!textOnly || plainIcon) && (
-        <SessionCategoryIcon
-          categoryId={categoryId}
-          size={iconSize}
-          showGlyph={showIconGlyph}
-          backgroundColor={plainIcon ? "transparent" : undefined}
-        />
-      )}
+      {!plain && !outlineColor && <SessionBadgeGlass />}
       <Text
         style={[
           styles.categoryLabel,
           !plain && styles.categoryLabelCard,
-          textOnly && styles.categoryLabelTextOnly,
+          styles.categoryLabelTextOnly,
         ]}
         numberOfLines={1}
       >
