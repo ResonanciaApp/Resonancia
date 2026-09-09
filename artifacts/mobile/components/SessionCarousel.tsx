@@ -340,7 +340,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY,
+                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY + 20,
                         },
                       ]}
                     />
@@ -351,6 +351,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
                         offsetY={ambientalTitleOffsetY}
                       />
+                    )}
+                    {(!useOverlayMetadata || !showImageCategoryPill) && (
+                      <SessionCategoryPill categoryId={s.categoryId} plainIcon />
                     )}
                     {durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
