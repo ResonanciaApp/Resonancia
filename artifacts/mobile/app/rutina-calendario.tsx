@@ -239,7 +239,7 @@ export default function RutinaCalendarioScreen() {
                   style={[
                     styles.dayLabel,
                     {
-                      color: selected ? routineTheme.completion : routineTheme.accent,
+                       color: selected ? "#F9F9F9" : routineTheme.accent,
                       opacity: selected ? 1 : 0.7,
                     },
                   ]}
