@@ -381,8 +381,6 @@ export default function SonidosScreen() {
                     : COMPACT_CARD_H
                 }
                 ambientalCardWidth={AMBIENTAL_CARD_W}
-                ambientalImageOffsetY={-36}
-                ambientalTitleOffsetY={-20}
                 titleSize={19}
                 showCardMetadata
                  metadataTitleNumberOfLines={3}

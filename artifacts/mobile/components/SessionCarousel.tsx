@@ -73,29 +73,14 @@ const CarouselImage = React.memo(function CarouselImage({
 
 const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
   title,
-  color,
   numberOfLines,
-  offsetY,
 }: {
   title: string;
-  color: string;
   numberOfLines: number;
-  offsetY: number;
 }) {
   return (
-    <View
-      style={[
-        styles.ambientalTitleWrap,
-        {
-          height: numberOfLines * 20,
-          transform: [{ translateY: 18 + offsetY }],
-        },
-      ]}
-    >
-      <Text
-        style={[styles.ambientalTitle, { color }]}
-        numberOfLines={numberOfLines}
-      >
+    <View style={styles.sleepOverlayMetadata}>
+      <Text style={styles.sleepOverlayTitle} numberOfLines={numberOfLines}>
         {title}
       </Text>
     </View>
@@ -138,10 +123,6 @@ type SessionCarouselProps = {
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
   ambientalCardBackground?: string;
-  /** Vertical offset for the circular image inside Ambiental cards. */
-  ambientalImageOffsetY?: number;
-  /** Vertical offset for Ambiental titles, regardless of line count. */
-  ambientalTitleOffsetY?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
@@ -185,8 +166,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
-  ambientalImageOffsetY = -24,
-  ambientalTitleOffsetY = 0,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -332,16 +311,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2,
-                          top: (ch - ambientalImageSize) / 2 + ambientalImageOffsetY + 35,
+                          top: (ch - ambientalImageSize) / 2,
                         },
                       ]}
                     />
-                    {!shouldHideAmbientalTitle && (
+                    {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
-                        color="#F9F9F9"
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
-                        offsetY={ambientalTitleOffsetY}
                       />
                     )}
                     {(!useOverlayMetadata || !showImageCategoryPill) && (
@@ -595,21 +572,6 @@ const styles = StyleSheet.create({
   ambientalImage: {
     position: "absolute",
     overflow: "hidden",
-  },
-  ambientalTitleWrap: {
-    position: "absolute",
-    left: 8,
-    right: 8,
-    bottom: 23,
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  ambientalTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    lineHeight: 20,
-    textAlign: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
