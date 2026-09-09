@@ -1105,8 +1105,8 @@ const styles = StyleSheet.create({
   controlsRow: {
     position: "absolute",
     top: "50%",
-    left: 56,
-    right: 56,
+    left: 86,
+    right: 86,
     transform: [{ translateY: 188.5 }],
     flexDirection: "row",
     alignItems: "center",
@@ -1117,6 +1117,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 44,
     height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
     gap: 2,
   },
   ctrlSkipLabel: {
