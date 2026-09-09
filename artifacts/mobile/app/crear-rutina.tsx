@@ -6,6 +6,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -55,6 +56,8 @@ export default function CrearRutinaScreen() {
   const [repeatSheetOpen, setRepeatSheetOpen] = useState(false);
   const [suggestionEditing, setSuggestionEditing] = useState(false);
   const titleInputRef = useRef<TextInput>(null);
+  const contentScrollRef = useRef<any>(null);
+  const suggestionsYRef = useRef(0);
   const suggestionTransition = useSharedValue(0);
 
   const topPad = Platform.OS === "web" ? 24 : Math.max(insets.top, 40);
@@ -96,6 +99,12 @@ export default function CrearRutinaScreen() {
   const undoSuggestionEditing = () => {
     setSuggestionEditing(false);
     suggestionTransition.value = withTiming(0, { duration: 350 });
+    requestAnimationFrame(() => {
+      contentScrollRef.current?.scrollTo?.({
+        y: Math.max(0, suggestionsYRef.current - topPad - 12),
+        animated: true,
+      });
+    });
   };
 
   const toggleDay = (day: number) => {
@@ -122,6 +131,7 @@ export default function CrearRutinaScreen() {
     <View style={styles.root}>
       <SacredBackground variant="gradient" />
       <KeyboardAwareScrollViewCompat
+        scrollRef={contentScrollRef}
         contentContainerStyle={[
           styles.content,
           { paddingTop: topPad, paddingBottom: bottomPad + 28 },
@@ -223,13 +233,18 @@ export default function CrearRutinaScreen() {
           </View>
         </View>
 
-        <View style={styles.suggestionsBlock}>
+        <View
+          style={styles.suggestionsBlock}
+          onLayout={(event) => {
+            suggestionsYRef.current = event.nativeEvent.layout.y;
+          }}
+        >
           <Reanimated.View
             pointerEvents={suggestionEditing ? "none" : "auto"}
             style={suggestionsFadeStyle}
           >
             <View style={[styles.tabRail, { borderBottomColor: tabAccentColor }]}>
-              <KeyboardAwareScrollViewCompat
+              <ScrollView
                 horizontal
                 style={styles.tabScroller}
                 showsHorizontalScrollIndicator={false}
@@ -262,7 +277,7 @@ export default function CrearRutinaScreen() {
                     </Pressable>
                   );
                 })}
-              </KeyboardAwareScrollViewCompat>
+              </ScrollView>
             </View>
 
             <View style={styles.suggestionList}>
