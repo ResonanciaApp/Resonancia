@@ -39,7 +39,7 @@ function repeatLabel(repeatDays: number[]) {
 
 export default function CrearRutinaScreen() {
   const colors = useColors();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { addActivity } = useRutina();
   const [title, setTitle] = useState("");
@@ -54,10 +54,13 @@ export default function CrearRutinaScreen() {
   const canSave = title.trim().length > 0 && repeatDays.length > 0;
   const suggestionSurface =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.057)"
-        : "rgba(181,211,255,0.057)";
+      ? "rgba(0,0,0,0.14)"
+      : activeSceneId === "indigo2"
+        ? "rgba(191,207,255,0.14)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(181,211,255,0.14)"
+          : "rgba(181,211,255,0.14)";
+  const tabAccentColor = activeTheme.accent ?? colors.primary;
 
   const toggleDay = (day: number) => {
     setRepeatDays((current) =>
@@ -180,7 +183,7 @@ export default function CrearRutinaScreen() {
         </View>
 
         <View style={styles.suggestionsBlock}>
-          <View style={styles.tabRail}>
+          <View style={[styles.tabRail, { borderBottomColor: tabAccentColor }]}>
             <KeyboardAwareScrollViewCompat
               horizontal
               style={styles.tabScroller}
@@ -205,7 +208,7 @@ export default function CrearRutinaScreen() {
                       },
                     ]}
                   >
-                    <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : ROUTINE_MUTED }]}>
+                    <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : tabAccentColor }]}>
                       {tab}
                     </Text>
                   </Pressable>
@@ -230,7 +233,20 @@ export default function CrearRutinaScreen() {
                   },
                 ]}
               >
-                <Text style={[styles.suggestionText, { color: colors.foreground }]}>{suggestion.title}</Text>
+                <Text
+                  style={[styles.suggestionText, { color: colors.foreground }]}
+                  numberOfLines={2}
+                >
+                  {suggestion.title}
+                </Text>
+                {category === "Sugerido" ? (
+                  <Text
+                    style={[styles.suggestionCategory, { color: tabAccentColor }]}
+                    numberOfLines={1}
+                  >
+                    {suggestion.category}
+                  </Text>
+                ) : null}
               </Pressable>
             ))}
           </View>
@@ -400,7 +416,6 @@ const styles = StyleSheet.create({
   },
   tabRail: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(127,127,127,0.5)",
   },
   tabScroller: {
     marginHorizontal: -22,
@@ -434,6 +449,15 @@ const styles = StyleSheet.create({
   suggestionText: {
     fontFamily: "Manrope",
     fontSize: 16,
+    flex: 1,
+    minWidth: 0,
+    paddingRight: 12,
+  },
+  suggestionCategory: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    flexShrink: 0,
   },
   modalRoot: {
     flex: 1,

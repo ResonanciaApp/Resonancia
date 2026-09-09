@@ -131,11 +131,27 @@ const SUGGESTION_GROUPS: Record<RoutineCategory, string[]> = {
   ],
 };
 
+const SUGGESTED_CATEGORY_BY_TITLE: Record<
+  (typeof SUGGESTION_GROUPS.Sugerido)[number],
+  Exclude<RoutineCategory, "Sugerido">
+> = {
+  "Meditar": "Practicar",
+  "Relajarme sin pantallas": "Dormir",
+  "Comer algo nutritivo": "Autocuidado",
+  "Celebrar las pequeñas victorias": "Días difíciles",
+  "Apreciar un momento de tranquilidad": "Gratitud",
+  "Dedicar tiempo a conectar": "Seres queridos",
+  "Ver cómo está un amigo": "Seres queridos",
+};
+
 export const ROUTINE_SUGGESTIONS = ROUTINE_CATEGORY_TABS.reduce(
   (groups, category) => {
     groups[category] = SUGGESTION_GROUPS[category].map((title) => ({
       title,
-      category,
+      category:
+        category === "Sugerido"
+          ? SUGGESTED_CATEGORY_BY_TITLE[title]
+          : category,
     }));
     return groups;
   },
