@@ -18,7 +18,6 @@ import {
 } from "@/constants/carousel";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
-  SessionCategoryPill,
 } from "@/components/SessionCardMetadataOverlay";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
@@ -262,12 +261,10 @@ export function ContentCategoryGrid({
                        transition={180}
                      />
                    )}
-                    <SessionCategoryPill
-                      categoryId={category.id}
-                      leftInset={12}
-                      bottomInset={12}
-                    />
                  </View>
+                 <Text style={styles.discoverCardTitle} numberOfLines={1}>
+                   {category.label}
+                 </Text>
               </Pressable>
             );
           })}
@@ -455,6 +452,14 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  discoverCardTitle: {
+    color: "#FBFBFB",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 19,
+    fontWeight: "600",
+    marginTop: 8,
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,
