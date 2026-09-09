@@ -147,7 +147,7 @@ function Chip({
   const { theme } = useSceneTheme();
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "rgba(191,207,255,0.1)" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {theme.id === "indigo2" && !sel && indigo2BackgroundColor && (
         <Animated.View
           pointerEvents="none"

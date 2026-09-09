@@ -29,6 +29,7 @@ import { useColors } from "@/hooks/useColors";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -54,6 +55,13 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const overlay = useCategoryOverlayOptional();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const cardBackground = theme.id === "tibet"
+    ? "rgba(0,0,0,0.1)"
+    : isIndigoThemeId(theme.id)
+      ? "rgba(181,211,255,0.1)"
+      : theme.id === "indigo2"
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
   const tag = SONIDOS_TAG_CARDS.find((candidate) => candidate.id === id);
   const sessions = useMemo(
     () => tag ? getSessionsBySonidosTag(tag.label) : [],
@@ -144,7 +152,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
                   { width: CARD_W, opacity: pressed ? 0.82 : 1 },
                 ]}
               >
-                <View style={styles.image}>
+                <View style={[styles.image, { backgroundColor: cardBackground }]}>
                   <Image
                     source={session.image}
                     style={styles.ambientalImage}
@@ -212,7 +220,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.2)",
   },
   ambientalImage: {
     width: AMBIENTAL_IMAGE_SIZE,

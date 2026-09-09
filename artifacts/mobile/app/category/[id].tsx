@@ -462,10 +462,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.1)",
   },
-  chipTibet: { backgroundColor: "rgba(255,255,255,0.1)" },
-  chipIndigo: { backgroundColor: "rgba(255,255,255,0.1)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   chipIndigo2Inactive: {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(191,207,255,0.1)",
     borderColor: "rgba(255,255,255,0.04)",
   },
   chipSelected: {

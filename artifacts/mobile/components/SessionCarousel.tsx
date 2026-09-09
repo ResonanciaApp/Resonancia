@@ -17,6 +17,7 @@ import {
 
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -263,7 +264,15 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
-    ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.2)";
+    ambientalCardBackgroundOverride ?? (
+      theme.id === "tibet"
+        ? "rgba(0,0,0,0.1)"
+        : isIndigoThemeId(theme.id)
+          ? "rgba(181,211,255,0.1)"
+          : theme.id === "indigo2"
+            ? "rgba(191,207,255,0.1)"
+            : "rgba(181,211,255,0.1)"
+    );
   const ambientalImageSize = Math.round(cw * 0.72);
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (

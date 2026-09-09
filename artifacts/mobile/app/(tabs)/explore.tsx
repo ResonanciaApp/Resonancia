@@ -276,12 +276,12 @@ export function ExploreScreen({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const durationSurfaceColor =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
+      ? "rgba(0,0,0,0.1)"
       : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.057)"
+        ? "rgba(181,211,255,0.1)"
         : activeSceneId === "indigo2"
-          ? "rgba(191,207,255,0.096)"
-          : "rgba(181,211,255,0.057)";
+          ? "rgba(191,207,255,0.1)"
+          : "rgba(181,211,255,0.1)";
   // Playlists para ti — playlists del catálogo (admin, showOnHome)
   const ritualItems = useMemo(
     () =>
@@ -717,7 +717,7 @@ export function ExploreScreen({
                   style={({ pressed }) => [
                     styles.durationCard,
                     {
-                      backgroundColor: "rgba(255,255,255,0.1)",
+                      backgroundColor: durationSurfaceColor,
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}
@@ -764,7 +764,7 @@ export function ExploreScreen({
                     style={({ pressed }) => [
                       styles.themeGridCard,
                       {
-                        backgroundColor: "rgba(255,255,255,0.1)",
+                        backgroundColor: durationSurfaceColor,
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}

@@ -134,8 +134,13 @@ export default function SonidosScreen() {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.057)" : undefined;
-  const indigo2ResonanciaSurface =
-    theme.id === "indigo2" ? RESONANCIA_CARD_SURFACE : undefined;
+  const inactiveTabSurface = theme.id === "tibet"
+    ? "rgba(0,0,0,0.1)"
+    : isIndigoThemeId(theme.id)
+      ? "rgba(181,211,255,0.1)"
+      : theme.id === "indigo2"
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyHeaderActiveRef = useRef(false);
@@ -333,7 +338,7 @@ export default function SonidosScreen() {
                   label={collection.label}
                   icon={collection.icon}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
-                  backgroundColor={indigo2ResonanciaSurface}
+                  backgroundColor={inactiveTabSurface}
                 />
               ))}
             </ScrollView>
