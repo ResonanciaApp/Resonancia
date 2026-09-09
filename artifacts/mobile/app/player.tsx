@@ -585,7 +585,7 @@ export default function PlayerScreen() {
 
           {/* ── Progreso: barra a 100 px del fondo interior ──────────────── */}
           {!infiniteLoop && (
-            <View style={[styles.progressDock, { bottom: bottomPad + 68 }]}>
+            <View style={[styles.progressDock, { bottom: bottomPad + 103 }]}>
               <View
                 ref={progressBarRef}
                 style={styles.progressTrack}
