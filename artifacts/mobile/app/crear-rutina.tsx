@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     flex: 1,
     minWidth: 0,
     paddingRight: 12,
