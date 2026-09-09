@@ -133,6 +133,8 @@ type SessionCarouselProps = {
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
   squareMetadataBelow?: boolean;
+  /** Square card with only its title below the image. */
+  squareTitleOnlyBelow?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -173,6 +175,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   overlayDurationTopLeft = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
+  squareTitleOnlyBelow = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -182,7 +185,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
   const useSleepMetadataBelow =
-    squareMetadataBelow || (isSleepCategoryPresentation && sleepMetadataBelow);
+    squareMetadataBelow ||
+    squareTitleOnlyBelow ||
+    (isSleepCategoryPresentation && sleepMetadataBelow);
   const isTallOverlayPresentation =
     isSleepCategoryPresentation || presentation === "tall-overlay";
   const useOverlayMetadata =
@@ -450,16 +455,18 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </View>
               {useSleepMetadataBelow ? (
                 <View style={styles.sleepBelowMetadata}>
-                  <Text
-                    style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
-                    numberOfLines={1}
-                  >
-                    {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
-                  </Text>
+                  {!squareTitleOnlyBelow ? (
+                    <Text
+                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                      numberOfLines={1}
+                    >
+                      {[s.categoryLabel, s.durationLabel].filter(Boolean).join(" · ")}
+                    </Text>
+                  ) : null}
                   <Text style={styles.sleepBelowTitle} numberOfLines={2}>
                     {s.title}
                   </Text>
-                  {authorName ? (
+                  {!squareTitleOnlyBelow && authorName ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
                       numberOfLines={1}

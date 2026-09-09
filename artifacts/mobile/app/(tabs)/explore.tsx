@@ -22,7 +22,6 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { isIndigoThemeId, type SceneTheme } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { SessionCard } from "@/components/SessionCard";
 import { ChakraCarouselSection } from "@/components/ChakraCarouselSection";
 import {
   SESSIONS,
@@ -70,8 +69,12 @@ const DURATION_GAP = 9;
 const DURATION_CARD_WIDTH = Math.floor(
   (width - H_PAD * 2 - DURATION_GAP * 2) / 3,
 );
+const NEW_IN_RESONANCE_BASE_WIDTH = (width - H_PAD * 2 - 56) * 0.85;
 const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
-  (width - H_PAD - 14 * 2 - 25) / 2,
+  NEW_IN_RESONANCE_BASE_WIDTH * 1.25,
+);
+const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
+  (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
 );
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
@@ -646,15 +649,50 @@ export function ExploreScreen({
               contentContainerStyle={styles.newInResonanceRow}
             >
               {recientesMeditaciones.map((session) => (
-                <SessionCard
+                <Pressable
                   key={session.id}
-                  session={session}
-                  width={NEW_IN_RESONANCE_CARD_WIDTH}
-                  style={{ marginRight: 0 }}
-                  showAuthorAvatar={false}
-                  squareMetaBelow
-                  overridePress={() => handleSessionPress(session)}
-                />
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={({ pressed }) => [
+                    styles.newInResonanceCard,
+                    { opacity: pressed ? 0.82 : 1 },
+                  ]}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                  </View>
+                  <View style={styles.newInResonanceMeta}>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: activeTheme.accent ?? "#c2c2c2" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {[session.categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
+                    </Text>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: activeTheme.accent ?? "#c2c2c2" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </Pressable>
               ))}
             </ScrollView>
           </View>
@@ -1081,7 +1119,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceImageWrap: {
     width: "100%",
-    height: NEW_IN_RESONANCE_CARD_WIDTH,
+    height: NEW_IN_RESONANCE_CARD_HEIGHT,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
@@ -1102,22 +1140,21 @@ const styles = StyleSheet.create({
   },
   newInResonanceTitle: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 14,
     lineHeight: 18,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#FBFBFB",
+    marginTop: 2,
+    marginBottom: 2,
   },
-  newInResonanceAuthor: {
+  newInResonanceSecondary: {
     fontFamily: "Manrope",
     fontSize: 11,
-    color: "#c2c2c2",
-    marginTop: 4,
+    lineHeight: 15,
+    fontWeight: "500",
   },
   newInResonanceMeta: {
-    position: "absolute",
-    left: 18,
-    right: 18,
-    bottom: 14,
+    marginTop: 8,
   },
   otherThemesHeader: {
     marginBottom: 17,
