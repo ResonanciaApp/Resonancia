@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -15,7 +16,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { SacredBackground } from "@/components/SacredBackground";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
@@ -34,6 +34,7 @@ import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -46,6 +47,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const rawId = idProp ?? params.id;
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { currentSession, playSessionInPlaylist } = usePlayer();
@@ -102,9 +104,19 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View
+      style={[
+        styles.root,
+        { backgroundColor: theme.gradient[theme.gradient.length - 1] as string },
+      ]}
+    >
       <StatusBar hidden />
-      <SacredBackground />
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        locations={theme.gradientLocations}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
          <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
           <Feather name="chevron-left" size={26} color={colors.foreground} />
@@ -118,9 +130,6 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.description, { color: colors.mutedForeground }]}>
-          {tag.description}
-        </Text>
         {sessions.length === 0 ? (
           <View style={[styles.empty, { borderColor: colors.border }]}>
             <Feather name="headphones" size={28} color={colors.mutedForeground} />
@@ -188,14 +197,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   scroll: { flex: 1 },
-  description: {
-    marginHorizontal: H_PAD,
-    marginTop: 8,
-    fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 21,
-    textAlign: "center",
-  },
   grid: {
     paddingHorizontal: H_PAD,
     paddingTop: 30,
