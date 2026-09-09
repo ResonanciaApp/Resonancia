@@ -357,6 +357,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   );
   const todayActivityIdsKey = todayActivityIds.join(",");
   const orderSV = useSharedValue<string[]>(todayActivityIds);
+  const listHeight = useSharedValue(todayActivities.length * ROUTINE_SLOT_HEIGHT);
   const draggingId = useSharedValue("");
   const dragOriginSlot = useSharedValue(-1);
   const dragDeltaY = useSharedValue(0);
@@ -373,6 +374,15 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
     });
     orderSV.value = mergedOrder;
   }, [orderSV, todayActivityIds, todayActivityIdsKey]);
+  useEffect(() => {
+    listHeight.value = withTiming(
+      todayActivities.length * ROUTINE_SLOT_HEIGHT,
+      { duration: 350 },
+    );
+  }, [listHeight, todayActivities.length]);
+  const listHeightStyle = useAnimatedStyle(() => ({
+    height: listHeight.value,
+  }));
 
   useEffect(
     () => () => {
@@ -515,12 +525,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
       </View>
 
       {!isHydrated ? null : todayActivities.length > 0 ? (
-        <View
-          style={[
-            styles.activityList,
-            { height: todayActivities.length * ROUTINE_SLOT_HEIGHT },
-          ]}
-        >
+        <Reanimated.View style={[styles.activityList, listHeightStyle]}>
           {todayActivities.map((activity, index) => (
             <ActivityRow
               key={activity.id}
@@ -539,7 +544,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
               cardBackgroundColor={cardBackgroundColor}
             />
           ))}
-        </View>
+        </Reanimated.View>
       ) : hasScheduledToday ? (
         <Reanimated.View style={[styles.completeState, completeFadeStyle]}>
           <View style={styles.completeCopy}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
@@ -204,7 +205,9 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
               </Animated.Text>
             </>
           ) : (
-            <Text style={styles.addedCheck}>✓</Text>
+            <View style={styles.addedTicket}>
+              <Feather name="check" size={20} color="#060A0F" />
+            </View>
           )}
         </View>
       </View>
@@ -279,10 +282,12 @@ const styles = StyleSheet.create({
   nextNumber: {
     position: "absolute",
   },
-  addedCheck: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
+  addedTicket: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "#F9F9F9",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
