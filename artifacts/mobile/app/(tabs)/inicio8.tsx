@@ -1521,17 +1521,9 @@ export default function HomeScreen2({
     Platform.OS === "web" ? 2 : Math.max(3, insets.bottom - 15) - 1;
   const emotionWidgetBottom = tabBarBottomOffset + 68 + 25;
   const emotionWidgetBackground = "#2D4082";
-  const cardBg = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : "rgba(181,211,255,0.057)";
-  const durationPillBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : activeSceneId === "indigo2"
-      ? "rgba(191,207,255,0.096)"
-      : cardBg;
-  const recommendationSurfaceBg = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : cardBg;
+  const cardBg = "rgba(255,255,255,0.1)";
+  const durationPillBg = cardBg;
+  const recommendationSurfaceBg = cardBg;
   // Solo tema Índigo: fondo blanco translúcido para los 6 bloques de categoría
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
@@ -2701,11 +2693,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <MiRutinaSection
-            cardBackgroundColor={
-              isIndigoThemeId(activeSceneId)
-                ? "rgba(181,211,255,0.057)"
-                : "rgba(18,10,33,0.37)"
-            }
+            cardBackgroundColor="rgba(255,255,255,0.1)"
             style={{
               marginHorizontal: GRID_PAD,
               marginBottom: INICIO2_SECTION_GAP,

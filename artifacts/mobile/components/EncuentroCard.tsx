@@ -86,7 +86,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "rgba(18,10,33,0.37)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderRadius: 18,
     overflow: "hidden",
     borderWidth: 1,
