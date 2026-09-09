@@ -29,7 +29,6 @@ import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
@@ -182,7 +181,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.1)"],
+    outputRange: ["rgba(191,207,255,0.1)", "rgba(191,207,255,0.1)"],
   });
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
@@ -322,21 +321,12 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow,
           {
             paddingTop: topPad + 8,
-            opacity: stickyHeaderOpacity,
+            opacity: 1,
+            backgroundColor: theme.gradient[0] as string,
           },
         ]}
-        pointerEvents={stickyActive ? "auto" : "none"}
+        pointerEvents="auto"
       >
-        <StickyHeaderSurface
-          opacity={0.96}
-          tint={theme.gradient[0] as string}
-          showTint={!useDiscoverStickyStyle}
-          showDivider={!useDiscoverStickyStyle}
-          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-          showBlackTint={!useDiscoverStickyStyle}
-          strongBlur={useDiscoverStickyStyle}
-          fadeBottom={useDiscoverStickyStyle}
-        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>

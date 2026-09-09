@@ -32,7 +32,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
@@ -534,17 +533,7 @@ export default function MeditacionesGuiadasScreen() {
       </Modal>
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <StickyHeaderSurface
-          opacity={0.96}
-          tint={theme.gradient[0] as string}
-          showTint={!useDiscoverStickyStyle}
-          showDivider={!useDiscoverStickyStyle}
-          blurIntensity={useDiscoverStickyStyle ? 85 : undefined}
-          showBlackTint={!useDiscoverStickyStyle}
-          strongBlur={useDiscoverStickyStyle}
-          fadeBottom={useDiscoverStickyStyle}
-        />
+      <Animated.View style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8, opacity: 1, backgroundColor: theme.gradient[0] as string }]} pointerEvents="auto">
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>

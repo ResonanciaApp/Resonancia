@@ -249,7 +249,10 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         ) : showDuration && (!squareMetaBelow || categoryGridPresentation) ? (
           <SessionDurationBadge
             label={session.durationLabel}
-            style={styles.durationBadge}
+            style={[
+              styles.durationBadge,
+              categoryGridPresentation && styles.categoryDurationBadge,
+            ]}
             textStyle={styles.durationBadgeText}
           />
         ) : null}
@@ -412,6 +415,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 4,
     paddingVertical: 2,
+  },
+  categoryDurationBadge: {
+    paddingHorizontal: 9,
   },
   durationBadgeText: {
     fontFamily: "Manrope",

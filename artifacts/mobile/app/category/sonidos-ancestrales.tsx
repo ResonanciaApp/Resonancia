@@ -36,7 +36,6 @@ import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
@@ -147,7 +146,7 @@ function Chip({
   const { theme } = useSceneTheme();
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && { backgroundColor: "rgba(191,207,255,0.1)" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, theme.id === "tibet" && styles.chipTibet, isIndigoThemeId(theme.id) && styles.chipIndigo, theme.id === "indigo2" && !sel && styles.chipIndigo2Inactive, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {theme.id === "indigo2" && !sel && indigo2BackgroundColor && (
         <Animated.View
           pointerEvents="none"
@@ -656,17 +655,7 @@ export default function SonidosAncestalesScreen() {
       </ScrollView>
 
       {/* ── Sticky header ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <StickyHeaderSurface
-          opacity={0.96}
-          tint={theme.gradient[0] as string}
-          showTint={!isIndigoTheme}
-          showDivider={!isIndigoTheme}
-          blurIntensity={isIndigoTheme ? 85 : undefined}
-          showBlackTint={!isIndigoTheme}
-          strongBlur={isIndigoTheme}
-          fadeBottom={isIndigoTheme}
-        />
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: 1, backgroundColor: theme.gradient[0] as string }]} pointerEvents="auto">
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -784,6 +773,7 @@ const styles = StyleSheet.create({
    chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(191,207,255,0.1)", borderColor: "rgba(255,255,255,0.04)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},

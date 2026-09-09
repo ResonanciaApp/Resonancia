@@ -27,7 +27,6 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD   = 14;
@@ -92,7 +91,14 @@ function Chip({
 }) {
   const { theme: chipTheme } = useSceneTheme();
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, chipTheme.id === "indigo2" && !sel && { backgroundColor: "transparent" }, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [
+      styles.chip,
+      !sel && chipTheme.id === "tibet" && styles.chipTibet,
+      !sel && isIndigoThemeId(chipTheme.id) && styles.chipIndigo,
+      !sel && chipTheme.id === "indigo2" && styles.chipIndigo2Inactive,
+      sel && styles.chipSel,
+      { opacity: pressed ? 0.7 : 1 },
+    ]}>
       {chipTheme.id === "indigo2" && !sel && indigo2BackgroundColor && (
         <Animated.View
           pointerEvents="none"
@@ -500,19 +506,13 @@ export default function NochesScreen() {
 
       {/* ── Sticky header ── */}
       <Animated.View
-        style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]}
-        pointerEvents={stickyActive ? "auto" : "none"}
+        style={[styles.stickyHeader, {
+          paddingTop: topPad + 8,
+          opacity: 1,
+          backgroundColor: theme.gradient[0] as string,
+        }]}
+        pointerEvents="auto"
       >
-        <StickyHeaderSurface
-          opacity={0.96}
-          tint={theme.gradient[0] as string}
-          showTint={!isIndigoTheme}
-          showDivider={!isIndigoTheme}
-          blurIntensity={isIndigoTheme ? 85 : undefined}
-          showBlackTint={!isIndigoTheme}
-          strongBlur={isIndigoTheme}
-          fadeBottom={isIndigoTheme}
-        />
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
@@ -549,6 +549,9 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
+  chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(191,207,255,0.1)", borderColor: "rgba(255,255,255,0.04)" },
   chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },
