@@ -541,7 +541,7 @@ export default function PlayerScreen() {
           )}
 
           {/* ── Controles principales centrados ───────────────────────────── */}
-          <View style={[styles.controlsRow, { bottom: bottomPad + 152 }]}>
+          <View style={styles.controlsRow}>
             <Pressable
               onPress={skipBackward}
               style={[styles.ctrlBtn, infiniteLoop && styles.hiddenControl]}
@@ -1104,8 +1104,10 @@ const styles = StyleSheet.create({
   // Fila de controles −15 · play/pausa · +15
   controlsRow: {
     position: "absolute",
+    top: "50%",
     left: 56,
     right: 56,
+    transform: [{ translateY: 78.5 }],
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -1128,9 +1130,9 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   playBtn: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+    width: 83,
+    height: 83,
+    borderRadius: 41.5,
     backgroundColor: "rgba(255,255,255,0.14)",
     borderWidth: 1.5,
     borderColor: "rgba(255,255,255,0.28)",
