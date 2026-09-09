@@ -145,7 +145,7 @@ export default function RutinaCalendarioScreen() {
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const { activities, isHydrated } = useRutina();
   const selectedKey = getRoutineDateKey(selectedDate);
   const isFutureDate = selectedKey > todayKey;
@@ -180,7 +180,7 @@ export default function RutinaCalendarioScreen() {
     activity.completedDates.includes(selectedKey),
   ).length;
   const visibleActivities = showAll
-    ? historyForDate
+    ? scheduledForDate
     : historyForDate.filter((activity) => activity.completedDates.includes(selectedKey));
 
   return (
@@ -322,7 +322,7 @@ export default function RutinaCalendarioScreen() {
             </Text>
             <Text style={[styles.emptyText, { color: routineTheme.textMuted }]}>
               {scheduledForDate.length
-                ? "Usa “Mostrar todo” para consultar también las tareas saltadas."
+                ? "Usa “Mostrar todo” para consultar también las tareas pendientes y omitidas."
                 : "Añade una actividad o elige otro día de la semana."}
             </Text>
           </View>
