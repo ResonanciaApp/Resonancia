@@ -12,8 +12,7 @@ import {
   useGetPopularSessions,
 } from "@workspace/api-client-react";
 
-import { CategoryAtmosphericCard } from "@/components/CategoryAtmosphericCard";
-import { SessionRow } from "@/components/SessionRow";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import {
   getSessionById,
   SESSIONS,
@@ -24,9 +23,10 @@ import type { Mood } from "@/data/moods";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
+import { usePremium } from "@/context/PremiumContext";
 
 const HORIZONTAL_PAD = 14;
-const CARDS_PER_TAB = 3;
+const CARDS_PER_TAB = 5;
 
 const RECOMMENDATION_TABS = [
   { id: "by-mood", label: "Según tu estado de ánimo" },
@@ -53,6 +53,7 @@ export function RecommendedForYouSection({
 }: Props) {
   const { activeSceneId, theme } = useSceneTheme();
   const colors = useColors();
+  const { isPremium } = usePremium();
   const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
     RECOMMENDATION_TABS[0].id,
   );
@@ -196,35 +197,19 @@ export function RecommendedForYouSection({
       </ScrollView>
 
       {activeSessions.length > 0 ? (
-        <View style={styles.recommendationsList}>
-          {activeSessions.map((session) => (
-            <CategoryAtmosphericCard
-              key={session.id}
-              categoryId={session.categoryId}
-            >
-              <SessionRow
-                session={session}
-                imageSize={97}
-                showCategoryText
-                showDurationBadge
-                showChevron
-                authorColor={theme.accent ?? colors.accent}
-                authorFontSize={theme.id === "indigo2" ? 11 : undefined}
-                chevronColor={
-                  theme.id === "indigo2"
-                    ? theme.accent ?? colors.accent
-                    : undefined
-                }
-                onPress={() => onPress(session)}
-                style={styles.row}
-              />
-            </CategoryAtmosphericCard>
-          ))}
-        </View>
+        <SessionCarousel
+          title=""
+          sessions={activeSessions.slice(0, CARDS_PER_TAB)}
+          isPremium={isPremium}
+          onPress={onPress}
+          showHeader={false}
+          squareTitleAuthorBelow
+          style={styles.carousel}
+        />
       ) : (
         <Text style={[styles.empty, { color: theme.accent ?? colors.accent }]}>
           {activeTabId === "by-mood" && !moodSelectionKey
-            ? "Cuéntanos cómo te sientes hoy para recomendarte tres sesiones."
+            ? "Cuéntanos cómo te sientes hoy para recomendarte sesiones."
             : "No hay recomendaciones disponibles."}
         </Text>
       )}
@@ -278,13 +263,8 @@ const styles = StyleSheet.create({
   tabTextSelected: {
     color: "#060A0F",
   },
-  recommendationsList: {
-    paddingHorizontal: HORIZONTAL_PAD,
-    gap: 15,
-  },
-  row: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+  carousel: {
+    marginBottom: 0,
   },
   empty: {
     minHeight: 80,

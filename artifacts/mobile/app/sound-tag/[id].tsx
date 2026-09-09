@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
   ambientalImage: {
     width: AMBIENTAL_IMAGE_SIZE,
