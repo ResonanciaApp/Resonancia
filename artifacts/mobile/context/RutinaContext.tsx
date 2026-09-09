@@ -158,6 +158,17 @@ export const ROUTINE_SUGGESTIONS = ROUTINE_CATEGORY_TABS.reduce(
   {} as Record<RoutineCategory, { title: string; category: RoutineCategory }[]>,
 );
 
+export function getRoutineActivityCategory(
+  activity: Pick<RoutineActivity, "title" | "category">,
+): Exclude<RoutineCategory, "Sugerido"> | null {
+  if (activity.category !== "Sugerido") return activity.category;
+  return (
+    SUGGESTED_CATEGORY_BY_TITLE[
+      activity.title as keyof typeof SUGGESTED_CATEGORY_BY_TITLE
+    ] ?? null
+  );
+}
+
 function normalizeActivity(value: unknown): RoutineActivity | null {
   if (!value || typeof value !== "object") return null;
   const item = value as Partial<RoutineActivity>;
@@ -176,13 +187,21 @@ function normalizeActivity(value: unknown): RoutineActivity | null {
       ).sort((a, b) => a - b)
     : [];
 
+  const storedCategory = ROUTINE_CATEGORY_TABS.includes(item.category as RoutineCategory)
+    ? (item.category as RoutineCategory)
+    : "Sugerido";
+  const category =
+    storedCategory === "Sugerido"
+      ? SUGGESTED_CATEGORY_BY_TITLE[
+          item.title.trim() as keyof typeof SUGGESTED_CATEGORY_BY_TITLE
+        ] ?? storedCategory
+      : storedCategory;
+
   return {
     id: item.id,
     title: item.title.trim(),
     description: typeof item.description === "string" ? item.description : "",
-    category: ROUTINE_CATEGORY_TABS.includes(item.category as RoutineCategory)
-      ? (item.category as RoutineCategory)
-      : "Sugerido",
+    category,
     repeatDays,
     completedDates: normalizeDateList(item.completedDates),
     skippedDates: normalizeDateList(item.skippedDates),

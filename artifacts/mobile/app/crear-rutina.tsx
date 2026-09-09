@@ -45,6 +45,7 @@ export default function CrearRutinaScreen() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<RoutineCategory>("Sugerido");
+  const [suggestedCategory, setSuggestedCategory] = useState<RoutineCategory | null>(null);
   const [repeatDays, setRepeatDays] = useState<number[]>(ALL_DAYS);
   const [repeatSheetOpen, setRepeatSheetOpen] = useState(false);
 
@@ -76,7 +77,7 @@ export default function CrearRutinaScreen() {
     addActivity({
       title,
       description,
-      category,
+      category: category === "Sugerido" && suggestedCategory ? suggestedCategory : category,
       repeatDays,
     });
     router.back();
@@ -126,7 +127,10 @@ export default function CrearRutinaScreen() {
 
         <TextInput
           value={title}
-          onChangeText={setTitle}
+          onChangeText={(value) => {
+            setTitle(value);
+            setSuggestedCategory(null);
+          }}
           placeholder="Nombra tu actividad"
           placeholderTextColor={ROUTINE_MUTED}
           style={[styles.titleInput, { color: colors.foreground }]}
@@ -196,7 +200,10 @@ export default function CrearRutinaScreen() {
                 return (
                   <Pressable
                     key={tab}
-                    onPress={() => setCategory(tab)}
+                    onPress={() => {
+                      setCategory(tab);
+                      setSuggestedCategory(null);
+                    }}
                     accessibilityRole="tab"
                     accessibilityState={{ selected }}
                     testID={`crear-rutina-tab-${tab}`}
@@ -221,7 +228,10 @@ export default function CrearRutinaScreen() {
             {suggestions.map((suggestion) => (
               <Pressable
                 key={`${suggestion.category}-${suggestion.title}`}
-                onPress={() => setTitle(suggestion.title)}
+                onPress={() => {
+                  setTitle(suggestion.title);
+                  setSuggestedCategory(suggestion.category);
+                }}
                 accessibilityRole="button"
                 accessibilityLabel={`Usar sugerencia ${suggestion.title}`}
                 testID={`crear-rutina-suggestion-${suggestion.title}`}

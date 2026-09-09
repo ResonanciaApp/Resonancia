@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import {
+  getRoutineActivityCategory,
   getRoutineDateKey,
   isRoutineActivityScheduledForDate,
   useRutina,
@@ -67,6 +68,7 @@ function CalendarActivityRow({
   const status = statusFor(activity, dateKey);
   const completed = status === "completed";
   const skipped = status === "skipped";
+  const category = getRoutineActivityCategory(activity);
 
   return (
     <Pressable
@@ -84,9 +86,11 @@ function CalendarActivityRow({
       ]}
     >
       <View style={styles.activityCopy}>
-        <Text style={[styles.category, { color: routineTheme.accent }]}>
-          {activity.category}
-        </Text>
+        {category ? (
+          <Text style={[styles.category, { color: routineTheme.accent }]}>
+            {category}
+          </Text>
+        ) : null}
         <Text
           numberOfLines={2}
           style={[
