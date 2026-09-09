@@ -474,6 +474,17 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const hasScheduledToday = activities.some((activity) =>
     isRoutineActivityScheduledForDate(activity, today),
   );
+  const showCompleteState =
+    isHydrated && todayActivities.length === 0 && hasScheduledToday;
+  const completeFade = useSharedValue(0);
+  useEffect(() => {
+    completeFade.value = showCompleteState
+      ? withTiming(1, { duration: 300 })
+      : 0;
+  }, [completeFade, showCompleteState]);
+  const completeFadeStyle = useAnimatedStyle(() => ({
+    opacity: completeFade.value,
+  }));
 
   return (
     <View style={[styles.section, style]} testID="mi-rutina-section">
@@ -530,13 +541,13 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           ))}
         </View>
       ) : hasScheduledToday ? (
-        <View style={styles.completeState}>
+        <Reanimated.View style={[styles.completeState, completeFadeStyle]}>
           <View style={styles.completeCopy}>
             <Text style={styles.completeTitle}>
               Rutina completa
             </Text>
             <Text style={styles.completeSubtitle}>
-              Hasta mañana
+              Hasta mañana.
             </Text>
           </View>
           <Pressable
@@ -551,7 +562,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           >
             <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
           </Pressable>
-        </View>
+        </Reanimated.View>
       ) : null}
 
       {!(isHydrated && todayActivities.length === 0 && hasScheduledToday) ? (
