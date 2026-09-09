@@ -331,7 +331,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 style={[
                   styles.thumbWrap,
                   thumbStyle,
-                  isAmbiental && { backgroundColor: ambientalCardBackground },
+                  isAmbiental && {
+                    backgroundColor: ambientalCardBackground,
+                    borderWidth: 2,
+                    borderColor: "rgba(255,255,255,0.1)",
+                  },
                 ]}
               >
                 {!isAmbiental && (
