@@ -372,13 +372,16 @@ export function ProfileScreenBase({
     : isIndigoThemeId(activeSceneId)
       ? "rgba(181,211,255,0.1)"
       : activeSceneId === "indigo2"
-        ? "rgba(0,0,0,0.25)"
+        ? "rgba(0,0,0,0.18)"
         : "rgba(181,211,255,0.1)";
   const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
     ? "rgba(181,211,255,0.057)"
     : "rgba(255,255,255,0.12)";
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
+  const profileDescriptionColor = activeSceneId === "indigo2"
+    ? "#F0F0F0"
+    : secondaryAccent;
   const personalStats = useMemo(() => {
     const rangeStart = new Date();
     rangeStart.setHours(0, 0, 0, 0);
@@ -1265,7 +1268,7 @@ export function ProfileScreenBase({
           </View>
           <View style={styles.profileCardDivider} />
           <ProfileMembershipModules
-            secondaryTextColor={secondaryAccent}
+            secondaryTextColor={profileDescriptionColor}
             foregroundColor={colors.foreground}
           />
         </View>
@@ -1428,14 +1431,14 @@ export function ProfileScreenBase({
                 </View>
                 {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={{ flexDirection: "row", gap: 9 }}>
                   {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
-                </View> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
+                </View> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
               </View>
               <View style={{ borderRadius: 18, padding: 16, backgroundColor: profileSectionBackground }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
                   <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
                 </View>
-                {(() => { const entry = history.slice().sort((a,b) => +new Date(b.playedAt) - +new Date(a.playedAt))[0]; const session = entry && getSessionById(entry.sessionId); return session ? <Pressable onPress={() => router.push(`/session/${session.id}` as never)} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><View><Image source={session.image as never} style={{ width: 68, height: 68, borderRadius: 10 }} contentFit="cover"/><Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>{session.durationLabel}</Text></View><Text style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }} numberOfLines={2}>{session.title}</Text></Pressable> : <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>; })()}
+                {(() => { const entry = history.slice().sort((a,b) => +new Date(b.playedAt) - +new Date(a.playedAt))[0]; const session = entry && getSessionById(entry.sessionId); return session ? <Pressable onPress={() => router.push(`/session/${session.id}` as never)} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><View><Image source={session.image as never} style={{ width: 68, height: 68, borderRadius: 10 }} contentFit="cover"/><Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>{session.durationLabel}</Text></View><Text style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }} numberOfLines={2}>{session.title}</Text></Pressable> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>; })()}
               </View>
             </View>
 
