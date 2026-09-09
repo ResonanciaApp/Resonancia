@@ -105,8 +105,6 @@ type SessionCarouselProps = {
   description?: string;
   squareCards?: boolean;
   showImageCategoryPill?: boolean;
-  categoryPillTextOnly?: boolean;
-  categoryPillTinted?: boolean;
   onViewAll?: () => void;
   viewAllColor?: string;
   showCardMetadata?: boolean;
@@ -150,8 +148,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   description,
   squareCards = false,
   showImageCategoryPill = false,
-  categoryPillTextOnly = false,
-  categoryPillTinted = false,
   onViewAll,
   viewAllColor,
   showCardMetadata = false,
@@ -324,9 +320,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {(!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
                         categoryId={s.categoryId}
-                        textOnly
-                        tinted
-                        plainIcon
                         leftInset={18}
                         topInset={18}
                       />
@@ -352,7 +345,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     authorName={effectiveShowAuthor && !effectiveShowCollectionBelow ? authorName : undefined}
                     showAuthor={effectiveShowAuthor && !effectiveShowCollectionBelow}
                     showCategoryPill={!effectiveShowMetaBelow && (showImageCategoryPill || !effectiveShowCollectionBelow)}
-                    categoryPillPlainIcon
                     showCategoryBelow={effectiveShowMetaBelow || effectiveShowCollectionBelow}
                     showDuration={effectiveShowDurationBadge && !effectiveShowMetaBelow}
                     durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
@@ -365,7 +357,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isSleepCategoryPresentation &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) &&
                       showImageCategoryPill && (
-                      <SessionCategoryPill categoryId={s.categoryId} plainIcon />
+                      <SessionCategoryPill categoryId={s.categoryId} />
                     )}
                     {effectiveShowDurationBadge &&
                       !useOverlayMetadata &&
@@ -404,9 +396,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                      {showImageCategoryPill ? (
                        <SessionCategoryPill
                          categoryId={s.categoryId}
-                         textOnly={categoryPillTextOnly}
-                         tinted={categoryPillTinted}
-                          plainIcon
                          leftInset={18}
                          topInset={18}
                        />

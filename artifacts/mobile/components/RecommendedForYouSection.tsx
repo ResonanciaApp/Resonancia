@@ -207,10 +207,6 @@ export function RecommendedForYouSection({
                 imageSize={97}
                 showCategoryPill
                 categoryPillPlain={false}
-                categoryPillTextOnly
-                categoryPillTinted
-                categoryPillPlainIcon
-                categoryPillIconSize={15}
                 showDurationBadge
                 showChevron
                 authorColor={theme.accent ?? colors.accent}

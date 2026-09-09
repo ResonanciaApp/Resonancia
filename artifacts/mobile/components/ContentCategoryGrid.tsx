@@ -270,9 +270,6 @@ export function ContentCategoryGrid({
                     />
                     <SessionCategoryPill
                       categoryId={category.id}
-                      textOnly
-                      tinted
-                      plainIcon
                       leftInset={12}
                       bottomInset={12}
                     />
