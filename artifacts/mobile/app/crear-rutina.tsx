@@ -54,12 +54,12 @@ export default function CrearRutinaScreen() {
   const canSave = title.trim().length > 0 && repeatDays.length > 0;
   const suggestionSurface =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.14)"
+      ? "rgba(0,0,0,0.07)"
       : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.14)"
+        ? "rgba(191,207,255,0.07)"
         : isIndigoThemeId(activeSceneId)
-          ? "rgba(181,211,255,0.14)"
-          : "rgba(181,211,255,0.14)";
+          ? "rgba(181,211,255,0.07)"
+          : "rgba(181,211,255,0.07)";
   const tabAccentColor = activeTheme.accent ?? colors.primary;
 
   const toggleDay = (day: number) => {
@@ -436,10 +436,10 @@ const styles = StyleSheet.create({
   },
   suggestionList: {
     gap: 9,
-    marginTop: 10,
+    marginTop: 30,
   },
   suggestionRow: {
-    minHeight: 60,
+    minHeight: 50,
     borderRadius: 13,
     paddingHorizontal: 23,
     flexDirection: "row",
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   },
   suggestionCategory: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "600",
     flexShrink: 0,
   },
