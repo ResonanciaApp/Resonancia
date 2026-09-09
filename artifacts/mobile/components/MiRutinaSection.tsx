@@ -591,6 +591,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
         </Pressable>
       ) : null}
 
+      <View style={styles.sectionSpacer} pointerEvents="none" />
     </View>
   );
 }
@@ -598,7 +599,9 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 const styles = StyleSheet.create({
   section: {
     marginHorizontal: 14,
-    paddingBottom: 53,
+  },
+  sectionSpacer: {
+    height: 53,
   },
   headerRow: {
     flexDirection: "row",
