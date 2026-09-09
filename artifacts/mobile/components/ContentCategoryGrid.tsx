@@ -262,12 +262,6 @@ export function ContentCategoryGrid({
                        transition={180}
                      />
                    )}
-                    <LinearGradient
-                      pointerEvents="none"
-                      colors={["transparent", "rgba(0,0,0,0.72)"]}
-                      locations={[0.35, 1]}
-                      style={StyleSheet.absoluteFill}
-                    />
                     <SessionCategoryPill
                       categoryId={category.id}
                       leftInset={12}
