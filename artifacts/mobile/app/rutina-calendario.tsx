@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -65,14 +66,33 @@ function CalendarActivityRow({
   dateKey: string;
 }) {
   const routineTheme = useRoutineTheme();
+  const { toggleActivity } = useRutina();
   const status = statusFor(activity, dateKey);
   const completed = status === "completed";
   const skipped = status === "skipped";
   const category = getRoutineActivityCategory(activity);
+  const confirmUncheck = () => {
+    Alert.alert(
+      "¿Estás seguro que quieres desmarcar tu tarea?",
+      "Puede afectar tu racha.",
+      [
+        { text: "Mejor no", style: "cancel" },
+        {
+          text: "Sí, seguro",
+          style: "destructive",
+          onPress: () => toggleActivity(activity.id, dateKey),
+        },
+      ],
+    );
+  };
 
   return (
     <Pressable
-      onPress={() => router.push(`/rutina/${activity.id}?dateKey=${dateKey}` as never)}
+      onPress={
+        completed
+          ? undefined
+          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}` as never)
+      }
       accessibilityRole="button"
       accessibilityLabel={`${activity.title}, ${
         completed ? "completada" : skipped ? "saltada" : "pendiente"
@@ -81,7 +101,7 @@ function CalendarActivityRow({
         styles.activityRow,
         {
           backgroundColor: "rgba(255,255,255,0.025)",
-          opacity: pressed ? 0.72 : 1,
+          opacity: pressed && !completed ? 0.72 : 1,
         },
       ]}
     >
@@ -110,7 +130,15 @@ function CalendarActivityRow({
           </Text>
         </View>
       </View>
-      <View
+      <Pressable
+        onPress={(event) => {
+          event.stopPropagation();
+          if (completed) confirmUncheck();
+        }}
+        disabled={!completed}
+        accessibilityRole={completed ? "button" : undefined}
+        accessibilityLabel={completed ? `Desmarcar ${activity.title}` : undefined}
+        hitSlop={8}
         style={[
           styles.stateSquare,
           {
@@ -128,7 +156,7 @@ function CalendarActivityRow({
         ]}
       >
         <Feather
-          name={completed ? "check" : skipped ? "minus" : "clock"}
+          name={completed || !skipped ? "check" : "minus"}
           size={19}
           color={
             completed
@@ -138,7 +166,7 @@ function CalendarActivityRow({
                 : "#060A0F"
           }
         />
-      </View>
+      </Pressable>
     </Pressable>
   );
 }
@@ -460,7 +488,7 @@ const styles = StyleSheet.create({
   stateSquare: {
     width: 38,
     height: 38,
-    borderRadius: 14,
+    borderRadius: 19,
     borderWidth: StyleSheet.hairlineWidth,
     alignItems: "center",
     justifyContent: "center",
