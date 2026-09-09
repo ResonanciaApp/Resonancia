@@ -2700,7 +2700,11 @@ export default function HomeScreen2({
             }}
           />
         )}
-        {isInicio2 && <DailyWisdomCard backgroundColor="rgba(34,102,104,0.9)" />}
+        {isInicio2 && (
+          <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
+            <DailyWisdomCard backgroundColor="rgba(34,102,104,0.9)" />
+          </View>
+        )}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (

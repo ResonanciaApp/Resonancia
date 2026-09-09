@@ -131,3 +131,4 @@
 - [Carruseles anidados en Dormir](nested-carousel-clipping.md) — no usar clipping ni virtualización vertical; igualar Sonidos y evitar PanResponder/toggles de fondo durante scroll
 - [Drizzle y aritmética timestamptz](drizzle-timestamptz-arithmetic.md) — parámetros Date en SQL crudo pueden tiparse como interval; castear ISO explícitamente a timestamptz antes de restar intervalos
 - [Contadores animados interrumpibles](interruptible-counter-events.md) — al ocultar la superficie, conservar eventos aún no mostrados y descartar solo los ya confirmados para evitar pérdidas o repeticiones
+- [Separación tras contenido dinámico](dynamic-section-spacing.md) — en Inicio, el gap posterior a un bloque que cambia al terminar una animación debe pertenecer al siguiente contenedor estable
