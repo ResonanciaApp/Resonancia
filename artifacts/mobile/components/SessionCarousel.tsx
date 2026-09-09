@@ -131,6 +131,8 @@ type SessionCarouselProps = {
   overlayDurationTopLeft?: boolean;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
+  /** Square card with category, duration, title and author below the image. */
+  squareMetadataBelow?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -170,6 +172,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
   sleepMetadataBelow = false,
+  squareMetadataBelow = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -179,7 +182,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isSleepCategoryPresentation = presentation === "sleep-category";
   const useSleepMetadataBelow =
-    isSleepCategoryPresentation && sleepMetadataBelow;
+    squareMetadataBelow || (isSleepCategoryPresentation && sleepMetadataBelow);
   const isTallOverlayPresentation =
     isSleepCategoryPresentation || presentation === "tall-overlay";
   const useOverlayMetadata =

@@ -238,9 +238,8 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             width={CARD_W}
             style={{ marginRight: 0 }}
             showCardMetadata
-            showCategoryPill={false}
-            showAuthor={false}
             showAuthorAvatar={false}
+            squareMetaBelow
             overridePress={() => handleSessionPress(session)}
             cardVariant={id === "ambientales" ? "ambiental" : undefined}
           />

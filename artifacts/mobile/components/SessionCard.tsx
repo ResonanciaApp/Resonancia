@@ -58,6 +58,7 @@ type Props = {
   /** Shows a white border around the thumbnail to mark this as the currently loaded session */
   playing?: boolean;
   cardVariant?: "ambiental";
+  squareMetaBelow?: boolean;
 };
 
 function PlayingDot() {
@@ -95,7 +96,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -189,11 +190,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           { borderRadius: colors.radius - 4 },
             isAmbiental
               ? {
-                  height: ambientalCardHeight,
+                  height: squareMetaBelow ? width : ambientalCardHeight,
                   aspectRatio: undefined,
                   backgroundColor: ambientalCardBackground,
                 }
-              : showCardMetadata
+              : showCardMetadata && !squareMetaBelow
             ? { height: (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }
             : undefined,
         ]}
@@ -218,7 +219,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   height: ambientalImageSize,
                   borderRadius: ambientalImageSize / 2,
                   left: (width - ambientalImageSize) / 2,
-                  top: (ambientalCardHeight - ambientalImageSize) / 2 - 32,
+                  top: ((squareMetaBelow ? width : ambientalCardHeight) - ambientalImageSize) / 2
+                    - (squareMetaBelow ? 0 : 32),
                 },
               ]}
               contentFit="cover"
@@ -226,7 +228,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               transition={IMAGE_TRANSITION}
             />
           </>
-        ) : showCardMetadata ? (
+        ) : showCardMetadata && !squareMetaBelow ? (
           <SessionCardMetadataOverlay
             categoryId={session.categoryId}
             durationLabel={session.durationLabel}
@@ -243,7 +245,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             categoryPillTinted={categoryPillTinted}
             categoryPillTopInset={categoryPillTopInset}
           />
-        ) : showDuration ? (
+        ) : showDuration && !squareMetaBelow ? (
           <SessionDurationBadge
             label={session.durationLabel}
             style={styles.durationBadge}
@@ -252,7 +254,21 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         ) : null}
         {locked && <LockStar />}
       </View>
-      {!showCardMetadata && (
+      {squareMetaBelow ? (
+        <View style={styles.squareMeta}>
+          <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
+            {[categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
+          </Text>
+          <Text style={[styles.squareTitle, { color: colors.foreground }]} numberOfLines={2}>
+            {session.title}
+          </Text>
+          {!!authorName && (
+            <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
+              {authorName}
+            </Text>
+          )}
+        </View>
+      ) : !showCardMetadata && (
         <>
           {isAmbiental ? (
             <View style={styles.ambientalCardTitleWrap}>
@@ -291,6 +307,23 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
 const styles = StyleSheet.create({
   card: {
     marginRight: 14,
+  },
+  squareMeta: {
+    marginTop: 8,
+  },
+  squareSecondary: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+  },
+  squareTitle: {
+    marginTop: 2,
+    marginBottom: 2,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
   },
   imageContainer: {
     width: "100%",

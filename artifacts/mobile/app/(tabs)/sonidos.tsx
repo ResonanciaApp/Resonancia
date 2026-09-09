@@ -374,17 +374,8 @@ export default function SonidosScreen() {
                 isPremium={isPremium}
                 onPress={openSession}
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
-                cardWidth={COMPACT_CARD_W}
-                fixedCardHeight={
-                  collection.sessions.every((session) => session.categoryId === "ambientales")
-                    ? AMBIENTAL_CARD_H
-                    : COMPACT_CARD_H
-                }
-                ambientalCardWidth={AMBIENTAL_CARD_W}
+                squareMetadataBelow
                 titleSize={19}
-                showCardMetadata
-                 metadataTitleNumberOfLines={3}
-                showAuthor={false}
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}

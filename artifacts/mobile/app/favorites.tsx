@@ -279,6 +279,7 @@ export default function FavoritesScreen() {
               style={{ marginRight: 0 }}
               showCardMetadata
               showAuthorAvatar={false}
+              squareMetaBelow
             />
           ))}
         </View>

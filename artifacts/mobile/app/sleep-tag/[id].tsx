@@ -17,10 +17,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
-import {
-  SESSION_CARD_METADATA_HEIGHT_SCALE,
-  SessionCardMetadataOverlay,
-} from "@/components/SessionCardMetadataOverlay";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
@@ -38,7 +34,6 @@ const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const COL_GAP = 12;
 const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
-const CARD_H = Math.round((CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE);
 
 export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -48,6 +43,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { activeSceneId, theme } = useSceneTheme();
+  const accentColor = theme.accent ?? colors.accent;
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
   useCatalog();
@@ -180,7 +176,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
                     <View
                       style={[
                         styles.cardImg,
-                         { height: CARD_H, backgroundColor: colors.card },
+                          { height: CARD_W, backgroundColor: colors.card },
                       ]}
                     >
                       <Image
@@ -188,19 +184,30 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
                       />
-                       <SessionCardMetadataOverlay
-                         categoryId={session.categoryId}
-                         durationLabel={session.durationLabel}
-                         title={session.title}
-                         categoryPillTextOnly
-                         authorName={
-                           session.guideId
-                             ? getGuide(session.guideId).name
-                             : getArtist(session.artistId).name
-                         }
-                      />
                       <PremiumBadge session={session} />
                     </View>
+                     <View style={styles.cardMetadata}>
+                       <Text
+                         style={[styles.cardSecondary, { color: accentColor }]}
+                         numberOfLines={1}
+                       >
+                         {[session.categoryLabel, session.durationLabel].filter(Boolean).join(" · ")}
+                       </Text>
+                       <Text
+                         style={[styles.cardTitle, { color: colors.foreground }]}
+                         numberOfLines={2}
+                       >
+                         {session.title}
+                       </Text>
+                       <Text
+                         style={[styles.cardSecondary, { color: accentColor }]}
+                         numberOfLines={1}
+                       >
+                         {session.guideId
+                           ? getGuide(session.guideId).name
+                           : getArtist(session.artistId).name}
+                       </Text>
+                     </View>
                   </Pressable>
                   );
                 })}
@@ -335,6 +342,23 @@ const styles = StyleSheet.create({
   cardImg: {
     borderRadius: 14,
     overflow: "hidden",
+  },
+  cardMetadata: {
+    marginTop: 8,
+  },
+  cardSecondary: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+  },
+  cardTitle: {
+    marginTop: 2,
+    marginBottom: 2,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
   },
 
   emptySlot: {

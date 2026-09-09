@@ -7,6 +7,7 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
+import { SessionCard } from "@/components/SessionCard";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
@@ -278,23 +279,16 @@ function CategoryCard({
     );
   }
   return (
-    <Pressable onPress={handlePress} onLongPress={onLongPress} style={({ pressed }) => [ac.card, { width: cardWidth, opacity: pressed?0.85:1 }]}>
-      <View style={[ac.imgContainer, { height: (cardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }]}>
-        <Image source={session.image} style={ac.cardImage} contentFit="cover" />
-        <SessionCardMetadataOverlay
-          categoryId={session.categoryId}
-          durationLabel={session.durationLabel}
-          title={session.title}
-          showCategoryPill={false}
-          showAuthor={false}
-          durationBottom={52}
-          metaBottom={20}
-          metaLeft={18}
-          contentLeft={18}
-        />
-        {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-      </View>
-    </Pressable>
+    <SessionCard
+      session={session}
+      width={cardWidth}
+      style={{ marginRight: 0 }}
+      showCardMetadata
+      showAuthorAvatar={false}
+      squareMetaBelow
+      onLongPress={onLongPress}
+      overridePress={handlePress}
+    />
   );
 }
 

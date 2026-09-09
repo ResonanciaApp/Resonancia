@@ -265,8 +265,8 @@ export default function FavoritosTodosScreen() {
                   width={CARD_W}
                   style={{ marginRight: 0 }}
                   showCardMetadata
-                  showCategoryPill={false}
                   showAuthorAvatar={false}
+                  squareMetaBelow
                   overridePress={() => openSession(session)}
                   playing={currentSession?.id === session.id}
                 />

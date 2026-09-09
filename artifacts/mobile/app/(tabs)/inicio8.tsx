@@ -2566,11 +2566,9 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             presentation="sleep-category"
-            cardWidth={INICIO2_SLEEP_CARD_W}
-            fixedCardHeight={INICIO2_SLEEP_CARD_H}
+            squareMetadataBelow
             titleSize={19}
             titleSpacing={17}
-            showImageCategoryPill
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
             eagerRender
@@ -2651,11 +2649,9 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             presentation="sleep-category"
-            cardWidth={INICIO2_SLEEP_CARD_W}
-            fixedCardHeight={INICIO2_SLEEP_CARD_H}
+            squareMetadataBelow
             titleSize={19}
             titleSpacing={17}
-            showImageCategoryPill
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
           />
@@ -2753,11 +2749,8 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={originalSessionCarouselStyle}
             titleOffset={10}
-            cardWidth={RECENT_CARD_W}
+            squareMetadataBelow
             titleSize={20}
-            showCardMetadata
-            showAuthor={false}
-            showMetaBelow
           />
         )}
         {/* ── FAVORITOS ── */}
@@ -2769,13 +2762,10 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={originalSessionCarouselStyle}
             titleOffset={10}
-            cardWidth={RECENT_CARD_W}
+            squareMetadataBelow
             titleSize={20}
             onViewAll={handleViewAllFavorites}
             viewAllColor={colors.accent}
-            showCardMetadata
-            showAuthor={false}
-            showMetaBelow
           />
         )}
 

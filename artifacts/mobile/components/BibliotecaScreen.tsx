@@ -1758,6 +1758,7 @@ export function BibliotecaScreen({
                   key={s.id}
                   session={s}
                   width={cellW}
+                  squareMetaBelow
                   onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
                 />
               ))}
