@@ -1155,7 +1155,7 @@ const styles = StyleSheet.create({
     top: "50%",
     left: 86,
     right: 86,
-    transform: [{ translateY: 188.5 }],
+    transform: [{ translateY: 168.5 }],
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
