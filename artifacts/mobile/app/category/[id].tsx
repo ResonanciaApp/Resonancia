@@ -95,13 +95,19 @@ function ChipRow({
         style={styles.chipRow}
         contentContainerStyle={styles.chipRowContent}
       >
+        <Chip
+          label="Ver todo"
+          selected={activeTab === null}
+          indigo2BackgroundColor={indigo2BackgroundColor}
+          onPress={() => onSelect(null)}
+        />
         {tabs.map((tab) => (
           <Chip
             key={tab}
             label={tab}
             selected={activeTab === tab}
             indigo2BackgroundColor={indigo2BackgroundColor}
-            onPress={() => onSelect(activeTab === tab ? null : tab)}
+            onPress={() => onSelect(tab)}
           />
         ))}
       </ScrollView>
@@ -219,35 +225,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             {category?.subtitle ?? "Estamos preparando nuevas sesiones para ti."}
           </Text>
         </View>
-      );
-    }
-
-    if (activeTab === null && tabs.length > 0) {
-      return (
-        <>
-          {tabs.map((tab, index) => {
-            const tabSessions = allSessions.filter((session) =>
-              getCategorySessionTags(session, id).includes(tab),
-            );
-            return (
-              <SessionCarousel
-                key={tab}
-                title={tab}
-                sessions={tabSessions.slice(0, 5)}
-                isPremium={isPremium}
-                onPress={handleSessionPress}
-                onViewAll={tabSessions.length > 5 ? () => setActiveTab(tab) : undefined}
-                style={{ marginTop: index === 0 ? 13 : 53, marginBottom: 0 }}
-                presentation="sleep-category"
-                titleSize={19}
-                titleOffset={10}
-                titleSpacing={17}
-                showImageCategoryPill
-                cardVariant={id === "ambientales" ? "ambiental" : undefined}
-              />
-            );
-          })}
-        </>
       );
     }
 

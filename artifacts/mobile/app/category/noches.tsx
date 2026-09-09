@@ -113,11 +113,11 @@ function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect, onClear }:
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Todos" sel={activeTab === null} indigo2BackgroundColor={indigo2BackgroundColor} onPress={onClear} />
+        <Chip label="Ver todo" sel={activeTab === null} indigo2BackgroundColor={indigo2BackgroundColor} onPress={onClear} />
         {tabs.map((t) => (
           <Chip key={t.tag} label={t.tag} sel={activeTab === t.tag}
             indigo2BackgroundColor={indigo2BackgroundColor}
-            onPress={() => activeTab === t.tag ? onClear() : onSelect(t.tag)} />
+            onPress={() => onSelect(t.tag)} />
         ))}
       </ScrollView>
     </View>
@@ -334,7 +334,7 @@ export default function NochesScreen() {
     const hasMore = visibleCount < shuffledSessions.length;
     return (
       <>
-        {featuredSessions.length > 0 && (
+        {false && featuredSessions.length > 0 && (
           <>
             <Text style={styles.featuredTitle}>Contenido destacado</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -361,7 +361,7 @@ export default function NochesScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
-        {activeTab === null && favoritesInCategory.length > 0 && (
+        {false && activeTab === null && favoritesInCategory.length > 0 && (
           <>
             <SessionCarousel
               title="Favoritos"
@@ -375,7 +375,7 @@ export default function NochesScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
-        {activeTab === null && (() => {
+        {false && activeTab === null && (() => {
           const visibleSubs = TABS.filter((sub) => getSessionsForTab(sub.tag).length > 0);
           return visibleSubs.map((sub, idx) => {
             const tabSessions = getSessionsForTab(sub.tag);
@@ -399,7 +399,7 @@ export default function NochesScreen() {
             );
           });
         })()}
-        {activeTab === null && (
+        {false && activeTab === null && (
           <Pressable
             onPress={() => setAllVisible(true)}
             style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
@@ -408,7 +408,7 @@ export default function NochesScreen() {
             <Feather name="chevron-right" size={16} color={GOLD} />
           </Pressable>
         )}
-        {activeTab !== null && (
+        {(
           <>
             <View style={styles.sessionGrid}>
               {visibleSessions.map((s) => (

@@ -167,10 +167,13 @@ function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: {
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        <Chip label="Ver todo" sel={activeTab === null}
+          indigo2BackgroundColor={indigo2BackgroundColor}
+          onPress={() => onSelect(null)} />
         {tabs.map((t) => (
           <Chip key={t.id} label={t.label} sel={activeTab === t.id}
             indigo2BackgroundColor={indigo2BackgroundColor}
-            onPress={() => onSelect(activeTab === t.id ? null : t.id)} />
+            onPress={() => onSelect(t.id)} />
         ))}
       </ScrollView>
     </View>
@@ -512,7 +515,7 @@ export default function SonidosAncestalesScreen() {
     const hasMore = visibleCount < shuffledSessions.length;
     return (
       <>
-        {featuredSessions.length > 0 && (
+        {false && featuredSessions.length > 0 && (
           <>
             <Text style={styles.featuredTitle}>Contenido destacado</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -538,7 +541,7 @@ export default function SonidosAncestalesScreen() {
             />
           </>
         )}
-        {activeTab === null && (() => {
+        {false && activeTab === null && (() => {
           const visibleTabs = TABS.filter((tab) => getSessionsForTab(tab.id).length > 0);
           return visibleTabs.map((tab, idx) => {
             const tabSessions = getSessionsForTab(tab.id);
@@ -561,7 +564,7 @@ export default function SonidosAncestalesScreen() {
             );
           });
         })()}
-        {activeTab === null && (
+        {false && activeTab === null && (
           <Pressable
             onPress={() => setAllVisible(true)}
             style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
@@ -570,7 +573,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="chevron-right" size={16} color="#F9F9F9" />
           </Pressable>
         )}
-        {activeTab !== null && (
+        {(
           <>
             <View style={styles.sessionGrid}>
               {visibleSessions.map((s)=>(
