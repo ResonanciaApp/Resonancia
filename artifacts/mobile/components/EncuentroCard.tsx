@@ -10,6 +10,8 @@ import { Image } from "expo-image";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 import { CONTENT_CAROUSEL_HEIGHT_SCALE } from "@/constants/carousel";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { isIndigoThemeId } from "@/config/scene-themes";
 
 type Props = {
   encuentro: Encuentro;
@@ -18,11 +20,19 @@ type Props = {
 };
 
 export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
+  const { theme } = useSceneTheme();
   const fechaTexto = formatearFecha(encuentro.fechaISO);
   const extraInscritos = Math.max(0, encuentro.inscritos - encuentro.participantes.length);
+  const cardBackground = theme.id === "tibet"
+    ? "rgba(0,0,0,0.1)"
+    : isIndigoThemeId(theme.id)
+      ? "rgba(181,211,255,0.1)"
+      : theme.id === "indigo2"
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: cardBackground }]}>
       {/* Hero — imagen del tema */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
         {encuentro.heroImagen ? (

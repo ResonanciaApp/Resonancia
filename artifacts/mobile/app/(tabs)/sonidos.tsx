@@ -133,7 +133,13 @@ export default function SonidosScreen() {
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const indigoSurface = isIndigoThemeId(theme.id) ? "rgba(181,211,255,0.057)" : undefined;
+  const indigoSurface = theme.id === "tibet"
+    ? "rgba(0,0,0,0.1)"
+    : isIndigoThemeId(theme.id)
+      ? "rgba(181,211,255,0.1)"
+      : theme.id === "indigo2"
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
   const inactiveTabSurface = theme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
     : isIndigoThemeId(theme.id)

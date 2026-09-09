@@ -120,7 +120,13 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;
-  const indigoSurface = isIndigoThemeId(sceneTheme.id) ? "rgba(181,211,255,0.057)" : undefined;
+  const indigoSurface = sceneTheme.id === "tibet"
+    ? "rgba(0,0,0,0.1)"
+    : isIndigoThemeId(sceneTheme.id)
+      ? "rgba(181,211,255,0.1)"
+      : sceneTheme.id === "indigo2"
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
 
   const [searchVisible, setSearchVisible] = useState(false);
   const { version: catalogVersion } = useCatalog();

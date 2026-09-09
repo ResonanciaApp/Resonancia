@@ -26,12 +26,12 @@ export function getDailyRecommendationSurface(
   themeId: Parameters<typeof isIndigoThemeId>[0],
 ): string {
   return themeId === "tibet"
-    ? "rgba(0,0,0,0.15)"
+    ? "rgba(0,0,0,0.1)"
     : isIndigoThemeId(themeId)
-      ? "rgba(181,211,255,0.057)"
+      ? "rgba(181,211,255,0.1)"
       : themeId === "indigo2"
-        ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)";
+        ? "rgba(191,207,255,0.1)"
+        : "rgba(181,211,255,0.1)";
 }
 
 const WEEKDAYS = [
@@ -77,9 +77,7 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const refreshButtonBackground = isIndigoThemeId(theme.id)
-    ? getDailyRecommendationSurface(theme.id)
-    : "rgba(18,10,33,0.37)";
+  const refreshButtonBackground = getDailyRecommendationSurface(theme.id);
 
   if (recommendations.length < 3) return null;
 

@@ -555,7 +555,10 @@ export function ExploreScreen({
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
-              style={styles.headerSearchButton}
+              style={[
+                styles.headerSearchButton,
+                { backgroundColor: durationSurfaceColor },
+              ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"

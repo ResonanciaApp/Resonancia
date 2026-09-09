@@ -29,8 +29,8 @@ const HORIZONTAL_PAD = 14;
 const CARDS_PER_TAB = 5;
 
 const RECOMMENDATION_TABS = [
-  { id: "by-mood", label: "Según tu estado de ánimo" },
   { id: "short-meditations", label: "Meditaciones cortas" },
+  { id: "by-mood", label: "Según tu estado de ánimo" },
   { id: "new-content", label: "Nuevo contenido" },
   { id: "anxiety-sos", label: "Ansiedad S.O.S" },
   { id: "popular", label: "Populares" },
