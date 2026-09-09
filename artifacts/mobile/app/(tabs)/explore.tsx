@@ -679,6 +679,7 @@ export function ExploreScreen({
                        categoryId={session.categoryId}
                        textOnly
                        tinted
+                        plainIcon
                        leftInset={18}
                        topInset={18}
                      />
