@@ -373,6 +373,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     authorName={effectiveShowAuthor && !effectiveShowCollectionBelow ? authorName : undefined}
                     showAuthor={effectiveShowAuthor && !effectiveShowCollectionBelow}
                     showCategoryPill={!effectiveShowMetaBelow && (showImageCategoryPill || !effectiveShowCollectionBelow)}
+                    categoryPillPlainIcon
                     showCategoryBelow={effectiveShowMetaBelow || effectiveShowCollectionBelow}
                     showDuration={effectiveShowDurationBadge && !effectiveShowMetaBelow}
                     durationBottom={(hasSecondaryMeta ? 70 : 52) + durationLift}
@@ -385,7 +386,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isSleepCategoryPresentation &&
                       (!effectiveShowMetaBelow || durationInsideWithMeta) &&
                       showImageCategoryPill && (
-                      <SessionCategoryPill categoryId={s.categoryId} />
+                      <SessionCategoryPill categoryId={s.categoryId} plainIcon />
                     )}
                     {effectiveShowDurationBadge &&
                       !useOverlayMetadata &&
@@ -426,6 +427,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          categoryId={s.categoryId}
                          textOnly={categoryPillTextOnly}
                          tinted={categoryPillTinted}
+                          plainIcon
                          leftInset={18}
                          topInset={18}
                        />

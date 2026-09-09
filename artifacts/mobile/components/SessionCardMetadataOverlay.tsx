@@ -64,6 +64,7 @@ export function SessionCategoryPill({
   plain = false,
   textOnly = false,
   tinted = false,
+  plainIcon = false,
   showIconGlyph = true,
   iconSize = 19,
   outlineColor,
@@ -76,6 +77,7 @@ export function SessionCategoryPill({
   plain?: boolean;
   textOnly?: boolean;
   tinted?: boolean;
+  plainIcon?: boolean;
   showIconGlyph?: boolean;
   iconSize?: number;
   outlineColor?: string;
@@ -93,6 +95,7 @@ export function SessionCategoryPill({
         styles.categoryPill,
         inline && styles.categoryPillInline,
         textOnly && styles.categoryPillTextOnly,
+        plainIcon && styles.categoryPillWithPlainIcon,
         plain && styles.categoryPillPlain,
         tinted ? { backgroundColor: `${category.color}66` } : null,
         outlineColor && styles.categoryPillOutlined,
@@ -103,11 +106,12 @@ export function SessionCategoryPill({
       ]}
     >
       {!plain && !outlineColor && !tinted && <SessionBadgeGlass />}
-      {!textOnly && (
+      {(!textOnly || plainIcon) && (
         <SessionCategoryIcon
           categoryId={categoryId}
           size={iconSize}
           showGlyph={showIconGlyph}
+          backgroundColor={plainIcon ? "transparent" : undefined}
         />
       )}
       <Text
@@ -129,18 +133,31 @@ export function SessionCategoryIcon({
   style,
   size = 19,
   showGlyph = true,
+  backgroundColor,
 }: {
   categoryId?: string;
   style?: object;
   size?: number;
   showGlyph?: boolean;
+  backgroundColor?: string;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
   const iconSize = Math.round(size * 0.63);
 
   return (
-    <View style={[styles.categoryCircle, { width: size, height: size, borderRadius: size / 2 }, style, { backgroundColor: category.color }]}>
+    <View
+      style={[
+        styles.categoryCircle,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: backgroundColor ?? category.color,
+        },
+        style,
+      ]}
+    >
       {showGlyph && category.materialIcon ? (
         <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
       ) : showGlyph && category.icon ? (
@@ -160,6 +177,7 @@ type Props = {
   showCategoryPill?: boolean;
   categoryPillTextOnly?: boolean;
   categoryPillTinted?: boolean;
+  categoryPillPlainIcon?: boolean;
   categoryPillTopInset?: number;
   showCategoryBelow?: boolean;
   showMetaBelow?: boolean;
@@ -182,6 +200,7 @@ export function SessionCardMetadataOverlay({
   showCategoryPill = true,
   categoryPillTextOnly = false,
   categoryPillTinted = false,
+  categoryPillPlainIcon = false,
   categoryPillTopInset,
   showCategoryBelow = false,
   showMetaBelow = false,
@@ -214,6 +233,7 @@ export function SessionCardMetadataOverlay({
           leftInset={contentLeft}
           textOnly={categoryPillTextOnly}
           tinted={categoryPillTinted}
+          plainIcon={categoryPillPlainIcon}
           topInset={categoryPillTopInset}
         />
       )}
@@ -300,6 +320,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 9,
     paddingRight: 9,
+  },
+  categoryPillWithPlainIcon: {
+    gap: 5,
+    paddingLeft: 7,
   },
   categoryPillOutlined: {
     borderWidth: 2,
