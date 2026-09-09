@@ -25,6 +25,7 @@ export {
 } from "@/lib/routineLogic";
 
 const STORAGE_KEY = "@resonance_routine_v1";
+const RESET_MARKER_KEY = "@resonance_routine_reset_2026_09_09";
 
 export const ROUTINE_DAY_LABELS = ["L", "M", "X", "J", "V", "S", "D"] as const;
 export const ROUTINE_CATEGORY_TABS = [
@@ -220,8 +221,19 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
+    Promise.all([
+      AsyncStorage.getItem(STORAGE_KEY),
+      AsyncStorage.getItem(RESET_MARKER_KEY),
+    ])
+      .then(async ([raw, resetMarker]) => {
+        if (resetMarker !== "complete") {
+          await AsyncStorage.multiSet([
+            [STORAGE_KEY, "[]"],
+            [RESET_MARKER_KEY, "complete"],
+          ]);
+          raw = "[]";
+        }
+
         if (cancelled) return;
         if (raw) {
           try {
