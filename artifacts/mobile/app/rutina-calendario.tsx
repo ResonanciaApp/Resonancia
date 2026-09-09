@@ -182,7 +182,7 @@ export default function RutinaCalendarioScreen() {
   return (
     <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
       <StatusBar hidden />
-      <SacredBackground variant="solid" />
+      <SacredBackground variant="gradient" />
       <ScrollView
         contentContainerStyle={[
           styles.content,
@@ -220,8 +220,6 @@ export default function RutinaCalendarioScreen() {
           {weekDays.map((date, index) => {
             const dateKey = getRoutineDateKey(date);
             const selected = dateKey === selectedKey;
-            const isPast = dateKey < todayKey;
-            const isFuture = dateKey > todayKey;
             const hasCompletion = activities.some((activity) =>
               activity.completedDates.includes(dateKey),
             );
@@ -253,11 +251,7 @@ export default function RutinaCalendarioScreen() {
                     {
                       backgroundColor: selected
                         ? routineTheme.completion
-                        : isFuture
-                          ? "rgba(41,139,115,0.20)"
-                        : hasCompletion
-                          ? routineTheme.completionSoft
-                          : routineTheme.surface,
+                         : "rgba(255,255,255,0.1)",
                       borderColor: selected ? routineTheme.completion : routineTheme.divider,
                     },
                   ]}
@@ -268,11 +262,7 @@ export default function RutinaCalendarioScreen() {
                       {
                         color: selected
                           ? "#FFFFFF"
-                          : isFuture
-                            ? routineTheme.completion
-                            : isPast
-                              ? routineTheme.accent
-                              : routineTheme.text,
+                           : routineTheme.text,
                       },
                     ]}
                   >

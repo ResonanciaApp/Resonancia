@@ -40,7 +40,7 @@ type Props = {
 const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
-const COMPLETION_EXIT_DELAY = 1000;
+const COMPLETION_EXIT_DELAY = 1500;
 const TOAST_DURATION = 2400;
 const HANDLE_COLOR = "#7F7F7F";
 
@@ -99,7 +99,7 @@ const ActivityRow = React.memo(function ActivityRow({
   const settledY = useSharedValue(initialIndex * ROUTINE_SLOT_HEIGHT);
 
   useEffect(() => {
-    completionProgress.value = withTiming(completing ? 1 : 0, { duration: 450 });
+    completionProgress.value = withTiming(completing ? 1 : 0, { duration: 500 });
   }, [completing, completionProgress]);
 
   const pan = useMemo(

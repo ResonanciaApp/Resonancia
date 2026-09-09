@@ -81,7 +81,7 @@ export default function CrearRutinaScreen() {
 
   return (
     <View style={styles.root}>
-      <SacredBackground />
+      <SacredBackground variant="gradient" />
       <KeyboardAwareScrollViewCompat
         contentContainerStyle={[
           styles.content,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   optionalText: {
     fontSize: 11,
     fontWeight: "400",
-    color: "rgba(41,139,115,0.72)",
+    color: "#F0F0F0",
   },
   validationText: {
     fontFamily: "Manrope",
