@@ -138,6 +138,8 @@ type SessionCarouselProps = {
   squareTitleOnlyBelow?: boolean;
   /** Square card with title and author below the image. */
   squareTitleAuthorBelow?: boolean;
+  /** Category-grid layout: duration pill over image, title and author below. */
+  categoryGridPresentation?: boolean;
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -180,6 +182,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
   squareTitleAuthorBelow = false,
+  categoryGridPresentation = false,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -232,7 +235,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const effectiveShowMetaBelow =
     isTallOverlayPresentation ? false : showMetaBelow;
   const effectiveShowDurationBadge = useSleepMetadataBelow
-    ? false
+    ? categoryGridPresentation
     : isTallOverlayPresentation
       ? true
       : showDurationBadge;
@@ -381,6 +384,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     )}
+                    {categoryGridPresentation && effectiveShowDurationBadge && (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[styles.durBadge, styles.categoryDurationBadge]}
+                        textStyle={styles.durText}
+                      />
+                    )}
                   </>
                 ) : effectiveShowCardMetadata ? (
                   <SessionCardMetadataOverlay
@@ -412,8 +422,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         label={s.durationLabel}
                         style={[
                           styles.durBadge,
+                         categoryGridPresentation && styles.categoryDurationBadge,
                           !effectiveShowAuthor && styles.durBadgeLower,
-                           { bottom: (effectiveShowAuthor ? 8 : 4) + durationLift },
+                         !categoryGridPresentation && {
+                           bottom: (effectiveShowAuthor ? 8 : 4) + durationLift,
+                         },
                         ]}
                         textStyle={styles.durText}
                       />
@@ -475,7 +488,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </View>
               {useSleepMetadataBelow ? (
                 <View style={styles.sleepBelowMetadata}>
-                  {!squareTitleOnlyBelow && !squareTitleAuthorBelow ? (
+                   {!categoryGridPresentation && !squareTitleOnlyBelow && !squareTitleAuthorBelow ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
                       numberOfLines={1}
@@ -650,6 +663,12 @@ const styles = StyleSheet.create({
   },
   durBadgeLower: {
     bottom: 4,
+  },
+  categoryDurationBadge: {
+    top: undefined,
+    bottom: 8,
+    left: 8,
+    paddingHorizontal: 9,
   },
   durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
   sleepOverlayMetadata: {

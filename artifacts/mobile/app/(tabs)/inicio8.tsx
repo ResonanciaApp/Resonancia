@@ -2650,6 +2650,7 @@ export default function HomeScreen2({
             style={inicio2SessionCarouselStyle}
             presentation="sleep-category"
             squareMetadataBelow
+            categoryGridPresentation
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
@@ -2771,6 +2772,7 @@ export default function HomeScreen2({
             style={originalSessionCarouselStyle}
             titleOffset={10}
             squareMetadataBelow
+            categoryGridPresentation
             titleSize={20}
             onViewAll={handleViewAllFavorites}
             viewAllColor={colors.accent}
