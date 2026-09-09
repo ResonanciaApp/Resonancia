@@ -14,6 +14,7 @@ import {
   canMutateRoutineDate,
   completeRoutineDate,
   getRoutineDateKey,
+  getRoutineOccurrenceKey,
   skipRoutineDate,
 } from "@/lib/routineLogic";
 export {
@@ -22,6 +23,8 @@ export {
   getRoutineWeekday,
   isRoutineActivityScheduledForDate,
   canMutateRoutineDate,
+  getRoutineOccurrenceKey,
+  hasRoutineDateEntry,
 } from "@/lib/routineLogic";
 
 const STORAGE_KEY = "@resonance_routine_v1";
@@ -46,6 +49,8 @@ export interface RoutineActivity {
   description: string;
   category: RoutineCategory;
   repeatDays: number[];
+  repeatEnabled: boolean;
+  timesPerDay: number;
   completedDates: string[];
   skippedDates: string[];
   archivedAt: string | null;
@@ -57,6 +62,8 @@ export interface RoutineActivityInput {
   description?: string;
   category: RoutineCategory;
   repeatDays: number[];
+  repeatEnabled?: boolean;
+  timesPerDay?: number;
 }
 
 interface RutinaContextValue {
@@ -64,13 +71,13 @@ interface RutinaContextValue {
   isHydrated: boolean;
   lastAddedId: string | null;
   addActivity: (input: RoutineActivityInput) => RoutineActivity;
-  completeActivity: (activityId: string, dateKey?: string) => void;
-  skipActivity: (activityId: string, dateKey?: string) => void;
+  completeActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
+  skipActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
   archiveActivity: (activityId: string) => void;
-  toggleActivity: (activityId: string, dateKey?: string) => void;
+  toggleActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
   reorderActivities: (orderedActivityIds: string[]) => void;
-  isActivityCompleted: (activity: RoutineActivity, dateKey?: string) => boolean;
-  isActivitySkipped: (activity: RoutineActivity, dateKey?: string) => boolean;
+  isActivityCompleted: (activity: RoutineActivity, dateKey?: string, occurrenceIndex?: number) => boolean;
+  isActivitySkipped: (activity: RoutineActivity, dateKey?: string, occurrenceIndex?: number) => boolean;
   getActivityById: (activityId: string) => RoutineActivity | undefined;
 }
 
@@ -81,6 +88,12 @@ function normalizeDateList(value: unknown): string[] {
   return Array.from(
     new Set(value.filter((date): date is string => typeof date === "string")),
   ).sort();
+}
+
+function normalizeTimesPerDay(value: unknown): number {
+  return typeof value === "number" && Number.isInteger(value)
+    ? Math.max(1, Math.min(12, value))
+    : 1;
 }
 
 const SUGGESTION_GROUPS: Record<RoutineCategory, string[]> = {
@@ -204,11 +217,62 @@ function normalizeActivity(value: unknown): RoutineActivity | null {
     description: typeof item.description === "string" ? item.description : "",
     category,
     repeatDays,
+    repeatEnabled: item.repeatEnabled !== false,
+    timesPerDay: normalizeTimesPerDay(item.timesPerDay),
     completedDates: normalizeDateList(item.completedDates),
     skippedDates: normalizeDateList(item.skippedDates),
     archivedAt: typeof item.archivedAt === "string" ? item.archivedAt : null,
     createdAt: typeof item.createdAt === "string" ? item.createdAt : new Date().toISOString(),
   };
+}
+
+function activityIdentity(activity: RoutineActivity): string {
+  return JSON.stringify([
+    activity.title.trim().toLocaleLowerCase("es"),
+    activity.description.trim().toLocaleLowerCase("es"),
+    activity.category,
+    activity.repeatEnabled,
+    activity.repeatDays,
+    activity.timesPerDay,
+  ]);
+}
+
+export function deduplicateRoutineActivities(
+  activities: RoutineActivity[],
+): RoutineActivity[] {
+  const byIdentity = new Map<string, RoutineActivity>();
+  for (const activity of activities) {
+    const identity = activityIdentity(activity);
+    const existing = byIdentity.get(identity);
+    if (!existing) {
+      byIdentity.set(identity, activity);
+      continue;
+    }
+    const completedDates = normalizeDateList([
+      ...existing.completedDates,
+      ...activity.completedDates,
+    ]);
+    const skippedDates = normalizeDateList([
+      ...existing.skippedDates,
+      ...activity.skippedDates,
+    ]).filter((date) => !completedDates.includes(date));
+    byIdentity.set(identity, {
+      ...existing,
+      completedDates,
+      skippedDates,
+      createdAt:
+        existing.createdAt <= activity.createdAt
+          ? existing.createdAt
+          : activity.createdAt,
+      archivedAt:
+        existing.archivedAt && activity.archivedAt
+          ? existing.archivedAt >= activity.archivedAt
+            ? existing.archivedAt
+            : activity.archivedAt
+          : null,
+    });
+  }
+  return Array.from(byIdentity.values());
 }
 
 export function RutinaProvider({ children }: { children: ReactNode }) {
@@ -218,33 +282,41 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   const hydratedRef = useRef(false);
   const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestActivitiesRef = useRef<RoutineActivity[]>([]);
+  const persistQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const enqueuePersist = useCallback((snapshot: RoutineActivity[]) => {
+    persistQueueRef.current = persistQueueRef.current
+      .catch(() => {})
+      .then(() =>
+        AsyncStorage.multiSet([
+          [STORAGE_KEY, JSON.stringify(snapshot)],
+          [RESET_MARKER_KEY, "complete"],
+        ]),
+      );
+    return persistQueueRef.current;
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_KEY),
-      AsyncStorage.getItem(RESET_MARKER_KEY),
-    ])
-      .then(async ([raw, resetMarker]) => {
-        if (resetMarker !== "complete") {
-          await AsyncStorage.multiSet([
-            [STORAGE_KEY, "[]"],
-            [RESET_MARKER_KEY, "complete"],
-          ]);
-          raw = "[]";
-        }
-
+    AsyncStorage.getItem(STORAGE_KEY)
+      .then(async (raw) => {
         if (cancelled) return;
+        let normalized: RoutineActivity[] = [];
         if (raw) {
           try {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
-              setActivities(parsed.map(normalizeActivity).filter((item): item is RoutineActivity => item !== null));
+              normalized = deduplicateRoutineActivities(
+                parsed.map(normalizeActivity).filter((item): item is RoutineActivity => item !== null),
+              );
             }
           } catch {
-            setActivities([]);
+            normalized = [];
           }
         }
+        latestActivitiesRef.current = normalized;
+        setActivities(normalized);
+        await enqueuePersist(normalized);
+        if (cancelled) return;
         hydratedRef.current = true;
         setIsHydrated(true);
       })
@@ -258,29 +330,27 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enqueuePersist]);
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    latestActivitiesRef.current = activities;
+    const canonicalActivities = deduplicateRoutineActivities(activities);
+    latestActivitiesRef.current = canonicalActivities;
     if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
     persistTimerRef.current = setTimeout(() => {
       persistTimerRef.current = null;
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(latestActivitiesRef.current)).catch(() => {});
+      void enqueuePersist(latestActivitiesRef.current);
     }, 350);
-  }, [activities]);
+  }, [activities, enqueuePersist]);
 
   useEffect(
     () => () => {
       if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
       if (hydratedRef.current) {
-        AsyncStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify(latestActivitiesRef.current),
-        ).catch(() => {});
+        void enqueuePersist(latestActivitiesRef.current);
       }
     },
-    [],
+    [enqueuePersist],
   );
 
   const addActivity = useCallback((input: RoutineActivityInput) => {
@@ -290,23 +360,27 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       description: input.description?.trim() ?? "",
       category: input.category,
       repeatDays: Array.from(new Set(input.repeatDays)).sort((a, b) => a - b),
+      repeatEnabled: input.repeatEnabled !== false,
+      timesPerDay: normalizeTimesPerDay(input.timesPerDay),
       completedDates: [],
       skippedDates: [],
       archivedAt: null,
       createdAt: new Date().toISOString(),
     };
-    setActivities((current) => [activity, ...current]);
+    setActivities((current) => deduplicateRoutineActivities([activity, ...current]));
     setLastAddedId(activity.id);
     return activity;
   }, []);
 
   const completeActivity = useCallback(
-    (activityId: string, dateKey = getRoutineDateKey()) => {
+    (activityId: string, dateKey = getRoutineDateKey(), occurrenceIndex = 0) => {
       setActivities((current) =>
         current.map((activity) => {
           if (activity.id !== activityId) return activity;
+          if (occurrenceIndex < 0 || occurrenceIndex >= activity.timesPerDay) return activity;
           if (!canMutateRoutineDate(activity, dateKey)) return activity;
-          return completeRoutineDate(activity, dateKey);
+          const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+          return completeRoutineDate(activity, occurrenceKey);
         }),
       );
     },
@@ -314,12 +388,14 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   );
 
   const skipActivity = useCallback(
-    (activityId: string, dateKey = getRoutineDateKey()) => {
+    (activityId: string, dateKey = getRoutineDateKey(), occurrenceIndex = 0) => {
       setActivities((current) =>
         current.map((activity) => {
           if (activity.id !== activityId) return activity;
+          if (occurrenceIndex < 0 || occurrenceIndex >= activity.timesPerDay) return activity;
           if (!canMutateRoutineDate(activity, dateKey)) return activity;
-          return skipRoutineDate(activity, dateKey);
+          const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+          return skipRoutineDate(activity, occurrenceKey);
         }),
       );
     },
@@ -337,16 +413,18 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const toggleActivity = useCallback((activityId: string, dateKey = getRoutineDateKey()) => {
+  const toggleActivity = useCallback((activityId: string, dateKey = getRoutineDateKey(), occurrenceIndex = 0) => {
     setActivities((current) =>
       current.map((activity) => {
         if (activity.id !== activityId) return activity;
-        const completed = activity.completedDates.includes(dateKey);
+        if (occurrenceIndex < 0 || occurrenceIndex >= activity.timesPerDay) return activity;
+        const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+        const completed = activity.completedDates.includes(occurrenceKey);
         return {
           ...activity,
           completedDates: completed
-            ? activity.completedDates.filter((date) => date !== dateKey)
-            : [...activity.completedDates, dateKey],
+            ? activity.completedDates.filter((date) => date !== occurrenceKey)
+            : [...activity.completedDates, occurrenceKey],
         };
       }),
     );
@@ -374,14 +452,14 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const isActivityCompleted = useCallback(
-    (activity: RoutineActivity, dateKey = getRoutineDateKey()) =>
-      activity.completedDates.includes(dateKey),
+    (activity: RoutineActivity, dateKey = getRoutineDateKey(), occurrenceIndex = 0) =>
+      activity.completedDates.includes(getRoutineOccurrenceKey(dateKey, occurrenceIndex)),
     [],
   );
 
   const isActivitySkipped = useCallback(
-    (activity: RoutineActivity, dateKey = getRoutineDateKey()) =>
-      activity.skippedDates.includes(dateKey),
+    (activity: RoutineActivity, dateKey = getRoutineDateKey(), occurrenceIndex = 0) =>
+      activity.skippedDates.includes(getRoutineOccurrenceKey(dateKey, occurrenceIndex)),
     [],
   );
 

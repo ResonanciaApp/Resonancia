@@ -1,10 +1,19 @@
 export type RoutineScheduleRecord = {
   repeatDays: number[];
+  repeatEnabled?: boolean;
   completedDates: string[];
   skippedDates: string[];
   archivedAt: string | null;
   createdAt: string;
 };
+
+export function getRoutineOccurrenceKey(dateKey: string, occurrenceIndex = 0): string {
+  return occurrenceIndex > 0 ? `${dateKey}#${occurrenceIndex + 1}` : dateKey;
+}
+
+export function hasRoutineDateEntry(entries: string[], dateKey: string): boolean {
+  return entries.some((entry) => entry === dateKey || entry.startsWith(`${dateKey}#`));
+}
 
 export function getRoutineDateKey(date = new Date()): string {
   return [
@@ -35,6 +44,7 @@ export function isRoutineActivityScheduledForDate(
     const archivedKey = getRoutineDateKey(new Date(activity.archivedAt));
     if (dateKey >= archivedKey) return false;
   }
+  if (activity.repeatEnabled === false) return dateKey === createdKey;
   return activity.repeatDays.includes(getRoutineWeekday(date));
 }
 

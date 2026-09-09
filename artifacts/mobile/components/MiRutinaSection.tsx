@@ -23,6 +23,7 @@ import Reanimated, {
 
 import {
   getRoutineDateKey,
+  getRoutineOccurrenceKey,
   isRoutineActivityScheduledForDate,
   useRutina,
   type RoutineActivity,
@@ -44,6 +45,12 @@ const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
 const COMPLETION_EXIT_DELAY = 1500;
 const HANDLE_COLOR = "#7F7F7F";
 
+type RoutineOccurrence = {
+  activity: RoutineActivity;
+  occurrenceIndex: number;
+  itemId: string;
+};
+
 function lightenHexColor(color: string, amount = 0.1) {
   const match = /^#([0-9a-f]{6})$/i.exec(color);
   if (!match) return color;
@@ -59,6 +66,8 @@ function lightenHexColor(color: string, amount = 0.1) {
 
 const ActivityRow = React.memo(function ActivityRow({
   activity,
+  occurrenceIndex,
+  itemId,
   initialIndex,
   completing,
   itemCount,
@@ -73,6 +82,8 @@ const ActivityRow = React.memo(function ActivityRow({
   cardBackgroundColor,
 }: {
   activity: RoutineActivity;
+  occurrenceIndex: number;
+  itemId: string;
   completing: boolean;
   itemCount: number;
   orderSV: SharedValue<string[]>;
@@ -81,8 +92,8 @@ const ActivityRow = React.memo(function ActivityRow({
   dragDeltaY: SharedValue<number>;
   insertAt: SharedValue<number>;
   initialIndex: number;
-  onOpen: (activityId: string) => void;
-  onComplete: (activity: RoutineActivity) => void;
+  onOpen: (activityId: string, occurrenceIndex: number) => void;
+  onComplete: (activity: RoutineActivity, occurrenceIndex: number) => void;
   onDragEnd: (from: number, to: number) => void;
   cardBackgroundColor?: string;
 }) {
@@ -90,7 +101,7 @@ const ActivityRow = React.memo(function ActivityRow({
   const { theme } = useSceneTheme();
   const completionProgress = useSharedValue(completing ? 1 : 0);
   const didActivate = useSharedValue(0);
-  const activityId = activity.id;
+  const activityId = itemId;
   const sharedOrder = orderSV;
   const sharedDraggingId = draggingId;
   const sharedDragOriginSlot = dragOriginSlot;
@@ -105,6 +116,7 @@ const ActivityRow = React.memo(function ActivityRow({
   const pan = useMemo(
     () =>
       Gesture.Pan()
+        .enabled(activity.timesPerDay === 1)
         .activateAfterLongPress(250)
         .onStart(() => {
           didActivate.value = 1;
@@ -225,15 +237,15 @@ const ActivityRow = React.memo(function ActivityRow({
   const completeFromTicket = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      if (!completing) onComplete(activity);
+      if (!completing) onComplete(activity, occurrenceIndex);
     },
-    [activity, completing, onComplete],
+    [activity, completing, occurrenceIndex, onComplete],
   );
 
   return (
     <Reanimated.View
       style={[styles.activitySlot, positionStyle]}
-      testID={`routine-activity-${activity.id}`}
+      testID={`routine-activity-${itemId}`}
     >
       <GestureDetector gesture={pan}>
         <Reanimated.View
@@ -251,7 +263,7 @@ const ActivityRow = React.memo(function ActivityRow({
             ]}
           />
           <Pressable
-            onPress={() => onOpen(activityId)}
+            onPress={() => onOpen(activity.id, occurrenceIndex)}
             disabled={completing}
             accessibilityRole="button"
             accessibilityLabel={`Abrir ${activity.title}`}
@@ -276,6 +288,9 @@ const ActivityRow = React.memo(function ActivityRow({
                 numberOfLines={2}
               >
                 {activity.title}
+                {activity.timesPerDay > 1
+                  ? ` · ${occurrenceIndex + 1}/${activity.timesPerDay}`
+                  : ""}
               </Text>
             </View>
           </Pressable>
@@ -290,7 +305,7 @@ const ActivityRow = React.memo(function ActivityRow({
               accessibilityRole="checkbox"
               accessibilityState={{ checked: completing }}
               accessibilityLabel={`Completar ${activity.title}`}
-              testID={`routine-toggle-${activity.id}`}
+              testID={`routine-toggle-${itemId}`}
               hitSlop={10}
               style={({ pressed }) => [
                 styles.checkButton,
@@ -327,7 +342,14 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const dateKey = getRoutineDateKey(today);
   const completedTodayCount = useMemo(
     () =>
-      activities.filter((activity) => activity.completedDates.includes(dateKey)).length,
+      activities.reduce(
+        (total, activity) =>
+          total +
+          Array.from({ length: activity.timesPerDay }, (_, index) =>
+            activity.completedDates.includes(getRoutineOccurrenceKey(dateKey, index)),
+          ).filter(Boolean).length,
+        0,
+      ),
     [activities, dateKey],
   );
   const completedTodayCountRef = useRef(completedTodayCount);
@@ -339,20 +361,26 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   useEffect(() => {
     completedTodayCountRef.current = completedTodayCount;
   }, [completedTodayCount]);
-  const todayActivities = useMemo(
+  const todayActivities = useMemo<RoutineOccurrence[]>(
     () =>
-      activities.filter((activity) => {
-        if (!isRoutineActivityScheduledForDate(activity, today)) return false;
-        if (completingIds.has(activity.id)) return true;
-        return (
-          !activity.completedDates.includes(dateKey) &&
-          !activity.skippedDates.includes(dateKey)
-        );
+      activities.flatMap((activity) => {
+        if (!isRoutineActivityScheduledForDate(activity, today)) return [];
+        return Array.from({ length: activity.timesPerDay }, (_, occurrenceIndex) => {
+          const itemId = `${activity.id}::${occurrenceIndex}`;
+          return { activity, occurrenceIndex, itemId };
+        }).filter(({ activity: item, occurrenceIndex, itemId }) => {
+          if (completingIds.has(itemId)) return true;
+          const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+          return (
+            !item.completedDates.includes(occurrenceKey) &&
+            !item.skippedDates.includes(occurrenceKey)
+          );
+        });
       }),
     [activities, completingIds, dateKey, today],
   );
   const todayActivityIds = useMemo(
-    () => todayActivities.map((activity) => activity.id),
+    () => todayActivities.map((occurrence) => occurrence.itemId),
     [todayActivities],
   );
   const todayActivityIdsKey = todayActivityIds.join(",");
@@ -421,36 +449,38 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   }, []);
 
   const openActivity = useCallback(
-    (activityId: string) => {
-      router.push(`/rutina/${activityId}?dateKey=${dateKey}` as never);
+    (activityId: string, occurrenceIndex: number) => {
+      router.push(`/rutina/${activityId}?dateKey=${dateKey}&occurrence=${occurrenceIndex}` as never);
     },
     [dateKey],
   );
 
   const handleComplete = useCallback(
-    (activity: RoutineActivity) => {
-      if (completingIdsRef.current.has(activity.id)) return;
-      if (activity.completedDates.includes(dateKey)) return;
+    (activity: RoutineActivity, occurrenceIndex: number) => {
+      const itemId = `${activity.id}::${occurrenceIndex}`;
+      const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+      if (completingIdsRef.current.has(itemId)) return;
+      if (activity.completedDates.includes(occurrenceKey)) return;
       if (!isRoutineActivityScheduledForDate(activity, today)) return;
       const nextCompleting = new Set(completingIdsRef.current);
-      nextCompleting.add(activity.id);
+      nextCompleting.add(itemId);
       completingIdsRef.current = nextCompleting;
       const previousCount = completedTodayCountRef.current;
       const nextCount = previousCount + 1;
       completedTodayCountRef.current = nextCount;
-      completeActivity(activity.id, dateKey);
+      completeActivity(activity.id, dateKey, occurrenceIndex);
       setCompletingIds(nextCompleting);
       announceCompletion(previousCount, nextCount);
-      const existingTimer = exitTimersRef.current.get(activity.id);
+      const existingTimer = exitTimersRef.current.get(itemId);
       if (existingTimer) clearTimeout(existingTimer);
       exitTimersRef.current.set(
-        activity.id,
+        itemId,
         setTimeout(() => {
           const next = new Set(completingIdsRef.current);
-          next.delete(activity.id);
+          next.delete(itemId);
           completingIdsRef.current = next;
           setCompletingIds(next);
-          exitTimersRef.current.delete(activity.id);
+          exitTimersRef.current.delete(itemId);
         }, COMPLETION_EXIT_DELAY),
       );
     },
@@ -476,7 +506,10 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
       const [movedId] = reorderedIds.splice(from, 1);
       if (!movedId) return;
       reorderedIds.splice(to, 0, movedId);
-      reorderActivities(reorderedIds);
+      const activityIds = reorderedIds
+        .map((itemId) => itemId.split("::")[0])
+        .filter((id, index, all) => all.indexOf(id) === index);
+      reorderActivities(activityIds);
     },
     [reorderActivities],
   );
@@ -526,12 +559,14 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 
       {!isHydrated ? null : todayActivities.length > 0 ? (
         <Reanimated.View style={[styles.activityList, listHeightStyle]}>
-          {todayActivities.map((activity, index) => (
+          {todayActivities.map(({ activity, occurrenceIndex, itemId }, index) => (
             <ActivityRow
-              key={activity.id}
+              key={itemId}
               activity={activity}
+              occurrenceIndex={occurrenceIndex}
+              itemId={itemId}
               initialIndex={index}
-              completing={completingIds.has(activity.id)}
+              completing={completingIds.has(itemId)}
               itemCount={todayActivities.length}
               orderSV={orderSV}
               draggingId={draggingId}

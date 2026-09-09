@@ -17,14 +17,18 @@ import { SacredBackground } from "@/components/SacredBackground";
 import {
   getRoutineDateFromKey,
   getRoutineDateKey,
+  getRoutineOccurrenceKey,
   ROUTINE_DAY_LABELS,
   useRutina,
 } from "@/context/RutinaContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
-function repeatLabel(days: number[]): string {
-  if (days.length === 7) return "Cada día";
+function repeatLabel(days: number[], repeatEnabled: boolean, timesPerDay: number): string {
+  if (!repeatEnabled) return "No se repite";
+  if (days.length === 7) {
+    return timesPerDay === 1 ? "Cada día" : `${timesPerDay} veces al día`;
+  }
   return days.map((day) => ROUTINE_DAY_LABELS[day]).join(" · ");
 }
 
@@ -92,9 +96,10 @@ function ActionRow({
 }
 
 export default function RutinaDetailScreen() {
-  const { id, dateKey: routeDateKey } = useLocalSearchParams<{
+  const { id, dateKey: routeDateKey, occurrence: routeOccurrence } = useLocalSearchParams<{
     id: string;
     dateKey?: string;
+    occurrence?: string;
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
@@ -112,23 +117,28 @@ export default function RutinaDetailScreen() {
       ? routeDateKey
       : todayKey;
   const selectedDate = getRoutineDateFromKey(dateKey);
+  const occurrenceIndex =
+    typeof routeOccurrence === "string" && /^\d+$/.test(routeOccurrence)
+      ? Number(routeOccurrence)
+      : 0;
+  const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
   const isToday = dateKey === todayKey;
-  const completed = activity?.completedDates.includes(dateKey) ?? false;
-  const skipped = activity?.skippedDates.includes(dateKey) ?? false;
+  const completed = activity?.completedDates.includes(occurrenceKey) ?? false;
+  const skipped = activity?.skippedDates.includes(occurrenceKey) ?? false;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
 
   const markComplete = useCallback(() => {
     if (!activity || completed || !isToday || activity.archivedAt) return;
-    completeActivity(activity.id, dateKey);
+    completeActivity(activity.id, dateKey, occurrenceIndex);
     router.back();
-  }, [activity, completeActivity, completed, dateKey, isToday]);
+  }, [activity, completeActivity, completed, dateKey, isToday, occurrenceIndex]);
 
   const skipToday = useCallback(() => {
     if (!activity || skipped || !isToday || activity.archivedAt) return;
-    skipActivity(activity.id, dateKey);
+    skipActivity(activity.id, dateKey, occurrenceIndex);
     router.back();
-  }, [activity, dateKey, isToday, skipActivity, skipped]);
+  }, [activity, dateKey, isToday, occurrenceIndex, skipActivity, skipped]);
 
   const archive = useCallback(() => {
     if (!activity) return;
@@ -238,7 +248,23 @@ export default function RutinaDetailScreen() {
               { backgroundColor: routineTheme.surface, borderColor: routineTheme.divider },
             ]}
           >
-            <DetailRow icon="repeat" label={repeatLabel(activity.repeatDays)} />
+            <DetailRow
+              icon="repeat"
+              label={repeatLabel(
+                activity.repeatDays,
+                activity.repeatEnabled,
+                activity.timesPerDay,
+              )}
+            />
+            {activity.timesPerDay > 1 ? (
+              <>
+                <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />
+                <DetailRow
+                  icon="clock"
+                  label={`Ocurrencia ${occurrenceIndex + 1} de ${activity.timesPerDay}`}
+                />
+              </>
+            ) : null}
             <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />
             <DetailRow icon="plus-square" label="Adjuntar una práctica (próximamente)" muted />
             <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />

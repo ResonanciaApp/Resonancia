@@ -23,7 +23,6 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import {
   ROUTINE_CATEGORY_TABS,
-  ROUTINE_DAY_LABELS,
   ROUTINE_SUGGESTIONS,
   useRutina,
   type RoutineCategory,
@@ -37,10 +36,9 @@ const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 const ROUTINE_MUTED = "#7F7F7F";
 const ROUTINE_SELECTED = "#F9F9F9";
 
-function repeatLabel(repeatDays: number[]) {
-  if (repeatDays.length === 7) return "Cada día";
-  if (!repeatDays.length) return "Elegir días";
-  return repeatDays.map((day) => ROUTINE_DAY_LABELS[day]).join(" · ");
+function repeatLabel(repeatEnabled: boolean, timesPerDay: number) {
+  if (!repeatEnabled) return "Repetición apagada";
+  return timesPerDay === 1 ? "Cada día" : `${timesPerDay} veces al día`;
 }
 
 export default function CrearRutinaScreen() {
@@ -53,6 +51,10 @@ export default function CrearRutinaScreen() {
   const [category, setCategory] = useState<RoutineCategory>("Sugerido");
   const [suggestedCategory, setSuggestedCategory] = useState<RoutineCategory | null>(null);
   const [repeatDays, setRepeatDays] = useState<number[]>(ALL_DAYS);
+  const [repeatEnabled, setRepeatEnabled] = useState(true);
+  const [timesPerDay, setTimesPerDay] = useState(1);
+  const [draftRepeatEnabled, setDraftRepeatEnabled] = useState(true);
+  const [draftTimesPerDay, setDraftTimesPerDay] = useState(1);
   const [repeatSheetOpen, setRepeatSheetOpen] = useState(false);
   const [suggestionEditing, setSuggestionEditing] = useState(false);
   const titleInputRef = useRef<TextInput>(null);
@@ -63,7 +65,7 @@ export default function CrearRutinaScreen() {
   const topPad = Platform.OS === "web" ? 24 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : Math.max(insets.bottom, 18);
   const suggestions = useMemo(() => ROUTINE_SUGGESTIONS[category], [category]);
-  const canSave = title.trim().length > 0 && repeatDays.length > 0;
+  const canSave = title.trim().length > 0;
   const suggestionSurface =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.07)"
@@ -107,12 +109,18 @@ export default function CrearRutinaScreen() {
     });
   };
 
-  const toggleDay = (day: number) => {
-    setRepeatDays((current) =>
-      current.includes(day)
-        ? current.filter((item) => item !== day)
-        : [...current, day].sort((a, b) => a - b),
-    );
+  const openRepeatSheet = () => {
+    Keyboard.dismiss();
+    setDraftRepeatEnabled(repeatEnabled);
+    setDraftTimesPerDay(timesPerDay);
+    setRepeatSheetOpen(true);
+  };
+
+  const saveRepeatSettings = () => {
+    setRepeatEnabled(draftRepeatEnabled);
+    setRepeatDays(draftRepeatEnabled ? ALL_DAYS : []);
+    setTimesPerDay(draftRepeatEnabled ? draftTimesPerDay : 1);
+    setRepeatSheetOpen(false);
   };
 
   const save = () => {
@@ -123,6 +131,8 @@ export default function CrearRutinaScreen() {
       description,
       category: category === "Sugerido" && suggestedCategory ? suggestedCategory : category,
       repeatDays,
+      repeatEnabled,
+      timesPerDay,
     });
     router.back();
   };
@@ -202,12 +212,9 @@ export default function CrearRutinaScreen() {
 
         <View style={styles.actionsBlock}>
           <Pressable
-            onPress={() => {
-              Keyboard.dismiss();
-              setRepeatSheetOpen(true);
-            }}
+            onPress={openRepeatSheet}
             accessibilityRole="button"
-            accessibilityLabel={`Repetición: ${repeatLabel(repeatDays)}`}
+            accessibilityLabel={`Repetición: ${repeatLabel(repeatEnabled, timesPerDay)}`}
             testID="crear-rutina-repeat"
             style={({ pressed }) => [
               styles.simpleAction,
@@ -216,12 +223,9 @@ export default function CrearRutinaScreen() {
           >
             <Feather name="repeat" size={19} color={WIDGET_GREEN_SOLID} />
             <Text style={[styles.actionText, { color: WIDGET_GREEN_SOLID }]}>
-              {repeatLabel(repeatDays)}
+              {repeatLabel(repeatEnabled, timesPerDay)}
             </Text>
           </Pressable>
-          {!repeatDays.length ? (
-            <Text style={styles.validationText}>Selecciona al menos un día.</Text>
-          ) : null}
           <View
             style={styles.simpleAction}
             accessibilityState={{ disabled: true }}
@@ -351,62 +355,119 @@ export default function CrearRutinaScreen() {
           <View style={[styles.repeatSheet, { backgroundColor: colors.background }]}>
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
-              <View>
-                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Repetición</Text>
-                <Text style={[styles.sheetSubtitle, { color: colors.mutedForeground }]}>
-                  ¿Qué días quieres reservar para ti?
-                </Text>
-              </View>
               <Pressable
-                onPress={() => setRepeatDays(ALL_DAYS)}
+                onPress={() => setRepeatSheetOpen(false)}
                 accessibilityRole="button"
-                accessibilityLabel="Seleccionar cada día"
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                accessibilityLabel="Cerrar repetición"
+                hitSlop={10}
+                style={({ pressed }) => [styles.sheetHeaderSide, { opacity: pressed ? 0.6 : 1 }]}
               >
-                <Text style={[styles.everyDayText, { color: WIDGET_GREEN_SOLID }]}>Cada día</Text>
+                <Feather name="x" size={25} color={colors.foreground} />
               </Pressable>
+              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Repetir</Text>
+              <View style={styles.sheetHeaderSide} />
             </View>
 
-            <View style={styles.dayPicker}>
-              {ROUTINE_DAY_LABELS.map((label, day) => {
-                const selected = repeatDays.includes(day);
-                return (
+            <View style={styles.repeatSettings}>
+              <View style={[styles.settingRow, { backgroundColor: suggestionSurface }]}>
+                <Text style={[styles.settingLabel, { color: colors.foreground }]}>Repite</Text>
+                <View style={styles.repeatOptions}>
                   <Pressable
-                    key={label}
-                    onPress={() => toggleDay(day)}
-                    accessibilityRole="checkbox"
-                    accessibilityState={{ checked: selected }}
-                    accessibilityLabel={`Repetir el día ${label}`}
-                    testID={`crear-rutina-day-${day}`}
+                    onPress={() => setDraftRepeatEnabled(false)}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: !draftRepeatEnabled }}
+                    testID="crear-rutina-repeat-off"
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                  >
+                    <Text style={[
+                      styles.settingValue,
+                      { color: !draftRepeatEnabled ? WIDGET_GREEN_SOLID : colors.mutedForeground },
+                    ]}>
+                      Apagado
+                    </Text>
+                  </Pressable>
+                  <View style={[styles.optionDivider, { backgroundColor: colors.border }]} />
+                  <Pressable
+                    onPress={() => setDraftRepeatEnabled(true)}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: draftRepeatEnabled }}
+                    testID="crear-rutina-repeat-daily"
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                  >
+                    <Text style={[
+                      styles.settingValue,
+                      { color: draftRepeatEnabled ? WIDGET_GREEN_SOLID : colors.mutedForeground },
+                    ]}>
+                      Cada día
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+
+              <View
+                style={[
+                  styles.settingRow,
+                  {
+                    backgroundColor: suggestionSurface,
+                    opacity: draftRepeatEnabled ? 1 : 0.4,
+                  },
+                ]}
+              >
+                <Text style={[styles.settingLabel, { color: colors.foreground }]}>Veces al día</Text>
+                <View style={styles.stepper}>
+                  <Pressable
+                    onPress={() => setDraftTimesPerDay((current) => Math.max(1, current - 1))}
+                    disabled={!draftRepeatEnabled || draftTimesPerDay <= 1}
+                    accessibilityRole="button"
+                    accessibilityLabel="Restar una vez al día"
+                    testID="crear-rutina-times-minus"
                     style={({ pressed }) => [
-                      styles.dayButton,
+                      styles.stepperButton,
                       {
-                        backgroundColor: selected ? WIDGET_GREEN_SOLID : "transparent",
-                        borderColor: selected ? WIDGET_GREEN_SOLID : colors.border,
-                        opacity: pressed ? 0.72 : 1,
+                        backgroundColor: colors.background,
+                        opacity: pressed ? 0.55 : 1,
                       },
                     ]}
                   >
-                    <Text style={[styles.dayText, { color: selected ? "#0E0E17" : colors.foreground }]}>
-                      {label}
-                    </Text>
+                    <Feather name="minus" size={17} color={colors.foreground} />
                   </Pressable>
-                );
-              })}
+                  <Text
+                    testID="crear-rutina-times-value"
+                    style={[styles.stepperValue, { color: colors.foreground }]}
+                  >
+                    {draftTimesPerDay}
+                  </Text>
+                  <Pressable
+                    onPress={() => setDraftTimesPerDay((current) => Math.min(12, current + 1))}
+                    disabled={!draftRepeatEnabled || draftTimesPerDay >= 12}
+                    accessibilityRole="button"
+                    accessibilityLabel="Sumar una vez al día"
+                    testID="crear-rutina-times-plus"
+                    style={({ pressed }) => [
+                      styles.stepperButton,
+                      {
+                        backgroundColor: colors.background,
+                        opacity: pressed ? 0.55 : 1,
+                      },
+                    ]}
+                  >
+                    <Feather name="plus" size={17} color={colors.foreground} />
+                  </Pressable>
+                </View>
+              </View>
             </View>
 
             <Pressable
-              onPress={() => setRepeatSheetOpen(false)}
-              disabled={!repeatDays.length}
+              onPress={saveRepeatSettings}
               accessibilityRole="button"
-              accessibilityLabel="Aplicar repetición"
+              accessibilityLabel="Guardar repetición"
               testID="crear-rutina-repeat-apply"
               style={({ pressed }) => [
                 styles.applyButton,
-                { backgroundColor: WIDGET_GREEN_SOLID, opacity: !repeatDays.length ? 0.35 : pressed ? 0.78 : 1 },
+                { backgroundColor: WIDGET_GREEN_SOLID, opacity: pressed ? 0.78 : 1 },
               ]}
             >
-              <Text style={styles.applyButtonText}>Aplicar</Text>
+              <Text style={styles.applyButtonText}>Guardar</Text>
             </Pressable>
           </View>
         </View>
@@ -570,6 +631,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.48)",
   },
   repeatSheet: {
+    minHeight: "63%",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingHorizontal: 22,
@@ -586,43 +648,71 @@ const styles = StyleSheet.create({
   },
   sheetHeader: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
-    gap: 12,
+    position: "relative",
+  },
+  sheetHeaderSide: {
+    width: 44,
   },
   sheetTitle: {
     fontFamily: "Manrope",
-    fontSize: 21,
+    fontSize: 17,
     fontWeight: "700",
+    position: "absolute",
+    left: 44,
+    right: 44,
+    textAlign: "center",
   },
-  sheetSubtitle: {
+  repeatSettings: {
+    marginTop: 38,
+    gap: 18,
+    flex: 1,
+  },
+  settingRow: {
+    minHeight: 58,
+    borderRadius: 14,
+    paddingHorizontal: 17,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  settingLabel: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 15,
+    fontWeight: "600",
   },
-  everyDayText: {
+  repeatOptions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  settingValue: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-    paddingTop: 4,
   },
-  dayPicker: {
+  optionDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: 18,
+  },
+  stepper: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 27,
-    marginBottom: 27,
+    alignItems: "center",
+    gap: 12,
   },
-  dayButton: {
-    width: 39,
-    height: 39,
-    borderRadius: 14,
-    borderWidth: 1,
+  stepperButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
   },
-  dayText: {
+  stepperValue: {
+    minWidth: 18,
+    textAlign: "center",
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "700",
   },
   applyButton: {
@@ -630,6 +720,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: "auto",
   },
   applyButtonText: {
     fontFamily: "Manrope",

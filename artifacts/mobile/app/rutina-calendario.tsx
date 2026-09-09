@@ -17,6 +17,8 @@ import { SacredBackground } from "@/components/SacredBackground";
 import {
   getRoutineActivityCategory,
   getRoutineDateKey,
+  getRoutineOccurrenceKey,
+  hasRoutineDateEntry,
   isRoutineActivityScheduledForDate,
   useRutina,
   type RoutineActivity,
@@ -52,22 +54,25 @@ function selectedDateLabel(date: Date, todayKey: string): string {
   return `${prefix}${shortMonth(date)} ${date.getDate()}`;
 }
 
-function statusFor(activity: RoutineActivity, dateKey: string) {
-  if (activity.completedDates.includes(dateKey)) return "completed" as const;
-  if (activity.skippedDates.includes(dateKey)) return "skipped" as const;
+function statusFor(activity: RoutineActivity, dateKey: string, occurrenceIndex: number) {
+  const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
+  if (activity.completedDates.includes(occurrenceKey)) return "completed" as const;
+  if (activity.skippedDates.includes(occurrenceKey)) return "skipped" as const;
   return "pending" as const;
 }
 
 function CalendarActivityRow({
   activity,
   dateKey,
+  occurrenceIndex,
 }: {
   activity: RoutineActivity;
   dateKey: string;
+  occurrenceIndex: number;
 }) {
   const routineTheme = useRoutineTheme();
   const { toggleActivity } = useRutina();
-  const status = statusFor(activity, dateKey);
+  const status = statusFor(activity, dateKey, occurrenceIndex);
   const completed = status === "completed";
   const skipped = status === "skipped";
   const category = getRoutineActivityCategory(activity);
@@ -80,7 +85,7 @@ function CalendarActivityRow({
         {
           text: "Sí, seguro",
           style: "destructive",
-          onPress: () => toggleActivity(activity.id, dateKey),
+          onPress: () => toggleActivity(activity.id, dateKey, occurrenceIndex),
         },
       ],
     );
@@ -91,7 +96,7 @@ function CalendarActivityRow({
       onPress={
         completed
           ? undefined
-          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}` as never)
+          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}&occurrence=${occurrenceIndex}` as never)
       }
       accessibilityRole="button"
       accessibilityLabel={`${activity.title}, ${
@@ -122,11 +127,16 @@ function CalendarActivityRow({
           ]}
         >
           {activity.title}
+          {activity.timesPerDay > 1 ? ` · ${occurrenceIndex + 1}/${activity.timesPerDay}` : ""}
         </Text>
         <View style={styles.repeatRow}>
           <Feather name="repeat" size={12} color={routineTheme.textMuted} />
           <Text style={[styles.repeatText, { color: routineTheme.textMuted }]}>
-            {activity.repeatDays.length === 7 ? "Cada día" : "Días seleccionados"}
+             {activity.repeatEnabled
+               ? activity.timesPerDay === 1
+                 ? "Cada día"
+                 : `${activity.timesPerDay} veces al día`
+               : "No se repite"}
           </Text>
         </View>
       </View>
@@ -191,29 +201,40 @@ export default function RutinaCalendarioScreen() {
 
   const scheduledForDate = useMemo(
     () =>
-      activities.filter((activity) => {
+      activities.flatMap((activity) => {
         const explicitlyTracked =
-          activity.completedDates.includes(selectedKey) ||
-          activity.skippedDates.includes(selectedKey);
-        return explicitlyTracked || isRoutineActivityScheduledForDate(activity, selectedDate);
+          hasRoutineDateEntry(activity.completedDates, selectedKey) ||
+          hasRoutineDateEntry(activity.skippedDates, selectedKey);
+        if (!explicitlyTracked && !isRoutineActivityScheduledForDate(activity, selectedDate)) {
+          return [];
+        }
+        return Array.from({ length: activity.timesPerDay }, (_, occurrenceIndex) => ({
+          activity,
+          occurrenceIndex,
+          itemId: `${activity.id}::${occurrenceIndex}`,
+        }));
       }),
     [activities, selectedDate, selectedKey],
   );
   const historyForDate = useMemo(
     () =>
-      activities.filter(
-        (activity) =>
-          activity.completedDates.includes(selectedKey) ||
-          activity.skippedDates.includes(selectedKey),
-      ),
-    [activities, selectedKey],
+      scheduledForDate.filter(({ activity, occurrenceIndex }) => {
+        const occurrenceKey = getRoutineOccurrenceKey(selectedKey, occurrenceIndex);
+        return (
+          activity.completedDates.includes(occurrenceKey) ||
+          activity.skippedDates.includes(occurrenceKey)
+        );
+      }),
+    [scheduledForDate, selectedKey],
   );
-  const completedCount = historyForDate.filter((activity) =>
-    activity.completedDates.includes(selectedKey),
+  const completedCount = historyForDate.filter(({ activity, occurrenceIndex }) =>
+    activity.completedDates.includes(getRoutineOccurrenceKey(selectedKey, occurrenceIndex)),
   ).length;
   const visibleActivities = showAll
     ? scheduledForDate
-    : historyForDate.filter((activity) => activity.completedDates.includes(selectedKey));
+    : historyForDate.filter(({ activity, occurrenceIndex }) =>
+        activity.completedDates.includes(getRoutineOccurrenceKey(selectedKey, occurrenceIndex)),
+      );
 
   return (
     <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
@@ -258,7 +279,7 @@ export default function RutinaCalendarioScreen() {
             const selected = dateKey === selectedKey;
             const isToday = dateKey === todayKey;
             const hasCompletion = activities.some((activity) =>
-              activity.completedDates.includes(dateKey),
+              hasRoutineDateEntry(activity.completedDates, dateKey),
             );
             return (
               <Pressable
@@ -327,11 +348,12 @@ export default function RutinaCalendarioScreen() {
 
         {!isHydrated ? null : visibleActivities.length ? (
           <View style={styles.activityList}>
-            {visibleActivities.map((activity) => (
+            {visibleActivities.map(({ activity, occurrenceIndex, itemId }) => (
               <CalendarActivityRow
-                key={activity.id}
+                key={itemId}
                 activity={activity}
                 dateKey={selectedKey}
+                occurrenceIndex={occurrenceIndex}
               />
             ))}
           </View>

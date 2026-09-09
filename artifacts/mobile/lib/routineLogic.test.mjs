@@ -5,6 +5,8 @@ import {
   canMutateRoutineDate,
   completeRoutineDate,
   getRoutineDateFromKey,
+  getRoutineOccurrenceKey,
+  hasRoutineDateEntry,
   isRoutineActivityScheduledForDate,
   skipRoutineDate,
 } from "./routineLogic.ts";
@@ -24,6 +26,43 @@ test("a daily routine is scheduled from its creation date", () => {
   );
   assert.equal(
     isRoutineActivityScheduledForDate(base, getRoutineDateFromKey("2026-08-31")),
+    false,
+  );
+});
+
+test("a daily routine remains one scheduled record across consecutive dates", () => {
+  const activities = [{ id: "daily-1", ...base }];
+  for (const dateKey of ["2026-09-01", "2026-09-02", "2026-09-03"]) {
+    const scheduled = activities.filter((activity) =>
+      isRoutineActivityScheduledForDate(activity, getRoutineDateFromKey(dateKey)),
+    );
+    assert.equal(scheduled.length, 1);
+    assert.equal(scheduled[0].id, "daily-1");
+  }
+});
+
+test("a routine with repetition off is scheduled only on its creation date", () => {
+  const once = { ...base, repeatEnabled: false };
+  assert.equal(
+    isRoutineActivityScheduledForDate(once, getRoutineDateFromKey("2026-09-01")),
+    true,
+  );
+  assert.equal(
+    isRoutineActivityScheduledForDate(once, getRoutineDateFromKey("2026-09-02")),
+    false,
+  );
+});
+
+test("multiple daily occurrences have stable independent history keys", () => {
+  assert.equal(getRoutineOccurrenceKey("2026-09-02", 0), "2026-09-02");
+  assert.equal(getRoutineOccurrenceKey("2026-09-02", 1), "2026-09-02#2");
+  assert.equal(getRoutineOccurrenceKey("2026-09-02", 2), "2026-09-02#3");
+  assert.equal(
+    hasRoutineDateEntry(["2026-09-02#3"], "2026-09-02"),
+    true,
+  );
+  assert.equal(
+    hasRoutineDateEntry(["2026-09-03"], "2026-09-02"),
     false,
   );
 });
