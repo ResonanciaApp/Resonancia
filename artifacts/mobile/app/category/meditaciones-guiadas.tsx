@@ -35,8 +35,9 @@ import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
+const CARD_GAP = 12;
 const { width: W } = Dimensions.get("window");
-const cardW = (W - H_PAD * 2 - 20) / 2;
+const cardW = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
@@ -651,7 +652,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", gap: CARD_GAP, paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 6 },
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },

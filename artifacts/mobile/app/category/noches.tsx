@@ -30,8 +30,9 @@ import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD   = 14;
+const CARD_GAP = 12;
 const { width: W } = Dimensions.get("window");
-const cardW   = (W - H_PAD * 2 - 20) / 2;
+const cardW   = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const ICON_COLOR = "#C87BB5";
 const GOLD    = "#F9F9F9";
@@ -562,7 +563,7 @@ const styles = StyleSheet.create({
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
 
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", gap: CARD_GAP, paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 6 },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
 
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },

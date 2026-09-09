@@ -33,8 +33,9 @@ import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
+const CARD_GAP = 12;
 const { width: W } = Dimensions.get("window");
-const CARD_W = (W - H_PAD * 2 - 20) / 2;
+const CARD_W = (W - H_PAD * 2 - CARD_GAP) / 2;
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -486,8 +487,7 @@ const styles = StyleSheet.create({
   sessionGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 20,
-    rowGap: 24,
+    gap: CARD_GAP,
     paddingHorizontal: H_PAD,
     marginTop: 18,
     marginBottom: 6,

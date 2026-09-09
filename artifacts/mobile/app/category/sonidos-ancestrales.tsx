@@ -40,6 +40,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
+const CARD_GAP = 12;
 const FEATURED_CARD_W = getContentCarouselCardWidth(width, H_PAD);
 const GOLD  = "#F9F9F9";
 
@@ -47,7 +48,7 @@ const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const cardW = (width - H_PAD * 2 - 20) / 2;
+const cardW = (width - H_PAD * 2 - CARD_GAP) / 2;
 const HERO_H   = 148;
 
 type CatTab   = string;
@@ -805,7 +806,7 @@ const styles = StyleSheet.create({
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
   sectionLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", gap: CARD_GAP, paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 6 },
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
