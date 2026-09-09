@@ -42,7 +42,6 @@ const ROUTINE_CARD_HEIGHT = 74;
 const ROUTINE_CARD_GAP = 9;
 const ROUTINE_SLOT_HEIGHT = ROUTINE_CARD_HEIGHT + ROUTINE_CARD_GAP;
 const COMPLETION_EXIT_DELAY = 1500;
-const TOAST_DURATION = 2400;
 const HANDLE_COLOR = "#7F7F7F";
 
 function lightenHexColor(color: string, amount = 0.1) {
@@ -310,7 +309,7 @@ const ActivityRow = React.memo(function ActivityRow({
 export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const colors = useColors();
   const routineTheme = useRoutineTheme();
-  const { announceCompletion } = useRoutineCompletionBanner();
+  const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const {
     activities,
@@ -319,11 +318,9 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
     completeActivity,
     reorderActivities,
   } = useRutina();
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [completingIds, setCompletingIds] = useState<Set<string>>(() => new Set());
   const completingIdsRef = useRef<Set<string>>(new Set());
   const lastSeenAddedId = useRef<string | null>(null);
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exitTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const today = useMemo(() => new Date(), [todayKey]);
@@ -379,42 +376,27 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 
   useEffect(
     () => () => {
-      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       exitTimersRef.current.forEach(clearTimeout);
       exitTimersRef.current.clear();
     },
     [],
   );
 
-  const showToast = useCallback((message: string) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    setToastMessage(message);
-    toastTimerRef.current = setTimeout(() => {
-      setToastMessage(null);
-      toastTimerRef.current = null;
-    }, TOAST_DURATION);
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
       if (!lastAddedId || lastSeenAddedId.current === lastAddedId) return;
       lastSeenAddedId.current = lastAddedId;
-      showToast("Actividad añadida");
-    }, [lastAddedId, showToast]),
+      announceActivityAdded();
+    }, [announceActivityAdded, lastAddedId]),
   );
 
   useFocusEffect(
     useCallback(
       () => () => {
-        if (toastTimerRef.current) {
-          clearTimeout(toastTimerRef.current);
-          toastTimerRef.current = null;
-        }
         exitTimersRef.current.forEach(clearTimeout);
         exitTimersRef.current.clear();
         completingIdsRef.current = new Set();
         setCompletingIds(new Set());
-        setToastMessage(null);
       },
       [],
     ),
@@ -592,23 +574,6 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
         </Text>
       </Pressable>
 
-      {toastMessage ? (
-        <View
-          style={[
-            styles.toast,
-            {
-              backgroundColor: routineTheme.surfaceElevated,
-              borderColor: routineTheme.divider,
-            },
-          ]}
-          pointerEvents="none"
-        >
-          <View style={[styles.toastIcon, { backgroundColor: routineTheme.completion }]}>
-            <Feather name="check" size={14} color="#FFFFFF" />
-          </View>
-          <Text style={[styles.toastText, { color: routineTheme.text }]}>{toastMessage}</Text>
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -750,35 +715,5 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
-  },
-  toast: {
-    position: "absolute",
-    left: 10,
-    right: 10,
-    bottom: -7,
-    minHeight: 48,
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    shadowColor: "#000000",
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 6,
-  },
-  toastIcon: {
-    width: 23,
-    height: 23,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  toastText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
   },
 });

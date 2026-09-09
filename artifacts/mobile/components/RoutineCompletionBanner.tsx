@@ -3,7 +3,7 @@ import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
-const ENTRY_DISTANCE = 68;
+const ENTRY_DISTANCE = 86;
 const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
@@ -51,7 +51,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
     translateY.setValue(ENTRY_DISTANCE);
     countProgress.setValue(0);
     waveProgress.setValue(0);
-    setSubtitleCount(activeEvent.previousCount);
+    setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
 
     Animated.timing(translateY, {
       toValue: 0,
@@ -60,6 +60,24 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
       useNativeDriver: true,
     }).start(({ finished: entered }) => {
       if (!entered) return;
+      if (activeEvent.kind === "added") {
+        committedEventIdRef.current = activeEvent.id;
+        holdTimer = setTimeout(() => {
+          Animated.timing(translateY, {
+            toValue: ENTRY_DISTANCE,
+            duration: EXIT_DURATION,
+            easing: Easing.in(Easing.cubic),
+            useNativeDriver: true,
+          }).start(({ finished: exited }) => {
+            if (exited) {
+              startedEventIdRef.current = null;
+              committedEventIdRef.current = null;
+              dismissActiveEvent();
+            }
+          });
+        }, HOLD_DURATION);
+        return;
+      }
       Animated.timing(countProgress, {
         toValue: 1,
         duration: COUNT_DURATION,
@@ -162,20 +180,32 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
       ]}
     >
       <View style={styles.copy}>
-        <Text style={styles.title}>Actividad finalizada</Text>
-        <Text style={styles.subtitle}>
-          {subtitleCount} {subtitleCount === 1 ? "tarea" : "tareas"} hoy
+        <Text style={styles.title}>
+          {activeEvent.kind === "completed" ? "Actividad finalizada" : "Actividad añadida"}
         </Text>
+        {activeEvent.kind === "completed" ? (
+          <Text style={styles.subtitle}>
+            {subtitleCount} {subtitleCount === 1 ? "tarea" : "tareas"} hoy
+          </Text>
+        ) : null}
       </View>
       <View style={styles.counterWrap}>
-        <Animated.View style={[styles.wave, waveStyle]} />
+        {activeEvent.kind === "completed" ? (
+          <Animated.View style={[styles.wave, waveStyle]} />
+        ) : null}
         <View style={styles.counter}>
-          <Animated.Text style={[styles.counterNumber, oldNumberStyle]}>
-            {activeEvent.previousCount}
-          </Animated.Text>
-          <Animated.Text style={[styles.counterNumber, styles.nextNumber, newNumberStyle]}>
-            {activeEvent.nextCount}
-          </Animated.Text>
+          {activeEvent.kind === "completed" ? (
+            <>
+              <Animated.Text style={[styles.counterNumber, oldNumberStyle]}>
+                {activeEvent.previousCount}
+              </Animated.Text>
+              <Animated.Text style={[styles.counterNumber, styles.nextNumber, newNumberStyle]}>
+                {activeEvent.nextCount}
+              </Animated.Text>
+            </>
+          ) : (
+            <Text style={styles.addedCheck}>✓</Text>
+          )}
         </View>
       </View>
     </Animated.View>
@@ -248,5 +278,11 @@ const styles = StyleSheet.create({
   },
   nextNumber: {
     position: "absolute",
+  },
+  addedCheck: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
   },
 });

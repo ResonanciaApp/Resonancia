@@ -479,7 +479,7 @@ function TabLayoutInner() {
           de Android duplica la barra) y las capas ya no necesitan compensar. */}
       <CategoryOverlay />
       <RoutineCompletionBanner
-        bottom={tabBarHeight - 8}
+        bottom={tabBarHeight + 15}
         backgroundColor={getTabBarBackground(activeSceneId)}
         visible={completionBannerVisible}
       />

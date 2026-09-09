@@ -1,14 +1,21 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 
-export type RoutineCompletionBannerEvent = {
-  id: number;
-  previousCount: number;
-  nextCount: number;
-};
+export type RoutineCompletionBannerEvent =
+  | {
+      id: number;
+      kind: "completed";
+      previousCount: number;
+      nextCount: number;
+    }
+  | {
+      id: number;
+      kind: "added";
+    };
 
 type RoutineCompletionBannerContextValue = {
   activeEvent: RoutineCompletionBannerEvent | null;
   announceCompletion: (previousCount: number, nextCount: number) => void;
+  announceActivityAdded: () => void;
   dismissActiveEvent: () => void;
 };
 
@@ -27,10 +34,21 @@ export function RoutineCompletionBannerProvider({
     if (nextCount <= previousCount) return;
     const event: RoutineCompletionBannerEvent = {
       id: nextIdRef.current++,
+      kind: "completed",
       previousCount,
       nextCount,
     };
     setQueue((current) => [...current, event]);
+  }, []);
+
+  const announceActivityAdded = useCallback(() => {
+    setQueue((current) => [
+      ...current,
+      {
+        id: nextIdRef.current++,
+        kind: "added",
+      },
+    ]);
   }, []);
 
   const dismissActiveEvent = useCallback(() => {
@@ -41,9 +59,10 @@ export function RoutineCompletionBannerProvider({
     () => ({
       activeEvent: queue[0] ?? null,
       announceCompletion,
+      announceActivityAdded,
       dismissActiveEvent,
     }),
-    [announceCompletion, dismissActiveEvent, queue],
+    [announceActivityAdded, announceCompletion, dismissActiveEvent, queue],
   );
 
   return (
