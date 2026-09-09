@@ -66,7 +66,7 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-function getLibraryTabSurface(sceneId: SceneId): string {
+export function getLibraryTabSurface(sceneId: SceneId): string {
   if (sceneId === "tibet") return "rgba(0,0,0,0.1)";
   if (isIndigoThemeId(sceneId)) return "rgba(181,211,255,0.1)";
   if (sceneId === "indigo2") return "rgba(191,207,255,0.1)";

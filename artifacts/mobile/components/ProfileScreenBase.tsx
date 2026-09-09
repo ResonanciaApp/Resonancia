@@ -62,7 +62,11 @@ import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
-import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
+import {
+  BibliotecaScreen,
+  getLibraryTabSurface,
+  type LibHeaderActions,
+} from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { useStreak } from "@/hooks/useStreak";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -374,9 +378,7 @@ export function ProfileScreenBase({
       : activeSceneId === "indigo2"
         ? "rgba(0,0,0,0.18)"
         : "rgba(181,211,255,0.1)";
-  const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : "rgba(255,255,255,0.12)";
+  const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
   const profileDescriptionColor = activeSceneId === "indigo2"

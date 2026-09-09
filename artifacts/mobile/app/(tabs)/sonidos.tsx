@@ -67,11 +67,13 @@ function CollectionPill({
   icon,
   onPress,
   backgroundColor,
+  borderColor,
 }: {
   label: string;
   icon: string;
   onPress: () => void;
   backgroundColor?: string;
+  borderColor?: string;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -105,6 +107,7 @@ function CollectionPill({
         style={[
           styles.pill,
           backgroundColor ? { backgroundColor } : null,
+          borderColor ? { borderColor } : null,
           { transform: [{ scale }] },
         ]}
       >
@@ -147,6 +150,9 @@ export default function SonidosScreen() {
       : theme.id === "indigo2"
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
+  const inactiveTabBorder = theme.id === "indigo2"
+    ? "rgba(255,255,255,0.04)"
+    : "rgba(255,255,255,0.1)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const stickyHeaderActiveRef = useRef(false);
@@ -345,6 +351,7 @@ export default function SonidosScreen() {
                   icon={collection.icon}
                   onPress={() => openCategory(`/sound-tag/${collection.id}`)}
                   backgroundColor={inactiveTabSurface}
+                  borderColor={inactiveTabBorder}
                 />
               ))}
             </ScrollView>

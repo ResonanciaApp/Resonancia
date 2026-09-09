@@ -2691,7 +2691,7 @@ export default function HomeScreen2({
                 : isIndigoThemeId(activeSceneId)
                   ? "rgba(181,211,255,0.1)"
                   : activeSceneId === "indigo2"
-                    ? "rgba(191,207,255,0.1)"
+                    ? "rgba(0,0,0,0.18)"
                     : "rgba(181,211,255,0.1)"
             }
             style={{
