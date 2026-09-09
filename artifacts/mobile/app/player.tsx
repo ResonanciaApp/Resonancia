@@ -1105,11 +1105,12 @@ const styles = StyleSheet.create({
   },
   ambientGhostPill: {
     width: "100%",
-    maxWidth: 180,
+    maxWidth: 160,
     height: 52,
     paddingHorizontal: 0,
     paddingVertical: 0,
     backgroundColor: "rgba(130,96,181,0.32)",
+    transform: [{ translateX: -20 }],
   },
   ambientPillContent: {
     flex: 1,
