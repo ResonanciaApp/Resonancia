@@ -585,7 +585,7 @@ export default function PlayerScreen() {
 
           {/* ── Progreso: barra a 100 px del fondo interior ──────────────── */}
           {!infiniteLoop && (
-            <View style={[styles.progressDock, { bottom: bottomPad + 103 }]}>
+            <View style={[styles.progressDock, { bottom: bottomPad + 128 }]}>
               <View
                 ref={progressBarRef}
                 style={styles.progressTrack}
@@ -615,7 +615,7 @@ export default function PlayerScreen() {
           )}
 
           {/* ── Acciones inferiores por categoría ────────────────────────── */}
-          <View style={[styles.bottomActions, { bottom: bottomPad + 10 }]}>
+          <View style={[styles.bottomActions, { bottom: bottomPad + 35 }]}>
             <View style={styles.bottomActionsLeft}>
               {catId === "meditaciones-guiadas" && (
                 <Pressable
