@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   Keyboard,
   Modal,
@@ -11,6 +11,11 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
@@ -48,6 +53,9 @@ export default function CrearRutinaScreen() {
   const [suggestedCategory, setSuggestedCategory] = useState<RoutineCategory | null>(null);
   const [repeatDays, setRepeatDays] = useState<number[]>(ALL_DAYS);
   const [repeatSheetOpen, setRepeatSheetOpen] = useState(false);
+  const [suggestionEditing, setSuggestionEditing] = useState(false);
+  const titleInputRef = useRef<TextInput>(null);
+  const suggestionTransition = useSharedValue(0);
 
   const topPad = Platform.OS === "web" ? 24 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : Math.max(insets.bottom, 18);
@@ -62,6 +70,33 @@ export default function CrearRutinaScreen() {
           ? "rgba(181,211,255,0.07)"
           : "rgba(181,211,255,0.07)";
   const tabAccentColor = activeTheme.accent ?? colors.primary;
+  const suggestionsFadeStyle = useAnimatedStyle(() => ({
+    opacity: 1 - suggestionTransition.value,
+  }));
+  const undoPillFadeStyle = useAnimatedStyle(() => ({
+    opacity: suggestionTransition.value,
+  }));
+
+  const enterSuggestionEditing = (suggestionTitle: string, suggestionCategory: RoutineCategory) => {
+    setTitle(suggestionTitle);
+    setSuggestedCategory(suggestionCategory);
+    setSuggestionEditing(true);
+    suggestionTransition.value = withTiming(1, { duration: 350 });
+    requestAnimationFrame(() => {
+      titleInputRef.current?.focus();
+      titleInputRef.current?.setNativeProps({
+        selection: {
+          start: suggestionTitle.length,
+          end: suggestionTitle.length,
+        },
+      });
+    });
+  };
+
+  const undoSuggestionEditing = () => {
+    setSuggestionEditing(false);
+    suggestionTransition.value = withTiming(0, { duration: 350 });
+  };
 
   const toggleDay = (day: number) => {
     setRepeatDays((current) =>
@@ -92,6 +127,7 @@ export default function CrearRutinaScreen() {
           { paddingTop: topPad, paddingBottom: bottomPad + 28 },
         ]}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         bottomOffset={24}
         showsVerticalScrollIndicator={false}
       >
@@ -126,6 +162,7 @@ export default function CrearRutinaScreen() {
         </View>
 
         <TextInput
+          ref={titleInputRef}
           value={title}
           onChangeText={(value) => {
             setTitle(value);
@@ -187,79 +224,99 @@ export default function CrearRutinaScreen() {
         </View>
 
         <View style={styles.suggestionsBlock}>
-          <View style={[styles.tabRail, { borderBottomColor: tabAccentColor }]}>
-            <KeyboardAwareScrollViewCompat
-              horizontal
-              style={styles.tabScroller}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.tabRow}
-              keyboardShouldPersistTaps="handled"
-            >
-              {ROUTINE_CATEGORY_TABS.map((tab) => {
-                const selected = tab === category;
-                return (
-                  <Pressable
-                    key={tab}
-                    onPress={() => {
-                      setCategory(tab);
-                      setSuggestedCategory(null);
-                    }}
-                    accessibilityRole="tab"
-                    accessibilityState={{ selected }}
-                    testID={`crear-rutina-tab-${tab}`}
-                    style={({ pressed }) => [
-                      styles.tab,
-                      {
-                        borderBottomColor: selected ? ROUTINE_SELECTED : "transparent",
-                        opacity: pressed ? 0.72 : 1,
-                      },
-                    ]}
-                  >
-                    <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : tabAccentColor }]}>
-                      {tab}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </KeyboardAwareScrollViewCompat>
-          </View>
-
-          <View style={styles.suggestionList}>
-            {suggestions.map((suggestion) => (
-              <Pressable
-                key={`${suggestion.category}-${suggestion.title}`}
-                onPress={() => {
-                  setTitle(suggestion.title);
-                  setSuggestedCategory(suggestion.category);
-                }}
-                accessibilityRole="button"
-                accessibilityLabel={`Usar sugerencia ${suggestion.title}`}
-                testID={`crear-rutina-suggestion-${suggestion.title}`}
-                style={({ pressed }) => [
-                  styles.suggestionRow,
-                  {
-                    backgroundColor: suggestionSurface,
-                    opacity: pressed ? 0.72 : 1,
-                  },
-                ]}
+          <Reanimated.View
+            pointerEvents={suggestionEditing ? "none" : "auto"}
+            style={suggestionsFadeStyle}
+          >
+            <View style={[styles.tabRail, { borderBottomColor: tabAccentColor }]}>
+              <KeyboardAwareScrollViewCompat
+                horizontal
+                style={styles.tabScroller}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.tabRow}
+                keyboardShouldPersistTaps="handled"
               >
-                <Text
-                  style={[styles.suggestionText, { color: colors.foreground }]}
-                  numberOfLines={2}
+                {ROUTINE_CATEGORY_TABS.map((tab) => {
+                  const selected = tab === category;
+                  return (
+                    <Pressable
+                      key={tab}
+                      onPress={() => {
+                        setCategory(tab);
+                        setSuggestedCategory(null);
+                      }}
+                      accessibilityRole="tab"
+                      accessibilityState={{ selected }}
+                      testID={`crear-rutina-tab-${tab}`}
+                      style={({ pressed }) => [
+                        styles.tab,
+                        {
+                          borderBottomColor: selected ? ROUTINE_SELECTED : "transparent",
+                          opacity: pressed ? 0.72 : 1,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : tabAccentColor }]}>
+                        {tab}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </KeyboardAwareScrollViewCompat>
+            </View>
+
+            <View style={styles.suggestionList}>
+              {suggestions.map((suggestion) => (
+                <Pressable
+                  key={`${suggestion.category}-${suggestion.title}`}
+                  onPress={() => enterSuggestionEditing(suggestion.title, suggestion.category)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Usar sugerencia ${suggestion.title}`}
+                  testID={`crear-rutina-suggestion-${suggestion.title}`}
+                  style={({ pressed }) => [
+                    styles.suggestionRow,
+                    {
+                      backgroundColor: suggestionSurface,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
                 >
-                  {suggestion.title}
-                </Text>
-                {category === "Sugerido" ? (
                   <Text
-                    style={[styles.suggestionCategory, { color: tabAccentColor }]}
-                    numberOfLines={1}
+                    style={[styles.suggestionText, { color: colors.foreground }]}
+                    numberOfLines={2}
                   >
-                    {suggestion.category}
+                    {suggestion.title}
                   </Text>
-                ) : null}
-              </Pressable>
-            ))}
-          </View>
+                  {category === "Sugerido" ? (
+                    <Text
+                      style={[styles.suggestionCategory, { color: tabAccentColor }]}
+                      numberOfLines={1}
+                    >
+                      {suggestion.category}
+                    </Text>
+                  ) : null}
+                </Pressable>
+              ))}
+            </View>
+          </Reanimated.View>
+          <Reanimated.View
+            pointerEvents={suggestionEditing ? "auto" : "none"}
+            style={[styles.undoPillLayer, undoPillFadeStyle]}
+          >
+            <Pressable
+              onPress={undoSuggestionEditing}
+              accessibilityRole="button"
+              accessibilityLabel="Volver a las sugerencias"
+              testID="crear-rutina-undo-suggestion"
+              style={({ pressed }) => [
+                styles.undoPill,
+                { opacity: pressed ? 0.76 : 1 },
+              ]}
+            >
+              <Feather name="arrow-left" size={16} color="#060A0F" />
+              <Text style={styles.undoPillText}>Atrás</Text>
+            </Pressable>
+          </Reanimated.View>
         </View>
 
       </KeyboardAwareScrollViewCompat>
@@ -423,6 +480,29 @@ const styles = StyleSheet.create({
   },
   suggestionsBlock: {
     marginTop: 67,
+    position: "relative",
+  },
+  undoPillLayer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    alignItems: "flex-start",
+  },
+  undoPill: {
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  undoPillText: {
+    color: "#060A0F",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
   },
   tabRail: {
     borderBottomWidth: StyleSheet.hairlineWidth,
