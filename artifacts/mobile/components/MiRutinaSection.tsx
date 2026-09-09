@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -215,13 +214,6 @@ const ActivityRow = React.memo(function ActivityRow({
     >
       <GestureDetector gesture={pan}>
         <Reanimated.View style={[styles.activityCard, completionStyle]}>
-          <BlurView
-            pointerEvents="none"
-            intensity={38}
-            tint="light"
-            experimentalBlurMethod="dimezisBlurView"
-            style={styles.activityCardGlass}
-          />
           <Pressable
             onPress={() => onOpen(activityId)}
             disabled={completing}
@@ -611,12 +603,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 11,
     overflow: "hidden",
-  },
-  activityCardGlass: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.10)",
   },
   activityOpenArea: {
     flex: 1,
