@@ -598,7 +598,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
 const styles = StyleSheet.create({
   section: {
     marginHorizontal: 14,
-    marginBottom: 53,
+    paddingBottom: 53,
   },
   headerRow: {
     flexDirection: "row",

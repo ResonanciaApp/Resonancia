@@ -2697,7 +2697,6 @@ export default function HomeScreen2({
             }
             style={{
               marginHorizontal: GRID_PAD,
-              marginBottom: INICIO2_SECTION_GAP,
             }}
           />
         )}
