@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   sleepInlineTitleLowered: {
-    transform: [{ translateY: 4 }],
+    transform: [{ translateY: 2 }],
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
