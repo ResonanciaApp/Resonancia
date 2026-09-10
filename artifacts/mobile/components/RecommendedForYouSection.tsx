@@ -162,6 +162,9 @@ export function RecommendedForYouSection({
     >
       <View style={styles.header}>
         <Text style={styles.title}>Recomendado para ti</Text>
+        <Text style={[styles.description, { color: theme.accent ?? colors.accent }]}>
+          Contenido seleccionado para acompañar tu momento.
+        </Text>
       </View>
 
       <ScrollView
@@ -228,6 +231,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",
+  },
+  description: {
+    marginTop: 5,
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
   },
   tabs: {
     paddingHorizontal: HORIZONTAL_PAD,
