@@ -499,8 +499,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
                       <SessionCategoryPill
                         categoryId="descanso"
-                        leftInset={15}
+                        leftInset={11}
                         topInset={15}
+                        style={styles.sleepCompactPill}
+                        textStyle={styles.sleepCompactPillText}
                       />
                     ) : effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
@@ -849,7 +851,9 @@ const styles = StyleSheet.create({
   sleepInlineDurationBorder: {
     borderWidth: 1,
     borderColor: "rgba(249,249,249,0.08)",
-    paddingVertical: 2.5,
+    height: 19,
+    paddingVertical: 0,
+    justifyContent: "center",
     transform: [{ translateY: 4 }],
   },
   sleepInlineDurationText: {
@@ -857,6 +861,14 @@ const styles = StyleSheet.create({
   },
   sleepInlineTitleLowered: {
     transform: [{ translateY: 2 }],
+  },
+  sleepCompactPill: {
+    height: 19,
+    minHeight: 19,
+    paddingVertical: 0,
+  },
+  sleepCompactPillText: {
+    fontSize: 10,
   },
   sleepOverlayDurationTopLeft: {
     top: 15,

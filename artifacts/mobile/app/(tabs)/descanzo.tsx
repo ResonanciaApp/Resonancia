@@ -387,7 +387,7 @@ export default function DescansoScreen() {
                 showSleepCategoryPillWithInlineDuration={collection.label === "Música para dormir"}
                 sleepOverlayMetadataStyle={
                   collection.label === "Música para dormir"
-                    ? { transform: [{ translateX: 7 }, { translateY: -1 }] }
+                    ? { transform: [{ translateX: 3 }, { translateY: -1 }] }
                     : undefined
                 }
                 overlayGradientLocations={

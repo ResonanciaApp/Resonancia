@@ -71,6 +71,8 @@ export function SessionCategoryPill({
   leftInset,
   topInset,
   bottomInset,
+  style,
+  textStyle,
 }: {
   categoryId?: string;
   inline?: boolean;
@@ -84,6 +86,8 @@ export function SessionCategoryPill({
   leftInset?: number;
   topInset?: number;
   bottomInset?: number;
+  style?: import("react-native").StyleProp<import("react-native").ViewStyle>;
+  textStyle?: import("react-native").StyleProp<import("react-native").TextStyle>;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -101,6 +105,7 @@ export function SessionCategoryPill({
         leftInset !== undefined ? { left: leftInset } : null,
         topInset !== undefined ? { top: topInset } : null,
         bottomInset !== undefined ? { top: "auto", bottom: bottomInset } : null,
+        style,
       ]}
     >
       {!plain && !outlineColor && <SessionBadgeGlass />}
@@ -109,6 +114,7 @@ export function SessionCategoryPill({
           styles.categoryLabel,
           !plain && styles.categoryLabelCard,
           styles.categoryLabelTextOnly,
+          textStyle,
         ]}
         numberOfLines={1}
       >
