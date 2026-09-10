@@ -86,11 +86,12 @@ const DURATION_SLOTS = [
 
 const OTHER_THEME_META: Record<string, {
   icon: React.ComponentProps<typeof Feather>["name"];
+  iconSize?: number;
   color: string;
   description: string;
 }> = {
-  "para-la-ansiedad": { icon: "heart", color: "#CE7FA3", description: "Calma tu mente y recupera la paz" },
-  "energiza-tus-mananas": { icon: "sunrise", color: "#E3A657", description: "Activa tu energía para comenzar" },
+  "para-la-ansiedad": { icon: "heart", iconSize: 26, color: "#CE7FA3", description: "Calma tu mente y recupera la paz" },
+  "energiza-tus-mananas": { icon: "sunrise", iconSize: 25, color: "#E3A657", description: "Activa tu energía para comenzar" },
   "foco-concentracion": { icon: "crosshair", color: "#72A0DA", description: "Claridad para sostener tu atención" },
   "suelto-la-rabia": { icon: "zap", color: "#DC7164", description: "Libera y transforma lo que sientes" },
   "crecimiento-personal": { icon: "trending-up", color: "#70BE8D", description: "Expande tu conciencia y tus recursos" },
@@ -781,7 +782,7 @@ export function ExploreScreen({
                       {meta ? (
                         <Feather
                           name={meta.icon}
-                          size={27}
+                          size={meta.iconSize ?? 27}
                           color={meta.color}
                         />
                       ) : card.image ? (

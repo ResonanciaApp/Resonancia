@@ -65,17 +65,6 @@ const WATERCOLOR_CATEGORY_IMAGES: Partial<
   charlas: require("@/assets/images/discover2-category-charlas.jpg"),
 };
 
-const DISCOVER_CATEGORY_IMAGES: Partial<
-  Record<ContentCategoryDefinition["id"], number>
-> = {
-  "meditaciones-guiadas": require("@/assets/images/discover2-category-meditaciones.jpg"),
-  "sonidos-ancestrales": require("@/assets/images/discover2-category-sonoterapia.jpg"),
-  "musica-sonidos": require("@/assets/images/discover2-category-musica.jpg"),
-  ambientales: require("@/assets/images/discover2-category-ambientales.jpg"),
-  historias: require("@/assets/images/discover2-category-historias.jpg"),
-  charlas: require("@/assets/images/discover2-category-charlas.jpg"),
-};
-
 function renderCategoryIcon(
   category: ContentCategoryDefinition,
   horizontal: boolean,
@@ -234,8 +223,6 @@ export function ContentCategoryGrid({
       >
         <View style={styles.discoverGrid}>
           {visibleCategories.map((category) => {
-            const image = DISCOVER_CATEGORY_IMAGES[category.id];
-
             return (
               <Pressable
                 key={category.id}
@@ -252,16 +239,6 @@ export function ContentCategoryGrid({
                 ]}
               >
                   <View style={[styles.discoverCardImage, { height: cardHeight }]}>
-                   {image && (
-                     <ExpoImage
-                       source={image}
-                       style={StyleSheet.absoluteFill}
-                       contentFit="cover"
-                       cachePolicy="memory-disk"
-                       transition={180}
-                     />
-                   )}
-                    <View pointerEvents="none" style={styles.discoverCardScrim} />
                     <View pointerEvents="none" style={styles.discoverCardContent}>
                       <View style={styles.discoverCardIcon}>
                         {renderCategoryIcon(category, false, true, 2)}
@@ -460,11 +437,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.2)",
-  },
-  discoverCardScrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.025)",
   },
   discoverCardContent: {
     ...StyleSheet.absoluteFillObject,
