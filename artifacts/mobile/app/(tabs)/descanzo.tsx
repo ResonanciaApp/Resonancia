@@ -383,6 +383,8 @@ export default function DescansoScreen() {
                 presentation="editorial"
                 titleSize={19}
                 showImageCategoryPill={collection.label !== "Música para dormir"}
+                hideCategoryAboveTitle={collection.label === "Música para dormir"}
+                stackCategoryPillBelowDuration={collection.label === "Música para dormir"}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}
