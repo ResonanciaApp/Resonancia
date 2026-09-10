@@ -111,7 +111,7 @@ const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SOUND_CARD_W  = 120;
-const SLEEP_MUSIC_CARD_WIDTH = Math.round((W - H_PAD - 14) / 1.9);
+const SLEEP_MUSIC_CARD_WIDTH = Math.round((W - H_PAD - 14 * 2 - 15) / 2);
 const SLEEP_MUSIC_CARD_HEIGHT = SLEEP_MUSIC_CARD_WIDTH + 25;
 
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
@@ -388,10 +388,11 @@ export default function DescansoScreen() {
                   sleepMetadataBelow={!isSleepMusic}
                   categoryGridPresentation
                   titleSize={19}
-                  showImageCategoryPill
+                  showImageCategoryPill={!isSleepMusic}
                   cardWidth={isSleepMusic ? SLEEP_MUSIC_CARD_WIDTH : undefined}
                   fixedCardHeight={isSleepMusic ? SLEEP_MUSIC_CARD_HEIGHT : undefined}
                   allowOversizedCardWidth={isSleepMusic}
+                  durationTextColor={isSleepMusic ? "rgba(249,249,249,0.82)" : undefined}
                   onViewAll={sleepCarouselViewAllHandlers[collection.id]}
                 />
               );
