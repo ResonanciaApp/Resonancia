@@ -394,7 +394,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                  presentation="editorial"
                  ambientalTitleOnly
-                 ambientalImageLift={10}
+                 ambientalImageLift={4}
                  showAmbientalCategoryPill
                  ambientalTitleOnlyMetadataStyle={{
                    transform: [{ translateY: -2 }],

@@ -880,6 +880,7 @@ const styles = StyleSheet.create({
   },
   sleepCompactPillText: {
     fontSize: 10,
+    lineHeight: 12,
     fontWeight: "600",
   },
   sleepOverlayDurationTopLeft: {
