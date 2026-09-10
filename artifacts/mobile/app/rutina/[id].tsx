@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
 import {
@@ -13,7 +14,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import {
   getRoutineDateFromKey,
   getRoutineDateKey,
@@ -21,6 +21,7 @@ import {
   ROUTINE_DAY_LABELS,
   useRutina,
 } from "@/context/RutinaContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
 
@@ -103,6 +104,7 @@ export default function RutinaDetailScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
+  const { theme: activeTheme } = useSceneTheme();
   const todayKey = useDayRollover();
   const {
     isHydrated,
@@ -158,12 +160,38 @@ export default function RutinaDetailScreen() {
     );
   }, [activity, archiveActivity]);
 
-  if (!isHydrated) return <View style={{ flex: 1, backgroundColor: routineTheme.background }} />;
+  if (!isHydrated) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string,
+        }}
+      >
+        <LinearGradient
+          colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+          locations={activeTheme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      </View>
+    );
+  }
 
   if (!activity) {
     return (
-      <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
-        <SacredBackground variant="solid" />
+      <View
+        style={[
+          styles.root,
+          { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string },
+        ]}
+      >
+        <LinearGradient
+          colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+          locations={activeTheme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         <View style={[styles.notFound, { paddingTop: topPad, paddingBottom: bottomPad }]}>
           <Feather name="calendar" size={28} color={routineTheme.accent} />
           <Text style={[styles.notFoundTitle, { color: routineTheme.text }]}>
@@ -178,9 +206,19 @@ export default function RutinaDetailScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
+    <View
+      style={[
+        styles.root,
+        { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string },
+      ]}
+    >
       <StatusBar hidden />
-      <SacredBackground variant="solid" />
+      <LinearGradient
+        colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+        locations={activeTheme.gradientLocations}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <ScrollView
         contentContainerStyle={[
           styles.content,
