@@ -28,6 +28,8 @@ import type {
   AdminMixHideResponse,
   AdminMixerSoundItem,
   AdminMixesPage,
+  AdminPlaylistCarouselInput,
+  AdminPlaylistCarouselUpdate,
   AdminPlaylistInput,
   AdminPlaylistUpdate,
   AdminSessionAudioInput,
@@ -108,6 +110,7 @@ import type {
   OkResponse,
   PinnedFeaturedResponse,
   PlaybackEventList,
+  PlaylistCarousel,
   PopularSessionsResponse,
   ProgressInput,
   ProgressList,
@@ -7192,6 +7195,296 @@ export const useDeleteAdminPlaylist = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminPlaylistMutationOptions(options));
+    }
+
+export const getListAdminPlaylistCarouselsUrl = () => {
+
+
+
+
+  return `/api/admin/playlist-carousels`
+}
+
+/**
+ * @summary Listar todos los carruseles editoriales (admin)
+ */
+export const listAdminPlaylistCarousels = async ( options?: RequestInit): Promise<PlaylistCarousel[]> => {
+
+  return customFetch<PlaylistCarousel[]>(getListAdminPlaylistCarouselsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminPlaylistCarouselsQueryKey = () => {
+    return [
+    `/api/admin/playlist-carousels`
+    ] as const;
+    }
+
+
+export const getListAdminPlaylistCarouselsQueryOptions = <TData = Awaited<ReturnType<typeof listAdminPlaylistCarousels>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylistCarousels>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminPlaylistCarouselsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminPlaylistCarousels>>> = ({ signal }) => listAdminPlaylistCarousels({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylistCarousels>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminPlaylistCarouselsQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminPlaylistCarousels>>>
+export type ListAdminPlaylistCarouselsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todos los carruseles editoriales (admin)
+ */
+
+export function useListAdminPlaylistCarousels<TData = Awaited<ReturnType<typeof listAdminPlaylistCarousels>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPlaylistCarousels>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminPlaylistCarouselsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminPlaylistCarouselUrl = () => {
+
+
+
+
+  return `/api/admin/playlist-carousels`
+}
+
+/**
+ * @summary Crear un carrusel editorial (admin)
+ */
+export const createAdminPlaylistCarousel = async (adminPlaylistCarouselInput: AdminPlaylistCarouselInput, options?: RequestInit): Promise<PlaylistCarousel> => {
+
+  return customFetch<PlaylistCarousel>(getCreateAdminPlaylistCarouselUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminPlaylistCarouselInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminPlaylistCarouselMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylistCarousel>>, TError,{data: BodyType<AdminPlaylistCarouselInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylistCarousel>>, TError,{data: BodyType<AdminPlaylistCarouselInput>}, TContext> => {
+
+const mutationKey = ['createAdminPlaylistCarousel'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminPlaylistCarousel>>, {data: BodyType<AdminPlaylistCarouselInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminPlaylistCarousel(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminPlaylistCarouselMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminPlaylistCarousel>>>
+    export type CreateAdminPlaylistCarouselMutationBody = BodyType<AdminPlaylistCarouselInput>
+    export type CreateAdminPlaylistCarouselMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear un carrusel editorial (admin)
+ */
+export const useCreateAdminPlaylistCarousel = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPlaylistCarousel>>, TError,{data: BodyType<AdminPlaylistCarouselInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminPlaylistCarousel>>,
+        TError,
+        {data: BodyType<AdminPlaylistCarouselInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminPlaylistCarouselMutationOptions(options));
+    }
+
+export const getUpdateAdminPlaylistCarouselUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlist-carousels/${id}`
+}
+
+/**
+ * @summary Editar nombre, publicación, orden o playlists de un carrusel (admin)
+ */
+export const updateAdminPlaylistCarousel = async (id: number,
+    adminPlaylistCarouselUpdate: AdminPlaylistCarouselUpdate, options?: RequestInit): Promise<PlaylistCarousel> => {
+
+  return customFetch<PlaylistCarousel>(getUpdateAdminPlaylistCarouselUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminPlaylistCarouselUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminPlaylistCarouselMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>, TError,{id: number;data: BodyType<AdminPlaylistCarouselUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>, TError,{id: number;data: BodyType<AdminPlaylistCarouselUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminPlaylistCarousel'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>, {id: number;data: BodyType<AdminPlaylistCarouselUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminPlaylistCarousel(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminPlaylistCarouselMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>>
+    export type UpdateAdminPlaylistCarouselMutationBody = BodyType<AdminPlaylistCarouselUpdate>
+    export type UpdateAdminPlaylistCarouselMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Editar nombre, publicación, orden o playlists de un carrusel (admin)
+ */
+export const useUpdateAdminPlaylistCarousel = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>, TError,{id: number;data: BodyType<AdminPlaylistCarouselUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminPlaylistCarousel>>,
+        TError,
+        {id: number;data: BodyType<AdminPlaylistCarouselUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminPlaylistCarouselMutationOptions(options));
+    }
+
+export const getDeleteAdminPlaylistCarouselUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlist-carousels/${id}`
+}
+
+/**
+ * @summary Eliminar un carrusel sin eliminar sus playlists (admin)
+ */
+export const deleteAdminPlaylistCarousel = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminPlaylistCarouselUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminPlaylistCarouselMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminPlaylistCarousel'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminPlaylistCarousel(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminPlaylistCarouselMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>>
+
+    export type DeleteAdminPlaylistCarouselMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar un carrusel sin eliminar sus playlists (admin)
+ */
+export const useDeleteAdminPlaylistCarousel = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminPlaylistCarousel>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminPlaylistCarouselMutationOptions(options));
     }
 
 export const getPublishAdminPlaylistUrl = (id: number,) => {

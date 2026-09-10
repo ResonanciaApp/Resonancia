@@ -825,7 +825,7 @@ export interface CatalogSession {
 }
 
 /**
- * Superficie editorial; hay un carrusel fijo por superficie
+ * Legacy per-playlist placement kept for compatibility
  */
 export type EditorialPlaylistPlacementSurface = typeof EditorialPlaylistPlacementSurface[keyof typeof EditorialPlaylistPlacementSurface];
 
@@ -836,11 +836,71 @@ export const EditorialPlaylistPlacementSurface = {
 } as const;
 
 export interface EditorialPlaylistPlacement {
-  /** Superficie editorial; hay un carrusel fijo por superficie */
+  /** Legacy per-playlist placement kept for compatibility */
   surface: EditorialPlaylistPlacementSurface;
   /** @minimum 0 */
   sortOrder: number;
   isActive: boolean;
+}
+
+export type PlaylistCarouselSurface = typeof PlaylistCarouselSurface[keyof typeof PlaylistCarouselSurface];
+
+
+export const PlaylistCarouselSurface = {
+  discover: 'discover',
+  sleep: 'sleep',
+} as const;
+
+export interface PlaylistCarousel {
+  id: number;
+  title: string;
+  surface: PlaylistCarouselSurface;
+  /** @minimum 0 */
+  sortOrder: number;
+  isActive: boolean;
+  playlistIds: string[];
+}
+
+export type AdminPlaylistCarouselInputSurface = typeof AdminPlaylistCarouselInputSurface[keyof typeof AdminPlaylistCarouselInputSurface];
+
+
+export const AdminPlaylistCarouselInputSurface = {
+  discover: 'discover',
+  sleep: 'sleep',
+} as const;
+
+export interface AdminPlaylistCarouselInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title: string;
+  surface: AdminPlaylistCarouselInputSurface;
+  /** @minimum 0 */
+  sortOrder: number;
+  isActive: boolean;
+  playlistIds: string[];
+}
+
+export type AdminPlaylistCarouselUpdateSurface = typeof AdminPlaylistCarouselUpdateSurface[keyof typeof AdminPlaylistCarouselUpdateSurface];
+
+
+export const AdminPlaylistCarouselUpdateSurface = {
+  discover: 'discover',
+  sleep: 'sleep',
+} as const;
+
+export interface AdminPlaylistCarouselUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title?: string;
+  surface?: AdminPlaylistCarouselUpdateSurface;
+  /** @minimum 0 */
+  sortOrder?: number;
+  isActive?: boolean;
+  playlistIds?: string[];
 }
 
 export interface CatalogPlaylist {
@@ -950,6 +1010,7 @@ export interface CatalogResponse {
   categories: CatalogCategory[];
   sessions: CatalogSession[];
   playlists: CatalogPlaylist[];
+  playlistCarousels: PlaylistCarousel[];
   /** Alias legado de Inicio, filtrado a showOnHome y máximo cuatro */
   homePlaylists?: CatalogPlaylist[];
 }

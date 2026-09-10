@@ -14,7 +14,7 @@ import {
   useRequestUploadUrl,
   getListAdminPlaylistsQueryKey,
 } from "@workspace/api-client-react";
-import type { CatalogPlaylist, EditorialPlaylistPlacement, AdminPlaylistInputPlaylistType } from "@workspace/api-client-react";
+import type { CatalogPlaylist, AdminPlaylistInputPlaylistType } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PlaylistCarouselsView } from "@/components/playlist-carousels/PlaylistCarouselsView";
 
 // ── Tipos ──────────────────────────────────────────────────────────────────
 
@@ -48,7 +49,6 @@ type PlaylistForm = {
   sessionIds: string[];
   playlistType: "sessions" | "music";
   isActive: boolean;
-  placements: EditorialPlaylistPlacement[];
 };
 
 const EMPTY_FORM: PlaylistForm = {
@@ -61,7 +61,6 @@ const EMPTY_FORM: PlaylistForm = {
   sessionIds: [],
   playlistType: "sessions",
   isActive: true,
-  placements: [],
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -394,23 +393,6 @@ function PlaylistForm({
     }
   };
 
-  const getPlacement = (surface: "discover" | "sleep") =>
-    form.placements.find(p => p.surface === surface) || { surface, sortOrder: 0, isActive: false };
-
-  const updatePlacement = (surface: "discover" | "sleep", updates: Partial<EditorialPlaylistPlacement>) => {
-    setForm(prev => {
-      const existing = prev.placements.filter(p => p.surface !== surface);
-      const current = prev.placements.find(p => p.surface === surface) || { surface, sortOrder: 0, isActive: false };
-      return {
-        ...prev,
-        placements: [...existing, { ...current, ...updates }]
-      };
-    });
-  };
-
-  const discoverPlacement = getPlacement("discover");
-  const sleepPlacement = getPlacement("sleep");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) { toast.error("El título es obligatorio"); return; }
@@ -429,11 +411,6 @@ function PlaylistForm({
         sessionIds: form.sessionIds,
         playlistType: form.playlistType as AdminPlaylistInputPlaylistType,
         isActive: form.isActive,
-        placements: form.placements,
-        // Fallbacks during transition
-        sortOrder: discoverPlacement.sortOrder || 0,
-        showOnHome: discoverPlacement.isActive,
-        homePosition: discoverPlacement.isActive ? (discoverPlacement.sortOrder || 1) : null,
       };
 
       if (isEdit) {
@@ -540,68 +517,6 @@ function PlaylistForm({
         </div>
       </div>
 
-      {/* Ubicaciones */}
-      <div className="border border-border rounded-lg p-4 space-y-4">
-        <div>
-          <p className="font-medium text-sm text-foreground">Ubicaciones</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Controla dónde aparece esta playlist de forma curada y su orden.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          {/* Discover */}
-          <div className="space-y-4 bg-secondary/30 p-3 rounded-md border border-border/50">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="discover-active" className="cursor-pointer font-medium">Discover</Label>
-              <Switch
-                id="discover-active"
-                checked={discoverPlacement.isActive}
-                onCheckedChange={(v) => updatePlacement("discover", { isActive: v })}
-              />
-            </div>
-            {discoverPlacement.isActive && (
-              <div className="space-y-1.5">
-                <Label htmlFor="discover-order" className="text-xs">Orden</Label>
-                <Input
-                  id="discover-order"
-                  type="number"
-                  min={0}
-                  value={discoverPlacement.sortOrder}
-                  onChange={(e) => updatePlacement("discover", { sortOrder: parseInt(e.target.value) || 0 })}
-                  className="h-8"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Sleep */}
-          <div className="space-y-4 bg-secondary/30 p-3 rounded-md border border-border/50">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="sleep-active" className="cursor-pointer font-medium">Sleep</Label>
-              <Switch
-                id="sleep-active"
-                checked={sleepPlacement.isActive}
-                onCheckedChange={(v) => updatePlacement("sleep", { isActive: v })}
-              />
-            </div>
-            {sleepPlacement.isActive && (
-              <div className="space-y-1.5">
-                <Label htmlFor="sleep-order" className="text-xs">Orden</Label>
-                <Input
-                  id="sleep-order"
-                  type="number"
-                  min={0}
-                  value={sleepPlacement.sortOrder}
-                  onChange={(e) => updatePlacement("sleep", { sortOrder: parseInt(e.target.value) || 0 })}
-                  className="h-8"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
       <CoverUpload
         coverUrl={form.coverUrl}
         onChange={(url) => set("coverUrl", url)}
@@ -636,6 +551,7 @@ export default function PlaylistsPage() {
   const [editing, setEditing] = useState<(PlaylistForm & { id?: number }) | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<CatalogPlaylist | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [section, setSection] = useState<"playlists" | "carousels">("playlists");
 
   const invalidate = () => qc.invalidateQueries({ queryKey: getListAdminPlaylistsQueryKey() });
 
@@ -656,7 +572,6 @@ export default function PlaylistsPage() {
       sessionIds: p.sessionIds,
       playlistType: p.playlistType as "sessions" | "music",
       isActive: p.isActive,
-      placements: p.placements || (p.showOnHome && p.homePosition ? [{ surface: "discover", sortOrder: p.homePosition, isActive: true }] : []),
     });
     setDialogOpen(true);
   };
@@ -683,49 +598,81 @@ export default function PlaylistsPage() {
       {/* Cabecera */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Playlists de Resonancia</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            {section === "playlists" ? "Playlists de Resonancia" : "Carruseles editoriales"}
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Colecciones curatoriales, música y sesiones
+            {section === "playlists"
+              ? "Colecciones curatoriales, música y sesiones"
+              : "Agrupaciones administrables para Descubrir y Dormir"}
           </p>
         </div>
-        <Button onClick={openCreate} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Nueva playlist
-        </Button>
+        {section === "playlists" && (
+          <Button onClick={openCreate} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Nueva playlist
+          </Button>
+        )}
       </div>
 
-      {/* Tabla */}
-      {isLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : sorted.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground border border-dashed border-border rounded-xl">
-          <ListMusic className="w-10 h-10 mb-3 opacity-30" />
-          <p className="font-medium">No hay playlists todavía</p>
-          <p className="text-sm mt-1">Crea la primera para empezar a curar el catálogo.</p>
-        </div>
-      ) : (
-        <div className="border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary/30">
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Playlist</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Tipo</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Sesiones</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Ubicaciones</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Estado</th>
-                <th className="w-20 px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {sorted.map((p) => {
-                const activePlacements = (p.placements || []).filter(pl => pl.isActive);
-                if (activePlacements.length === 0 && p.showOnHome) {
-                  activePlacements.push({ surface: "discover", sortOrder: p.homePosition || 1, isActive: true });
-                }
+      <div className="flex gap-1 border-b border-border" role="tablist" aria-label="Gestión de playlists">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={section === "playlists"}
+          onClick={() => setSection("playlists")}
+          className={`border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+            section === "playlists"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Playlists
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={section === "carousels"}
+          onClick={() => setSection("carousels")}
+          className={`border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+            section === "carousels"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Carruseles
+        </button>
+      </div>
 
-                return (
+      {section === "carousels" ? (
+        <PlaylistCarouselsView playlists={playlists} playlistsLoading={isLoading} />
+      ) : (
+        <>
+          {/* Tabla */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : sorted.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground border border-dashed border-border rounded-xl">
+              <ListMusic className="w-10 h-10 mb-3 opacity-30" />
+              <p className="font-medium">No hay playlists todavía</p>
+              <p className="text-sm mt-1">Crea la primera para empezar a curar el catálogo.</p>
+            </div>
+          ) : (
+            <div className="border border-border rounded-xl overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-secondary/30">
+                    <th className="text-left px-4 py-3 text-muted-foreground font-medium">Playlist</th>
+                    <th className="text-left px-4 py-3 text-muted-foreground font-medium">Tipo</th>
+                    <th className="text-left px-4 py-3 text-muted-foreground font-medium">Sesiones</th>
+                    <th className="text-left px-4 py-3 text-muted-foreground font-medium">Estado</th>
+                    <th className="w-20 px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {sorted.map((p) => (
                   <tr key={p.id} className="hover:bg-secondary/20 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -750,19 +697,6 @@ export default function PlaylistsPage() {
                     <td className="px-4 py-3 text-muted-foreground">
                       {p.sessionIds.length} sesiones
                       {p.durationLabel ? ` · ${p.durationLabel}` : ""}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1 items-start">
-                        {activePlacements.length > 0 ? (
-                          activePlacements.map(pl => (
-                            <Badge key={pl.surface} variant="secondary" className="text-xs font-normal">
-                              {pl.surface === "discover" ? "Discover" : "Sleep"} ({pl.sortOrder})
-                            </Badge>
-                          ))
-                        ) : (
-                          <span className="text-muted-foreground text-xs">—</span>
-                        )}
-                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <Badge
@@ -793,11 +727,12 @@ export default function PlaylistsPage() {
                       </div>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
 
       {/* Dialog crear / editar */}

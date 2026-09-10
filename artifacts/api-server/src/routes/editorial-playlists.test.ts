@@ -25,6 +25,8 @@ import {
   catalogSessionsTable,
   catalogPlaylistsTable,
   catalogPlaylistPlacementsTable,
+  catalogPlaylistCarouselsTable,
+  catalogPlaylistCarouselMembershipsTable,
   userLibraryTable,
   type User,
 } from "@workspace/db";
@@ -58,6 +60,7 @@ let regularUser: User;
 const sessionIds = [`editorial-a-${suffix}`, `editorial-b-${suffix}`, `editorial-draft-${suffix}`];
 let playlistId = 0;
 const createdPlaylistIds: number[] = [];
+const createdCarouselIds: number[] = [];
 
 async function createUser(tag: string, role: "admin" | "user") {
   const [user] = await db
@@ -284,6 +287,21 @@ describe("editorial playlist contract", () => {
     authAs(admin);
     const catalog = await request(app).get("/api/catalog");
     expect(catalog.status).toBe(200);
+    const homeRows = (await db
+      .select()
+      .from(catalogPlaylistsTable)
+      .where(eq(catalogPlaylistsTable.isActive, true)))
+      .filter((playlist) => playlist.showOnHome)
+      .sort(
+        (a, b) =>
+          (a.homePosition ?? Number.MAX_SAFE_INTEGER) -
+            (b.homePosition ?? Number.MAX_SAFE_INTEGER) ||
+          a.id - b.id,
+      )
+      .slice(0, 4);
+    expect(catalog.body.homePlaylists.map((playlist: { slug: string }) => playlist.slug)).toEqual(
+      homeRows.map((playlist) => playlist.slug),
+    );
     const listed = catalog.body.playlists.find(
       (playlist: { id: number }) => playlist.id === playlistId,
     );
@@ -311,6 +329,152 @@ describe("editorial playlist contract", () => {
     );
     expect(published.status).toBe(200);
     expect(published.body.isActive).toBe(true);
+  });
+
+  it("CRUDs independent same-surface carousels and never lets legacy writes drive them", async () => {
+    authAs(null);
+    expect((await request(app).get("/api/admin/playlist-carousels")).status).toBe(401);
+    authAs(regularUser);
+    expect((await request(app).get("/api/admin/playlist-carousels")).status).toBe(403);
+    authAs(admin);
+
+    const slug = `editorial-${suffix}`;
+    const first = await request(app)
+      .post("/api/admin/playlist-carousels")
+      .send({
+        title: "Selección compartida A",
+        surface: "discover",
+        sortOrder: 1,
+        isActive: true,
+        playlistIds: [slug],
+      });
+    expect(first.status).toBe(201);
+    expect(first.body.title).toBe("Selección compartida A");
+    expect(first.body.playlistIds).toEqual([slug]);
+    createdCarouselIds.push(first.body.id);
+
+    const second = await request(app)
+      .post("/api/admin/playlist-carousels")
+      .send({
+        title: "Selección compartida B",
+        surface: "discover",
+        sortOrder: 0,
+        isActive: true,
+        playlistIds: [slug],
+      });
+    expect(second.status).toBe(201);
+    createdCarouselIds.push(second.body.id);
+    expect(second.body.playlistIds).toEqual([slug]);
+
+    let adminRows = await request(app).get("/api/admin/playlist-carousels");
+    expect(adminRows.status).toBe(200);
+    const ownRows = adminRows.body.filter((row: { id: number }) =>
+      createdCarouselIds.includes(row.id),
+    );
+    expect(ownRows.map((row: { title: string }) => row.title)).toEqual([
+      "Selección compartida B",
+      "Selección compartida A",
+    ]);
+    expect(ownRows.map((row: { sortOrder: number }) => row.sortOrder)).toEqual([
+      expect.any(Number),
+      expect.any(Number),
+    ]);
+
+    const renamed = await request(app)
+      .patch(`/api/admin/playlist-carousels/${first.body.id}`)
+      .send({ title: "Selección renombrada", sortOrder: 0 });
+    expect(renamed.status).toBe(200);
+    expect(renamed.body.title).toBe("Selección renombrada");
+    expect(renamed.body.playlistIds).toEqual([slug]);
+
+    const hidden = await request(app)
+      .patch(`/api/admin/playlist-carousels/${second.body.id}`)
+      .send({ isActive: false });
+    expect(hidden.status).toBe(200);
+    expect(hidden.body.isActive).toBe(false);
+    adminRows = await request(app).get("/api/admin/playlist-carousels");
+    expect(
+      adminRows.body.find((row: { id: number }) => row.id === second.body.id).isActive,
+    ).toBe(false);
+
+    const publicBeforeEmpty = await request(app).get("/api/catalog");
+    expect(publicBeforeEmpty.status).toBe(200);
+    expect(
+      publicBeforeEmpty.body.playlistCarousels.some(
+        (row: { id: number }) => row.id === first.body.id,
+      ),
+    ).toBe(true);
+    expect(
+      publicBeforeEmpty.body.playlistCarousels.some(
+        (row: { id: number }) => row.id === second.body.id,
+      ),
+    ).toBe(false);
+
+    const emptied = await request(app)
+      .patch(`/api/admin/playlist-carousels/${first.body.id}`)
+      .send({ playlistIds: [] });
+    expect(emptied.status).toBe(200);
+    expect(emptied.body.playlistIds).toEqual([]);
+    const publicEmpty = await request(app).get("/api/catalog");
+    expect(
+      publicEmpty.body.playlistCarousels.some(
+        (row: { id: number }) => row.id === first.body.id,
+      ),
+    ).toBe(false);
+
+    const restored = await request(app)
+      .patch(`/api/admin/playlist-carousels/${first.body.id}`)
+      .send({ playlistIds: [slug], isActive: true });
+    expect(restored.status).toBe(200);
+
+    const hiddenPlaylist = await request(app).post(
+      `/api/admin/playlists/${playlistId}/hide`,
+    );
+    expect(hiddenPlaylist.status).toBe(200);
+    const publicWithoutPlaylist = await request(app).get("/api/catalog");
+    expect(
+      publicWithoutPlaylist.body.playlistCarousels.some(
+        (row: { id: number }) => row.id === first.body.id,
+      ),
+    ).toBe(false);
+    const republishedPlaylist = await request(app).post(
+      `/api/admin/playlists/${playlistId}/publish`,
+    );
+    expect(republishedPlaylist.status).toBe(200);
+
+    // Legacy per-playlist placement writes remain a compatibility surface and
+    // must not alter either independently managed carousel.
+    const beforeLegacyWrite = await request(app).get("/api/catalog");
+    await request(app)
+      .patch(`/api/admin/playlists/${playlistId}`)
+      .send({ placements: [{ surface: "sleep", sortOrder: 0, isActive: true }] });
+    const afterLegacyWrite = await request(app).get("/api/catalog");
+    expect(
+      afterLegacyWrite.body.playlistCarousels.filter(
+        (row: { id: number }) => createdCarouselIds.includes(row.id),
+      ),
+    ).toEqual(
+      beforeLegacyWrite.body.playlistCarousels.filter(
+        (row: { id: number }) => createdCarouselIds.includes(row.id),
+      ),
+    );
+
+    const deleted = await request(app).delete(
+      `/api/admin/playlist-carousels/${second.body.id}`,
+    );
+    expect(deleted.status).toBe(204);
+    expect(
+      await db
+        .select()
+        .from(catalogPlaylistCarouselMembershipsTable)
+        .where(eq(catalogPlaylistCarouselMembershipsTable.carouselId, second.body.id)),
+    ).toHaveLength(0);
+    expect(
+      await db
+        .select({ id: catalogPlaylistsTable.id })
+        .from(catalogPlaylistsTable)
+        .where(eq(catalogPlaylistsTable.id, playlistId)),
+    ).toHaveLength(1);
   });
 
   it("preserves unrelated library fields when syncing saved editorial slugs", async () => {
@@ -347,6 +511,11 @@ afterAll(async () => {
     await db
       .delete(catalogPlaylistsTable)
       .where(inArray(catalogPlaylistsTable.id, createdPlaylistIds));
+  }
+  if (createdCarouselIds.length > 0) {
+    await db
+      .delete(catalogPlaylistCarouselsTable)
+      .where(inArray(catalogPlaylistCarouselsTable.id, createdCarouselIds));
   }
   await db
     .delete(catalogSessionsTable)

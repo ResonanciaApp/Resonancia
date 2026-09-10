@@ -30,7 +30,7 @@ import {
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { getEditorialPlaylistsForSurface } from "@/data/playlists";
+import { getEditorialPlaylistCarouselsForSurface } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
 import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
@@ -307,8 +307,8 @@ export function ExploreScreen({
   const otherThemeDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : "rgba(255,255,255,0.62)";
-  const editorialDiscover = useMemo(
-    () => getEditorialPlaylistsForSurface("discover"),
+  const editorialDiscoverCarousels = useMemo(
+    () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
   );
 
@@ -674,13 +674,16 @@ export function ExploreScreen({
             />
           </View>
 
-          <EditorialPlaylistCarousel
-            title="Playlists para ti"
-            playlists={editorialDiscover}
-            onPress={(playlist) =>
-              openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-            }
-          />
+          {editorialDiscoverCarousels.map((carousel) => (
+            <EditorialPlaylistCarousel
+              key={carousel.id}
+              title={carousel.title}
+              playlists={carousel.playlists}
+              onPress={(playlist) =>
+                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+              }
+            />
+          ))}
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>

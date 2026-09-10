@@ -14,3 +14,9 @@ Las cards del carrusel deben conservar el diseño previamente aprobado: portada 
 **Why:** El usuario aclaró que conectar playlists creadas en Admin significaba alimentar esas mismas cards, no sustituirlas por otra presentación.
 
 **How to apply:** Mantener dimensiones, tipografía y tiras grises al cambiar la fuente de datos; el nuevo diseño de detalle no se extiende a las cards.
+
+Las migraciones editoriales deben preservar el contenido efectivo visible, incluidos los fallbacks antiguos, pero no volver a publicarlo después de que el editor lo elimine u oculte.
+
+**Why:** Importar solo las ubicaciones explícitas omite playlists que antes aparecían por compatibilidad con Inicio. Una corrección posterior que recrea defaults o rellena grupos ya editados invalida las decisiones del editor.
+
+**How to apply:** Materializar fallbacks solo una vez, con orden idéntico al cliente anterior. Las correcciones posteriores requieren evidencia de que el grupo sigue intacto y nunca crean grupos ausentes. Probar ediciones y borrados anteriores a la primera ejecución, no solo después del marcador.

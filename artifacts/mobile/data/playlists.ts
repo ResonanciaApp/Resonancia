@@ -1,4 +1,15 @@
 import { resolveAvatarUrl } from "@/lib/avatar";
+import {
+  buildLegacyPlaylistCarouselRecords,
+  resolvePlaylistCarouselRows,
+  type PlaylistCarouselRecord,
+  type PlaylistCarouselSurface,
+} from "@/lib/editorial-playlist-helpers";
+
+export type {
+  PlaylistCarouselRecord,
+  PlaylistCarouselSurface,
+} from "@/lib/editorial-playlist-helpers";
 
 export type Playlist = {
   id: string;
@@ -19,7 +30,7 @@ export type Playlist = {
 };
 
 export type EditorialPlacement = {
-  surface: "discover" | "sleep";
+  surface: PlaylistCarouselSurface;
   sortOrder: number;
   isActive: boolean;
 };
@@ -32,6 +43,18 @@ export type EditorialPlaylist = Playlist & {
 export const PLAYLISTS: EditorialPlaylist[] = [];
 /** Compatibilidad para las superficies antiguas de Inicio. */
 export const HOME_PLAYLISTS: EditorialPlaylist[] = [];
+/**
+ * Public carousel definitions.  This is deliberately separate from
+ * HOME_PLAYLISTS: a home placement is not a publication to Descubrir or
+ * Dormir, and must never make a hidden carousel reappear.
+ */
+export const PLAYLIST_CAROUSELS: PlaylistCarouselRecord[] = [];
+
+export type PlaylistCarouselSnapshot = PlaylistCarouselRecord;
+
+export type EditorialPlaylistCarousel = PlaylistCarouselRecord & {
+  playlists: EditorialPlaylist[];
+};
 
 export function getPlaylistById(id: string): Playlist | undefined {
   return PLAYLISTS.find((p) => p.id === id);
@@ -55,6 +78,37 @@ export type PlaylistSnapshot = {
   homePosition?: number | null;
   placements?: EditorialPlacement[];
 };
+
+function normalizePlaylistCarousels(input: unknown): PlaylistCarouselSnapshot[] {
+  if (!Array.isArray(input)) return [];
+  return input.flatMap((candidate) => {
+    if (!candidate || typeof candidate !== "object") return [];
+    const raw = candidate as Partial<PlaylistCarouselSnapshot>;
+    if (
+      typeof raw.id !== "number" ||
+      !Number.isFinite(raw.id) ||
+      typeof raw.title !== "string" ||
+      typeof raw.surface !== "string" ||
+      (raw.surface !== "discover" && raw.surface !== "sleep") ||
+      typeof raw.sortOrder !== "number" ||
+      !Number.isFinite(raw.sortOrder) ||
+      typeof raw.isActive !== "boolean" ||
+      !Array.isArray(raw.playlistIds)
+    ) {
+      return [];
+    }
+    return [{
+      id: raw.id,
+      title: raw.title,
+      surface: raw.surface,
+      sortOrder: raw.sortOrder,
+      isActive: raw.isActive,
+      playlistIds: raw.playlistIds.filter(
+        (playlistId): playlistId is string => typeof playlistId === "string" && playlistId.length > 0,
+      ),
+    }];
+  });
+}
 
 export type EditorialPlaylistDetailResponse = PlaylistSnapshot & {
   playlist?: PlaylistSnapshot;
@@ -103,6 +157,7 @@ function resolveCover(sessionIds: string[]): ReturnType<typeof require> {
 export function applyPlaylistsSnapshot(
   snapshots: PlaylistSnapshot[],
   homeSnapshots?: PlaylistSnapshot[],
+  playlistCarousels?: PlaylistCarouselSnapshot[],
 ): void {
   // Reemplazar contenido in-place (conserva la referencia del array)
   PLAYLISTS.length = 0;
@@ -132,6 +187,17 @@ export function applyPlaylistsSnapshot(
       showOnHome: snap.showOnHome,
     });
   }
+
+  // `undefined` means this is an old cached/server snapshot.  Any defined
+  // value, including [], is the complete publication and replaces the prior
+  // in-memory value.
+  const carouselSource =
+    playlistCarousels === undefined
+      ? buildLegacyPlaylistCarouselRecords(snapshots)
+      : normalizePlaylistCarousels(playlistCarousels);
+  PLAYLIST_CAROUSELS.length = 0;
+  PLAYLIST_CAROUSELS.push(...carouselSource);
+
   HOME_PLAYLISTS.length = 0;
   const homeSource = homeSnapshots ?? snapshots
     .filter((snapshot) => snapshot.isActive !== false && snapshot.showOnHome === true)
@@ -143,36 +209,25 @@ export function applyPlaylistsSnapshot(
   }
 }
 
+/** Published, named carousels with active playlist metadata resolved in order. */
+export function getEditorialPlaylistCarouselsForSurface(
+  surface: PlaylistCarouselSurface,
+): EditorialPlaylistCarousel[] {
+  return resolvePlaylistCarouselRows(PLAYLIST_CAROUSELS, PLAYLISTS, surface);
+}
+
 /**
  * Selecciones publicadas por superficie. Las posiciones pertenecen a la
  * publicación, no a las sesiones, para que una misma playlist pueda aparecer
- * en Descubrir y Dormir con órdenes distintos.
- *
- * `showOnHome` es únicamente compatibilidad con snapshots antiguos; los
- * snapshots editoriales actuales siempre usan `placements`.
+ * en varios carruseles y con órdenes independientes.  Kept as a compatibility
+ * flattening helper for callers that still render one carousel.
  */
 export function getEditorialPlaylistsForSurface(
-  surface: EditorialPlacement["surface"],
+  surface: PlaylistCarouselSurface,
 ): EditorialPlaylist[] {
-  return PLAYLISTS
-    .flatMap((playlist, playlistIndex) => {
-      const placements = playlist.placements.filter(
-        (placement) => placement.surface === surface && placement.isActive,
-      );
-      if (placements.length > 0) {
-        return placements.map((placement) => ({
-          playlist,
-          sortOrder: placement.sortOrder,
-          playlistIndex,
-        }));
-      }
-      if (surface === "discover" && playlist.showOnHome === true) {
-        return [{ playlist, sortOrder: playlist.sortOrder ?? playlistIndex, playlistIndex }];
-      }
-      return [];
-    })
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.playlistIndex - b.playlistIndex)
-    .map(({ playlist }) => playlist);
+  return getEditorialPlaylistCarouselsForSurface(surface).flatMap(
+    (carousel) => carousel.playlists,
+  );
 }
 
 /** Convierte la respuesta del detalle en un snapshot tolerante a versiones. */

@@ -9,6 +9,8 @@ import {
   catalogSessionsTable,
   catalogPlaylistsTable,
   catalogPlaylistPlacementsTable,
+  catalogPlaylistCarouselsTable,
+  catalogPlaylistCarouselMembershipsTable,
   playbackHistoryTable,
   sharedMixesTable,
   sharedMixReportsTable,
@@ -27,6 +29,7 @@ import {
   type CatalogCategory,
   type CatalogPlaylist,
   type CatalogPlaylistPlacement,
+  type CatalogPlaylistCarousel,
   type InsertCatalogPlaylist,
   type UpdateCatalogPlaylist,
   type SharedMix,
@@ -45,6 +48,7 @@ import {
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
+import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 
 const router: IRouter = Router();
 
@@ -741,6 +745,142 @@ async function replacePlaylistPlacements(
   }
 }
 
+const playlistCarouselPayloadSchema = zod4
+  .object({
+    title: zod4.string().trim().min(1).max(120),
+    surface: zod4.enum(EDITORIAL_PLAYLIST_SURFACES),
+    sortOrder: zod4.number().int().min(0),
+    isActive: zod4.boolean(),
+    playlistIds: zod4
+      .array(
+        zod4
+          .string()
+          .trim()
+          .min(1)
+          .max(80),
+      )
+      .refine((ids) => new Set(ids).size === ids.length, {
+        message: "Una playlist no puede repetirse dentro del mismo carrusel",
+      }),
+  })
+  .strict();
+const playlistCarouselPatchSchema = playlistCarouselPayloadSchema
+  .partial()
+  .strict()
+  .refine((value) => Object.keys(value).length > 0, {
+    message: "No hay campos para actualizar",
+  });
+
+type PlaylistCarouselPayload = zod4.infer<typeof playlistCarouselPayloadSchema>;
+type PlaylistCarouselPatch = zod4.infer<typeof playlistCarouselPatchSchema>;
+type CarouselTx = Pick<
+  typeof db,
+  "delete" | "insert" | "select" | "update" | "execute"
+>;
+
+function serializePlaylistCarousel(carousel: CatalogPlaylistCarousel, playlistIds: string[]) {
+  return {
+    id: carousel.id,
+    title: carousel.title,
+    surface: carousel.surface,
+    sortOrder: carousel.sortOrder,
+    isActive: carousel.isActive,
+    playlistIds,
+  };
+}
+
+async function lockPlaylistCarouselOrdering(tx: CarouselTx) {
+  // A single lock covers both surfaces and makes concurrent insert/move
+  // requests deterministic without relying on transient unique-index gaps.
+  await tx.execute(
+    sql`select pg_advisory_xact_lock(hashtextextended('catalog-playlist-carousels', 0))`,
+  );
+}
+
+async function setTemporaryCarouselOrders(
+  tx: CarouselTx,
+  rows: CatalogPlaylistCarousel[],
+) {
+  if (rows.length === 0) return;
+  await tx
+    .update(catalogPlaylistCarouselsTable)
+    .set({ sortOrder: sql`-${catalogPlaylistCarouselsTable.id}` })
+    .where(inArray(catalogPlaylistCarouselsTable.id, rows.map((row) => row.id)));
+}
+
+async function writeCarouselOrders(
+  tx: CarouselTx,
+  rowsBySurface: Map<"discover" | "sleep", CatalogPlaylistCarousel[]>,
+) {
+  for (const surface of EDITORIAL_PLAYLIST_SURFACES) {
+    const rows = rowsBySurface.get(surface) ?? [];
+    for (const row of rows) {
+      await tx
+        .update(catalogPlaylistCarouselsTable)
+        .set({ sortOrder: row.sortOrder, updatedAt: new Date() })
+        .where(eq(catalogPlaylistCarouselsTable.id, row.id));
+    }
+  }
+}
+
+async function validateCarouselPlaylistIds(
+  tx: Pick<typeof db, "select">,
+  playlistIds: string[],
+) {
+  if (playlistIds.length === 0) return new Map<string, number>();
+  const rows = await tx
+    .select({ id: catalogPlaylistsTable.id, slug: catalogPlaylistsTable.slug })
+    .from(catalogPlaylistsTable)
+    .where(inArray(catalogPlaylistsTable.slug, playlistIds));
+  const bySlug = new Map(rows.map((row) => [row.slug, row.id]));
+  const missing = playlistIds.filter((slug) => !bySlug.has(slug));
+  if (missing.length > 0) {
+    return { missing };
+  }
+  return bySlug;
+}
+
+async function replaceCarouselMemberships(
+  tx: CarouselTx,
+  carouselId: number,
+  playlistIds: string[],
+  playlistBySlug: Map<string, number>,
+) {
+  await tx
+    .delete(catalogPlaylistCarouselMembershipsTable)
+    .where(eq(catalogPlaylistCarouselMembershipsTable.carouselId, carouselId));
+  if (playlistIds.length === 0) return;
+  await tx.insert(catalogPlaylistCarouselMembershipsTable).values(
+    playlistIds.map((slug, sortOrder) => ({
+      carouselId,
+      playlistId: playlistBySlug.get(slug)!,
+      sortOrder,
+    })),
+  );
+}
+
+/**
+ * Keep the requested numeric order when there is room, while shifting only
+ * colliding neighbors. This preserves existing order values and mirrors the
+ * legacy placement contract (e.g. a first item requested at order 2 stays at
+ * order 2 rather than being silently rewritten to order 0).
+ */
+function placeCarouselAtOrder(
+  rows: CatalogPlaylistCarousel[],
+  target: CatalogPlaylistCarousel,
+  sortOrder: number,
+) {
+  const shifted = rows
+    .filter((row) => row.id !== target.id)
+    .map((row) =>
+      row.sortOrder >= sortOrder
+        ? { ...row, sortOrder: row.sortOrder + 1 }
+        : row,
+    );
+  shifted.push({ ...target, sortOrder });
+  return shifted.sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+}
+
 // GET /admin/playlists — listar todas las playlists (admin).
 router.get("/admin/playlists", requireAuth, requireRole("admin"), async (req, res) => {
   try {
@@ -986,6 +1126,289 @@ router.delete("/admin/playlists/:id", requireAuth, requireRole("admin"), async (
     res.status(500).json({ error: "Error al eliminar la playlist" });
   }
 });
+
+// ── Admin playlist carousels ────────────────────────────────────────────────
+
+// GET /admin/playlist-carousels — returns hidden and empty editorial groups.
+router.get(
+  "/admin/playlist-carousels",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    try {
+      res.json(await loadPlaylistCarousels(false));
+    } catch (err) {
+      req.log.error({ err }, "error listing playlist carousels");
+      res.status(500).json({ error: "Error al cargar los carruseles" });
+    }
+  },
+);
+
+// POST /admin/playlist-carousels — create a named editorial group.
+router.post(
+  "/admin/playlist-carousels",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const parsed = playlistCarouselPayloadSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const payload: PlaylistCarouselPayload = parsed.data;
+    try {
+      const created = await db.transaction(async (tx) => {
+        const playlistBySlug = await validateCarouselPlaylistIds(tx, payload.playlistIds);
+        if ("missing" in playlistBySlug) {
+          throw {
+            code: "UNKNOWN_CAROUSEL_PLAYLISTS",
+            missing: playlistBySlug.missing,
+          };
+        }
+        await lockPlaylistCarouselOrdering(tx);
+        const rows = await tx
+          .select()
+          .from(catalogPlaylistCarouselsTable)
+          .orderBy(
+            asc(catalogPlaylistCarouselsTable.surface),
+            asc(catalogPlaylistCarouselsTable.sortOrder),
+            asc(catalogPlaylistCarouselsTable.id),
+          );
+        await setTemporaryCarouselOrders(tx, rows);
+        const temporarySortOrder =
+          -(Math.max(0, ...rows.map((candidate) => candidate.id)) + 1);
+        const [row] = await tx
+          .insert(catalogPlaylistCarouselsTable)
+          .values({
+            title: payload.title,
+            surface: payload.surface,
+            // The temporary value is replaced below after all affected rows
+            // have been moved out of the unique-index range.
+            sortOrder: temporarySortOrder,
+            isActive: payload.isActive,
+          })
+          .returning();
+        const rowsBySurface = new Map<"discover" | "sleep", CatalogPlaylistCarousel[]>();
+        for (const surface of EDITORIAL_PLAYLIST_SURFACES) {
+          const ordered = rows
+            .filter((candidate) => candidate.surface === surface)
+            .sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+          if (surface === payload.surface) {
+            rowsBySurface.set(
+              surface,
+              placeCarouselAtOrder(ordered, row, payload.sortOrder),
+            );
+            continue;
+          }
+          rowsBySurface.set(surface, ordered);
+        }
+        await writeCarouselOrders(tx, rowsBySurface);
+        await replaceCarouselMemberships(tx, row.id, payload.playlistIds, playlistBySlug);
+        return row;
+      });
+      const response = (await loadPlaylistCarousels(false)).find(
+        (carousel) => carousel.id === created.id,
+      );
+      req.log.info({ carouselId: created.id }, "playlist carousel created");
+      res.status(201).json(response ?? serializePlaylistCarousel(created, payload.playlistIds));
+    } catch (err: unknown) {
+      const error = err as { code?: string; missing?: string[] };
+      if (error.code === "UNKNOWN_CAROUSEL_PLAYLISTS") {
+        res.status(400).json({
+          code: error.code,
+          error: `Las playlists no existen: ${(error.missing ?? []).join(", ")}`,
+        });
+        return;
+      }
+      if (error.code === "23505") {
+        res.status(409).json({ error: "El orden del carrusel ya está ocupado" });
+        return;
+      }
+      req.log.error({ err }, "error creating playlist carousel");
+      res.status(500).json({ error: "Error al crear el carrusel" });
+    }
+  },
+);
+
+// PATCH /admin/playlist-carousels/:id — edit metadata, order, or memberships.
+router.patch(
+  "/admin/playlist-carousels/:id",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = parseInt(String(req.params.id), 10);
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: "ID inválido" });
+      return;
+    }
+    const parsed = playlistCarouselPatchSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const payload: PlaylistCarouselPatch = parsed.data;
+    try {
+      const updated = await db.transaction(async (tx) => {
+        await lockPlaylistCarouselOrdering(tx);
+        const [current] = await tx
+          .select()
+          .from(catalogPlaylistCarouselsTable)
+          .where(eq(catalogPlaylistCarouselsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!current) return { kind: "not-found" as const };
+
+        let playlistBySlug = new Map<string, number>();
+        if (payload.playlistIds !== undefined) {
+          const lookup = await validateCarouselPlaylistIds(tx, payload.playlistIds);
+          if ("missing" in lookup) {
+            return {
+              kind: "unknown-playlists" as const,
+              missing: lookup.missing,
+            };
+          }
+          playlistBySlug = lookup;
+        }
+
+        const rows = await tx
+          .select()
+          .from(catalogPlaylistCarouselsTable)
+          .orderBy(
+            asc(catalogPlaylistCarouselsTable.surface),
+            asc(catalogPlaylistCarouselsTable.sortOrder),
+            asc(catalogPlaylistCarouselsTable.id),
+          );
+        await setTemporaryCarouselOrders(tx, rows);
+
+        const destinationSurface = payload.surface ?? current.surface;
+        const destinationSortOrder = payload.sortOrder ?? current.sortOrder;
+        const updates: Partial<typeof catalogPlaylistCarouselsTable.$inferInsert> = {
+          title: payload.title ?? current.title,
+          surface: destinationSurface,
+          isActive: payload.isActive ?? current.isActive,
+          sortOrder: -current.id,
+          updatedAt: new Date(),
+        };
+        const [updatedRow] = await tx
+          .update(catalogPlaylistCarouselsTable)
+          .set(updates)
+          .where(eq(catalogPlaylistCarouselsTable.id, id))
+          .returning();
+        const rowsBySurface = new Map<"discover" | "sleep", CatalogPlaylistCarousel[]>();
+        for (const surface of EDITORIAL_PLAYLIST_SURFACES) {
+          const ordered = rows
+            .filter(
+              (candidate) =>
+                candidate.id !== id && candidate.surface === surface,
+            )
+            .sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+          if (surface === destinationSurface) {
+            rowsBySurface.set(
+              surface,
+              placeCarouselAtOrder(
+                ordered,
+                updatedRow,
+                destinationSortOrder,
+              ),
+            );
+            continue;
+          }
+          rowsBySurface.set(surface, ordered);
+        }
+        await writeCarouselOrders(tx, rowsBySurface);
+        if (payload.playlistIds !== undefined) {
+          await replaceCarouselMemberships(
+            tx,
+            id,
+            payload.playlistIds,
+            playlistBySlug,
+          );
+        }
+        return { kind: "updated" as const, row: updatedRow };
+      });
+
+      if (updated.kind === "not-found") {
+        res.status(404).json({ error: "Carrusel no encontrado" });
+        return;
+      }
+      if (updated.kind === "unknown-playlists") {
+        res.status(400).json({
+          code: "UNKNOWN_CAROUSEL_PLAYLISTS",
+          error: `Las playlists no existen: ${updated.missing.join(", ")}`,
+        });
+        return;
+      }
+      const response = (await loadPlaylistCarousels(false)).find(
+        (carousel) => carousel.id === updated.row.id,
+      );
+      req.log.info({ carouselId: id }, "playlist carousel updated");
+      res.json(response ?? serializePlaylistCarousel(updated.row, payload.playlistIds ?? []));
+    } catch (err: unknown) {
+      const error = err as { code?: string };
+      if (error.code === "23505") {
+        res.status(409).json({ error: "El orden del carrusel ya está ocupado" });
+        return;
+      }
+      req.log.error({ err }, "error updating playlist carousel");
+      res.status(500).json({ error: "Error al actualizar el carrusel" });
+    }
+  },
+);
+
+// DELETE /admin/playlist-carousels/:id — remove only the grouping.
+router.delete(
+  "/admin/playlist-carousels/:id",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = parseInt(String(req.params.id), 10);
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: "ID inválido" });
+      return;
+    }
+    try {
+      const deleted = await db.transaction(async (tx) => {
+        await lockPlaylistCarouselOrdering(tx);
+        const [current] = await tx
+          .select()
+          .from(catalogPlaylistCarouselsTable)
+          .where(eq(catalogPlaylistCarouselsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!current) return null;
+        const rows = await tx
+          .select()
+          .from(catalogPlaylistCarouselsTable)
+          .where(eq(catalogPlaylistCarouselsTable.surface, current.surface))
+          .orderBy(
+            asc(catalogPlaylistCarouselsTable.sortOrder),
+            asc(catalogPlaylistCarouselsTable.id),
+          );
+        await setTemporaryCarouselOrders(tx, rows);
+        await tx
+          .delete(catalogPlaylistCarouselsTable)
+          .where(eq(catalogPlaylistCarouselsTable.id, id));
+        const remaining = rows
+          .filter((row) => row.id !== id)
+          .sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+        await writeCarouselOrders(
+          tx,
+          new Map([[current.surface, remaining]]),
+        );
+        return current;
+      });
+      if (!deleted) {
+        res.status(404).json({ error: "Carrusel no encontrado" });
+        return;
+      }
+      req.log.info({ carouselId: id }, "playlist carousel deleted");
+      res.status(204).end();
+    } catch (err) {
+      req.log.error({ err }, "error deleting playlist carousel");
+      res.status(500).json({ error: "Error al eliminar el carrusel" });
+    }
+  },
+);
 
 // DELETE /admin/mixes/:id — eliminar una mezcla definitivamente (admin).
 router.delete("/admin/mixes/:id", requireAuth, requireRole("admin"), async (req, res) => {

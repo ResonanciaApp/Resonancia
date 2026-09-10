@@ -2625,6 +2625,146 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlist-carousels:
+    get:
+      operationId: listAdminPlaylistCarousels
+      tags: [admin]
+      summary: Listar todos los carruseles editoriales (admin)
+      responses:
+        "200":
+          description: Carruseles visibles, ocultos y vacíos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlaylistCarousel"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminPlaylistCarousel
+      tags: [admin]
+      summary: Crear un carrusel editorial (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPlaylistCarouselInput"
+      responses:
+        "201":
+          description: Carrusel creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaylistCarousel"
+        "400":
+          description: Datos inválidos o playlists inexistentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlist-carousels/{id}:
+    patch:
+      operationId: updateAdminPlaylistCarousel
+      tags: [admin]
+      summary: Editar nombre, publicación, orden o playlists de un carrusel (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPlaylistCarouselUpdate"
+      responses:
+        "200":
+          description: Carrusel actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaylistCarousel"
+        "400":
+          description: Datos inválidos o playlists inexistentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Carrusel no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminPlaylistCarousel
+      tags: [admin]
+      summary: Eliminar un carrusel sin eliminar sus playlists (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Carrusel eliminado
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Carrusel no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/playlists/{id}/publish:
     post:
       operationId: publishAdminPlaylist
@@ -4967,13 +5107,80 @@ components:
         surface:
           type: string
           enum: [discover, sleep]
-          description: Superficie editorial; hay un carrusel fijo por superficie
+          description: Legacy per-playlist placement kept for compatibility
         sortOrder:
           type: integer
           minimum: 0
         isActive:
           type: boolean
       required: [surface, sortOrder, isActive]
+    PlaylistCarousel:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        surface:
+          type: string
+          enum: [discover, sleep]
+        sortOrder:
+          type: integer
+          minimum: 0
+        isActive:
+          type: boolean
+        playlistIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+      required: [id, title, surface, sortOrder, isActive, playlistIds]
+    AdminPlaylistCarouselInput:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        surface:
+          type: string
+          enum: [discover, sleep]
+        sortOrder:
+          type: integer
+          minimum: 0
+        isActive:
+          type: boolean
+        playlistIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+      required: [title, surface, sortOrder, isActive, playlistIds]
+    AdminPlaylistCarouselUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        surface:
+          type: string
+          enum: [discover, sleep]
+        sortOrder:
+          type: integer
+          minimum: 0
+        isActive:
+          type: boolean
+        playlistIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
     CatalogPlaylist:
       type: object
       properties:
@@ -5131,12 +5338,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
+        playlistCarousels:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaylistCarousel"
         homePlaylists:
           type: array
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
           description: Alias legado de Inicio, filtrado a showOnHome y máximo cuatro
-      required: [categories, sessions, playlists]
+      required: [categories, sessions, playlists, playlistCarousels]
     SearchTrendContext:
       type: string
       enum: [discover, sleep, sounds]

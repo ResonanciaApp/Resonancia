@@ -1182,6 +1182,10 @@ export const getCatalogResponseSessionsItemIsLoopDefault = false;
 export const getCatalogResponseSessionsItemIsPinnedFeaturedDefault = false;
 export const getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin = 0;
 
+export const getCatalogResponsePlaylistCarouselsItemSortOrderMin = 0;
+
+export const getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax = 80;
+
 export const getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 
@@ -1275,10 +1279,18 @@ export const GetCatalogResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
+})),
+  "playlistCarousels": zod.array(zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "surface": zod.enum(['discover', 'sleep']),
+  "sortOrder": zod.number().min(getCatalogResponsePlaylistCarouselsItemSortOrderMin),
+  "isActive": zod.boolean(),
+  "playlistIds": zod.array(zod.string().min(1).max(getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax))
 })),
   "homePlaylists": zod.array(zod.object({
   "id": zod.number(),
@@ -1295,7 +1307,7 @@ export const GetCatalogResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
@@ -1340,7 +1352,7 @@ export const GetCatalogPlaylistResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(getCatalogPlaylistResponsePlaylistPlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
@@ -3022,7 +3034,7 @@ export const ListAdminPlaylistsResponseItem = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(listAdminPlaylistsResponsePlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
@@ -3063,7 +3075,7 @@ export const CreateAdminPlaylistBody = zod.object({
   "showOnHome": zod.boolean().optional(),
   "homePosition": zod.number().min(1).max(createAdminPlaylistBodyHomePositionMax).nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(createAdminPlaylistBodyPlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).optional().describe('Una ubicación por superficie; omitir preserva las existentes al editar')
@@ -3107,7 +3119,7 @@ export const UpdateAdminPlaylistBody = zod.object({
   "showOnHome": zod.boolean().optional(),
   "homePosition": zod.number().min(1).max(updateAdminPlaylistBodyHomePositionMax).nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(updateAdminPlaylistBodyPlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).optional().describe('Reemplaza todas las ubicaciones; una por superficie como máximo')
@@ -3132,7 +3144,7 @@ export const UpdateAdminPlaylistResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(updateAdminPlaylistResponsePlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
@@ -3143,6 +3155,93 @@ export const UpdateAdminPlaylistResponse = zod.object({
  * @summary Eliminar una playlist de Resonancia (admin)
  */
 export const DeleteAdminPlaylistParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Listar todos los carruseles editoriales (admin)
+ */
+export const listAdminPlaylistCarouselsResponseSortOrderMin = 0;
+
+export const listAdminPlaylistCarouselsResponsePlaylistIdsItemMax = 80;
+
+
+
+export const ListAdminPlaylistCarouselsResponseItem = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "surface": zod.enum(['discover', 'sleep']),
+  "sortOrder": zod.number().min(listAdminPlaylistCarouselsResponseSortOrderMin),
+  "isActive": zod.boolean(),
+  "playlistIds": zod.array(zod.string().min(1).max(listAdminPlaylistCarouselsResponsePlaylistIdsItemMax))
+})
+export const ListAdminPlaylistCarouselsResponse = zod.array(ListAdminPlaylistCarouselsResponseItem)
+
+
+/**
+ * @summary Crear un carrusel editorial (admin)
+ */
+export const createAdminPlaylistCarouselBodyTitleMax = 120;
+
+export const createAdminPlaylistCarouselBodySortOrderMin = 0;
+
+export const createAdminPlaylistCarouselBodyPlaylistIdsItemMax = 80;
+
+
+
+export const CreateAdminPlaylistCarouselBody = zod.object({
+  "title": zod.string().min(1).max(createAdminPlaylistCarouselBodyTitleMax),
+  "surface": zod.enum(['discover', 'sleep']),
+  "sortOrder": zod.number().min(createAdminPlaylistCarouselBodySortOrderMin),
+  "isActive": zod.boolean(),
+  "playlistIds": zod.array(zod.string().min(1).max(createAdminPlaylistCarouselBodyPlaylistIdsItemMax))
+})
+
+
+/**
+ * @summary Editar nombre, publicación, orden o playlists de un carrusel (admin)
+ */
+export const UpdateAdminPlaylistCarouselParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updateAdminPlaylistCarouselBodyTitleMax = 120;
+
+export const updateAdminPlaylistCarouselBodySortOrderMin = 0;
+
+export const updateAdminPlaylistCarouselBodyPlaylistIdsItemMax = 80;
+
+
+
+export const UpdateAdminPlaylistCarouselBody = zod.object({
+  "title": zod.string().min(1).max(updateAdminPlaylistCarouselBodyTitleMax).optional(),
+  "surface": zod.enum(['discover', 'sleep']).optional(),
+  "sortOrder": zod.number().min(updateAdminPlaylistCarouselBodySortOrderMin).optional(),
+  "isActive": zod.boolean().optional(),
+  "playlistIds": zod.array(zod.string().min(1).max(updateAdminPlaylistCarouselBodyPlaylistIdsItemMax)).optional()
+})
+
+export const updateAdminPlaylistCarouselResponseSortOrderMin = 0;
+
+export const updateAdminPlaylistCarouselResponsePlaylistIdsItemMax = 80;
+
+
+
+export const UpdateAdminPlaylistCarouselResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "surface": zod.enum(['discover', 'sleep']),
+  "sortOrder": zod.number().min(updateAdminPlaylistCarouselResponseSortOrderMin),
+  "isActive": zod.boolean(),
+  "playlistIds": zod.array(zod.string().min(1).max(updateAdminPlaylistCarouselResponsePlaylistIdsItemMax))
+})
+
+
+/**
+ * @summary Eliminar un carrusel sin eliminar sus playlists (admin)
+ */
+export const DeleteAdminPlaylistCarouselParams = zod.object({
   "id": zod.coerce.number()
 })
 
@@ -3173,7 +3272,7 @@ export const PublishAdminPlaylistResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(publishAdminPlaylistResponsePlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')
@@ -3206,7 +3305,7 @@ export const HideAdminPlaylistResponse = zod.object({
   "showOnHome": zod.boolean(),
   "homePosition": zod.number().nullish(),
   "placements": zod.array(zod.object({
-  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "surface": zod.enum(['discover', 'sleep']).describe('Legacy per-playlist placement kept for compatibility'),
   "sortOrder": zod.number().min(hideAdminPlaylistResponsePlacementsItemSortOrderMin),
   "isActive": zod.boolean()
 })).describe('Ubicaciones editoriales activas (público) o todas (admin)')

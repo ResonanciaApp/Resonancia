@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  buildLegacyPlaylistCarouselRecords,
   buildEditorialQueue,
   classifyEditorialDetailStatus,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
+  resolvePlaylistCarouselRows,
 } from "../lib/editorial-playlist-helpers.ts";
 
 test("evicts editorial detail cache only for authoritative 404/410", () => {
@@ -47,4 +49,98 @@ test("random playback chooses a playable start before shuffling continuation", (
     buildEditorialQueue(["a", "b", "c"], "c", true, () => 0),
     ["c", "b", "a"],
   );
+});
+
+test("resolves multiple named carousels in server order and reuses playlists", () => {
+  const playlists = [
+    { id: "shared", isActive: true },
+    { id: "second", isActive: true },
+    { id: "inactive", isActive: false },
+  ];
+  const carousels = [
+    {
+      id: 20,
+      title: "Después",
+      surface: "discover" as const,
+      sortOrder: 20,
+      isActive: true,
+      playlistIds: ["shared", "second", "shared"],
+    },
+    {
+      id: 10,
+      title: "Primero",
+      surface: "discover" as const,
+      sortOrder: 10,
+      isActive: true,
+      playlistIds: ["shared", "inactive"],
+    },
+    {
+      id: 30,
+      title: "Dormir",
+      surface: "sleep" as const,
+      sortOrder: 1,
+      isActive: true,
+      playlistIds: ["second"],
+    },
+  ];
+
+  assert.deepEqual(
+    resolvePlaylistCarouselRows(carousels, playlists, "discover").map((carousel) => ({
+      id: carousel.id,
+      playlistIds: carousel.playlists.map((playlist) => playlist.id),
+    })),
+    [
+      { id: 10, playlistIds: ["shared"] },
+      { id: 20, playlistIds: ["shared", "second"] },
+    ],
+  );
+});
+
+test("an explicit empty carousel publication clears all rendered rows", () => {
+  const playlists = [{ id: "shared", isActive: true, showOnHome: true }];
+  assert.deepEqual(resolvePlaylistCarouselRows([], playlists, "discover"), []);
+  assert.deepEqual(
+    resolvePlaylistCarouselRows(
+      [{
+        id: 1,
+        title: "Oculto",
+        surface: "discover",
+        sortOrder: 0,
+        isActive: false,
+        playlistIds: ["shared"],
+      }],
+      playlists,
+      "discover",
+    ),
+    [],
+  );
+});
+
+test("legacy conversion keeps the old Discover home fallback after inactive placements", () => {
+  const legacy = buildLegacyPlaylistCarouselRecords([
+    {
+      slug: "fallback",
+      sortOrder: 7,
+      showOnHome: true,
+      placements: [{ surface: "discover", sortOrder: 2, isActive: false }],
+    },
+    {
+      slug: "placed",
+      sortOrder: 99,
+      showOnHome: true,
+      placements: [{ surface: "discover", sortOrder: 1, isActive: true }],
+    },
+    {
+      slug: "home-only",
+      sortOrder: 3,
+      showOnHome: true,
+      placements: [],
+    },
+  ]);
+
+  assert.deepEqual(
+    legacy.find((carousel) => carousel.surface === "discover")?.playlistIds,
+    ["placed", "home-only", "fallback"],
+  );
+  assert.equal(legacy.some((carousel) => carousel.surface === "sleep"), false);
 });

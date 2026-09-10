@@ -38,8 +38,10 @@ import {
 import {
   applyPlaylistsSnapshot,
   HOME_PLAYLISTS,
+  PLAYLIST_CAROUSELS,
   PLAYLISTS,
   type EditorialPlaylist,
+  type PlaylistCarouselSnapshot,
   type PlaylistSnapshot,
 } from "@/data/playlists";
 
@@ -57,6 +59,8 @@ type CatalogContextValue = {
   editorialPlaylists: EditorialPlaylist[];
   /** Alias legado de Inicio: solo showOnHome y máximo cuatro. */
   homeEditorialPlaylists: EditorialPlaylist[];
+  /** Definiciones publicadas de carruseles (los slugs se resuelven al renderizar). */
+  editorialPlaylistCarousels: PlaylistCarouselSnapshot[];
 };
 
 const CatalogContext = createContext<CatalogContextValue>({
@@ -64,18 +68,30 @@ const CatalogContext = createContext<CatalogContextValue>({
   version: 0,
   editorialPlaylists: PLAYLISTS,
   homeEditorialPlaylists: HOME_PLAYLISTS,
+  editorialPlaylistCarousels: PLAYLIST_CAROUSELS,
 });
 
-function hydrate(snapshot: {
+type CatalogSnapshot = {
   categories: CatalogCategorySnapshot[];
   sessions: CatalogSessionSnapshot[];
   playlists?: PlaylistSnapshot[];
   homePlaylists?: PlaylistSnapshot[];
-}): void {
+  /**
+   * Optional only for compatibility with snapshots created before named
+   * carousels existed.  An explicit [] is authoritative and must be kept.
+   */
+  playlistCarousels?: PlaylistCarouselSnapshot[];
+};
+
+function hydrate(snapshot: CatalogSnapshot): void {
   applyCategoriesSnapshot(snapshot.categories);
   applyCatalogSnapshot(snapshot.sessions);
   if (snapshot.playlists) {
-    applyPlaylistsSnapshot(snapshot.playlists, snapshot.homePlaylists);
+    applyPlaylistsSnapshot(
+      snapshot.playlists,
+      snapshot.homePlaylists,
+      snapshot.playlistCarousels,
+    );
   }
 }
 
@@ -83,6 +99,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<CatalogStatus>("bundled");
   const [version, setVersion] = useState(0);
   const lastSignature = useRef<string | null>(null);
+  const remoteApplied = useRef(false);
 
   // 1) Aplicar el snapshot cacheado al montar (offline / arranque rápido).
   useEffect(() => {
@@ -90,9 +107,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     (async () => {
       try {
         const raw = await AsyncStorage.getItem(CACHE_KEY);
-        if (!raw || cancelled) return;
-        const parsed = JSON.parse(raw) as CatalogResponse;
+        if (!raw || cancelled || remoteApplied.current) return;
+        const parsed = JSON.parse(raw) as CatalogResponse & CatalogSnapshot;
         if (!parsed?.categories || !parsed?.sessions) return;
+        if (remoteApplied.current || cancelled) return;
         const signature = JSON.stringify(parsed);
         if (signature === lastSignature.current) return;
         hydrate(parsed);
@@ -115,9 +133,16 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!data?.categories || !data?.sessions) return;
-    const signature = JSON.stringify(data);
-    if (signature === lastSignature.current) return;
-    hydrate(data);
+    // Mark the network response before hydrating so a slower cache read can
+    // never overwrite a valid remote response with stale editorial state.
+    remoteApplied.current = true;
+    const snapshot = data as CatalogResponse & CatalogSnapshot;
+    const signature = JSON.stringify(snapshot);
+    if (signature === lastSignature.current) {
+      setStatus("remote");
+      return;
+    }
+    hydrate(snapshot);
     lastSignature.current = signature;
     setStatus("remote");
     setVersion((v) => v + 1);
@@ -133,6 +158,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         version,
         editorialPlaylists: PLAYLISTS,
         homeEditorialPlaylists: HOME_PLAYLISTS,
+        editorialPlaylistCarousels: PLAYLIST_CAROUSELS,
       }}
     >
       {children}

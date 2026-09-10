@@ -42,6 +42,8 @@ export * from "./shared-glyph-likes";
 export * from "./geometrix-settings";
 export * from "./catalog-playlists";
 export * from "./catalog-playlist-placements";
+export * from "./catalog-playlist-carousels";
+export * from "./catalog-playlist-carousel-memberships";
 export * from "./expansor-profiles";
 export * from "./applications";
 export * from "./live-sessions";

@@ -36,6 +36,7 @@ import {
   canUserReferenceObject,
 } from "../lib/objectAccess";
 import { getCatalogReadiness } from "../lib/catalogReadiness";
+import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 
 const router: IRouter = Router();
 
@@ -326,7 +327,7 @@ async function loadPlaylistPlacements(
 
 // GET /catalog — catálogo público (sesiones publicadas + todas las playlists activas).
 router.get("/catalog", async (req, res) => {
-  const [categories, sessions, playlists] = await Promise.all([
+  const [categories, sessions, playlists, playlistCarousels] = await Promise.all([
     db.select().from(catalogCategoriesTable)
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id))
       .limit(200),
@@ -339,6 +340,7 @@ router.get("/catalog", async (req, res) => {
     db.select().from(catalogPlaylistsTable)
       .where(eq(catalogPlaylistsTable.isActive, true))
       .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
+    loadPlaylistCarousels(true),
   ]);
 
   const sessionIds = sessions.map((s) => s.id);
@@ -364,7 +366,13 @@ router.get("/catalog", async (req, res) => {
   }
 
   req.log.info(
-    { categories: categories.length, sessions: sessions.length, playlists: playlists.length, audioFiles: audioFiles.length },
+    {
+      categories: categories.length,
+      sessions: sessions.length,
+      playlists: playlists.length,
+      playlistCarousels: playlistCarousels.length,
+      audioFiles: audioFiles.length,
+    },
     "served catalog",
   );
 
@@ -378,6 +386,7 @@ router.get("/catalog", async (req, res) => {
         visibleSessionIds,
       ),
     ),
+    playlistCarousels,
     // Alias legado para Inicio: la fuente editorial nueva es `playlists`,
     // mientras que consumidores antiguos pueden seguir mostrando solo las
     // ubicaciones explícitas de home (máximo cuatro por posición).
