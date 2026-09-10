@@ -37,26 +37,19 @@ function repeatLabel(days: number[], repeatEnabled: boolean, timesPerDay: number
 function DetailRow({
   icon,
   label,
-  muted = false,
 }: {
   icon: React.ComponentProps<typeof Feather>["name"];
   label: string;
   muted?: boolean;
 }) {
-  const routineTheme = useRoutineTheme();
   return (
     <View style={styles.detailRow}>
       <Feather
         name={icon}
         size={18}
-        color={muted ? routineTheme.textMuted : routineTheme.completion}
+        color="#F9F9F9"
       />
-      <Text
-        style={[
-          styles.detailText,
-          { color: muted ? routineTheme.textMuted : routineTheme.completion },
-        ]}
-      >
+      <Text style={[styles.detailText, { color: "#F9F9F9" }]}>
         {label}
       </Text>
     </View>
@@ -108,14 +101,14 @@ export default function RutinaDetailScreen() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const profileSectionBackground =
+  const actionBackground =
     activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.14)"
+      ? "rgba(0,0,0,0.1)"
       : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.14)"
+        ? "rgba(191,207,255,0.1)"
         : isIndigoThemeId(activeSceneId)
-          ? "rgba(181,211,255,0.14)"
-          : "rgba(181,211,255,0.14)";
+          ? "rgba(181,211,255,0.1)"
+          : "rgba(181,211,255,0.1)";
   const todayKey = useDayRollover();
   const {
     isHydrated,
@@ -290,11 +283,11 @@ export default function RutinaDetailScreen() {
             {activity.description || "Sin descripción"}
           </Text>
 
-          <Text style={[styles.sectionLabel, { color: routineTheme.textMuted }]}>Detalles</Text>
+          <Text style={[styles.sectionLabel, { color: "#F9F9F9" }]}>Detalles</Text>
           <View
             style={[
               styles.detailsCard,
-              { backgroundColor: profileSectionBackground, borderColor: routineTheme.divider },
+              { backgroundColor: "transparent", borderColor: routineTheme.divider },
             ]}
           >
             <DetailRow
@@ -332,21 +325,21 @@ export default function RutinaDetailScreen() {
                   : "Solo lectura para esta fecha"
             }
             onPress={markComplete}
-            backgroundColor={profileSectionBackground}
+            backgroundColor={actionBackground}
             disabled={completed || !isToday || !!activity.archivedAt}
           />
           <ActionRow
             icon="clock"
             label={skipped ? "Saltada por hoy" : "Saltarme hoy"}
             onPress={skipToday}
-            backgroundColor={profileSectionBackground}
+            backgroundColor={actionBackground}
             disabled={completed || skipped || !isToday || !!activity.archivedAt}
           />
           <ActionRow
             icon="archive"
             label="Archivar rutina"
             onPress={archive}
-            backgroundColor={profileSectionBackground}
+            backgroundColor={actionBackground}
           />
         </View>
       </ScrollView>
@@ -439,7 +432,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   actionRow: {
-    minHeight: 58,
+    minHeight: 50,
     borderRadius: 17,
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 16,
