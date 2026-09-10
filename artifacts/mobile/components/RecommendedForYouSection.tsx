@@ -4,7 +4,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 
@@ -27,7 +26,6 @@ import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 
 const HORIZONTAL_PAD = 14;
-const CARD_GAP = 14;
 const CARDS_PER_TAB = 5;
 
 const RECOMMENDATION_TABS = [
@@ -55,11 +53,7 @@ export function RecommendedForYouSection({
 }: Props) {
   const { activeSceneId, theme } = useSceneTheme();
   const colors = useColors();
-  const { width: viewportWidth } = useWindowDimensions();
   const { isPremium } = usePremium();
-  const recommendationCardWidth = Math.round(
-    (viewportWidth - HORIZONTAL_PAD - CARD_GAP) / 1.9,
-  );
   const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
     RECOMMENDATION_TABS[0].id,
   );
@@ -208,8 +202,6 @@ export function RecommendedForYouSection({
           showHeader={false}
           squareTitleAuthorBelow
           categoryGridPresentation
-          cardWidth={recommendationCardWidth}
-          allowOversizedCardWidth
           style={styles.carousel}
         />
       ) : (

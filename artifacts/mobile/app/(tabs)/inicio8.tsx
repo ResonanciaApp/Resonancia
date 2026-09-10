@@ -2657,14 +2657,6 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
           />
         )}
-        {isInicio2 && (
-          <RecommendedForYouSection
-            selectedMoods={selectedMoods}
-            catalogVersion={catalogVersion}
-            onPress={handleSessionCarouselPress}
-            marginBottom={INICIO2_SECTION_GAP}
-          />
-        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2683,6 +2675,14 @@ export default function HomeScreen2({
               ))}
             </ScrollView>
           </View>
+        )}
+        {isInicio2 && (
+          <RecommendedForYouSection
+            selectedMoods={selectedMoods}
+            catalogVersion={catalogVersion}
+            onPress={handleSessionCarouselPress}
+            marginBottom={INICIO2_SECTION_GAP}
+          />
         )}
         {isInicio2 && (
           <MiRutinaSection
