@@ -260,16 +260,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     : isTallOverlayPresentation
       ? false
       : squareCards;
-  const effectiveShowAuthor = isTallOverlayPresentation ? true : showAuthor;
+  const effectiveShowAuthor = showAuthor;
   const effectiveShowCollectionBelow =
     isTallOverlayPresentation ? false : showCollectionBelow;
   const effectiveShowMetaBelow =
     isTallOverlayPresentation ? false : showMetaBelow;
   const effectiveShowDurationBadge = useSleepMetadataBelow
-    ? categoryGridPresentation
-    : isTallOverlayPresentation
-      ? true
-      : showDurationBadge;
+    ? categoryGridPresentation && showDurationBadge
+    : showDurationBadge;
   const effectiveShowCategoryAboveTitle =
     !hideCategoryAboveTitle && (showCategoryAboveTitle || isEditorialPresentation);
   const effectiveOverlayDurationTopLeft =

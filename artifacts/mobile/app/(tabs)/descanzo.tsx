@@ -389,9 +389,11 @@ export default function DescansoScreen() {
                 showDurationBadge={collection.id !== "sonidos-para-dormir"}
                 showAuthor={collection.id !== "sonidos-para-dormir"}
                 showOverlayGradient={collection.id !== "sonidos-para-dormir"}
-                sleepOverlayMetadataStyle={{
-                  transform: [{ translateX: 3 }, { translateY: -1 }],
-                }}
+                sleepOverlayMetadataStyle={
+                  collection.id === "sonidos-para-dormir"
+                    ? { transform: [{ translateX: 3 }, { translateY: 22 }] }
+                    : { transform: [{ translateX: 3 }, { translateY: -1 }] }
+                }
                 overlayGradientLocations={[0.18, 0.48, 1]}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
