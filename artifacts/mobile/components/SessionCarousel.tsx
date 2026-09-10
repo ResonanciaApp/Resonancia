@@ -144,6 +144,8 @@ type SessionCarouselProps = {
   overlayDurationTopLeft?: boolean;
   /** Shows DORMIR at top-left and moves duration into the metadata above the title. */
   showSleepCategoryPillWithInlineDuration?: boolean;
+  /** Ambiental cards show only their title, aligned to the usual author position. */
+  ambientalTitleOnly?: boolean;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -203,6 +205,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
   showSleepCategoryPillWithInlineDuration = false,
+  ambientalTitleOnly = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -351,6 +354,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
+          const showAmbientalTitleOnly = ambientalTitleOnly && isAmbiental;
            const hasSecondaryMeta =
             effectiveShowMetaBelow ||
             effectiveShowCollectionBelow ||
@@ -471,7 +475,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 )}
                 {useOverlayMetadata && (
                   <>
-                    {showOverlayGradient ? (
+                    {showOverlayGradient && !showAmbientalTitleOnly ? (
                       <LinearGradient
                         colors={[
                           "rgba(0,0,0,0)",
@@ -483,7 +487,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         pointerEvents="none"
                       />
                     ) : null}
-                    {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
+                    {!showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
                       <SessionCategoryPill
                         categoryId="descanso"
                         leftInset={11}
@@ -491,7 +495,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={styles.sleepCompactPill}
                         textStyle={styles.sleepCompactPillText}
                       />
-                    ) : effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
+                    ) : !showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
@@ -502,7 +506,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     ) : null}
-                     {effectiveShowImageCategoryPill ? (
+                     {!showAmbientalTitleOnly && effectiveShowImageCategoryPill ? (
                        <SessionCategoryPill
                          categoryId={s.categoryId}
                          leftInset={18}
@@ -515,9 +519,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          styles.sleepOverlayMetadata,
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
+                          showAmbientalTitleOnly && styles.ambientalTitleOnlyMetadata,
                        ]}
                      >
-                      {effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
+                       {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
                           style={[
@@ -528,7 +533,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={[styles.durText, styles.sleepInlineDurationText]}
                         />
                       ) : null}
-                      {effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
+                       {!showAmbientalTitleOnly && effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
                           style={[
@@ -539,7 +544,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
-                      {effectiveShowCategoryAboveTitle && s.categoryLabel ? (
+                       {!showAmbientalTitleOnly && effectiveShowCategoryAboveTitle && s.categoryLabel ? (
                         <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
                           {s.categoryLabel}
                         </Text>
@@ -556,7 +561,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       >
                         {s.title}
                       </Text>
-                      {effectiveShowAuthor && authorName ? (
+                       {!showAmbientalTitleOnly && effectiveShowAuthor && authorName ? (
                         <Text
                           style={[
                             styles.sleepOverlayAuthor,
@@ -772,6 +777,9 @@ const styles = StyleSheet.create({
   },
   editorialAmbientalMetadata: {
     transform: [{ translateX: 7 }, { translateY: -7 }],
+  },
+  ambientalTitleOnlyMetadata: {
+    bottom: -9,
   },
   sleepOverlayTitle: {
     fontFamily: "Manrope",

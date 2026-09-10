@@ -383,17 +383,11 @@ export default function DescansoScreen() {
                 presentation="editorial"
                 titleSize={19}
                 hideCategoryAboveTitle
-                showSleepCategoryPillWithInlineDuration={
-                  collection.id !== "sonidos-para-dormir"
-                }
-                showDurationBadge={collection.id !== "sonidos-para-dormir"}
-                showAuthor={collection.id !== "sonidos-para-dormir"}
-                showOverlayGradient={collection.id !== "sonidos-para-dormir"}
-                sleepOverlayMetadataStyle={
-                  collection.id === "sonidos-para-dormir"
-                    ? { transform: [{ translateX: 3 }, { translateY: 22 }] }
-                    : { transform: [{ translateX: 3 }, { translateY: -1 }] }
-                }
+                showSleepCategoryPillWithInlineDuration
+                ambientalTitleOnly
+                sleepOverlayMetadataStyle={{
+                  transform: [{ translateX: 3 }, { translateY: -1 }],
+                }}
                 overlayGradientLocations={[0.18, 0.48, 1]}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
