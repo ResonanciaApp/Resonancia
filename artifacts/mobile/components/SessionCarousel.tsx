@@ -30,7 +30,10 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  SessionBadgeGlass,
+  SessionDurationBadge,
+} from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -107,7 +110,7 @@ type SessionCarouselProps = {
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
-  showCategoryTextAboveTitle?: boolean;
+  showCategoryIconTopRight?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -166,7 +169,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
   sleepOverlayMetadataStyle,
-  showCategoryTextAboveTitle = false,
+  showCategoryIconTopRight = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -479,6 +482,18 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          topInset={18}
                        />
                      ) : null}
+                     {showCategoryIconTopRight ? (
+                       <View pointerEvents="none" style={styles.sleepOverlayCategoryIcon}>
+                         <SessionBadgeGlass />
+                         <View style={styles.sleepOverlayCategoryIconContent}>
+                           <SessionCategoryGlyph
+                             categoryId={s.categoryId}
+                             size={12}
+                             color="rgba(249,249,249,0.82)"
+                           />
+                         </View>
+                       </View>
+                     ) : null}
                      <View
                        pointerEvents="none"
                        style={[styles.sleepOverlayMetadata, sleepOverlayMetadataStyle]}
@@ -494,25 +509,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
-                      {showCategoryTextAboveTitle && s.categoryLabel ? (
-                        <View style={styles.sleepOverlayCategoryAdjusted}>
-                          <SessionCategoryGlyph
-                            categoryId={s.categoryId}
-                            size={11}
-                            color="rgba(249,249,249,0.82)"
-                          />
-                          <Text
-                            style={[styles.sleepOverlayAuthor, styles.sleepOverlayCategoryText]}
-                            numberOfLines={1}
-                          >
-                            {s.categoryLabel}
-                          </Text>
-                        </View>
+                      {showCategoryIconTopRight ? (
+                        <View style={styles.sleepOverlayCategorySpacer} />
                       ) : null}
                       <Text
                         style={[
                           styles.sleepOverlayTitle,
-                          showCategoryTextAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                          showCategoryIconTopRight && styles.sleepOverlayTitleAfterCategory,
                           sleepOverlayTitleStyle,
                         ]}
                         numberOfLines={2}
@@ -738,17 +741,27 @@ const styles = StyleSheet.create({
   },
   sleepOverlayTitleAfterCategory: {
     marginTop: 4,
-    transform: [{ translateY: -1 }],
+    transform: [{ translateY: 1 }],
   },
-  sleepOverlayCategoryAdjusted: {
+  sleepOverlayCategorySpacer: {
     marginTop: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    transform: [{ translateY: -2 }],
+    height: 15,
   },
-  sleepOverlayCategoryText: {
-    marginTop: 0,
+  sleepOverlayCategoryIcon: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+    overflow: "hidden",
+  },
+  sleepOverlayCategoryIconContent: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
   },
   sleepOverlayAuthor: {
     marginTop: 4,
