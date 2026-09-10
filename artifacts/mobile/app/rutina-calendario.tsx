@@ -112,7 +112,7 @@ function CalendarActivityRow({
     >
       <View style={styles.activityCopy}>
         {category ? (
-          <Text style={[styles.category, { color: routineTheme.accent }]}>
+          <Text style={[styles.category, { color: "#B5B5B5" }]}>
             {category}
           </Text>
         ) : null}
@@ -121,7 +121,7 @@ function CalendarActivityRow({
           style={[
             styles.activityTitle,
             {
-              color: completed ? routineTheme.textMuted : routineTheme.text,
+              color: completed ? "#B5B5B5" : routineTheme.text,
               textDecorationLine: completed ? "line-through" : "none",
             },
           ]}
@@ -130,8 +130,8 @@ function CalendarActivityRow({
           {activity.timesPerDay > 1 ? ` · ${occurrenceIndex + 1}/${activity.timesPerDay}` : ""}
         </Text>
         <View style={styles.repeatRow}>
-          <Feather name="repeat" size={12} color={routineTheme.textMuted} />
-          <Text style={[styles.repeatText, { color: routineTheme.textMuted }]}>
+          <Feather name="repeat" size={12} color="#B5B5B5" />
+          <Text style={[styles.repeatText, { color: "#B5B5B5" }]}>
              {activity.repeatEnabled
                ? activity.timesPerDay === 1
                  ? "Cada día"
@@ -153,12 +153,12 @@ function CalendarActivityRow({
           styles.stateSquare,
           {
             backgroundColor: completed
-              ? routineTheme.completion
+              ? "rgba(255,255,255,0.08)"
               : skipped
                 ? routineTheme.surfaceElevated
                 : "#F9F9F9",
             borderColor: completed
-              ? routineTheme.completion
+              ? "rgba(255,255,255,0.08)"
               : skipped
                 ? routineTheme.divider
                 : "#F9F9F9",
@@ -170,7 +170,7 @@ function CalendarActivityRow({
           size={19}
           color={
             completed
-              ? "#FFFFFF"
+              ? "#F9F9F9"
               : skipped
                 ? routineTheme.textMuted
                 : "#060A0F"
