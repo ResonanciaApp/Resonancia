@@ -531,11 +531,27 @@ type EditorialPlaylistPlacementInput = zod4.infer<
   typeof editorialPlaylistPlacementSchema
 >;
 
+const editorialPlaylistTypeSchema = zod4.enum([
+  "meditative",
+  "relaxation",
+  "ritual",
+]);
+
 const adminPlaylistInputSchema = insertCatalogPlaylistSchema
   .extend({
+    // Keep the database default for legacy rows/migrations, but require the
+    // editorial choice at the public admin API boundary.
+    editorialType: editorialPlaylistTypeSchema,
     placements: zod4.array(editorialPlaylistPlacementSchema).optional(),
   })
   .superRefine((value, ctx) => {
+    if (value.isActive !== false && !value.durationLabel?.trim()) {
+      ctx.addIssue({
+        code: zod4.ZodIssueCode.custom,
+        path: ["durationLabel"],
+        message: "La duración es obligatoria para playlists activas",
+      });
+    }
     const placements = value.placements as
       | EditorialPlaylistPlacementInput[]
       | undefined;
@@ -555,6 +571,13 @@ const adminPlaylistUpdateSchema = updateCatalogPlaylistSchema
     placements: zod4.array(editorialPlaylistPlacementSchema).optional(),
   })
   .superRefine((value, ctx) => {
+    if (value.isActive === true && value.durationLabel !== undefined && !value.durationLabel.trim()) {
+      ctx.addIssue({
+        code: zod4.ZodIssueCode.custom,
+        path: ["durationLabel"],
+        message: "La duración es obligatoria para playlists activas",
+      });
+    }
     const placements = value.placements as
       | EditorialPlaylistPlacementInput[]
       | undefined;
@@ -591,6 +614,7 @@ function serializePlaylist(
     savedCount: p.savedCount,
     sessionIds: p.sessionIds ?? [],
     playlistType: p.playlistType,
+    editorialType: p.editorialType,
     sortOrder: p.sortOrder,
     isActive: p.isActive,
     showOnHome: p.showOnHome,
@@ -909,6 +933,13 @@ router.post("/admin/playlists", requireAuth, requireRole("admin"), async (req, r
   } = parsed.data as InsertCatalogPlaylist & {
     placements?: EditorialPlaylistPlacementInput[];
   };
+  if (playlistValues.isActive !== false && !playlistValues.durationLabel?.trim()) {
+    res.status(400).json({
+      code: "INVALID_PLAYLIST_DURATION",
+      error: "La duración es obligatoria para playlists activas",
+    });
+    return;
+  }
   const sessionError = await validatePublishedPlaylistSessions(
     playlistValues.sessionIds ?? [],
   );
@@ -969,6 +1000,15 @@ router.patch("/admin/playlists/:id", requireAuth, requireRole("admin"), async (r
       placements?: EditorialPlaylistPlacementInput[];
     };
     const sessionIds = playlistValues.sessionIds ?? current.sessionIds ?? [];
+    const effectiveActive = playlistValues.isActive ?? current.isActive;
+    const effectiveDuration = playlistValues.durationLabel ?? current.durationLabel;
+    if (effectiveActive && !effectiveDuration.trim()) {
+      res.status(400).json({
+        code: "INVALID_PLAYLIST_DURATION",
+        error: "La duración es obligatoria para playlists activas",
+      });
+      return;
+    }
     const shouldValidateSessions =
       playlistValues.sessionIds !== undefined ||
       playlistValues.isActive === true ||
@@ -1038,6 +1078,13 @@ router.post(
         .limit(1);
       if (!current) {
         res.status(404).json({ error: "Playlist no encontrada" });
+        return;
+      }
+      if (!current.durationLabel.trim()) {
+        res.status(400).json({
+          code: "INVALID_PLAYLIST_DURATION",
+          error: "La duración es obligatoria para playlists activas",
+        });
         return;
       }
       const sessionError = await validatePublishedPlaylistSessions(

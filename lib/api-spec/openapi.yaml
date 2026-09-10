@@ -5205,6 +5205,9 @@ components:
             type: string
         playlistType:
           type: string
+        editorialType:
+          type: string
+          enum: [meditative, relaxation, ritual]
         sortOrder:
           type: integer
         isActive:
@@ -5219,7 +5222,7 @@ components:
           items:
             $ref: "#/components/schemas/EditorialPlaylistPlacement"
           description: Ubicaciones editoriales activas (público) o todas (admin)
-      required: [id, slug, title, description, durationLabel, savedCount, sessionIds, playlistType, sortOrder, isActive, showOnHome, placements]
+      required: [id, slug, title, description, durationLabel, savedCount, sessionIds, playlistType, editorialType, sortOrder, isActive, showOnHome, placements]
     AdminPlaylistInput:
       type: object
       properties:
@@ -5250,6 +5253,9 @@ components:
         playlistType:
           type: string
           enum: [sessions, music]
+        editorialType:
+          type: string
+          enum: [meditative, relaxation, ritual]
         sortOrder:
           type: integer
         isActive:
@@ -5266,7 +5272,7 @@ components:
           items:
             $ref: "#/components/schemas/EditorialPlaylistPlacement"
           description: Una ubicación por superficie; omitir preserva las existentes al editar
-      required: [slug, title, playlistType]
+      required: [slug, title, playlistType, editorialType]
     AdminPlaylistUpdate:
       type: object
       properties:
@@ -5297,6 +5303,9 @@ components:
         playlistType:
           type: string
           enum: [sessions, music]
+        editorialType:
+          type: string
+          enum: [meditative, relaxation, ritual]
         sortOrder:
           type: integer
         isActive:

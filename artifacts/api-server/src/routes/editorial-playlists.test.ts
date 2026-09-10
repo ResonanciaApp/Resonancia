@@ -31,6 +31,7 @@ import {
   type User,
 } from "@workspace/db";
 import { eq, inArray } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import adminRouter from "./admin";
 import catalogRouter from "./catalog";
 import usersRouter from "./users";
@@ -80,6 +81,19 @@ function authAs(user: User | null) {
 }
 
 beforeAll(async () => {
+  // Keep the integration fixture usable against development databases that
+  // predate migration 0004. Production schema/data is never changed here.
+  await db.execute(sql`
+    DO $$ BEGIN
+      CREATE TYPE editorial_playlist_type AS ENUM ('meditative', 'relaxation', 'ritual');
+    EXCEPTION WHEN duplicate_object THEN NULL;
+    END $$;
+  `);
+  await db.execute(sql`
+    ALTER TABLE catalog_playlists
+      ADD COLUMN IF NOT EXISTS editorial_type editorial_playlist_type
+      NOT NULL DEFAULT 'meditative';
+  `);
   admin = await createUser("admin", "admin");
   regularUser = await createUser("user", "user");
   await db.insert(catalogSessionsTable).values([
@@ -155,9 +169,34 @@ describe("editorial playlist contract", () => {
           slug: `editorial-${suffix}`,
           title: "Nope",
           playlistType: "sessions",
+          editorialType: "meditative",
         })
       ).status,
     ).toBe(403);
+
+    authAs(admin);
+    const missingType = await request(app)
+      .post("/api/admin/playlists")
+      .send({
+        slug: `editorial-missing-type-${suffix}`,
+        title: "Sin tipo",
+        playlistType: "sessions",
+        durationLabel: "1 min",
+        sessionIds: [sessionIds[0]],
+      });
+    expect(missingType.status).toBe(400);
+
+    const invalidType = await request(app)
+      .post("/api/admin/playlists")
+      .send({
+        slug: `editorial-invalid-type-${suffix}`,
+        title: "Tipo inválido",
+        playlistType: "sessions",
+        editorialType: "selection",
+        durationLabel: "1 min",
+        sessionIds: [sessionIds[0]],
+      });
+    expect(invalidType.status).toBe(400);
   });
 
   it("creates placements independently and accepts sessions from any category", async () => {
@@ -170,6 +209,8 @@ describe("editorial playlist contract", () => {
         title: "Selección editorial",
         description: "Varias categorías",
         playlistType: "sessions",
+        editorialType: "relaxation",
+        durationLabel: "25 min",
         sessionIds: [sessionIds[0], sessionIds[1]],
         placements: [
           { surface: "discover", sortOrder: 2, isActive: true },
@@ -189,6 +230,7 @@ describe("editorial playlist contract", () => {
     playlistId = response.body.id;
     createdPlaylistIds.push(playlistId);
     expect(response.body.sessionIds).toEqual(sessionIds.slice(0, 2));
+    expect(response.body.editorialType).toBe("relaxation");
     expect(response.body.placements).toEqual([
       { surface: "discover", sortOrder: 2, isActive: true },
       { surface: "sleep", sortOrder: 1, isActive: false },
@@ -205,6 +247,7 @@ describe("editorial playlist contract", () => {
         slug: `editorial-collision-${suffix}`,
         title: "Colisión editorial",
         playlistType: "sessions",
+        editorialType: "meditative",
         sessionIds: [sessionIds[0]],
         isActive: false,
         placements: [{ surface: "discover", sortOrder: 2, isActive: true }],
@@ -228,11 +271,12 @@ describe("editorial playlist contract", () => {
 
     const resequenced = await request(app)
       .patch(`/api/admin/playlists/${playlistId}`)
-      .send({ placements: [{ surface: "discover", sortOrder: 1, isActive: true }] });
+      .send({ editorialType: "ritual", placements: [{ surface: "discover", sortOrder: 1, isActive: true }] });
     expect(resequenced.status).toBe(200);
     expect(resequenced.body.placements).toEqual([
       { surface: "discover", sortOrder: 1, isActive: true },
     ]);
+    expect(resequenced.body.editorialType).toBe("ritual");
 
     const duplicate = await request(app)
       .patch(`/api/admin/playlists/${playlistId}`)
@@ -260,16 +304,37 @@ describe("editorial playlist contract", () => {
         slug: `editorial-empty-${suffix}`,
         title: "Borrador vacío",
         playlistType: "sessions",
+        editorialType: "meditative",
         isActive: false,
       });
     expect(emptyDraft.status).toBe(201);
     expect(emptyDraft.body.sessionIds).toEqual([]);
+    expect(emptyDraft.body.editorialType).toBe("meditative");
     expect(emptyDraft.body.placements).toEqual([]);
     createdPlaylistIds.push(emptyDraft.body.id);
     const publishEmptyDraft = await request(app).post(
       `/api/admin/playlists/${emptyDraft.body.id}/publish`,
     );
     expect(publishEmptyDraft.status).toBe(400);
+
+    const blankDurationDraft = await request(app)
+      .post("/api/admin/playlists")
+      .send({
+        slug: `editorial-blank-duration-${suffix}`,
+        title: "Borrador sin duración",
+        playlistType: "sessions",
+        editorialType: "meditative",
+        sessionIds: [sessionIds[0]],
+        isActive: false,
+        durationLabel: "",
+      });
+    expect(blankDurationDraft.status).toBe(201);
+    createdPlaylistIds.push(blankDurationDraft.body.id);
+    const publishBlankDuration = await request(app).post(
+      `/api/admin/playlists/${blankDurationDraft.body.id}/publish`,
+    );
+    expect(publishBlankDuration.status).toBe(400);
+    expect(publishBlankDuration.body.code).toBe("INVALID_PLAYLIST_DURATION");
 
     const deleted = await request(app).delete(
       `/api/admin/playlists/${collisionId}`,
@@ -281,6 +346,28 @@ describe("editorial playlist contract", () => {
         .from(catalogPlaylistPlacementsTable)
         .where(eq(catalogPlaylistPlacementsTable.playlistId, collisionId)),
     ).toHaveLength(0);
+  });
+
+  it("requires a meaningful duration for active playlists", async () => {
+    authAs(admin);
+    const create = await request(app)
+      .post("/api/admin/playlists")
+      .send({
+        slug: `editorial-no-duration-${suffix}`,
+        title: "Sin duración",
+        playlistType: "sessions",
+        editorialType: "meditative",
+        sessionIds: [sessionIds[0]],
+        durationLabel: "   ",
+      });
+    expect(create.status).toBe(400);
+    expect(create.body.code ?? create.body.error).toBeTruthy();
+
+    const edit = await request(app)
+      .patch(`/api/admin/playlists/${playlistId}`)
+      .send({ durationLabel: " " });
+    expect(edit.status).toBe(400);
+    expect(edit.body.code ?? edit.body.error).toBeTruthy();
   });
 
   it("returns every active playlist and ordered public detail, then supports hide/publish", async () => {
@@ -306,6 +393,7 @@ describe("editorial playlist contract", () => {
       (playlist: { id: number }) => playlist.id === playlistId,
     );
     expect(listed).toBeDefined();
+    expect(listed.editorialType).toBe("ritual");
     expect(listed.placements).toEqual([
       { surface: "discover", sortOrder: 1, isActive: true },
     ]);
@@ -313,6 +401,7 @@ describe("editorial playlist contract", () => {
     const detail = await request(app).get(`/api/catalog/playlists/editorial-${suffix}`);
     expect(detail.status).toBe(200);
     expect(detail.body.playlist.slug).toBe(`editorial-${suffix}`);
+    expect(detail.body.playlist.editorialType).toBe("ritual");
     expect(detail.body.sessions.map((session: { id: string }) => session.id)).toEqual(
       sessionIds.slice(0, 2),
     );

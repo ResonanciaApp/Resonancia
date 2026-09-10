@@ -14,7 +14,7 @@ import {
   useRequestUploadUrl,
   getListAdminPlaylistsQueryKey,
 } from "@workspace/api-client-react";
-import type { CatalogPlaylist, AdminPlaylistInputPlaylistType } from "@workspace/api-client-react";
+import type { CatalogPlaylist, AdminPlaylistInputPlaylistType, AdminPlaylistInputEditorialType } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +48,7 @@ type PlaylistForm = {
   savedCount: number;
   sessionIds: string[];
   playlistType: "sessions" | "music";
+  editorialType: "meditative" | "relaxation" | "ritual";
   isActive: boolean;
 };
 
@@ -60,6 +61,7 @@ const EMPTY_FORM: PlaylistForm = {
   savedCount: 0,
   sessionIds: [],
   playlistType: "sessions",
+  editorialType: "meditative",
   isActive: true,
 };
 
@@ -397,6 +399,7 @@ function PlaylistForm({
     e.preventDefault();
     if (!form.title.trim()) { toast.error("El título es obligatorio"); return; }
     if (!form.slug.trim()) { toast.error("El slug es obligatorio"); return; }
+    if (form.isActive && !form.durationLabel.trim()) { toast.error("La duración es obligatoria para playlists activas"); return; }
     if (form.isActive && form.sessionIds.length === 0) { toast.error("Agrega al menos una sesión para activarla"); return; }
 
     setSaving(true);
@@ -410,6 +413,7 @@ function PlaylistForm({
         savedCount: form.savedCount,
         sessionIds: form.sessionIds,
         playlistType: form.playlistType as AdminPlaylistInputPlaylistType,
+        editorialType: form.editorialType as AdminPlaylistInputEditorialType,
         isActive: form.isActive,
       };
 
@@ -466,7 +470,7 @@ function PlaylistForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label>Tipo</Label>
+          <Label>Tipo de contenido</Label>
           <Select
             value={form.playlistType}
             onValueChange={(v) => {
@@ -480,6 +484,20 @@ function PlaylistForm({
             <SelectContent>
               <SelectItem value="sessions">Sesiones</SelectItem>
               <SelectItem value="music">Música</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label>Tipo editorial *</Label>
+          <Select
+            value={form.editorialType}
+            onValueChange={(v) => set("editorialType", v as PlaylistForm["editorialType"])}
+          >
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="meditative">Meditativa</SelectItem>
+              <SelectItem value="relaxation">Relajación</SelectItem>
+              <SelectItem value="ritual">Ritual</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -571,6 +589,7 @@ export default function PlaylistsPage() {
       savedCount: p.savedCount,
       sessionIds: p.sessionIds,
       playlistType: p.playlistType as "sessions" | "music",
+      editorialType: p.editorialType as PlaylistForm["editorialType"],
       isActive: p.isActive,
     });
     setDialogOpen(true);

@@ -22,6 +22,7 @@ export type Playlist = {
   durationLabel: string;
   sessionIds: string[];
   playlistType?: "sessions" | "music";
+  editorialType: "meditative" | "relaxation" | "ritual";
   /** Publicaciones independientes del contenido de la playlist. */
   placements?: EditorialPlacement[];
   isActive?: boolean;
@@ -72,6 +73,7 @@ export type PlaylistSnapshot = {
   savedCount?: number;
   sessionIds?: string[];
   playlistType?: string;
+  editorialType?: string;
   sortOrder?: number;
   isActive?: boolean;
   showOnHome?: boolean;
@@ -181,6 +183,10 @@ export function applyPlaylistsSnapshot(
       savedCount: snap.savedCount ?? 0,
       sessionIds: snap.sessionIds ?? [],
       playlistType: snap.playlistType === "music" ? "music" : "sessions",
+      editorialType:
+        snap.editorialType === "relaxation" || snap.editorialType === "ritual"
+          ? snap.editorialType
+          : "meditative",
       placements,
       isActive: snap.isActive ?? true,
       sortOrder: snap.sortOrder ?? 0,

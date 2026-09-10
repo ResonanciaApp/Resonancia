@@ -288,6 +288,7 @@ function serializePlaylist(
     savedCount: p.savedCount,
     sessionIds,
     playlistType: p.playlistType,
+    editorialType: p.editorialType,
     sortOrder: p.sortOrder,
     isActive: p.isActive,
     showOnHome: p.showOnHome,

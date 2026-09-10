@@ -79,11 +79,20 @@ export function EditorialPlaylistCarousel({
                 colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
                 style={StyleSheet.absoluteFill}
               />
-              <SessionDurationBadge
-                label={playlist.durationLabel || "Selección"}
-                style={styles.duration}
-              />
+              <View style={styles.typePill}>
+                <Text style={styles.typeText}>
+                  {playlist.editorialType === "relaxation"
+                    ? "Relajación"
+                    : playlist.editorialType === "ritual"
+                      ? "Ritual"
+                      : "Meditativa"}
+                </Text>
+              </View>
               <View style={styles.meta}>
+                <SessionDurationBadge
+                  label={playlist.durationLabel}
+                  style={styles.duration}
+                />
                 <Text style={styles.cardTitle} numberOfLines={2}>
                   {playlist.title}
                 </Text>
@@ -170,9 +179,23 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   duration: {
+    alignSelf: "flex-start",
+    marginBottom: 8,
+  },
+  typePill: {
     position: "absolute",
     top: 15,
     left: 15,
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    backgroundColor: "rgba(20,20,24,0.72)",
+  },
+  typeText: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
   },
   meta: {
     position: "absolute",

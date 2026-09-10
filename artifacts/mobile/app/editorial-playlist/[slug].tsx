@@ -149,6 +149,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       description: description ?? "",
       sessionIds,
       durationLabel: snapshot?.durationLabel ?? base?.durationLabel ?? "",
+      editorialType: snapshot?.editorialType ?? base?.editorialType ?? "meditative",
       coverUrl,
       cover: base?.cover,
     };
