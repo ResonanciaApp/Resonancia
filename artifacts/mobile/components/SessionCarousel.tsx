@@ -148,6 +148,10 @@ type SessionCarouselProps = {
   showSleepCategoryPill?: boolean;
   /** Ambiental cards show only their title, aligned to the usual author position. */
   ambientalTitleOnly?: boolean;
+  /** Moves the centered image of Ambiental cards upward. */
+  ambientalImageLift?: number;
+  /** Position override used only by Ambiental title-only metadata. */
+  ambientalTitleOnlyMetadataStyle?: StyleProp<ViewStyle>;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -209,6 +213,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showSleepCategoryPillWithInlineDuration = false,
   showSleepCategoryPill = true,
   ambientalTitleOnly = false,
+  ambientalImageLift = 0,
+  ambientalTitleOnlyMetadataStyle,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -397,7 +403,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           height: ambientalImageSize,
                           borderRadius: ambientalImageSize / 2,
                           left: (cw - ambientalImageSize) / 2 - 1,
-                          top: (ch - ambientalImageSize) / 2 - 1,
+                           top: (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift,
                         },
                       ]}
                     />
@@ -522,6 +528,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          styles.sleepOverlayMetadata,
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
+                          showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
                        ]}
                      >
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
