@@ -389,7 +389,17 @@ export default function DescansoScreen() {
                 showCategoryTextAboveTitle={collection.label === "Música para dormir"}
                 durationBadgeStyle={
                   collection.label === "Música para dormir"
-                    ? { borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }
+                    ? {
+                        borderWidth: 1,
+                        borderColor: "rgba(255,255,255,0.15)",
+                        top: 15,
+                        left: 15,
+                      }
+                    : undefined
+                }
+                sleepOverlayMetadataStyle={
+                  collection.label === "Música para dormir"
+                    ? { transform: [{ translateX: 7 }, { translateY: -7 }] }
                     : undefined
                 }
                 sleepBelowTitleStyle={

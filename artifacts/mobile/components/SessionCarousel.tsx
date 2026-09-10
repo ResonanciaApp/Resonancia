@@ -104,6 +104,7 @@ type SessionCarouselProps = {
   durationBadgeStyle?: StyleProp<ViewStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
+  sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
   showCategoryTextAboveTitle?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
@@ -161,6 +162,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   durationBadgeStyle,
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
+  sleepOverlayMetadataStyle,
   showCategoryTextAboveTitle = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
@@ -474,7 +476,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          topInset={18}
                        />
                      ) : null}
-                    <View pointerEvents="none" style={styles.sleepOverlayMetadata}>
+                     <View
+                       pointerEvents="none"
+                       style={[styles.sleepOverlayMetadata, sleepOverlayMetadataStyle]}
+                     >
                       {effectiveShowDurationBadge && !overlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
