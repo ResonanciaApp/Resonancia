@@ -1173,13 +1173,18 @@ export const PushMyMilestonesResponse = zod.object({
 
 
 /**
- * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
+ * @summary Catálogo público (categorías, sesiones y playlists editoriales activas)
  */
 export const getCatalogResponseSessionsItemIsPlaceholderDefault = false;
 export const getCatalogResponseSessionsItemSkipDetailDefault = false;
 export const getCatalogResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getCatalogResponseSessionsItemIsLoopDefault = false;
 export const getCatalogResponseSessionsItemIsPinnedFeaturedDefault = false;
+export const getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin = 0;
+
+export const getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin = 0;
+
+
 
 export const GetCatalogResponse = zod.object({
   "categories": zod.array(zod.object({
@@ -1268,8 +1273,138 @@ export const GetCatalogResponse = zod.object({
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
-  "homePosition": zod.number().nullish()
-})).optional()
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
+})),
+  "homePlaylists": zod.array(zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
+})).optional().describe('Alias legado de Inicio, filtrado a showOnHome y máximo cuatro')
+})
+
+
+/**
+ * @summary Detalle público de una playlist editorial publicada
+ */
+export const getCatalogPlaylistPathSlugMax = 80;
+
+
+export const getCatalogPlaylistPathSlugRegExp = new RegExp('^[a-z0-9-]+$');
+
+
+export const GetCatalogPlaylistParams = zod.object({
+  "slug": zod.coerce.string().min(1).max(getCatalogPlaylistPathSlugMax).regex(getCatalogPlaylistPathSlugRegExp)
+})
+
+export const getCatalogPlaylistResponsePlaylistPlacementsItemSortOrderMin = 0;
+
+export const getCatalogPlaylistResponseSessionsItemIsPlaceholderDefault = false;
+export const getCatalogPlaylistResponseSessionsItemSkipDetailDefault = false;
+export const getCatalogPlaylistResponseSessionsItemSkipMiniPlayerDefault = false;
+export const getCatalogPlaylistResponseSessionsItemIsLoopDefault = false;
+export const getCatalogPlaylistResponseSessionsItemIsPinnedFeaturedDefault = false;
+
+export const GetCatalogPlaylistResponse = zod.object({
+  "playlist": zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(getCatalogPlaylistResponsePlaylistPlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
+}),
+  "sessions": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "categoryId": zod.string(),
+  "categoryLabel": zod.string(),
+  "duration": zod.number(),
+  "durationLabel": zod.string(),
+  "description": zod.string(),
+  "benefits": zod.array(zod.string()),
+  "instruments": zod.array(zod.string()),
+  "imageKey": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "isFeatured": zod.boolean(),
+  "isFeaturedCategory": zod.boolean(),
+  "isNew": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "isPlaceholder": zod.boolean().default(getCatalogPlaylistResponseSessionsItemIsPlaceholderDefault),
+  "skipDetail": zod.boolean().default(getCatalogPlaylistResponseSessionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getCatalogPlaylistResponseSessionsItemSkipMiniPlayerDefault),
+  "isLoop": zod.boolean().default(getCatalogPlaylistResponseSessionsItemIsLoopDefault),
+  "isPinnedFeatured": zod.boolean().default(getCatalogPlaylistResponseSessionsItemIsPinnedFeaturedDefault),
+  "frequency": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "sabiduriaTag": zod.string().nullish(),
+  "podcastTag": zod.string().nullish(),
+  "sonidosTag": zod.string().nullish(),
+  "sonidosTags": zod.array(zod.string()).optional(),
+  "descansoTag": zod.string().nullish(),
+  "descansoTags": zod.array(zod.string()).optional(),
+  "themeTag": zod.array(zod.string()).nullish(),
+  "temaTag": zod.array(zod.string()).nullish(),
+  "sleepTag": zod.string().nullish(),
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "guideId": zod.string().nullish(),
+  "artistId": zod.string().nullish(),
+  "guests": zod.array(zod.object({
+  "name": zod.string(),
+  "role": zod.string(),
+  "instagram": zod.string().nullish()
+})).nullish(),
+  "playerDescription": zod.string().nullish(),
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
+  "sortOrder": zod.number(),
+  "audioFiles": zod.array(zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string().nullish(),
+  "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']),
+  "assetKey": zod.string().nullish(),
+  "url": zod.string().nullish(),
+  "name": zod.string(),
+  "contentType": zod.string().nullish(),
+  "sizeBytes": zod.number().nullish(),
+  "durationSeconds": zod.number().nullish(),
+  "isLoop": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+}))
 })
 
 
@@ -1366,6 +1501,7 @@ export const GetMyLibraryResponse = zod.object({
   "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
@@ -1379,6 +1515,7 @@ export const SetMyLibraryBody = zod.object({
   "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
@@ -1388,6 +1525,7 @@ export const SetMyLibraryResponse = zod.object({
   "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
+  "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
@@ -2865,6 +3003,10 @@ export const DeleteAdminMixParams = zod.object({
 /**
  * @summary Listar todas las playlists de Resonancia (admin)
  */
+export const listAdminPlaylistsResponsePlacementsItemSortOrderMin = 0;
+
+
+
 export const ListAdminPlaylistsResponseItem = zod.object({
   "id": zod.number(),
   "slug": zod.string(),
@@ -2878,7 +3020,12 @@ export const ListAdminPlaylistsResponseItem = zod.object({
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
-  "homePosition": zod.number().nullish()
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(listAdminPlaylistsResponsePlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
 })
 export const ListAdminPlaylistsResponse = zod.array(ListAdminPlaylistsResponseItem)
 
@@ -2898,6 +3045,8 @@ export const createAdminPlaylistBodyDurationLabelMax = 30;
 
 export const createAdminPlaylistBodyHomePositionMax = 4;
 
+export const createAdminPlaylistBodyPlacementsItemSortOrderMin = 0;
+
 
 
 export const CreateAdminPlaylistBody = zod.object({
@@ -2912,7 +3061,12 @@ export const CreateAdminPlaylistBody = zod.object({
   "sortOrder": zod.number().optional(),
   "isActive": zod.boolean().optional(),
   "showOnHome": zod.boolean().optional(),
-  "homePosition": zod.number().min(1).max(createAdminPlaylistBodyHomePositionMax).nullish()
+  "homePosition": zod.number().min(1).max(createAdminPlaylistBodyHomePositionMax).nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(createAdminPlaylistBodyPlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).optional().describe('Una ubicación por superficie; omitir preserva las existentes al editar')
 })
 
 
@@ -2935,6 +3089,8 @@ export const updateAdminPlaylistBodyDurationLabelMax = 30;
 
 export const updateAdminPlaylistBodyHomePositionMax = 4;
 
+export const updateAdminPlaylistBodyPlacementsItemSortOrderMin = 0;
+
 
 
 export const UpdateAdminPlaylistBody = zod.object({
@@ -2949,8 +3105,17 @@ export const UpdateAdminPlaylistBody = zod.object({
   "sortOrder": zod.number().optional(),
   "isActive": zod.boolean().optional(),
   "showOnHome": zod.boolean().optional(),
-  "homePosition": zod.number().min(1).max(updateAdminPlaylistBodyHomePositionMax).nullish()
+  "homePosition": zod.number().min(1).max(updateAdminPlaylistBodyHomePositionMax).nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(updateAdminPlaylistBodyPlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).optional().describe('Reemplaza todas las ubicaciones; una por superficie como máximo')
 })
+
+export const updateAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
+
+
 
 export const UpdateAdminPlaylistResponse = zod.object({
   "id": zod.number(),
@@ -2965,7 +3130,12 @@ export const UpdateAdminPlaylistResponse = zod.object({
   "sortOrder": zod.number(),
   "isActive": zod.boolean(),
   "showOnHome": zod.boolean(),
-  "homePosition": zod.number().nullish()
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(updateAdminPlaylistResponsePlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
 })
 
 
@@ -2974,6 +3144,72 @@ export const UpdateAdminPlaylistResponse = zod.object({
  */
 export const DeleteAdminPlaylistParams = zod.object({
   "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Publicar una playlist editorial (admin)
+ */
+export const PublishAdminPlaylistParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const publishAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
+
+
+
+export const PublishAdminPlaylistResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(publishAdminPlaylistResponsePlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
+})
+
+
+/**
+ * @summary Ocultar una playlist editorial sin borrar su contenido (admin)
+ */
+export const HideAdminPlaylistParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const hideAdminPlaylistResponsePlacementsItemSortOrderMin = 0;
+
+
+
+export const HideAdminPlaylistResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "coverUrl": zod.string().nullish(),
+  "durationLabel": zod.string(),
+  "savedCount": zod.number(),
+  "sessionIds": zod.array(zod.string()),
+  "playlistType": zod.string(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "showOnHome": zod.boolean(),
+  "homePosition": zod.number().nullish(),
+  "placements": zod.array(zod.object({
+  "surface": zod.enum(['discover', 'sleep']).describe('Superficie editorial; hay un carrusel fijo por superficie'),
+  "sortOrder": zod.number().min(hideAdminPlaylistResponsePlacementsItemSortOrderMin),
+  "isActive": zod.boolean()
+})).describe('Ubicaciones editoriales activas (público) o todas (admin)')
 })
 
 

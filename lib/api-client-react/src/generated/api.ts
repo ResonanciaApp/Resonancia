@@ -40,6 +40,7 @@ import type {
   CalWebhookBody,
   CatalogCategory,
   CatalogPlaylist,
+  CatalogPlaylistDetailResponse,
   CatalogResponse,
   CatalogVideo,
   CommunityMessage,
@@ -4643,7 +4644,7 @@ export const getGetCatalogUrl = () => {
 }
 
 /**
- * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
+ * @summary Catálogo público (categorías, sesiones y playlists editoriales activas)
  */
 export const getCatalog = async ( options?: RequestInit): Promise<CatalogResponse> => {
 
@@ -4690,7 +4691,7 @@ export type GetCatalogQueryError = ErrorType<unknown>
 
 
 /**
- * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
+ * @summary Catálogo público (categorías, sesiones y playlists editoriales activas)
  */
 
 export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TError = ErrorType<unknown>>(
@@ -4699,6 +4700,83 @@ export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TE
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetCatalogQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetCatalogPlaylistUrl = (slug: string,) => {
+
+
+
+
+  return `/api/catalog/playlists/${slug}`
+}
+
+/**
+ * @summary Detalle público de una playlist editorial publicada
+ */
+export const getCatalogPlaylist = async (slug: string, options?: RequestInit): Promise<CatalogPlaylistDetailResponse> => {
+
+  return customFetch<CatalogPlaylistDetailResponse>(getGetCatalogPlaylistUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetCatalogPlaylistQueryKey = (slug: string,) => {
+    return [
+    `/api/catalog/playlists/${slug}`
+    ] as const;
+    }
+
+
+export const getGetCatalogPlaylistQueryOptions = <TData = Awaited<ReturnType<typeof getCatalogPlaylist>>, TError = ErrorType<ErrorResponse>>(slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCatalogPlaylist>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCatalogPlaylistQueryKey(slug);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCatalogPlaylist>>> = ({ signal }) => getCatalogPlaylist(slug, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCatalogPlaylist>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetCatalogPlaylistQueryResult = NonNullable<Awaited<ReturnType<typeof getCatalogPlaylist>>>
+export type GetCatalogPlaylistQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Detalle público de una playlist editorial publicada
+ */
+
+export function useGetCatalogPlaylist<TData = Awaited<ReturnType<typeof getCatalogPlaylist>>, TError = ErrorType<ErrorResponse>>(
+ slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCatalogPlaylist>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetCatalogPlaylistQueryOptions(slug,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -7114,6 +7192,146 @@ export const useDeleteAdminPlaylist = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminPlaylistMutationOptions(options));
+    }
+
+export const getPublishAdminPlaylistUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlists/${id}/publish`
+}
+
+/**
+ * @summary Publicar una playlist editorial (admin)
+ */
+export const publishAdminPlaylist = async (id: number, options?: RequestInit): Promise<CatalogPlaylist> => {
+
+  return customFetch<CatalogPlaylist>(getPublishAdminPlaylistUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getPublishAdminPlaylistMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publishAdminPlaylist>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['publishAdminPlaylist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publishAdminPlaylist>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  publishAdminPlaylist(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublishAdminPlaylistMutationResult = NonNullable<Awaited<ReturnType<typeof publishAdminPlaylist>>>
+
+    export type PublishAdminPlaylistMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Publicar una playlist editorial (admin)
+ */
+export const usePublishAdminPlaylist = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof publishAdminPlaylist>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getPublishAdminPlaylistMutationOptions(options));
+    }
+
+export const getHideAdminPlaylistUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/playlists/${id}/hide`
+}
+
+/**
+ * @summary Ocultar una playlist editorial sin borrar su contenido (admin)
+ */
+export const hideAdminPlaylist = async (id: number, options?: RequestInit): Promise<CatalogPlaylist> => {
+
+  return customFetch<CatalogPlaylist>(getHideAdminPlaylistUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getHideAdminPlaylistMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof hideAdminPlaylist>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['hideAdminPlaylist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hideAdminPlaylist>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  hideAdminPlaylist(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HideAdminPlaylistMutationResult = NonNullable<Awaited<ReturnType<typeof hideAdminPlaylist>>>
+
+    export type HideAdminPlaylistMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Ocultar una playlist editorial sin borrar su contenido (admin)
+ */
+export const useHideAdminPlaylist = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideAdminPlaylist>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof hideAdminPlaylist>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getHideAdminPlaylistMutationOptions(options));
     }
 
 export const getCreateAdminCategoryUrl = () => {

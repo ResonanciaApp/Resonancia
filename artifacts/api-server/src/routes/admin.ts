@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import { z } from "zod";
+import { z as zod4 } from "zod/v4";
 import { and, asc, count, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import {
   db,
@@ -7,6 +8,7 @@ import {
   catalogCategoriesTable,
   catalogSessionsTable,
   catalogPlaylistsTable,
+  catalogPlaylistPlacementsTable,
   playbackHistoryTable,
   sharedMixesTable,
   sharedMixReportsTable,
@@ -16,6 +18,7 @@ import {
   updateMixerSoundSchema,
   insertCatalogPlaylistSchema,
   updateCatalogPlaylistSchema,
+  EDITORIAL_PLAYLIST_SURFACES,
   insertGuideConfigSchema,
   updateGuideConfigSchema,
   sceneAnimationsTable,
@@ -23,6 +26,9 @@ import {
   UpdateSceneAnimationSchema,
   type CatalogCategory,
   type CatalogPlaylist,
+  type CatalogPlaylistPlacement,
+  type InsertCatalogPlaylist,
+  type UpdateCatalogPlaylist,
   type SharedMix,
   type User,
   type MixerSound,
@@ -510,7 +516,67 @@ router.delete("/admin/sounds/:id", requireAuth, requireRole("admin"), async (req
 
 // ── Admin Playlists ────────────────────────────────────────────────────────
 
-function serializePlaylist(p: CatalogPlaylist) {
+const editorialPlaylistPlacementSchema = zod4
+  .object({
+    surface: zod4.enum(EDITORIAL_PLAYLIST_SURFACES),
+    sortOrder: zod4.number().int().min(0),
+    isActive: zod4.boolean(),
+  })
+  .strict();
+type EditorialPlaylistPlacementInput = zod4.infer<
+  typeof editorialPlaylistPlacementSchema
+>;
+
+const adminPlaylistInputSchema = insertCatalogPlaylistSchema
+  .extend({
+    placements: zod4.array(editorialPlaylistPlacementSchema).optional(),
+  })
+  .superRefine((value, ctx) => {
+    const placements = value.placements as
+      | EditorialPlaylistPlacementInput[]
+      | undefined;
+    if (!placements) return;
+    const surfaces = placements.map((placement) => placement.surface);
+    if (new Set(surfaces).size !== surfaces.length) {
+      ctx.addIssue({
+        code: zod4.ZodIssueCode.custom,
+        path: ["placements"],
+        message: "Solo puede existir una ubicación por superficie",
+      });
+    }
+  });
+
+const adminPlaylistUpdateSchema = updateCatalogPlaylistSchema
+  .extend({
+    placements: zod4.array(editorialPlaylistPlacementSchema).optional(),
+  })
+  .superRefine((value, ctx) => {
+    const placements = value.placements as
+      | EditorialPlaylistPlacementInput[]
+      | undefined;
+    if (!placements) return;
+    const surfaces = placements.map((placement) => placement.surface);
+    if (new Set(surfaces).size !== surfaces.length) {
+      ctx.addIssue({
+        code: zod4.ZodIssueCode.custom,
+        path: ["placements"],
+        message: "Solo puede existir una ubicación por superficie",
+      });
+    }
+  });
+
+function serializePlacement(p: CatalogPlaylistPlacement) {
+  return {
+    surface: p.surface,
+    sortOrder: p.sortOrder,
+    isActive: p.isActive,
+  };
+}
+
+function serializePlaylist(
+  p: CatalogPlaylist,
+  placements: CatalogPlaylistPlacement[] = [],
+) {
   return {
     id: p.id,
     slug: p.slug,
@@ -525,7 +591,154 @@ function serializePlaylist(p: CatalogPlaylist) {
     isActive: p.isActive,
     showOnHome: p.showOnHome,
     homePosition: p.homePosition ?? null,
+    placements: placements.map(serializePlacement),
   };
+}
+
+async function loadPlaylistPlacements(playlistIds: number[]) {
+  const byPlaylist = new Map<number, CatalogPlaylistPlacement[]>();
+  if (playlistIds.length === 0) return byPlaylist;
+  const rows = await db
+    .select()
+    .from(catalogPlaylistPlacementsTable)
+    .where(inArray(catalogPlaylistPlacementsTable.playlistId, playlistIds))
+    .orderBy(
+      asc(catalogPlaylistPlacementsTable.surface),
+      asc(catalogPlaylistPlacementsTable.sortOrder),
+      asc(catalogPlaylistPlacementsTable.id),
+    );
+  for (const row of rows) {
+    const list = byPlaylist.get(row.playlistId) ?? [];
+    list.push(row);
+    byPlaylist.set(row.playlistId, list);
+  }
+  return byPlaylist;
+}
+
+async function validatePublishedPlaylistSessions(
+  sessionIds: string[],
+  requireAtLeastOne = false,
+) {
+  if (new Set(sessionIds).size !== sessionIds.length) {
+    return "Una playlist no puede contener sesiones duplicadas";
+  }
+  if (sessionIds.some((sessionId) => typeof sessionId !== "string" || !sessionId.trim())) {
+    return "Los IDs de sesión deben ser textos no vacíos";
+  }
+  if (sessionIds.length === 0) {
+    return requireAtLeastOne
+      ? "La playlist debe incluir al menos una sesión publicada"
+      : null;
+  }
+
+  const sessions = await db
+    .select({ id: catalogSessionsTable.id, status: catalogSessionsTable.status })
+    .from(catalogSessionsTable)
+    .where(inArray(catalogSessionsTable.id, sessionIds));
+  const published = new Set(
+    sessions
+      .filter((session) => session.status === "published")
+      .map((session) => session.id),
+  );
+  const unavailable = sessionIds.filter((sessionId) => !published.has(sessionId));
+  if (unavailable.length > 0) {
+    return `Las sesiones no están publicadas o no existen: ${unavailable.join(", ")}`;
+  }
+  return null;
+}
+
+async function replacePlaylistPlacements(
+  tx: Pick<typeof db, "delete" | "insert" | "select" | "execute">,
+  playlistId: number,
+  placements: EditorialPlaylistPlacementInput[],
+) {
+  // There are only two editorial surfaces for now. Lock both before reading
+  // the playlist so a concurrent update cannot change the set of surfaces
+  // between the read and the resequencing pass.
+  for (const surface of EDITORIAL_PLAYLIST_SURFACES) {
+    await tx.execute(
+      sql`select pg_advisory_xact_lock(hashtextextended(${surface}, 0))`,
+    );
+  }
+  const existingForPlaylist = await tx
+    .select()
+    .from(catalogPlaylistPlacementsTable)
+    .where(eq(catalogPlaylistPlacementsTable.playlistId, playlistId));
+  const surfaces = [
+    ...new Set([
+      ...existingForPlaylist.map((placement) => placement.surface),
+      ...placements.map((placement) => placement.surface),
+    ]),
+  ] as (typeof EDITORIAL_PLAYLIST_SURFACES)[number][];
+  if (surfaces.length === 0) return;
+
+  const rows = await tx
+    .select()
+    .from(catalogPlaylistPlacementsTable)
+    .where(inArray(catalogPlaylistPlacementsTable.surface, surfaces));
+  const nextRows: Array<{
+    playlistId: number;
+    surface: (typeof EDITORIAL_PLAYLIST_SURFACES)[number];
+    sortOrder: number;
+    isActive: boolean;
+  }> = [];
+
+  for (const surface of surfaces) {
+    const retained = rows
+      .filter(
+        (placement) =>
+          placement.surface === surface && placement.playlistId !== playlistId,
+      )
+      .sort(
+        (a, b) =>
+          a.sortOrder - b.sortOrder ||
+          a.id - b.id,
+      );
+    const requested = placements.find((placement) => placement.surface === surface);
+    if (requested) {
+      const hasCollision = retained.some(
+        (placement) => placement.sortOrder === requested.sortOrder,
+      );
+      if (hasCollision) {
+        for (const placement of retained) {
+          if (placement.sortOrder >= requested.sortOrder) {
+            placement.sortOrder += 1;
+          }
+        }
+      }
+      retained.push({
+        id: Number.MAX_SAFE_INTEGER,
+        playlistId,
+        surface,
+        sortOrder: requested.sortOrder,
+        isActive: requested.isActive,
+        createdAt: new Date(0),
+        updatedAt: new Date(0),
+      });
+      retained.sort(
+        (a, b) =>
+          a.sortOrder - b.sortOrder ||
+          a.id - b.id,
+      );
+    }
+    retained.forEach((placement) => {
+      nextRows.push({
+        playlistId: placement.playlistId,
+        surface,
+        sortOrder: placement.sortOrder,
+        isActive: placement.isActive,
+      });
+    });
+  }
+
+  // Rewriting affected surfaces inside the same transaction avoids transient
+  // `(surface, sortOrder)` conflicts while all neighboring rows are shifted.
+  await tx
+    .delete(catalogPlaylistPlacementsTable)
+    .where(inArray(catalogPlaylistPlacementsTable.surface, surfaces));
+  if (nextRows.length > 0) {
+    await tx.insert(catalogPlaylistPlacementsTable).values(nextRows);
+  }
 }
 
 // GET /admin/playlists — listar todas las playlists (admin).
@@ -535,7 +748,8 @@ router.get("/admin/playlists", requireAuth, requireRole("admin"), async (req, re
       .select()
       .from(catalogPlaylistsTable)
       .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id));
-    res.json(rows.map(serializePlaylist));
+    const placements = await loadPlaylistPlacements(rows.map((row) => row.id));
+    res.json(rows.map((row) => serializePlaylist(row, placements.get(row.id))));
   } catch (err) {
     req.log.error({ err }, "error listing playlists");
     res.status(500).json({ error: "Error al cargar las playlists" });
@@ -544,18 +758,40 @@ router.get("/admin/playlists", requireAuth, requireRole("admin"), async (req, re
 
 // POST /admin/playlists — crear una playlist.
 router.post("/admin/playlists", requireAuth, requireRole("admin"), async (req, res) => {
-  const parsed = insertCatalogPlaylistSchema.safeParse(req.body);
+  const parsed = adminPlaylistInputSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
+  const {
+    placements = [],
+    ...playlistValues
+  } = parsed.data as InsertCatalogPlaylist & {
+    placements?: EditorialPlaylistPlacementInput[];
+  };
+  const sessionError = await validatePublishedPlaylistSessions(
+    playlistValues.sessionIds ?? [],
+  );
+  if (sessionError) {
+    res.status(400).json({ code: "INVALID_PLAYLIST_SESSIONS", error: sessionError });
+    return;
+  }
   try {
-    const [created] = await db
-      .insert(catalogPlaylistsTable)
-      .values(parsed.data)
-      .returning();
+    const created = await db.transaction(async (tx) => {
+      const [playlist] = await tx
+        .insert(catalogPlaylistsTable)
+        .values(playlistValues)
+        .returning();
+      await replacePlaylistPlacements(tx, playlist.id, placements);
+      return playlist;
+    });
     req.log.info({ playlistId: created.id, slug: created.slug }, "admin playlist created");
-    res.status(201).json(serializePlaylist(created));
+    res.status(201).json(
+      serializePlaylist(
+        created,
+        (await loadPlaylistPlacements([created.id])).get(created.id),
+      ),
+    );
   } catch (err: unknown) {
     const e = err as { code?: string };
     if (e?.code === "23505") {
@@ -574,28 +810,158 @@ router.patch("/admin/playlists/:id", requireAuth, requireRole("admin"), async (r
     res.status(400).json({ error: "ID inválido" });
     return;
   }
-  const parsed = updateCatalogPlaylistSchema.safeParse(req.body);
+  const parsed = adminPlaylistUpdateSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
   try {
-    const [updated] = await db
-      .update(catalogPlaylistsTable)
-      .set({ ...parsed.data, updatedAt: new Date() })
+    const [current] = await db
+      .select()
+      .from(catalogPlaylistsTable)
       .where(eq(catalogPlaylistsTable.id, id))
-      .returning();
+      .limit(1);
+    if (!current) {
+      res.status(404).json({ error: "Playlist no encontrada" });
+      return;
+    }
+    const { placements, ...playlistValues } = parsed.data as UpdateCatalogPlaylist & {
+      placements?: EditorialPlaylistPlacementInput[];
+    };
+    const sessionIds = playlistValues.sessionIds ?? current.sessionIds ?? [];
+    const shouldValidateSessions =
+      playlistValues.sessionIds !== undefined ||
+      playlistValues.isActive === true ||
+      placements?.some((placement) => placement.isActive) === true;
+    if (shouldValidateSessions) {
+      const sessionError = await validatePublishedPlaylistSessions(
+        sessionIds,
+        playlistValues.isActive === true,
+      );
+      if (sessionError) {
+        res.status(400).json({
+          code: "INVALID_PLAYLIST_SESSIONS",
+          error: sessionError,
+        });
+        return;
+      }
+    }
+    const updated = await db.transaction(async (tx) => {
+      const [playlist] = await tx
+        .update(catalogPlaylistsTable)
+        .set({ ...playlistValues, updatedAt: new Date() })
+        .where(eq(catalogPlaylistsTable.id, id))
+        .returning();
+      if (placements !== undefined) {
+        await replacePlaylistPlacements(tx, id, placements);
+      }
+      return playlist;
+    });
     if (!updated) {
       res.status(404).json({ error: "Playlist no encontrada" });
       return;
     }
     req.log.info({ playlistId: id }, "admin playlist updated");
-    res.json(serializePlaylist(updated));
-  } catch (err) {
+    res.json(
+      serializePlaylist(
+        updated,
+        (await loadPlaylistPlacements([updated.id])).get(updated.id),
+      ),
+    );
+  } catch (err: unknown) {
+    const e = err as { code?: string };
+    if (e?.code === "23505") {
+      res.status(409).json({ error: "Ya existe una playlist con ese slug" });
+      return;
+    }
     req.log.error({ err }, "error updating playlist");
     res.status(500).json({ error: "Error al actualizar la playlist" });
   }
 });
+
+// POST /admin/playlists/:id/publish — publicar una playlist y sus ubicaciones.
+router.post(
+  "/admin/playlists/:id/publish",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = parseInt(String(req.params.id), 10);
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: "ID inválido" });
+      return;
+    }
+    try {
+      const [current] = await db
+        .select()
+        .from(catalogPlaylistsTable)
+        .where(eq(catalogPlaylistsTable.id, id))
+        .limit(1);
+      if (!current) {
+        res.status(404).json({ error: "Playlist no encontrada" });
+        return;
+      }
+      const sessionError = await validatePublishedPlaylistSessions(
+        current.sessionIds ?? [],
+        true,
+      );
+      if (sessionError) {
+        res.status(400).json({
+          code: "INVALID_PLAYLIST_SESSIONS",
+          error: sessionError,
+        });
+        return;
+      }
+      const [published] = await db
+        .update(catalogPlaylistsTable)
+        .set({ isActive: true, updatedAt: new Date() })
+        .where(eq(catalogPlaylistsTable.id, id))
+        .returning();
+      res.json(
+        serializePlaylist(
+          published,
+          (await loadPlaylistPlacements([id])).get(id),
+        ),
+      );
+    } catch (err) {
+      req.log.error({ err }, "error publishing playlist");
+      res.status(500).json({ error: "Error al publicar la playlist" });
+    }
+  },
+);
+
+// POST /admin/playlists/:id/hide — ocultar una playlist sin borrar su contenido.
+router.post(
+  "/admin/playlists/:id/hide",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = parseInt(String(req.params.id), 10);
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: "ID inválido" });
+      return;
+    }
+    try {
+      const [hidden] = await db
+        .update(catalogPlaylistsTable)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(catalogPlaylistsTable.id, id))
+        .returning();
+      if (!hidden) {
+        res.status(404).json({ error: "Playlist no encontrada" });
+        return;
+      }
+      res.json(
+        serializePlaylist(
+          hidden,
+          (await loadPlaylistPlacements([id])).get(id),
+        ),
+      );
+    } catch (err) {
+      req.log.error({ err }, "error hiding playlist");
+      res.status(500).json({ error: "Error al ocultar la playlist" });
+    }
+  },
+);
 
 // DELETE /admin/playlists/:id — eliminar una playlist.
 router.delete("/admin/playlists/:id", requireAuth, requireRole("admin"), async (req, res) => {

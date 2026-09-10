@@ -30,7 +30,7 @@ import {
 } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { PLAYLISTS } from "@/data/playlists";
+import { getEditorialPlaylistsForSurface } from "@/data/playlists";
 import { isChakraTag } from "@/data/chakras";
 import { TAG_CARDS, slugifyThemeTag } from "@/data/tags";
 import { usePremium } from "@/context/PremiumContext";
@@ -40,6 +40,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
+import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
@@ -89,14 +90,6 @@ const COLLECTION_CARD_H =
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) - 11;
-const PLAYLIST_SAMPLES = [
-  { id: "c1", title: "Paz y Calma", imageId: "1", durationLabel: "4 h 15 min" },
-  { id: "c2", title: "Foco Profundo", imageId: "5", durationLabel: "2 h 30 min" },
-  { id: "c3", title: "Rituales de Mañana", imageId: "10", durationLabel: "1 h 45 min" },
-  { id: "c4", title: "Sueño Reparador", imageId: "9", durationLabel: "5 h 20 min" },
-  { id: "c5", title: "Anti Estrés", imageId: "2", durationLabel: "3 h 10 min" },
-];
-
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
   { label: "10 min", displayLabel: "10 minutos" },
@@ -314,16 +307,8 @@ export function ExploreScreen({
   const otherThemeDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : "rgba(255,255,255,0.62)";
-  // Playlists para ti — playlists del catálogo (admin, showOnHome)
-  const ritualItems = useMemo(
-    () =>
-      PLAYLISTS.slice(0, 4).map((pl) => ({
-        id: pl.id,
-        title: pl.title,
-        durationLabel: pl.durationLabel,
-        image: pl.coverUrl ? { uri: pl.coverUrl } : (pl.cover as number),
-      })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const editorialDiscover = useMemo(
+    () => getEditorialPlaylistsForSurface("discover"),
     [catalogVersion],
   );
 
@@ -440,13 +425,6 @@ export function ExploreScreen({
     { limit: 30 },
     { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 30 }), staleTime: 5 * 60_000 } },
   );
-  const collectionSamples = React.useMemo(() => {
-    return PLAYLIST_SAMPLES.map(p => ({
-      ...p,
-      image: SESSIONS.find(s => s.id === p.imageId)?.image ?? SESSIONS[0].image
-    }));
-  }, []);
-
   const masEscuchadasMeditaciones = React.useMemo(() => {
     const ids = (popularData?.sessions ?? []).map((s) => s.id);
     return ids
@@ -696,58 +674,13 @@ export function ExploreScreen({
             />
           </View>
 
-          <View style={styles.playlistCollectionSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Playlists para ti
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {collectionSamples.map((item) => (
-                <Pressable
-                  key={item.id}
-                  style={({ pressed }) => [
-                    styles.playlistCard,
-                    { opacity: pressed ? 0.85 : 1 },
-                  ]}
-                >
-                  <View style={styles.playlistStack}>
-                    <View style={styles.playlistStackStripFront} />
-                    <View style={styles.playlistStackStripBack} />
-                    <View style={styles.playlistCover}>
-                      <Image
-                        source={item.image as number}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                        cachePolicy="memory-disk"
-                      />
-                      <LinearGradient
-                        pointerEvents="none"
-                        colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
-                        style={StyleSheet.absoluteFill}
-                      />
-                      <SessionDurationBadge
-                        label={item.durationLabel}
-                        style={styles.playlistDurationBadge}
-                      />
-                      <View style={styles.playlistMeta}>
-                        <Text style={styles.playlistTitle} numberOfLines={2}>
-                          {item.title}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
+          <EditorialPlaylistCarousel
+            title="Playlists para ti"
+            playlists={editorialDiscover}
+            onPress={(playlist) =>
+              openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+            }
+          />
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>

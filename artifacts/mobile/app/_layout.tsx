@@ -298,6 +298,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="editorial-playlist/[slug]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="mezclas-comunidad"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

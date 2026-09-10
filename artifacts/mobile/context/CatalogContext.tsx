@@ -37,6 +37,9 @@ import {
 } from "@/data/categories";
 import {
   applyPlaylistsSnapshot,
+  HOME_PLAYLISTS,
+  PLAYLISTS,
+  type EditorialPlaylist,
   type PlaylistSnapshot,
 } from "@/data/playlists";
 
@@ -50,22 +53,29 @@ type CatalogContextValue = {
   status: CatalogStatus;
   /** Se incrementa cada vez que se aplica un snapshot nuevo (cache o red). */
   version: number;
+  /** Playlists curatoriales públicas; nunca contiene las playlists privadas. */
+  editorialPlaylists: EditorialPlaylist[];
+  /** Alias legado de Inicio: solo showOnHome y máximo cuatro. */
+  homeEditorialPlaylists: EditorialPlaylist[];
 };
 
 const CatalogContext = createContext<CatalogContextValue>({
   status: "bundled",
   version: 0,
+  editorialPlaylists: PLAYLISTS,
+  homeEditorialPlaylists: HOME_PLAYLISTS,
 });
 
 function hydrate(snapshot: {
   categories: CatalogCategorySnapshot[];
   sessions: CatalogSessionSnapshot[];
   playlists?: PlaylistSnapshot[];
+  homePlaylists?: PlaylistSnapshot[];
 }): void {
   applyCategoriesSnapshot(snapshot.categories);
   applyCatalogSnapshot(snapshot.sessions);
   if (snapshot.playlists) {
-    applyPlaylistsSnapshot(snapshot.playlists);
+    applyPlaylistsSnapshot(snapshot.playlists, snapshot.homePlaylists);
   }
 }
 
@@ -117,7 +127,14 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, [data]);
 
   return (
-    <CatalogContext.Provider value={{ status, version }}>
+    <CatalogContext.Provider
+      value={{
+        status,
+        version,
+        editorialPlaylists: PLAYLISTS,
+        homeEditorialPlaylists: HOME_PLAYLISTS,
+      }}
+    >
       {children}
     </CatalogContext.Provider>
   );

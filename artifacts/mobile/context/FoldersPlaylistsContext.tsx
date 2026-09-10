@@ -51,6 +51,9 @@ export type Playlist = {
   pinned?: boolean;
 };
 
+/** Referencia a una playlist del catálogo; nunca se convierte en playlist privada. */
+export type EditorialPlaylistLibraryRef = string;
+
 interface FoldersPlaylistsCtx {
   folders: Folder[];
   playlists: Playlist[];
@@ -104,6 +107,9 @@ interface FoldersPlaylistsCtx {
   pinnedFavoriteIds: string[];
   isFavoritePinned: (sessionId: string) => boolean;
   togglePinFavorite: (sessionId: string) => void;
+  savedEditorialPlaylistIds: EditorialPlaylistLibraryRef[];
+  isEditorialPlaylistSaved: (slug: string) => boolean;
+  toggleEditorialPlaylist: (slug: string) => void;
 }
 
 // ─── Storage keys ─────────────────────────────────────────────────────────────
@@ -139,6 +145,7 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
 ];
 const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
+const EDITORIAL_PLAYLISTS_KEY = "@resonance_saved_editorial_playlist_ids";
 
 /**
  * Marca de primera sincronización de biblioteca con la nube.
@@ -179,6 +186,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [favFolders, setFavFolders] = useState<FavFolder[]>([]);
   const [pinnedFavoriteIds, setPinnedFavoriteIds] = useState<string[]>([]);
+  const [savedEditorialPlaylistIds, setSavedEditorialPlaylistIds] = useState<string[]>([]);
 
   // True mientras se carga desde storage (no empujar al server aún)
   const hydrating = useRef(true);
@@ -190,14 +198,25 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   // ── Carga inicial desde AsyncStorage + merge con server ─────────────────────
 
   useEffect(() => {
+    // Clerk puede resolver la sesión después del primer render. Mantener la
+    // hidratación activa mientras cambia evita que el push debounced de una
+    // sesión anónima sobrescriba la biblioteca remota antes del merge.
+    hydrating.current = true;
+    if (pushTimer.current) {
+      clearTimeout(pushTimer.current);
+      pushTimer.current = null;
+    }
+    let cancelled = false;
     AsyncStorage.multiGet([
       FOLDERS_KEY,
       PLAYLISTS_KEY,
       FAV_FOLDERS_KEY,
       PINNED_FAVORITES_KEY,
+      EDITORIAL_PLAYLISTS_KEY,
       DEFAULT_PLAYLISTS_SEEDED_KEY,
       LIBRARY_FIRST_SYNC_KEY,
-    ]).then(async ([fEntry, pEntry, ffEntry, pfEntry, seededEntry, firstSyncEntry]) => {
+    ]).then(async ([fEntry, pEntry, ffEntry, pfEntry, editorialEntry, seededEntry, firstSyncEntry]) => {
+      if (cancelled) return;
       // ── Folders ──
       const localFolders: Folder[] = fEntry[1] ? JSON.parse(fEntry[1]) : [];
 
@@ -224,15 +243,20 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       // ── Fav folders & pinned ──
       const localFavFolders: FavFolder[] = ffEntry[1] ? JSON.parse(ffEntry[1]) : [];
       const localPinned: string[] = pfEntry[1] ? JSON.parse(pfEntry[1]) : [];
+      const localEditorial: string[] = editorialEntry[1] ? JSON.parse(editorialEntry[1]) : [];
 
       // ── Sync con server ──────────────────────────────────────────────────────
       if (isSignedIn) {
         try {
           const snap = await getMyLibrary();
+           if (cancelled) return;
           const serverFolders = (snap.folders ?? []) as Folder[];
           const serverPlaylists = (snap.playlists ?? []) as Playlist[];
           const serverFavFolders = (snap.favFolders ?? []) as FavFolder[];
           const serverPinned = (snap.pinnedFavoriteIds ?? []) as string[];
+           const serverEditorial = (
+             (snap as typeof snap & { savedEditorialPlaylistIds?: unknown }).savedEditorialPlaylistIds ?? []
+           ) as string[];
 
           const firstSync = !firstSyncEntry[1];
 
@@ -240,6 +264,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
           let finalPlaylists: Playlist[];
           let finalFavFolders: FavFolder[];
           let finalPinned: string[];
+           let finalEditorial: string[];
 
           if (firstSync) {
             // Primera sync de este dispositivo: unión para recuperar datos de la nube
@@ -247,42 +272,50 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
             finalPlaylists = mergeById(localPlaylists, serverPlaylists);
             finalFavFolders = mergeById(localFavFolders, serverFavFolders);
             finalPinned = mergeStringArrays(localPinned, serverPinned);
+             finalEditorial = mergeStringArrays(localEditorial, serverEditorial);
             await AsyncStorage.setItem(LIBRARY_FIRST_SYNC_KEY, "1");
             // Guardar el resultado fusionado localmente
             AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(finalFolders));
             AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(finalPlaylists));
             AsyncStorage.setItem(FAV_FOLDERS_KEY, JSON.stringify(finalFavFolders));
             AsyncStorage.setItem(PINNED_FAVORITES_KEY, JSON.stringify(finalPinned));
+             AsyncStorage.setItem(EDITORIAL_PLAYLISTS_KEY, JSON.stringify(finalEditorial));
           } else {
             // Syncs siguientes: local es autoritativo
             finalFolders = localFolders;
             finalPlaylists = localPlaylists;
             finalFavFolders = localFavFolders;
             finalPinned = localPinned;
+             finalEditorial = localEditorial;
           }
 
           setFolders(finalFolders);
           setPlaylists(finalPlaylists);
           setFavFolders(finalFavFolders);
           setPinnedFavoriteIds(finalPinned);
+           setSavedEditorialPlaylistIds(finalEditorial);
         } catch {
           // Sin red: usar datos locales
           setFolders(localFolders);
           setPlaylists(localPlaylists);
           setFavFolders(localFavFolders);
           setPinnedFavoriteIds(localPinned);
+           setSavedEditorialPlaylistIds(localEditorial);
         }
       } else {
         setFolders(localFolders);
         setPlaylists(localPlaylists);
         setFavFolders(localFavFolders);
         setPinnedFavoriteIds(localPinned);
+         setSavedEditorialPlaylistIds(localEditorial);
       }
 
-      hydrating.current = false;
+       if (!cancelled) hydrating.current = false;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignedIn]);
 
   // ── Push debounced al server cuando cambian los datos ─────────────────────
 
@@ -290,11 +323,21 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     if (hydrating.current || !isSignedIn) return;
     if (pushTimer.current) clearTimeout(pushTimer.current);
     pushTimer.current = setTimeout(() => {
-      setMyLibrary({ folders, playlists, favFolders, pinnedFavoriteIds }).catch(() => {
+      // El campo savedEditorialPlaylistIds se incorpora al contrato compartido de
+      // biblioteca; este cliente antiguo lo envía de forma estructural mientras
+      // el paquete generado termina de regenerarse.
+      const librarySnapshot = {
+        folders,
+        playlists,
+        favFolders,
+        pinnedFavoriteIds,
+        savedEditorialPlaylistIds,
+      };
+      setMyLibrary(librarySnapshot).catch(() => {
         // Sin red: silencioso; se intentará en la siguiente sesión
       });
     }, 1500);
-  }, [folders, playlists, favFolders, pinnedFavoriteIds, isSignedIn]);
+  }, [folders, playlists, favFolders, pinnedFavoriteIds, savedEditorialPlaylistIds, isSignedIn]);
 
   // Functional updaters — always read latest state (no stale closure)
   const updateFolders = useCallback((updater: (prev: Folder[]) => Folder[]) => {
@@ -325,6 +368,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     setPinnedFavoriteIds((prev) => {
       const next = updater(prev);
       AsyncStorage.setItem(PINNED_FAVORITES_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const updateEditorialPlaylistSlugs = useCallback((updater: (prev: string[]) => string[]) => {
+    setSavedEditorialPlaylistIds((prev) => {
+      const next = Array.from(new Set(updater(prev)));
+      AsyncStorage.setItem(EDITORIAL_PLAYLISTS_KEY, JSON.stringify(next));
       return next;
     });
   }, []);
@@ -676,6 +727,17 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updatePinnedFavorites]);
 
+  const isEditorialPlaylistSaved = useCallback(
+    (slug: string) => savedEditorialPlaylistIds.includes(slug),
+    [savedEditorialPlaylistIds],
+  );
+
+  const toggleEditorialPlaylist = useCallback((slug: string) => {
+    updateEditorialPlaylistSlugs((prev) =>
+      prev.includes(slug) ? prev.filter((item) => item !== slug) : [slug, ...prev],
+    );
+  }, [updateEditorialPlaylistSlugs]);
+
   return (
     <Ctx.Provider
       value={{
@@ -727,6 +789,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         pinnedFavoriteIds,
         isFavoritePinned,
         togglePinFavorite,
+         savedEditorialPlaylistIds,
+         isEditorialPlaylistSaved,
+         toggleEditorialPlaylist,
       }}
     >
       {children}

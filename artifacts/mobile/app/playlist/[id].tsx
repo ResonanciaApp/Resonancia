@@ -121,13 +121,23 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
   const { videos: allVideos } = useVideos();
-  const { playSession, playSessionInPlaylist, pauseResume, isPlaying, currentSession } = usePlayer();
+  const {
+    playSession,
+    playSessionInPlaylist,
+    pauseResume,
+    isPlaying,
+    currentSession,
+    activePlaylistOwner,
+  } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   // ¿Está sonando una sesión de ESTA playlist?
   const playlistSessionIds = playlists.find((p) => p.id === id)?.sessionIds ?? [];
-  const miniPlayerVisible = !!currentSession && playlistSessionIds.includes(currentSession.id);
+  const playlistOwner = id ? `private:${id}` : null;
+  const ownsActiveQueue = !!playlistOwner && activePlaylistOwner === playlistOwner;
+  const miniPlayerVisible =
+    ownsActiveQueue && !!currentSession && playlistSessionIds.includes(currentSession.id);
   const MINI_H = 68;
 
   // ── Anti-flicker para el botón play/pause ────────────────────────────────
@@ -239,7 +249,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const handlePlayAll = () => {
     const first = sessions.find((s) => !s.isPremium || isPremium);
     if (!first) return;
-    playSessionInPlaylist(first, sessions.map((s) => s.id));
+    playSessionInPlaylist(first, sessions.map((s) => s.id), playlistOwner ?? undefined);
   };
 
   const handleShuffle = () => {
@@ -247,7 +257,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     if (!available.length) return;
     const random = available[Math.floor(Math.random() * available.length)];
     // Usar playSessionInPlaylist con shuffle activado (se barajará en el contexto)
-    playSessionInPlaylist(random, sessions.map((s) => s.id));
+    playSessionInPlaylist(random, sessions.map((s) => s.id), playlistOwner ?? undefined, true);
   };
 
   const handleShare = async () => {
@@ -389,9 +399,11 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             key={session.id}
             session={session}
             isPremium={isPremium}
-            isActive={currentSession?.id === session.id}
-            isPlaying={displayIsPlaying}
-            onPlay={() => playSessionInPlaylist(session, sessions.map((s) => s.id))}
+            isActive={ownsActiveQueue && currentSession?.id === session.id}
+            isPlaying={ownsActiveQueue && displayIsPlaying}
+            onPlay={() =>
+              playSessionInPlaylist(session, sessions.map((s) => s.id), playlistOwner ?? undefined)
+            }
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
           />

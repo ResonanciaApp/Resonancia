@@ -33,6 +33,7 @@ const LazyTag           = React.lazy(() => import("@/app/tag/[id]"));
 const LazyTodasTematicas = React.lazy(() => import("@/app/todas-las-tematicas"));
 const LazyFavoritos     = React.lazy(() => import("@/app/favoritos-todos"));
 const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
+const LazyEditorialPlaylist = React.lazy(() => import("@/app/editorial-playlist/[slug]"));
 const LazySleepTag      = React.lazy(() => import("@/app/sleep-tag/[id]"));
 const LazySoundTag      = React.lazy(() => import("@/app/sound-tag/[id]"));
 
@@ -58,6 +59,13 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   if (route === "/favoritos-todos") return { node: <LazyFavoritos />, eager: false };
   const p = route.match(/^\/playlist\/(.+)$/);
   if (p) return { node: <LazyPlaylist id={decodeURIComponent(p[1])} />, eager: false };
+  const editorial = route.match(/^\/editorial-playlist\/(.+)$/);
+  if (editorial) {
+    return {
+      node: <LazyEditorialPlaylist slug={decodeURIComponent(editorial[1])} />,
+      eager: false,
+    };
+  }
   const m = route.match(/^\/(session|mezcla|tema|chakra|tag|sleep-tag|sound-tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);

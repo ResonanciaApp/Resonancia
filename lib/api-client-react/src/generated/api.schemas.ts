@@ -68,6 +68,8 @@ export interface LibrarySnapshot {
   favFolders?: unknown[];
   /** IDs de favoritos fijados */
   pinnedFavoriteIds?: string[];
+  /** Slugs estables de playlists editoriales guardadas */
+  savedEditorialPlaylistIds?: string[];
   /** Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite */
   mixerPresets?: unknown[];
   /** Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite */
@@ -822,6 +824,25 @@ export interface CatalogSession {
   audioFiles: CatalogAudioFile[];
 }
 
+/**
+ * Superficie editorial; hay un carrusel fijo por superficie
+ */
+export type EditorialPlaylistPlacementSurface = typeof EditorialPlaylistPlacementSurface[keyof typeof EditorialPlaylistPlacementSurface];
+
+
+export const EditorialPlaylistPlacementSurface = {
+  discover: 'discover',
+  sleep: 'sleep',
+} as const;
+
+export interface EditorialPlaylistPlacement {
+  /** Superficie editorial; hay un carrusel fijo por superficie */
+  surface: EditorialPlaylistPlacementSurface;
+  /** @minimum 0 */
+  sortOrder: number;
+  isActive: boolean;
+}
+
 export interface CatalogPlaylist {
   id: number;
   slug: string;
@@ -836,6 +857,8 @@ export interface CatalogPlaylist {
   isActive: boolean;
   showOnHome: boolean;
   homePosition?: number | null;
+  /** Ubicaciones editoriales activas (público) o todas (admin) */
+  placements: EditorialPlaylistPlacement[];
 }
 
 export type AdminPlaylistInputPlaylistType = typeof AdminPlaylistInputPlaylistType[keyof typeof AdminPlaylistInputPlaylistType];
@@ -874,6 +897,8 @@ export interface AdminPlaylistInput {
      * @maximum 4
      */
   homePosition?: number | null;
+  /** Una ubicación por superficie; omitir preserva las existentes al editar */
+  placements?: EditorialPlaylistPlacement[];
 }
 
 export type AdminPlaylistUpdatePlaylistType = typeof AdminPlaylistUpdatePlaylistType[keyof typeof AdminPlaylistUpdatePlaylistType];
@@ -912,12 +937,21 @@ export interface AdminPlaylistUpdate {
      * @maximum 4
      */
   homePosition?: number | null;
+  /** Reemplaza todas las ubicaciones; una por superficie como máximo */
+  placements?: EditorialPlaylistPlacement[];
+}
+
+export interface CatalogPlaylistDetailResponse {
+  playlist: CatalogPlaylist;
+  sessions: CatalogSession[];
 }
 
 export interface CatalogResponse {
   categories: CatalogCategory[];
   sessions: CatalogSession[];
-  playlists?: CatalogPlaylist[];
+  playlists: CatalogPlaylist[];
+  /** Alias legado de Inicio, filtrado a showOnHome y máximo cuatro */
+  homePlaylists?: CatalogPlaylist[];
 }
 
 export type SearchTrendContext = typeof SearchTrendContext[keyof typeof SearchTrendContext];

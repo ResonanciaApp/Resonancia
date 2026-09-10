@@ -133,4 +133,5 @@
 - [Contadores animados interrumpibles](interruptible-counter-events.md) — al ocultar la superficie, conservar eventos aún no mostrados y descartar solo los ya confirmados para evitar pérdidas o repeticiones
 - [Separación tras contenido dinámico](dynamic-section-spacing.md) — en Inicio, el gap posterior a un bloque que cambia al terminar una animación debe pertenecer al siguiente contenedor estable
 - [Alto canónico de cards editoriales](editorial-card-canonical-size.md) — mantienen el alto de Música para dormir; las grids conservan su ancho local para llenar la fila
-- [Cards Ambientales en Sonidos](ambiental-cards-sonidos.md) — en la pestaña Sonidos muestran solo el título abajo; nunca categoría, duración, autor ni overlay oscuro
+- [Cards Ambientales en Sonidos](ambiental-cards-sonidos.md) — tratamiento propio de Sonidos: título centrado y categoría; sin autor, duración ni overlay oscuro
+- [Playlists editoriales](editorial-playlist-boundaries.md) — publicación por pantalla, no por tags; guardar referencia editorial no crea una playlist privada editable

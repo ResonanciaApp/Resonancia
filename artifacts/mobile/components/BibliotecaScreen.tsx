@@ -56,6 +56,8 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { useCatalog } from "@/context/CatalogContext";
+import type { EditorialPlaylist } from "@/data/playlists";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -1126,7 +1128,29 @@ export function BibliotecaScreen({
   const [nombreCarpetaFavVisible, setNombreCarpetaFavVisible] = useState(false);
   const [favActionsItemId, setFavActionsItemId] = useState<string | null>(null);
   const [favActionsItemKind, setFavActionsItemKind] = useState<"session" | "folder" | null>(null);
-  const { playlists: userPlaylists, folders: userFolders, favFolders, pinnedFavoriteIds } = useFoldersPlaylists();
+  const {
+    playlists: userPlaylists,
+    folders: userFolders,
+    favFolders,
+    pinnedFavoriteIds,
+    savedEditorialPlaylistIds,
+  } = useFoldersPlaylists();
+  const { editorialPlaylists, version: catalogVersion } = useCatalog();
+  const editorialOverlay = useCategoryOverlayOptional();
+  const openEditorialPlaylist = useCallback((slug: string) => {
+    const route = `/editorial-playlist/${encodeURIComponent(slug)}`;
+    if (editorialOverlay) {
+      editorialOverlay.openCategory(route);
+    } else {
+      openLibraryRoute(route);
+    }
+  }, [editorialOverlay, openLibraryRoute]);
+  const savedEditorialPlaylists = useMemo(
+    () => savedEditorialPlaylistIds
+      .map((slug) => editorialPlaylists.find((playlist) => playlist.id === slug))
+      .filter((playlist): playlist is EditorialPlaylist => !!playlist),
+    [catalogVersion, savedEditorialPlaylistIds, editorialPlaylists],
+  );
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
@@ -1227,7 +1251,11 @@ export function BibliotecaScreen({
       const sortedPlaylists = userPlaylists
         .filter((pl) => !plIdsInFoldersGeneral.has(pl.id))
         .sort(cmpGeneral);
-      const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0 || sortedFavFoldersGeneral.length > 0;
+       const hasUserContent =
+         sortedFoldersGeneral.length > 0 ||
+         sortedPlaylists.length > 0 ||
+         sortedFavFoldersGeneral.length > 0 ||
+         savedEditorialPlaylists.length > 0;
       const mixIdsInFoldersGeneral = new Set([
         ...mixFolders.flatMap((f) => f.presetIds),
         ...userFolders.flatMap((f) => f.presetIds ?? []),
@@ -1238,6 +1266,52 @@ export function BibliotecaScreen({
 
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
+           {savedEditorialPlaylists.length > 0 && (
+             <View style={{ gap: 12 }}>
+               <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
+               {viewMode === "grid" ? (
+                 <View style={styles.gridWrap}>
+                   {savedEditorialPlaylists.map((playlist) => (
+                     <Pressable
+                       key={`editorial-${playlist.id}`}
+                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                       onPress={() => openEditorialPlaylist(playlist.id)}
+                     >
+                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                         <Image
+                           source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
+                           style={StyleSheet.absoluteFill}
+                           contentFit="cover"
+                         />
+                       </View>
+                       <Text style={styles.gridTitle} numberOfLines={2}>{playlist.title}</Text>
+                     </Pressable>
+                   ))}
+                 </View>
+               ) : (
+                 savedEditorialPlaylists.map((playlist) => (
+                   <Pressable
+                     key={`editorial-${playlist.id}`}
+                     onPress={() => openEditorialPlaylist(playlist.id)}
+                     style={({ pressed }) => [styles.editorialLibraryRow, { opacity: pressed ? 0.78 : 1 }]}
+                   >
+                     <Image
+                       source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
+                       style={styles.editorialLibraryThumb}
+                       contentFit="cover"
+                     />
+                     <View style={styles.rowInfo}>
+                       <Text style={styles.rowTitle} numberOfLines={1}>{playlist.title}</Text>
+                       <Text style={styles.rowSub} numberOfLines={1}>
+                         Selección especial de Resonancia
+                       </Text>
+                     </View>
+                     <Feather name="chevron-right" size={18} color={MUTED} />
+                   </Pressable>
+                 ))
+               )}
+             </View>
+           )}
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
@@ -1420,7 +1494,7 @@ export function BibliotecaScreen({
       };
       const displayPl = applySort(sortedUserPl);
 
-      if (displayPl.length === 0 && userFolders.length === 0) {
+       if (displayPl.length === 0 && userFolders.length === 0 && savedEditorialPlaylists.length === 0) {
         return (
           <View style={styles.emptyState}>
             <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
@@ -1436,7 +1510,31 @@ export function BibliotecaScreen({
 
       if (viewMode === "grid") {
         return (
-          <View style={[styles.gridWrap, { marginTop: 30 }]}>
+           <View style={{ gap: 18, marginTop: 30 }}>
+             {savedEditorialPlaylists.length > 0 && (
+               <View style={{ gap: 12 }}>
+                 <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
+                 <View style={styles.gridWrap}>
+                   {savedEditorialPlaylists.map((playlist) => (
+                     <Pressable
+                       key={`editorial-${playlist.id}`}
+                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                       onPress={() => openEditorialPlaylist(playlist.id)}
+                     >
+                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                         <Image
+                           source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
+                           style={StyleSheet.absoluteFill}
+                           contentFit="cover"
+                         />
+                       </View>
+                       <Text style={styles.gridTitle} numberOfLines={2}>{playlist.title}</Text>
+                     </Pressable>
+                   ))}
+                 </View>
+               </View>
+             )}
+             <View style={styles.gridWrap}>
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => openPlaylistPanel(pl.id)}>
@@ -1456,6 +1554,7 @@ export function BibliotecaScreen({
                 <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
               </Pressable>
             ))}
+             </View>
           </View>
         );
       }
@@ -1466,6 +1565,31 @@ export function BibliotecaScreen({
       const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
+           {savedEditorialPlaylists.length > 0 && (
+             <View style={{ gap: 12 }}>
+               <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
+               {savedEditorialPlaylists.map((playlist) => (
+                 <Pressable
+                   key={`editorial-${playlist.id}`}
+                   onPress={() => openEditorialPlaylist(playlist.id)}
+                   style={({ pressed }) => [styles.editorialLibraryRow, { opacity: pressed ? 0.78 : 1 }]}
+                 >
+                   <Image
+                     source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
+                     style={styles.editorialLibraryThumb}
+                     contentFit="cover"
+                   />
+                   <View style={styles.rowInfo}>
+                     <Text style={styles.rowTitle} numberOfLines={1}>{playlist.title}</Text>
+                     <Text style={styles.rowSub} numberOfLines={1}>
+                       Selección especial de Resonancia
+                     </Text>
+                   </View>
+                   <Feather name="chevron-right" size={18} color={MUTED} />
+                 </Pressable>
+               ))}
+             </View>
+           )}
           {sortedFolders.map((folder) => (
             <FolderRow
               key={folder.id}
@@ -2183,6 +2307,26 @@ const styles = StyleSheet.create({
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT },
   rowSub:   { fontFamily: "Manrope", fontSize: 12, color: MUTED },
+  editorialLibraryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    minHeight: 70,
+    paddingHorizontal: H_PAD,
+  },
+  editorialLibraryThumb: {
+    width: 62,
+    height: 62,
+    borderRadius: 8,
+    backgroundColor: "rgba(190,150,80,0.08)",
+  },
+  librarySectionTitle: {
+    paddingHorizontal: H_PAD,
+    color: TEXT,
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
   mixMenuBtn: {
     width: 32,
     height: 32,

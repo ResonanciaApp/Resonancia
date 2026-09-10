@@ -22,6 +22,10 @@ export const userLibraryTable = pgTable("user_library", {
   pinnedFavoriteIds: jsonb("pinned_favorite_ids").notNull().default([]),
   mixerPresets: jsonb("mixer_presets").notNull().default([]),
   geometrixCreations: jsonb("geometrix_creations").notNull().default([]),
+  /** Slugs estables de playlists editoriales guardadas por el usuario. */
+  savedEditorialPlaylistIds: jsonb("saved_editorial_playlist_ids")
+    .notNull()
+    .default([]),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

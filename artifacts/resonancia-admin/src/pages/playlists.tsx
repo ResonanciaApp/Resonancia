@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import {
-  Plus, Trash2, Pencil, X, GripVertical, ListMusic,
+  Plus, Trash2, Pencil, X, ListMusic,
   Image as ImageIcon, Loader2, Check, ChevronDown, ChevronUp,
+  ArrowUp, ArrowDown
 } from "lucide-react";
 import {
   useListAdminPlaylists,
@@ -13,7 +14,7 @@ import {
   useRequestUploadUrl,
   getListAdminPlaylistsQueryKey,
 } from "@workspace/api-client-react";
-import type { CatalogPlaylist } from "@workspace/api-client-react";
+import type { CatalogPlaylist, EditorialPlaylistPlacement, AdminPlaylistInputPlaylistType } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,10 +47,8 @@ type PlaylistForm = {
   savedCount: number;
   sessionIds: string[];
   playlistType: "sessions" | "music";
-  sortOrder: number;
   isActive: boolean;
-  showOnHome: boolean;
-  homePosition: number | null;
+  placements: EditorialPlaylistPlacement[];
 };
 
 const EMPTY_FORM: PlaylistForm = {
@@ -61,10 +60,8 @@ const EMPTY_FORM: PlaylistForm = {
   savedCount: 0,
   sessionIds: [],
   playlistType: "sessions",
-  sortOrder: 0,
   isActive: true,
-  showOnHome: false,
-  homePosition: null,
+  placements: [],
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -90,38 +87,57 @@ const SESSION_CATEGORY_TABS = [
   { id: "todas", label: "Todas" },
   { id: "meditaciones-guiadas", label: "Meditaciones" },
   { id: "sonidos-ancestrales", label: "Sonoterapia" },
+  { id: "music", label: "Música" },
 ] as const;
 
 function SessionPicker({
   selected,
   onChange,
-  playlistType,
 }: {
   selected: string[];
   onChange: (ids: string[]) => void;
-  playlistType: "sessions" | "music";
 }) {
   const { data: catalog } = useGetCatalog();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(true);
   const [tab, setTab] = useState<string>("todas");
 
-  const sessions = (catalog?.sessions ?? []).filter((s) => {
-    const isMusic = isMusicCategory(s.categoryId);
-    return playlistType === "music" ? isMusic : !isMusic;
-  });
+  const sessions = catalog?.sessions ?? [];
 
   const filtered = sessions.filter((s) => {
-    const matchesTab = playlistType !== "sessions" || tab === "todas" || s.categoryId === tab;
+    const isMusic = isMusicCategory(s.categoryId);
+
+    let matchesTab = true;
+    if (tab === "music") {
+      matchesTab = isMusic;
+    } else if (tab !== "todas") {
+      matchesTab = s.categoryId === tab;
+    }
+
     const matchesSearch =
       !search.trim() ||
       s.title.toLowerCase().includes(search.toLowerCase()) ||
       s.categoryLabel.toLowerCase().includes(search.toLowerCase());
+
     return matchesTab && matchesSearch;
   });
 
   const toggle = (id: string) => {
     onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  };
+
+  const moveUp = (idx: number) => {
+    if (idx === 0) return;
+    const newIds = [...selected];
+    [newIds[idx - 1], newIds[idx]] = [newIds[idx], newIds[idx - 1]];
+    onChange(newIds);
+  };
+
+  const moveDown = (idx: number) => {
+    if (idx === selected.length - 1) return;
+    const newIds = [...selected];
+    [newIds[idx + 1], newIds[idx]] = [newIds[idx], newIds[idx + 1]];
+    onChange(newIds);
   };
 
   return (
@@ -150,24 +166,22 @@ function SessionPicker({
               className="h-8 text-sm"
             />
           </div>
-          {playlistType === "sessions" && (
-            <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
-              {SESSION_CATEGORY_TABS.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setTab(t.id)}
-                  className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    tab === t.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
+            {SESSION_CATEGORY_TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTab(t.id)}
+                className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  tab === t.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
           <div className="max-h-56 overflow-y-auto divide-y divide-border">
             {filtered.length === 0 && (
               <p className="text-center text-muted-foreground text-sm py-6">
@@ -213,15 +227,32 @@ function SessionPicker({
                   return (
                     <div
                       key={id}
-                      className="flex items-center gap-2 text-xs text-foreground"
+                      className="flex items-center gap-2 text-xs text-foreground p-1 hover:bg-secondary/50 rounded"
                     >
-                      <GripVertical className="w-3 h-3 text-muted-foreground" />
+                      <div className="flex flex-col gap-0.5 mr-1">
+                        <button
+                          type="button"
+                          onClick={() => moveUp(idx)}
+                          disabled={idx === 0}
+                          className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveDown(idx)}
+                          disabled={idx === selected.length - 1}
+                          className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                       <span className="text-muted-foreground w-4">{idx + 1}.</span>
-                      <span className="truncate">{s?.title ?? id}</span>
+                      <span className="truncate flex-1">{s?.title ?? id}</span>
                       <button
                         type="button"
                         onClick={() => toggle(id)}
-                        className="ml-auto text-muted-foreground hover:text-destructive"
+                        className="ml-auto text-muted-foreground hover:text-destructive p-1"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -363,15 +394,28 @@ function PlaylistForm({
     }
   };
 
+  const getPlacement = (surface: "discover" | "sleep") =>
+    form.placements.find(p => p.surface === surface) || { surface, sortOrder: 0, isActive: false };
+
+  const updatePlacement = (surface: "discover" | "sleep", updates: Partial<EditorialPlaylistPlacement>) => {
+    setForm(prev => {
+      const existing = prev.placements.filter(p => p.surface !== surface);
+      const current = prev.placements.find(p => p.surface === surface) || { surface, sortOrder: 0, isActive: false };
+      return {
+        ...prev,
+        placements: [...existing, { ...current, ...updates }]
+      };
+    });
+  };
+
+  const discoverPlacement = getPlacement("discover");
+  const sleepPlacement = getPlacement("sleep");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) { toast.error("El título es obligatorio"); return; }
     if (!form.slug.trim()) { toast.error("El slug es obligatorio"); return; }
-    if (form.sessionIds.length === 0) { toast.error("Agrega al menos una sesión"); return; }
-
-    if (form.showOnHome && !form.homePosition) {
-      toast.error("Selecciona la posición en el inicio (1–4)"); return;
-    }
+    if (form.isActive && form.sessionIds.length === 0) { toast.error("Agrega al menos una sesión para activarla"); return; }
 
     setSaving(true);
     try {
@@ -383,11 +427,13 @@ function PlaylistForm({
         durationLabel: form.durationLabel.trim(),
         savedCount: form.savedCount,
         sessionIds: form.sessionIds,
-        playlistType: form.playlistType,
-        sortOrder: form.sortOrder,
+        playlistType: form.playlistType as AdminPlaylistInputPlaylistType,
         isActive: form.isActive,
-        showOnHome: form.showOnHome,
-        homePosition: form.showOnHome ? form.homePosition : null,
+        placements: form.placements,
+        // Fallbacks during transition
+        sortOrder: discoverPlacement.sortOrder || 0,
+        showOnHome: discoverPlacement.isActive,
+        homePosition: discoverPlacement.isActive ? (discoverPlacement.sortOrder || 1) : null,
       };
 
       if (isEdit) {
@@ -441,14 +487,14 @@ function PlaylistForm({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label>Tipo</Label>
           <Select
             value={form.playlistType}
             onValueChange={(v) => {
               set("playlistType", v as "sessions" | "music");
-              set("sessionIds", []);
+              // Note: We deliberately do not clear sessionIds here anymore
             }}
           >
             <SelectTrigger>
@@ -467,16 +513,6 @@ function PlaylistForm({
             value={form.durationLabel}
             onChange={(e) => set("durationLabel", e.target.value)}
             placeholder="3 h 15 m"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="sortOrder">Orden</Label>
-          <Input
-            id="sortOrder"
-            type="number"
-            min={0}
-            value={form.sortOrder}
-            onChange={(e) => set("sortOrder", parseInt(e.target.value) || 0)}
           />
         </div>
       </div>
@@ -499,51 +535,71 @@ function PlaylistForm({
             onCheckedChange={(v) => set("isActive", v)}
           />
           <Label htmlFor="isActive" className="cursor-pointer">
-            Activa (visible en la app)
+            Activa (visible en el catálogo público)
           </Label>
         </div>
       </div>
 
-      {/* Sección "Inicio" */}
+      {/* Ubicaciones */}
       <div className="border border-border rounded-lg p-4 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium text-sm text-foreground">Mostrar en inicio</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Máx. 4 playlists se muestran en el home de la app
-            </p>
-          </div>
-          <Switch
-            id="showOnHome"
-            checked={form.showOnHome}
-            onCheckedChange={(v) => {
-              set("showOnHome", v);
-              if (!v) set("homePosition", null);
-            }}
-          />
+        <div>
+          <p className="font-medium text-sm text-foreground">Ubicaciones</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Controla dónde aparece esta playlist de forma curada y su orden.
+          </p>
         </div>
-        {form.showOnHome && (
-          <div className="space-y-1.5">
-            <Label>Posición en el inicio *</Label>
-            <Select
-              value={form.homePosition ? String(form.homePosition) : ""}
-              onValueChange={(v) => set("homePosition", parseInt(v))}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Elige posición…" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Posición 1</SelectItem>
-                <SelectItem value="2">Posición 2</SelectItem>
-                <SelectItem value="3">Posición 3</SelectItem>
-                <SelectItem value="4">Posición 4</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Si otra playlist ya ocupa esa posición, esta la reemplazará.
-            </p>
+
+        <div className="grid grid-cols-2 gap-6">
+          {/* Discover */}
+          <div className="space-y-4 bg-secondary/30 p-3 rounded-md border border-border/50">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="discover-active" className="cursor-pointer font-medium">Discover</Label>
+              <Switch
+                id="discover-active"
+                checked={discoverPlacement.isActive}
+                onCheckedChange={(v) => updatePlacement("discover", { isActive: v })}
+              />
+            </div>
+            {discoverPlacement.isActive && (
+              <div className="space-y-1.5">
+                <Label htmlFor="discover-order" className="text-xs">Orden</Label>
+                <Input
+                  id="discover-order"
+                  type="number"
+                  min={0}
+                  value={discoverPlacement.sortOrder}
+                  onChange={(e) => updatePlacement("discover", { sortOrder: parseInt(e.target.value) || 0 })}
+                  className="h-8"
+                />
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Sleep */}
+          <div className="space-y-4 bg-secondary/30 p-3 rounded-md border border-border/50">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="sleep-active" className="cursor-pointer font-medium">Sleep</Label>
+              <Switch
+                id="sleep-active"
+                checked={sleepPlacement.isActive}
+                onCheckedChange={(v) => updatePlacement("sleep", { isActive: v })}
+              />
+            </div>
+            {sleepPlacement.isActive && (
+              <div className="space-y-1.5">
+                <Label htmlFor="sleep-order" className="text-xs">Orden</Label>
+                <Input
+                  id="sleep-order"
+                  type="number"
+                  min={0}
+                  value={sleepPlacement.sortOrder}
+                  onChange={(e) => updatePlacement("sleep", { sortOrder: parseInt(e.target.value) || 0 })}
+                  className="h-8"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <CoverUpload
@@ -554,7 +610,6 @@ function PlaylistForm({
       <SessionPicker
         selected={form.sessionIds}
         onChange={(ids) => set("sessionIds", ids)}
-        playlistType={form.playlistType}
       />
 
       <div className="flex gap-3 pt-2 justify-end border-t border-border">
@@ -600,10 +655,8 @@ export default function PlaylistsPage() {
       savedCount: p.savedCount,
       sessionIds: p.sessionIds,
       playlistType: p.playlistType as "sessions" | "music",
-      sortOrder: p.sortOrder,
       isActive: p.isActive,
-      showOnHome: p.showOnHome ?? false,
-      homePosition: p.homePosition ?? null,
+      placements: p.placements || (p.showOnHome && p.homePosition ? [{ surface: "discover", sortOrder: p.homePosition, isActive: true }] : []),
     });
     setDialogOpen(true);
   };
@@ -623,7 +676,7 @@ export default function PlaylistsPage() {
     }
   };
 
-  const sorted = [...playlists].sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+  const sorted = [...playlists].sort((a, b) => b.id - a.id);
 
   return (
     <div className="space-y-6">
@@ -632,7 +685,7 @@ export default function PlaylistsPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Playlists de Resonancia</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Colecciones curatoriales que aparecen en el inicio de la app
+            Colecciones curatoriales, música y sesiones
           </p>
         </div>
         <Button onClick={openCreate} className="gap-2">
@@ -650,7 +703,7 @@ export default function PlaylistsPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground border border-dashed border-border rounded-xl">
           <ListMusic className="w-10 h-10 mb-3 opacity-30" />
           <p className="font-medium">No hay playlists todavía</p>
-          <p className="text-sm mt-1">Crea la primera para que aparezca en el home.</p>
+          <p className="text-sm mt-1">Crea la primera para empezar a curar el catálogo.</p>
         </div>
       ) : (
         <div className="border border-border rounded-xl overflow-hidden">
@@ -660,79 +713,88 @@ export default function PlaylistsPage() {
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Playlist</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Tipo</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Sesiones</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Orden</th>
-                <th className="text-left px-4 py-3 text-muted-foreground font-medium">En inicio</th>
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Ubicaciones</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Estado</th>
                 <th className="w-20 px-4 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {sorted.map((p) => (
-                <tr key={p.id} className="hover:bg-secondary/20 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-md border border-border bg-secondary flex items-center justify-center overflow-hidden shrink-0">
-                        {p.coverUrl ? (
-                          <img src={p.coverUrl} alt="" className="w-full h-full object-cover" />
+              {sorted.map((p) => {
+                const activePlacements = (p.placements || []).filter(pl => pl.isActive);
+                if (activePlacements.length === 0 && p.showOnHome) {
+                  activePlacements.push({ surface: "discover", sortOrder: p.homePosition || 1, isActive: true });
+                }
+
+                return (
+                  <tr key={p.id} className="hover:bg-secondary/20 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-md border border-border bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+                          {p.coverUrl ? (
+                            <img src={p.coverUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <ListMusic className="w-4 h-4 text-muted-foreground" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{p.title}</p>
+                          <p className="text-xs text-muted-foreground">{p.slug}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge variant="outline" className="text-xs">
+                        {p.playlistType === "music" ? "Música" : "Sesiones"}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {p.sessionIds.length} sesiones
+                      {p.durationLabel ? ` · ${p.durationLabel}` : ""}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1 items-start">
+                        {activePlacements.length > 0 ? (
+                          activePlacements.map(pl => (
+                            <Badge key={pl.surface} variant="secondary" className="text-xs font-normal">
+                              {pl.surface === "discover" ? "Discover" : "Sleep"} ({pl.sortOrder})
+                            </Badge>
+                          ))
                         ) : (
-                          <ListMusic className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-muted-foreground text-xs">—</span>
                         )}
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{p.title}</p>
-                        <p className="text-xs text-muted-foreground">{p.slug}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge variant="outline" className="text-xs">
-                      {p.playlistType === "music" ? "Música" : "Sesiones"}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {p.sessionIds.length} sesiones
-                    {p.durationLabel ? ` · ${p.durationLabel}` : ""}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">{p.sortOrder}</td>
-                  <td className="px-4 py-3">
-                    {p.showOnHome ? (
-                      <Badge variant="default" className="text-xs gap-1">
-                        Pos. {p.homePosition}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge
+                        variant={p.isActive ? "default" : "secondary"}
+                        className="text-xs"
+                      >
+                        {p.isActive ? "Activa" : "Borrador"}
                       </Badge>
-                    ) : (
-                      <span className="text-muted-foreground text-xs">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge
-                      variant={p.isActive ? "default" : "secondary"}
-                      className="text-xs"
-                    >
-                      {p.isActive ? "Activa" : "Inactiva"}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1 justify-end">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="w-8 h-8"
-                        onClick={() => openEdit(p)}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="w-8 h-8 text-destructive hover:text-destructive"
-                        onClick={() => setConfirmDelete(p)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1 justify-end">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="w-8 h-8"
+                          onClick={() => openEdit(p)}
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="w-8 h-8 text-destructive hover:text-destructive"
+                          onClick={() => setConfirmDelete(p)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

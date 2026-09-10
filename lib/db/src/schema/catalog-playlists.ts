@@ -10,14 +10,15 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
 /**
- * Playlists curatoriales de Resonancia — aparecen en el home del mobile
- * debajo de "Establece tu intención aquí".
+ * Playlists editoriales de Resonancia.
  *
  * `slug` es el ID estable usado por la app mobile (ej. "para-la-ansiedad").
- * `sessionIds` es un array de IDs de sesiones en el orden deseado.
- * `playlistType`:
- *   - "sessions" → mezcla de ancestrales / meditaciones / reflexiones
- *   - "music"    → canciones de la categoría Música
+ * `sessionIds` es el contenido de la playlist, en el orden de reproducción.
+ * Las ubicaciones editoriales viven en `catalog_playlist_placements` para que
+ * cada superficie pueda publicarse y ordenarse de forma independiente.
+ *
+ * `playlistType` se conserva por compatibilidad con el catálogo legado; las
+ * playlists editoriales nuevas pueden contener sesiones de cualquier categoría.
  */
 export const catalogPlaylistsTable = pgTable("catalog_playlists", {
   id: serial("id").primaryKey(),

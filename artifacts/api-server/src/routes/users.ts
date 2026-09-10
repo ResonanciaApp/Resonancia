@@ -773,6 +773,7 @@ router.get("/me/library", requireAuth, async (req, res) => {
       pinnedFavoriteIds: [],
       mixerPresets: [],
       geometrixCreations: [],
+      savedEditorialPlaylistIds: [],
     });
     return;
   }
@@ -784,6 +785,7 @@ router.get("/me/library", requireAuth, async (req, res) => {
     pinnedFavoriteIds: r.pinnedFavoriteIds,
     mixerPresets: r.mixerPresets,
     geometrixCreations: r.geometrixCreations,
+    savedEditorialPlaylistIds: r.savedEditorialPlaylistIds,
   });
 });
 
@@ -799,6 +801,7 @@ router.put("/me/library", requireAuth, async (req, res) => {
     "pinnedFavoriteIds",
     "mixerPresets",
     "geometrixCreations",
+    "savedEditorialPlaylistIds",
   ] as const;
   const updates: Record<string, unknown> = {};
   for (const f of FIELDS) {
@@ -806,6 +809,15 @@ router.put("/me/library", requireAuth, async (req, res) => {
     if (v === undefined) continue;
     if (!Array.isArray(v)) {
       res.status(400).json({ error: `Payload inválido: ${f} debe ser un array` });
+      return;
+    }
+    if (
+      f === "savedEditorialPlaylistIds" &&
+      v.some((id) => typeof id !== "string" || id.length === 0)
+    ) {
+      res.status(400).json({
+        error: "Payload inválido: savedEditorialPlaylistIds debe ser string[]",
+      });
       return;
     }
     updates[f] = v;
@@ -831,6 +843,7 @@ router.put("/me/library", requireAuth, async (req, res) => {
     pinnedFavoriteIds: row.pinnedFavoriteIds,
     mixerPresets: row.mixerPresets,
     geometrixCreations: row.geometrixCreations,
+    savedEditorialPlaylistIds: row.savedEditorialPlaylistIds,
   });
 });
 

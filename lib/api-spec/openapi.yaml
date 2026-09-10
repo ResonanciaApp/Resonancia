@@ -1507,7 +1507,7 @@ paths:
     get:
       operationId: getCatalog
       tags: [catalog]
-      summary: Catálogo público (categorías, sesiones y metadata de audio publicadas)
+      summary: Catálogo público (categorías, sesiones y playlists editoriales activas)
       responses:
         "200":
           description: Catálogo publicado completo
@@ -1515,6 +1515,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CatalogResponse"
+  /catalog/playlists/{slug}:
+    get:
+      operationId: getCatalogPlaylist
+      tags: [catalog]
+      summary: Detalle público de una playlist editorial publicada
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 80
+            pattern: "^[a-z0-9-]+$"
+      responses:
+        "200":
+          description: Playlist publicada con sus sesiones publicadas en orden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogPlaylistDetailResponse"
+        "404":
+          description: Playlist no encontrada o no publicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /catalog/pinned-featured:
     get:
       operationId: getPinnedFeatured
@@ -2580,6 +2607,84 @@ paths:
       responses:
         "204":
           description: Eliminada
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlists/{id}/publish:
+    post:
+      operationId: publishAdminPlaylist
+      tags: [admin]
+      summary: Publicar una playlist editorial (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Playlist publicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogPlaylist"
+        "400":
+          description: La playlist contiene sesiones no publicadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/playlists/{id}/hide:
+    post:
+      operationId: hideAdminPlaylist
+      tags: [admin]
+      summary: Ocultar una playlist editorial sin borrar su contenido (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Playlist oculta
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogPlaylist"
         "401":
           description: No autenticado
           content:
@@ -3858,6 +3963,11 @@ components:
           items:
             type: string
           description: IDs de favoritos fijados
+        savedEditorialPlaylistIds:
+          type: array
+          items:
+            type: string
+          description: Slugs estables de playlists editoriales guardadas
         mixerPresets:
           type: array
           items: {}
@@ -4851,6 +4961,19 @@ components:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
         [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isNew, isPremium, isPlaceholder, status, sortOrder, audioFiles]
+    EditorialPlaylistPlacement:
+      type: object
+      properties:
+        surface:
+          type: string
+          enum: [discover, sleep]
+          description: Superficie editorial; hay un carrusel fijo por superficie
+        sortOrder:
+          type: integer
+          minimum: 0
+        isActive:
+          type: boolean
+      required: [surface, sortOrder, isActive]
     CatalogPlaylist:
       type: object
       properties:
@@ -4884,7 +5007,12 @@ components:
         homePosition:
           type: integer
           nullable: true
-      required: [id, slug, title, description, durationLabel, savedCount, sessionIds, playlistType, sortOrder, isActive, showOnHome]
+        placements:
+          type: array
+          items:
+            $ref: "#/components/schemas/EditorialPlaylistPlacement"
+          description: Ubicaciones editoriales activas (público) o todas (admin)
+      required: [id, slug, title, description, durationLabel, savedCount, sessionIds, playlistType, sortOrder, isActive, showOnHome, placements]
     AdminPlaylistInput:
       type: object
       properties:
@@ -4926,6 +5054,11 @@ components:
           nullable: true
           minimum: 1
           maximum: 4
+        placements:
+          type: array
+          items:
+            $ref: "#/components/schemas/EditorialPlaylistPlacement"
+          description: Una ubicación por superficie; omitir preserva las existentes al editar
       required: [slug, title, playlistType]
     AdminPlaylistUpdate:
       type: object
@@ -4968,6 +5101,21 @@ components:
           nullable: true
           minimum: 1
           maximum: 4
+        placements:
+          type: array
+          items:
+            $ref: "#/components/schemas/EditorialPlaylistPlacement"
+          description: Reemplaza todas las ubicaciones; una por superficie como máximo
+    CatalogPlaylistDetailResponse:
+      type: object
+      properties:
+        playlist:
+          $ref: "#/components/schemas/CatalogPlaylist"
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogSession"
+      required: [playlist, sessions]
     CatalogResponse:
       type: object
       properties:
@@ -4983,7 +5131,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
-      required: [categories, sessions]
+        homePlaylists:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogPlaylist"
+          description: Alias legado de Inicio, filtrado a showOnHome y máximo cuatro
+      required: [categories, sessions, playlists]
     SearchTrendContext:
       type: string
       enum: [discover, sleep, sounds]

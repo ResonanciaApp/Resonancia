@@ -3,7 +3,7 @@ name: Cards Ambientales en Sonidos
 description: Política visual específica para las cards Ambientales de la pestaña Sonidos.
 ---
 
-En la pestaña Sonidos, cualquier card cuya categoría sea Ambientales debe mostrar únicamente el título, alineado en la zona inferior donde normalmente aparece el autor. No debe mostrar categoría, duración, autor ni overlay oscuro.
+En la pestaña Sonidos, las cards Ambientales tienen título centrado, primera línea anclada y píldora de categoría alineada con Dormir. No muestran duración, autor ni overlay oscuro. Esto reemplaza la decisión inicial de ocultar también la categoría.
 
 **Why:** La pestaña Sonidos y la colección “Sonidos para dormir” son superficies distintas y se confundieron durante ajustes visuales; la referencia válida es la pantalla Sonidos con sus carruseles de sonidos ambientales.
 

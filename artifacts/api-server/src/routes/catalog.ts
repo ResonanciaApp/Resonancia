@@ -7,6 +7,7 @@ import {
   catalogSessionsTable,
   catalogAudioFilesTable,
   catalogPlaylistsTable,
+  catalogPlaylistPlacementsTable,
   playbackHistoryTable,
   notificationsTable,
   usersTable,
@@ -16,6 +17,7 @@ import {
   type CatalogSession,
   type CatalogAudioFile,
   type CatalogPlaylist,
+  type CatalogPlaylistPlacement,
   type User,
   type SceneAnimation,
 } from "@workspace/db";
@@ -259,7 +261,22 @@ async function serializeSubmissionList(sessions: CatalogSession[]) {
   );
 }
 
-function serializePlaylist(p: CatalogPlaylist) {
+function serializePlacement(p: CatalogPlaylistPlacement) {
+  return {
+    surface: p.surface,
+    sortOrder: p.sortOrder,
+    isActive: p.isActive,
+  };
+}
+
+function serializePlaylist(
+  p: CatalogPlaylist,
+  placements: CatalogPlaylistPlacement[] = [],
+  visibleSessionIds: Set<string> | null = null,
+) {
+  const sessionIds = (p.sessionIds ?? []).filter((id) =>
+    visibleSessionIds ? visibleSessionIds.has(id) : true,
+  );
   return {
     id: p.id,
     slug: p.slug,
@@ -268,16 +285,46 @@ function serializePlaylist(p: CatalogPlaylist) {
     coverUrl: p.coverUrl ?? null,
     durationLabel: p.durationLabel,
     savedCount: p.savedCount,
-    sessionIds: p.sessionIds ?? [],
+    sessionIds,
     playlistType: p.playlistType,
     sortOrder: p.sortOrder,
     isActive: p.isActive,
     showOnHome: p.showOnHome,
     homePosition: p.homePosition ?? null,
+    placements: placements.map(serializePlacement),
   };
 }
 
-// GET /catalog — catálogo público (solo sesiones publicadas + playlists del home, máx 4).
+async function loadPlaylistPlacements(
+  playlistIds: number[],
+  activeOnly = true,
+) {
+  const byPlaylist = new Map<number, CatalogPlaylistPlacement[]>();
+  if (playlistIds.length === 0) return byPlaylist;
+  const where = activeOnly
+    ? and(
+        inArray(catalogPlaylistPlacementsTable.playlistId, playlistIds),
+        eq(catalogPlaylistPlacementsTable.isActive, true),
+      )
+    : inArray(catalogPlaylistPlacementsTable.playlistId, playlistIds);
+  const rows = await db
+    .select()
+    .from(catalogPlaylistPlacementsTable)
+    .where(where)
+    .orderBy(
+      asc(catalogPlaylistPlacementsTable.surface),
+      asc(catalogPlaylistPlacementsTable.sortOrder),
+      asc(catalogPlaylistPlacementsTable.id),
+    );
+  for (const row of rows) {
+    const list = byPlaylist.get(row.playlistId) ?? [];
+    list.push(row);
+    byPlaylist.set(row.playlistId, list);
+  }
+  return byPlaylist;
+}
+
+// GET /catalog — catálogo público (sesiones publicadas + todas las playlists activas).
 router.get("/catalog", async (req, res) => {
   const [categories, sessions, playlists] = await Promise.all([
     db.select().from(catalogCategoriesTable)
@@ -290,12 +337,15 @@ router.get("/catalog", async (req, res) => {
       // endpoint no debe volverse un full-scan sin techo si el catálogo crece.
       .limit(1000),
     db.select().from(catalogPlaylistsTable)
-      .where(and(eq(catalogPlaylistsTable.isActive, true), eq(catalogPlaylistsTable.showOnHome, true)))
-      .orderBy(asc(catalogPlaylistsTable.homePosition), asc(catalogPlaylistsTable.id))
-      .limit(4),
+      .where(eq(catalogPlaylistsTable.isActive, true))
+      .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
   ]);
 
   const sessionIds = sessions.map((s) => s.id);
+  const visibleSessionIds = new Set(sessionIds);
+  const placements = await loadPlaylistPlacements(
+    playlists.map((playlist) => playlist.id),
+  );
   const audioFiles =
     sessionIds.length > 0
       ? await db
@@ -321,7 +371,101 @@ router.get("/catalog", async (req, res) => {
   res.json({
     categories: categories.map(serializeCategory),
     sessions: sessions.map((s) => serializeSession(s, audioBySession.get(s.id) ?? [])),
-    playlists: playlists.map(serializePlaylist),
+    playlists: playlists.map((playlist) =>
+      serializePlaylist(
+        playlist,
+        placements.get(playlist.id),
+        visibleSessionIds,
+      ),
+    ),
+    // Alias legado para Inicio: la fuente editorial nueva es `playlists`,
+    // mientras que consumidores antiguos pueden seguir mostrando solo las
+    // ubicaciones explícitas de home (máximo cuatro por posición).
+    homePlaylists: playlists
+      .filter((playlist) => playlist.showOnHome)
+      .sort(
+        (a, b) =>
+          (a.homePosition ?? Number.MAX_SAFE_INTEGER) -
+            (b.homePosition ?? Number.MAX_SAFE_INTEGER) ||
+          a.id - b.id,
+      )
+      .slice(0, 4)
+      .map((playlist) =>
+        serializePlaylist(
+          playlist,
+          placements.get(playlist.id),
+          visibleSessionIds,
+        ),
+      ),
+  });
+});
+
+// GET /catalog/playlists/:slug — detalle público de una playlist publicada.
+router.get("/catalog/playlists/:slug", async (req, res) => {
+  const slug = String(req.params.slug);
+  const [playlist] = await db
+    .select()
+    .from(catalogPlaylistsTable)
+    .where(
+      and(
+        eq(catalogPlaylistsTable.slug, slug),
+        eq(catalogPlaylistsTable.isActive, true),
+      ),
+    )
+    .limit(1);
+  if (!playlist) {
+    res.status(404).json({ error: "Playlist no encontrada" });
+    return;
+  }
+
+  const [sessions, placements] = await Promise.all([
+    playlist.sessionIds.length > 0
+      ? db
+          .select()
+          .from(catalogSessionsTable)
+          .where(
+            and(
+              inArray(catalogSessionsTable.id, playlist.sessionIds),
+              eq(catalogSessionsTable.status, "published"),
+            ),
+          )
+      : Promise.resolve([] as CatalogSession[]),
+    loadPlaylistPlacements([playlist.id]),
+  ]);
+  const sessionById = new Map(sessions.map((session) => [session.id, session]));
+  const orderedSessions = playlist.sessionIds
+    .map((sessionId) => sessionById.get(sessionId))
+    .filter((session): session is CatalogSession => session !== undefined);
+  const orderedSessionIds = new Set(orderedSessions.map((session) => session.id));
+  const audioFiles =
+    orderedSessions.length > 0
+      ? await db
+          .select()
+          .from(catalogAudioFilesTable)
+          .where(
+            inArray(
+              catalogAudioFilesTable.sessionId,
+              orderedSessions.map((session) => session.id),
+            ),
+          )
+          .orderBy(asc(catalogAudioFilesTable.id))
+      : [];
+  const audioBySession = new Map<string, CatalogAudioFile[]>();
+  for (const audioFile of audioFiles) {
+    if (!audioFile.sessionId) continue;
+    const list = audioBySession.get(audioFile.sessionId) ?? [];
+    list.push(audioFile);
+    audioBySession.set(audioFile.sessionId, list);
+  }
+  res.json({
+    playlist: serializePlaylist(
+      playlist,
+      placements.get(playlist.id),
+      orderedSessionIds,
+    ),
+    sessions: orderedSessions.map((session) =>
+      serializeSession(session, audioBySession.get(session.id) ?? []),
+    ),
   });
 });
 

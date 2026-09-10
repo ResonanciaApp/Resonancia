@@ -31,6 +31,8 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
+import { getEditorialPlaylistsForSurface } from "@/data/playlists";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -208,6 +210,10 @@ export default function DescansoScreen() {
       })).filter((tag) => tag.sessions.length > 0),
     [catalogVersion],
   );
+  const editorialSleep = useMemo(
+    () => getEditorialPlaylistsForSurface("sleep"),
+    [catalogVersion],
+  );
   const sleepCarouselStyles = useMemo(
     () =>
       sleepCollections.map((_, index) => ({
@@ -371,6 +377,13 @@ export default function DescansoScreen() {
               </ScrollView>
             </View>
           </View>
+          <EditorialPlaylistCarousel
+            title="Selecciones para dormir"
+            playlists={editorialSleep}
+            onPress={(playlist) =>
+              openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+            }
+          />
           <View style={{ marginTop: -3 }}>
             {sleepCollections.map((collection, index) => (
               <SessionCarousel

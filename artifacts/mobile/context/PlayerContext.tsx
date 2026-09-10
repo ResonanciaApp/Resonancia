@@ -34,6 +34,7 @@ import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@
 import { sendHeartbeat } from "@/lib/communityApi";
 import { getArtist } from "@/data/artists";
 import { downloadOwnerScope, getValidLocalUri } from "@/lib/downloadRepository";
+import { buildEditorialQueue } from "@/lib/editorial-playlist-helpers";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 
 export interface HistoryEntry {
@@ -57,6 +58,9 @@ type PlayerContextType = {
   currentSession: Session | null;
   /** Si la sesión actual proviene de una cola de playlist, sus IDs en orden original */
   activePlaylistIds: string[] | null;
+  /** Identidad de la cola dueña (editorial/private), para no mostrar controles
+   * de una playlist cuando la sesión proviene de otra cola. */
+  activePlaylistOwner: string | null;
   /** true cuando la cola es implícita (lista/categoría de origen, estilo Calm):
    *  prev/next disponibles, pero sin shuffle ni auto-avance al terminar. */
   queueImplicit: boolean;
@@ -67,7 +71,12 @@ type PlayerContextType = {
   /** Si está en modo aleatorio dentro de la playlist */
   shuffleMode: boolean;
   /** Reproduce una sesión registrando la cola de la playlist (habilita prev/next en el reproductor) */
-  playSessionInPlaylist: (session: Session, sessionIds: string[]) => void;
+  playSessionInPlaylist: (
+    session: Session,
+    sessionIds: string[],
+    owner?: string,
+    shuffle?: boolean,
+  ) => void;
   /** Avanza a la siguiente sesión de la cola (respeta shuffle) */
   playlistNext: () => void;
   /** Retrocede a la sesión anterior de la cola (respeta shuffle) */
@@ -204,6 +213,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
   // ── Cola de playlist (prev / next / shuffle) ─────────────────────────────
   const [activePlaylistIds, setActivePlaylistIds] = useState<string[] | null>(null);
+  const [activePlaylistOwner, setActivePlaylistOwner] = useState<string | null>(null);
   const [queueImplicit, setQueueImplicit] = useState(false);
   const queueImplicitRef = useRef(false);
   queueImplicitRef.current = queueImplicit;
@@ -1127,13 +1137,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   );
   activateLockScreenRef.current = activateLockScreen;
 
-  // ── Helpers de cola de playlist ──────────────────────────────────────────
-  /** Baraja un arreglo y pone el elemento con id `currentId` primero. */
-  function buildShuffledOrder(ids: string[], currentId: string): string[] {
-    const rest = ids.filter((id) => id !== currentId).sort(() => Math.random() - 0.5);
-    return [currentId, ...rest];
-  }
-
   /** Avanza (o retrocede) en la cola y arranca la siguiente sesión. */
   const advancePlaylist = useCallback(
     (direction: 1 | -1) => {
@@ -1221,7 +1224,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (next) {
         // Activar: barajar a partir de la sesión actual
         const original = activePlaylistIds ?? [];
-        const shuffled = buildShuffledOrder(original, currentId);
+        const shuffled = buildEditorialQueue(original, currentId, true);
         playOrderRef.current = shuffled;
         playIndexRef.current = 0;
       } else {
@@ -1234,15 +1237,25 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     });
   }, [activePlaylistIds]);
 
-  const playSessionInPlaylist = useCallback((session: Session, sessionIds: string[]) => {
+  const playSessionInPlaylist = useCallback((
+    session: Session,
+    sessionIds: string[],
+    owner?: string,
+    shuffle = false,
+  ) => {
     // Registrar la cola y el índice ANTES de llamar a playSession.
     // playSession detectará inPlaylistAdvanceRef = false → registra la cola nueva.
     setActivePlaylistIds(sessionIds);
+    setActivePlaylistOwner(owner ?? null);
     setQueueImplicit(false);
     queueImplicitRef.current = false;
+    // Cada cola nueva define explícitamente su modo: una cola normal no
+    // hereda el shuffle de una playlist anterior.
+    setShuffleMode(shuffle);
+    shuffleModeRef.current = shuffle;
     const idx = sessionIds.indexOf(session.id);
     if (shuffleModeRef.current) {
-      const shuffled = buildShuffledOrder(sessionIds, session.id);
+      const shuffled = buildEditorialQueue(sessionIds, session.id, true);
       playOrderRef.current = shuffled;
       playIndexRef.current = 0;
     } else {
@@ -1281,6 +1294,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         }
         setInfiniteLoop(false);
         setActivePlaylistIds(null);
+        setActivePlaylistOwner(null);
         setQueueImplicit(false);
         queueImplicitRef.current = false;
         setCurrentSession(session);
@@ -1310,6 +1324,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (contextIds.length > 1) {
           setActivePlaylistIds(contextIds);
           setQueueImplicit(true);
+          setActivePlaylistOwner(null);
           queueImplicitRef.current = true;
           setQueueRandom(true);
           queueRandomRef.current = true;
@@ -1319,6 +1334,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           playIndexRef.current = Math.max(0, contextIds.indexOf(session.id));
         } else {
           setActivePlaylistIds(null);
+          setActivePlaylistOwner(null);
           setQueueImplicit(false);
           queueImplicitRef.current = false;
           playOrderRef.current = [];
@@ -1857,6 +1873,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setInfiniteLoop(false);
     // Al detener no queda nada sonando: limpiar también la cola de navegación.
     setActivePlaylistIds(null);
+    setActivePlaylistOwner(null);
     setQueueImplicit(false);
     queueImplicitRef.current = false;
     setShuffleMode(false);
@@ -2008,6 +2025,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         toggleFavorite,
         clearSessionProgress,
         activePlaylistIds,
+         activePlaylistOwner,
         queueImplicit,
         queueRandom,
         toggleQueueRandom,
