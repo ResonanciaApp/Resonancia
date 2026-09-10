@@ -26,14 +26,10 @@ import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import {
   SessionCategoryPill,
-  SessionCategoryGlyph,
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
-import {
-  SessionBadgeGlass,
-  SessionDurationBadge,
-} from "@/components/SessionDurationBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -110,7 +106,7 @@ type SessionCarouselProps = {
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
-  showCategoryIconTopRight?: boolean;
+  showCategoryWithAuthor?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -169,7 +165,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
   sleepOverlayMetadataStyle,
-  showCategoryIconTopRight = false,
+  showCategoryWithAuthor = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -482,18 +478,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          topInset={18}
                        />
                      ) : null}
-                     {showCategoryIconTopRight ? (
-                       <View pointerEvents="none" style={styles.sleepOverlayCategoryIcon}>
-                         <SessionBadgeGlass />
-                         <View style={styles.sleepOverlayCategoryIconContent}>
-                           <SessionCategoryGlyph
-                             categoryId={s.categoryId}
-                             size={12}
-                             color="rgba(249,249,249,0.82)"
-                           />
-                         </View>
-                       </View>
-                     ) : null}
                      <View
                        pointerEvents="none"
                        style={[styles.sleepOverlayMetadata, sleepOverlayMetadataStyle]}
@@ -509,13 +493,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
-                      {showCategoryIconTopRight ? (
+                      {showCategoryWithAuthor ? (
                         <View style={styles.sleepOverlayCategorySpacer} />
                       ) : null}
                       <Text
                         style={[
                           styles.sleepOverlayTitle,
-                          showCategoryIconTopRight && styles.sleepOverlayTitleAfterCategory,
+                          showCategoryWithAuthor && styles.sleepOverlayTitleAfterCategory,
                           sleepOverlayTitleStyle,
                         ]}
                         numberOfLines={2}
@@ -523,9 +507,26 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         {s.title}
                       </Text>
                       {authorName ? (
-                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
-                          {authorName}
-                        </Text>
+                        showCategoryWithAuthor && s.categoryLabel ? (
+                          <View style={styles.sleepOverlayAuthorRow}>
+                            <Text style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}>
+                              {s.categoryLabel}
+                            </Text>
+                            <Text style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}>
+                              ·
+                            </Text>
+                            <Text
+                              style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}
+                              numberOfLines={1}
+                            >
+                              {authorName}
+                            </Text>
+                          </View>
+                        ) : (
+                          <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                            {authorName}
+                          </Text>
+                        )
                       ) : null}
                     </View>
                   </>
@@ -747,21 +748,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     height: 15,
   },
-  sleepOverlayCategoryIcon: {
-    position: "absolute",
-    top: 15,
-    right: 15,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
-    overflow: "hidden",
-  },
-  sleepOverlayCategoryIconContent: {
-    ...StyleSheet.absoluteFillObject,
+  sleepOverlayAuthorRow: {
+    marginTop: 4,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: 4,
+  },
+  sleepOverlayAuthorInline: {
+    marginTop: 0,
   },
   sleepOverlayAuthor: {
     marginTop: 4,

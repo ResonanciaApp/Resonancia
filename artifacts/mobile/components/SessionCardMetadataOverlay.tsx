@@ -157,35 +157,6 @@ export function SessionCategoryIcon({
   );
 }
 
-export function SessionCategoryGlyph({
-  categoryId,
-  size = 11,
-  color,
-}: {
-  categoryId?: string;
-  size?: number;
-  color: string;
-}) {
-  const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
-  if (!category) return null;
-
-  if (category.materialIcon) {
-    return <MaterialCommunityIcons name={category.materialIcon} size={size} color={color} />;
-  }
-
-  if (category.icon) {
-    return (
-      <Image
-        source={category.icon}
-        style={{ width: size, height: size, tintColor: color }}
-        resizeMode="contain"
-      />
-    );
-  }
-
-  return null;
-}
-
 type Props = {
   categoryId?: string;
   durationLabel: string;
