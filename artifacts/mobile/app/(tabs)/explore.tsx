@@ -49,9 +49,11 @@ import {
   getGetPopularSessionsQueryKey,
 } from "@workspace/api-client-react";
 import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 import {
   buildOtherThemeCards,
   keepLastExploreSections,
@@ -79,7 +81,14 @@ const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
 const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
   (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
 );
-const COLLECTION_CARD_W = getTwoCardCarouselCardWidth(width, H_PAD, 25);
+const COLLECTION_CARD_W =
+  getTwoCardCarouselCardWidth(width, H_PAD, 25) - 3.5;
+const COLLECTION_CARD_H =
+  Math.round(
+    (COLLECTION_CARD_W + 50) *
+      SESSION_CARD_METADATA_HEIGHT_SCALE *
+      CONTENT_CAROUSEL_HEIGHT_SCALE,
+  ) - 11;
 const PLAYLIST_SAMPLES = [
   { id: "c1", title: "Paz y Calma", imageId: "1", categoryLabel: "Colección", durationLabel: "4 h 15 min" },
   { id: "c2", title: "Foco Profundo", imageId: "5", categoryLabel: "Colección", durationLabel: "2 h 30 min" },
@@ -703,21 +712,14 @@ export function ExploreScreen({
                 <Pressable
                   key={item.id}
                   style={({ pressed }) => [
-                    { width: COLLECTION_CARD_W },
+                    styles.playlistCard,
                     { opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
-                  <View style={{ width: COLLECTION_CARD_W, height: COLLECTION_CARD_W + 15 }}>
-                    <View style={{
-                      position: 'absolute',
-                      top: 15,
-                      left: 14,
-                      right: 14,
-                      height: COLLECTION_CARD_W,
-                      borderRadius: 16,
-                      overflow: 'hidden',
-                      opacity: 0.6,
-                    }}>
+                  <View style={styles.playlistStack}>
+                    <View style={styles.playlistStackStripFront} />
+                    <View style={styles.playlistStackStripBack} />
+                    <View style={styles.playlistCover}>
                       <Image
                         source={item.image as number}
                         style={StyleSheet.absoluteFill}
@@ -726,38 +728,37 @@ export function ExploreScreen({
                         transition={IMAGE_TRANSITION}
                         cachePolicy="memory-disk"
                       />
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000', opacity: 0.5 }]} />
-                    </View>
-
-                    <View style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: COLLECTION_CARD_W,
-                      borderRadius: 18,
-                      overflow: 'hidden',
-                      borderWidth: StyleSheet.hairlineWidth,
-                      borderColor: 'rgba(255,255,255,0.1)',
-                    }}>
-                      <Image
-                        source={item.image as number}
+                      <LinearGradient
+                        pointerEvents="none"
+                        colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
+                        locations={[0, 0.52, 1]}
                         style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                        cachePolicy="memory-disk"
                       />
+                      <View style={styles.playlistKind}>
+                        <MaterialCommunityIcons
+                          name="layers-outline"
+                          size={13}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.playlistKindText}>
+                          {item.categoryLabel}
+                        </Text>
+                      </View>
+                      <View style={styles.playlistMeta}>
+                        <Text style={styles.playlistTitle} numberOfLines={2}>
+                          {item.title}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.playlistDuration,
+                            { color: activeTheme.accent ?? "#D8D8D8" },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {item.durationLabel}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-
-                  <View style={{ marginTop: 12 }}>
-                    <Text style={{ fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: activeTheme.accent ?? "#c2c2c2" }} numberOfLines={1}>
-                      {item.categoryLabel} · {item.durationLabel}
-                    </Text>
-                    <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginTop: 4, lineHeight: 20 }} numberOfLines={2}>
-                      {item.title}
-                    </Text>
                   </View>
                 </Pressable>
               ))}
@@ -1214,6 +1215,74 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     marginTop: 0,
     marginBottom: SECTION_GAP,
+  },
+  playlistCard: {
+    width: COLLECTION_CARD_W,
+  },
+  playlistStack: {
+    width: COLLECTION_CARD_W,
+    height: COLLECTION_CARD_H + 13,
+  },
+  playlistStackStripFront: {
+    position: "absolute",
+    top: COLLECTION_CARD_H - 2,
+    left: 12,
+    right: 12,
+    height: 9,
+    borderRadius: 6,
+    backgroundColor: "rgba(210,210,210,0.62)",
+  },
+  playlistStackStripBack: {
+    position: "absolute",
+    top: COLLECTION_CARD_H + 8,
+    left: 17,
+    right: 17,
+    height: 5,
+    borderRadius: 4,
+    backgroundColor: "rgba(120,120,120,0.62)",
+  },
+  playlistCover: {
+    width: COLLECTION_CARD_W,
+    height: COLLECTION_CARD_H,
+    borderRadius: 18,
+    overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  playlistKind: {
+    position: "absolute",
+    top: 13,
+    left: 13,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  playlistKindText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    letterSpacing: 0.7,
+    textTransform: "uppercase",
+  },
+  playlistMeta: {
+    position: "absolute",
+    left: 13,
+    right: 13,
+    bottom: 13,
+  },
+  playlistTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    lineHeight: 21,
+    color: "#FBFBFB",
+  },
+  playlistDuration: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
