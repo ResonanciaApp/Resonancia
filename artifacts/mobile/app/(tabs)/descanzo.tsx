@@ -390,6 +390,11 @@ export default function DescansoScreen() {
                     ? { transform: [{ translateX: 7 }, { translateY: -1 }] }
                     : undefined
                 }
+                overlayGradientLocations={
+                  collection.label === "Música para dormir"
+                    ? [0.18, 0.48, 1]
+                    : undefined
+                }
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}

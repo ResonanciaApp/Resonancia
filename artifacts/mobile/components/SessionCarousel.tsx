@@ -107,6 +107,7 @@ type SessionCarouselProps = {
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayAuthorStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
+  overlayGradientLocations?: [number, number, number];
   showCategoryAboveTitle?: boolean;
   hideCategoryAboveTitle?: boolean;
   fixedCardHeight?: number;
@@ -170,6 +171,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepOverlayTitleStyle,
   sleepOverlayAuthorStyle,
   sleepOverlayMetadataStyle,
+  overlayGradientLocations,
   showCategoryAboveTitle = false,
   hideCategoryAboveTitle = false,
   fixedCardHeight,
@@ -490,7 +492,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         "rgba(0,0,0,0.18)",
                         "rgba(0,0,0,0.82)",
                       ]}
-                      locations={[0.28, 0.58, 1]}
+                      locations={overlayGradientLocations ?? [0.28, 0.58, 1]}
                       style={StyleSheet.absoluteFill}
                       pointerEvents="none"
                     />
@@ -557,7 +559,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.sleepOverlayTitle,
                           isEditorialPresentation && styles.editorialTitle,
-                           effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                          effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                          showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
                           sleepOverlayTitleStyle,
                         ]}
                         numberOfLines={2}
@@ -847,9 +850,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(249,249,249,0.08)",
     paddingVertical: 2.5,
+    transform: [{ translateY: 4 }],
   },
   sleepInlineDurationText: {
     fontSize: 10,
+  },
+  sleepInlineTitleLowered: {
+    transform: [{ translateY: 4 }],
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
