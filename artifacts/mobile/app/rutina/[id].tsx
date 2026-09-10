@@ -276,8 +276,6 @@ export default function RutinaDetailScreen() {
             }).format(selectedDate)}
           </Text>
 
-          <View style={[styles.divider, { backgroundColor: routineTheme.divider }]} />
-
           <Text style={[styles.eyebrow, { color: routineTheme.textMuted }]}>Descripción</Text>
           <Text style={[styles.description, { color: routineTheme.textMuted }]}>
             {activity.description || "Sin descripción"}
@@ -287,7 +285,7 @@ export default function RutinaDetailScreen() {
           <View
             style={[
               styles.detailsCard,
-              { backgroundColor: "transparent", borderColor: routineTheme.divider },
+              { backgroundColor: "transparent" },
             ]}
           >
             <DetailRow
@@ -300,16 +298,13 @@ export default function RutinaDetailScreen() {
             />
             {activity.timesPerDay > 1 ? (
               <>
-                <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />
                 <DetailRow
                   icon="clock"
                   label={`Ocurrencia ${occurrenceIndex + 1} de ${activity.timesPerDay}`}
                 />
               </>
             ) : null}
-            <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />
             <DetailRow icon="plus-square" label="Adjuntar una práctica (próximamente)" muted />
-            <View style={[styles.innerDivider, { backgroundColor: routineTheme.divider }]} />
             <DetailRow icon="tag" label={activity.category} />
           </View>
         </View>
@@ -391,10 +386,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textTransform: "capitalize",
   },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginVertical: 28,
-  },
   description: {
     fontFamily: "Manrope",
     fontSize: 15,
@@ -408,7 +399,6 @@ const styles = StyleSheet.create({
   },
   detailsCard: {
     borderRadius: 18,
-    borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 16,
   },
   detailRow: {
@@ -422,10 +412,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-  },
-  innerDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: 30,
   },
   actions: {
     marginTop: 48,
