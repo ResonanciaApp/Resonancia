@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
   sleepOverlayCategoryText: {
     marginTop: 4,
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 10,
     lineHeight: 15,
     fontWeight: "500",
     color: "rgba(249,249,249,0.82)",
