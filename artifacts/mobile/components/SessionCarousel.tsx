@@ -519,7 +519,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          styles.sleepOverlayMetadata,
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
-                          showAmbientalTitleOnly && styles.ambientalTitleOnlyMetadata,
                        ]}
                      >
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
@@ -777,9 +776,6 @@ const styles = StyleSheet.create({
   },
   editorialAmbientalMetadata: {
     transform: [{ translateX: 7 }, { translateY: -7 }],
-  },
-  ambientalTitleOnlyMetadata: {
-    bottom: -9,
   },
   sleepOverlayTitle: {
     fontFamily: "Manrope",
