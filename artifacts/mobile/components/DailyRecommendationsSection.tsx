@@ -95,6 +95,7 @@ export function DailyRecommendationsSection({
           <CategoryAtmosphericCard
             key={session.id}
             categoryId={session.categoryId}
+            style={styles.recommendationCard}
           >
             <SessionRow
               session={session}
@@ -149,6 +150,10 @@ const styles = StyleSheet.create({
   },
   recommendationsList: {
     gap: 15,
+  },
+  recommendationCard: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   row: {
     paddingVertical: 14,

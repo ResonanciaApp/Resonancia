@@ -153,15 +153,11 @@ function CalendarActivityRow({
           styles.stateSquare,
           {
             backgroundColor: completed
-              ? "rgba(255,255,255,0.08)"
-              : skipped
-                ? routineTheme.surfaceElevated
-                : "#F9F9F9",
+              ? "#F9F9F9"
+              : "rgba(255,255,255,0.1)",
             borderColor: completed
-              ? "rgba(255,255,255,0.08)"
-              : skipped
-                ? routineTheme.divider
-                : "#F9F9F9",
+              ? "#F9F9F9"
+              : "rgba(255,255,255,0.1)",
           },
         ]}
       >
@@ -170,10 +166,8 @@ function CalendarActivityRow({
           size={19}
           color={
             completed
-              ? "#F9F9F9"
-              : skipped
-                ? routineTheme.textMuted
-                : "#060A0F"
+              ? "#060A0F"
+              : "#F9F9F9"
           }
         />
       </Pressable>
@@ -296,8 +290,8 @@ export default function RutinaCalendarioScreen() {
                   style={[
                     styles.dayLabel,
                     {
-                       color: selected ? "#F9F9F9" : routineTheme.accent,
-                      opacity: selected ? 1 : 0.7,
+                      color: "#B5B5B5",
+                      opacity: 1,
                     },
                   ]}
                 >

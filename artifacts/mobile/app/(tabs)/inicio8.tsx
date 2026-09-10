@@ -2702,7 +2702,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
-            <DailyWisdomCard backgroundColor="rgba(34,102,104,0.9)" />
+            <DailyWisdomCard backgroundColor="rgba(0,0,0,0.25)" />
           </View>
         )}
         {isInicio2 && <AlmaCommunitySection />}
