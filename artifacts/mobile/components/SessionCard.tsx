@@ -206,7 +206,10 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <View
         style={[
           styles.imageContainer,
-          { borderRadius: isEditorial ? 18 : colors.radius - 4 },
+          {
+            borderRadius: isEditorial ? 18 : colors.radius - 4,
+            borderWidth: isEditorial ? 0 : 2,
+          },
             isAmbiental
               ? {
                   height: squareMetaBelow
@@ -227,7 +230,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         {!isAmbiental && (
           <Image
             source={session.image}
-            style={styles.cardImage}
+            style={[styles.cardImage, isEditorial && styles.editorialRoundedLayer]}
             contentFit="cover"
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
@@ -261,11 +264,10 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                 <LinearGradient
                   colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
                   locations={[0.28, 0.58, 1]}
-                  style={StyleSheet.absoluteFill}
+                  style={[StyleSheet.absoluteFill, styles.editorialRoundedLayer]}
                   pointerEvents="none"
                 />
                 <View pointerEvents="none" style={styles.editorialMetadata}>
-                  <Text style={styles.editorialCategory} numberOfLines={1}>{categoryLabel}</Text>
                   <Text style={styles.editorialTitle} numberOfLines={2}>{session.title}</Text>
                 </View>
               </>
@@ -276,7 +278,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             <LinearGradient
               colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
               locations={[0.28, 0.58, 1]}
-              style={StyleSheet.absoluteFill}
+              style={[StyleSheet.absoluteFill, styles.editorialRoundedLayer]}
               pointerEvents="none"
             />
             {isAmbiental ? null : (
@@ -287,7 +289,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               />
             )}
             <View pointerEvents="none" style={styles.editorialMetadata}>
-              <Text style={styles.editorialCategory} numberOfLines={1}>{categoryLabel}</Text>
               <Text style={styles.editorialTitle} numberOfLines={2}>{session.title}</Text>
               {!isAmbiental && showAuthor && !!authorName && (
                 <Text style={styles.editorialAuthor} numberOfLines={1}>{authorName}</Text>
@@ -497,6 +498,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 15,
     left: 15,
+  },
+  editorialRoundedLayer: {
+    borderRadius: 18,
   },
   editorialMetadata: {
     position: "absolute",
