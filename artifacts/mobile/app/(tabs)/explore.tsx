@@ -48,7 +48,10 @@ import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
 } from "@workspace/api-client-react";
-import { getContentCarouselCardWidth } from "@/constants/carousel";
+import {
+  getContentCarouselCardWidth,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 import {
   buildOtherThemeCards,
   keepLastExploreSections,
@@ -76,6 +79,15 @@ const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
 const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
   (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
 );
+const COLLECTION_CARD_W = getTwoCardCarouselCardWidth(width, H_PAD, 25);
+const PLAYLIST_SAMPLES = [
+  { id: "c1", title: "Paz y Calma", imageId: "1", categoryLabel: "Colección", durationLabel: "4 h 15 min" },
+  { id: "c2", title: "Foco Profundo", imageId: "5", categoryLabel: "Colección", durationLabel: "2 h 30 min" },
+  { id: "c3", title: "Rituales de Mañana", imageId: "10", categoryLabel: "Colección", durationLabel: "1 h 45 min" },
+  { id: "c4", title: "Sueño Reparador", imageId: "9", categoryLabel: "Colección", durationLabel: "5 h 20 min" },
+  { id: "c5", title: "Anti Estrés", imageId: "2", categoryLabel: "Colección", durationLabel: "3 h 10 min" },
+];
+
 const DURATION_SLOTS = [
   { label: "5 min", displayLabel: "5 minutos" },
   { label: "10 min", displayLabel: "10 minutos" },
@@ -419,6 +431,13 @@ export function ExploreScreen({
     { limit: 30 },
     { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 30 }), staleTime: 5 * 60_000 } },
   );
+  const collectionSamples = React.useMemo(() => {
+    return PLAYLIST_SAMPLES.map(p => ({
+      ...p,
+      image: SESSIONS.find(s => s.id === p.imageId)?.image ?? SESSIONS[0].image
+    }));
+  }, []);
+
   const masEscuchadasMeditaciones = React.useMemo(() => {
     const ids = (popularData?.sessions ?? []).map((s) => s.id);
     return ids
@@ -666,6 +685,83 @@ export function ExploreScreen({
               ]}
               discoverTieredLayout
             />
+          </View>
+
+          <View style={styles.playlistCollectionSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Playlists para ti
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
+            >
+              {collectionSamples.map((item) => (
+                <Pressable
+                  key={item.id}
+                  style={({ pressed }) => [
+                    { width: COLLECTION_CARD_W },
+                    { opacity: pressed ? 0.85 : 1 },
+                  ]}
+                >
+                  <View style={{ width: COLLECTION_CARD_W, height: COLLECTION_CARD_W + 15 }}>
+                    <View style={{
+                      position: 'absolute',
+                      top: 15,
+                      left: 14,
+                      right: 14,
+                      height: COLLECTION_CARD_W,
+                      borderRadius: 16,
+                      overflow: 'hidden',
+                      opacity: 0.6,
+                    }}>
+                      <Image
+                        source={item.image as number}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
+                        cachePolicy="memory-disk"
+                      />
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000', opacity: 0.5 }]} />
+                    </View>
+
+                    <View style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: COLLECTION_CARD_W,
+                      borderRadius: 18,
+                      overflow: 'hidden',
+                      borderWidth: StyleSheet.hairlineWidth,
+                      borderColor: 'rgba(255,255,255,0.1)',
+                    }}>
+                      <Image
+                        source={item.image as number}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
+                        cachePolicy="memory-disk"
+                      />
+                    </View>
+                  </View>
+
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={{ fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: activeTheme.accent ?? "#c2c2c2" }} numberOfLines={1}>
+                      {item.categoryLabel} · {item.durationLabel}
+                    </Text>
+                    <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginTop: 4, lineHeight: 20 }} numberOfLines={2}>
+                      {item.title}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
           </View>
 
           <View style={styles.newInResonanceSection}>
@@ -1113,6 +1209,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
+  },
+  playlistCollectionSection: {
+    paddingHorizontal: H_PAD,
+    marginTop: 0,
+    marginBottom: SECTION_GAP,
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
