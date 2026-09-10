@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   getRoutineDateFromKey,
   getRoutineDateKey,
@@ -66,11 +67,13 @@ function ActionRow({
   label,
   icon,
   onPress,
+  backgroundColor,
   disabled = false,
 }: {
   label: string;
   icon: React.ComponentProps<typeof Feather>["name"];
   onPress: () => void;
+  backgroundColor: string;
   disabled?: boolean;
 }) {
   const routineTheme = useRoutineTheme();
@@ -83,7 +86,7 @@ function ActionRow({
       style={({ pressed }) => [
         styles.actionRow,
         {
-          backgroundColor: routineTheme.surface,
+          backgroundColor,
           borderColor: routineTheme.divider,
           opacity: disabled ? 0.5 : pressed ? 0.7 : 1,
         },
@@ -104,7 +107,15 @@ export default function RutinaDetailScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
-  const { theme: activeTheme } = useSceneTheme();
+  const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const profileSectionBackground =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.14)"
+      : activeSceneId === "indigo2"
+        ? "rgba(191,207,255,0.14)"
+        : isIndigoThemeId(activeSceneId)
+          ? "rgba(181,211,255,0.14)"
+          : "rgba(181,211,255,0.14)";
   const todayKey = useDayRollover();
   const {
     isHydrated,
@@ -283,7 +294,7 @@ export default function RutinaDetailScreen() {
           <View
             style={[
               styles.detailsCard,
-              { backgroundColor: routineTheme.surface, borderColor: routineTheme.divider },
+              { backgroundColor: profileSectionBackground, borderColor: routineTheme.divider },
             ]}
           >
             <DetailRow
@@ -321,15 +332,22 @@ export default function RutinaDetailScreen() {
                   : "Solo lectura para esta fecha"
             }
             onPress={markComplete}
+            backgroundColor={profileSectionBackground}
             disabled={completed || !isToday || !!activity.archivedAt}
           />
           <ActionRow
             icon="clock"
             label={skipped ? "Saltada por hoy" : "Saltarme hoy"}
             onPress={skipToday}
+            backgroundColor={profileSectionBackground}
             disabled={completed || skipped || !isToday || !!activity.archivedAt}
           />
-          <ActionRow icon="archive" label="Archivar rutina" onPress={archive} />
+          <ActionRow
+            icon="archive"
+            label="Archivar rutina"
+            onPress={archive}
+            backgroundColor={profileSectionBackground}
+          />
         </View>
       </ScrollView>
     </View>
