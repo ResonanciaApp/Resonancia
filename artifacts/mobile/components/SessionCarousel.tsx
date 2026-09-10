@@ -423,10 +423,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       (!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
                         categoryId={s.categoryId}
-                          leftInset={showAmbientalTitleOnly ? 11 : 18}
-                          topInset={showAmbientalTitleOnly ? 15 : 18}
-                          style={showAmbientalTitleOnly ? styles.sleepCompactPill : undefined}
-                          textStyle={showAmbientalTitleOnly ? styles.sleepCompactPillText : undefined}
+                        leftInset={18}
+                        topInset={18}
                       />
                     )}
                     {!isEditorialPresentation && durationInsideWithMeta && effectiveShowDurationBadge && (
@@ -527,8 +525,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       (showAmbientalTitleOnly && showAmbientalCategoryPill) ? (
                        <SessionCategoryPill
                          categoryId={s.categoryId}
-                         leftInset={18}
-                         topInset={18}
+                         leftInset={showAmbientalTitleOnly ? 11 : 18}
+                         topInset={showAmbientalTitleOnly ? 15 : 18}
+                         style={showAmbientalTitleOnly ? styles.sleepCompactPill : undefined}
+                         textStyle={showAmbientalTitleOnly ? styles.sleepCompactPillText : undefined}
                        />
                      ) : null}
                      <View
