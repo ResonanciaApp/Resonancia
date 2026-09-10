@@ -487,7 +487,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         />
                       ) : null}
                       {showCategoryTextAboveTitle && s.categoryLabel ? (
-                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                        <Text
+                          style={[styles.sleepOverlayAuthor, styles.sleepOverlayCategoryAdjusted]}
+                          numberOfLines={1}
+                        >
                           {s.categoryLabel}
                         </Text>
                       ) : null}
@@ -720,6 +723,10 @@ const styles = StyleSheet.create({
   },
   sleepOverlayTitleAfterCategory: {
     marginTop: 4,
+    transform: [{ translateY: 3 }],
+  },
+  sleepOverlayCategoryAdjusted: {
+    transform: [{ translateY: 6 }],
   },
   sleepOverlayAuthor: {
     marginTop: 4,
