@@ -115,7 +115,6 @@ type SessionCarouselProps = {
   showMetaBelow?: boolean;
   durationInsideWithMeta?: boolean;
   showDurationBadge?: boolean;
-  durationTextColor?: string;
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
@@ -169,7 +168,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showMetaBelow = false,
   durationInsideWithMeta = false,
   showDurationBadge = true,
-  durationTextColor,
   durationLift = 0,
   showHeader = true,
   cardVariant,
@@ -466,10 +464,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         <SessionDurationBadge
                           label={s.durationLabel}
                           style={[styles.durBadge, styles.sleepOverlayDurationInline]}
-                          textStyle={[
-                            styles.durText,
-                            durationTextColor ? { color: durationTextColor } : undefined,
-                          ]}
+                          textStyle={styles.durText}
                         />
                       ) : null}
                       <Text style={styles.sleepOverlayTitle} numberOfLines={2}>

@@ -111,8 +111,6 @@ const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SOUND_CARD_W  = 120;
-const SLEEP_MUSIC_CARD_WIDTH = Math.round((W - H_PAD - 14 * 2 - 15) / 2);
-const SLEEP_MUSIC_CARD_HEIGHT = SLEEP_MUSIC_CARD_WIDTH + 25;
 
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
@@ -374,29 +372,22 @@ export default function DescansoScreen() {
             </View>
           </View>
           <View style={{ marginTop: -3 }}>
-            {sleepCollections.map((collection, index) => {
-              const isSleepMusic = collection.label === "Música para dormir";
-              return (
-                <SessionCarousel
-                  key={collection.id}
-                  title={collection.label}
-                  sessions={collection.sessions}
-                  isPremium={isPremium}
-                  onPress={handleSessionTap}
-                  style={sleepCarouselStyles[index]}
-                  presentation="sleep-category"
-                  sleepMetadataBelow={!isSleepMusic}
-                  categoryGridPresentation
-                  titleSize={19}
-                  showImageCategoryPill={!isSleepMusic}
-                  cardWidth={isSleepMusic ? SLEEP_MUSIC_CARD_WIDTH : undefined}
-                  fixedCardHeight={isSleepMusic ? SLEEP_MUSIC_CARD_HEIGHT : undefined}
-                  allowOversizedCardWidth={isSleepMusic}
-                  durationTextColor={isSleepMusic ? "rgba(249,249,249,0.82)" : undefined}
-                  onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-                />
-              );
-            })}
+            {sleepCollections.map((collection, index) => (
+              <SessionCarousel
+                key={collection.id}
+                title={collection.label}
+                sessions={collection.sessions}
+                isPremium={isPremium}
+                onPress={handleSessionTap}
+                style={sleepCarouselStyles[index]}
+                presentation="sleep-category"
+                sleepMetadataBelow
+                categoryGridPresentation
+                titleSize={19}
+                showImageCategoryPill
+                onViewAll={sleepCarouselViewAllHandlers[collection.id]}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>
