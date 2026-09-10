@@ -13,6 +13,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -77,6 +78,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
     isPlaying,
   } = usePlayer();
   const backOverride = useBackOverride();
+  const { width } = useWindowDimensions();
   const [remotePlaylist, setRemotePlaylist] = useState<PlaylistSnapshot | null>(null);
   const [loading, setLoading] = useState(false);
   const [authoritativeMissing, setAuthoritativeMissing] = useState(false);
@@ -263,127 +265,135 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 + insets.bottom }}
+        bounces={false}
       >
-        <View style={[styles.header, { paddingTop: (Platform.OS === "web" ? 67 : insets.top) + 8 }]}>
-          <Pressable
-            onPress={goBack}
-            hitSlop={12}
-            style={styles.headerButton}
-            accessibilityRole="button"
-            accessibilityLabel="Volver"
-          >
-            <Feather name="chevron-left" size={28} color={COLORS.text} />
-          </Pressable>
-          <View style={styles.headerSpacer} />
-          <Pressable
-            onPress={() => Share.share({ message: `Escucha "${playlist.title}" en Resonancia.` })}
-            hitSlop={12}
-            style={styles.headerButton}
-            accessibilityRole="button"
-            accessibilityLabel="Más opciones"
-            testID="editorial-playlist-menu"
-          >
-            <Feather name="more-horizontal" size={24} color={COLORS.text} />
-          </Pressable>
-        </View>
-
-        <View style={styles.hero}>
-          <View style={styles.cover}>
-            {coverSource ? (
-              <Image
-                source={coverSource}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-                placeholder={BLUR_PLACEHOLDER}
-                transition={IMAGE_TRANSITION}
-                cachePolicy="memory-disk"
-              />
-            ) : (
-              <View style={styles.missingCover}>
-                <Feather name="image" size={42} color={COLORS.gold} />
-                <Text style={styles.missingCoverText}>Sin portada</Text>
-              </View>
-            )}
-          </View>
-          <View style={styles.titleBlock}>
-            <View style={styles.titleLine}>
-              <Text style={styles.title} numberOfLines={3}>{playlist.title}</Text>
-              <Pressable
-                onPress={() => toggleEditorialPlaylist(playlist.id)}
-                hitSlop={10}
-                style={styles.heartButton}
-                accessibilityRole="button"
-                accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
-                testID="editorial-playlist-save"
-              >
-                <Feather
-                  name="heart"
-                  size={23}
-                  color={saved ? COLORS.gold : COLORS.text}
-                  fill={saved ? COLORS.gold : "transparent"}
-                />
-              </Pressable>
-            </View>
-            <View style={styles.creatorRow}>
-              <Image
-                source={require("../../assets/images/logo-resonancia.png")}
-                style={styles.creatorAvatar}
-                contentFit="cover"
-              />
-              <View>
-                <Text style={styles.creatorName}>Resonancia</Text>
-                <Text style={styles.creatorCaption}>Selección especial de Resonancia</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {!!playlist.description && (
-          <Text style={styles.description}>{playlist.description}</Text>
-        )}
-
-        <View style={styles.controls}>
-          <Pressable
-            onPress={handlePlayAll}
-            style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.82 : 1 }]}
-            accessibilityRole="button"
-            accessibilityLabel={displayIsPlaying ? "Pausar selección" : "Reproducir selección"}
-            testID="editorial-playlist-play"
-          >
-            <Feather name={displayIsPlaying ? "pause" : "play"} size={17} color={COLORS.navy} />
-            <Text style={styles.playButtonText}>{displayIsPlaying ? "Pausar" : "Reproducir"}</Text>
-          </Pressable>
-          <Pressable
-            onPress={handleShuffle}
-            style={({ pressed }) => [styles.shuffleButton, { opacity: pressed ? 0.78 : 1 }]}
-            accessibilityRole="button"
-            accessibilityLabel="Reproducir aleatoriamente"
-            testID="editorial-playlist-shuffle"
-          >
-            <Text style={styles.shuffleText}>Aleatorio</Text>
-            <Feather name="shuffle" size={16} color={COLORS.text} />
-          </Pressable>
-        </View>
-
-        <View style={styles.divider} />
-        <View style={styles.sessionList}>
-          {rows.length === 0 && (
-            <Text style={styles.unavailablePlaylist}>
-              Esta selección todavía no tiene sesiones disponibles.
-            </Text>
-          )}
-          {rows.map((row) => (
-            <EditorialSessionRow
-              key={row.id}
-              session={row.session}
-              isPremium={isPremium}
-              isActive={currentIsEditorial && currentSession?.id === row.id}
-              isPlaying={displayIsPlaying && currentSession?.id === row.id}
-              onPress={() => handleRowPress(row)}
+        <View style={[styles.heroContainer, { width, height: width }]}>
+          {coverSource ? (
+            <Image
+              source={coverSource}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
+              cachePolicy="memory-disk"
             />
-          ))}
+          ) : (
+            <View style={[StyleSheet.absoluteFill, styles.missingHeroCover]}>
+              <Feather name="image" size={48} color={COLORS.gold} />
+            </View>
+          )}
+
+          <LinearGradient
+            colors={['rgba(0,0,0,0.5)', 'transparent', theme.gradient[0] || theme.solid]}
+            locations={[0, 0.4, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+
+          <View style={[styles.header, { paddingTop: (Platform.OS === "web" ? 67 : insets.top) + 8 }]}>
+            <Pressable
+              onPress={goBack}
+              hitSlop={12}
+              style={styles.headerButton}
+              accessibilityRole="button"
+              accessibilityLabel="Volver"
+            >
+              <Feather name="chevron-left" size={28} color={COLORS.text} />
+            </Pressable>
+            <View style={styles.headerSpacer} />
+            <Pressable
+              onPress={() => Share.share({ message: `Escucha "${playlist.title}" en Resonancia.` })}
+              hitSlop={12}
+              style={styles.headerButton}
+              accessibilityRole="button"
+              accessibilityLabel="Más opciones"
+              testID="editorial-playlist-menu"
+            >
+              <Feather name="more-horizontal" size={24} color={COLORS.text} />
+            </Pressable>
+          </View>
         </View>
-        {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
+
+        <View style={styles.contentContainer}>
+          <View style={styles.titleLine}>
+            <Text style={styles.title} numberOfLines={3}>{playlist.title}</Text>
+            <Pressable
+              onPress={() => toggleEditorialPlaylist(playlist.id)}
+              hitSlop={10}
+              style={styles.heartButton}
+              accessibilityRole="button"
+              accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+              testID="editorial-playlist-save"
+            >
+              <Feather
+                name="heart"
+                size={26}
+                color={saved ? COLORS.gold : COLORS.text}
+                fill={saved ? COLORS.gold : "transparent"}
+              />
+            </Pressable>
+          </View>
+
+          <View style={styles.creatorRow}>
+            <Image
+              source={require("../../assets/images/logo-resonancia.png")}
+              style={styles.creatorAvatar}
+              contentFit="cover"
+            />
+            <View>
+              <Text style={styles.creatorName}>Resonancia</Text>
+              <Text style={styles.creatorCaption}>Selección especial</Text>
+            </View>
+          </View>
+
+          <View style={styles.controls}>
+            <Pressable
+              onPress={handlePlayAll}
+              style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.82 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel={displayIsPlaying ? "Pausar selección" : "Reproducir selección"}
+              testID="editorial-playlist-play"
+            >
+              <Feather name={displayIsPlaying ? "pause" : "play"} size={18} color={COLORS.navy} />
+              <Text style={styles.playButtonText}>{displayIsPlaying ? "Pausar" : "Reproducir"}</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleShuffle}
+              style={({ pressed }) => [styles.shuffleButton, { opacity: pressed ? 0.78 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Reproducir aleatoriamente"
+              testID="editorial-playlist-shuffle"
+            >
+              <Feather name="shuffle" size={16} color={COLORS.text} />
+              <Text style={styles.shuffleText}>Aleatorio</Text>
+            </Pressable>
+          </View>
+
+          {!!playlist.description && (
+            <Text style={styles.description}>{playlist.description}</Text>
+          )}
+
+          <View style={styles.divider} />
+
+          <View style={styles.sessionList}>
+            {rows.length === 0 && (
+              <Text style={styles.unavailablePlaylist}>
+                Esta selección todavía no tiene sesiones disponibles.
+              </Text>
+            )}
+            {rows.map((row) => (
+              <EditorialSessionRow
+                key={row.id}
+                session={row.session}
+                isPremium={isPremium}
+                isActive={currentIsEditorial && currentSession?.id === row.id}
+                isPlaying={displayIsPlaying && currentSession?.id === row.id}
+                onPress={() => handleRowPress(row)}
+              />
+            ))}
+          </View>
+          {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
+        </View>
       </ScrollView>
     </View>
   );
@@ -458,17 +468,29 @@ const COLORS = {
   muted: "rgba(251,251,251,0.62)",
   gold: "#BE9650",
   navy: "#060A0F",
-  line: "rgba(190,150,80,0.24)",
-  card: "rgba(190,150,80,0.06)",
+  line: "rgba(255,255,255,0.1)",
+  card: "rgba(0,0,0,0.2)",
 };
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  heroContainer: {
+    position: 'relative',
+    backgroundColor: COLORS.card,
+  },
+  missingHeroCover: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingBottom: 12,
+    zIndex: 10,
   },
   headerButton: {
     width: 42,
@@ -476,96 +498,93 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.18)",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   headerSpacer: { flex: 1 },
-  hero: {
+  contentContainer: {
     paddingHorizontal: 20,
-    gap: 18,
+    paddingTop: 16,
+  },
+  titleLine: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 12,
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 16,
   },
-  cover: {
-    width: 138,
-    height: 138,
-    borderRadius: 12,
-    overflow: "hidden",
-    backgroundColor: COLORS.card,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: COLORS.line,
-  },
-  missingCover: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  missingCoverText: {
-    color: COLORS.muted,
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  titleBlock: { flex: 1, gap: 15 },
-  titleLine: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
   title: {
     flex: 1,
     color: COLORS.text,
     fontFamily: "Manrope",
-    fontSize: 25,
-    lineHeight: 31,
-    fontWeight: "700",
+    fontSize: 28,
+    lineHeight: 34,
+    fontWeight: "800",
+    letterSpacing: -0.3,
   },
-  heartButton: { paddingTop: 4, width: 30, alignItems: "center" },
-  creatorRow: { flexDirection: "row", alignItems: "center", gap: 9 },
-  creatorAvatar: { width: 31, height: 31, borderRadius: 16 },
-  creatorName: { color: COLORS.text, fontSize: 13, fontWeight: "700" },
-  creatorCaption: { color: COLORS.muted, fontSize: 11, marginTop: 2 },
-  description: {
-    color: COLORS.muted,
-    fontSize: 14,
-    lineHeight: 21,
-    paddingHorizontal: 20,
-    marginTop: 22,
+  heartButton: {
+    paddingTop: 2,
+    width: 40,
+    alignItems: "flex-end",
   },
-  controls: {
-    paddingHorizontal: 20,
-    marginTop: 22,
+  creatorRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    marginTop: 14,
+  },
+  creatorAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  creatorName: { color: COLORS.text, fontSize: 14, fontWeight: "700" },
+  creatorCaption: { color: COLORS.muted, fontSize: 13, marginTop: 2 },
+  controls: {
+    marginTop: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   playButton: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    paddingHorizontal: 18,
-    minHeight: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.gold,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#F9F9F9",
   },
-  playButtonText: { color: COLORS.navy, fontSize: 14, fontWeight: "700" },
+  playButtonText: { color: COLORS.navy, fontSize: 15, fontWeight: "700" },
   shuffleButton: {
-    minHeight: 44,
-    paddingHorizontal: 16,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(251,251,251,0.35)",
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
   },
-  shuffleText: { color: COLORS.text, fontSize: 14, fontWeight: "600" },
+  shuffleText: { color: COLORS.text, fontSize: 15, fontWeight: "700" },
+  description: {
+    color: COLORS.muted,
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 24,
+  },
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: COLORS.line,
-    marginHorizontal: 20,
-    marginTop: 24,
+    marginTop: 28,
+    marginBottom: 8,
   },
-  sessionList: { paddingHorizontal: 20 },
+  sessionList: {
+    paddingBottom: 20,
+  },
   sessionRow: {
     minHeight: 84,
     flexDirection: "row",
