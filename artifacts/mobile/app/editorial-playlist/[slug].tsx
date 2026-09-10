@@ -19,14 +19,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
 import {
   fetchEditorialPlaylist,
   EditorialPlaylistFetchError,
@@ -51,12 +48,6 @@ type EditorialPlaylistScreenProps = { slug?: string };
 function resolveSlug(value: string | string[] | undefined): string | null {
   if (Array.isArray(value)) return value[0] ?? null;
   return value ?? null;
-}
-
-function getAuthor(session: Session): string {
-  if (session.guideId) return getGuide(session.guideId).name;
-  if (session.artistId) return getArtist(session.artistId).name;
-  return "Resonancia";
 }
 
 export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPlaylistScreenProps = {}) {
@@ -412,34 +403,13 @@ function EditorialSessionRow({
       accessibilityRole="button"
       accessibilityLabel={session?.title ?? "Sesión no disponible"}
     >
-      <View style={styles.sessionThumb}>
-        {session ? (
-          <Image
-            source={session.image}
-            style={StyleSheet.absoluteFill}
-            contentFit="cover"
-            placeholder={BLUR_PLACEHOLDER}
-            transition={IMAGE_TRANSITION}
-          />
-        ) : (
-          <Feather name="slash" size={19} color={COLORS.muted} />
-        )}
-        {session && <SessionDurationBadge label={session.durationLabel} style={styles.rowDuration} />}
-        {locked && (
-          <View style={styles.lockBadge}>
-            <Feather name="lock" size={10} color={COLORS.text} />
-          </View>
-        )}
-      </View>
       <View style={styles.sessionCopy}>
         {session ? (
           <>
             <Text style={[styles.sessionTitle, isActive && styles.sessionTitleActive]} numberOfLines={2}>
               {session.title}
             </Text>
-            <Text style={styles.sessionMeta} numberOfLines={1}>
-              {session.categoryLabel} · {getAuthor(session)}
-            </Text>
+            <Text style={styles.sessionDuration}>{session.durationLabel}</Text>
           </>
         ) : (
           <>
@@ -448,6 +418,7 @@ function EditorialSessionRow({
           </>
         )}
       </View>
+      {locked && <Feather name="lock" size={14} color={COLORS.muted} />}
       {isPlaying && <EqualizerBars color={COLORS.gold} size="sm" />}
       {isActive && !isPlaying && <Feather name="pause" size={17} color={COLORS.gold} />}
     </Pressable>
@@ -583,30 +554,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(251,251,251,0.14)",
   },
-  sessionThumb: {
-    width: 62,
-    height: 62,
-    borderRadius: 9,
-    overflow: "hidden",
-    backgroundColor: COLORS.card,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  rowDuration: { position: "absolute", bottom: 5, left: 5 },
-  lockBadge: {
-    position: "absolute",
-    top: 5,
-    right: 5,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.62)",
-  },
-  sessionCopy: { flex: 1, gap: 6 },
+  sessionCopy: { flex: 1, gap: 4 },
   sessionTitle: { color: COLORS.text, fontSize: 14, lineHeight: 19, fontWeight: "600" },
   sessionTitleActive: { color: COLORS.gold },
+  sessionDuration: { color: COLORS.muted, fontSize: 12 },
   sessionMeta: { color: COLORS.muted, fontSize: 12 },
   unavailablePlaylist: {
     color: COLORS.muted,
