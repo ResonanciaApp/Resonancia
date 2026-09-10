@@ -507,6 +507,7 @@ const styles = StyleSheet.create({
     left: 12,
     right: 12,
     bottom: 13,
+    gap: 4,
     transform: [{ translateX: 7 }, { translateY: -7 }],
   },
   editorialCategory: {
@@ -533,7 +534,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   editorialAuthor: {
-    marginTop: 4,
+    marginTop: 0,
     fontFamily: "Manrope",
     fontSize: 10,
     lineHeight: 15,
