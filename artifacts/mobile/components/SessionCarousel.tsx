@@ -108,6 +108,7 @@ type SessionCarouselProps = {
   sleepOverlayAuthorStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
   overlayGradientLocations?: [number, number, number];
+  showOverlayGradient?: boolean;
   showCategoryAboveTitle?: boolean;
   hideCategoryAboveTitle?: boolean;
   fixedCardHeight?: number;
@@ -172,6 +173,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepOverlayAuthorStyle,
   sleepOverlayMetadataStyle,
   overlayGradientLocations,
+  showOverlayGradient = true,
   showCategoryAboveTitle = false,
   hideCategoryAboveTitle = false,
   fixedCardHeight,
@@ -394,22 +396,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         },
                       ]}
                     />
-                    {isEditorialPresentation ? (
-                      <>
-                        <LinearGradient
-                          colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
-                          locations={[0.28, 0.58, 1]}
-                          style={StyleSheet.absoluteFill}
-                          pointerEvents="none"
-                        />
-                        <View pointerEvents="none" style={[styles.sleepOverlayMetadata, styles.editorialAmbientalMetadata]}>
-                          <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
-                            {s.categoryLabel}
-                          </Text>
-                          <Text style={styles.sleepOverlayTitle} numberOfLines={2}>{s.title}</Text>
-                        </View>
-                      </>
-                    ) : !useOverlayMetadata && !shouldHideAmbientalTitle && (
+                    {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
@@ -486,16 +473,18 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 )}
                 {useOverlayMetadata && (
                   <>
-                    <LinearGradient
-                      colors={[
-                        "rgba(0,0,0,0)",
-                        "rgba(0,0,0,0.18)",
-                        "rgba(0,0,0,0.82)",
-                      ]}
-                      locations={overlayGradientLocations ?? [0.28, 0.58, 1]}
-                      style={StyleSheet.absoluteFill}
-                      pointerEvents="none"
-                    />
+                    {showOverlayGradient ? (
+                      <LinearGradient
+                        colors={[
+                          "rgba(0,0,0,0)",
+                          "rgba(0,0,0,0.18)",
+                          "rgba(0,0,0,0.82)",
+                        ]}
+                        locations={overlayGradientLocations ?? [0.28, 0.58, 1]}
+                        style={StyleSheet.absoluteFill}
+                        pointerEvents="none"
+                      />
+                    ) : null}
                     {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
                       <SessionCategoryPill
                         categoryId="descanso"
