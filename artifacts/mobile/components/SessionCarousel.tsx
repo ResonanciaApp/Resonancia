@@ -841,9 +841,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   sleepInlineDurationBorder: {
-    borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.08)",
-    height: 19,
+    height: 23,
+    paddingHorizontal: 7,
     paddingVertical: 0,
     justifyContent: "center",
     transform: [{ translateY: 4 }],
