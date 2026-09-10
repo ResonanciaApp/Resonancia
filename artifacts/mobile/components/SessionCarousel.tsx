@@ -140,8 +140,8 @@ type SessionCarouselProps = {
   overlayMetadataInside?: boolean;
   /** Keeps the duration pill in the image's upper-left corner. */
   overlayDurationTopLeft?: boolean;
-  /** Stacks a glass category pill 4 px below the top-left duration pill. */
-  stackCategoryPillBelowDuration?: boolean;
+  /** Shows DORMIR at top-left and moves duration into the metadata above the title. */
+  showSleepCategoryPillWithInlineDuration?: boolean;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -198,7 +198,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   presentation,
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
-  stackCategoryPillBelowDuration = false,
+  showSleepCategoryPillWithInlineDuration = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -494,18 +494,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       style={StyleSheet.absoluteFill}
                       pointerEvents="none"
                     />
-                    {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && stackCategoryPillBelowDuration ? (
-                      <View pointerEvents="none" style={styles.sleepOverlayPillStack}>
-                        <SessionDurationBadge
-                          label={s.durationLabel}
-                          style={styles.sleepOverlayStackedPill}
-                          textStyle={styles.durText}
-                        />
-                        <SessionCategoryPill
-                          categoryId={s.categoryId}
-                          inline
-                        />
-                      </View>
+                    {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
+                      <SessionCategoryPill
+                        categoryId="descanso"
+                        leftInset={15}
+                        topInset={15}
+                      />
                     ) : effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
                         label={s.durationLabel}
@@ -532,6 +526,16 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          sleepOverlayMetadataStyle,
                        ]}
                      >
+                      {effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
+                        <SessionDurationBadge
+                          label={s.durationLabel}
+                          style={[
+                            styles.durBadge,
+                            styles.sleepOverlayDurationInline,
+                          ]}
+                          textStyle={styles.durText}
+                        />
+                      ) : null}
                       {effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
@@ -842,18 +846,6 @@ const styles = StyleSheet.create({
     top: 15,
     bottom: undefined,
     left: 15,
-  },
-  sleepOverlayPillStack: {
-    position: "absolute",
-    top: 15,
-    left: 15,
-    alignItems: "flex-start",
-    gap: 4,
-  },
-  sleepOverlayStackedPill: {
-    position: "relative",
-    left: undefined,
-    bottom: undefined,
   },
   editorialMetadata: {
     transform: [{ translateX: 7 }, { translateY: -7 }],
