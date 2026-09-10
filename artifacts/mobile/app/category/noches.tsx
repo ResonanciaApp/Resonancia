@@ -194,6 +194,8 @@ function CategoryCard({
       width={cardWidth}
       style={{ marginRight: 0 }}
        editorialPresentation
+      sleepEditorialContent
+      showSleepCategoryPill={false}
       showAuthorAvatar={false}
       onLongPress={onLongPress}
       overridePress={handlePress}

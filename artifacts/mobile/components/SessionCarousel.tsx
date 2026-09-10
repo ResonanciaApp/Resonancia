@@ -144,6 +144,8 @@ type SessionCarouselProps = {
   overlayDurationTopLeft?: boolean;
   /** Shows DORMIR at top-left and moves duration into the metadata above the title. */
   showSleepCategoryPillWithInlineDuration?: boolean;
+  /** Keeps the inline duration layout without its DORMIR pill. */
+  showSleepCategoryPill?: boolean;
   /** Ambiental cards show only their title, aligned to the usual author position. */
   ambientalTitleOnly?: boolean;
   /** Dormir-only square card with category, duration and author below the image. */
@@ -205,6 +207,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
   showSleepCategoryPillWithInlineDuration = false,
+  showSleepCategoryPill = true,
   ambientalTitleOnly = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
@@ -487,7 +490,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         pointerEvents="none"
                       />
                     ) : null}
-                    {!showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration ? (
+                    {!showAmbientalTitleOnly && effectiveShowDurationBadge && effectiveOverlayDurationTopLeft && showSleepCategoryPillWithInlineDuration && showSleepCategoryPill ? (
                       <SessionCategoryPill
                         categoryId="descanso"
                         leftInset={11}
