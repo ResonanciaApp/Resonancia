@@ -731,7 +731,6 @@ export function ExploreScreen({
                       <LinearGradient
                         pointerEvents="none"
                         colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
-                        locations={[0, 0.52, 1]}
                         style={StyleSheet.absoluteFill}
                       />
                       <View style={styles.playlistKind}>
@@ -1225,21 +1224,21 @@ const styles = StyleSheet.create({
   },
   playlistStackStripFront: {
     position: "absolute",
-    top: COLLECTION_CARD_H + 2,
+    top: COLLECTION_CARD_H,
     left: 12,
     right: 12,
-    height: 4,
-    borderRadius: 2,
+    height: 3,
+    borderRadius: 1.5,
     backgroundColor: "#717172",
   },
   playlistStackStripBack: {
     position: "absolute",
-    top: COLLECTION_CARD_H + 8,
+    top: COLLECTION_CARD_H + 5,
     left: 17,
     right: 17,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: "#3D3C41",
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: "#48474D",
   },
   playlistCover: {
     width: COLLECTION_CARD_W,
