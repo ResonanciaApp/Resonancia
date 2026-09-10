@@ -82,7 +82,7 @@ const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
   (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
 );
 const COLLECTION_CARD_W =
-  getTwoCardCarouselCardWidth(width, H_PAD, 25) - 3.5;
+  getTwoCardCarouselCardWidth(width, 14) - 3.5;
 const COLLECTION_CARD_H =
   Math.round(
     (COLLECTION_CARD_W + 50) *
