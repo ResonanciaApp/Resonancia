@@ -133,7 +133,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const isEditorial = editorialPresentation && !horizontal;
   const editorialCardWidth =
     getTwoCardCarouselCardWidth(viewportWidth, 14) - 3.5;
-  const renderedCardWidth = isEditorial ? editorialCardWidth : width;
+  const renderedCardWidth = width;
   const ambientalCardBackground = "rgba(181,211,255,0.1)";
   const ambientalImageSize = Math.round(renderedCardWidth * 0.72);
   const ambientalCardHeight = Math.round(
@@ -206,7 +206,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <View
         style={[
           styles.imageContainer,
-          { borderRadius: colors.radius - 4 },
+          { borderRadius: isEditorial ? 18 : colors.radius - 4 },
             isAmbiental
               ? {
                   height: squareMetaBelow
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   },
   editorialMetadata: {
     position: "absolute",
-    left: 18,
+    left: 12,
     right: 12,
     bottom: 13,
     transform: [{ translateX: 7 }, { translateY: -7 }],

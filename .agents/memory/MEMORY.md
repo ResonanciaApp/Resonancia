@@ -132,4 +132,4 @@
 - [Drizzle y aritmética timestamptz](drizzle-timestamptz-arithmetic.md) — parámetros Date en SQL crudo pueden tiparse como interval; castear ISO explícitamente a timestamptz antes de restar intervalos
 - [Contadores animados interrumpibles](interruptible-counter-events.md) — al ocultar la superficie, conservar eventos aún no mostrados y descartar solo los ya confirmados para evitar pérdidas o repeticiones
 - [Separación tras contenido dinámico](dynamic-section-spacing.md) — en Inicio, el gap posterior a un bloque que cambia al terminar una animación debe pertenecer al siguiente contenedor estable
-- [Cards editoriales con tamaño canónico](editorial-card-canonical-size.md) — todas replican el tamaño absoluto de Música para dormir; nunca escalan según el ancho previo de cada pantalla
+- [Alto canónico de cards editoriales](editorial-card-canonical-size.md) — mantienen el alto de Música para dormir; las grids conservan su ancho local para llenar la fila
