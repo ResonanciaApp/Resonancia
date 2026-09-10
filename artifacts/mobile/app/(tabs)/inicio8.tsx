@@ -2652,12 +2652,11 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            cardWidth={CARD_W}
+            cardWidth={INICIO2_SQUARE_CAROUSEL_CARD_W}
             allowOversizedCardWidth
-            presentation="editorial"
-            hideCategoryAboveTitle
-            showSleepCategoryPillWithInlineDuration
-            showSleepCategoryPill={false}
+            squareTitleAuthorBelow
+            categoryGridPresentation
+            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}

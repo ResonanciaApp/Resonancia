@@ -264,11 +264,13 @@ export default function FavoritosTodosScreen() {
                   session={session}
                   width={CARD_W}
                   style={{ marginRight: 0 }}
-                  showCardMetadata
+                  editorialPresentation
+                  sleepEditorialContent
+                  showSleepCategoryPill={false}
                   showAuthorAvatar={false}
-                  squareMetaBelow
                   overridePress={() => openSession(session)}
                   playing={currentSession?.id === session.id}
+                  cardVariant={session.categoryId === "ambientales" ? "ambiental" : undefined}
                 />
               ))}
             </View>
