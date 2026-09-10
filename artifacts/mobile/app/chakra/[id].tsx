@@ -158,7 +158,7 @@ export default function ChakraScreen({ id: idProp }: { id?: string } = {}) {
                 session={session}
                 width={CARD_W}
                 style={{ marginRight: 0 }}
-                showCardMetadata
+                editorialPresentation
                 showAuthorAvatar={false}
                 overridePress={() => handleSessionPress(session)}
               />
