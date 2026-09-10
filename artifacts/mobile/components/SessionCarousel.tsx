@@ -104,6 +104,7 @@ type SessionCarouselProps = {
   durationBadgeStyle?: StyleProp<ViewStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
+  showCategoryTextBelow?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -160,6 +161,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   durationBadgeStyle,
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
+  showCategoryTextBelow = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -566,6 +568,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   ) : null}
                 </>
               )}
+              {showCategoryTextBelow ? (
+                <Text
+                  style={[styles.sleepBelowCategory, { color: viewAllAccent }]}
+                  numberOfLines={1}
+                >
+                  {s.categoryLabel}
+                </Text>
+              ) : null}
             </PressScale>
           );
         }}
@@ -735,6 +745,14 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "700",
     color: "#F9F9F9",
+  },
+  sleepBelowCategory: {
+    marginTop: 8,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+    textAlign: "center",
   },
   sleepOverlayDurationInline: {
     position: "relative",
