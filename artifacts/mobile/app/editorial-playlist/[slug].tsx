@@ -65,7 +65,6 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
     currentSession,
     activePlaylistOwner,
     playSessionInPlaylist,
-    pauseResume,
     isPlaying,
   } = usePlayer();
   const backOverride = useBackOverride();
@@ -184,9 +183,13 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
     }
   };
 
-  const playFrom = (session: Session, shuffle = false) => {
+  const openPlayerFrom = (session: Session, shuffle = false) => {
     if (!owner || playableIds.length === 0) return;
     playSessionInPlaylist(session, playableIds, owner, shuffle);
+    router.push({
+      pathname: "/player",
+      params: { playlistSlug: slug },
+    } as never);
   };
 
   const handlePlayAll = () => {
@@ -198,12 +201,11 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       }
       return;
     }
-    if (displayIsPlaying) {
-      pauseResume();
-      return;
-    }
-    const first = pickRandomQueueStart(availableRows)?.session;
-    if (first) playFrom(first);
+    const first =
+      currentIsEditorial && currentSession
+        ? currentSession
+        : pickRandomQueueStart(availableRows)?.session;
+    if (first) openPlayerFrom(first);
   };
 
   const handleShuffle = () => {
@@ -212,7 +214,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       return;
     }
     const first = availableRows[0]?.session;
-    if (first) playFrom(first, true);
+    if (first) openPlayerFrom(first, true);
   };
 
   const handleRowPress = (row: { id: string; session?: Session }) => {
@@ -221,11 +223,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       router.push("/membresia" as never);
       return;
     }
-    if (ownsQueue && currentSession?.id === row.session.id) {
-      pauseResume();
-      return;
-    }
-    playFrom(row.session);
+    openPlayerFrom(row.session);
   };
 
   if (!playlist) {
@@ -419,7 +417,11 @@ function EditorialSessionRow({
         )}
       </View>
       {locked && <Feather name="lock" size={14} color={COLORS.muted} />}
-      {isPlaying && <EqualizerBars color={COLORS.gold} size="sm" />}
+      {isPlaying && (
+        <View style={styles.activeWave}>
+          <EqualizerBars color="#F9F9F9" size="sm" variant="zen" />
+        </View>
+      )}
       {isActive && !isPlaying && <Feather name="pause" size={17} color={COLORS.gold} />}
     </Pressable>
   );
@@ -556,8 +558,16 @@ const styles = StyleSheet.create({
   },
   sessionCopy: { flex: 1, gap: 4 },
   sessionTitle: { color: COLORS.text, fontSize: 14, lineHeight: 19, fontWeight: "600" },
-  sessionTitleActive: { color: COLORS.gold },
+  sessionTitleActive: { color: "#F9F9F9" },
   sessionDuration: { color: COLORS.muted, fontSize: 12 },
+  activeWave: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
   sessionMeta: { color: COLORS.muted, fontSize: 12 },
   unavailablePlaylist: {
     color: COLORS.muted,

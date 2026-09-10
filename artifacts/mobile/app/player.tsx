@@ -65,7 +65,10 @@ function formatTime(seconds: number): string {
 }
 
 export default function PlayerScreen() {
-  const { anim } = useLocalSearchParams<{ anim?: string }>();
+  const { anim, playlistSlug } = useLocalSearchParams<{
+    anim?: string;
+    playlistSlug?: string;
+  }>();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -87,6 +90,7 @@ export default function PlayerScreen() {
     hasVoiceTrack,
     voiceVolume,
     setVoiceVolume,
+    stop,
   } = usePlayer();
   const { downloads, download, remove } = useDownloads();
 
@@ -118,6 +122,33 @@ export default function PlayerScreen() {
   const terminarOpacity = useRef(new RNAnimated.Value(0)).current;
   const uiOpacity = useRef(new RNAnimated.Value(1)).current;
   const [uiShown, setUiShown] = useState(true);
+  const playlistCloseHandledRef = useRef(false);
+  const stopRef = useRef(stop);
+  stopRef.current = stop;
+
+  const closePlayer = useCallback(async () => {
+    if (!playlistSlug) {
+      router.back();
+      return;
+    }
+    if (playlistCloseHandledRef.current) return;
+    playlistCloseHandledRef.current = true;
+    await stopRef.current();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace(`/editorial-playlist/${playlistSlug}` as never);
+    }
+  }, [playlistSlug]);
+
+  useEffect(() => {
+    return () => {
+      if (playlistSlug && !playlistCloseHandledRef.current) {
+        playlistCloseHandledRef.current = true;
+        void stopRef.current();
+      }
+    };
+  }, [playlistSlug]);
 
   const toggleUI = useCallback(() => {
     const next = !uiShown;
@@ -222,6 +253,11 @@ export default function PlayerScreen() {
   useEffect(() => {
     const sid = currentSession?.id;
     if (!sid) return;
+    setSelectedAmbientSoundId(null);
+    setShowOptionsSheet(false);
+    setShowPlaylistSheet(false);
+    setShowFolderSheet(false);
+    setShowAmbientPicker(false);
     AsyncStorage.getItem(RATINGS_KEY).then((val) => {
       if (!val) { setRating(0); return; }
       const map: Record<string, number> = JSON.parse(val);
@@ -465,9 +501,11 @@ export default function PlayerScreen() {
         {/* ── Cierre ──────────────────────────────────────────────────────── */}
         <View style={[styles.topRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
           <Pressable
-            onPress={() => router.back()}
+            onPress={closePlayer}
             style={styles.topCircleBtn}
             hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar reproductor"
           >
             {Platform.OS !== "web" ? (
               <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />

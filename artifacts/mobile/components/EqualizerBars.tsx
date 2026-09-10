@@ -26,7 +26,7 @@ function Bar({
     );
     anim.start();
     return () => anim.stop();
-  }, []);
+  }, [color, delay, duration, h]);
 
   return <Animated.View style={[styles.bar, { height: h, backgroundColor: color }]} />;
 }
@@ -34,15 +34,36 @@ function Bar({
 interface Props {
   color?: string;
   size?: "sm" | "md";
+  variant?: "default" | "zen";
 }
 
-export function EqualizerBars({ color = "#F9F9F9", size = "md" }: Props) {
+export function EqualizerBars({
+  color = "#F9F9F9",
+  size = "md",
+  variant = "default",
+}: Props) {
   const scale = size === "sm" ? 0.75 : 1;
+  const timings = variant === "zen"
+    ? [
+        { duration: 1100, delay: 0 },
+        { duration: 1450, delay: 320 },
+        { duration: 1250, delay: 640 },
+      ]
+    : [
+        { duration: 380, delay: 0 },
+        { duration: 500, delay: 140 },
+        { duration: 430, delay: 270 },
+      ];
   return (
     <View style={[styles.wrap, { height: MAX_H * scale, gap: 3 * scale }]}>
-      <Bar duration={380} delay={0}   color={color} />
-      <Bar duration={500} delay={140} color={color} />
-      <Bar duration={430} delay={270} color={color} />
+      {timings.map((timing, index) => (
+        <Bar
+          key={index}
+          duration={timing.duration}
+          delay={timing.delay}
+          color={color}
+        />
+      ))}
     </View>
   );
 }

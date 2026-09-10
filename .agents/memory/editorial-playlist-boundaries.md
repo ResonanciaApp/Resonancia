@@ -20,3 +20,9 @@ Las migraciones editoriales deben preservar el contenido efectivo visible, inclu
 **Why:** Importar solo las ubicaciones explícitas omite playlists que antes aparecían por compatibilidad con Inicio. Una corrección posterior que recrea defaults o rellena grupos ya editados invalida las decisiones del editor.
 
 **How to apply:** Materializar fallbacks solo una vez, con orden idéntico al cliente anterior. Las correcciones posteriores requieren evidencia de que el grupo sigue intacto y nunca crean grupos ausentes. Probar ediciones y borrados anteriores a la primera ejecución, no solo después del marcador.
+
+Las sesiones iniciadas desde una playlist editorial abren directamente el reproductor con la cola explícita; cerrar ese reproductor detiene el audio y devuelve a la playlist.
+
+**Why:** Este flujo debe sentirse contenido dentro de la selección editorial: el avance ocurre en el mismo reproductor y la pantalla de playlist nunca queda con audio residual.
+
+**How to apply:** Conservar el origen de playlist al navegar, omitir el detalle solo para ese origen y ejecutar una detención real también al cerrar con gesto o botón Atrás. Fuera de playlists, mantener la navegación normal.
