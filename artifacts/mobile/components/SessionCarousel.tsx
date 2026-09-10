@@ -532,6 +532,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.durBadge,
                             styles.sleepOverlayDurationInline,
+                            styles.sleepInlineDurationBorder,
                           ]}
                           textStyle={styles.durText}
                         />
@@ -841,6 +842,10 @@ const styles = StyleSheet.create({
     bottom: undefined,
     alignSelf: "flex-start",
     marginBottom: 5,
+  },
+  sleepInlineDurationBorder: {
+    borderWidth: 1,
+    borderColor: "rgba(249,249,249,0.08)",
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
