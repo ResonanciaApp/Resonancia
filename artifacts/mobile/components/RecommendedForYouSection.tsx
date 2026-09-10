@@ -233,14 +233,14 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
   description: {
-    marginTop: 11,
+    marginTop: 9,
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
   },
   tabs: {
     paddingHorizontal: HORIZONTAL_PAD,
-    paddingTop: 8,
+    paddingTop: 13,
     paddingBottom: 17,
     gap: 8,
   },
