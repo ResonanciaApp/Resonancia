@@ -283,12 +283,6 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
             </View>
           )}
 
-          <LinearGradient
-            colors={['rgba(0,0,0,0.5)', 'transparent', theme.gradient[0] || theme.solid]}
-            locations={[0, 0.4, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-
           <View style={[styles.header, { paddingTop: (Platform.OS === "web" ? 67 : insets.top) + 8 }]}>
             <Pressable
               onPress={goBack}
