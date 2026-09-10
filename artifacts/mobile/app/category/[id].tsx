@@ -236,10 +236,8 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             session={session}
             width={CARD_W}
             style={{ marginRight: 0 }}
-            showCardMetadata
+            editorialPresentation
             showAuthorAvatar={false}
-            squareMetaBelow
-            categoryGridPresentation
             overridePress={() => handleSessionPress(session)}
             cardVariant={id === "ambientales" ? "ambiental" : undefined}
           />

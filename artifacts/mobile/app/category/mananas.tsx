@@ -481,7 +481,7 @@ export default function MananasScreen() {
                     isPremium={isPremium}
                     onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                     style={{ marginTop: 24, marginBottom: 0 }}
-                    presentation="sleep-category"
+                    presentation="editorial"
                   />
                 )}
                 {filteredSessions.length === 0 ? (

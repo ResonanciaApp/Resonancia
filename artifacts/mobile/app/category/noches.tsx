@@ -193,10 +193,8 @@ function CategoryCard({
       session={session}
       width={cardWidth}
       style={{ marginRight: 0 }}
-      showCardMetadata
+       editorialPresentation
       showAuthorAvatar={false}
-      squareMetaBelow
-      categoryGridPresentation
       onLongPress={onLongPress}
       overridePress={handlePress}
     />
@@ -356,7 +354,7 @@ export default function NochesScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
-              presentation="sleep-category"
+               presentation="editorial"
               titleSize={19}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
@@ -370,7 +368,7 @@ export default function NochesScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
-              presentation="sleep-category"
+               presentation="editorial"
               titleSize={19}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
@@ -391,7 +389,7 @@ export default function NochesScreen() {
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
-                  presentation="sleep-category"
+                   presentation="editorial"
                   titleSize={19}
                   onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
                 />

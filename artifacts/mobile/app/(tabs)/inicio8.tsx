@@ -2565,8 +2565,7 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            presentation="sleep-category"
-            squareTitleAuthorBelow
+            presentation="editorial"
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
@@ -2648,9 +2647,7 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            presentation="sleep-category"
-            squareMetadataBelow
-            categoryGridPresentation
+            presentation="editorial"
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
@@ -2761,7 +2758,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={originalSessionCarouselStyle}
             titleOffset={10}
-            squareTitleAuthorBelow
+            presentation="editorial"
             titleSize={20}
           />
         )}
@@ -2774,8 +2771,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={originalSessionCarouselStyle}
             titleOffset={10}
-            squareMetadataBelow
-            categoryGridPresentation
+            presentation="editorial"
             titleSize={20}
             onViewAll={handleViewAllFavorites}
             viewAllColor={colors.accent}

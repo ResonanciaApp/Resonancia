@@ -380,42 +380,7 @@ export default function DescansoScreen() {
                 isPremium={isPremium}
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
-                presentation="sleep-category"
-                sleepMetadataBelow={collection.label !== "Música para dormir"}
-                overlayMetadataInside={collection.label === "Música para dormir"}
-                categoryGridPresentation
-                cardWidthAdjustment={collection.label === "Música para dormir" ? -3.5 : 0}
-                cardHeightAdjustment={collection.label === "Música para dormir" ? -11 : 0}
-                overlayDurationTopLeft={collection.label === "Música para dormir"}
-                showCategoryAboveTitle={collection.label === "Música para dormir"}
-                durationBadgeStyle={
-                  collection.label === "Música para dormir"
-                    ? {
-                        top: 15,
-                        left: 15,
-                      }
-                    : undefined
-                }
-                sleepOverlayMetadataStyle={
-                  collection.label === "Música para dormir"
-                    ? { transform: [{ translateX: 7 }, { translateY: -7 }] }
-                    : undefined
-                }
-                sleepBelowTitleStyle={
-                  collection.label === "Música para dormir"
-                    ? { fontSize: 13, fontWeight: "600" }
-                    : undefined
-                }
-                sleepOverlayTitleStyle={
-                  collection.label === "Música para dormir"
-                    ? { fontSize: 14, fontWeight: "600" }
-                    : undefined
-                }
-                sleepOverlayAuthorStyle={
-                  collection.label === "Música para dormir"
-                    ? { fontSize: 10 }
-                    : undefined
-                }
+                presentation="editorial"
                 titleSize={19}
                 showImageCategoryPill={collection.label !== "Música para dormir"}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}

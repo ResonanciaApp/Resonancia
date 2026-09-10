@@ -5,7 +5,6 @@ import React from "react";
 import {
   Animated,
   Dimensions,
-  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -16,14 +15,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PremiumBadge } from "@/components/PremiumBadge";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { usePremium } from "@/context/PremiumContext";
+import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { getSessionsByDescansoTag } from "@/data/sessions";
-import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
 import { useCatalog } from "@/context/CatalogContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -41,10 +36,8 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const rawId = idProp ?? params.id;
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
-  const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { activeSceneId, theme } = useSceneTheme();
-  const accentColor = theme.accent ?? colors.accent;
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
   useCatalog();
@@ -155,59 +148,22 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             {rows.map((row, rowIdx) => (
               <View key={rowIdx} style={styles.row}>
                 {row.map((session) => {
-                  const locked = !!session.isPremium && !isPremium;
                   return (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => {
-                      if (locked) { router.push("/membresia" as never); return; }
-                      if (session.skipMiniPlayer) { playSession(session); return; }
-                      if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-                      if (overlay) {
-                        overlay.openCategory(`/session/${session.id}`);
-                      } else {
-                        router.push(`/session/${session.id}` as never);
-                      }
-                    }}
-                    style={({ pressed }) => [
-                      styles.card,
-                      { width: CARD_W, opacity: pressed ? 0.82 : 1 },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.cardImg,
-                          { height: CARD_W, backgroundColor: colors.card },
-                      ]}
-                    >
-                      <Image
-                        source={session.image as number}
-                        style={StyleSheet.absoluteFill}
-                        resizeMode="cover"
-                      />
-                      <SessionDurationBadge
-                        label={session.durationLabel}
-                        style={styles.categoryDurationBadge}
-                      />
-                      <PremiumBadge session={session} />
-                    </View>
-                     <View style={styles.cardMetadata}>
-                       <Text
-                         style={[styles.cardTitle, { color: colors.foreground }]}
-                         numberOfLines={2}
-                       >
-                         {session.title}
-                       </Text>
-                       <Text
-                         style={[styles.cardSecondary, { color: accentColor }]}
-                         numberOfLines={1}
-                       >
-                         {session.guideId
-                           ? getGuide(session.guideId).name
-                           : getArtist(session.artistId).name}
-                       </Text>
-                     </View>
-                  </Pressable>
+                    <SessionCard
+                      key={session.id}
+                      session={session}
+                      width={CARD_W}
+                      style={styles.editorialCard}
+                      editorialPresentation
+                      showAuthor
+                      showAuthorAvatar={false}
+                      overridePress={() => {
+                        if (session.skipMiniPlayer) { playSession(session); return; }
+                        if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
+                        if (overlay) overlay.openCategory(`/session/${session.id}`);
+                        else router.push(`/session/${session.id}` as never);
+                      }}
+                    />
                   );
                 })}
                 {row.length === 1 && <View style={{ width: CARD_W }} />}
@@ -335,6 +291,10 @@ const styles = StyleSheet.create({
     gap: COL_GAP,
   },
 
+  editorialCard: {
+    marginRight: 0,
+    marginBottom: 4,
+  },
   card: {
     marginBottom: 4,
   },

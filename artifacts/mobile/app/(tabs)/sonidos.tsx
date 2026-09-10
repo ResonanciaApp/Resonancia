@@ -392,7 +392,7 @@ export default function SonidosScreen() {
                 isPremium={isPremium}
                 onPress={openSession}
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
-                squareTitleOnlyBelow
+                 presentation="editorial"
                 titleSize={19}
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />

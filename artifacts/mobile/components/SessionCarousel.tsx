@@ -134,7 +134,7 @@ type SessionCarouselProps = {
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
-  presentation?: "sleep-category" | "tall-overlay";
+  presentation?: "sleep-category" | "tall-overlay" | "editorial";
   /** Places title and author over the image without a category pill. */
   overlayMetadataInside?: boolean;
   /** Keeps the duration pill in the image's upper-left corner. */
@@ -206,7 +206,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
-  const isSleepCategoryPresentation = presentation === "sleep-category";
+  const isEditorialPresentation = presentation === "editorial";
+  const isSleepCategoryPresentation =
+    presentation === "sleep-category" || isEditorialPresentation;
   const useSleepMetadataBelow =
     squareMetadataBelow ||
     squareTitleOnlyBelow ||
@@ -226,13 +228,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     GRID_PAD,
     useSleepMetadataBelow ? 25 : undefined,
   );
-  const requestedCardWidth = (useSleepMetadataBelow
+  const requestedCardWidth = (isEditorialPresentation
     ? sleepCategoryCardWidth
-    : isTallOverlayPresentation
-    ? cardWidth ?? sleepCategoryCardWidth
-    : isAmbientalCarousel
-    ? ambientalCardWidth ?? ambientalCarouselCardWidth
-    : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) + cardWidthAdjustment;
+    : useSleepMetadataBelow
+      ? sleepCategoryCardWidth
+      : isTallOverlayPresentation
+        ? cardWidth ?? sleepCategoryCardWidth
+        : isAmbientalCarousel
+          ? ambientalCardWidth ?? ambientalCarouselCardWidth
+          : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) +
+    (isEditorialPresentation ? -3.5 : 0) +
+    cardWidthAdjustment;
   const effectiveAllowOversizedCardWidth =
     isTallOverlayPresentation || allowOversizedCardWidth;
   const cw = effectiveAllowOversizedCardWidth
@@ -255,6 +261,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     : isTallOverlayPresentation
       ? true
       : showDurationBadge;
+  const effectiveShowCategoryAboveTitle =
+    showCategoryAboveTitle || isEditorialPresentation;
+  const effectiveOverlayDurationTopLeft =
+    overlayDurationTopLeft || isEditorialPresentation;
+  const effectiveShowImageCategoryPill =
+    showImageCategoryPill && !isEditorialPresentation;
   const baseCardHeight = cardHeight ?? cw;
   const originalCardHeight = effectiveShowCardMetadata
     ? (baseCardHeight + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE
@@ -263,7 +275,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (cw + 50) *
       SESSION_CARD_METADATA_HEIGHT_SCALE *
       CONTENT_CAROUSEL_HEIGHT_SCALE,
-  ) + cardHeightAdjustment;
+  ) + (isEditorialPresentation ? -11 : 0) + cardHeightAdjustment;
   const ch = useSleepMetadataBelow ? cw + cardHeightAdjustment : fixedCardHeight ?? (
     isTallOverlayPresentation
       ? sleepCategoryCardHeight
@@ -332,7 +344,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
-          const hasSecondaryMeta =
+           const hasSecondaryMeta =
             effectiveShowMetaBelow ||
             effectiveShowCollectionBelow ||
             (effectiveShowAuthor && Boolean(authorName));
@@ -375,13 +387,28 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         },
                       ]}
                     />
-                    {!useOverlayMetadata && !shouldHideAmbientalTitle && (
+                    {isEditorialPresentation ? (
+                      <>
+                        <LinearGradient
+                          colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
+                          locations={[0.28, 0.58, 1]}
+                          style={StyleSheet.absoluteFill}
+                          pointerEvents="none"
+                        />
+                        <View pointerEvents="none" style={[styles.sleepOverlayMetadata, styles.editorialAmbientalMetadata]}>
+                          <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
+                            {s.categoryLabel}
+                          </Text>
+                          <Text style={styles.sleepOverlayTitle} numberOfLines={2}>{s.title}</Text>
+                        </View>
+                      </>
+                    ) : !useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
                         numberOfLines={metadataTitleNumberOfLines ?? 2}
                       />
                     )}
-                    {!useSleepMetadataBelow &&
+                    {!isEditorialPresentation && !useSleepMetadataBelow &&
                       (!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
                         categoryId={s.categoryId}
@@ -389,7 +416,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         topInset={18}
                       />
                     )}
-                    {durationInsideWithMeta && effectiveShowDurationBadge && (
+                    {!isEditorialPresentation && durationInsideWithMeta && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
@@ -400,7 +427,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     )}
-                    {categoryGridPresentation && effectiveShowDurationBadge && (
+                    {!isEditorialPresentation && categoryGridPresentation && effectiveShowDurationBadge && (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[styles.durBadge, styles.categoryDurationBadge, durationBadgeStyle]}
@@ -462,7 +489,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       style={StyleSheet.absoluteFill}
                       pointerEvents="none"
                     />
-                    {effectiveShowDurationBadge && overlayDurationTopLeft ? (
+                    {effectiveShowDurationBadge && effectiveOverlayDurationTopLeft ? (
                       <SessionDurationBadge
                         label={s.durationLabel}
                         style={[
@@ -473,7 +500,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     ) : null}
-                     {showImageCategoryPill ? (
+                     {effectiveShowImageCategoryPill ? (
                        <SessionCategoryPill
                          categoryId={s.categoryId}
                          leftInset={18}
@@ -482,9 +509,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                      ) : null}
                      <View
                        pointerEvents="none"
-                       style={[styles.sleepOverlayMetadata, sleepOverlayMetadataStyle]}
+                       style={[
+                         styles.sleepOverlayMetadata,
+                         isEditorialPresentation && styles.editorialMetadata,
+                         sleepOverlayMetadataStyle,
+                       ]}
                      >
-                      {effectiveShowDurationBadge && !overlayDurationTopLeft ? (
+                      {effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
                           style={[
@@ -495,7 +526,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
-                      {showCategoryAboveTitle && s.categoryLabel ? (
+                      {effectiveShowCategoryAboveTitle && s.categoryLabel ? (
                         <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
                           {s.categoryLabel}
                         </Text>
@@ -503,7 +534,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       <Text
                         style={[
                           styles.sleepOverlayTitle,
-                          showCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                          isEditorialPresentation && styles.editorialTitle,
+                           effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
                           sleepOverlayTitleStyle,
                         ]}
                         numberOfLines={2}
@@ -512,7 +544,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       </Text>
                       {authorName ? (
                         <Text
-                          style={[styles.sleepOverlayAuthor, sleepOverlayAuthorStyle]}
+                          style={[
+                            styles.sleepOverlayAuthor,
+                            isEditorialPresentation && styles.editorialAuthor,
+                            sleepOverlayAuthorStyle,
+                          ]}
                           numberOfLines={1}
                         >
                           {authorName}
@@ -720,6 +756,9 @@ const styles = StyleSheet.create({
     right: 12,
     bottom: 13,
   },
+  editorialAmbientalMetadata: {
+    transform: [{ translateX: 7 }, { translateY: -7 }],
+  },
   sleepOverlayTitle: {
     fontFamily: "Manrope",
     fontSize: 15,
@@ -783,9 +822,22 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   sleepOverlayDurationTopLeft: {
-    top: 8,
+    top: 15,
     bottom: undefined,
-    left: 8,
+    left: 15,
+  },
+  editorialMetadata: {
+    transform: [{ translateX: 7 }, { translateY: -7 }],
+  },
+  editorialTitle: {
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "600",
+  },
+  editorialAuthor: {
+    fontSize: 10,
+    lineHeight: 15,
+    fontWeight: "500",
   },
   cardTitleWrap: {
     width: CARD_W,

@@ -8,6 +8,7 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
   ViewStyle,
 } from "react-native";
@@ -22,6 +23,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import {
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
+  getTwoCardCarouselCardWidth,
+} from "@/constants/carousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
@@ -60,6 +65,8 @@ type Props = {
   cardVariant?: "ambiental";
   squareMetaBelow?: boolean;
   categoryGridPresentation?: boolean;
+  /** Shared tall editorial card presentation used by Dormir and discovery cards. */
+  editorialPresentation?: boolean;
 };
 
 function PlayingDot() {
@@ -97,7 +104,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -105,6 +112,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
+  const { width: viewportWidth } = useWindowDimensions();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
@@ -122,11 +130,21 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
+  const isEditorial = editorialPresentation && !horizontal;
+  const editorialCardWidth =
+    getTwoCardCarouselCardWidth(viewportWidth, 14) - 3.5;
+  const renderedCardWidth = isEditorial ? editorialCardWidth : width;
   const ambientalCardBackground = "rgba(181,211,255,0.1)";
-  const ambientalImageSize = Math.round(width * 0.72);
+  const ambientalImageSize = Math.round(renderedCardWidth * 0.72);
   const ambientalCardHeight = Math.round(
-    (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
+    (renderedCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
   );
+  const editorialCardHeight =
+    Math.round(
+      (editorialCardWidth + 50) *
+        SESSION_CARD_METADATA_HEIGHT_SCALE *
+        CONTENT_CAROUSEL_HEIGHT_SCALE,
+    ) - 11;
 
   if (horizontal) {
     return (
@@ -181,7 +199,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       onLongPress={onLongPress}
       style={[
         styles.card,
-        { width },
+        { width: renderedCardWidth },
         style,
       ]}
     >
@@ -191,11 +209,17 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           { borderRadius: colors.radius - 4 },
             isAmbiental
               ? {
-                  height: squareMetaBelow ? width : ambientalCardHeight,
+                  height: squareMetaBelow
+                    ? renderedCardWidth
+                    : isEditorial
+                      ? editorialCardHeight
+                      : ambientalCardHeight,
                   aspectRatio: undefined,
                   backgroundColor: ambientalCardBackground,
                 }
-              : showCardMetadata && !squareMetaBelow
+              : isEditorial
+                ? { height: editorialCardHeight, aspectRatio: undefined }
+                : showCardMetadata && !squareMetaBelow
             ? { height: (width + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE, aspectRatio: undefined }
             : undefined,
         ]}
@@ -219,8 +243,12 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                   width: ambientalImageSize,
                   height: ambientalImageSize,
                   borderRadius: ambientalImageSize / 2,
-                  left: (width - ambientalImageSize) / 2,
-                  top: ((squareMetaBelow ? width : ambientalCardHeight) - ambientalImageSize) / 2
+                  left: (renderedCardWidth - ambientalImageSize) / 2,
+                  top: ((squareMetaBelow
+                    ? renderedCardWidth
+                    : isEditorial
+                      ? editorialCardHeight
+                      : ambientalCardHeight) - ambientalImageSize) / 2
                     - (squareMetaBelow ? 0 : 32),
                 },
               ]}
@@ -228,6 +256,43 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
             />
+            {isEditorial && (
+              <>
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
+                  locations={[0.28, 0.58, 1]}
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
+                <View pointerEvents="none" style={styles.editorialMetadata}>
+                  <Text style={styles.editorialCategory} numberOfLines={1}>{categoryLabel}</Text>
+                  <Text style={styles.editorialTitle} numberOfLines={2}>{session.title}</Text>
+                </View>
+              </>
+            )}
+          </>
+        ) : isEditorial ? (
+          <>
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
+              locations={[0.28, 0.58, 1]}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            {isAmbiental ? null : (
+              <SessionDurationBadge
+                label={session.durationLabel}
+                style={styles.editorialDuration}
+                textStyle={styles.durationBadgeText}
+              />
+            )}
+            <View pointerEvents="none" style={styles.editorialMetadata}>
+              <Text style={styles.editorialCategory} numberOfLines={1}>{categoryLabel}</Text>
+              <Text style={styles.editorialTitle} numberOfLines={2}>{session.title}</Text>
+              {!isAmbiental && showAuthor && !!authorName && (
+                <Text style={styles.editorialAuthor} numberOfLines={1}>{authorName}</Text>
+              )}
+            </View>
           </>
         ) : showCardMetadata && !squareMetaBelow ? (
           <SessionCardMetadataOverlay
@@ -258,7 +323,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         ) : null}
         {locked && <LockStar />}
       </View>
-      {squareMetaBelow ? (
+      {isEditorial ? null : squareMetaBelow ? (
         <View style={styles.squareMeta}>
           {!categoryGridPresentation && (
             <Text style={[styles.squareSecondary, { color: colors.accent }]} numberOfLines={1}>
@@ -427,6 +492,52 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.95)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 0,
+  },
+  editorialDuration: {
+    position: "absolute",
+    top: 15,
+    left: 15,
+  },
+  editorialMetadata: {
+    position: "absolute",
+    left: 18,
+    right: 12,
+    bottom: 13,
+    transform: [{ translateX: 7 }, { translateY: -7 }],
+  },
+  editorialCategory: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.82)",
+    transform: [{ translateY: 2 }],
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  editorialTitle: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "600",
+    color: "#F9F9F9",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  editorialAuthor: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.82)",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   hRow: {
     flexDirection: "row",

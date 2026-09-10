@@ -121,7 +121,7 @@ export function ExpandConsciousnessSection({
           onPress={onPress}
           style={styles.carousel}
           cardWidth={discoverCardWidth}
-          showCardMetadata
+          presentation="editorial"
           showHeader={false}
         />
       ) : (

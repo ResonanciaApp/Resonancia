@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionCard } from "@/components/SessionCard";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -144,29 +145,17 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         ) : (
           <View style={styles.grid}>
             {sessions.map((session) => (
-              <Pressable
+              <SessionCard
                 key={session.id}
-                onPress={() => openSession(session)}
-                style={({ pressed }) => [
-                  styles.card,
-                  { width: CARD_W, opacity: pressed ? 0.82 : 1 },
-                ]}
-              >
-                <View style={[styles.image, { backgroundColor: cardBackground }]}>
-                  <Image
-                    source={session.image}
-                    style={styles.ambientalImage}
-                    contentFit="cover"
-                  />
-                  <PremiumBadge session={session} />
-                </View>
-                <Text
-                  style={[styles.cardTitle, { color: colors.foreground }]}
-                  numberOfLines={2}
-                >
-                  {session.title}
-                </Text>
-              </Pressable>
+                session={session}
+                width={CARD_W}
+                cardVariant="ambiental"
+                editorialPresentation
+                showAuthor={false}
+                showAuthorAvatar={false}
+                style={styles.card}
+                overridePress={() => openSession(session)}
+              />
             ))}
           </View>
         )}
@@ -212,7 +201,7 @@ const styles = StyleSheet.create({
     columnGap: GAP,
     rowGap: 18,
   },
-  card: { marginBottom: 4 },
+  card: { marginRight: 0, marginBottom: 4 },
   image: {
     width: CARD_W,
     height: CARD_W,

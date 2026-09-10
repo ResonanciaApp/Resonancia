@@ -203,8 +203,7 @@ export function RecommendedForYouSection({
           isPremium={isPremium}
           onPress={onPress}
           showHeader={false}
-          squareTitleAuthorBelow
-          categoryGridPresentation
+          presentation="editorial"
           style={styles.carousel}
         />
       ) : (

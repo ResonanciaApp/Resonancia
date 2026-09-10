@@ -217,10 +217,8 @@ function CategoryCard({
       session={session}
       width={cardWidth}
       style={{ marginRight: 0 }}
-      showCardMetadata
+       editorialPresentation
       showAuthorAvatar={false}
-      squareMetaBelow
-      categoryGridPresentation
       onLongPress={onLongPress}
       overridePress={handlePress}
     />
@@ -386,7 +384,7 @@ export default function MeditacionesGuiadasScreen() {
               isPremium={isPremium}
               onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                style={{ marginTop: 33, marginBottom: 0 }}
-              presentation="sleep-category"
+               presentation="editorial"
               titleSize={19}
               titleOffset={10}
               titleSpacing={17}
@@ -408,7 +406,7 @@ export default function MeditacionesGuiadasScreen() {
                   isPremium={isPremium}
                   onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
                    style={{ marginTop: idx === 0 ? 33 : 53, marginBottom: 0 }}
-                  presentation="sleep-category"
+                   presentation="editorial"
                   titleSize={18}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
