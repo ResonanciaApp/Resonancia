@@ -385,6 +385,11 @@ export default function DescansoScreen() {
                 showImageCategoryPill={collection.label !== "Música para dormir"}
                 hideCategoryAboveTitle={collection.label === "Música para dormir"}
                 showSleepCategoryPillWithInlineDuration={collection.label === "Música para dormir"}
+                sleepOverlayMetadataStyle={
+                  collection.label === "Música para dormir"
+                    ? { transform: [{ translateX: 7 }, { translateY: -1 }] }
+                    : undefined
+                }
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}
