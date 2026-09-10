@@ -68,12 +68,12 @@ const WATERCOLOR_CATEGORY_IMAGES: Partial<
 const DISCOVER_CATEGORY_IMAGES: Partial<
   Record<ContentCategoryDefinition["id"], number>
 > = {
-  "meditaciones-guiadas": require("@/assets/images/discover3-category-meditaciones.jpg"),
-  "sonidos-ancestrales": require("@/assets/images/discover3-category-sonoterapia.jpg"),
-  "musica-sonidos": require("@/assets/images/discover3-category-musica.jpg"),
-  ambientales: require("@/assets/images/discover3-category-ambientales.jpg"),
-  historias: require("@/assets/images/discover3-category-historias.jpg"),
-  charlas: require("@/assets/images/discover3-category-charlas.jpg"),
+  "meditaciones-guiadas": require("@/assets/images/discover2-category-meditaciones.jpg"),
+  "sonidos-ancestrales": require("@/assets/images/discover2-category-sonoterapia.jpg"),
+  "musica-sonidos": require("@/assets/images/discover2-category-musica.jpg"),
+  ambientales: require("@/assets/images/discover2-category-ambientales.jpg"),
+  historias: require("@/assets/images/discover2-category-historias.jpg"),
+  charlas: require("@/assets/images/discover2-category-charlas.jpg"),
 };
 
 function renderCategoryIcon(
@@ -251,7 +251,7 @@ export function ContentCategoryGrid({
                   },
                 ]}
               >
-                 <View style={[styles.discoverCardImage, { height: cardHeight }]}>
+                  <View style={[styles.discoverCardImage, { height: cardHeight }]}>
                    {image && (
                      <ExpoImage
                        source={image}
@@ -261,10 +261,16 @@ export function ContentCategoryGrid({
                        transition={180}
                      />
                    )}
+                    <View pointerEvents="none" style={styles.discoverCardScrim} />
+                    <View pointerEvents="none" style={styles.discoverCardContent}>
+                      <View style={styles.discoverCardIcon}>
+                        {renderCategoryIcon(category, false, true, 2)}
+                      </View>
+                      <Text style={styles.discoverCardTitle} numberOfLines={2}>
+                        {category.label}
+                      </Text>
+                    </View>
                  </View>
-                 <Text style={styles.discoverCardTitle} numberOfLines={1}>
-                   {category.label}
-                 </Text>
               </Pressable>
             );
           })}
@@ -446,12 +452,31 @@ const styles = StyleSheet.create({
   },
   discoverCard: {
     borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    overflow: "hidden",
   },
   discoverCardImage: {
     width: "100%",
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  discoverCardScrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  discoverCardContent: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  discoverCardIcon: {
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 7,
   },
   discoverCardTitle: {
     color: "#FBFBFB",
@@ -459,7 +484,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     fontWeight: "600",
-    marginTop: 8,
+    textAlign: "center",
   },
   watercolorHorizontalContent: {
     gap: WATERCOLOR_CARD_GAP,

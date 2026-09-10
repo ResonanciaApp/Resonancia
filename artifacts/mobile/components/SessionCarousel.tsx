@@ -108,6 +108,7 @@ type SessionCarouselProps = {
   sleepOverlayAuthorStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
   showCategoryAboveTitle?: boolean;
+  hideCategoryAboveTitle?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -168,6 +169,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepOverlayAuthorStyle,
   sleepOverlayMetadataStyle,
   showCategoryAboveTitle = false,
+  hideCategoryAboveTitle = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -262,7 +264,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       ? true
       : showDurationBadge;
   const effectiveShowCategoryAboveTitle =
-    showCategoryAboveTitle || isEditorialPresentation;
+    !hideCategoryAboveTitle && (showCategoryAboveTitle || isEditorialPresentation);
   const effectiveOverlayDurationTopLeft =
     overlayDurationTopLeft || isEditorialPresentation;
   const effectiveShowImageCategoryPill =
@@ -542,7 +544,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       >
                         {s.title}
                       </Text>
-                      {authorName ? (
+                      {effectiveShowAuthor && authorName ? (
                         <Text
                           style={[
                             styles.sleepOverlayAuthor,

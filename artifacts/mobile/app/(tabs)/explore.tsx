@@ -283,6 +283,12 @@ export function ExploreScreen({
           ? "rgba(181,211,255,0.14)"
           : "rgba(181,211,255,0.14)";
   const contentCardSurfaceColor = durationSurfaceColor;
+  const otherThemeCardSurfaceColor =
+    activeSceneId === "tibet"
+      ? "rgba(0,0,0,0.07)"
+      : activeSceneId === "indigo2"
+        ? "rgba(191,207,255,0.07)"
+        : "rgba(181,211,255,0.07)";
   const otherThemeDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : "rgba(255,255,255,0.62)";
@@ -643,6 +649,37 @@ export function ExploreScreen({
             </View>
           )}
 
+          <View style={styles.durationSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor: contentCardSurfaceColor,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -699,37 +736,6 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          <View style={styles.durationSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durationRow}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() =>
-                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={slot.displayLabel}
-                  style={({ pressed }) => [
-                    styles.durationCard,
-                    {
-                      backgroundColor: contentCardSurfaceColor,
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
           <View style={styles.categoryBlocksSection}>
             <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
               Descubre por categoría
@@ -766,7 +772,7 @@ export function ExploreScreen({
                     style={({ pressed }) => [
                       styles.themeGridCard,
                       {
-                        backgroundColor: contentCardSurfaceColor,
+                        backgroundColor: otherThemeCardSurfaceColor,
                         opacity: pressed ? 0.72 : 1,
                       },
                     ]}
@@ -1193,7 +1199,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   themeGridIcon: {
-    width: 34,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.13)",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 20,

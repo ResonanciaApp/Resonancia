@@ -2566,6 +2566,7 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             presentation="editorial"
+            hideCategoryAboveTitle
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
@@ -2759,6 +2760,7 @@ export default function HomeScreen2({
             style={originalSessionCarouselStyle}
             titleOffset={10}
             presentation="editorial"
+            hideCategoryAboveTitle
             titleSize={20}
           />
         )}

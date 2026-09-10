@@ -204,6 +204,7 @@ export function RecommendedForYouSection({
           onPress={onPress}
           showHeader={false}
           presentation="editorial"
+          showAuthor={false}
           style={styles.carousel}
         />
       ) : (
