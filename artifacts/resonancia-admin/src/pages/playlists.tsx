@@ -296,7 +296,7 @@ function CoverUpload({
         body: file,
         headers: { "Content-Type": file.type },
       });
-      const servingUrl = `/api/storage/${objectPath}`;
+      const servingUrl = `/api/storage/${objectPath.replace(/^\/+/, "")}`;
       onChange(servingUrl);
       toast.success("Imagen subida");
     } catch {

@@ -62,7 +62,11 @@ export async function resolveObjectReadAccess({
         OR EXISTS (
           SELECT 1
           FROM catalog_playlists p
-          WHERE p.is_active = true AND p.cover_url = ${objectPath}
+          WHERE p.is_active = true
+            AND (
+              p.cover_url = ${objectPath}
+              OR regexp_replace(p.cover_url, '^/api/storage/+', '/') = ${objectPath}
+            )
         )
         OR EXISTS (
           SELECT 1

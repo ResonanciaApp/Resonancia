@@ -9,6 +9,9 @@
  */
 export function resolveAvatarUrl(path: string | null | undefined): string | null {
   if (!path) return null;
+  // Older editorial uploads stored /api/storage//objects/... .
+  // Normalize only our storage prefix, never the slashes in https://.
+  path = path.replace(/\/api\/storage\/+(?=objects\/)/, "/api/storage/");
   if (/^(https?:|data:)/i.test(path)) return path;
 
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");

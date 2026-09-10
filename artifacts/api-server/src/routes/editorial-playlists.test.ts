@@ -32,6 +32,7 @@ import { eq, inArray } from "drizzle-orm";
 import adminRouter from "./admin";
 import catalogRouter from "./catalog";
 import usersRouter from "./users";
+import { resolveObjectReadAccess } from "../lib/objectAccess";
 
 function buildApp(): Express {
   const app = express();
@@ -116,6 +117,28 @@ beforeAll(async () => {
 });
 
 describe("editorial playlist contract", () => {
+  it("serves active playlist covers in object and legacy serving formats without exposing drafts", async () => {
+    const objectPath = `/objects/uploads/editorial-cover-${suffix}`;
+    const slug = `editorial-cover-${suffix}`;
+    const [playlist] = await db.insert(catalogPlaylistsTable).values({
+      slug,
+      title: "Portada de prueba",
+      isActive: true,
+      coverUrl: objectPath,
+      sessionIds: [],
+    }).returning();
+    try {
+      for (const coverUrl of [objectPath, `/api/storage${objectPath}`, `/api/storage/${objectPath}`]) {
+        await db.update(catalogPlaylistsTable).set({ coverUrl }).where(eq(catalogPlaylistsTable.id, playlist.id));
+        expect(await resolveObjectReadAccess({ objectPath })).toBe("public");
+      }
+      await db.update(catalogPlaylistsTable).set({ isActive: false }).where(eq(catalogPlaylistsTable.id, playlist.id));
+      expect(await resolveObjectReadAccess({ objectPath })).toBe("denied");
+      expect(await resolveObjectReadAccess({ objectPath: `${objectPath}-other` })).toBe("denied");
+    } finally {
+      await db.delete(catalogPlaylistsTable).where(eq(catalogPlaylistsTable.id, playlist.id));
+    }
+  });
   it("protects playlist mutations with the admin role", async () => {
     authAs(null);
     expect(
