@@ -90,11 +90,11 @@ const COLLECTION_CARD_H =
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) - 11;
 const PLAYLIST_SAMPLES = [
-  { id: "c1", title: "Paz y Calma", imageId: "1", categoryLabel: "Colección", durationLabel: "4 h 15 min" },
-  { id: "c2", title: "Foco Profundo", imageId: "5", categoryLabel: "Colección", durationLabel: "2 h 30 min" },
-  { id: "c3", title: "Rituales de Mañana", imageId: "10", categoryLabel: "Colección", durationLabel: "1 h 45 min" },
-  { id: "c4", title: "Sueño Reparador", imageId: "9", categoryLabel: "Colección", durationLabel: "5 h 20 min" },
-  { id: "c5", title: "Anti Estrés", imageId: "2", categoryLabel: "Colección", durationLabel: "3 h 10 min" },
+  { id: "c1", title: "Paz y Calma", imageId: "1", durationLabel: "4 h 15 min" },
+  { id: "c2", title: "Foco Profundo", imageId: "5", durationLabel: "2 h 30 min" },
+  { id: "c3", title: "Rituales de Mañana", imageId: "10", durationLabel: "1 h 45 min" },
+  { id: "c4", title: "Sueño Reparador", imageId: "9", durationLabel: "5 h 20 min" },
+  { id: "c5", title: "Anti Estrés", imageId: "2", durationLabel: "3 h 10 min" },
 ];
 
 const DURATION_SLOTS = [
@@ -733,28 +733,13 @@ export function ExploreScreen({
                         colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
                         style={StyleSheet.absoluteFill}
                       />
-                      <View style={styles.playlistKind}>
-                        <MaterialCommunityIcons
-                          name="layers-outline"
-                          size={13}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.playlistKindText}>
-                          {item.categoryLabel}
-                        </Text>
-                      </View>
+                      <SessionDurationBadge
+                        label={item.durationLabel}
+                        style={styles.playlistDurationBadge}
+                      />
                       <View style={styles.playlistMeta}>
                         <Text style={styles.playlistTitle} numberOfLines={2}>
                           {item.title}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.playlistDuration,
-                            { color: activeTheme.accent ?? "#D8D8D8" },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {item.durationLabel}
                         </Text>
                       </View>
                     </View>
@@ -1248,21 +1233,10 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.1)",
   },
-  playlistKind: {
+  playlistDurationBadge: {
     position: "absolute",
     top: 13,
     left: 13,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-  playlistKindText: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    letterSpacing: 0.7,
-    textTransform: "uppercase",
   },
   playlistMeta: {
     position: "absolute",
@@ -1272,16 +1246,13 @@ const styles = StyleSheet.create({
   },
   playlistTitle: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "700",
-    lineHeight: 21,
-    color: "#FBFBFB",
-  },
-  playlistDuration: {
-    marginTop: 4,
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
+    lineHeight: 19,
+    color: "#F9F9F9",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
