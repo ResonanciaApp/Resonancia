@@ -221,7 +221,7 @@ const ActivityRow = React.memo(function ActivityRow({
   const completionOverlayStyle = useAnimatedStyle(() => ({
     opacity: completionProgress.value,
   }));
-  const ticketCircleColor = "#F9F9F9";
+  const ticketCircleColor = "rgba(255,255,255,0.1)";
   const ticketCircleCompletedColor = useMemo(
     () => lightenHexColor(theme.gradient[0], 0.1),
     [theme.gradient],
