@@ -381,8 +381,25 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="sleep-category"
-                sleepMetadataBelow
+                sleepMetadataBelow={collection.label !== "Música para dormir"}
+                overlayMetadataInside={collection.label === "Música para dormir"}
                 categoryGridPresentation
+                cardHeightAdjustment={collection.label === "Música para dormir" ? 20 : 0}
+                durationBadgeStyle={
+                  collection.label === "Música para dormir"
+                    ? { borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }
+                    : undefined
+                }
+                sleepBelowTitleStyle={
+                  collection.label === "Música para dormir"
+                    ? { fontSize: 13, fontWeight: "600" }
+                    : undefined
+                }
+                sleepOverlayTitleStyle={
+                  collection.label === "Música para dormir"
+                    ? { fontSize: 13, fontWeight: "600" }
+                    : undefined
+                }
                 titleSize={19}
                 showImageCategoryPill
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
