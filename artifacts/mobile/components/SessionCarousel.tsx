@@ -152,6 +152,8 @@ type SessionCarouselProps = {
   ambientalImageLift?: number;
   /** Position override used only by Ambiental title-only metadata. */
   ambientalTitleOnlyMetadataStyle?: StyleProp<ViewStyle>;
+  /** Text override used only by Ambiental title-only titles. */
+  ambientalTitleOnlyTitleStyle?: StyleProp<TextStyle>;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -215,6 +217,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalTitleOnly = false,
   ambientalImageLift = 0,
   ambientalTitleOnlyMetadataStyle,
+  ambientalTitleOnlyTitleStyle,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -566,6 +569,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
                           showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
                           sleepOverlayTitleStyle,
+                          showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
                         ]}
                         numberOfLines={2}
                       >
