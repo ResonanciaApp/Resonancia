@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Dimensions,
@@ -13,11 +14,15 @@ import {
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import type { EditorialPlaylist } from "@/data/playlists";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { CONTENT_CAROUSEL_HEIGHT_SCALE, getTwoCardCarouselCardWidth } from "@/constants/carousel";
+import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
 
 const H_PAD = 16;
 const CARD_GAP = 14;
-const CARD_WIDTH = Math.round((Dimensions.get("window").width - H_PAD * 2) * 0.7);
-const CARD_HEIGHT = Math.round(CARD_WIDTH * 0.76);
+const CARD_WIDTH = getTwoCardCarouselCardWidth(Dimensions.get("window").width, CARD_GAP) - 3.5;
+const CARD_HEIGHT = Math.round(
+  (CARD_WIDTH + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE,
+) - 11;
 
 export function EditorialPlaylistCarousel({
   title,
@@ -34,7 +39,6 @@ export function EditorialPlaylistCarousel({
     <View style={styles.section}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>{title}</Text>
-        <Feather name="chevron-right" size={18} color="#C2C2C2" />
       </View>
       <ScrollView
         horizontal
@@ -49,8 +53,11 @@ export function EditorialPlaylistCarousel({
             accessibilityRole="button"
             accessibilityLabel={`Abrir ${playlist.title}`}
             testID={`editorial-playlist-${playlist.id}`}
-            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.82 : 1 }]}
+            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
           >
+            <View style={styles.stack}>
+              <View style={styles.stackStripFront} />
+              <View style={styles.stackStripBack} />
             <View style={styles.cover}>
               {playlist.coverUrl ? (
                 <Image
@@ -67,14 +74,21 @@ export function EditorialPlaylistCarousel({
                   <Text style={styles.missingCoverText}>Sin portada</Text>
                 </View>
               )}
-              <View style={styles.coverShade} pointerEvents="none" />
+              <LinearGradient
+                pointerEvents="none"
+                colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
+                style={StyleSheet.absoluteFill}
+              />
               <SessionDurationBadge
                 label={playlist.durationLabel || "Selección"}
                 style={styles.duration}
               />
-              <Text style={styles.cardTitle} numberOfLines={2}>
-                {playlist.title}
-              </Text>
+              <View style={styles.meta}>
+                <Text style={styles.cardTitle} numberOfLines={2}>
+                  {playlist.title}
+                </Text>
+              </View>
+            </View>
             </View>
           </Pressable>
         ))}
@@ -85,11 +99,12 @@ export function EditorialPlaylistCarousel({
 
 const styles = StyleSheet.create({
   section: {
-    marginTop: 33,
+    paddingHorizontal: H_PAD,
+    marginTop: 0,
+    marginBottom: 53,
   },
   titleRow: {
-    paddingHorizontal: H_PAD,
-    marginBottom: 16,
+    marginBottom: 17,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -99,7 +114,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 19,
     fontWeight: "700",
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
   },
   carousel: {
     marginHorizontal: -H_PAD,
@@ -111,17 +126,37 @@ const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
   },
+  stack: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT + 11,
+  },
+  stackStripFront: {
+    position: "absolute",
+    top: CARD_HEIGHT,
+    left: 12,
+    right: 12,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#717172",
+  },
+  stackStripBack: {
+    position: "absolute",
+    top: CARD_HEIGHT + 5,
+    left: 17,
+    right: 17,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: "#48474D",
+  },
   cover: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    borderRadius: 17,
+    borderRadius: 18,
     overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.1)",
     backgroundColor: "rgba(190,150,80,0.06)",
     justifyContent: "flex-end",
-  },
-  coverShade: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.34)",
   },
   missingCover: {
     flex: 1,
@@ -136,16 +171,23 @@ const styles = StyleSheet.create({
   },
   duration: {
     position: "absolute",
-    top: 10,
-    left: 10,
+    top: 15,
+    left: 15,
+  },
+  meta: {
+    position: "absolute",
+    left: 19,
+    right: 19,
+    bottom: 20,
   },
   cardTitle: {
-    color: "#FFFFFF",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 23,
-    fontWeight: "700",
-    paddingHorizontal: 14,
-    paddingBottom: 14,
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "600",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 });
