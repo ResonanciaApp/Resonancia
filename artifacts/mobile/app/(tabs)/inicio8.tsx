@@ -2656,6 +2656,7 @@ export default function HomeScreen2({
             allowOversizedCardWidth
             squareTitleAuthorBelow
             categoryGridPresentation
+            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
