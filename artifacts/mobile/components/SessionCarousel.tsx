@@ -106,7 +106,7 @@ type SessionCarouselProps = {
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayMetadataStyle?: StyleProp<ViewStyle>;
-  showCategoryWithAuthor?: boolean;
+  showCategoryAboveTitle?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -165,7 +165,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
   sleepOverlayMetadataStyle,
-  showCategoryWithAuthor = false,
+  showCategoryAboveTitle = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -493,13 +493,15 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
-                      {showCategoryWithAuthor ? (
-                        <View style={styles.sleepOverlayCategorySpacer} />
+                      {showCategoryAboveTitle && s.categoryLabel ? (
+                        <Text style={styles.sleepOverlayCategoryText} numberOfLines={1}>
+                          {s.categoryLabel}
+                        </Text>
                       ) : null}
                       <Text
                         style={[
                           styles.sleepOverlayTitle,
-                          showCategoryWithAuthor && styles.sleepOverlayTitleAfterCategory,
+                          showCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
                           sleepOverlayTitleStyle,
                         ]}
                         numberOfLines={2}
@@ -507,26 +509,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         {s.title}
                       </Text>
                       {authorName ? (
-                        showCategoryWithAuthor && s.categoryLabel ? (
-                          <View style={styles.sleepOverlayAuthorRow}>
-                            <Text style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}>
-                              {s.categoryLabel}
-                            </Text>
-                            <Text style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}>
-                              ·
-                            </Text>
-                            <Text
-                              style={[styles.sleepOverlayAuthor, styles.sleepOverlayAuthorInline]}
-                              numberOfLines={1}
-                            >
-                              {authorName}
-                            </Text>
-                          </View>
-                        ) : (
-                          <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
-                            {authorName}
-                          </Text>
-                        )
+                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                          {authorName}
+                        </Text>
                       ) : null}
                     </View>
                   </>
@@ -744,18 +729,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
     transform: [{ translateY: 1 }],
   },
-  sleepOverlayCategorySpacer: {
+  sleepOverlayCategoryText: {
     marginTop: 4,
-    height: 15,
-  },
-  sleepOverlayAuthorRow: {
-    marginTop: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  sleepOverlayAuthorInline: {
-    marginTop: 0,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.82)",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   sleepOverlayAuthor: {
     marginTop: 4,

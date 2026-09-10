@@ -387,12 +387,10 @@ export default function DescansoScreen() {
                 cardWidthAdjustment={collection.label === "Música para dormir" ? -3.5 : 0}
                 cardHeightAdjustment={collection.label === "Música para dormir" ? -11 : 0}
                 overlayDurationTopLeft={collection.label === "Música para dormir"}
-                showCategoryWithAuthor={collection.label === "Música para dormir"}
+                showCategoryAboveTitle={collection.label === "Música para dormir"}
                 durationBadgeStyle={
                   collection.label === "Música para dormir"
                     ? {
-                        borderWidth: 1,
-                        borderColor: "rgba(255,255,255,0.15)",
                         top: 15,
                         left: 15,
                       }
