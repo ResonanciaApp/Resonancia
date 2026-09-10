@@ -524,6 +524,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
                         <SessionDurationBadge
                           label={s.durationLabel}
+                           showClock
                           style={[
                             styles.durBadge,
                             styles.sleepOverlayDurationInline,
