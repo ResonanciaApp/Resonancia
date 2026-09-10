@@ -382,19 +382,12 @@ export default function DescansoScreen() {
                 style={sleepCarouselStyles[index]}
                 presentation="editorial"
                 titleSize={19}
-                showImageCategoryPill={collection.label !== "Música para dormir"}
-                hideCategoryAboveTitle={collection.label === "Música para dormir"}
-                showSleepCategoryPillWithInlineDuration={collection.label === "Música para dormir"}
-                sleepOverlayMetadataStyle={
-                  collection.label === "Música para dormir"
-                    ? { transform: [{ translateX: 3 }, { translateY: -1 }] }
-                    : undefined
-                }
-                overlayGradientLocations={
-                  collection.label === "Música para dormir"
-                    ? [0.18, 0.48, 1]
-                    : undefined
-                }
+                hideCategoryAboveTitle
+                showSleepCategoryPillWithInlineDuration
+                sleepOverlayMetadataStyle={{
+                  transform: [{ translateX: 3 }, { translateY: -1 }],
+                }}
+                overlayGradientLocations={[0.18, 0.48, 1]}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}
