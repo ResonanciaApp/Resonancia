@@ -869,6 +869,7 @@ const styles = StyleSheet.create({
   },
   sleepCompactPillText: {
     fontSize: 10,
+    fontWeight: "600",
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
