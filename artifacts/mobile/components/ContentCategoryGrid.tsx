@@ -214,7 +214,7 @@ export function ContentCategoryGrid({
     const cardWidth = Math.floor(
       (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
     );
-    const cardHeight = Math.round(cardWidth * 0.66) + 15;
+    const cardHeight = Math.round(cardWidth * 0.66) - 1;
 
     return (
       <View
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.025)",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   discoverCardContent: {
     ...StyleSheet.absoluteFillObject,

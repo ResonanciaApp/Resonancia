@@ -650,6 +650,24 @@ export function ExploreScreen({
             </View>
           )}
 
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Descubre por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+                "ambientales",
+                "charlas",
+              ]}
+              discoverTieredLayout
+            />
+          </View>
+
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
               Explora según tu tiempo
@@ -735,24 +753,6 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
-          </View>
-
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Descubre por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-                "ambientales",
-                "charlas",
-              ]}
-              discoverTieredLayout
-            />
           </View>
 
           <View style={styles.otherThemesSection}>
