@@ -155,6 +155,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
                       width={CARD_W}
                       style={styles.editorialCard}
                       editorialPresentation
+                      sleepEditorialContent
                       showAuthor
                       showAuthorAvatar={false}
                       overridePress={() => {

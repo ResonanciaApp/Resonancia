@@ -29,6 +29,7 @@ import {
 } from "@/constants/carousel";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import {
+  SessionCategoryPill,
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
@@ -67,6 +68,8 @@ type Props = {
   categoryGridPresentation?: boolean;
   /** Shared tall editorial card presentation used by Dormir and discovery cards. */
   editorialPresentation?: boolean;
+  /** Matches the metadata layout used by the Dormir carousels. */
+  sleepEditorialContent?: boolean;
 };
 
 function PlayingDot() {
@@ -104,7 +107,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false, sleepEditorialContent = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -259,7 +262,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
             />
-            {isEditorial && (
+            {isEditorial && sleepEditorialContent ? (
+              <View pointerEvents="none" style={styles.sleepEditorialMetadata}>
+                <Text style={styles.sleepEditorialTitle} numberOfLines={2}>{session.title}</Text>
+              </View>
+            ) : isEditorial && (
               <>
                 <LinearGradient
                   colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
@@ -272,6 +279,34 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
                 </View>
               </>
             )}
+          </>
+        ) : isEditorial && sleepEditorialContent ? (
+          <>
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.82)"]}
+              locations={[0.18, 0.48, 1]}
+              style={[StyleSheet.absoluteFill, styles.editorialRoundedLayer]}
+              pointerEvents="none"
+            />
+            <SessionCategoryPill
+              categoryId="descanso"
+              leftInset={11}
+              topInset={15}
+              style={styles.sleepCategoryPill}
+              textStyle={styles.sleepCategoryPillText}
+            />
+            <View pointerEvents="none" style={styles.sleepEditorialMetadata}>
+              <SessionDurationBadge
+                label={session.durationLabel}
+                showClock
+                style={styles.sleepDuration}
+                textStyle={styles.sleepDurationText}
+              />
+              <Text style={styles.sleepEditorialTitle} numberOfLines={2}>{session.title}</Text>
+              {showAuthor && !!authorName && (
+                <Text style={styles.sleepEditorialAuthor} numberOfLines={1}>{authorName}</Text>
+              )}
+            </View>
           </>
         ) : isEditorial ? (
           <>
@@ -535,6 +570,60 @@ const styles = StyleSheet.create({
   },
   editorialAuthor: {
     marginTop: 0,
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 15,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.82)",
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  sleepCategoryPill: {
+    height: 19,
+    minHeight: 19,
+    paddingVertical: 0,
+  },
+  sleepCategoryPillText: {
+    fontSize: 10,
+    fontWeight: "600",
+  },
+  sleepEditorialMetadata: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    bottom: 13,
+    transform: [{ translateX: 3 }, { translateY: -1 }],
+  },
+  sleepDuration: {
+    position: "relative",
+    left: undefined,
+    bottom: undefined,
+    alignSelf: "flex-start",
+    marginBottom: 5,
+    height: 23,
+    paddingHorizontal: 7,
+    paddingVertical: 0,
+    justifyContent: "center",
+    transform: [{ translateY: 4 }],
+  },
+  sleepDurationText: {
+    fontSize: 10,
+    fontWeight: "600",
+  },
+  sleepEditorialTitle: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "600",
+    color: "#F9F9F9",
+    transform: [{ translateY: 2 }],
+    textShadowColor: "rgba(0,0,0,0.75)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  sleepEditorialAuthor: {
+    marginTop: 4,
     fontFamily: "Manrope",
     fontSize: 10,
     lineHeight: 15,
