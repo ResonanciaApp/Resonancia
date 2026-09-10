@@ -154,6 +154,8 @@ type SessionCarouselProps = {
   ambientalTitleOnlyMetadataStyle?: StyleProp<ViewStyle>;
   /** Text override used only by Ambiental title-only titles. */
   ambientalTitleOnlyTitleStyle?: StyleProp<TextStyle>;
+  /** Shows the session category pill on Ambiental title-only cards. */
+  showAmbientalCategoryPill?: boolean;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -218,6 +220,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalImageLift = 0,
   ambientalTitleOnlyMetadataStyle,
   ambientalTitleOnlyTitleStyle,
+  showAmbientalCategoryPill = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -518,7 +521,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         textStyle={styles.durText}
                       />
                     ) : null}
-                     {!showAmbientalTitleOnly && effectiveShowImageCategoryPill ? (
+                      {(!showAmbientalTitleOnly && effectiveShowImageCategoryPill) ||
+                      (showAmbientalTitleOnly && showAmbientalCategoryPill) ? (
                        <SessionCategoryPill
                          categoryId={s.categoryId}
                          leftInset={18}
