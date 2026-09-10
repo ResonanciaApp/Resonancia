@@ -104,7 +104,7 @@ type SessionCarouselProps = {
   durationBadgeStyle?: StyleProp<ViewStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
-  showCategoryTextBelow?: boolean;
+  showCategoryTextAboveTitle?: boolean;
   fixedCardHeight?: number;
   allowOversizedCardWidth?: boolean;
   titleSize?: number;
@@ -161,7 +161,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   durationBadgeStyle,
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
-  showCategoryTextBelow = false,
+  showCategoryTextAboveTitle = false,
   fixedCardHeight,
   allowOversizedCardWidth = false,
   titleSize,
@@ -486,8 +486,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           textStyle={styles.durText}
                         />
                       ) : null}
+                      {showCategoryTextAboveTitle && s.categoryLabel ? (
+                        <Text style={styles.sleepOverlayAuthor} numberOfLines={1}>
+                          {s.categoryLabel}
+                        </Text>
+                      ) : null}
                       <Text
-                        style={[styles.sleepOverlayTitle, sleepOverlayTitleStyle]}
+                        style={[
+                          styles.sleepOverlayTitle,
+                          showCategoryTextAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                          sleepOverlayTitleStyle,
+                        ]}
                         numberOfLines={2}
                       >
                         {s.title}
@@ -568,14 +577,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   ) : null}
                 </>
               )}
-              {showCategoryTextBelow ? (
-                <Text
-                  style={[styles.sleepBelowCategory, { color: viewAllAccent }]}
-                  numberOfLines={1}
-                >
-                  {s.categoryLabel}
-                </Text>
-              ) : null}
             </PressScale>
           );
         }}
@@ -717,6 +718,9 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
+  sleepOverlayTitleAfterCategory: {
+    marginTop: 4,
+  },
   sleepOverlayAuthor: {
     marginTop: 4,
     fontFamily: "Manrope",
@@ -745,14 +749,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "700",
     color: "#F9F9F9",
-  },
-  sleepBelowCategory: {
-    marginTop: 8,
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 15,
-    fontWeight: "500",
-    textAlign: "center",
   },
   sleepOverlayDurationInline: {
     position: "relative",

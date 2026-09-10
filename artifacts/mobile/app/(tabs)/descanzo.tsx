@@ -386,7 +386,7 @@ export default function DescansoScreen() {
                 categoryGridPresentation
                 cardHeightAdjustment={collection.label === "Música para dormir" ? -15 : 0}
                 overlayDurationTopLeft={collection.label === "Música para dormir"}
-                showCategoryTextBelow={collection.label === "Música para dormir"}
+                showCategoryTextAboveTitle={collection.label === "Música para dormir"}
                 durationBadgeStyle={
                   collection.label === "Música para dormir"
                     ? { borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }
