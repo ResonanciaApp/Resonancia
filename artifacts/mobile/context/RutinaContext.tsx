@@ -297,17 +297,24 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then(async (raw) => {
+    Promise.all([
+      AsyncStorage.getItem(STORAGE_KEY),
+      AsyncStorage.getItem(RESET_MARKER_KEY),
+    ])
+      .then(async ([raw, migrationMarker]) => {
         if (cancelled) return;
         let normalized: RoutineActivity[] = [];
         if (raw) {
           try {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
-              normalized = deduplicateRoutineActivities(
-                parsed.map(normalizeActivity).filter((item): item is RoutineActivity => item !== null),
-              );
+              const validActivities = parsed
+                .map(normalizeActivity)
+                .filter((item): item is RoutineActivity => item !== null);
+              normalized =
+                migrationMarker === "complete"
+                  ? validActivities
+                  : deduplicateRoutineActivities(validActivities);
             }
           } catch {
             normalized = [];
@@ -334,8 +341,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    const canonicalActivities = deduplicateRoutineActivities(activities);
-    latestActivitiesRef.current = canonicalActivities;
+    latestActivitiesRef.current = activities;
     if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
     persistTimerRef.current = setTimeout(() => {
       persistTimerRef.current = null;
@@ -367,7 +373,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       archivedAt: null,
       createdAt: new Date().toISOString(),
     };
-    setActivities((current) => deduplicateRoutineActivities([activity, ...current]));
+    setActivities((current) => [activity, ...current]);
     setLastAddedId(activity.id);
     return activity;
   }, []);
