@@ -410,7 +410,7 @@ export default function DescansoScreen() {
                 }
                 sleepOverlayTitleStyle={
                   collection.label === "Música para dormir"
-                    ? { fontSize: 13, fontWeight: "600" }
+                    ? { fontSize: 14, fontWeight: "600" }
                     : undefined
                 }
                 titleSize={19}
