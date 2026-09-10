@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Alert,
   Platform,
@@ -10,6 +10,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -113,11 +114,14 @@ export default function RutinaDetailScreen() {
   const {
     isHydrated,
     getActivityById,
+    updateActivityDescription,
     completeActivity,
     skipActivity,
     archiveActivity,
   } = useRutina();
   const activity = id ? getActivityById(id) : undefined;
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [descriptionDraft, setDescriptionDraft] = useState("");
   const dateKey =
     typeof routeDateKey === "string" && /^\d{4}-\d{2}-\d{2}$/.test(routeDateKey)
       ? routeDateKey
@@ -163,6 +167,18 @@ export default function RutinaDetailScreen() {
       ],
     );
   }, [activity, archiveActivity]);
+
+  const beginDescriptionEdit = useCallback(() => {
+    if (!activity) return;
+    setDescriptionDraft(activity.description);
+    setEditingDescription(true);
+  }, [activity]);
+
+  const saveDescription = useCallback(() => {
+    if (!activity) return;
+    updateActivityDescription(activity.id, descriptionDraft);
+    setEditingDescription(false);
+  }, [activity, descriptionDraft, updateActivityDescription]);
 
   if (!isHydrated) {
     return (
@@ -276,10 +292,43 @@ export default function RutinaDetailScreen() {
             }).format(selectedDate)}
           </Text>
 
-          <Text style={[styles.eyebrow, { color: routineTheme.textMuted }]}>Descripción</Text>
-          <Text style={[styles.description, { color: routineTheme.textMuted }]}>
-            {activity.description || "Sin descripción"}
+          <Text
+            style={[
+              styles.eyebrow,
+              styles.descriptionLabel,
+              { color: routineTheme.textMuted },
+            ]}
+          >
+            Descripción
           </Text>
+          {editingDescription ? (
+            <TextInput
+              autoFocus
+              multiline
+              maxLength={180}
+              value={descriptionDraft}
+              onChangeText={setDescriptionDraft}
+              onBlur={saveDescription}
+              placeholder="Añadir una descripción (opcional)"
+              placeholderTextColor={routineTheme.textMuted}
+              style={[styles.description, styles.descriptionInput, { color: "#F9F9F9" }]}
+              accessibilityLabel="Descripción de la actividad"
+            />
+          ) : activity.description ? (
+            <Text style={[styles.description, { color: routineTheme.textMuted }]}>
+              {activity.description}
+            </Text>
+          ) : (
+            <Pressable
+              onPress={beginDescriptionEdit}
+              accessibilityRole="button"
+              accessibilityLabel="Añadir una descripción opcional"
+            >
+              <Text style={[styles.description, { color: routineTheme.textMuted }]}>
+                Añadir una descripción (opcional)
+              </Text>
+            </Pressable>
+          )}
 
           <Text style={[styles.sectionLabel, { color: "#F9F9F9" }]}>Detalles</Text>
           <View
@@ -391,6 +440,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 23,
   },
+  descriptionLabel: {
+    marginTop: 25,
+  },
+  descriptionInput: {
+    minHeight: 46,
+    padding: 0,
+    textAlignVertical: "top",
+  },
   sectionLabel: {
     fontFamily: "Manrope",
     fontSize: 12,
@@ -400,9 +457,9 @@ const styles = StyleSheet.create({
   detailsCard: {
     borderRadius: 18,
     paddingHorizontal: 16,
+    gap: 5,
   },
   detailRow: {
-    minHeight: 48,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,

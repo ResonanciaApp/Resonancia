@@ -71,6 +71,7 @@ interface RutinaContextValue {
   isHydrated: boolean;
   lastAddedId: string | null;
   addActivity: (input: RoutineActivityInput) => RoutineActivity;
+  updateActivityDescription: (activityId: string, description: string) => void;
   completeActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
   skipActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
   archiveActivity: (activityId: string) => void;
@@ -378,6 +379,17 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     return activity;
   }, []);
 
+  const updateActivityDescription = useCallback((activityId: string, description: string) => {
+    const normalizedDescription = description.trim();
+    setActivities((current) =>
+      current.map((activity) =>
+        activity.id === activityId
+          ? { ...activity, description: normalizedDescription }
+          : activity,
+      ),
+    );
+  }, []);
+
   const completeActivity = useCallback(
     (activityId: string, dateKey = getRoutineDateKey(), occurrenceIndex = 0) => {
       setActivities((current) =>
@@ -480,6 +492,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       isHydrated,
       lastAddedId,
       addActivity,
+      updateActivityDescription,
       completeActivity,
       skipActivity,
       archiveActivity,
@@ -494,6 +507,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       isHydrated,
       lastAddedId,
       addActivity,
+      updateActivityDescription,
       completeActivity,
       skipActivity,
       archiveActivity,
