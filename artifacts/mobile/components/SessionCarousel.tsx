@@ -233,7 +233,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const requestedCardWidth = (isEditorialPresentation
     ? sleepCategoryCardWidth
     : useSleepMetadataBelow
-      ? sleepCategoryCardWidth
+      ? cardWidth ?? sleepCategoryCardWidth
       : isTallOverlayPresentation
         ? cardWidth ?? sleepCategoryCardWidth
         : isAmbientalCarousel
