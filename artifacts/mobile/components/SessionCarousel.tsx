@@ -882,6 +882,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 12,
     fontWeight: "600",
+    transform: [{ translateY: 1 }],
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
