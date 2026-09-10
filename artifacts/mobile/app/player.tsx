@@ -52,6 +52,10 @@ import { SOUNDS } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 import { useDownloads } from "@/context/DownloadContext";
+import {
+  closePlayerForOrigin,
+  stopPlaylistPlaybackOnUnmount,
+} from "@/lib/player-navigation";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const HERO_HEIGHT = SCREEN_HEIGHT * 0.63 + 35;
@@ -128,24 +132,33 @@ export default function PlayerScreen() {
 
   const closePlayer = useCallback(async () => {
     if (!playlistSlug) {
-      router.back();
+      await closePlayerForOrigin(undefined, {
+        stop: stopRef.current,
+        canGoBack: () => router.canGoBack(),
+        back: () => router.back(),
+        replace: (path) => router.replace(path as never),
+      });
       return;
     }
     if (playlistCloseHandledRef.current) return;
     playlistCloseHandledRef.current = true;
-    await stopRef.current();
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace(`/editorial-playlist/${playlistSlug}` as never);
-    }
+    await closePlayerForOrigin(playlistSlug, {
+      stop: stopRef.current,
+      canGoBack: () => router.canGoBack(),
+      back: () => router.back(),
+      replace: (path) => router.replace(path as never),
+    });
   }, [playlistSlug]);
 
   useEffect(() => {
     return () => {
-      if (playlistSlug && !playlistCloseHandledRef.current) {
+      const stopped = stopPlaylistPlaybackOnUnmount(
+        playlistSlug,
+        playlistCloseHandledRef.current,
+        stopRef.current,
+      );
+      if (stopped) {
         playlistCloseHandledRef.current = true;
-        void stopRef.current();
       }
     };
   }, [playlistSlug]);
