@@ -384,7 +384,7 @@ export default function DescansoScreen() {
                 sleepMetadataBelow={collection.label !== "Música para dormir"}
                 overlayMetadataInside={collection.label === "Música para dormir"}
                 categoryGridPresentation
-                cardHeightAdjustment={collection.label === "Música para dormir" ? 20 : 0}
+                cardHeightAdjustment={collection.label === "Música para dormir" ? -5 : 0}
                 durationBadgeStyle={
                   collection.label === "Música para dormir"
                     ? { borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }
@@ -401,7 +401,7 @@ export default function DescansoScreen() {
                     : undefined
                 }
                 titleSize={19}
-                showImageCategoryPill
+                showImageCategoryPill={collection.label !== "Música para dormir"}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
               />
             ))}
