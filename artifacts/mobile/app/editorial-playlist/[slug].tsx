@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -333,10 +333,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
               style={styles.creatorAvatar}
               contentFit="cover"
             />
-            <View>
-              <Text style={styles.creatorName}>Resonancia</Text>
-              <Text style={styles.creatorCaption}>Selección especial</Text>
-            </View>
+            <Text style={styles.creatorCaption}>Selección especial de Resonancia</Text>
           </View>
 
           <View style={styles.controls}>
@@ -347,7 +344,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
               accessibilityLabel={displayIsPlaying ? "Pausar selección" : "Reproducir selección"}
               testID="editorial-playlist-play"
             >
-              <Feather name={displayIsPlaying ? "pause" : "play"} size={18} color={COLORS.navy} />
+              <Ionicons name={displayIsPlaying ? "pause" : "play"} size={19} color={COLORS.navy} />
               <Text style={styles.playButtonText}>{displayIsPlaying ? "Pausar" : "Reproducir"}</Text>
             </Pressable>
 
@@ -497,7 +494,7 @@ const styles = StyleSheet.create({
   headerSpacer: { flex: 1 },
   contentContainer: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 22,
   },
   titleLine: {
     flexDirection: "row",
@@ -532,8 +529,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.15)",
   },
-  creatorName: { color: COLORS.text, fontSize: 14, fontWeight: "700" },
-  creatorCaption: { color: COLORS.muted, fontSize: 13, marginTop: 2 },
+  creatorCaption: { color: "#F9F9F9", fontSize: 13, fontWeight: "600" },
   controls: {
     marginTop: 24,
     flexDirection: "row",
@@ -550,7 +546,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: "#F9F9F9",
   },
-  playButtonText: { color: COLORS.navy, fontSize: 15, fontWeight: "700" },
+  playButtonText: { color: COLORS.navy, fontSize: 15, fontWeight: "600" },
   shuffleButton: {
     flex: 1,
     flexDirection: "row",
@@ -563,11 +559,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.15)",
   },
-  shuffleText: { color: COLORS.text, fontSize: 15, fontWeight: "700" },
+  shuffleText: { color: COLORS.text, fontSize: 15, fontWeight: "600" },
   description: {
-    color: COLORS.muted,
-    fontSize: 15,
-    lineHeight: 22,
+    color: "#F9F9F9",
+    fontSize: 13,
+    lineHeight: 20,
     marginTop: 24,
   },
   divider: {
