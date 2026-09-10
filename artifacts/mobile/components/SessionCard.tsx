@@ -72,6 +72,8 @@ type Props = {
   sleepEditorialContent?: boolean;
   /** Keeps the Dormir metadata layout without its DORMIR pill. */
   showSleepCategoryPill?: boolean;
+  /** Category rendered by the editorial pill; defaults to Dormir. */
+  editorialCategoryPillId?: string;
 };
 
 function PlayingDot() {
@@ -109,7 +111,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false, sleepEditorialContent = false, showSleepCategoryPill = true }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false, sleepEditorialContent = false, showSleepCategoryPill = true, editorialCategoryPillId = "descanso" }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -292,7 +294,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             />
             {showSleepCategoryPill ? (
               <SessionCategoryPill
-                categoryId="descanso"
+                categoryId={editorialCategoryPillId}
                 leftInset={11}
                 topInset={15}
                 style={styles.sleepCategoryPill}
