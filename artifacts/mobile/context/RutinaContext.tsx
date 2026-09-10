@@ -373,7 +373,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       archivedAt: null,
       createdAt: new Date().toISOString(),
     };
-    setActivities((current) => [activity, ...current]);
+    setActivities((current) => [...current, activity]);
     setLastAddedId(activity.id);
     return activity;
   }, []);
