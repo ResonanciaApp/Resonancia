@@ -411,6 +411,11 @@ export default function DescansoScreen() {
                     ? { fontSize: 14, fontWeight: "600" }
                     : undefined
                 }
+                sleepOverlayAuthorStyle={
+                  collection.label === "Música para dormir"
+                    ? { fontSize: 10 }
+                    : undefined
+                }
                 titleSize={19}
                 showImageCategoryPill={collection.label !== "Música para dormir"}
                 onViewAll={sleepCarouselViewAllHandlers[collection.id]}
