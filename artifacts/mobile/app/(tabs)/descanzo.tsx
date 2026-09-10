@@ -384,7 +384,8 @@ export default function DescansoScreen() {
                 sleepMetadataBelow={collection.label !== "Música para dormir"}
                 overlayMetadataInside={collection.label === "Música para dormir"}
                 categoryGridPresentation
-                cardHeightAdjustment={collection.label === "Música para dormir" ? -15 : 0}
+                cardWidthAdjustment={collection.label === "Música para dormir" ? -3.5 : 0}
+                cardHeightAdjustment={collection.label === "Música para dormir" ? -11 : 0}
                 overlayDurationTopLeft={collection.label === "Música para dormir"}
                 showCategoryTextAboveTitle={collection.label === "Música para dormir"}
                 durationBadgeStyle={

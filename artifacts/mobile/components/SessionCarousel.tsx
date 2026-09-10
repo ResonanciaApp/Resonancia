@@ -26,6 +26,7 @@ import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import {
   SessionCategoryPill,
+  SessionCategoryGlyph,
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
@@ -101,6 +102,7 @@ type SessionCarouselProps = {
   cardWidth?: number;
   cardHeight?: number;
   cardHeightAdjustment?: number;
+  cardWidthAdjustment?: number;
   durationBadgeStyle?: StyleProp<ViewStyle>;
   sleepBelowTitleStyle?: StyleProp<TextStyle>;
   sleepOverlayTitleStyle?: StyleProp<TextStyle>;
@@ -159,6 +161,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardWidth,
   cardHeight,
   cardHeightAdjustment = 0,
+  cardWidthAdjustment = 0,
   durationBadgeStyle,
   sleepBelowTitleStyle,
   sleepOverlayTitleStyle,
@@ -222,13 +225,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     GRID_PAD,
     useSleepMetadataBelow ? 25 : undefined,
   );
-  const requestedCardWidth = useSleepMetadataBelow
+  const requestedCardWidth = (useSleepMetadataBelow
     ? sleepCategoryCardWidth
     : isTallOverlayPresentation
     ? cardWidth ?? sleepCategoryCardWidth
     : isAmbientalCarousel
     ? ambientalCardWidth ?? ambientalCarouselCardWidth
-    : cardWidth ?? getContentCarouselCardWidth(viewportWidth);
+    : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) + cardWidthAdjustment;
   const effectiveAllowOversizedCardWidth =
     isTallOverlayPresentation || allowOversizedCardWidth;
   const cw = effectiveAllowOversizedCardWidth
@@ -492,12 +495,19 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         />
                       ) : null}
                       {showCategoryTextAboveTitle && s.categoryLabel ? (
-                        <Text
-                          style={[styles.sleepOverlayAuthor, styles.sleepOverlayCategoryAdjusted]}
-                          numberOfLines={1}
-                        >
-                          {s.categoryLabel}
-                        </Text>
+                        <View style={styles.sleepOverlayCategoryAdjusted}>
+                          <SessionCategoryGlyph
+                            categoryId={s.categoryId}
+                            size={11}
+                            color="rgba(249,249,249,0.82)"
+                          />
+                          <Text
+                            style={[styles.sleepOverlayAuthor, styles.sleepOverlayCategoryText]}
+                            numberOfLines={1}
+                          >
+                            {s.categoryLabel}
+                          </Text>
+                        </View>
                       ) : null}
                       <Text
                         style={[
@@ -728,10 +738,17 @@ const styles = StyleSheet.create({
   },
   sleepOverlayTitleAfterCategory: {
     marginTop: 4,
-    transform: [{ translateY: 3 }],
+    transform: [{ translateY: -1 }],
   },
   sleepOverlayCategoryAdjusted: {
-    transform: [{ translateY: 6 }],
+    marginTop: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    transform: [{ translateY: -2 }],
+  },
+  sleepOverlayCategoryText: {
+    marginTop: 0,
   },
   sleepOverlayAuthor: {
     marginTop: 4,
