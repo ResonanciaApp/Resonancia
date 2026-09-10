@@ -214,7 +214,7 @@ export function ContentCategoryGrid({
     const cardWidth = Math.floor(
       (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
     );
-    const cardHeight = Math.round(cardWidth * 0.66) - 1;
+    const cardHeight = Math.round(cardWidth * 0.66) - 16;
 
     return (
       <View
