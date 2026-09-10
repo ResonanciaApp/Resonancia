@@ -534,7 +534,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.sleepOverlayDurationInline,
                             styles.sleepInlineDurationBorder,
                           ]}
-                          textStyle={styles.durText}
+                          textStyle={[styles.durText, styles.sleepInlineDurationText]}
                         />
                       ) : null}
                       {effectiveShowDurationBadge && !effectiveOverlayDurationTopLeft ? (
@@ -846,6 +846,10 @@ const styles = StyleSheet.create({
   sleepInlineDurationBorder: {
     borderWidth: 1,
     borderColor: "rgba(249,249,249,0.08)",
+    paddingVertical: 2.5,
+  },
+  sleepInlineDurationText: {
+    fontSize: 10,
   },
   sleepOverlayDurationTopLeft: {
     top: 15,
