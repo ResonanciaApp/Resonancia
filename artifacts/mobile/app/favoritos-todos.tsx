@@ -16,7 +16,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { VideoCard } from "@/components/VideoCard";
@@ -94,6 +93,32 @@ function FavoriteSessionsCarousel({
   onPress: (session: Session) => void;
 }) {
   const ambiental = tabId === "ambientales";
+  if (!ambiental) {
+    return (
+      <SessionCarousel
+        title={title}
+        sessions={sessions}
+        isPremium={isPremium}
+        onPress={onPress}
+        style={styles.favoriteSessionCarousel}
+        presentation="editorial"
+        disableAmbientalVariant
+        sleepMetadataBelow
+        categoryGridPresentation
+        whiteMetadataGlass
+        showDurationClock
+        sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+        trailingPeek={20}
+        cardBorderRadius={16}
+        titleSize={19}
+        hideCategoryAboveTitle
+        showSleepCategoryPillWithInlineDuration
+        ambientalTitleOnly
+        sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+        overlayGradientLocations={[0.18, 0.48, 1]}
+      />
+    );
+  }
   return (
     <SessionCarousel
       title={title}
@@ -101,16 +126,14 @@ function FavoriteSessionsCarousel({
       isPremium={isPremium}
       onPress={onPress}
       presentation="editorial"
-      sleepMetadataBelow={!ambiental}
-      showSleepCategoryPill={false}
       trailingPeek={16}
-      ambientalTitleOnly={ambiental}
-      ambientalImageLift={ambiental ? 9 : undefined}
-      ambientalImageFillTop={ambiental}
-      ambientalCardBackground={ambiental ? "rgba(0,0,0,0.28)" : undefined}
-      ambientalCardBorderColor={ambiental ? "rgba(249,249,249,0.2)" : undefined}
-      ambientalCardBorderWidth={ambiental ? 1 : undefined}
-      ambientalCardBorderRadius={ambiental ? 28 : undefined}
+      ambientalTitleOnly
+      ambientalImageLift={9}
+      ambientalImageFillTop
+      ambientalCardBackground="rgba(0,0,0,0.28)"
+      ambientalCardBorderColor="rgba(249,249,249,0.2)"
+      ambientalCardBorderWidth={1}
+      ambientalCardBorderRadius={28}
     />
   );
 }
@@ -150,7 +173,7 @@ export default function FavoritosTodosScreen() {
   const goBack = useBackOverride();
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { favorites, playSession, currentSession } = usePlayer();
+  const { favorites, playSession } = usePlayer();
   const { isPremium } = usePremium();
   const { favFolders, savedEditorialPlaylistIds } = useFoldersPlaylists();
   const { version: catalogVersion } = useCatalog();
@@ -430,23 +453,30 @@ export default function FavoritosTodosScreen() {
               }}
             />
           ) : (
-            <View style={styles.grid}>
-              {tabSessions.map((session) => (
-                <SessionCard
-                  key={session.id}
-                  session={session}
-                  width={CARD_W}
-                  style={{ marginRight: 0 }}
-                  editorialPresentation
-                  sleepEditorialContent
-                  showSleepCategoryPill={false}
-                  showAuthorAvatar={false}
-                  overridePress={() => openSession(session)}
-                  playing={currentSession?.id === session.id}
-                  cardVariant={session.categoryId === "ambientales" ? "ambiental" : undefined}
-                />
-              ))}
-            </View>
+            <SessionCarousel
+              title=""
+              sessions={tabSessions}
+              isPremium={isPremium}
+              onPress={openSession}
+              style={styles.favoriteSessionGrid}
+              showHeader={false}
+              gridLayout
+              gridScrollEnabled={false}
+              eagerRender
+              presentation="editorial"
+              disableAmbientalVariant
+              sleepMetadataBelow
+              categoryGridPresentation
+              whiteMetadataGlass
+              showDurationClock
+              sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+              cardBorderRadius={16}
+              hideCategoryAboveTitle
+              showSleepCategoryPillWithInlineDuration
+              ambientalTitleOnly
+              sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+              overlayGradientLocations={[0.18, 0.48, 1]}
+            />
           )}
         </ScrollView>
       </View>
@@ -564,6 +594,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
+  },
+  favoriteSessionCarousel: {
+    marginBottom: 53,
+    paddingHorizontal: H_PAD,
+  },
+  favoriteSessionGrid: {
+    paddingHorizontal: H_PAD,
+    marginBottom: 0,
   },
   allCollections: {
     paddingTop: 2,
