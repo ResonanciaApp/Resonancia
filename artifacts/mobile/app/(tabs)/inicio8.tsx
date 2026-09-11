@@ -123,7 +123,7 @@ const INICIO2_SQUARE_CAROUSEL_CARD_W = Math.floor(
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
-const HERO_HEIGHT = 270;
+const HERO_HEIGHT = 220;
 const INICIO2_HERO_HEIGHT = Math.round(Math.min(465, Math.max(401, width * 0.92 + 75)) * 1.15 * 0.95);
 const INICIO2_SLIDES = [
   {
@@ -2568,8 +2568,7 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            cardWidth={INICIO2_SQUARE_CAROUSEL_CARD_W}
-            allowOversizedCardWidth
+            trailingPeek={20}
             squareTitleOnlyBelow
             titleSize={19}
             titleSpacing={17}
