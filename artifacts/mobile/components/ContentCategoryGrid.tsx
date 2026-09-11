@@ -196,7 +196,7 @@ export function ContentCategoryGrid({
     : isIndigoThemeId(activeSceneId) && isDiscoverGrid
       ? "rgba(181,211,255,0.057)"
       : activeSceneId === "indigo2" && isDiscoverGrid
-        ? "rgba(191,207,255,0.096)"
+        ? "rgba(0,0,0,0.28)"
       : isIndigoThemeId(activeSceneId)
         ? "rgba(255,255,255,0.04)"
         : CARD_BG;
@@ -238,7 +238,7 @@ export function ContentCategoryGrid({
                   },
                 ]}
               >
-                  <View style={[styles.discoverCardImage, { height: cardHeight }]}>
+                  <View style={[styles.discoverCardImage, { height: cardHeight, backgroundColor: catBlockBg }]}>
                     <View pointerEvents="none" style={styles.discoverCardContent}>
                       <View style={styles.discoverCardIcon}>
                         {renderCategoryIcon(category, false, true, 2)}
