@@ -1027,7 +1027,7 @@ const styles = StyleSheet.create({
     width: 31,
     height: 31,
     borderRadius: 15.5,
-    backgroundColor: "rgba(255,255,255,0.3)",
+    backgroundColor: "rgba(0,0,0,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1035,7 +1035,7 @@ const styles = StyleSheet.create({
     width: 31,
     height: 31,
     borderRadius: 15.5,
-    backgroundColor: "rgba(255,255,255,0.3)",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
