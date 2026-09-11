@@ -1099,7 +1099,7 @@ const styles = StyleSheet.create({
   ambientalFooterTitle: {
     height: undefined,
     fontSize: 14,
-    fontWeight: "550" as TextStyle["fontWeight"],
+    fontWeight: "800",
     lineHeight: 18,
     textAlign: "center",
   },
