@@ -16,6 +16,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   showClock?: boolean;
+  whiteGlass?: boolean;
 };
 
 /**
@@ -23,12 +24,19 @@ type Props = {
  * The tint layer stays exact while BlurView only supplies the frosted image
  * behind it, so the badge never inherits the old burgundy color.
  */
-export function SessionDurationBadge({ label, style, textStyle, showClock = false }: Props) {
+export function SessionDurationBadge({
+  label,
+  style,
+  textStyle,
+  showClock = false,
+  whiteGlass = false,
+}: Props) {
   const displayLabel = label.replace(/\bmin\b/gi, "min");
 
   return (
     <View pointerEvents="none" style={[styles.root, style, styles.rounded]}>
-      <SessionBadgeGlass />
+      <SessionBadgeGlass showBlackTint={!whiteGlass} />
+      {whiteGlass ? <View style={[StyleSheet.absoluteFill, styles.whiteTint]} /> : null}
       <View style={styles.content}>
         {showClock && <MaterialCommunityIcons name="clock" size={12} color="#F9F9F9" />}
         <Text style={[styles.text, textStyle]}>{displayLabel}</Text>
@@ -70,6 +78,9 @@ const styles = StyleSheet.create({
   },
   blackTint: {
     backgroundColor: "rgba(0,0,0,0.20)",
+  },
+  whiteTint: {
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   text: {
     fontFamily: "Manrope",

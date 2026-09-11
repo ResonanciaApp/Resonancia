@@ -400,12 +400,16 @@ export default function DescansoScreen() {
                 sleepMetadataBelow={collection.id === "musica-para-dormir"}
                 categoryGridPresentation={collection.id === "musica-para-dormir"}
                 showCategoryPillTopLeft={collection.id === "musica-para-dormir"}
+                whiteMetadataGlass={collection.id === "musica-para-dormir"}
                 sleepBelowMetadataStyle={
                   collection.id === "musica-para-dormir"
                     ? { transform: [{ translateX: 3 }] }
                     : undefined
                 }
-                trailingPeek={collection.id === "musica-para-dormir" ? 35 : undefined}
+                trailingPeek={collection.id === "musica-para-dormir" ? 55 : undefined}
+                cardHeightAdjustment={
+                  collection.id === "musica-para-dormir" ? 25 : 0
+                }
                 cardBorderRadius={
                   collection.id === "musica-para-dormir" ? 21 : undefined
                 }

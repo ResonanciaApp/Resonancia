@@ -254,6 +254,8 @@ type SessionCarouselProps = {
   categoryGridPresentation?: boolean;
   /** Shows the session category as a glass pill in the image's upper-left corner. */
   showCategoryPillTopLeft?: boolean;
+  /** Uses the same white glass surface as Ambiental favorite buttons. */
+  whiteMetadataGlass?: boolean;
   soundPreview?: {
     activeId: string | null;
     isPlaying: boolean;
@@ -331,6 +333,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
   showCategoryPillTopLeft = false,
+  whiteMetadataGlass = false,
   soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -714,6 +717,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       (!effectiveShowMetaBelow || durationInsideWithMeta) && (
                       <SessionDurationBadge
                         label={s.durationLabel}
+                        whiteGlass={whiteMetadataGlass}
                         style={[
                           styles.durBadge,
                          categoryGridPresentation && styles.categoryDurationBadge,
@@ -864,6 +868,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     categoryId={s.categoryId}
                     leftInset={12}
                     topInset={12}
+                    whiteGlass={whiteMetadataGlass}
                   />
                 ) : null}
                 {locked && (

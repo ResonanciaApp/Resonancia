@@ -71,6 +71,7 @@ export function SessionCategoryPill({
   leftInset,
   topInset,
   bottomInset,
+  whiteGlass = false,
   style,
   textStyle,
 }: {
@@ -86,6 +87,7 @@ export function SessionCategoryPill({
   leftInset?: number;
   topInset?: number;
   bottomInset?: number;
+  whiteGlass?: boolean;
   style?: import("react-native").StyleProp<import("react-native").ViewStyle>;
   textStyle?: import("react-native").StyleProp<import("react-native").TextStyle>;
 }) {
@@ -108,7 +110,12 @@ export function SessionCategoryPill({
         style,
       ]}
     >
-      {!plain && !outlineColor && <SessionBadgeGlass />}
+      {!plain && !outlineColor && (
+        <>
+          <SessionBadgeGlass showBlackTint={!whiteGlass} />
+          {whiteGlass ? <View style={[StyleSheet.absoluteFill, styles.whiteGlassTint]} /> : null}
+        </>
+      )}
       <Text
         style={[
           styles.categoryLabel,
@@ -316,6 +323,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 9,
     paddingRight: 9,
+  },
+  whiteGlassTint: {
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   categoryPillWithPlainIcon: {
     gap: 5,
