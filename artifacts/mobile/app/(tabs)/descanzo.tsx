@@ -396,21 +396,18 @@ export default function DescansoScreen() {
                 onPress={handleSessionTap}
                 style={sleepCarouselStyles[index]}
                 presentation="editorial"
-                disableAmbientalVariant={collection.id === "musica-para-dormir"}
-                sleepMetadataBelow={collection.id === "musica-para-dormir"}
-                categoryGridPresentation={collection.id === "musica-para-dormir"}
-                showCategoryPillTopLeft={collection.id === "musica-para-dormir"}
-                whiteMetadataGlass={collection.id === "musica-para-dormir"}
-                showDurationClock={collection.id === "musica-para-dormir"}
-                sleepBelowMetadataStyle={
-                  collection.id === "musica-para-dormir"
-                    ? { marginTop: 3, transform: [{ translateX: 3 }] }
-                    : undefined
-                }
-                trailingPeek={collection.id === "musica-para-dormir" ? 20 : undefined}
-                cardBorderRadius={
-                  collection.id === "musica-para-dormir" ? 16 : undefined
-                }
+                disableAmbientalVariant
+                sleepMetadataBelow
+                categoryGridPresentation
+                showCategoryPillTopLeft
+                whiteMetadataGlass
+                showDurationClock
+                sleepBelowMetadataStyle={{
+                  marginTop: 3,
+                  transform: [{ translateX: 3 }],
+                }}
+                trailingPeek={20}
+                cardBorderRadius={16}
                 titleSize={19}
                 hideCategoryAboveTitle
                 showSleepCategoryPillWithInlineDuration
