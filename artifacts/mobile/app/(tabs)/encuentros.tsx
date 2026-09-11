@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -18,7 +18,7 @@ import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
-const H_PAD = 20;
+const H_PAD = 14;
 
 export default function ComunidadScreen() {
   const insets = useSafeAreaInsets();
@@ -28,6 +28,9 @@ export default function ComunidadScreen() {
 
   const feedOpacity = useRef(new Animated.Value(1)).current;
   const previousRefreshing = useRef(false);
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyHeaderActiveRef = useRef(false);
+  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
   useEffect(() => {
     if (previousRefreshing.current && !refreshing) {
       Animated.sequence([
@@ -38,9 +41,27 @@ export default function ComunidadScreen() {
     previousRefreshing.current = refreshing;
   }, [feedOpacity, refreshing]);
 
+  const handleScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y >= 8;
+    if (active === stickyHeaderActiveRef.current) return;
+    stickyHeaderActiveRef.current = active;
+    setStickyHeaderActive(active);
+    stickyHeaderOpacity.stopAnimation();
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyHeaderOpacity]);
+
   const header = (
     <View>
-      <EncuentrosResonadoresSection />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Comunidad</Text>
+      </View>
+      <EncuentrosResonadoresSection titleMarginTop={5} />
       <ResonadoresSection marginTop={36} marginBottom={32} />
       <View style={styles.feedSection}>
         <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
@@ -84,9 +105,35 @@ export default function ComunidadScreen() {
       <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Comunidad</Text>
-      </View>
+      <Animated.View
+        pointerEvents={stickyHeaderActive ? "auto" : "none"}
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: Math.max(insets.top, 40) + 2,
+            backgroundColor: theme.gradient[0] as string,
+            opacity: stickyHeaderOpacity,
+          },
+        ]}
+      >
+        <View style={styles.stickyHeaderRow}>
+          <Animated.Text
+            style={[
+              styles.stickyHeaderTitle,
+              {
+                transform: [{
+                  translateY: stickyHeaderOpacity.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                }],
+              },
+            ]}
+          >
+            Comunidad
+          </Animated.Text>
+        </View>
+      </Animated.View>
 
       <Animated.FlatList
         data={loading || events.length === 0 ? [] : events}
@@ -97,6 +144,8 @@ export default function ComunidadScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}
         style={{ opacity: feedOpacity }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -129,6 +178,29 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     marginTop: -9,
     transform: [{ translateX: -2 }, { translateY: -2 }],
+  },
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+  },
+  stickyHeaderRow: {
+    minHeight: 54,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: H_PAD,
+    paddingTop: 7,
+    paddingBottom: 10,
+  },
+  stickyHeaderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#F4F4F4",
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
   feedSection: {
     marginTop: 36,

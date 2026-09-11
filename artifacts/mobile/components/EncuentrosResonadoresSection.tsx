@@ -13,7 +13,7 @@ import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet"
 import { EncuentroCard } from "@/components/EncuentroCard";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
 
-const HORIZONTAL_PAD = 20;
+const HORIZONTAL_PAD = 14;
 const CARD_GAP = 12;
 
 type Props = {
