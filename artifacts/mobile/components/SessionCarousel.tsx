@@ -561,7 +561,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           <MaterialCommunityIcons
                             name={isFavorite(s.id) ? "heart" : "heart-outline"}
                             size={19}
-                            color="#F9F9F9"
+                            color={
+                              isFavorite(s.id)
+                                ? "rgba(249,249,249,0.9)"
+                                : "rgba(249,249,249,0.7)"
+                            }
                           />
                         </Pressable>
                       </>
