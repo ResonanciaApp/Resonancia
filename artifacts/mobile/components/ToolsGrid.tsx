@@ -15,8 +15,6 @@ import {
 import { useDrawer } from "@/context/DrawerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useColors } from "@/hooks/useColors";
-import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 
 const PILLS_PAD = 19;
 const PILLS_GAP = 8;
@@ -114,17 +112,10 @@ export function ToolsGrid({
   onOpenMoodPicker?: () => void;
 }) {
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const { openOverlay } = useDrawer();
   const { openMixer } = useMixerPanel();
 
-  const pillBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.14)"
-    : theme.id === "indigo2"
-      ? "rgba(0,0,0,0.28)"
-      : isIndigoThemeId(theme.id)
-        ? "rgba(181,211,255,0.14)"
-        : "rgba(181,211,255,0.14)";
+  const pillBackground = "rgba(249,249,249,0.10)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
       case "mood-register":
