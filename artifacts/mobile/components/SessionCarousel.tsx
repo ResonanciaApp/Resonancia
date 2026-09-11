@@ -505,11 +505,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.previewButton,
                             {
                               left: 12,
-                              top:
-                                (ch - ambientalImageSize) / 2 -
-                                ambientalImageLift +
-                                ambientalImageSize +
-                                -26,
+                              top: 12,
                             },
                           ]}
                         >
@@ -536,11 +532,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.previewButton,
                             {
                               right: 12,
-                              top:
-                                (ch - ambientalImageSize) / 2 -
-                                ambientalImageLift +
-                                ambientalImageSize +
-                                -26,
+                              top: 12,
                             },
                           ]}
                         >
