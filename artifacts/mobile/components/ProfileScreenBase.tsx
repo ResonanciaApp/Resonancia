@@ -62,6 +62,7 @@ import { getListenNowButtonColors } from "@/components/GoldGradient";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
+import { MessageDeck } from "@/components/MessageDeck";
 import {
   BibliotecaScreen,
   getLibraryTabSurface,
@@ -1250,6 +1251,13 @@ export function ProfileScreenBase({
           />
         </View>
 
+        <View style={styles.wisdomSection}>
+          <Text style={[styles.wisdomSectionTitle, { color: colors.foreground }]}>
+            Mensaje de los sabios
+          </Text>
+          <MessageDeck />
+        </View>
+
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
@@ -2060,6 +2068,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 19,
     gap: 0,
+  },
+  wisdomSection: {
+    marginBottom: 28,
+  },
+  wisdomSectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    marginBottom: 17,
   },
   profileIdentityRow: {
     flexDirection: "row",

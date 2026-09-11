@@ -50,7 +50,6 @@ import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
-import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
@@ -2462,28 +2461,6 @@ export default function HomeScreen2({
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
-        {isInicio2 && (
-          <View
-            style={{
-              marginTop: 21,
-              marginBottom: INICIO2_SECTION_GAP,
-            }}
-          >
-            <Text
-              style={[
-                styles.sectionTitle,
-                {
-                  fontSize: 19,
-                  marginBottom: 17,
-                  paddingHorizontal: GRID_PAD,
-                },
-              ]}
-            >
-              Mensaje de los sabios
-            </Text>
-            <MessageDeck />
-          </View>
-        )}
         {isInicio2 && (
           <View
             style={[

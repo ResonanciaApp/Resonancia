@@ -17,7 +17,7 @@ const CARD_H = 185;
 function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
   const s = 14;
   const off = 12;
-  const borderColor = "#3E6B48";
+  const borderColor = "rgba(255,255,255,0.18)";
   const bw = 0.8;
 
   const pos: Record<string, object> = {
@@ -38,7 +38,7 @@ function Corner({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
 function CardBack() {
   return (
     <LinearGradient
-      colors={["#0B1A0E", "#07100A", "#0B1A0E"]}
+      colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
@@ -59,13 +59,13 @@ function CardBack() {
 function CardFront({ message }: { message: string }) {
   return (
     <LinearGradient
-      colors={["#0F1E12", "#0A1510", "#0F1E12"]}
+      colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.cardFace}
     >
-      <View style={[styles.outerBorder, { borderWidth: 0.8, borderColor: "#4A7A55" }]} pointerEvents="none" />
-      <View style={[styles.innerBorder, { borderWidth: 0.8, borderColor: "rgba(74,122,85,0.3)" }]} pointerEvents="none" />
+      <View style={[styles.outerBorder, { borderWidth: 0.8, borderColor: "rgba(255,255,255,0.18)" }]} pointerEvents="none" />
+      <View style={[styles.innerBorder, { borderWidth: 0.8, borderColor: "rgba(255,255,255,0.10)" }]} pointerEvents="none" />
       <Corner position="tl" />
       <Corner position="tr" />
       <Corner position="bl" />
@@ -140,10 +140,10 @@ export function MessageDeck() {
           pointerEvents="none"
         >
           <LinearGradient
-            colors={["#091510", "#060E08"]}
+            colors={["rgba(0,0,0,0.20)", "rgba(0,0,0,0.20)"]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "#1A3520", borderRadius: 10 }]} />
+          <View style={[StyleSheet.absoluteFill, { borderWidth: 0.8, borderColor: "rgba(255,255,255,0.08)", borderRadius: 10 }]} />
         </View>
       ))}
 
@@ -207,10 +207,10 @@ const styles = StyleSheet.create({
   },
   corner: { position: "absolute" },
   backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
-  thinRule: { width: 56, height: 0.8, backgroundColor: "#4A7A55", opacity: 0.7 },
+  thinRule: { width: 56, height: 0.8, backgroundColor: "rgba(255,255,255,0.35)", opacity: 0.7 },
   backTitle: {
     fontFamily: "Manrope",
-    color: "#A8C8B0",
+    color: "#F9F9F9",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 4,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   frontTopLabel: {
     fontFamily: "Manrope",
-    color: "#5A8A65",
+    color: "rgba(255,255,255,0.65)",
     fontSize: 9,
     letterSpacing: 2,
     textAlign: "center",
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   frontMessage: {
-    color: "#D8EDE0",
+    color: "#F9F9F9",
     fontSize: 17,
     lineHeight: 26,
     textAlign: "center",
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   frontDate: {
     fontFamily: "Manrope",
-    color: "#3A6A45",
+    color: "rgba(255,255,255,0.55)",
     fontSize: 8,
     letterSpacing: 1.2,
     textAlign: "center",
@@ -254,25 +254,28 @@ const styles = StyleSheet.create({
   },
   hintText: {
     fontFamily: "Manrope",
-    color: "#4A7055",
+    color: "rgba(255,255,255,0.68)",
     fontSize: 11,
     letterSpacing: 0.8,
     textAlign: "center",
     fontStyle: "italic",
   },
   newBtn: {
-    paddingHorizontal: 22,
-    paddingVertical: 9,
-    borderRadius: 6,
-    borderWidth: 0.8,
-    borderColor: "#4A7A55",
-    backgroundColor: "rgba(74,122,85,0.10)",
+    height: 52,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   newBtnText: {
     fontFamily: "Manrope",
-    color: "#7AAA85",
-    fontSize: 11,
-    letterSpacing: 1.5,
+    color: "#F9F9F9",
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.1,
     textAlign: "center",
   },
 });
