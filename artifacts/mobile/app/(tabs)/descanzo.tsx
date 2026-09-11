@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
   },
   stickySearchButton: {
     position: "absolute",
-    top: 7,
+    top: 5,
     right: H_PAD,
   },
   sleepTabsHeader: {
