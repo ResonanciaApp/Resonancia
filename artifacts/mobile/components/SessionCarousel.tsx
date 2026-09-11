@@ -28,7 +28,6 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -79,7 +78,7 @@ function PreviewProgressRing({
   size: number;
   progress: SharedValue<number>;
 }) {
-  const strokeWidth = 2.5;
+  const strokeWidth = 3.5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const animatedProps = useAnimatedProps(() => ({
@@ -94,7 +93,7 @@ function PreviewProgressRing({
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="rgba(249,249,249,0.9)"
+        stroke="rgba(249,249,249,0.5)"
         strokeWidth={strokeWidth}
         strokeDasharray={`${circumference} ${circumference}`}
         strokeLinecap="round"
@@ -303,7 +302,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { openForSession } = useAmbientalDuration();
-  const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
@@ -525,8 +523,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: 11,
-                              top: 12,
+                              left: (cw - 31) / 2,
+                              top: ch - 91,
                             },
                           ]}
                         >
@@ -535,33 +533,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             size={19}
                             color="#F9F9F9"
                             style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
-                          />
-                        </Pressable>
-                        <Pressable
-                          onPress={(event) => {
-                            event.stopPropagation();
-                            toggleFavorite(s.id);
-                          }}
-                          hitSlop={8}
-                          accessibilityRole="button"
-                          accessibilityLabel={
-                            isFavorite(s.id)
-                              ? `Quitar ${s.title} de favoritos`
-                              : `Agregar ${s.title} a favoritos`
-                          }
-                          style={[
-                            styles.previewButton,
-                            styles.favoriteButton,
-                            {
-                              right: 12,
-                              top: 12,
-                            },
-                          ]}
-                        >
-                          <MaterialCommunityIcons
-                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
-                            size={19}
-                            color="#F9F9F9"
                           />
                         </Pressable>
                       </>
@@ -946,12 +917,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  favoriteButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "transparent",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
