@@ -1257,6 +1257,14 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
+              <View style={styles.profileProgressIntro}>
+                <Text style={[styles.profileProgressIntroTitle, { color: colors.foreground }]}>
+                  Tu progreso en Resonancia
+                </Text>
+                <Text style={[styles.profileProgressIntroDescription, { color: profileDescriptionColor }]}>
+                  Medita todos los días y transforma tu vida
+                </Text>
+              </View>
               <View style={styles.profileProgressCard}>
                 <SonicStreakDays
                   activeFlags={weekFlags}
@@ -1300,9 +1308,9 @@ export function ProfileScreenBase({
               </View>
             </View>
 
-            <HistorialCalendar embedded backgroundColor={profileSectionBackground} />
+            <HistorialCalendar embedded outlined backgroundColor="transparent" />
             <View style={{ marginTop: 16, gap: 12 }}>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: profileSectionBackground }}>
+              <View style={styles.outlinedProfileSection}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
                   <Pressable onPress={() => router.push("/descargas" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
@@ -1311,7 +1319,7 @@ export function ProfileScreenBase({
                   {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
                 </View> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
               </View>
-              <View style={{ borderRadius: 18, padding: 16, backgroundColor: profileSectionBackground }}>
+              <View style={styles.outlinedProfileSection}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
                   <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
@@ -2235,6 +2243,20 @@ const styles = StyleSheet.create({
   profileProgressSection: {
     marginBottom: 19,
   },
+  profileProgressIntro: {
+    marginBottom: 12,
+  },
+  profileProgressIntroTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  profileProgressIntroDescription: {
+    marginTop: 4,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+  },
   profileProgressCard: {
     borderRadius: 14,
     borderWidth: 2,
@@ -2242,6 +2264,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
+  },
+  outlinedProfileSection: {
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.14)",
+    backgroundColor: "transparent",
+    padding: 16,
   },
   profileProgressHeader: {
     flexDirection: "row",

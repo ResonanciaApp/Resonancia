@@ -219,10 +219,12 @@ export function HistorialCalendar({
   containerPadding = 0,
   embedded = false,
   backgroundColor,
+  outlined = false,
 }: {
   containerPadding?: number;
   embedded?: boolean;
   backgroundColor?: string;
+  outlined?: boolean;
 }) {
   const colors = useColors();
   const { activeSceneId } = useSceneTheme();
@@ -320,7 +322,14 @@ export function HistorialCalendar({
         </View>
       )}
 
-      <View style={[styles.calendarCard, { backgroundColor: backgroundColor ?? calendarBackground }, p ? { marginHorizontal: p } : undefined]}>
+      <View
+        style={[
+          styles.calendarCard,
+          { backgroundColor: backgroundColor ?? calendarBackground },
+          outlined && styles.outlinedCalendarCard,
+          p ? { marginHorizontal: p } : undefined,
+        ]}
+      >
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
@@ -480,6 +489,11 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingVertical: 16,
     paddingHorizontal: 14,
+  },
+  outlinedCalendarCard: {
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.14)",
   },
   calendarNav: {
     flexDirection: "row",
