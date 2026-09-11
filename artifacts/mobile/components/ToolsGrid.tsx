@@ -115,7 +115,7 @@ export function ToolsGrid({
   const { openOverlay } = useDrawer();
   const { openMixer } = useMixerPanel();
 
-  const pillBackground = "rgba(249,249,249,0.10)";
+  const pillBackground = "rgba(0,0,0,0.28)";
   const handlePress = useCallback((id: ToolId) => {
     switch (id) {
       case "mood-register":

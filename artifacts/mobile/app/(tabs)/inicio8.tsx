@@ -1,6 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
+import { useStreak } from "@/hooks/useStreak";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -311,6 +312,17 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
+
+function Inicio2LotusStreak() {
+  const { currentStreak } = useStreak();
+
+  return (
+    <View style={styles.inicio2HeroLotusContent}>
+      <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+      <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
+    </View>
+  );
+}
 
 function Inicio2HeroControl({
   active,
@@ -860,9 +872,7 @@ function Inicio2HeroSlider({
           testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <View style={styles.inicio2HeroLotusContent}>
-              <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
-            </View>
+            <Inicio2LotusStreak />
           </Animated.View>
         </Pressable>
       </RAnimated.View>
@@ -1192,9 +1202,7 @@ function Inicio2HeroSliderRebuilt({
           testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <View style={styles.inicio2HeroLotusContent}>
-              <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
-            </View>
+            <Inicio2LotusStreak />
           </Animated.View>
         </Pressable>
       </RAnimated.View>
@@ -1382,9 +1390,7 @@ function Inicio2HeroStatic({
           testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <View style={styles.inicio2HeroLotusContent}>
-              <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
-            </View>
+            <Inicio2LotusStreak />
           </Animated.View>
         </Pressable>
       </View>
@@ -2328,9 +2334,7 @@ export default function HomeScreen2({
               testID="inicio-sticky-open-progress"
             >
               <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <View style={styles.inicio2HeroLotusContent}>
-                  <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
-                </View>
+                <Inicio2LotusStreak />
               </Animated.View>
             </Pressable>
           </View>
@@ -2604,6 +2608,7 @@ export default function HomeScreen2({
             trailingPeek={20}
             squareTitleAuthorBelow
             categoryGridPresentation
+            whiteMetadataGlass
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             titleSize={19}
             titleSpacing={17}
@@ -3065,8 +3070,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inicio2HeroLotusContent: {
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
+  },
+  inicio2HeroLotusCount: {
+    position: "absolute",
+    right: 4,
+    bottom: 2,
+    minWidth: 11,
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: "800",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   inicio2HeroEmotionWidget: {
     width: 72,
