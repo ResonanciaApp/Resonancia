@@ -65,6 +65,7 @@ export function SessionCategoryPill({
   textOnly = false,
   tinted = false,
   plainIcon = false,
+  solid = false,
   showIconGlyph = true,
   iconSize = 19,
   outlineColor,
@@ -80,6 +81,7 @@ export function SessionCategoryPill({
   textOnly?: boolean;
   tinted?: boolean;
   plainIcon?: boolean;
+  solid?: boolean;
   showIconGlyph?: boolean;
   iconSize?: number;
   outlineColor?: string;
@@ -99,16 +101,26 @@ export function SessionCategoryPill({
         styles.categoryPill,
         inline && styles.categoryPillInline,
         styles.categoryPillTextOnly,
+        solid && styles.categoryPillSolid,
         plain && styles.categoryPillPlain,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
+        solid ? { backgroundColor: category.color } : null,
         leftInset !== undefined ? { left: leftInset } : null,
         topInset !== undefined ? { top: topInset } : null,
         bottomInset !== undefined ? { top: "auto", bottom: bottomInset } : null,
         style,
       ]}
     >
-      {!plain && !outlineColor && <SessionBadgeGlass />}
+      {!plain && !outlineColor && !solid && <SessionBadgeGlass />}
+      {solid && (
+        <SessionCategoryIcon
+          categoryId={categoryId}
+          size={iconSize}
+          showGlyph={showIconGlyph}
+          backgroundColor="transparent"
+        />
+      )}
       <Text
         style={[
           styles.categoryLabel,
@@ -318,6 +330,10 @@ const styles = StyleSheet.create({
     paddingRight: 9,
   },
   categoryPillWithPlainIcon: {
+    gap: 5,
+    paddingLeft: 7,
+  },
+  categoryPillSolid: {
     gap: 5,
     paddingLeft: 7,
   },

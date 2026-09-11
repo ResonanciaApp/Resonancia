@@ -100,7 +100,9 @@ export function DailyRecommendationsSection({
             <SessionRow
               session={session}
               imageSize={94.3}
-              showCategoryText
+              showCategoryPill
+              categoryPillPlain={false}
+              categoryPillSolid
               showDurationBadge
               showChevron
               authorColor={themeAccent}
