@@ -200,6 +200,10 @@ type SessionCarouselProps = {
   durationLift?: number;
   showHeader?: boolean;
   cardVariant?: "ambiental";
+  /** Prevents Ambiental session metadata from changing the requested card presentation. */
+  disableAmbientalVariant?: boolean;
+  /** Optional radius override for every card in the carousel. */
+  cardBorderRadius?: number;
   /** Explicit width for Ambiental cards; ignored by sleep-category presentation. */
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
@@ -292,6 +296,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   durationLift = 0,
   showHeader = true,
   cardVariant,
+  disableAmbientalVariant = false,
+  cardBorderRadius,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardBorderColor,
@@ -339,7 +345,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const useOverlayMetadata =
     (isTallOverlayPresentation && !useSleepMetadataBelow) || overlayMetadataInside;
   const isAmbientalCarousel =
-    forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales");
+    !disableAmbientalVariant &&
+    (forceAmbientalVariant || sessions.every((session) => session.categoryId === "ambientales"));
   const ambientalCarouselCardWidth = Math.floor(
     (viewportWidth - GRID_PAD - CONTENT_CAROUSEL_GAP * 2) / 2.9,
   );
@@ -479,7 +486,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           const locked = !!s.isPremium && !isPremium;
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
-          const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
+          const isAmbiental =
+            !disableAmbientalVariant &&
+            (forceAmbientalVariant || s.categoryId === "ambientales");
           const isPreviewActive = soundPreview?.activeId === s.id;
           const showAmbientalTitleOnly = ambientalTitleOnly && isAmbiental;
            const hasSecondaryMeta =
@@ -509,6 +518,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 style={[
                   styles.thumbWrap,
                   thumbStyle,
+                  cardBorderRadius !== undefined && {
+                    borderRadius: cardBorderRadius,
+                  },
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
                     borderWidth: ambientalCardBorderWidth ?? 1,
