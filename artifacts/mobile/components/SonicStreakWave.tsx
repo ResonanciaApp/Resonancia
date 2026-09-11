@@ -138,7 +138,7 @@ export function SonicStreakDays({
                   ) : null}
                   <Circle cx={circleCenter} cy={circleCenter} r={circleRadius} stroke={borderStroke} strokeWidth={activeBorderWidth} fill="#F9F9F9" />
                 </Svg>
-                <Feather name="check" size={18} color="#060A0F" />
+                <Feather name="check" size={21} color="#060A0F" />
               </View>
             ) : isToday ? (
               <View style={[styles.circleGradientBorder, { width: circleSize, height: circleSize }]}>

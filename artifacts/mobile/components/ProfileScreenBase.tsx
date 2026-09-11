@@ -137,20 +137,6 @@ const MEMBERSHIP_PLANS = [
 ] as const;
 
 
-function brightenHexColor(color: string, amount = 0.5): string {
-  const hex = color.replace("#", "");
-  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return color;
-  const value = Number.parseInt(hex, 16);
-  const brighten = (channel: number) =>
-    Math.round(channel + (255 - channel) * amount);
-  const red = brighten((value >> 16) & 0xff);
-  const green = brighten((value >> 8) & 0xff);
-  const blue = brighten(value & 0xff);
-  return `#${[red, green, blue]
-    .map((channel) => channel.toString(16).padStart(2, "0"))
-    .join("")}`;
-}
-
 function ProfileMembershipModules({
   foregroundColor,
 }: {
@@ -1269,9 +1255,7 @@ export function ProfileScreenBase({
                   todayIndex={todayIndex}
                   edgeAligned
                   daysMarginTop={0}
-                  activeBorderGradient={activeTheme.gradient.map((color) =>
-                    brightenHexColor(color, 0.55),
-                  )}
+                  activeBorderColor="#BE9650"
                 />
                 <View style={styles.streakStatsDivider} />
                 <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
@@ -1307,7 +1291,7 @@ export function ProfileScreenBase({
             </View>
 
             {false && <HistorialCalendar embedded outlined backgroundColor="transparent" />}
-            <View style={{ marginTop: 16, gap: 12 }}>
+            <View style={{ marginTop: 12, gap: 12 }}>
               <Pressable
                 onPress={() => router.push("/notificaciones-practica" as never)}
                 style={({ pressed }) => [
@@ -2309,7 +2293,7 @@ const styles = StyleSheet.create({
 
   // Progreso semanal compacto
   profileProgressSection: {
-    marginBottom: 19,
+    marginBottom: 0,
   },
   profileProgressIntro: {
     paddingTop: 10,
