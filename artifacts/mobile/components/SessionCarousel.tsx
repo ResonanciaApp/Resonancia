@@ -626,9 +626,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             size={18}
                             color={
                               isFavorite(s.id)
-                                ? isPreviewActive
-                                  ? NEON_VIOLET
-                                  : "#F9F9F9"
+                                ? "#F9F9F9"
                                 : "rgba(249,249,249,0.5)"
                             }
                           />
@@ -805,6 +803,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             ambientalTitleOnlyTitleStyle,
                             {
                               height: 38,
+                              fontSize: 14,
+                              fontWeight: "550" as TextStyle["fontWeight"],
                               textAlignVertical: "center",
                             },
                           ]}
