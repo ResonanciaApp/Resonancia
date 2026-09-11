@@ -26,6 +26,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -321,6 +322,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { openForSession } = useAmbientalDuration();
+  const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
@@ -592,6 +594,37 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={22}
                             color="#F9F9F9"
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={(event) => {
+                            event.stopPropagation();
+                            toggleFavorite(s.id);
+                          }}
+                          hitSlop={8}
+                          accessibilityRole="button"
+                          accessibilityLabel={
+                            isFavorite(s.id)
+                              ? `Quitar ${s.title} de favoritos`
+                              : `Agregar ${s.title} a favoritos`
+                          }
+                          style={[
+                            styles.favoriteButton,
+                            {
+                              right: 12,
+                              top: 12,
+                            },
+                          ]}
+                        >
+                          <SessionBadgeGlass showBlackTint={false} />
+                          <View
+                            pointerEvents="none"
+                            style={styles.favoriteGlassTint}
+                          />
+                          <MaterialCommunityIcons
+                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
+                            size={18}
+                            color="rgba(34,34,88,0.6)"
                           />
                         </Pressable>
                       </>
@@ -1006,6 +1039,20 @@ const styles = StyleSheet.create({
   previewProgressEdge: {
     height: 3,
     backgroundColor: NEON_VIOLET,
+  },
+  favoriteButton: {
+    position: "absolute",
+    zIndex: 5,
+    width: 34,
+    height: 34,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  favoriteGlassTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
