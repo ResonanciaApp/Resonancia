@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
+import { SessionCard } from "@/components/SessionCard";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -34,8 +35,10 @@ import { getSessionById, type Session } from "@/data/sessions";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import {
   classifyEditorialDetailStatus,
+  computePlaylistCompletion,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
+  resolveMeditationPlaylistPlayAction,
 } from "@/lib/editorial-playlist-helpers";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -66,6 +69,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
     activePlaylistOwner,
     playSessionInPlaylist,
     isPlaying,
+    pauseResume,
+    statEvents,
   } = usePlayer();
   const backOverride = useBackOverride();
   const { width } = useWindowDimensions();
@@ -142,6 +147,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
       sessionIds,
       durationLabel: snapshot?.durationLabel ?? base?.durationLabel ?? "",
       editorialType: snapshot?.editorialType ?? base?.editorialType ?? "meditative",
+      playlistType: snapshot?.playlistType ?? base?.playlistType ?? "music",
       coverUrl,
       cover: base?.cover,
     };
@@ -226,6 +232,49 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
     openPlayerFrom(row.session);
   };
 
+  const isSessions = playlist?.playlistType === "sessions";
+
+  const completedSessionIds = useMemo(() => {
+    const completed = new Set<string>();
+    for (const event of statEvents) {
+      if (event.completed) {
+        completed.add(event.sessionId);
+      }
+    }
+    return completed;
+  }, [statEvents]);
+
+  const playlistCompletion = useMemo(
+    () => computePlaylistCompletion(
+      rows.map((row) => row.id),
+      completedSessionIds,
+    ),
+    [completedSessionIds, rows],
+  );
+
+  const handleTogglePlay = () => {
+    const firstPlayable = availableRows[0]?.session;
+    const action = resolveMeditationPlaylistPlayAction({
+      currentIsEditorial,
+      hasPlayableSessions: !!firstPlayable,
+      hasPremiumSessions: rows.some((row) => !!row.session?.isPremium),
+    });
+    switch (action) {
+      case "toggle":
+        pauseResume();
+        break;
+      case "play-first":
+        if (firstPlayable) openPlayerFrom(firstPlayable, false);
+        break;
+      case "membership":
+        router.push("/membresia" as never);
+        break;
+      case "unavailable":
+        Alert.alert("Selección no disponible", "Esta selección no tiene sesiones reproducibles.");
+        break;
+    }
+  };
+
   if (!playlist) {
     return (
       <View style={[styles.root, { backgroundColor: theme.solid }]}>
@@ -272,6 +321,28 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
             </View>
           )}
 
+          {isSessions && (
+            <View pointerEvents="box-none" style={styles.sessionsHeroPlayContainer}>
+              <Pressable
+                onPress={handleTogglePlay}
+                style={({ pressed }) => [
+                  styles.sessionsHeroPlayButton,
+                  { opacity: pressed ? 0.82 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={displayIsPlaying ? "Pausar playlist" : "Reproducir playlist"}
+                testID="editorial-meditation-play"
+              >
+                <Ionicons
+                  name={displayIsPlaying ? "pause" : "play"}
+                  size={32}
+                  color={COLORS.navy}
+                  style={{ marginLeft: displayIsPlaying ? 0 : 4 }}
+                />
+              </Pressable>
+            </View>
+          )}
+
           <View style={[styles.header, { paddingTop: (Platform.OS === "web" ? 67 : insets.top) + 8 }]}>
             <Pressable
               onPress={goBack}
@@ -296,84 +367,127 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
           </View>
         </View>
 
-        <View style={styles.contentContainer}>
-          <View style={styles.titleLine}>
-            <Text style={styles.title} numberOfLines={3}>{playlist.title}</Text>
-            <Pressable
-              onPress={() => toggleEditorialPlaylist(playlist.id)}
-              hitSlop={10}
-              style={styles.heartButton}
-              accessibilityRole="button"
-              accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
-              testID="editorial-playlist-save"
-            >
-              <Feather
-                name="heart"
-                size={26}
-                color={saved ? COLORS.gold : COLORS.text}
-                fill={saved ? COLORS.gold : "transparent"}
-              />
-            </Pressable>
-          </View>
-
-          <View style={styles.creatorRow}>
-            <Image
-              source={require("../../assets/images/logo-resonancia.png")}
-              style={styles.creatorAvatar}
-              contentFit="cover"
-            />
-            <Text style={styles.creatorCaption}>Selección especial de Resonancia</Text>
-          </View>
-
-          <View style={styles.controls}>
-            <Pressable
-              onPress={handlePlayAll}
-              style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.82 : 1 }]}
-              accessibilityRole="button"
-              accessibilityLabel={displayIsPlaying ? "Pausar selección" : "Reproducir selección"}
-              testID="editorial-playlist-play"
-            >
-              <Ionicons name={displayIsPlaying ? "pause" : "play"} size={19} color={COLORS.navy} />
-              <Text style={styles.playButtonText}>{displayIsPlaying ? "Pausar" : "Reproducir"}</Text>
-            </Pressable>
-
-            <Pressable
-              onPress={handleShuffle}
-              style={({ pressed }) => [styles.shuffleButton, { opacity: pressed ? 0.78 : 1 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Reproducir aleatoriamente"
-              testID="editorial-playlist-shuffle"
-            >
-              <Feather name="shuffle" size={16} color={COLORS.text} />
-              <Text style={styles.shuffleText}>Aleatorio</Text>
-            </Pressable>
-          </View>
-
-          {!!playlist.description && (
-            <Text style={styles.description}>{playlist.description}</Text>
-          )}
-
-          <View style={styles.divider} />
-
-          <View style={styles.sessionList}>
-            {rows.length === 0 && (
-              <Text style={styles.unavailablePlaylist}>
-                Esta selección todavía no tiene sesiones disponibles.
-              </Text>
+        {isSessions ? (
+          <View style={styles.sessionsContentContainer}>
+            <Text style={styles.sessionsTitle}>{playlist.title}</Text>
+            {!!playlist.description && (
+              <Text style={styles.sessionsDescription}>{playlist.description}</Text>
             )}
-            {rows.map((row) => (
-              <EditorialSessionRow
-                key={row.id}
-                session={row.session}
-                isPremium={isPremium}
-                isActive={currentIsEditorial && currentSession?.id === row.id}
-                isPlaying={displayIsPlaying && currentSession?.id === row.id}
-                onPress={() => handleRowPress(row)}
-              />
-            ))}
+
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBarBackground}>
+                <View style={[styles.progressBarFill, { width: `${playlistCompletion.percentage}%` }]} />
+              </View>
+              <Text style={styles.progressText}>
+                {playlistCompletion.total} {playlistCompletion.total === 1 ? "sesión" : "sesiones"} · {playlistCompletion.percentage}% completado
+              </Text>
+            </View>
+
+            <View style={styles.sessionsList}>
+              {rows.length === 0 && (
+                <Text style={styles.unavailablePlaylist}>
+                  Esta selección todavía no tiene sesiones disponibles.
+                </Text>
+              )}
+              {rows.map((row) =>
+                row.session ? (
+                  <SessionCard
+                    key={row.id}
+                    session={row.session}
+                    horizontal
+                    width={width - 40}
+                    overridePress={() => handleRowPress(row)}
+                    playing={currentIsEditorial && currentSession?.id === row.id}
+                  />
+                ) : (
+                  <View key={row.id} style={styles.missingSessionRow}>
+                    <Text style={styles.missingSessionText}>Sesión no disponible</Text>
+                  </View>
+                ),
+              )}
+            </View>
+            {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
           </View>
-          {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
-        </View>
+        ) : (
+          <View style={styles.contentContainer}>
+            <View style={styles.titleLine}>
+              <Text style={styles.title} numberOfLines={3}>{playlist.title}</Text>
+              <Pressable
+                onPress={() => toggleEditorialPlaylist(playlist.id)}
+                hitSlop={10}
+                style={styles.heartButton}
+                accessibilityRole="button"
+                accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+                testID="editorial-playlist-save"
+              >
+                <Feather
+                  name="heart"
+                  size={26}
+                  color={saved ? COLORS.gold : COLORS.text}
+                  fill={saved ? COLORS.gold : "transparent"}
+                />
+              </Pressable>
+            </View>
+
+            <View style={styles.creatorRow}>
+              <Image
+                source={require("../../assets/images/logo-resonancia.png")}
+                style={styles.creatorAvatar}
+                contentFit="cover"
+              />
+              <Text style={styles.creatorCaption}>Selección especial de Resonancia</Text>
+            </View>
+
+            <View style={styles.controls}>
+              <Pressable
+                onPress={handlePlayAll}
+                style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.82 : 1 }]}
+                accessibilityRole="button"
+                accessibilityLabel={displayIsPlaying ? "Pausar selección" : "Reproducir selección"}
+                testID="editorial-playlist-play"
+              >
+                <Ionicons name={displayIsPlaying ? "pause" : "play"} size={19} color={COLORS.navy} />
+                <Text style={styles.playButtonText}>{displayIsPlaying ? "Pausar" : "Reproducir"}</Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleShuffle}
+                style={({ pressed }) => [styles.shuffleButton, { opacity: pressed ? 0.78 : 1 }]}
+                accessibilityRole="button"
+                accessibilityLabel="Reproducir aleatoriamente"
+                testID="editorial-playlist-shuffle"
+              >
+                <Feather name="shuffle" size={16} color={COLORS.text} />
+                <Text style={styles.shuffleText}>Aleatorio</Text>
+              </Pressable>
+            </View>
+
+            {!!playlist.description && (
+              <Text style={styles.description}>{playlist.description}</Text>
+            )}
+
+            <View style={styles.divider} />
+
+            <View style={styles.sessionList}>
+              {rows.length === 0 && (
+                <Text style={styles.unavailablePlaylist}>
+                  Esta selección todavía no tiene sesiones disponibles.
+                </Text>
+              )}
+              {rows.map((row) => (
+                <EditorialSessionRow
+                  key={row.id}
+                  session={row.session}
+                  isPremium={isPremium}
+                  isActive={currentIsEditorial && currentSession?.id === row.id}
+                  isPlaying={displayIsPlaying && currentSession?.id === row.id}
+                  onPress={() => handleRowPress(row)}
+                />
+              ))}
+            </View>
+            {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -439,15 +553,15 @@ const COLORS = {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   heroContainer: {
-    position: 'relative',
+    position: "relative",
     backgroundColor: COLORS.card,
   },
   missingHeroCover: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   header: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -586,4 +700,83 @@ const styles = StyleSheet.create({
   emptyBody: { color: COLORS.muted, fontSize: 14, textAlign: "center", marginTop: 8 },
   backTextButton: { marginTop: 22, padding: 10 },
   backText: { color: COLORS.gold, fontSize: 15, fontWeight: "700" },
+
+  // Sessions-specific layout styles
+  sessionsContentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 20,
+  },
+  sessionsHeroPlayContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  sessionsHeroPlayButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "#F9F9F9",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  sessionsTitle: {
+    color: COLORS.text,
+    fontFamily: "Manrope",
+    fontSize: 24,
+    lineHeight: 30,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  sessionsDescription: {
+    color: "rgba(249,249,249,0.8)",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: "center",
+    marginTop: 12,
+  },
+  progressContainer: {
+    marginTop: 24,
+    marginBottom: 24,
+  },
+  progressBarBackground: {
+    height: 4,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 2,
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: "#F9F9F9",
+    borderRadius: 2,
+  },
+  progressText: {
+    fontSize: 12,
+    color: "rgba(251,251,251,0.62)",
+    fontWeight: "500",
+    fontFamily: "Manrope",
+    textAlign: "center",
+  },
+  sessionsList: {
+    paddingBottom: 20,
+  },
+  missingSessionRow: {
+    height: 64,
+    justifyContent: "center",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(251,251,251,0.14)",
+  },
+  missingSessionText: {
+    color: COLORS.muted,
+    fontSize: 14,
+    fontFamily: "Manrope",
+  },
 });

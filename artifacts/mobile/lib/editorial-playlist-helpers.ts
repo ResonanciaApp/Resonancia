@@ -235,3 +235,48 @@ export function pickRandomQueueStart<T>(
   if (items.length === 0) return undefined;
   return items[Math.min(items.length - 1, Math.floor(random() * items.length))];
 }
+
+export type PlaylistCompletion = {
+  total: number;
+  completed: number;
+  percentage: number;
+};
+
+/** Progreso editorial por sesiones terminadas, deduplicando IDs en ambos lados. */
+export function computePlaylistCompletion(
+  sessionIds: readonly string[],
+  completedSessionIds: Iterable<string>,
+): PlaylistCompletion {
+  const uniqueSessionIds = Array.from(new Set(sessionIds));
+  const completedIds = new Set(completedSessionIds);
+  const completed = uniqueSessionIds.filter((sessionId) => completedIds.has(sessionId)).length;
+  return {
+    total: uniqueSessionIds.length,
+    completed,
+    percentage:
+      uniqueSessionIds.length > 0
+        ? Math.round((completed / uniqueSessionIds.length) * 100)
+        : 0,
+  };
+}
+
+export type MeditationPlaylistPlayAction =
+  | "toggle"
+  | "play-first"
+  | "membership"
+  | "unavailable";
+
+export function resolveMeditationPlaylistPlayAction({
+  currentIsEditorial,
+  hasPlayableSessions,
+  hasPremiumSessions,
+}: {
+  currentIsEditorial: boolean;
+  hasPlayableSessions: boolean;
+  hasPremiumSessions: boolean;
+}): MeditationPlaylistPlayAction {
+  if (currentIsEditorial) return "toggle";
+  if (hasPlayableSessions) return "play-first";
+  if (hasPremiumSessions) return "membership";
+  return "unavailable";
+}

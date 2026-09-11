@@ -486,7 +486,7 @@ function PlaylistForm({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="sessions">Sesiones</SelectItem>
+              <SelectItem value="sessions">Meditaciones</SelectItem>
               <SelectItem value="music">Música</SelectItem>
             </SelectContent>
           </Select>
@@ -715,7 +715,7 @@ export default function PlaylistsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant="outline" className="text-xs">
-                        {p.playlistType === "music" ? "Música" : "Sesiones"}
+                        {p.playlistType === "music" ? "Música" : "Meditaciones"}
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">

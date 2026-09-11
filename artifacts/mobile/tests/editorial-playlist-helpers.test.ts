@@ -5,11 +5,71 @@ import {
   buildLegacyPlaylistCarouselRecords,
   buildEditorialQueue,
   classifyEditorialDetailStatus,
+  computePlaylistCompletion,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolvePlaylistCarouselRows,
+  resolveMeditationPlaylistPlayAction,
   resolveSleepCarouselOrder,
 } from "../lib/editorial-playlist-helpers.ts";
+
+test("computes meditation playlist completion at 0%, partial and 100%", () => {
+  assert.deepEqual(
+    computePlaylistCompletion(["a", "b", "c"], []),
+    { total: 3, completed: 0, percentage: 0 },
+  );
+  assert.deepEqual(
+    computePlaylistCompletion(["a", "b", "c"], ["b"]),
+    { total: 3, completed: 1, percentage: 33 },
+  );
+  assert.deepEqual(
+    computePlaylistCompletion(["a", "b", "c"], ["a", "b", "c"]),
+    { total: 3, completed: 3, percentage: 100 },
+  );
+  assert.deepEqual(
+    computePlaylistCompletion(["a", "a", "b"], ["a", "a"]),
+    { total: 2, completed: 1, percentage: 50 },
+  );
+  assert.deepEqual(
+    computePlaylistCompletion([], ["a"]),
+    { total: 0, completed: 0, percentage: 0 },
+  );
+});
+
+test("resolves every meditation playlist hero play state", () => {
+  assert.equal(
+    resolveMeditationPlaylistPlayAction({
+      currentIsEditorial: true,
+      hasPlayableSessions: true,
+      hasPremiumSessions: false,
+    }),
+    "toggle",
+  );
+  assert.equal(
+    resolveMeditationPlaylistPlayAction({
+      currentIsEditorial: false,
+      hasPlayableSessions: true,
+      hasPremiumSessions: false,
+    }),
+    "play-first",
+  );
+  assert.equal(
+    resolveMeditationPlaylistPlayAction({
+      currentIsEditorial: false,
+      hasPlayableSessions: false,
+      hasPremiumSessions: true,
+    }),
+    "membership",
+  );
+  assert.equal(
+    resolveMeditationPlaylistPlayAction({
+      currentIsEditorial: false,
+      hasPlayableSessions: false,
+      hasPremiumSessions: false,
+    }),
+    "unavailable",
+  );
+});
 
 test("evicts editorial detail cache only for authoritative 404/410", () => {
   assert.equal(classifyEditorialDetailStatus(404), "missing");
