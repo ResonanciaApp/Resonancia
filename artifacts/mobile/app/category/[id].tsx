@@ -231,6 +231,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           onPress={handleSessionPress}
           showHeader={false}
           gridLayout
+          fillGridWidth
           gridScrollEnabled={false}
           eagerRender
           presentation="editorial"
@@ -267,6 +268,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         onPress={handleSessionPress}
         showHeader={false}
         gridLayout
+        fillGridWidth
         gridScrollEnabled={false}
         eagerRender
         presentation="editorial"

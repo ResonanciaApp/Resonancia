@@ -442,6 +442,7 @@ export default function MusicaSonidosScreen() {
               onLongPress={setSelectedSession}
               showHeader={false}
               gridLayout
+              fillGridWidth
               gridScrollEnabled={false}
               eagerRender
               presentation="editorial"

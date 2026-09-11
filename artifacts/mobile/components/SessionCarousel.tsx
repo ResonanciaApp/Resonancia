@@ -220,6 +220,7 @@ type SessionCarouselProps = {
   eagerRender?: boolean;
   /** Renders the same cards in a two-column vertical grid. */
   gridLayout?: boolean;
+  fillGridWidth?: boolean;
   gridBottomPadding?: number;
   gridScrollEnabled?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
@@ -320,6 +321,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   gridLayout = false,
+  fillGridWidth = false,
   gridBottomPadding = 0,
   gridScrollEnabled = true,
   presentation,
@@ -373,17 +375,21 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     GRID_PAD,
     trailingPeek ?? (useSleepMetadataBelow ? 25 : undefined),
   );
-  const requestedCardWidth = (isEditorialPresentation
-    ? sleepCategoryCardWidth
-    : useSleepMetadataBelow
-      ? cardWidth ?? sleepCategoryCardWidth
-      : isTallOverlayPresentation
-        ? cardWidth ?? sleepCategoryCardWidth
-        : isAmbientalCarousel
-          ? ambientalCardWidth ?? ambientalCarouselCardWidth
-          : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) +
-    (isEditorialPresentation && trailingPeek === undefined ? -3.5 : 0) +
-    cardWidthAdjustment;
+  const requestedCardWidth = (
+    gridLayout && fillGridWidth
+      ? (viewportWidth - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 2
+      : (isEditorialPresentation
+          ? sleepCategoryCardWidth
+          : useSleepMetadataBelow
+            ? cardWidth ?? sleepCategoryCardWidth
+            : isTallOverlayPresentation
+              ? cardWidth ?? sleepCategoryCardWidth
+              : isAmbientalCarousel
+                ? ambientalCardWidth ?? ambientalCarouselCardWidth
+                : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) +
+        (isEditorialPresentation && trailingPeek === undefined ? -3.5 : 0) +
+        cardWidthAdjustment
+  );
   const effectiveAllowOversizedCardWidth =
     isTallOverlayPresentation || allowOversizedCardWidth;
   const cw = effectiveAllowOversizedCardWidth

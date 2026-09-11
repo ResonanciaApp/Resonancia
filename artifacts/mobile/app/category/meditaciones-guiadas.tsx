@@ -434,6 +434,7 @@ export default function MeditacionesGuiadasScreen() {
               onLongPress={setSelectedSession}
               showHeader={false}
               gridLayout
+              fillGridWidth
               gridScrollEnabled={false}
               eagerRender
               presentation="editorial"

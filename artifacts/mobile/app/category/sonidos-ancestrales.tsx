@@ -571,6 +571,7 @@ export default function SonidosAncestalesScreen() {
               onLongPress={setSelectedSession}
               showHeader={false}
               gridLayout
+              fillGridWidth
               gridScrollEnabled={false}
               eagerRender
               presentation="editorial"
