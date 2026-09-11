@@ -28,6 +28,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -48,6 +49,7 @@ import {
 const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
+const NEON_VIOLET = "#A970FF";
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function PreviewFadeLayer({
@@ -77,7 +79,7 @@ function PreviewProgressRing({
   size: number;
   progress: SharedValue<number>;
 }) {
-  const strokeWidth = 3.5;
+  const strokeWidth = 2.5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const animatedProps = useAnimatedProps(() => ({
@@ -92,7 +94,7 @@ function PreviewProgressRing({
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="rgba(249,249,249,0.5)"
+        stroke="rgba(249,249,249,0.9)"
         strokeWidth={strokeWidth}
         strokeDasharray={`${circumference} ${circumference}`}
         strokeLinecap="round"
@@ -301,6 +303,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { openForSession } = useAmbientalDuration();
+  const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
@@ -456,6 +459,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               }}
               style={[styles.card, cardStyle]}
             >
+              {soundPreview && (
+                <PreviewFadeLayer active={isPreviewActive} style={styles.previewActiveCard} />
+              )}
               <View
                 style={[
                   styles.thumbWrap,
@@ -504,6 +510,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               progress={soundPreview.progress}
                             />
                         </PreviewFadeLayer>
+                        <PreviewFadeLayer
+                          active={isPreviewActive}
+                          style={styles.previewBorder}
+                        />
                         <Pressable
                           onPress={(event) => {
                             event.stopPropagation();
@@ -515,13 +525,41 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: (cw - 31) / 2,
-                              top: ch - 49,
+                              left: 11,
+                              top: 12,
                             },
                           ]}
                         >
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
+                            size={19}
+                            color="#F9F9F9"
+                            style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={(event) => {
+                            event.stopPropagation();
+                            toggleFavorite(s.id);
+                          }}
+                          hitSlop={8}
+                          accessibilityRole="button"
+                          accessibilityLabel={
+                            isFavorite(s.id)
+                              ? `Quitar ${s.title} de favoritos`
+                              : `Agregar ${s.title} a favoritos`
+                          }
+                          style={[
+                            styles.previewButton,
+                            styles.favoriteButton,
+                            {
+                              right: 12,
+                              top: 12,
+                            },
+                          ]}
+                        >
+                          <MaterialCommunityIcons
+                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
                             size={19}
                             color="#F9F9F9"
                           />
@@ -653,11 +691,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
                           showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
-                          showAmbientalTitleOnly &&
-                            soundPreview && {
-                              top: ch - 89,
-                              bottom: undefined,
-                            },
                        ]}
                      >
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
@@ -872,6 +905,23 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: { width: CARD_W },
+  previewActiveCard: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 18,
+    backgroundColor: "rgba(169,112,255,0.05)",
+    shadowColor: NEON_VIOLET,
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 7,
+  },
+  previewBorder: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 4,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: NEON_VIOLET,
+  },
   thumbWrap: {
     width: CARD_W,
     height: CARD_W,
@@ -896,6 +946,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  favoriteButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "transparent",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {

@@ -399,7 +399,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                  presentation="editorial"
                  ambientalTitleOnly
-                 ambientalImageLift={37}
+                 ambientalImageLift={9}
                  soundPreview={{
                    activeId: soundPreview.activeId,
                    isPlaying: soundPreview.isPlaying,
