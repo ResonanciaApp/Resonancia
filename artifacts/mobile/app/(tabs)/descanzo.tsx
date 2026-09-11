@@ -401,9 +401,10 @@ export default function DescansoScreen() {
                 categoryGridPresentation={collection.id === "musica-para-dormir"}
                 showCategoryPillTopLeft={collection.id === "musica-para-dormir"}
                 whiteMetadataGlass={collection.id === "musica-para-dormir"}
+                showDurationClock={collection.id === "musica-para-dormir"}
                 sleepBelowMetadataStyle={
                   collection.id === "musica-para-dormir"
-                    ? { marginTop: 4, transform: [{ translateX: 3 }] }
+                    ? { marginTop: 3, transform: [{ translateX: 3 }] }
                     : undefined
                 }
                 trailingPeek={collection.id === "musica-para-dormir" ? 20 : undefined}

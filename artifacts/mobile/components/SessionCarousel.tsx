@@ -256,6 +256,8 @@ type SessionCarouselProps = {
   showCategoryPillTopLeft?: boolean;
   /** Uses the same white glass surface as Ambiental favorite buttons. */
   whiteMetadataGlass?: boolean;
+  /** Shows a clock icon before the duration label. */
+  showDurationClock?: boolean;
   soundPreview?: {
     activeId: string | null;
     isPlaying: boolean;
@@ -334,6 +336,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   categoryGridPresentation = false,
   showCategoryPillTopLeft = false,
   whiteMetadataGlass = false,
+  showDurationClock = false,
   soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -718,6 +721,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       <SessionDurationBadge
                         label={s.durationLabel}
                         whiteGlass={whiteMetadataGlass}
+                        showClock={showDurationClock}
                         style={[
                           styles.durBadge,
                          categoryGridPresentation && styles.categoryDurationBadge,
