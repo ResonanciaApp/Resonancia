@@ -1251,16 +1251,19 @@ export function ProfileScreenBase({
           />
         </View>
 
-        <View style={styles.wisdomSection}>
-          <Text style={[styles.wisdomSectionTitle, { color: colors.foreground }]}>
-            Mensaje de los sabios
-          </Text>
-          <MessageDeck />
-        </View>
+        {false && (
+          <View style={styles.wisdomSection}>
+            <Text style={[styles.wisdomSectionTitle, { color: colors.foreground }]}>
+              Mensaje de los sabios
+            </Text>
+            <MessageDeck />
+          </View>
+        )}
 
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
+            {false && (
             <View style={styles.profileProgressSection}>
               <View style={styles.profileProgressIntro}>
                 <Text style={[styles.profileProgressIntroTitle, { color: colors.foreground }]}>
@@ -1309,8 +1312,9 @@ export function ProfileScreenBase({
                 </View>
               </View>
             </View>
+            )}
 
-            <HistorialCalendar embedded outlined backgroundColor="transparent" />
+            {false && <HistorialCalendar embedded outlined backgroundColor="transparent" />}
             <View style={{ marginTop: 16, gap: 12 }}>
               <View style={styles.outlinedProfileSection}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
