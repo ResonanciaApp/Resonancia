@@ -3161,9 +3161,9 @@ const styles = StyleSheet.create({
     right: GRID_PAD,
     bottom: 18,
     zIndex: 10,
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
-    paddingHorizontal: 18,
+    paddingHorizontal: 0,
     paddingVertical: 20,
   },
   inicio2HeroTitle: {
@@ -3182,7 +3182,7 @@ const styles = StyleSheet.create({
     maxWidth: "76%",
     fontSize: 24,
     lineHeight: 29,
-    textAlign: "center",
+    textAlign: "left",
     transform: [],
   },
   inicio2HeroCategory: {
