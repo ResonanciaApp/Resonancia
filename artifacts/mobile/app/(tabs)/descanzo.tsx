@@ -397,6 +397,13 @@ export default function DescansoScreen() {
                 style={sleepCarouselStyles[index]}
                 presentation="editorial"
                 disableAmbientalVariant={collection.id === "musica-para-dormir"}
+                sleepMetadataBelow={collection.id === "musica-para-dormir"}
+                categoryGridPresentation={collection.id === "musica-para-dormir"}
+                showCategoryBelowAuthor={collection.id === "musica-para-dormir"}
+                trailingPeek={collection.id === "musica-para-dormir" ? 35 : undefined}
+                cardBorderRadius={
+                  collection.id === "musica-para-dormir" ? 21 : undefined
+                }
                 titleSize={19}
                 hideCategoryAboveTitle
                 showSleepCategoryPillWithInlineDuration

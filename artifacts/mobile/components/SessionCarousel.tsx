@@ -204,6 +204,8 @@ type SessionCarouselProps = {
   disableAmbientalVariant?: boolean;
   /** Optional radius override for every card in the carousel. */
   cardBorderRadius?: number;
+  /** Visible width of the next card after two complete cards. */
+  trailingPeek?: number;
   /** Explicit width for Ambiental cards; ignored by sleep-category presentation. */
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
@@ -249,6 +251,8 @@ type SessionCarouselProps = {
   squareTitleAuthorBelow?: boolean;
   /** Category-grid layout: duration pill over image, title and author below. */
   categoryGridPresentation?: boolean;
+  /** Adds the category below the author in metadata-below layouts. */
+  showCategoryBelowAuthor?: boolean;
   soundPreview?: {
     activeId: string | null;
     isPlaying: boolean;
@@ -298,6 +302,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   disableAmbientalVariant = false,
   cardBorderRadius,
+  trailingPeek,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardBorderColor,
@@ -323,6 +328,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleOnlyBelow = false,
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
+  showCategoryBelowAuthor = false,
   soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -353,7 +359,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const sleepCategoryCardWidth = getTwoCardCarouselCardWidth(
     viewportWidth,
     GRID_PAD,
-    useSleepMetadataBelow ? 25 : undefined,
+    trailingPeek ?? (useSleepMetadataBelow ? 25 : undefined),
   );
   const requestedCardWidth = (isEditorialPresentation
     ? sleepCategoryCardWidth
@@ -364,7 +370,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         : isAmbientalCarousel
           ? ambientalCardWidth ?? ambientalCarouselCardWidth
           : cardWidth ?? getContentCarouselCardWidth(viewportWidth)) +
-    (isEditorialPresentation ? -3.5 : 0) +
+    (isEditorialPresentation && trailingPeek === undefined ? -3.5 : 0) +
     cardWidthAdjustment;
   const effectiveAllowOversizedCardWidth =
     isTallOverlayPresentation || allowOversizedCardWidth;
@@ -878,6 +884,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       numberOfLines={1}
                     >
                       {authorName}
+                    </Text>
+                  ) : null}
+                  {showCategoryBelowAuthor && s.categoryLabel ? (
+                    <Text
+                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                      numberOfLines={1}
+                    >
+                      {s.categoryLabel}
                     </Text>
                   ) : null}
                 </View>
