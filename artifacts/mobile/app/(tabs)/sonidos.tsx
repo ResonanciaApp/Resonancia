@@ -310,7 +310,6 @@ export default function SonidosScreen() {
             style={[
               styles.headerSearchButton,
               styles.stickySearchButton,
-              indigoSurface && { backgroundColor: indigoSurface },
             ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonidos"
@@ -335,7 +334,7 @@ export default function SonidosScreen() {
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
-              style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+              style={styles.headerSearchButton}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonidos"
             >
@@ -566,7 +565,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
   },
   sonidosTabsHeader: {
     marginTop: 9,

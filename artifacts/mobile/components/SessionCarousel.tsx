@@ -34,7 +34,10 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  SessionBadgeGlass,
+  SessionDurationBadge,
+} from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -563,6 +566,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             },
                           ]}
                         >
+                          <SessionBadgeGlass />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={22}
@@ -967,7 +971,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
