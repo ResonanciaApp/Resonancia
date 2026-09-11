@@ -31,7 +31,6 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
 import {
-  SessionCategoryIcon,
   SessionCategoryPill,
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
@@ -253,8 +252,8 @@ type SessionCarouselProps = {
   squareTitleAuthorBelow?: boolean;
   /** Category-grid layout: duration pill over image, title and author below. */
   categoryGridPresentation?: boolean;
-  /** Shows the session category as a glass icon in the image's upper-left corner. */
-  showCategoryIconTopLeft?: boolean;
+  /** Shows the session category as a glass pill in the image's upper-left corner. */
+  showCategoryPillTopLeft?: boolean;
   soundPreview?: {
     activeId: string | null;
     isPlaying: boolean;
@@ -331,7 +330,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleOnlyBelow = false,
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
-  showCategoryIconTopLeft = false,
+  showCategoryPillTopLeft = false,
   soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
@@ -860,17 +859,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     </View>
                   </>
                 )}
-                {showCategoryIconTopLeft ? (
-                  <View pointerEvents="none" style={styles.categoryIconGlass}>
-                    <SessionBadgeGlass showBlackTint={false} />
-                    <View style={styles.favoriteGlassTint} />
-                    <SessionCategoryIcon
-                      categoryId={s.categoryId}
-                      size={29}
-                      glyphSize={16}
-                      backgroundColor="transparent"
-                    />
-                  </View>
+                {showCategoryPillTopLeft ? (
+                  <SessionCategoryPill
+                    categoryId={s.categoryId}
+                    leftInset={12}
+                    topInset={12}
+                  />
                 ) : null}
                 {locked && (
                   <Image
@@ -1090,18 +1084,6 @@ const styles = StyleSheet.create({
   favoriteGlassTint: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(255,255,255,0.15)",
-  },
-  categoryIconGlass: {
-    position: "absolute",
-    zIndex: 5,
-    top: 12,
-    left: 12,
-    width: 29,
-    height: 29,
-    borderRadius: 14.5,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {

@@ -399,7 +399,7 @@ export default function DescansoScreen() {
                 disableAmbientalVariant={collection.id === "musica-para-dormir"}
                 sleepMetadataBelow={collection.id === "musica-para-dormir"}
                 categoryGridPresentation={collection.id === "musica-para-dormir"}
-                showCategoryIconTopLeft={collection.id === "musica-para-dormir"}
+                showCategoryPillTopLeft={collection.id === "musica-para-dormir"}
                 sleepBelowMetadataStyle={
                   collection.id === "musica-para-dormir"
                     ? { transform: [{ translateX: 3 }] }
