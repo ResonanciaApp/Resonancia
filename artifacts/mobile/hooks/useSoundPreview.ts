@@ -10,16 +10,13 @@ import {
 } from "@/context/audioBridge";
 import type { Session } from "@/data/sessions";
 import {
-  getSoundPreviewElapsed,
-  getSoundPreviewRemaining,
   SOUND_PREVIEW_DURATION_MS,
 } from "@/lib/sound-preview";
 
 export function useSoundPreview() {
   const playerRef = useRef<AudioPlayer | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const startedAtRef = useRef(0);
-  const elapsedRef = useRef(0);
+  const visualResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const progress = useSharedValue(0);
@@ -32,8 +29,11 @@ export function useSoundPreview() {
   const stop = useCallback(() => {
     clearTimer();
     cancelAnimation(progress);
-    progress.value = 0;
-    elapsedRef.current = 0;
+    if (visualResetTimerRef.current) clearTimeout(visualResetTimerRef.current);
+    visualResetTimerRef.current = setTimeout(() => {
+      progress.value = 0;
+      visualResetTimerRef.current = null;
+    }, 350);
     try {
       playerRef.current?.pause();
       playerRef.current?.seekTo(0);
@@ -44,34 +44,12 @@ export function useSoundPreview() {
 
   const armFinish = useCallback((remainingMs: number) => {
     clearTimer();
-    startedAtRef.current = Date.now();
     timerRef.current = setTimeout(stop, remainingMs);
   }, [clearTimer, stop]);
 
   const toggle = useCallback((session: Session) => {
     if (activeId === session.id) {
-      if (isPlaying) {
-        clearTimer();
-        elapsedRef.current = getSoundPreviewElapsed(
-          elapsedRef.current,
-          startedAtRef.current,
-          Date.now(),
-        );
-        cancelAnimation(progress);
-        playerRef.current?.pause();
-        setIsPlaying(false);
-      } else {
-        const remaining = getSoundPreviewRemaining(elapsedRef.current);
-        if (remaining <= 0) {
-          stop();
-          return;
-        }
-        startedAtRef.current = Date.now();
-        playerRef.current?.play();
-        progress.value = withTiming(1, { duration: remaining });
-        setIsPlaying(true);
-        armFinish(remaining);
-      }
+      stop();
       return;
     }
 
@@ -86,6 +64,10 @@ export function useSoundPreview() {
     }
 
     stop();
+    if (visualResetTimerRef.current) {
+      clearTimeout(visualResetTimerRef.current);
+      visualResetTimerRef.current = null;
+    }
     stopOtherAudioForPreview();
     try {
       const player = playerRef.current ?? createAudioPlayer(null, { updateInterval: 100 });
@@ -94,8 +76,6 @@ export function useSoundPreview() {
       player.replace(source);
       player.seekTo(0);
       player.play();
-      elapsedRef.current = 0;
-      startedAtRef.current = Date.now();
       progress.value = 0;
       progress.value = withTiming(1, { duration: SOUND_PREVIEW_DURATION_MS });
       setActiveId(session.id);
@@ -104,7 +84,7 @@ export function useSoundPreview() {
     } catch {
       stop();
     }
-  }, [activeId, armFinish, clearTimer, isPlaying, progress, stop]);
+  }, [activeId, armFinish, progress, stop]);
 
   useEffect(() => {
     registerPreviewStopper(stop);
@@ -113,6 +93,7 @@ export function useSoundPreview() {
     });
     return () => {
       appStateSubscription.remove();
+      if (visualResetTimerRef.current) clearTimeout(visualResetTimerRef.current);
       registerPreviewStopper(null);
       stop();
       playerRef.current?.release();

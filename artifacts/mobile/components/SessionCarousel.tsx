@@ -6,6 +6,8 @@ import React from "react";
 import Animated, {
   type SharedValue,
   useAnimatedProps,
+  useAnimatedStyle,
+  withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 import {
@@ -49,6 +51,26 @@ const GRID_PAD = 14;
 const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+function PreviewFadeLayer({
+  active,
+  style,
+  children,
+}: {
+  active: boolean;
+  style: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
+}) {
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(active ? 1 : 0, { duration: 350 }),
+  }), [active]);
+
+  return (
+    <Animated.View pointerEvents="none" style={[style, animatedStyle]}>
+      {children}
+    </Animated.View>
+  );
+}
 
 function PreviewProgressRing({
   size,
@@ -435,12 +457,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 if (openForSession(s)) return;
                 onPress(s);
               }}
-              style={[
-                styles.card,
-                cardStyle,
-                isPreviewActive && styles.previewActiveCard,
-              ]}
+              style={[styles.card, cardStyle]}
             >
+              {soundPreview && (
+                <PreviewFadeLayer active={isPreviewActive} style={styles.previewActiveCard} />
+              )}
               <View
                 style={[
                   styles.thumbWrap,
@@ -448,9 +469,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
                     borderWidth: 1,
-                    borderColor: isPreviewActive
-                      ? NEON_VIOLET
-                      : ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
+                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
               >
@@ -474,9 +493,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     />
                     {soundPreview && (
                       <>
-                        {isPreviewActive && (
-                          <View
-                            pointerEvents="none"
+                        <PreviewFadeLayer
+                            active={isPreviewActive}
                             style={[
                               styles.previewRing,
                               {
@@ -491,8 +509,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               size={ambientalImageSize + 6}
                               progress={soundPreview.progress}
                             />
-                          </View>
-                        )}
+                        </PreviewFadeLayer>
+                        <PreviewFadeLayer
+                          active={isPreviewActive}
+                          style={styles.previewBorder}
+                        />
                         <Pressable
                           onPress={(event) => {
                             event.stopPropagation();
@@ -504,7 +525,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: 12,
+                              left: 11,
                               top: 12,
                             },
                           ]}
@@ -885,11 +906,21 @@ const styles = StyleSheet.create({
   },
   card: { width: CARD_W },
   previewActiveCard: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 18,
+    backgroundColor: "rgba(169,112,255,0.05)",
     shadowColor: NEON_VIOLET,
     shadowOpacity: 0.28,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 3 },
     elevation: 7,
+  },
+  previewBorder: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 4,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: NEON_VIOLET,
   },
   thumbWrap: {
     width: CARD_W,
