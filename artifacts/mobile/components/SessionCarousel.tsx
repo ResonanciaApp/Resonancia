@@ -220,6 +220,7 @@ type SessionCarouselProps = {
   /** Renders the same cards in a two-column vertical grid. */
   gridLayout?: boolean;
   gridBottomPadding?: number;
+  gridScrollEnabled?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
   presentation?: "sleep-category" | "tall-overlay" | "editorial";
   /** Places title and author over the image without a category pill. */
@@ -318,6 +319,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   eagerRender = false,
   gridLayout = false,
   gridBottomPadding = 0,
+  gridScrollEnabled = true,
   presentation,
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
@@ -471,6 +473,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       ))}
       <FlatList
         horizontal={!gridLayout}
+        scrollEnabled={!gridLayout || gridScrollEnabled}
         numColumns={gridLayout ? 2 : undefined}
         data={sessions}
         keyExtractor={(session) => session.id}

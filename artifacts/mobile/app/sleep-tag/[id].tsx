@@ -4,7 +4,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   Animated,
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -15,8 +14,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { getSessionsByDescansoTag } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
@@ -26,10 +26,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
-const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const COL_GAP = 12;
-const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
 
 export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -37,6 +34,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const colors = useColors();
   const { playSession } = usePlayer();
+  const { isPremium } = usePremium();
   const { activeSceneId, theme } = useSceneTheme();
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
@@ -68,11 +66,6 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const goBack = () => (overlayBack ? overlayBack() : router.back());
 
   const sessions = getSessionsByDescansoTag(tag.label);
-
-  const rows: (typeof sessions)[] = [];
-  for (let i = 0; i < sessions.length; i += 2) {
-    rows.push(sessions.slice(i, i + 2));
-  }
 
   return (
     <View
@@ -144,33 +137,45 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             </Text>
           </View>
         ) : (
-          <View style={styles.grid}>
-            {rows.map((row, rowIdx) => (
-              <View key={rowIdx} style={styles.row}>
-                {row.map((session) => {
-                  return (
-                    <SessionCard
-                      key={session.id}
-                      session={session}
-                      width={CARD_W}
-                      style={styles.editorialCard}
-                      editorialPresentation
-                      sleepEditorialContent
-                      showAuthor
-                      showAuthorAvatar={false}
-                      overridePress={() => {
-                        if (session.skipMiniPlayer) { playSession(session); return; }
-                        if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-                        if (overlay) overlay.openCategory(`/session/${session.id}`);
-                        else router.push(`/session/${session.id}` as never);
-                      }}
-                    />
-                  );
-                })}
-                {row.length === 1 && <View style={{ width: CARD_W }} />}
-              </View>
-            ))}
-          </View>
+          <SessionCarousel
+            title=""
+            sessions={sessions}
+            isPremium={isPremium}
+            onPress={(session) => {
+              if (session.skipMiniPlayer) {
+                playSession(session);
+                return;
+              }
+              if (session.skipDetail) {
+                playSession(session);
+                router.push("/player" as never);
+                return;
+              }
+              if (overlay) overlay.openCategory(`/session/${session.id}`);
+              else router.push(`/session/${session.id}` as never);
+            }}
+            style={styles.sessionGrid}
+            showHeader={false}
+            gridLayout
+            gridScrollEnabled={false}
+            eagerRender
+            presentation="editorial"
+            disableAmbientalVariant
+            sleepMetadataBelow
+            categoryGridPresentation
+            showCategoryPillTopLeft
+            whiteMetadataGlass
+            showDurationClock
+            sleepBelowMetadataStyle={{
+              marginTop: 3,
+              transform: [{ translateX: 3 }],
+            }}
+            trailingPeek={20}
+            cardBorderRadius={16}
+            hideCategoryAboveTitle
+            showSleepCategoryPillWithInlineDuration
+            ambientalTitleOnly
+          />
         )}
       </ScrollView>
 
@@ -282,19 +287,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  grid: {
-    paddingHorizontal: H_PAD,
-    paddingTop: 36,
-    gap: COL_GAP,
-  },
-  row: {
-    flexDirection: "row",
-    gap: COL_GAP,
-  },
-
-  editorialCard: {
-    marginRight: 0,
-    marginBottom: 4,
+  sessionGrid: {
+    paddingHorizontal: 0,
+    marginBottom: 0,
   },
   card: {
     marginBottom: 4,
