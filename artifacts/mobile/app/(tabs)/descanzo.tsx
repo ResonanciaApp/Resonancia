@@ -408,7 +408,7 @@ export default function DescansoScreen() {
                 }
                 trailingPeek={collection.id === "musica-para-dormir" ? 55 : undefined}
                 cardBorderRadius={
-                  collection.id === "musica-para-dormir" ? 23 : undefined
+                  collection.id === "musica-para-dormir" ? 16 : undefined
                 }
                 titleSize={19}
                 hideCategoryAboveTitle
