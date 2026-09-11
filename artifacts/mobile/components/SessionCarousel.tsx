@@ -626,7 +626,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             size={18}
                             color={
                               isFavorite(s.id)
-                                ? "#F9F9F9"
+                                ? isPreviewActive
+                                  ? NEON_VIOLET
+                                  : "#F9F9F9"
                                 : "rgba(249,249,249,0.5)"
                             }
                           />
