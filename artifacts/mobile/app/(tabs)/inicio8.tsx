@@ -76,7 +76,12 @@ import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { TEMAS } from "@/data/temas";
-import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
+import {
+  getGetPopularSessionsQueryKey,
+  useGetPinnedFeatured,
+  useGetPopularSessions,
+  useGetSceneAnimations,
+} from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
@@ -1495,6 +1500,7 @@ export default function HomeScreen2({
     isPlaying,
     pauseResume,
     history,
+    favorites,
     statEvents,
     sessionProgress,
     getSessionProgress,
@@ -1879,6 +1885,35 @@ export default function HomeScreen2({
 
   const filteredListened = listenedRecently;
 
+  const favoriteSessions = React.useMemo<Session[]>(() => {
+    return favorites
+      .map((id) => getSessionById(id))
+      .filter((session): session is Session => session !== undefined)
+      .filter((session) => session.categoryId !== "ambientales")
+      .slice(0, 10);
+  }, [favorites]);
+
+  const { data: popularData } = useGetPopularSessions(
+    { limit: 30 },
+    {
+      query: {
+        queryKey: getGetPopularSessionsQueryKey({ limit: 30 }),
+        staleTime: 5 * 60_000,
+      },
+    },
+  );
+  const popularSessions = React.useMemo<Session[]>(() => {
+    return (popularData?.sessions ?? [])
+      .map((session) => getSessionById(session.id))
+      .filter(
+        (session): session is Session =>
+          session !== undefined
+          && !session.isPlaceholder
+          && session.categoryId !== "ambientales",
+      )
+      .slice(0, 10);
+  }, [catalogVersion, popularData]);
+
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -2132,6 +2167,9 @@ export default function HomeScreen2({
   const handleViewAllRecent = useCallback(() => {
     router.push("/historial" as never);
   }, []);
+  const handleViewAllFavorites = useCallback(() => {
+    openCategory("/favoritos-todos");
+  }, [openCategory]);
   const inicio2SessionCarouselStyle = useMemo(
     () => ({ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }),
     [],
@@ -2563,6 +2601,24 @@ export default function HomeScreen2({
             eagerRender
           />
         )}
+        {isInicio2 && (
+          <SessionCarousel
+            title="Mis favoritos"
+            sessions={favoriteSessions}
+            isPremium={isPremium}
+            onPress={handleSessionCarouselPress}
+            style={inicio2SessionCarouselStyle}
+            cardWidth={INICIO2_SQUARE_CAROUSEL_CARD_W}
+            allowOversizedCardWidth
+            squareTitleAuthorBelow
+            categoryGridPresentation
+            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+            titleSize={19}
+            titleSpacing={17}
+            onViewAll={handleViewAllFavorites}
+            viewAllColor={carouselViewAllColor}
+          />
+        )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
@@ -2666,7 +2722,20 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
+          <SessionCarousel
+            title="Populares"
+            sessions={popularSessions}
+            isPremium={isPremium}
+            onPress={handleSessionCarouselPress}
+            style={inicio2SessionCarouselStyle}
+            trailingPeek={20}
+            squareTitleOnlyBelow
+            titleSize={19}
+            titleSpacing={17}
+          />
+        )}
+        {isInicio2 && (
+          <View>
             <DailyWisdomCard backgroundColor="rgba(0,0,0,0.25)" />
           </View>
         )}
