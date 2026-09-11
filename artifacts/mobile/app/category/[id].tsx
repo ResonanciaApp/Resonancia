@@ -360,12 +360,15 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow,
           {
             paddingTop: topPad + 8,
-            opacity: 1,
-            backgroundColor: theme.gradient[0] as string,
+            opacity: stickyHeaderOpacity,
           },
         ]}
-        pointerEvents="auto"
+        pointerEvents={stickyActive ? "auto" : "none"}
       >
+        <LinearGradient
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          style={StyleSheet.absoluteFill}
+        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
