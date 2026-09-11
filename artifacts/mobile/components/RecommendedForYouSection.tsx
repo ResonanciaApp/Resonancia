@@ -204,7 +204,25 @@ export function RecommendedForYouSection({
           onPress={onPress}
           showHeader={false}
           presentation="editorial"
-          showAuthor={false}
+          disableAmbientalVariant
+          sleepMetadataBelow
+          categoryGridPresentation
+          showCategoryPillTopLeft
+          whiteMetadataGlass
+          showDurationClock
+          sleepBelowMetadataStyle={{
+            marginTop: 3,
+            transform: [{ translateX: 3 }],
+          }}
+          trailingPeek={20}
+          cardBorderRadius={16}
+          hideCategoryAboveTitle
+          showSleepCategoryPillWithInlineDuration
+          ambientalTitleOnly
+          sleepOverlayMetadataStyle={{
+            transform: [{ translateX: 3 }, { translateY: -1 }],
+          }}
+          overlayGradientLocations={[0.18, 0.48, 1]}
           style={styles.carousel}
         />
       ) : (

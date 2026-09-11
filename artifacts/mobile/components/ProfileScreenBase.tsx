@@ -366,13 +366,7 @@ export function ProfileScreenBase({
       : activeSceneId === "indigo2"
         ? "rgba(0,0,0,0.28)"
         : "rgba(181,211,255,0.057)";
-  const profileSectionBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.14)"
-    : activeSceneId === "indigo2"
-      ? "rgba(0,0,0,0.28)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.14)"
-        : "rgba(181,211,255,0.14)";
+  const profileSectionBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
@@ -2338,7 +2332,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.14)",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
   },
   practiceReminderSection: {

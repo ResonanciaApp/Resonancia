@@ -14,15 +14,12 @@ import {
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import type { EditorialPlaylist } from "@/data/playlists";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
-import { CONTENT_CAROUSEL_HEIGHT_SCALE, getTwoCardCarouselCardWidth } from "@/constants/carousel";
-import { SESSION_CARD_METADATA_HEIGHT_SCALE } from "@/components/SessionCardMetadataOverlay";
+import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 
 const H_PAD = 16;
 const CARD_GAP = 14;
 const CARD_WIDTH = getTwoCardCarouselCardWidth(Dimensions.get("window").width, CARD_GAP) - 3.5;
-const CARD_HEIGHT = Math.round(
-  (CARD_WIDTH + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE * CONTENT_CAROUSEL_HEIGHT_SCALE,
-) - 11;
+const CARD_HEIGHT = CARD_WIDTH;
 
 export function EditorialPlaylistCarousel({
   title,

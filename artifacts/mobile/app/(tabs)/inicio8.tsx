@@ -1886,6 +1886,7 @@ export default function HomeScreen2({
     return favorites
       .map((id) => getSessionById(id))
       .filter((s): s is Session => s !== undefined)
+      .filter((session) => session.categoryId !== "ambientales")
       .slice(0, 10);
   }, [favorites]);
 
