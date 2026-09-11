@@ -13,7 +13,6 @@ import { SessionRow } from "@/components/SessionRow";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 
 type Props = {
   sessions: Session[];
@@ -21,18 +20,6 @@ type Props = {
   onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
 };
-
-export function getDailyRecommendationSurface(
-  themeId: Parameters<typeof isIndigoThemeId>[0],
-): string {
-  return themeId === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(themeId)
-      ? "rgba(181,211,255,0.1)"
-      : themeId === "indigo2"
-        ? "rgba(0,0,0,0.2)"
-        : "rgba(181,211,255,0.1)";
-}
 
 const WEEKDAYS = [
   "domingo",
@@ -77,7 +64,6 @@ export function DailyRecommendationsSection({
   const { theme } = useSceneTheme();
   const recommendations = sessions.slice(0, 3);
   const themeAccent = theme.accent ?? colors.accent;
-  const refreshButtonBackground = getDailyRecommendationSurface(theme.id);
 
   if (recommendations.length < 3) return null;
 
@@ -119,7 +105,7 @@ export function DailyRecommendationsSection({
           style={({ pressed }) => [
             styles.refreshButton,
             {
-              backgroundColor: refreshButtonBackground,
+              backgroundColor: "rgba(0,0,0,0.28)",
               opacity: pressed ? 0.72 : 1,
             },
           ]}
@@ -152,8 +138,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   recommendationCard: {
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
+    borderColor: "rgba(130,96,181,0.06)",
   },
   row: {
     paddingVertical: 14,
@@ -163,7 +150,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
+    borderColor: "rgba(130,96,181,0.06)",
     marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",

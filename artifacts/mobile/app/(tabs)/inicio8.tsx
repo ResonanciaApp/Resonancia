@@ -105,10 +105,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
-import {
-  DailyRecommendationsSection,
-  getDailyRecommendationSurface,
-} from "@/components/DailyRecommendationsSection";
+import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
@@ -1517,7 +1514,6 @@ export default function HomeScreen2({
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const carouselViewAllColor = activeTheme.accent ?? colors.accent;
-  const recommendationSurface = getDailyRecommendationSurface(activeTheme.id);
   // La tab bar flotante usa la misma separación inferior que su propio layout.
   // El widget queda 25 px por encima de la parte superior de esa barra.
   const tabBarBottomOffset =
