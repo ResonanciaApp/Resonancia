@@ -77,7 +77,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo2: {
     id: "indigo2",
     label: "Indigo 2",
-    gradient: ["#2B1E54", "#222258", "#2D2D70", "#373782"],
+    gradient: ["#2A1C56", "#20205A", "#2B2B72", "#353584"],
     gradientLocations: [0, 0.33, 0.66, 1],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
@@ -90,8 +90,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         r: 68,
         stops: [
           { offset: 0, color: "#5F69FF", opacity: 0.26 },
-          { offset: 0.3, color: "#4650B4", opacity: 0.13 },
-          { offset: 0.64, color: "#4650B4", opacity: 0 },
+          { offset: 0.3, color: "#434DB7", opacity: 0.13 },
+          { offset: 0.64, color: "#434DB7", opacity: 0 },
         ],
       },
       {
@@ -100,8 +100,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         r: 60,
         stops: [
           { offset: 0, color: "#5F69FF", opacity: 0.2 },
-          { offset: 0.3, color: "#4650B4", opacity: 0.1 },
-          { offset: 0.6, color: "#4650B4", opacity: 0 },
+          { offset: 0.3, color: "#434DB7", opacity: 0.1 },
+          { offset: 0.6, color: "#434DB7", opacity: 0 },
         ],
       },
       {
@@ -109,9 +109,9 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         cy: 43,
         r: 45,
         stops: [
-          { offset: 0, color: "#8296F2", opacity: 0.16 },
-          { offset: 0.35, color: "#6479D6", opacity: 0.08 },
-          { offset: 0.72, color: "#6479D6", opacity: 0 },
+          { offset: 0, color: "#7F94F5", opacity: 0.16 },
+          { offset: 0.35, color: "#6177D9", opacity: 0.08 },
+          { offset: 0.72, color: "#6177D9", opacity: 0 },
         ],
       },
       {
@@ -119,9 +119,9 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
         cy: 58,
         r: 48,
         stops: [
-          { offset: 0, color: "#8296F2", opacity: 0.15 },
-          { offset: 0.38, color: "#6479D6", opacity: 0.075 },
-          { offset: 0.74, color: "#6479D6", opacity: 0 },
+          { offset: 0, color: "#7F94F5", opacity: 0.15 },
+          { offset: 0.38, color: "#6177D9", opacity: 0.075 },
+          { offset: 0.74, color: "#6177D9", opacity: 0 },
         ],
       },
     ],
