@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -38,6 +38,7 @@ import {
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+import { useSoundPreview } from "@/hooks/useSoundPreview";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   CONTENT_CAROUSEL_HEIGHT_SCALE,
@@ -126,6 +127,7 @@ export default function SonidosScreen() {
   const { version } = useCatalog();
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
+  const soundPreview = useSoundPreview();
   const {
     currentSession,
     history,
@@ -134,6 +136,9 @@ export default function SonidosScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
   const [allVisible, setAllVisible] = useState(false);
   const [allVisibleCount, setAllVisibleCount] = useState(20);
+  useFocusEffect(
+    useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
+  );
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const indigoSurface = theme.id === "tibet"
@@ -394,7 +399,13 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                  presentation="editorial"
                  ambientalTitleOnly
-                 ambientalImageLift={7}
+                 ambientalImageLift={18}
+                 soundPreview={{
+                   activeId: soundPreview.activeId,
+                   isPlaying: soundPreview.isPlaying,
+                   progress: soundPreview.progress,
+                   onToggle: soundPreview.toggle,
+                 }}
                  ambientalCardBackground={
                    theme.id === "indigo2" ? "rgba(0,0,0,0.28)" : undefined
                  }

@@ -26,6 +26,7 @@ import {
   registerSessionStopper,
   stopMixPlayback,
   stopChatPlayback,
+  stopPreviewPlayback,
 } from "@/context/audioBridge";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -1284,6 +1285,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (session.isPlaceholder) {
         stopMixPlayback();
         stopChatPlayback();
+        stopPreviewPlayback();
         flushActiveStat();
         clearSim();
         teardownLayers();
@@ -1354,6 +1356,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
       stopChatPlayback();
+      stopPreviewPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();
@@ -1536,6 +1539,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Sesión, mezcla, sonido de Descanso y audio de chat son mutuamente excluyentes.
       stopMixPlayback();
       stopChatPlayback();
+      stopPreviewPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();

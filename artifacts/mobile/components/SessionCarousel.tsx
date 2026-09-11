@@ -3,6 +3,11 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
+import Animated, {
+  type SharedValue,
+  useAnimatedProps,
+} from "react-native-reanimated";
+import Svg, { Circle } from "react-native-svg";
 import {
   Pressable,
   FlatList,
@@ -41,6 +46,41 @@ import {
 const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
+const NEON_VIOLET = "#A970FF";
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+function PreviewProgressRing({
+  size,
+  progress,
+}: {
+  size: number;
+  progress: SharedValue<number>;
+}) {
+  const strokeWidth = 2.5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: circumference * (1 - progress.value),
+  }));
+
+  return (
+    <Svg width={size} height={size}>
+      <AnimatedCircle
+        animatedProps={animatedProps}
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="rgba(249,249,249,0.9)"
+        strokeWidth={strokeWidth}
+        strokeDasharray={`${circumference} ${circumference}`}
+        strokeLinecap="round"
+        rotation="-90"
+        origin={`${size / 2}, ${size / 2}`}
+      />
+    </Svg>
+  );
+}
 
 type CarouselImageProps = {
   source: import("react-native").ImageSourcePropType;
@@ -168,6 +208,12 @@ type SessionCarouselProps = {
   squareTitleAuthorBelow?: boolean;
   /** Category-grid layout: duration pill over image, title and author below. */
   categoryGridPresentation?: boolean;
+  soundPreview?: {
+    activeId: string | null;
+    isPlaying: boolean;
+    progress: SharedValue<number>;
+    onToggle: (session: Session) => void;
+  };
 };
 
 export const SessionCarousel = React.memo(function SessionCarousel({
@@ -229,6 +275,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleOnlyBelow = false,
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
+  soundPreview,
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -372,6 +419,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
           const authorName = authorObj?.name;
           const isAmbiental = forceAmbientalVariant || s.categoryId === "ambientales";
+          const isPreviewActive = soundPreview?.activeId === s.id;
           const showAmbientalTitleOnly = ambientalTitleOnly && isAmbiental;
            const hasSecondaryMeta =
             effectiveShowMetaBelow ||
@@ -385,7 +433,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 if (openForSession(s)) return;
                 onPress(s);
               }}
-              style={[styles.card, cardStyle]}
+              style={[
+                styles.card,
+                cardStyle,
+                isPreviewActive && styles.previewActiveCard,
+              ]}
             >
               <View
                 style={[
@@ -394,7 +446,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
                     borderWidth: 1,
-                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
+                    borderColor: isPreviewActive
+                      ? NEON_VIOLET
+                      : ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
               >
@@ -416,6 +470,56 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         },
                       ]}
                     />
+                    {soundPreview && (
+                      <>
+                        {isPreviewActive && (
+                          <View
+                            pointerEvents="none"
+                            style={[
+                              styles.previewRing,
+                              {
+                                width: ambientalImageSize + 6,
+                                height: ambientalImageSize + 6,
+                                left: (cw - ambientalImageSize) / 2 - 4,
+                                top: (ch - ambientalImageSize) / 2 - 4 - ambientalImageLift,
+                              },
+                            ]}
+                          >
+                            <PreviewProgressRing
+                              size={ambientalImageSize + 6}
+                              progress={soundPreview.progress}
+                            />
+                          </View>
+                        )}
+                        <Pressable
+                          onPress={(event) => {
+                            event.stopPropagation();
+                            soundPreview.onToggle(s);
+                          }}
+                          hitSlop={8}
+                          accessibilityRole="button"
+                          accessibilityLabel={`${isPreviewActive && soundPreview.isPlaying ? "Pausar" : "Reproducir"} preview de ${s.title}`}
+                          style={[
+                            styles.previewButton,
+                            {
+                              left: (cw - 34) / 2,
+                              top:
+                                (ch - ambientalImageSize) / 2 -
+                                ambientalImageLift +
+                                ambientalImageSize +
+                                5,
+                            },
+                          ]}
+                        >
+                          <Feather
+                            name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
+                            size={16}
+                            color="#F9F9F9"
+                            style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
+                          />
+                        </Pressable>
+                      </>
+                    )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
@@ -755,6 +859,13 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: { width: CARD_W },
+  previewActiveCard: {
+    shadowColor: NEON_VIOLET,
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 7,
+  },
   thumbWrap: {
     width: CARD_W,
     height: CARD_W,
@@ -765,6 +876,22 @@ const styles = StyleSheet.create({
   ambientalImage: {
     position: "absolute",
     overflow: "hidden",
+  },
+  previewRing: {
+    position: "absolute",
+    zIndex: 3,
+  },
+  previewButton: {
+    position: "absolute",
+    zIndex: 5,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1.5,
+    borderColor: NEON_VIOLET,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {

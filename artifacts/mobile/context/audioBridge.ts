@@ -13,6 +13,7 @@ type Stopper = () => void;
 let sessionStopper: Stopper | null = null;
 let mixStopper: Stopper | null = null;
 let chatStopper: Stopper | null = null;
+let previewStopper: Stopper | null = null;
 
 export function registerSessionStopper(fn: Stopper | null) {
   sessionStopper = fn;
@@ -30,10 +31,30 @@ export function registerChatStopper(fn: Stopper | null) {
   chatStopper = fn;
 }
 
+export function registerPreviewStopper(fn: Stopper | null) {
+  previewStopper = fn;
+}
+
 /** Detiene la sesión que estuviera sonando (llamar al iniciar una mezcla o audio de chat). */
 export function stopSessionPlayback() {
   try {
     sessionStopper?.();
+    previewStopper?.();
+  } catch {
+    // ignore
+  }
+}
+
+/** Detiene sesión, mezcla y chat antes de iniciar un preview, sin detener el preview nuevo. */
+export function stopOtherAudioForPreview() {
+  try { sessionStopper?.(); } catch {}
+  try { mixStopper?.(); } catch {}
+  try { chatStopper?.(); } catch {}
+}
+
+export function stopPreviewPlayback() {
+  try {
+    previewStopper?.();
   } catch {
     // ignore
   }
