@@ -602,8 +602,6 @@ export function ExploreScreen({
                 "__descanzo__",
                 "__mezcla__",
                 "__geometrix__",
-                "ambientales",
-                "charlas",
               ]}
               discoverTieredLayout
             />

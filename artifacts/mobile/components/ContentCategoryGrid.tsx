@@ -212,7 +212,7 @@ export function ContentCategoryGrid({
 
   if (discoverTieredLayout) {
     const cardWidth = Math.floor(
-      (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP) / 2,
+      (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP * 2) / 3,
     );
     const cardHeight = Math.round(cardWidth * 0.66) - 16;
 
