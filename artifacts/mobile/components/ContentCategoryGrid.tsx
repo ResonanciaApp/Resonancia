@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  type TextStyle,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -214,7 +215,7 @@ export function ContentCategoryGrid({
     const cardWidth = Math.floor(
       (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP * 2) / 3,
     );
-    const cardHeight = Math.round(cardWidth * 0.66) + 9;
+    const cardHeight = Math.round(cardWidth * 0.66) + 2;
 
     return (
       <View
@@ -428,14 +429,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   discoverCard: {
-    borderRadius: 11,
+    borderRadius: 21,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
   discoverCardImage: {
     width: "100%",
-    borderRadius: 14,
+    borderRadius: 21,
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.25)",
   },
@@ -454,9 +455,9 @@ const styles = StyleSheet.create({
   discoverCardTitle: {
     color: "#FBFBFB",
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 19,
-    fontWeight: "600",
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "650" as unknown as TextStyle["fontWeight"],
     textAlign: "center",
   },
   watercolorHorizontalContent: {

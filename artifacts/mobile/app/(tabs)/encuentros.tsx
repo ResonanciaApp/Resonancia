@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   feedEmptyIcon: {
     fontSize: 22,
-    color: "rgba(190,150,80,0.5)",
+    color: "#F9F9F9",
   },
   feedEmpty: {
     fontFamily: "Manrope",
