@@ -309,9 +309,6 @@ export function ExploreScreen({
       : activeSceneId === "indigo2"
         ? "rgba(0,0,0,0.28)"
         : "rgba(181,211,255,0.07)";
-  const otherThemeDescriptionColor = activeSceneId === "indigo2"
-    ? "#F0F0F0"
-    : "rgba(255,255,255,0.62)";
   const editorialDiscoverCarousels = useMemo(
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
@@ -754,6 +751,17 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
+          {editorialDiscoverCarousels.map((carousel) => (
+            <EditorialPlaylistCarousel
+              key={carousel.id}
+              title={carousel.title}
+              playlists={carousel.playlists}
+              onPress={(playlist) =>
+                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+              }
+            />
+          ))}
+
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
               Explora según tu tiempo
@@ -785,17 +793,6 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <EditorialPlaylistCarousel
-              key={carousel.id}
-              title={carousel.title}
-              playlists={carousel.playlists}
-              onPress={(playlist) =>
-                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-              }
-            />
-          ))}
-
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -813,49 +810,36 @@ export function ExploreScreen({
                     accessibilityLabel={`${card.label}. ${meta?.description ?? card.description}`}
                     style={({ pressed }) => [
                       styles.themeGridCard,
-                      {
-                        backgroundColor: otherThemeCardSurfaceColor,
-                        opacity: pressed ? 0.72 : 1,
-                      },
+                      { opacity: pressed ? 0.72 : 1 },
                     ]}
                   >
-                    <View style={styles.themeGridIcon}>
-                      {meta ? (
+                    <View
+                      style={[
+                        styles.themeGridImageWrap,
+                        { backgroundColor: otherThemeCardSurfaceColor },
+                      ]}
+                    >
+                      {card.image ? (
+                        <Image
+                          source={card.image}
+                          style={StyleSheet.absoluteFill}
+                          contentFit="cover"
+                          cachePolicy="memory-disk"
+                          transition={IMAGE_TRANSITION}
+                        />
+                      ) : meta ? (
                         <Feather
                           name={meta.icon}
                           size={meta.iconSize ?? 27}
                           color={meta.color}
                         />
-                      ) : card.image ? (
-                        <Image
-                          source={card.image}
-                          style={styles.themeGridDynamicImage}
-                          contentFit="cover"
-                          cachePolicy="memory-disk"
-                        />
                       ) : (
                         <Feather name="circle" size={27} color="#C8A6FF" />
                       )}
                     </View>
-                    <View style={styles.themeGridCopy}>
-                      <Text style={styles.themeGridLabel} numberOfLines={1}>
-                        {card.label}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.themeGridDescription,
-                          { color: otherThemeDescriptionColor },
-                        ]}
-                        numberOfLines={1}
-                      >
-                        {meta?.description ?? card.description}
-                      </Text>
-                    </View>
-                    <Feather
-                      name="chevron-right"
-                      size={23}
-                      color="rgba(255,255,255,0.72)"
-                    />
+                    <Text style={styles.themeGridLabel} numberOfLines={2}>
+                      {card.label}
+                    </Text>
                   </Pressable>
                 );
               })}
@@ -1276,53 +1260,30 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   themeGrid: {
-    gap: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 14,
+    rowGap: 18,
   },
   themeGridCard: {
-    width: "100%",
-    minHeight: 92,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 16,
-    paddingRight: 13,
-    paddingVertical: 14,
+    width: (width - H_PAD * 2 - 14) / 2,
   },
-  themeGridIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255,255,255,0.13)",
+  themeGridImageWrap: {
+    width: "100%",
+    aspectRatio: 1.35,
+    borderRadius: 14,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 20,
-  },
-  themeGridDynamicImage: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-  },
-  themeGridCopy: {
-    flex: 1,
-    minWidth: 0,
   },
   themeGridLabel: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
-    fontSize: 15,
-    lineHeight: 19,
+    fontSize: 14,
+    lineHeight: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
-  },
-  themeGridDescription: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.62)",
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: "400",
-    marginTop: 1,
+    marginTop: 8,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti
