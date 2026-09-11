@@ -151,10 +151,8 @@ function brightenHexColor(color: string, amount = 0.5): string {
 }
 
 function ProfileMembershipModules({
-  secondaryTextColor,
   foregroundColor,
 }: {
-  secondaryTextColor?: string;
   foregroundColor: string;
 }) {
   return (
@@ -197,7 +195,7 @@ function ProfileMembershipModules({
                     {plan.name}
                   </Text>
                   <Text
-                    style={[styles.membershipPlanEyebrow, secondaryTextColor && { color: secondaryTextColor }]}
+                    style={[styles.membershipPlanEyebrow, { color: "#F4F4F4" }]}
                     numberOfLines={1}
                   >
                     {plan.eyebrow}
@@ -1248,7 +1246,6 @@ export function ProfileScreenBase({
           </View>
           <View style={styles.profileCardDivider} />
           <ProfileMembershipModules
-            secondaryTextColor={profileDescriptionColor}
             foregroundColor={colors.foreground}
           />
         </View>
