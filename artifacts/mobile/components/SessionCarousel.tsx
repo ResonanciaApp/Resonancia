@@ -866,7 +866,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     <View style={styles.favoriteGlassTint} />
                     <SessionCategoryIcon
                       categoryId={s.categoryId}
-                      size={32}
+                      size={29}
+                      glyphSize={16}
                       backgroundColor="transparent"
                     />
                   </View>
@@ -1095,9 +1096,9 @@ const styles = StyleSheet.create({
     zIndex: 5,
     top: 12,
     left: 12,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 29,
+    height: 29,
+    borderRadius: 14.5,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

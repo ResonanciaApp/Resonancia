@@ -128,18 +128,20 @@ export function SessionCategoryIcon({
   categoryId,
   style,
   size = 19,
+  glyphSize,
   showGlyph = true,
   backgroundColor,
 }: {
   categoryId?: string;
   style?: object;
   size?: number;
+  glyphSize?: number;
   showGlyph?: boolean;
   backgroundColor?: string;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
-  const iconSize = Math.round(size * 0.63);
+  const iconSize = glyphSize ?? Math.round(size * 0.63);
 
   return (
     <View
