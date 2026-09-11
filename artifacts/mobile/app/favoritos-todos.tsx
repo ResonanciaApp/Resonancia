@@ -197,7 +197,7 @@ export default function FavoritosTodosScreen() {
     outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
   });
   const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
-    const compact = event.nativeEvent.contentOffset.y > 8;
+    const compact = event.nativeEvent.contentOffset.y > 0.5;
     if (compact !== compactRef.current) {
       compactRef.current = compact;
       Animated.timing(titleProgress, { toValue: compact ? 1 : 0, duration: 300, useNativeDriver: true }).start();
@@ -279,13 +279,17 @@ export default function FavoritosTodosScreen() {
           ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <LinearGradient
+          <Animated.View
             pointerEvents="none"
-            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
+            style={[StyleSheet.absoluteFill, { opacity: titleProgress }]}
+          >
+            <LinearGradient
+              colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
