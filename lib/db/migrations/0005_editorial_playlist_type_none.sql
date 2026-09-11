@@ -1,0 +1,1 @@
+ALTER TYPE editorial_playlist_type ADD VALUE IF NOT EXISTS 'none';

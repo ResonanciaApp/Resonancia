@@ -129,54 +129,11 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo3: {
     id: "indigo3",
     label: "Indigo 3",
-    gradient: ["#2B1E54", "#2B2258", "#362D70", "#423782"],
-    gradientLocations: [0, 0.33, 0.66, 1],
+    gradient: ["#000000", "#000000"],
     gradientStart: { x: 0.5, y: 0 },
     gradientEnd: { x: 0.5, y: 1 },
     solid: "#000000",
     accent: "#E8E8E8",
-    radialGlows: [
-      {
-        cx: 50,
-        cy: 3,
-        r: 68,
-        stops: [
-          { offset: 0, color: "#5F69FF", opacity: 0.26 },
-          { offset: 0.3, color: "#424CB8", opacity: 0.13 },
-          { offset: 0.64, color: "#424CB8", opacity: 0 },
-        ],
-      },
-      {
-        cx: 50,
-        cy: 100,
-        r: 60,
-        stops: [
-          { offset: 0, color: "#5F69FF", opacity: 0.2 },
-          { offset: 0.3, color: "#424CB8", opacity: 0.1 },
-          { offset: 0.6, color: "#424CB8", opacity: 0 },
-        ],
-      },
-      {
-        cx: 0,
-        cy: 43,
-        r: 45,
-        stops: [
-          { offset: 0, color: "#7F94F5", opacity: 0.16 },
-          { offset: 0.35, color: "#6177D9", opacity: 0.08 },
-          { offset: 0.72, color: "#6177D9", opacity: 0 },
-        ],
-      },
-      {
-        cx: 100,
-        cy: 58,
-        r: 48,
-        stops: [
-          { offset: 0, color: "#7F94F5", opacity: 0.15 },
-          { offset: 0.38, color: "#6177D9", opacity: 0.075 },
-          { offset: 0.74, color: "#6177D9", opacity: 0 },
-        ],
-      },
-    ],
   },
 };
 

@@ -5295,7 +5295,7 @@ components:
           type: string
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual]
+          enum: [meditative, relaxation, ritual, none]
         sortOrder:
           type: integer
         isActive:
@@ -5343,7 +5343,7 @@ components:
           enum: [sessions, music]
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual]
+          enum: [meditative, relaxation, ritual, none]
         sortOrder:
           type: integer
         isActive:
@@ -5393,7 +5393,7 @@ components:
           enum: [sessions, music]
         editorialType:
           type: string
-          enum: [meditative, relaxation, ritual]
+          enum: [meditative, relaxation, ritual, none]
         sortOrder:
           type: integer
         isActive:

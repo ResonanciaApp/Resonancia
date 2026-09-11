@@ -52,7 +52,9 @@ const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
 
 function getTabBarBackground(activeSceneId: string) {
-  return activeSceneId === "indigo2" || activeSceneId === "indigo3"
+  return activeSceneId === "indigo3"
+    ? "#000000"
+    : activeSceneId === "indigo2"
     ? "#150D2E"
     : activeSceneId === "resonancia"
       ? "#090B17"
@@ -181,7 +183,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
-  const indigo2Mode = activeSceneId === "indigo2" || activeSceneId === "indigo3";
+  const indigo2Mode = activeSceneId === "indigo2";
   const tabBarBackground = getTabBarBackground(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;

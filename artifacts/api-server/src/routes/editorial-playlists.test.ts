@@ -90,6 +90,9 @@ beforeAll(async () => {
     END $$;
   `);
   await db.execute(sql`
+    ALTER TYPE editorial_playlist_type ADD VALUE IF NOT EXISTS 'none';
+  `);
+  await db.execute(sql`
     ALTER TABLE catalog_playlists
       ADD COLUMN IF NOT EXISTS editorial_type editorial_playlist_type
       NOT NULL DEFAULT 'meditative';
@@ -209,7 +212,7 @@ describe("editorial playlist contract", () => {
         title: "Selección editorial",
         description: "Varias categorías",
         playlistType: "sessions",
-        editorialType: "relaxation",
+        editorialType: "none",
         durationLabel: "25 min",
         sessionIds: [sessionIds[0], sessionIds[1]],
         placements: [
@@ -230,7 +233,7 @@ describe("editorial playlist contract", () => {
     playlistId = response.body.id;
     createdPlaylistIds.push(playlistId);
     expect(response.body.sessionIds).toEqual(sessionIds.slice(0, 2));
-    expect(response.body.editorialType).toBe("relaxation");
+    expect(response.body.editorialType).toBe("none");
     expect(response.body.placements).toEqual([
       { surface: "discover", sortOrder: 2, isActive: true },
       { surface: "sleep", sortOrder: 1, isActive: false },

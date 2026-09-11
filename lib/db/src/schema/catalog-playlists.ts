@@ -25,6 +25,7 @@ export const editorialPlaylistTypeEnum = pgEnum("editorial_playlist_type", [
   "meditative",
   "relaxation",
   "ritual",
+  "none",
 ]);
 
 export const catalogPlaylistsTable = pgTable("catalog_playlists", {

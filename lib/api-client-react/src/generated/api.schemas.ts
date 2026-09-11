@@ -945,6 +945,7 @@ export const CatalogPlaylistEditorialType = {
   meditative: 'meditative',
   relaxation: 'relaxation',
   ritual: 'ritual',
+  none: 'none',
 } as const;
 
 export interface CatalogPlaylist {
@@ -981,6 +982,7 @@ export const AdminPlaylistInputEditorialType = {
   meditative: 'meditative',
   relaxation: 'relaxation',
   ritual: 'ritual',
+  none: 'none',
 } as const;
 
 export interface AdminPlaylistInput {
@@ -1031,6 +1033,7 @@ export const AdminPlaylistUpdateEditorialType = {
   meditative: 'meditative',
   relaxation: 'relaxation',
   ritual: 'ritual',
+  none: 'none',
 } as const;
 
 export interface AdminPlaylistUpdate {

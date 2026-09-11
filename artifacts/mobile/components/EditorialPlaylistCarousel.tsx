@@ -80,15 +80,17 @@ export function EditorialPlaylistCarousel({
                 colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
                 style={StyleSheet.absoluteFill}
               />
-              <View style={styles.typePill}>
-                <Text style={styles.typeText}>
-                  {playlist.editorialType === "relaxation"
-                    ? "Relajación"
-                    : playlist.editorialType === "ritual"
-                      ? "Ritual"
-                      : "Meditativa"}
-                </Text>
-              </View>
+              {playlist.editorialType !== "none" ? (
+                <View style={styles.typePill}>
+                  <Text style={styles.typeText}>
+                    {playlist.editorialType === "relaxation"
+                      ? "Relajación"
+                      : playlist.editorialType === "ritual"
+                        ? "Ritual"
+                        : "Meditativa"}
+                  </Text>
+                </View>
+              ) : null}
               <View style={styles.meta}>
                 <SessionDurationBadge
                   label={playlist.durationLabel}

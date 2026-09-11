@@ -48,7 +48,7 @@ type PlaylistForm = {
   savedCount: number;
   sessionIds: string[];
   playlistType: "sessions" | "music";
-  editorialType: "meditative" | "relaxation" | "ritual";
+  editorialType: "meditative" | "relaxation" | "ritual" | "none";
   isActive: boolean;
 };
 
@@ -498,6 +498,7 @@ function PlaylistForm({
               <SelectItem value="meditative">Meditativa</SelectItem>
               <SelectItem value="relaxation">Relajación</SelectItem>
               <SelectItem value="ritual">Ritual</SelectItem>
+              <SelectItem value="none">Sin píldora</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -24,7 +24,7 @@ export type Playlist = {
   durationLabel: string;
   sessionIds: string[];
   playlistType?: "sessions" | "music";
-  editorialType: "meditative" | "relaxation" | "ritual";
+  editorialType: "meditative" | "relaxation" | "ritual" | "none";
   /** Publicaciones independientes del contenido de la playlist. */
   placements?: EditorialPlacement[];
   isActive?: boolean;
@@ -208,7 +208,9 @@ export function applyPlaylistsSnapshot(
       sessionIds: snap.sessionIds ?? [],
       playlistType: snap.playlistType === "music" ? "music" : "sessions",
       editorialType:
-        snap.editorialType === "relaxation" || snap.editorialType === "ritual"
+        snap.editorialType === "relaxation" ||
+        snap.editorialType === "ritual" ||
+        snap.editorialType === "none"
           ? snap.editorialType
           : "meditative",
       placements,

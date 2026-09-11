@@ -575,6 +575,7 @@ const editorialPlaylistTypeSchema = zod4.enum([
   "meditative",
   "relaxation",
   "ritual",
+  "none",
 ]);
 
 const adminPlaylistInputSchema = insertCatalogPlaylistSchema
