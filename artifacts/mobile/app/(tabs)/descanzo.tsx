@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
+import { SymbolView } from "expo-symbols";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -329,7 +330,11 @@ export default function DescansoScreen() {
               accessibilityLabel="Buscar en Dormir"
               testID="sleep-search-button"
             >
-              <Feather name="search" size={24} color={colors.foreground} />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
+              ) : (
+                <Feather name="search" size={24} color={colors.foreground} />
+              )}
             </Pressable>
           </View>
         </Animated.View>
@@ -354,7 +359,11 @@ export default function DescansoScreen() {
                 accessibilityLabel="Buscar en Dormir"
                 testID="sleep-search-button"
               >
-                <Feather name="search" size={24} color={colors.foreground} />
+                {Platform.OS === "ios" ? (
+                  <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
+                ) : (
+                  <Feather name="search" size={24} color={colors.foreground} />
+                )}
               </Pressable>
             </View>
             <View style={styles.sleepTabsHeader}>

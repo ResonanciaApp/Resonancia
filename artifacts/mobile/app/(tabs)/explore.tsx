@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { SymbolView } from "expo-symbols";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -552,7 +553,11 @@ export function ExploreScreen({
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"
           >
-            <Feather name="search" size={24} color="#F4F4F4" />
+            {Platform.OS === "ios" ? (
+              <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+            ) : (
+              <Feather name="search" size={24} color="#F4F4F4" />
+            )}
           </Pressable>
         </View>
       </Animated.View>
@@ -576,7 +581,11 @@ export function ExploreScreen({
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
             >
-              <Feather name="search" size={24} color="#F4F4F4" />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+              ) : (
+                <Feather name="search" size={24} color="#F4F4F4" />
+              )}
             </Pressable>
           </View>
         </View>
@@ -670,17 +679,6 @@ export function ExploreScreen({
             />
           </View>
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <EditorialPlaylistCarousel
-              key={carousel.id}
-              title={carousel.title}
-              playlists={carousel.playlists}
-              onPress={(playlist) =>
-                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-              }
-            />
-          ))}
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -736,6 +734,17 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          {editorialDiscoverCarousels.map((carousel) => (
+            <EditorialPlaylistCarousel
+              key={carousel.id}
+              title={carousel.title}
+              playlists={carousel.playlists}
+              onPress={(playlist) =>
+                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+              }
+            />
+          ))}
 
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
@@ -1114,8 +1123,8 @@ const styles = StyleSheet.create({
     minWidth: DURATION_CARD_WIDTH,
     height: 44,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,

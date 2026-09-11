@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SymbolView } from "expo-symbols";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
@@ -314,7 +315,11 @@ export default function SonidosScreen() {
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonidos"
             >
-              <Feather name="search" size={24} color={colors.foreground} />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
+              ) : (
+                <Feather name="search" size={24} color={colors.foreground} />
+              )}
             </Pressable>
           </View>
         </Animated.View>
@@ -338,7 +343,11 @@ export default function SonidosScreen() {
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonidos"
             >
-              <Feather name="search" size={24} color={colors.foreground} />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
+              ) : (
+                <Feather name="search" size={24} color={colors.foreground} />
+              )}
             </Pressable>
           </View>
           <View style={styles.sonidosTabsHeader}>
