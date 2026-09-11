@@ -1033,7 +1033,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     // so it never leaks into the next session's event.
     const completed = statCompletedRef.current;
     statCompletedRef.current = false;
-    if (secondsListened < STAT_MIN_SECONDS) return;
+    // Una finalización natural siempre debe persistirse aunque la sesión se
+    // haya reanudado cerca del final. El mínimo solo filtra reproducciones
+    // abandonadas, no sesiones completadas.
+    if (secondsListened < STAT_MIN_SECONDS && !completed) return;
     const event: StatEvent = {
       sessionId: session.id,
       categoryId: session.categoryId,
