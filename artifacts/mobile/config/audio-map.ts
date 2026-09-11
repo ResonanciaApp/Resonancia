@@ -24,6 +24,8 @@ const BUNDLED_AUDIO_MAP: Record<BundledAudioSessionId, ReturnType<typeof require
   "28": require("@/assets/audio/sesion_cuencos_mix.mp3"),
   "29": require("@/assets/audio/prueba1.mp3"),
   "30": require("@/assets/audio/prueba1.mp3"),
+  "test-ambiental-01": require("@/assets/audio/rio_orilla_mar.wav"),
+  "test-ambiental-02": require("@/assets/audio/pajaros_ambiente.mp3"),
 };
 
 export const AUDIO_MAP: Record<string, ReturnType<typeof require> | undefined> =

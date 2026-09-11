@@ -11,6 +11,8 @@ export const BUNDLED_AUDIO_SESSION_IDS = [
   "28",
   "29",
   "30",
+  "test-ambiental-01",
+  "test-ambiental-02",
 ] as const;
 
 export type BundledAudioSessionId = (typeof BUNDLED_AUDIO_SESSION_IDS)[number];

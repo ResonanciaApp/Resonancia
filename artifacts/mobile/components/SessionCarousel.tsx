@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -507,13 +507,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 (ch - ambientalImageSize) / 2 -
                                 ambientalImageLift +
                                 ambientalImageSize +
-                                5,
+                                -1,
                             },
                           ]}
                         >
-                          <Feather
+                          <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
-                            size={16}
+                            size={19}
                             color="#F9F9F9"
                             style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
                           />
