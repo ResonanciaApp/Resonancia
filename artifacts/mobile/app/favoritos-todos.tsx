@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -18,6 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { VideoCard } from "@/components/VideoCard";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
@@ -31,22 +32,18 @@ import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
 import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { PLAYLISTS, type EditorialPlaylist } from "@/data/playlists";
+import { useCatalog } from "@/context/CatalogContext";
+import {
+  buildVisibleFavoriteTabs,
+  FAVORITE_COLLECTION_TABS,
+  resolveSavedEditorialFavorites,
+  type FavoriteCollectionTabId,
+} from "@/lib/favorites-home-helpers";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
-const FAV_TABS = [
-  { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
-  { id: "sesiones",     label: "Sonoterapia",  categoryId: "sonidos-ancestrales" },
-  { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
-  { id: "ambientales",  label: "Ambientales",  categoryId: "ambientales" },
-  { id: "historias",    label: "Historias",    categoryId: "historias" },
-  { id: "charlas",      label: "Charlas",      categoryId: "charlas" },
-  { id: "videos",       label: "Videos",       categoryId: null },
-] as const;
-
-type FavTabId = typeof FAV_TABS[number]["id"];
-
 function FavPill({
   sel, label, indigo2BackgroundColor, onPress,
 }: {
@@ -83,13 +80,80 @@ function FavPill({
   );
 }
 
+function FavoriteSessionsCarousel({
+  title,
+  tabId,
+  sessions,
+  isPremium,
+  onPress,
+}: {
+  title: string;
+  tabId: FavoriteCollectionTabId;
+  sessions: Session[];
+  isPremium: boolean;
+  onPress: (session: Session) => void;
+}) {
+  const ambiental = tabId === "ambientales";
+  return (
+    <SessionCarousel
+      title={title}
+      sessions={sessions}
+      isPremium={isPremium}
+      onPress={onPress}
+      presentation="editorial"
+      sleepMetadataBelow={!ambiental}
+      showSleepCategoryPill={false}
+      trailingPeek={16}
+      ambientalTitleOnly={ambiental}
+      ambientalImageLift={ambiental ? 9 : undefined}
+      ambientalImageFillTop={ambiental}
+      ambientalCardBackground={ambiental ? "rgba(0,0,0,0.28)" : undefined}
+      ambientalCardBorderColor={ambiental ? "rgba(249,249,249,0.2)" : undefined}
+      ambientalCardBorderWidth={ambiental ? 1 : undefined}
+      ambientalCardBorderRadius={ambiental ? 28 : undefined}
+    />
+  );
+}
+
+function FavoriteVideosCarousel({
+  title,
+  videos,
+  onOptionsPress,
+}: {
+  title: string;
+  videos: VideoItem[];
+  onOptionsPress: (video: VideoItem) => void;
+}) {
+  return (
+    <View style={styles.videoCarouselSection}>
+      <Text style={styles.carouselTitle}>{title}</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.videoCarouselScroll}
+        contentContainerStyle={styles.videoCarouselContent}
+      >
+        {videos.map((video) => (
+          <VideoCard
+            key={video.id}
+            video={video}
+            width={CARD_W}
+            onOptionsPress={() => onOptionsPress(video)}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function FavoritosTodosScreen() {
   const goBack = useBackOverride();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites, playSession, currentSession } = usePlayer();
   const { isPremium } = usePremium();
-  const { favFolders } = useFoldersPlaylists();
+  const { favFolders, savedEditorialPlaylistIds } = useFoldersPlaylists();
+  const { version: catalogVersion } = useCatalog();
   const { favoriteVideoIds } = useVideosState();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const { videos: allVideos } = useVideos();
@@ -102,7 +166,7 @@ export default function FavoritosTodosScreen() {
     ? "rgba(181,211,255,0.057)"
     : "rgba(255,255,255,0.12)";
 
-  const [activeTab, setActiveTab] = useState<FavTabId>("sesiones");
+  const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>("all");
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
@@ -132,23 +196,48 @@ export default function FavoritosTodosScreen() {
       .filter((id) => !inAnyFolder.has(id))
       .map((id) => getSessionById(id))
       .filter((s): s is Session => s !== undefined);
-  }, [favorites, favFolders]);
-
-  const activeCategory = FAV_TABS.find((t) => t.id === activeTab)!.categoryId;
-  const tabSessions = useMemo(
-    () => favSessions.filter((s) => s.categoryId === activeCategory),
-    [favSessions, activeCategory],
-  );
+  }, [favorites, favFolders, catalogVersion]);
 
   const favVideos = useMemo(
     () => allVideos.filter((v) => favoriteVideoIds.includes(v.id)),
     [allVideos, favoriteVideoIds],
   );
 
+  const favoritePlaylists = useMemo(
+    () => resolveSavedEditorialFavorites(savedEditorialPlaylistIds, PLAYLISTS),
+    [savedEditorialPlaylistIds, catalogVersion],
+  );
+
+  const visibleTabs = useMemo(
+    () => buildVisibleFavoriteTabs(
+      favSessions.map((session) => session.categoryId),
+      favVideos.length > 0,
+      favoritePlaylists.length > 0,
+    ),
+    [favSessions, favVideos.length, favoritePlaylists.length],
+  );
+  const visibleContentTabs = useMemo(
+    () => visibleTabs.filter((tab) => tab.id !== "all"),
+    [visibleTabs],
+  );
+
+  useEffect(() => {
+    if (!visibleTabs.some((tab) => tab.id === activeTab)) setActiveTab("all");
+  }, [activeTab, visibleTabs]);
+
+  const activeCategory = FAVORITE_COLLECTION_TABS.find((tab) => tab.id === activeTab)?.categoryId;
+  const tabSessions = useMemo(
+    () => favSessions.filter((s) => s.categoryId === activeCategory),
+    [favSessions, activeCategory],
+  );
+
   const openSession = (s: Session) => {
     if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     router.push(`/session/${s.id}` as never);
+  };
+  const openEditorialPlaylist = (playlist: EditorialPlaylist) => {
+    router.push(`/editorial-playlist/${encodeURIComponent(playlist.id)}` as never);
   };
 
   return (
@@ -210,7 +299,7 @@ export default function FavoritosTodosScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.tabRowContent}
             >
-              {FAV_TABS.map((tab) => (
+              {visibleTabs.map((tab) => (
                 <FavPill
                   key={tab.id}
                   sel={activeTab === tab.id}
@@ -230,8 +319,54 @@ export default function FavoritosTodosScreen() {
           scrollEventThrottle={16}
           onScroll={handleScroll}
         >
-          {/* Grilla */}
-          {activeTab === "videos" ? (
+          {activeTab === "all" ? (
+            visibleContentTabs.length === 0 ? (
+              <View style={styles.empty}>
+                <Feather name="heart" size={20} color="#f9f9f9" />
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  Aún no tienes favoritos.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.allCollections}>
+                {visibleContentTabs.map((tab) => {
+                  if (tab.id === "videos") {
+                    return (
+                      <FavoriteVideosCarousel
+                        key={tab.id}
+                        title={tab.label}
+                        videos={favVideos}
+                        onOptionsPress={setActionsVideo}
+                      />
+                    );
+                  }
+                  if (tab.id === "playlists") {
+                    return (
+                      <EditorialPlaylistCarousel
+                        key={tab.id}
+                        title={tab.label}
+                        playlists={favoritePlaylists}
+                        onPress={openEditorialPlaylist}
+                      />
+                    );
+                  }
+                  const sessions = favSessions.filter(
+                    (session) => session.categoryId === tab.categoryId,
+                  );
+                  return (
+                    <FavoriteSessionsCarousel
+                      key={tab.id}
+                      title={tab.label}
+                      tabId={tab.id}
+                      sessions={sessions}
+                      isPremium={isPremium}
+                      onPress={openSession}
+                    />
+                  );
+                })}
+              </View>
+            )
+          ) : activeTab === "videos" ? (
             favVideos.length === 0 ? (
               <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
                 <Feather name="heart" size={20} color="#f9f9f9" />
@@ -252,6 +387,13 @@ export default function FavoritosTodosScreen() {
                 ))}
               </View>
             )
+          ) : activeTab === "playlists" ? (
+            <EditorialPlaylistCarousel
+              title=""
+              playlists={favoritePlaylists}
+              onPress={openEditorialPlaylist}
+              style={styles.playlistsTab}
+            />
           ) : tabSessions.length === 0 ? (
             <View style={styles.empty}>
               <Feather name="heart" size={20} color="#f9f9f9" />
@@ -422,6 +564,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
+  },
+  allCollections: {
+    paddingTop: 2,
+  },
+  videoCarouselSection: {
+    marginBottom: 53,
+  },
+  carouselTitle: {
+    color: "#FBFBFB",
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    marginHorizontal: H_PAD,
+    marginBottom: 17,
+  },
+  videoCarouselScroll: {
+    width: "100%",
+  },
+  videoCarouselContent: {
+    paddingHorizontal: H_PAD,
+    gap: 14,
+  },
+  playlistsTab: {
+    paddingTop: 2,
   },
   ambientalGrid: {
     paddingHorizontal: 0,
