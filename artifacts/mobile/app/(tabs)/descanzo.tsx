@@ -387,51 +387,26 @@ export default function DescansoScreen() {
             />
           ))}
           <View style={{ marginTop: -3 }}>
-            {sleepCollections.map((collection, index) => {
-              const isSleepMusic = collection.id === "musica-para-dormir";
-              return (
-                <SessionCarousel
-                  key={collection.id}
-                  title={collection.label}
-                  sessions={collection.sessions}
-                  isPremium={isPremium}
-                  onPress={handleSessionTap}
-                  style={sleepCarouselStyles[index]}
-                  presentation="editorial"
-                  cardVariant={isSleepMusic ? "ambiental" : undefined}
-                  titleSize={19}
-                  hideCategoryAboveTitle
-                  showSleepCategoryPillWithInlineDuration={!isSleepMusic}
-                  ambientalTitleOnly
-                  ambientalImageLift={isSleepMusic ? 9 : 0}
-                  ambientalImageFillTop={isSleepMusic}
-                  ambientalDurationAtImageBottom={isSleepMusic}
-                  ambientalTopRightIcon={
-                    isSleepMusic
-                      ? (collection.icon as React.ComponentProps<
-                          typeof MaterialCommunityIcons
-                        >["name"])
-                      : undefined
-                  }
-                  ambientalFooterAuthor={isSleepMusic}
-                  ambientalCardBackground={
-                    isSleepMusic ? "rgba(0,0,0,0.28)" : undefined
-                  }
-                  ambientalCardBorderColor={
-                    isSleepMusic ? "rgba(249,249,249,0.2)" : undefined
-                  }
-                  ambientalCardBorderWidth={isSleepMusic ? 1 : undefined}
-                  ambientalCardBorderRadius={isSleepMusic ? 14 : undefined}
-                  sleepOverlayMetadataStyle={
-                    isSleepMusic
-                      ? undefined
-                      : { transform: [{ translateX: 3 }, { translateY: -1 }] }
-                  }
-                  overlayGradientLocations={[0.18, 0.48, 1]}
-                  onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-                />
-              );
-            })}
+            {sleepCollections.map((collection, index) => (
+              <SessionCarousel
+                key={collection.id}
+                title={collection.label}
+                sessions={collection.sessions}
+                isPremium={isPremium}
+                onPress={handleSessionTap}
+                style={sleepCarouselStyles[index]}
+                presentation="editorial"
+                titleSize={19}
+                hideCategoryAboveTitle
+                showSleepCategoryPillWithInlineDuration
+                ambientalTitleOnly
+                sleepOverlayMetadataStyle={{
+                  transform: [{ translateX: 3 }, { translateY: -1 }],
+                }}
+                overlayGradientLocations={[0.18, 0.48, 1]}
+                onViewAll={sleepCarouselViewAllHandlers[collection.id]}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>
