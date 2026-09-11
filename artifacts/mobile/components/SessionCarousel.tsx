@@ -658,7 +658,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.favoriteButton,
                           {
-                            right: 12,
+                            left: 12,
                             top: 12,
                           },
                         ]}
@@ -1140,19 +1140,21 @@ const styles = StyleSheet.create({
   },
   ambientalFooterTitle: {
     height: undefined,
+    alignSelf: "stretch",
     fontSize: 14,
     fontWeight: "800",
     lineHeight: 18,
-    textAlign: "center",
+    textAlign: "left",
   },
   ambientalFooterAuthor: {
+    alignSelf: "stretch",
     marginTop: 3,
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "500",
     color: "rgba(249,249,249,0.72)",
-    textAlign: "center",
+    textAlign: "left",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
