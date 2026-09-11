@@ -48,7 +48,6 @@ import {
 const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
-const NEON_VIOLET = "#A970FF";
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function PreviewFadeLayer({
@@ -457,9 +456,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               }}
               style={[styles.card, cardStyle]}
             >
-              {soundPreview && (
-                <PreviewFadeLayer active={isPreviewActive} style={styles.previewActiveCard} />
-              )}
               <View
                 style={[
                   styles.thumbWrap,
@@ -508,10 +504,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               progress={soundPreview.progress}
                             />
                         </PreviewFadeLayer>
-                        <PreviewFadeLayer
-                          active={isPreviewActive}
-                          style={styles.previewBorder}
-                        />
                         <Pressable
                           onPress={(event) => {
                             event.stopPropagation();
@@ -880,23 +872,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: { width: CARD_W },
-  previewActiveCard: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 18,
-    backgroundColor: "rgba(169,112,255,0.05)",
-    shadowColor: NEON_VIOLET,
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 7,
-  },
-  previewBorder: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 4,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: NEON_VIOLET,
-  },
   thumbWrap: {
     width: CARD_W,
     height: CARD_W,
