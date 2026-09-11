@@ -148,10 +148,10 @@ export default function SonidosScreen() {
     : isIndigoThemeId(theme.id)
       ? "rgba(181,211,255,0.1)"
       : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.1)"
+        ? "rgba(0,0,0,0.28)"
         : "rgba(181,211,255,0.1)";
   const inactiveTabBorder = theme.id === "indigo2"
-    ? "rgba(255,255,255,0.04)"
+    ? "rgba(255,255,255,0.2)"
     : "rgba(255,255,255,0.1)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;

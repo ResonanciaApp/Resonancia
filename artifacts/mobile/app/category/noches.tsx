@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
   chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
-  chipIndigo2Inactive: { backgroundColor: "rgba(191,207,255,0.1)", borderColor: "rgba(255,255,255,0.04)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },
   chipSel: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#060A0F", fontWeight: "600" },

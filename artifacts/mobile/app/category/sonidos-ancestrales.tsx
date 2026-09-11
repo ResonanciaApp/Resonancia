@@ -441,7 +441,7 @@ export default function SonidosAncestalesScreen() {
   const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
   const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(191,207,255,0.1)", "rgba(191,207,255,0.1)"],
+    outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
   });
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
    chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
-  chipIndigo2Inactive: { backgroundColor: "rgba(191,207,255,0.1)", borderColor: "rgba(255,255,255,0.04)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
