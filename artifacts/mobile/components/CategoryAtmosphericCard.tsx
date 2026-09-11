@@ -105,7 +105,7 @@ export function CategoryAtmosphericCard({
             <Stop offset="0.8" stopColor={glow.diffuse} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Rect width="100" height="100" fill="rgba(255,255,255,0.045)" />
+        <Rect width="100" height="100" fill="rgba(0,0,0,0.15)" />
         <Rect width="100" height="100" fill={`url(#${primaryGradientId})`} />
         <Rect width="100" height="100" fill={`url(#${diffuseGradientId})`} />
       </Svg>
