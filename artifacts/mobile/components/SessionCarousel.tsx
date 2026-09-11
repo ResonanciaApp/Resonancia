@@ -5,11 +5,9 @@ import { router } from "expo-router";
 import React from "react";
 import Animated, {
   type SharedValue,
-  useAnimatedProps,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import Svg, { Circle } from "react-native-svg";
 import {
   Pressable,
   FlatList,
@@ -28,7 +26,6 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -50,7 +47,6 @@ const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function LineAwareAmbientalTitle({
   children,
@@ -98,37 +94,18 @@ function PreviewFadeLayer({
   );
 }
 
-function PreviewProgressRing({
-  size,
+function PreviewProgressEdge({
+  width,
   progress,
 }: {
-  size: number;
+  width: number;
   progress: SharedValue<number>;
 }) {
-  const strokeWidth = 2.5;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: circumference * (1 - progress.value),
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: width * Math.max(0, Math.min(1, progress.value)),
   }));
 
-  return (
-    <Svg width={size} height={size}>
-      <AnimatedCircle
-        animatedProps={animatedProps}
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke="rgba(249,249,249,0.9)"
-        strokeWidth={strokeWidth}
-        strokeDasharray={`${circumference} ${circumference}`}
-        strokeLinecap="round"
-        rotation="-90"
-        origin={`${size / 2}, ${size / 2}`}
-      />
-    </Svg>
-  );
+  return <Animated.View style={[styles.previewProgressEdge, animatedStyle]} />;
 }
 
 type CarouselImageProps = {
@@ -336,7 +313,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { openForSession } = useAmbientalDuration();
-  const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
@@ -549,21 +525,20 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {soundPreview && (
                       <>
                         <PreviewFadeLayer
-                            active={isPreviewActive}
-                            style={[
-                              styles.previewRing,
-                              {
-                                width: ambientalImageSize + 6,
-                                height: ambientalImageSize + 6,
-                                left: (cw - ambientalImageSize) / 2 - 4,
-                                top: (ch - ambientalImageSize) / 2 - 4 - ambientalImageLift,
-                              },
-                            ]}
-                          >
-                            <PreviewProgressRing
-                              size={ambientalImageSize + 6}
-                              progress={soundPreview.progress}
-                            />
+                          active={isPreviewActive}
+                          style={[
+                            styles.previewProgressEdgeWrap,
+                            {
+                              width: cw,
+                              left: 0,
+                              top: ambientalImageBottom - 3,
+                            },
+                          ]}
+                        >
+                          <PreviewProgressEdge
+                            width={cw}
+                            progress={soundPreview.progress}
+                          />
                         </PreviewFadeLayer>
                         <PreviewFadeLayer
                           active={isPreviewActive}
@@ -584,45 +559,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.previewButton,
                             {
                               left: 12,
-                              top: 12,
+                              top: ambientalImageBottom - 46,
                             },
                           ]}
                         >
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
-                            size={19}
+                            size={22}
                             color="#F9F9F9"
-                          />
-                        </Pressable>
-                        <Pressable
-                          onPress={(event) => {
-                            event.stopPropagation();
-                            toggleFavorite(s.id);
-                          }}
-                          hitSlop={8}
-                          accessibilityRole="button"
-                          accessibilityLabel={
-                            isFavorite(s.id)
-                              ? `Quitar ${s.title} de favoritos`
-                              : `Agregar ${s.title} a favoritos`
-                          }
-                          style={[
-                            styles.previewButton,
-                            styles.favoriteButton,
-                            {
-                              right: 12,
-                              top: 12,
-                            },
-                          ]}
-                        >
-                          <MaterialCommunityIcons
-                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
-                            size={18}
-                            color={
-                              isFavorite(s.id)
-                                ? "rgba(249,249,249,0.9)"
-                                : "rgba(249,249,249,0.7)"
-                            }
                           />
                         </Pressable>
                       </>
@@ -1017,25 +961,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     overflow: "hidden",
   },
-  previewRing: {
-    position: "absolute",
-    zIndex: 3,
-  },
   previewButton: {
     position: "absolute",
     zIndex: 5,
-    width: 31,
-    height: 31,
-    borderRadius: 15.5,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: "rgba(0,0,0,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
-  favoriteButton: {
-    width: 31,
-    height: 31,
-    borderRadius: 15.5,
-    backgroundColor: "rgba(0,0,0,0.2)",
+  previewProgressEdgeWrap: {
+    position: "absolute",
+    zIndex: 6,
+    height: 3,
+    overflow: "hidden",
+  },
+  previewProgressEdge: {
+    height: 3,
+    backgroundColor: NEON_VIOLET,
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
