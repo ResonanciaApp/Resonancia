@@ -1352,6 +1352,44 @@ export function ProfileScreenBase({
                 </View>
                 {(() => { const entry = history.slice().sort((a,b) => +new Date(b.playedAt) - +new Date(a.playedAt))[0]; const session = entry && getSessionById(entry.sessionId); return session ? <Pressable onPress={() => router.push(`/session/${session.id}` as never)} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><View><Image source={session.image as never} style={{ width: 68, height: 68, borderRadius: 10 }} contentFit="cover"/><Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>{session.durationLabel}</Text></View><Text style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }} numberOfLines={2}>{session.title}</Text></Pressable> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>; })()}
               </View>
+              <View style={styles.outlinedProfileSection}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Favoritos</Text>
+                  <Pressable onPress={() => router.push("/favoritos-todos" as never)}>
+                    <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
+                  </Pressable>
+                </View>
+                {(() => {
+                  const session = favSessions[0];
+                  return session ? (
+                    <Pressable
+                      onPress={() => router.push(`/session/${session.id}` as never)}
+                      style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+                    >
+                      <View>
+                        <Image
+                          source={session.image as never}
+                          style={{ width: 68, height: 68, borderRadius: 10 }}
+                          contentFit="cover"
+                        />
+                        <Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>
+                          {session.durationLabel}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }}
+                        numberOfLines={2}
+                      >
+                        {session.title}
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>
+                      Aquí aparecerán tus sesiones favoritas.
+                    </Text>
+                  );
+                })()}
+              </View>
             </View>
 
           </>
