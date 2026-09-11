@@ -1257,7 +1257,6 @@ export function ProfileScreenBase({
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            {false && (
             <View style={styles.profileProgressSection}>
               <View style={styles.profileProgressIntro}>
                 <Text style={[styles.profileProgressIntroTitle, { color: colors.foreground }]}>
@@ -1306,7 +1305,6 @@ export function ProfileScreenBase({
                 </View>
               </View>
             </View>
-            )}
 
             {false && <HistorialCalendar embedded outlined backgroundColor="transparent" />}
             <View style={{ marginTop: 16, gap: 12 }}>
@@ -2324,8 +2322,9 @@ const styles = StyleSheet.create({
   },
   profileProgressCard: {
     borderRadius: 14,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
