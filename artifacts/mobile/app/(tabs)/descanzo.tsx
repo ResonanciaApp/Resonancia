@@ -399,7 +399,12 @@ export default function DescansoScreen() {
                 disableAmbientalVariant={collection.id === "musica-para-dormir"}
                 sleepMetadataBelow={collection.id === "musica-para-dormir"}
                 categoryGridPresentation={collection.id === "musica-para-dormir"}
-                showCategoryBelowAuthor={collection.id === "musica-para-dormir"}
+                showCategoryIconTopLeft={collection.id === "musica-para-dormir"}
+                sleepBelowMetadataStyle={
+                  collection.id === "musica-para-dormir"
+                    ? { transform: [{ translateX: 3 }] }
+                    : undefined
+                }
                 trailingPeek={collection.id === "musica-para-dormir" ? 35 : undefined}
                 cardBorderRadius={
                   collection.id === "musica-para-dormir" ? 21 : undefined
