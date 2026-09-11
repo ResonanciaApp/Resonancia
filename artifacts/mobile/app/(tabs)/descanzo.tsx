@@ -397,8 +397,6 @@ export default function DescansoScreen() {
                 style={sleepCarouselStyles[index]}
                 presentation="editorial"
                 disableAmbientalVariant={collection.id === "musica-para-dormir"}
-                cardBorderRadius={28}
-                ambientalCardBorderRadius={28}
                 titleSize={19}
                 hideCategoryAboveTitle
                 showSleepCategoryPillWithInlineDuration
