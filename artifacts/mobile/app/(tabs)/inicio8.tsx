@@ -2464,6 +2464,28 @@ export default function HomeScreen2({
         >
         {isInicio2 && (
           <View
+            style={{
+              marginTop: 21,
+              marginBottom: INICIO2_SECTION_GAP,
+            }}
+          >
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  fontSize: 19,
+                  marginBottom: 17,
+                  paddingHorizontal: GRID_PAD,
+                },
+              ]}
+            >
+              Mensaje de los sabios
+            </Text>
+            <MessageDeck />
+          </View>
+        )}
+        {isInicio2 && (
+          <View
             style={[
               styles.inicio2ToolsSection,
               { marginTop: 21, marginBottom: INICIO2_SECTION_GAP - 11 },
