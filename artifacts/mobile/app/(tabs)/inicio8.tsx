@@ -1496,7 +1496,6 @@ export default function HomeScreen2({
     isPlaying,
     pauseResume,
     history,
-    favorites,
     statEvents,
     sessionProgress,
     getSessionProgress,
@@ -1881,15 +1880,6 @@ export default function HomeScreen2({
 
   const filteredListened = listenedRecently;
 
-  // Favoritos — sesiones marcadas como favoritas, en orden de guardado (más reciente primero)
-  const favoriteSessions = React.useMemo<Session[]>(() => {
-    return favorites
-      .map((id) => getSessionById(id))
-      .filter((s): s is Session => s !== undefined)
-      .filter((session) => session.categoryId !== "ambientales")
-      .slice(0, 10);
-  }, [favorites]);
-
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -2143,9 +2133,6 @@ export default function HomeScreen2({
   const handleViewAllRecent = useCallback(() => {
     router.push("/historial" as never);
   }, []);
-  const handleViewAllFavorites = useCallback(() => {
-    openCategory("/favoritos-todos");
-  }, [openCategory]);
   const inicio2SessionCarouselStyle = useMemo(
     () => ({ marginTop: 0, marginBottom: INICIO2_SECTION_GAP, paddingHorizontal: GRID_PAD }),
     [],
@@ -2644,24 +2631,6 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
-        {isInicio2 && (
-          <SessionCarousel
-            title="Mis favoritos"
-            sessions={favoriteSessions}
-            isPremium={isPremium}
-            onPress={handleSessionCarouselPress}
-            style={inicio2SessionCarouselStyle}
-            cardWidth={INICIO2_SQUARE_CAROUSEL_CARD_W}
-            allowOversizedCardWidth
-            squareTitleAuthorBelow
-            categoryGridPresentation
-            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={19}
-            titleSpacing={17}
-            onViewAll={handleViewAllFavorites}
-            viewAllColor={carouselViewAllColor}
-          />
-        )}
         {isInicio2 && videos.length > 0 && (
           <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
@@ -2771,23 +2740,6 @@ export default function HomeScreen2({
             titleSize={20}
           />
         )}
-        {/* ── FAVORITOS ── */}
-        {!isInicio2 && (
-          <SessionCarousel
-            title="Mis favoritos"
-            sessions={favoriteSessions}
-            isPremium={isPremium}
-            onPress={handleSessionCarouselPress}
-            style={originalSessionCarouselStyle}
-            titleOffset={10}
-            presentation="editorial"
-            titleSize={20}
-            onViewAll={handleViewAllFavorites}
-            viewAllColor={colors.accent}
-          />
-        )}
-
-
         {!isInicio2 && (
           <InicioMoodRecommendations
             selectedMoods={selectedMoods}
