@@ -166,6 +166,7 @@ type SessionCarouselProps = {
   sessions: Session[];
   isPremium: boolean;
   onPress: (s: Session) => void;
+  onLongPress?: (s: Session) => void;
   style?: object;
   titleOffset?: number;
   cardWidth?: number;
@@ -272,6 +273,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   sessions,
   isPremium,
   onPress,
+  onLongPress,
   style,
   titleOffset,
   cardWidth,
@@ -515,6 +517,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
           return (
             <PressScale
               key={s.id}
+              onLongPress={onLongPress ? () => onLongPress(s) : undefined}
               onPress={() => {
                 if (locked) { router.push("/membresia" as never); return; }
                 if (openForSession(s)) return;

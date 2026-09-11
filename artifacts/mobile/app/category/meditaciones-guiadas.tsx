@@ -382,7 +382,7 @@ export default function MeditacionesGuiadasScreen() {
               title="Sesiones recientes"
               sessions={recentInCategory}
               isPremium={isPremium}
-              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } playSession(s); openCategory(`/session/${s.id}`); }}
+              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } openCategory(`/session/${s.id}`); }}
                style={{ marginTop: 33, marginBottom: 0 }}
                presentation="editorial"
               titleSize={19}
@@ -425,11 +425,31 @@ export default function MeditacionesGuiadasScreen() {
         )}
         {(
           <>
-            <View style={styles.sessionGrid}>
-              {visibleSessions.map((s)=>(
-                <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
-              ))}
-            </View>
+            <SessionCarousel
+              title=""
+              sessions={visibleSessions}
+              isPremium={isPremium}
+              style={{ paddingHorizontal: 0 }}
+              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push('/player' as never); return; } openCategory(`/session/${s.id}`); }}
+              onLongPress={setSelectedSession}
+              showHeader={false}
+              gridLayout
+              gridScrollEnabled={false}
+              eagerRender
+              presentation="editorial"
+              disableAmbientalVariant
+              sleepMetadataBelow
+              categoryGridPresentation
+              whiteMetadataGlass
+              showDurationClock
+              sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+              cardBorderRadius={16}
+              hideCategoryAboveTitle
+              showSleepCategoryPillWithInlineDuration
+              ambientalTitleOnly
+              sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+              overlayGradientLocations={[0.18, 0.48, 1]}
+            />
             {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
           </>
         )}

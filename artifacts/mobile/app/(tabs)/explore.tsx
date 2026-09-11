@@ -602,107 +602,6 @@ export function ExploreScreen({
             />
           </View>
 
-          {SHOW_FEATURED_MOMENT && featuredMoment && (
-            <View style={styles.featuredMomentSection}>
-              <Text style={styles.sectionTitle}>Para este momento</Text>
-              <Pressable
-                onPress={() => handleSessionPress(featuredMoment)}
-                accessibilityRole="button"
-                accessibilityLabel={featuredMoment.title}
-                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-              >
-                <View style={styles.featuredMomentImageContainer}>
-                  <Image
-                    source={featuredMoment.image}
-                    style={styles.featuredMomentImage}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                  <SessionDurationBadge
-                    label={featuredMoment.durationLabel}
-                    style={styles.featuredMomentDuration}
-                  />
-                </View>
-                {(() => {
-                  const guide = featuredMoment.guideId
-                    ? getGuide(featuredMoment.guideId)
-                    : undefined;
-                  const artist = featuredMoment.artistId
-                    ? getArtist(featuredMoment.artistId)
-                    : undefined;
-                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                  const authorPhoto = guide?.photo ?? artist?.photo;
-                  return (
-                    <View style={styles.featuredMomentInfo}>
-                      {authorPhoto && (
-                        <Image
-                          source={authorPhoto}
-                          style={styles.featuredMomentAvatar}
-                          contentFit="cover"
-                          cachePolicy="memory-disk"
-                        />
-                      )}
-                      <View style={styles.featuredMomentCopy}>
-                        <Text
-                          style={[
-                            styles.featuredMomentMeta,
-                            { color: activeTheme.accent },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {featuredMoment.categoryLabel}
-                        </Text>
-                        <Text style={styles.featuredMomentTitle} numberOfLines={2}>
-                          {featuredMoment.title}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.featuredMomentAuthor,
-                            { color: activeTheme.accent },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {authorName}
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })()}
-              </Pressable>
-            </View>
-          )}
-
-          <View style={styles.durationSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durationRow}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() =>
-                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={slot.displayLabel}
-                  style={({ pressed }) => [
-                    styles.durationCard,
-                    {
-                      backgroundColor: contentCardSurfaceColor,
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -754,6 +653,37 @@ export function ExploreScreen({
                       {getSessionAuthor(session)}
                     </Text>
                   </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.durationSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor: contentCardSurfaceColor,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
                 </Pressable>
               ))}
             </ScrollView>

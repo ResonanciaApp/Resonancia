@@ -1,10 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -17,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
-import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
@@ -29,11 +28,10 @@ import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
-const { width: W } = Dimensions.get("window");
-const CARD_W = (W - H_PAD * 2 - CARD_GAP) / 2;
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -116,6 +114,10 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const { activeSceneId, theme } = useSceneTheme();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
+  const soundPreview = useSoundPreview();
+  useFocusEffect(
+    useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
+  );
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
   const categoryOverlay = useCategoryOverlayOptional();
@@ -219,23 +221,68 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       );
     }
 
+    if (id === "ambientales") {
+      return (
+        <SessionCarousel
+          title=""
+          sessions={filteredSessions}
+          isPremium={isPremium}
+          style={{ paddingHorizontal: 0 }}
+          onPress={handleSessionPress}
+          showHeader={false}
+          gridLayout
+          gridScrollEnabled={false}
+          eagerRender
+          presentation="editorial"
+          ambientalTitleOnly
+          ambientalImageLift={9}
+          ambientalImageFillTop
+          soundPreview={{
+            activeId: soundPreview.activeId,
+            isPlaying: soundPreview.isPlaying,
+            progress: soundPreview.progress,
+            onToggle: soundPreview.toggle,
+          }}
+          ambientalCardBackground="rgba(0,0,0,0.28)"
+          ambientalCardBorderColor="rgba(249,249,249,0.2)"
+          ambientalCardBorderWidth={1}
+          ambientalCardBorderRadius={28}
+          ambientalTitleOnlyMetadataStyle={{ transform: [{ translateY: -2 }] }}
+          ambientalTitleOnlyTitleStyle={{
+            height: 36,
+            textAlign: "center",
+            textAlignVertical: "top",
+          }}
+          titleSize={19}
+        />
+      );
+    }
+
     return (
-      <View style={styles.sessionGrid}>
-        {filteredSessions.map((session) => (
-          <SessionCard
-            key={session.id}
-            session={session}
-            width={CARD_W}
-            style={{ marginRight: 0 }}
-            editorialPresentation
-            sleepEditorialContent
-            showSleepCategoryPill={false}
-            showAuthorAvatar={false}
-            overridePress={() => handleSessionPress(session)}
-            cardVariant={id === "ambientales" ? "ambiental" : undefined}
-          />
-        ))}
-      </View>
+      <SessionCarousel
+        title=""
+        sessions={filteredSessions}
+        isPremium={isPremium}
+        style={{ paddingHorizontal: 0 }}
+        onPress={handleSessionPress}
+        showHeader={false}
+        gridLayout
+        gridScrollEnabled={false}
+        eagerRender
+        presentation="editorial"
+        disableAmbientalVariant
+        sleepMetadataBelow
+        categoryGridPresentation
+        whiteMetadataGlass
+        showDurationClock
+        sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+        cardBorderRadius={16}
+        hideCategoryAboveTitle
+        showSleepCategoryPillWithInlineDuration
+        ambientalTitleOnly
+        sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+        overlayGradientLocations={[0.18, 0.48, 1]}
+      />
     );
   };
 

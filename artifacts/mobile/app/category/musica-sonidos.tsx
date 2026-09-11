@@ -433,11 +433,31 @@ export default function MusicaSonidosScreen() {
         )}
         {(
           <>
-            <View style={styles.sessionGrid}>
-              {visibleSessions.map((s)=>(
-                <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
-              ))}
-            </View>
+            <SessionCarousel
+              title=""
+              sessions={visibleSessions}
+              isPremium={isPremium}
+              style={{ paddingHorizontal: 0 }}
+              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
+              onLongPress={setSelectedSession}
+              showHeader={false}
+              gridLayout
+              gridScrollEnabled={false}
+              eagerRender
+              presentation="editorial"
+              disableAmbientalVariant
+              sleepMetadataBelow
+              categoryGridPresentation
+              whiteMetadataGlass
+              showDurationClock
+              sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+              cardBorderRadius={16}
+              hideCategoryAboveTitle
+              showSleepCategoryPillWithInlineDuration
+              ambientalTitleOnly
+              sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+              overlayGradientLocations={[0.18, 0.48, 1]}
+            />
             {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
           </>
         )}
