@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#F4F4F4",
     letterSpacing: 0.2,
-    marginTop: -9,
-    transform: [{ translateX: -2 }, { translateY: -2 }],
+    marginTop: 0,
+    transform: [{ translateX: -2 }, { translateY: 1 }],
   },
   stickyHeader: {
     position: "absolute",
