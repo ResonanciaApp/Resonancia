@@ -409,7 +409,7 @@ export default function SonidosScreen() {
                  }}
                  ambientalCardBackground="rgba(0,0,0,0.28)"
                  ambientalCardBorderColor="rgba(255,255,255,0.14)"
-                 ambientalCardBorderWidth={2}
+                 ambientalCardBorderWidth={0}
                  ambientalCardBorderRadius={14}
                  ambientalTitleOnlyMetadataStyle={{
                    transform: [{ translateY: -2 }],

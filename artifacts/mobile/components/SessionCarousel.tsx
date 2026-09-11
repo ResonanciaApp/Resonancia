@@ -411,6 +411,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
             : "rgba(181,211,255,0.14)"
     );
   const ambientalImageSize = Math.round(cw * 0.72);
+  const ambientalImageBottom =
+    (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
@@ -725,6 +727,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
                           showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
+                          showAmbientalTitleOnly &&
+                            ambientalImageFillTop && {
+                              top: ambientalImageBottom,
+                              bottom: 0,
+                              justifyContent: "center",
+                              transform: [],
+                            },
                        ]}
                      >
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
@@ -763,6 +772,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
                           sleepOverlayTitleStyle,
                           showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
+                          showAmbientalTitleOnly &&
+                            ambientalImageFillTop && {
+                              height: 38,
+                              textAlignVertical: "center",
+                            },
                         ]}
                         numberOfLines={2}
                       >
