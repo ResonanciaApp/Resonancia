@@ -229,8 +229,6 @@ type SessionCarouselProps = {
   ambientalImageLift?: number;
   /** Fills the upper card area with the image down to the former circle edge. */
   ambientalImageFillTop?: boolean;
-  /** Shows duration at the lower-left corner of the filled Ambiental image. */
-  ambientalDurationAtImageBottom?: boolean;
   /** Keeps the favorite control visible without enabling sound preview. */
   showAmbientalFavorite?: boolean;
   /** Centers title and author together in the lower Ambiental card area. */
@@ -241,6 +239,8 @@ type SessionCarouselProps = {
   ambientalTitleOnlyTitleStyle?: StyleProp<TextStyle>;
   /** Shows the session category pill on Ambiental title-only cards. */
   showAmbientalCategoryPill?: boolean;
+  /** Overrides the category shown by the Ambiental compact pill. */
+  ambientalCategoryPillId?: string;
   /** Dormir-only square card with category, duration and author below the image. */
   sleepMetadataBelow?: boolean;
   /** Square card with category, duration, title and author below the image. */
@@ -315,12 +315,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalTitleOnly = false,
   ambientalImageLift = 0,
   ambientalImageFillTop = false,
-  ambientalDurationAtImageBottom = false,
   showAmbientalFavorite = false,
   ambientalFooterAuthor = false,
   ambientalTitleOnlyMetadataStyle,
   ambientalTitleOnlyTitleStyle,
   showAmbientalCategoryPill = false,
+  ambientalCategoryPillId,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
   squareTitleOnlyBelow = false,
@@ -644,20 +644,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         />
                       </Pressable>
                     )}
-                    {ambientalDurationAtImageBottom && (
-                      <SessionDurationBadge
-                        label={s.durationLabel}
-                        style={[
-                          styles.durBadge,
-                          {
-                            left: 12,
-                            top: ambientalImageBottom - 34,
-                            bottom: undefined,
-                          },
-                        ]}
-                        textStyle={styles.durText}
-                      />
-                    )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
                         title={s.title}
@@ -667,7 +653,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     {!isEditorialPresentation && !useSleepMetadataBelow &&
                       (!useOverlayMetadata || !showImageCategoryPill) && (
                       <SessionCategoryPill
-                        categoryId={s.categoryId}
+                          categoryId={ambientalCategoryPillId ?? s.categoryId}
                         leftInset={18}
                         topInset={18}
                       />

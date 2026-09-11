@@ -404,9 +404,10 @@ export default function DescansoScreen() {
                   ambientalTitleOnly
                   ambientalImageLift={isSleepMusic ? 9 : 0}
                   ambientalImageFillTop={isSleepMusic}
-                  ambientalDurationAtImageBottom={isSleepMusic}
                   showAmbientalFavorite={isSleepMusic}
                   ambientalFooterAuthor={isSleepMusic}
+                  showAmbientalCategoryPill={isSleepMusic}
+                  ambientalCategoryPillId={isSleepMusic ? "descanso" : undefined}
                   ambientalCardBackground={
                     isSleepMusic ? "rgba(0,0,0,0.28)" : undefined
                   }
