@@ -583,7 +583,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: 11,
+                              left: 12,
                               top: 12,
                             },
                           ]}
@@ -592,7 +592,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={19}
                             color="#F9F9F9"
-                            style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
                           />
                         </Pressable>
                         <Pressable
@@ -618,7 +617,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         >
                           <MaterialCommunityIcons
                             name={isFavorite(s.id) ? "heart" : "heart-outline"}
-                            size={19}
+                            size={18}
                             color={
                               isFavorite(s.id)
                                 ? "rgba(249,249,249,0.9)"
@@ -1028,15 +1027,15 @@ const styles = StyleSheet.create({
     width: 31,
     height: 31,
     borderRadius: 15.5,
-    backgroundColor: "rgba(21,13,46,0.4)",
+    backgroundColor: "rgba(255,255,255,0.3)",
     alignItems: "center",
     justifyContent: "center",
   },
   favoriteButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "rgba(21,13,46,0.4)",
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
+    backgroundColor: "rgba(255,255,255,0.3)",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
