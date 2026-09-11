@@ -1150,7 +1150,25 @@ export function ProfileScreenBase({
         scrollEventThrottle={16}
       >
         <View style={styles.dedicatedTitleRow}>
-          <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
+          <View style={styles.dedicatedTitleLeft}>
+            <Pressable
+              onPress={() =>
+                router.canGoBack()
+                  ? router.back()
+                  : router.navigate("/(tabs)/inicio-copia" as never)
+              }
+              hitSlop={8}
+              style={({ pressed }) => [
+                styles.dedicatedBackButton,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Volver"
+            >
+              <Feather name="chevron-left" size={27} color="#FBFBFB" />
+            </Pressable>
+            <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
+          </View>
           <Pressable
             hitSlop={10}
             onPress={() => router.push("/configuraciones")}
@@ -1851,6 +1869,19 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 16,
     marginHorizontal: -16,
+  },
+  dedicatedTitleLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  dedicatedBackButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   dedicatedHeroTitle: {
     fontFamily: "Manrope",
