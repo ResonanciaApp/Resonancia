@@ -2236,7 +2236,9 @@ const styles = StyleSheet.create({
     marginBottom: 19,
   },
   profileProgressCard: {
-    borderRadius: 17,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.14)",
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
