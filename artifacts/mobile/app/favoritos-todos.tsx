@@ -29,7 +29,6 @@ import { getSessionById, type Session } from "@/data/sessions";
 import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useVideos } from "@/hooks/useVideos";
-import { StickyHeaderSurface } from "@/components/StickyHeaderSurface";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { PLAYLISTS, type EditorialPlaylist } from "@/data/playlists";
 import { useCatalog } from "@/context/CatalogContext";
@@ -193,7 +192,6 @@ export default function FavoritosTodosScreen() {
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
-  const stickySurfaceOpacity = titleProgress.interpolate({ inputRange: [0, 1], outputRange: [0, 0.96] });
   const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
@@ -281,15 +279,12 @@ export default function FavoritosTodosScreen() {
           ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <StickyHeaderSurface
-            opacity={stickySurfaceOpacity}
-            tint={sceneTheme.gradient[0] as string}
-            showTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            showDivider={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            blurIntensity={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2" ? 85 : undefined}
-            showBlackTint={!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2"}
-            strongBlur={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
-            fadeBottom={isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2"}
+          <LinearGradient
+            pointerEvents="none"
+            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
           />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
@@ -600,7 +595,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   favoriteSessionGrid: {
-    paddingHorizontal: H_PAD,
+    paddingHorizontal: 0,
     marginBottom: 0,
   },
   allCollections: {
