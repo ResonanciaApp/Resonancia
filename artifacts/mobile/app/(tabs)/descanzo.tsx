@@ -419,7 +419,6 @@ export default function DescansoScreen() {
                   disableAmbientalVariant
                   sleepMetadataBelow
                   categoryGridPresentation
-                  showCategoryPillTopLeft
                   whiteMetadataGlass
                   showDurationClock
                   sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
