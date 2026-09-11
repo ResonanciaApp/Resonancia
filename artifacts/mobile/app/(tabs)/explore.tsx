@@ -730,17 +730,6 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
-          {editorialDiscoverCarousels.map((carousel) => (
-            <EditorialPlaylistCarousel
-              key={carousel.id}
-              title={carousel.title}
-              playlists={carousel.playlists}
-              onPress={(playlist) =>
-                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-              }
-            />
-          ))}
-
           <View style={styles.durationSection}>
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
               Explora según tu tiempo
@@ -771,6 +760,17 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          {editorialDiscoverCarousels.map((carousel) => (
+            <EditorialPlaylistCarousel
+              key={carousel.id}
+              title={carousel.title}
+              playlists={carousel.playlists}
+              onPress={(playlist) =>
+                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+              }
+            />
+          ))}
 
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
@@ -1050,7 +1050,6 @@ const styles = StyleSheet.create({
   },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 15,
     marginBottom: SECTION_GAP,
   },
   featuredMomentImageContainer: {
