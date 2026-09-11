@@ -46,6 +46,8 @@ const FALLBACK_GLOW_COLORS = {
   diffuse: "#9A7340",
 };
 
+const GLOW_INTENSITY = 0.5;
+
 type Props = {
   categoryId?: string;
   children: React.ReactNode;
@@ -66,10 +68,10 @@ export function CategoryAtmosphericCard({
   const emphasizeGlow =
     categoryId === "meditaciones-guiadas" || categoryId === "musica-sonidos";
   const emphasizeMusic = categoryId === "musica-sonidos";
-  const primaryCenterOpacity = emphasizeMusic ? 0.3 : emphasizeGlow ? 0.18 : 0.13;
-  const primaryDiffuseOpacity = emphasizeMusic ? 0.17 : emphasizeGlow ? 0.1 : 0.07;
-  const secondaryCenterOpacity = emphasizeMusic ? 0.25 : emphasizeGlow ? 0.16 : 0.12;
-  const secondaryDiffuseOpacity = emphasizeMusic ? 0.12 : emphasizeGlow ? 0.07 : 0.05;
+  const primaryCenterOpacity = (emphasizeMusic ? 0.3 : emphasizeGlow ? 0.18 : 0.13) * GLOW_INTENSITY;
+  const primaryDiffuseOpacity = (emphasizeMusic ? 0.17 : emphasizeGlow ? 0.1 : 0.07) * GLOW_INTENSITY;
+  const secondaryCenterOpacity = (emphasizeMusic ? 0.25 : emphasizeGlow ? 0.16 : 0.12) * GLOW_INTENSITY;
+  const secondaryDiffuseOpacity = (emphasizeMusic ? 0.12 : emphasizeGlow ? 0.07 : 0.05) * GLOW_INTENSITY;
 
   return (
     <View style={[styles.card, style]}>
