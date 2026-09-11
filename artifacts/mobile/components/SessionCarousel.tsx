@@ -532,7 +532,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={19}
                             color="#F9F9F9"
-                            style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
                           />
                         </Pressable>
                       </>
