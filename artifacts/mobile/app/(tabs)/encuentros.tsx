@@ -213,8 +213,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    paddingTop: 19,
+    paddingLeft: H_PAD,
+    paddingRight: 16,
+    paddingTop: 2,
     paddingBottom: 20,
   },
   headerTitle: {
@@ -256,11 +257,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+    transform: [{ translateY: 2 }],
   },
   stickySearchButton: {
     position: "absolute",
-    top: 7,
-    right: H_PAD,
+    top: 0,
+    right: 16,
   },
   feedSection: {
     marginTop: 36,

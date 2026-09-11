@@ -3086,6 +3086,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "800",
     textAlign: "center",
+    transform: [{ translateY: 2 }],
     textShadowColor: "rgba(0,0,0,0.9)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
