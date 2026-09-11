@@ -52,6 +52,32 @@ const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
+function LineAwareAmbientalTitle({
+  children,
+  style,
+}: {
+  children: string;
+  style: StyleProp<TextStyle>;
+}) {
+  const [lineCount, setLineCount] = React.useState(1);
+
+  return (
+    <Text
+      style={[
+        style,
+        { transform: [{ translateY: lineCount > 1 ? -2 : 7 }] },
+      ]}
+      numberOfLines={2}
+      onTextLayout={(event) => {
+        const nextLineCount = Math.min(event.nativeEvent.lines.length, 2);
+        setLineCount((current) => current === nextLineCount ? current : nextLineCount);
+      }}
+    >
+      {children}
+    </Text>
+  );
+}
+
 function PreviewFadeLayer({
   active,
   style,
@@ -764,24 +790,35 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           {s.categoryLabel}
                         </Text>
                       ) : null}
-                      <Text
-                        style={[
-                          styles.sleepOverlayTitle,
-                          isEditorialPresentation && styles.editorialTitle,
-                          effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
-                          showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
-                          sleepOverlayTitleStyle,
-                          showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
-                          showAmbientalTitleOnly &&
-                            ambientalImageFillTop && {
+                      {showAmbientalTitleOnly && ambientalImageFillTop ? (
+                        <LineAwareAmbientalTitle
+                          style={[
+                            styles.sleepOverlayTitle,
+                            sleepOverlayTitleStyle,
+                            ambientalTitleOnlyTitleStyle,
+                            {
                               height: 38,
                               textAlignVertical: "center",
                             },
-                        ]}
-                        numberOfLines={2}
-                      >
-                        {s.title}
-                      </Text>
+                          ]}
+                        >
+                          {s.title}
+                        </LineAwareAmbientalTitle>
+                      ) : (
+                        <Text
+                          style={[
+                            styles.sleepOverlayTitle,
+                            isEditorialPresentation && styles.editorialTitle,
+                            effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
+                            showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
+                            sleepOverlayTitleStyle,
+                            showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
+                          ]}
+                          numberOfLines={2}
+                        >
+                          {s.title}
+                        </Text>
+                      )}
                        {!showAmbientalTitleOnly && effectiveShowAuthor && authorName ? (
                         <Text
                           style={[
@@ -991,7 +1028,7 @@ const styles = StyleSheet.create({
     width: 31,
     height: 31,
     borderRadius: 15.5,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(21,13,46,0.4)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -999,7 +1036,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(21,13,46,0.4)",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
