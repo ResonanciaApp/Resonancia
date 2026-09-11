@@ -1,9 +1,7 @@
-import { Feather } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   Animated,
-  Pressable,
   RefreshControl,
   StatusBar,
   StyleSheet,
@@ -12,93 +10,21 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAuth } from "@/context/AuthContext";
-import { useDrawer } from "@/context/DrawerContext";
-import { ENCUENTROS } from "@/data/encuentros";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ActivityFeedCard } from "@/components/ActivityFeedCard";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
-import { ContextSearchModal } from "@/components/ContextSearchModal";
 
 const H_PAD = 20;
 
-function getCommunityEventTitle(event: CommunityFeedEvent): string {
-  const { payload, eventType } = event;
-  if (typeof payload.sessionName === "string" && payload.sessionName.trim()) return payload.sessionName;
-  if (typeof payload.mixName === "string" && payload.mixName.trim()) return payload.mixName;
-  if (typeof payload.glyphName === "string" && payload.glyphName.trim()) return payload.glyphName;
-  if (eventType === "user_joined") return "Nueva persona en RESONANCIA";
-  if (eventType === "mixer_active") return "Creación activa en el Mezclador";
-  if (eventType === "geometrix_active") return "Creación activa en Geometrix";
-  return "Actividad de la comunidad";
-}
-
-function getCommunityEventAction(event: CommunityFeedEvent): string {
-  switch (event.eventType) {
-    case "session_play":
-      return "escuchando una sesión";
-    case "mix_shared":
-      return "compartió una mezcla";
-    case "glyph_shared":
-      return "compartió una creación";
-    case "mixer_active":
-      return "creando en el Mezclador";
-    case "geometrix_active":
-      return "creando en Geometrix";
-    case "user_joined":
-      return "se unió a RESONANCIA";
-    default:
-      return "está en RESONANCIA";
-  }
-}
-
 export default function ComunidadScreen() {
   const insets = useSafeAreaInsets();
-  const [searchVisible, setSearchVisible] = useState(false);
   const { theme } = useSceneTheme();
   const { clerkUserId } = useAuth();
-  const { open: openDrawer } = useDrawer();
   const { events, loading, refresh, refreshing } = useCommunityFeed(clerkUserId);
-
-  const searchItems = useMemo(
-    () => [
-      ...ENCUENTROS.map((encuentro) => ({
-        id: `encounter:${encuentro.id}`,
-        title: encuentro.titulo,
-        meta: "Encuentro Resonador",
-        subtitle: encuentro.guia.nombre,
-        searchText: [encuentro.titulo, encuentro.descripcion, encuentro.guia.nombre].join(" "),
-        image: encuentro.imagen,
-      })),
-      ...events.map((event) => {
-        const displayName =
-          typeof event.user.displayName === "string" && event.user.displayName.trim()
-            ? event.user.displayName
-            : "Alguien";
-        const title = getCommunityEventTitle(event);
-        return {
-          id: `event:${event.id}`,
-          title,
-          meta: displayName,
-          subtitle: getCommunityEventAction(event),
-          searchText: [
-            displayName,
-            event.user.location ?? "",
-            event.eventType,
-            getCommunityEventAction(event),
-            title,
-            JSON.stringify(event.payload),
-          ].join(" "),
-          image: event.user.avatarUrl ? { uri: event.user.avatarUrl } : undefined,
-        };
-      }),
-    ],
-    [events],
-  );
 
   const feedOpacity = useRef(new Animated.Value(1)).current;
   const previousRefreshing = useRef(false);
@@ -160,28 +86,6 @@ export default function ComunidadScreen() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Comunidad</Text>
-        <View style={styles.headerActions}>
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={styles.headerButton}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Comunidad"
-            testID="community-search-button"
-          >
-            <Feather name="search" size={22} color="#F9F9F9" />
-          </Pressable>
-          <Pressable
-            onPress={openDrawer}
-            hitSlop={10}
-            style={styles.headerButton}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir menú de perfil"
-            testID="community-profile-menu-button"
-          >
-            <Feather name="user" size={22} color="#F9F9F9" />
-          </Pressable>
-        </View>
       </View>
 
       <Animated.FlatList
@@ -203,25 +107,6 @@ export default function ComunidadScreen() {
         }
       />
 
-      <ContextSearchModal
-        visible={searchVisible}
-        onClose={() => setSearchVisible(false)}
-        items={searchItems}
-        placeholder="Buscar en Comunidad..."
-        emptyTitle="Explora la comunidad"
-        emptySubtitle="Busca encuentros, personas y actividades"
-        onSelect={(item) => {
-          if (item.id.startsWith("encounter:")) {
-            router.push(`/encuentro/${item.id.replace("encounter:", "")}` as never);
-            return;
-          }
-          const event = events.find((candidate) => `event:${candidate.id}` === item.id);
-          const sessionId = event?.payload.sessionId;
-          if (typeof sessionId === "string" && sessionId.length > 0) {
-            router.push(`/session/${sessionId}` as never);
-          }
-        }}
-      />
     </View>
   );
 }
@@ -236,13 +121,6 @@ const styles = StyleSheet.create({
     paddingTop: 19,
     paddingBottom: 20,
   },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: -9,
-  },
-  headerButton: { padding: 4 },
   headerTitle: {
     fontFamily: "Manrope",
     fontSize: 30,

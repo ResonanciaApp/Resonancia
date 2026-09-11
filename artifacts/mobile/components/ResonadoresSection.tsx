@@ -13,8 +13,8 @@ type Props = {
 
 const SECTION_PADDING = 14;
 const CARD_GAP = 11;
-const TRAILING_CARD_PEEK = 5;
-const VISIBLE_CARD_COUNT = 3;
+const TRAILING_CARD_PEEK = 25;
+const VISIBLE_CARD_COUNT = 2;
 const PHOTO_ASPECT_RATIO = 1.2;
 
 export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) {
@@ -25,7 +25,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
     (
       screenWidth
       - SECTION_PADDING
-      - CARD_GAP * VISIBLE_CARD_COUNT
+      - CARD_GAP * 2
       - TRAILING_CARD_PEEK
     ) / VISIBLE_CARD_COUNT,
   );
