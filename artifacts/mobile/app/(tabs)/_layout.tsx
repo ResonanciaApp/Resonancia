@@ -60,7 +60,7 @@ function getTabBarBackground(activeSceneId: string) {
 }
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "encuentros", "herramientas", "explore"]);
+const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "herramientas", "explore"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -90,6 +90,7 @@ const TAB_CONFIG: Record<
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
   sonidos:    { label: "Sonidos",    sfIcon: "waveform",  sfIconFill: "waveform", mciIcon: "waveform", mciIconFill: "waveform", featherIcon: "headphones", iconSize: 30, activeColor: "#F9F9F9" },
   emocion:    { label: "Emoción",    sfIcon: "face.smiling",        sfIconFill: "face.smiling.fill",     featherIcon: "smile", emoji: "🙂" },
+  encuentros: { label: "Comunidad",  sfIcon: "person.3",            sfIconFill: "person.3.fill",          featherIcon: "users", iconSize: 30 },
   profile:    { label: "Perfil",     sfIcon: "person.crop.circle",   sfIconFill: "person.crop.circle.fill", featherIcon: "user" },
 };
 
@@ -465,6 +466,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="herramientas"  options={{ title: "Recursos" }} />
         <Tabs.Screen name="sonidos"        options={{ title: "Sonidos" }} />
+        <Tabs.Screen name="encuentros"     options={{ title: "Comunidad" }} />
         <Tabs.Screen name="emocion"        options={{ title: "Emoción" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />

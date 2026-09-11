@@ -674,6 +674,37 @@ export function ExploreScreen({
             </View>
           )}
 
+          <View style={styles.durationSection}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+              Explora según tu tiempo
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durationRow}
+            >
+              {DURATION_SLOTS.map((slot) => (
+                <Pressable
+                  key={slot.label}
+                  onPress={() =>
+                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={slot.displayLabel}
+                  style={({ pressed }) => [
+                    styles.durationCard,
+                    {
+                      backgroundColor: contentCardSurfaceColor,
+                      opacity: pressed ? 0.72 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -725,37 +756,6 @@ export function ExploreScreen({
                       {getSessionAuthor(session)}
                     </Text>
                   </View>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.durationSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-              Explora según tu tiempo
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durationRow}
-            >
-              {DURATION_SLOTS.map((slot) => (
-                <Pressable
-                  key={slot.label}
-                  onPress={() =>
-                    openCategory(`/busqueda?tiempo=${encodeURIComponent(slot.label)}`)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={slot.displayLabel}
-                  style={({ pressed }) => [
-                    styles.durationCard,
-                    {
-                      backgroundColor: contentCardSurfaceColor,
-                      opacity: pressed ? 0.72 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.durationCardText}>{slot.displayLabel}</Text>
                 </Pressable>
               ))}
             </ScrollView>
