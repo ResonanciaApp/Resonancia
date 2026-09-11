@@ -841,6 +841,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.sleepOverlayTitle,
                             sleepOverlayTitleStyle,
                             ambientalTitleOnlyTitleStyle,
+                            styles.ambientalTitleMatchSleep,
                             {
                               height: 38,
                               textAlignVertical: "center",
@@ -858,6 +859,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
                             sleepOverlayTitleStyle,
                             showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
+                            showAmbientalTitleOnly && styles.ambientalTitleMatchSleep,
                           ]}
                           numberOfLines={2}
                         >
@@ -1195,6 +1197,11 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: "700",
     color: "#F9F9F9",
+  },
+  ambientalTitleMatchSleep: {
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "700",
   },
   sleepOverlayDurationInline: {
     position: "relative",
