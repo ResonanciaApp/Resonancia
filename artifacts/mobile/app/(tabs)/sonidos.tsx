@@ -400,6 +400,7 @@ export default function SonidosScreen() {
                  presentation="editorial"
                  ambientalTitleOnly
                  ambientalImageLift={9}
+                 ambientalImageFillTop
                  soundPreview={{
                    activeId: soundPreview.activeId,
                    isPlaying: soundPreview.isPlaying,

@@ -217,6 +217,8 @@ type SessionCarouselProps = {
   ambientalTitleOnly?: boolean;
   /** Moves the centered image of Ambiental cards upward. */
   ambientalImageLift?: number;
+  /** Fills the upper card area with the image down to the former circle edge. */
+  ambientalImageFillTop?: boolean;
   /** Position override used only by Ambiental title-only metadata. */
   ambientalTitleOnlyMetadataStyle?: StyleProp<ViewStyle>;
   /** Text override used only by Ambiental title-only titles. */
@@ -294,6 +296,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showSleepCategoryPill = true,
   ambientalTitleOnly = false,
   ambientalImageLift = 0,
+  ambientalImageFillTop = false,
   ambientalTitleOnlyMetadataStyle,
   ambientalTitleOnlyTitleStyle,
   showAmbientalCategoryPill = false,
@@ -493,13 +496,26 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                       source={s.image}
                       style={[
                         styles.ambientalImage,
-                        {
-                          width: ambientalImageSize,
-                          height: ambientalImageSize,
-                          borderRadius: ambientalImageSize / 2,
-                          left: (cw - ambientalImageSize) / 2 - 1,
-                           top: (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift,
-                        },
+                        ambientalImageFillTop
+                          ? {
+                              width: cw,
+                              height:
+                                (ch - ambientalImageSize) / 2 -
+                                1 -
+                                ambientalImageLift +
+                                ambientalImageSize,
+                              left: 0,
+                              top: 0,
+                              borderTopLeftRadius: ambientalCardBorderRadius ?? 18,
+                              borderTopRightRadius: ambientalCardBorderRadius ?? 18,
+                            }
+                          : {
+                              width: ambientalImageSize,
+                              height: ambientalImageSize,
+                              borderRadius: ambientalImageSize / 2,
+                              left: (cw - ambientalImageSize) / 2 - 1,
+                              top: (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift,
+                            },
                       ]}
                     />
                     {soundPreview && (
