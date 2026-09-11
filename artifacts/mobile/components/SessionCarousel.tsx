@@ -229,6 +229,12 @@ type SessionCarouselProps = {
   ambientalImageLift?: number;
   /** Fills the upper card area with the image down to the former circle edge. */
   ambientalImageFillTop?: boolean;
+  /** Shows duration at the lower-left corner of the filled Ambiental image. */
+  ambientalDurationAtImageBottom?: boolean;
+  /** Keeps the favorite control visible without enabling sound preview. */
+  showAmbientalFavorite?: boolean;
+  /** Centers title and author together in the lower Ambiental card area. */
+  ambientalFooterAuthor?: boolean;
   /** Position override used only by Ambiental title-only metadata. */
   ambientalTitleOnlyMetadataStyle?: StyleProp<ViewStyle>;
   /** Text override used only by Ambiental title-only titles. */
@@ -309,6 +315,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalTitleOnly = false,
   ambientalImageLift = 0,
   ambientalImageFillTop = false,
+  ambientalDurationAtImageBottom = false,
+  showAmbientalFavorite = false,
+  ambientalFooterAuthor = false,
   ambientalTitleOnlyMetadataStyle,
   ambientalTitleOnlyTitleStyle,
   showAmbientalCategoryPill = false,
@@ -596,42 +605,58 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             color="#F9F9F9"
                           />
                         </Pressable>
-                        <Pressable
-                          onPress={(event) => {
-                            event.stopPropagation();
-                            toggleFavorite(s.id);
-                          }}
-                          hitSlop={8}
-                          accessibilityRole="button"
-                          accessibilityLabel={
-                            isFavorite(s.id)
-                              ? `Quitar ${s.title} de favoritos`
-                              : `Agregar ${s.title} a favoritos`
-                          }
-                          style={[
-                            styles.favoriteButton,
-                            {
-                              right: 12,
-                              top: 12,
-                            },
-                          ]}
-                        >
-                          <SessionBadgeGlass showBlackTint={false} />
-                          <View
-                            pointerEvents="none"
-                            style={styles.favoriteGlassTint}
-                          />
-                          <MaterialCommunityIcons
-                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
-                            size={18}
-                            color={
-                              isFavorite(s.id)
-                                ? "#F9F9F9"
-                                : "rgba(249,249,249,0.5)"
-                            }
-                          />
-                        </Pressable>
                       </>
+                    )}
+                    {(soundPreview || showAmbientalFavorite) && (
+                      <Pressable
+                        onPress={(event) => {
+                          event.stopPropagation();
+                          toggleFavorite(s.id);
+                        }}
+                        hitSlop={8}
+                        accessibilityRole="button"
+                        accessibilityLabel={
+                          isFavorite(s.id)
+                            ? `Quitar ${s.title} de favoritos`
+                            : `Agregar ${s.title} a favoritos`
+                        }
+                        style={[
+                          styles.favoriteButton,
+                          {
+                            right: 12,
+                            top: 12,
+                          },
+                        ]}
+                      >
+                        <SessionBadgeGlass showBlackTint={false} />
+                        <View
+                          pointerEvents="none"
+                          style={styles.favoriteGlassTint}
+                        />
+                        <MaterialCommunityIcons
+                          name={isFavorite(s.id) ? "heart" : "heart-outline"}
+                          size={18}
+                          color={
+                            isFavorite(s.id)
+                              ? "#F9F9F9"
+                              : "rgba(249,249,249,0.5)"
+                          }
+                        />
+                      </Pressable>
+                    )}
+                    {ambientalDurationAtImageBottom && (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[
+                          styles.durBadge,
+                          {
+                            left: 12,
+                            top: ambientalImageBottom - 34,
+                            bottom: undefined,
+                          },
+                        ]}
+                        textStyle={styles.durText}
+                      />
                     )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle
@@ -795,7 +820,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           {s.categoryLabel}
                         </Text>
                       ) : null}
-                      {showAmbientalTitleOnly && ambientalImageFillTop ? (
+                      {showAmbientalTitleOnly &&
+                      ambientalImageFillTop &&
+                      !ambientalFooterAuthor ? (
                         <LineAwareAmbientalTitle
                           style={[
                             styles.sleepOverlayTitle,
@@ -811,6 +838,29 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         >
                           {s.title}
                         </LineAwareAmbientalTitle>
+                      ) : showAmbientalTitleOnly &&
+                        ambientalImageFillTop &&
+                        ambientalFooterAuthor ? (
+                        <>
+                          <Text
+                            style={[
+                              styles.sleepOverlayTitle,
+                              ambientalTitleOnlyTitleStyle,
+                              styles.ambientalFooterTitle,
+                            ]}
+                            numberOfLines={2}
+                          >
+                            {s.title}
+                          </Text>
+                          {authorName ? (
+                            <Text
+                              style={styles.ambientalFooterAuthor}
+                              numberOfLines={1}
+                            >
+                              {authorName}
+                            </Text>
+                          ) : null}
+                        </>
                       ) : (
                         <Text
                           style={[
@@ -1059,6 +1109,22 @@ const styles = StyleSheet.create({
   favoriteGlassTint: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(255,255,255,0.15)",
+  },
+  ambientalFooterTitle: {
+    height: undefined,
+    fontSize: 14,
+    fontWeight: "550" as TextStyle["fontWeight"],
+    lineHeight: 18,
+    textAlign: "center",
+  },
+  ambientalFooterAuthor: {
+    marginTop: 3,
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.72)",
+    textAlign: "center",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
