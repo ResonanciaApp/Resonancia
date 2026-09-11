@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   allCollections: {
-    paddingTop: 2,
+    paddingTop: 21,
   },
   videoCarouselSection: {
     marginBottom: 53,
