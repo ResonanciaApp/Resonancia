@@ -214,7 +214,7 @@ export function ContentCategoryGrid({
     const cardWidth = Math.floor(
       (windowWidth - GRID_PAD * 2 - DISCOVER_GRID_GAP * 2) / 3,
     );
-    const cardHeight = Math.round(cardWidth * 0.66) - 16;
+    const cardHeight = Math.round(cardWidth * 0.66) + 9;
 
     return (
       <View
@@ -244,7 +244,7 @@ export function ContentCategoryGrid({
                         {renderCategoryIcon(category, false, true, 2)}
                       </View>
                       <Text style={styles.discoverCardTitle} numberOfLines={2}>
-                        {category.label}
+                        {category.id === "meditaciones-guiadas" ? "Meditación" : category.label}
                       </Text>
                     </View>
                  </View>

@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -30,6 +30,7 @@ import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -125,6 +126,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const { activeSceneId, theme } = useSceneTheme();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
+  const soundPreview = useSoundPreview();
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
   const categoryOverlay = useCategoryOverlayOptional();
@@ -137,6 +139,9 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   );
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [searchVisible, setSearchVisible] = useState(false);
+  useFocusEffect(
+    useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
+  );
   const filteredSessions = useMemo(
     () => activeTab === null
       ? allSessions
@@ -225,6 +230,40 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             {category?.subtitle ?? "Estamos preparando nuevas sesiones para ti."}
           </Text>
         </View>
+      );
+    }
+
+    if (id === "ambientales") {
+      return (
+        <SessionCarousel
+          title=""
+          showHeader={false}
+          sessions={filteredSessions}
+          isPremium={isPremium}
+          onPress={handleSessionPress}
+          presentation="editorial"
+          ambientalTitleOnly
+          ambientalImageLift={9}
+          ambientalImageFillTop
+          soundPreview={{
+            activeId: soundPreview.activeId,
+            isPlaying: soundPreview.isPlaying,
+            progress: soundPreview.progress,
+            onToggle: soundPreview.toggle,
+          }}
+          ambientalCardBackground="rgba(0,0,0,0.28)"
+          ambientalCardBorderColor="rgba(249,249,249,0.2)"
+          ambientalCardBorderWidth={1}
+          ambientalCardBorderRadius={28}
+          ambientalTitleOnlyMetadataStyle={{
+            transform: [{ translateY: -2 }],
+          }}
+          ambientalTitleOnlyTitleStyle={{
+            height: 36,
+            textAlign: "center",
+            textAlignVertical: "top",
+          }}
+        />
       );
     }
 

@@ -592,9 +592,6 @@ export function ExploreScreen({
 
         <View style={styles.scrollContent}>
           <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Descubre por categoría
-            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
@@ -1048,11 +1045,8 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: 0,
+    marginTop: 15,
     marginBottom: SECTION_GAP,
-  },
-  categoryBlocksTitle: {
-    paddingHorizontal: H_PAD,
   },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
