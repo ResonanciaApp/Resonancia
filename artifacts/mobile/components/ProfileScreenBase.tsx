@@ -1261,9 +1261,6 @@ export function ProfileScreenBase({
                 <Text style={[styles.profileProgressIntroTitle, { color: colors.foreground }]}>
                   Tu progreso en Resonancia
                 </Text>
-                <Text style={[styles.profileProgressIntroDescription, { color: profileDescriptionColor }]}>
-                  Medita todos los días y transforma tu vida
-                </Text>
               </View>
               <View style={styles.profileProgressCard}>
                 <SonicStreakDays
@@ -2244,18 +2241,13 @@ const styles = StyleSheet.create({
     marginBottom: 19,
   },
   profileProgressIntro: {
+    paddingTop: 10,
     marginBottom: 12,
   },
   profileProgressIntroTitle: {
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
-  },
-  profileProgressIntroDescription: {
-    marginTop: 4,
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
   },
   profileProgressCard: {
     borderRadius: 14,
