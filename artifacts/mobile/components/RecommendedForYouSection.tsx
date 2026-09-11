@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Pressable,
   ScrollView,
@@ -21,7 +22,6 @@ import {
 } from "@/data/sessions";
 import type { Mood } from "@/data/moods";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 
@@ -51,7 +51,7 @@ export function RecommendedForYouSection({
   onPress,
   marginBottom = 0,
 }: Props) {
-  const { activeSceneId, theme } = useSceneTheme();
+  const { theme } = useSceneTheme();
   const colors = useColors();
   const { isPremium } = usePremium();
   const [activeTabId, setActiveTabId] = useState<RecommendationTabId>(
@@ -148,13 +148,7 @@ export function RecommendedForYouSection({
 
   if (!hasRecommendations) return null;
 
-  const tabBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.1)"
-      : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.1)"
-        : "rgba(181,211,255,0.1)";
+  const tabBackground = "rgba(0,0,0,0.2)";
   return (
     <View
       style={[styles.root, { marginBottom }]}
@@ -184,10 +178,19 @@ export function RecommendedForYouSection({
               testID={`inicio2-recommended-tab-${tab.id}`}
               style={({ pressed }) => [
                 styles.tab,
-                { backgroundColor: selected ? "#F9F9F9" : tabBackground },
+                { backgroundColor: selected ? "transparent" : tabBackground },
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
+              {selected && (
+                <LinearGradient
+                  pointerEvents="none"
+                  colors={["#E7C979", "#BE9650", "#8C6729"]}
+                  start={{ x: 0, y: 0.5 }}
+                  end={{ x: 1, y: 0.5 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
               <Text style={[styles.tabText, selected && styles.tabTextSelected]}>
                 {tab.label}
               </Text>
