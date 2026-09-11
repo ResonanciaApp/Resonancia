@@ -406,7 +406,7 @@ export default function DescansoScreen() {
                     ? { marginTop: 4, transform: [{ translateX: 3 }] }
                     : undefined
                 }
-                trailingPeek={collection.id === "musica-para-dormir" ? 55 : undefined}
+                trailingPeek={collection.id === "musica-para-dormir" ? 20 : undefined}
                 cardBorderRadius={
                   collection.id === "musica-para-dormir" ? 16 : undefined
                 }
