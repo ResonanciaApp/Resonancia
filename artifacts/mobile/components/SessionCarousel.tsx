@@ -817,7 +817,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             {
                               height: 38,
                               fontSize: 15,
-                              fontWeight: "650" as TextStyle["fontWeight"],
+                              fontWeight: "800",
                               textAlignVertical: "center",
                             },
                           ]}
