@@ -39,7 +39,7 @@ import {
   type FavoriteCollectionTabId,
 } from "@/lib/favorites-home-helpers";
 
-const H_PAD = 19;
+const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
 const CARD_W = (W - H_PAD * 2 - 14) / 2;
 function FavPill({
@@ -432,6 +432,7 @@ export default function FavoritosTodosScreen() {
               style={styles.ambientalGrid}
               showHeader={false}
               gridLayout
+              fillGridWidth
               gridScrollEnabled={false}
               eagerRender
               presentation="editorial"
@@ -460,6 +461,7 @@ export default function FavoritosTodosScreen() {
               style={styles.favoriteSessionGrid}
               showHeader={false}
               gridLayout
+              fillGridWidth
               gridScrollEnabled={false}
               eagerRender
               presentation="editorial"
