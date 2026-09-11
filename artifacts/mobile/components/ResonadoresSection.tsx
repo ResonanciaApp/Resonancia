@@ -53,7 +53,7 @@ export function ResonadoresSection({ marginTop = 0, marginBottom = 32 }: Props) 
           {resonadores.map((resonador) => (
             <Pressable
               key={resonador.id}
-              onPress={() => router.push(`/resonador/${resonador.id}` as never)}
+              onPress={() => router.push(`/resonador-perfil/${resonador.id}` as never)}
               style={({ pressed }) => [
                 styles.resonador,
                 { width: cardWidth, opacity: pressed ? 0.75 : 1 },

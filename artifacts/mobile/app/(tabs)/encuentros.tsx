@@ -2,12 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Platform,
+  Pressable,
   RefreshControl,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { SymbolView } from "expo-symbols";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -15,7 +19,9 @@ import { useAuth } from "@/context/AuthContext";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
 import { ActivityFeedCard } from "@/components/ActivityFeedCard";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
+import { ResonadorSearchModal } from "@/components/ResonadorSearchModal";
 import { useCommunityFeed } from "@/hooks/useCommunityFeed";
+import { useResonadores } from "@/hooks/useResonadores";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
 const H_PAD = 14;
@@ -25,6 +31,12 @@ export default function ComunidadScreen() {
   const { theme } = useSceneTheme();
   const { clerkUserId } = useAuth();
   const { events, loading, refresh, refreshing } = useCommunityFeed(clerkUserId);
+  const {
+    resonadores,
+    isLoading: resonadoresLoading,
+    isError: resonadoresError,
+  } = useResonadores();
+  const [searchVisible, setSearchVisible] = useState(false);
 
   const feedOpacity = useRef(new Animated.Value(1)).current;
   const previousRefreshing = useRef(false);
@@ -60,6 +72,20 @@ export default function ComunidadScreen() {
     <View>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Comunidad</Text>
+        <Pressable
+          onPress={() => setSearchVisible(true)}
+          hitSlop={10}
+          style={styles.headerSearchButton}
+          accessibilityRole="button"
+          accessibilityLabel="Buscar Resonadores"
+          testID="community-search-button"
+        >
+          {Platform.OS === "ios" ? (
+            <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+          ) : (
+            <Feather name="search" size={24} color="#F4F4F4" />
+          )}
+        </Pressable>
       </View>
       <EncuentrosResonadoresSection titleMarginTop={5} />
       <ResonadoresSection marginTop={36} marginBottom={32} />
@@ -132,6 +158,20 @@ export default function ComunidadScreen() {
           >
             Comunidad
           </Animated.Text>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={[styles.headerSearchButton, styles.stickySearchButton]}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar Resonadores"
+            testID="community-sticky-search-button"
+          >
+            {Platform.OS === "ios" ? (
+              <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+            ) : (
+              <Feather name="search" size={24} color="#F4F4F4" />
+            )}
+          </Pressable>
         </View>
       </Animated.View>
 
@@ -156,6 +196,13 @@ export default function ComunidadScreen() {
         }
       />
 
+      <ResonadorSearchModal
+        visible={searchVisible}
+        resonadores={resonadores}
+        loading={resonadoresLoading}
+        error={resonadoresError}
+        onClose={() => setSearchVisible(false)}
+      />
     </View>
   );
 }
@@ -201,6 +248,19 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
     letterSpacing: 0.2,
     textAlign: "center",
+  },
+  headerSearchButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  stickySearchButton: {
+    position: "absolute",
+    top: 7,
+    right: H_PAD,
   },
   feedSection: {
     marginTop: 36,

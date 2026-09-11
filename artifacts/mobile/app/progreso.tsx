@@ -1,4 +1,3 @@
-import MaskedView from "@react-native-masked-view/masked-view";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -21,14 +20,13 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
-import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { isIndigoThemeId } from "@/config/scene-themes";
+import { computeActiveDays } from "@/utils/stats";
 
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { statEvents } = usePlayer();
-  const { activeSceneId, theme } = useSceneTheme();
+  const { theme } = useSceneTheme();
   const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
@@ -36,14 +34,8 @@ export default function ProgresoScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const resourceBlockBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.057)"
-      : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.096)"
-        : "rgba(181,211,255,0.057)";
-  const progressAccent = activeSceneId === "indigo2" ? colors.accent : "#AAAAC4";
+  const sectionBackground = "rgba(0,0,0,0.28)";
+  const progressAccent = theme.accent ?? colors.accent;
 
   const personalStats = useMemo(() => {
     const rangeStart = new Date();
@@ -52,18 +44,18 @@ export default function ProgresoScreen() {
     const rangeStartTime = rangeStart.getTime();
     const now = Date.now();
     let totalMinutes = 0;
-    let completedSessions = 0;
+    const rangeEvents = [];
 
     for (const event of statEvents) {
       const playedAt = new Date(event.playedAt).getTime();
       if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      rangeEvents.push(event);
       totalMinutes += event.minutes;
-      if (event.completed === true) completedSessions += 1;
     }
 
     return {
       totalMinutes: Math.round(totalMinutes),
-      completedSessions,
+      activeDays: computeActiveDays(rangeEvents),
     };
   }, [statEvents, statsRangeDays, todayKey]);
 
@@ -99,57 +91,52 @@ export default function ProgresoScreen() {
         <View
           style={[
             styles.streakSection,
-            { backgroundColor: resourceBlockBackground },
+            { backgroundColor: sectionBackground },
           ]}
         >
-          <View style={styles.streakHeadingRow}>
-            <View style={styles.streakHeadingMain}>
-              <View style={styles.streakLotusIcon}>
-                <MaskedView
-                  style={styles.streakLotusMask}
-                  maskElement={<MaterialCommunityIcons name="spa" size={61} color="#000000" />}
-                >
-                  <LinearGradient
-                    colors={["#CFCFCF", "#E3E3E3"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                </MaskedView>
+          <SonicStreakDays
+            activeFlags={weekFlags}
+            todayIndex={todayIndex}
+            edgeAligned
+            daysMarginTop={0}
+            activeBorderColor="#BE9650"
+          />
+          <View style={styles.streakStatsDivider} />
+          <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
+            <View style={styles.personalStatItem}>
+              <View style={styles.personalStatIcon}>
+                <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
               </View>
-              <View style={styles.streakHeadingCopy}>
-                <View style={styles.streakTitleRow}>
-                  <Text style={[styles.streakCountText, { color: colors.foreground }]}>
-                    {currentStreak}
-                  </Text>
-                  <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                    Días de racha
-                  </Text>
-                </View>
-                <Text style={[styles.streakSubtitle, { color: progressAccent }]}>
-                  Expande tu consciencia todos los días
+              <View style={styles.personalStatCopy}>
+                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                  {currentStreak}
+                </Text>
+                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                  RACHA ACTUAL
+                </Text>
+              </View>
+            </View>
+            <View style={styles.personalStatDivider} />
+            <View style={styles.personalStatItem}>
+              <View style={styles.personalStatIcon}>
+                <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
+              </View>
+              <View style={styles.personalStatCopy}>
+                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                  {maxStreak}
+                </Text>
+                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                  RACHA MÁS LARGA
                 </Text>
               </View>
             </View>
           </View>
-
-          <SonicStreakDays
-            activeFlags={weekFlags}
-            todayIndex={todayIndex}
-            idPrefix="progress-screen-streak"
-            daysMarginTop={4}
-            circleSize={37}
-            edgeAligned
-            dayLabelColor={theme.accent ?? colors.primary}
-            activeBorderColor={WIDGET_GREEN_SOLID}
-            activeBorderWidth={2.9}
-          />
         </View>
 
         <View
           style={[
             styles.personalStatsSection,
-            { backgroundColor: resourceBlockBackground },
+            { backgroundColor: sectionBackground },
           ]}
         >
           <View style={styles.personalStatsHeader}>
@@ -169,7 +156,7 @@ export default function ProgresoScreen() {
               <Feather name="chevron-down" size={17} color={progressAccent} />
             </Pressable>
             {statsFilterOpen && (
-              <View style={[styles.statsFilterMenu, { backgroundColor: resourceBlockBackground }]}>
+              <View style={[styles.statsFilterMenu, { backgroundColor: theme.gradient[0] }]}>
                 {([7, 30, 90] as const).map((days) => (
                   <Pressable
                     key={days}
@@ -193,50 +180,36 @@ export default function ProgresoScreen() {
 
           <View style={styles.personalStatsValues}>
             <View style={styles.personalStatItem}>
-              <View style={styles.personalStatMetricRow}>
-                <View style={styles.personalStatIcon}>
-                  <MaterialCommunityIcons name="spa" size={22} color={WIDGET_GREEN_SOLID} />
-                </View>
+              <View style={styles.personalStatIcon}>
+                <Feather name="clock" size={20} color="#F9F9F9" />
+              </View>
+              <View style={styles.personalStatCopy}>
                 <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {`${Math.floor(personalStats.totalMinutes / 60)}h ${personalStats.totalMinutes % 60}m`}
+                  {personalStats.totalMinutes}
+                </Text>
+                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                  MINUTOS TOTALES
                 </Text>
               </View>
-              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                TIEMPO DE{"\n"}BIENESTAR
-              </Text>
             </View>
             <View style={styles.personalStatDivider} />
             <View style={styles.personalStatItem}>
-              <View style={styles.personalStatMetricRow}>
-                <View style={styles.personalStatIcon}>
-                  <Feather name="clock" size={20} color={WIDGET_GREEN_SOLID} />
-                </View>
+              <View style={styles.personalStatIcon}>
+                <Feather name="calendar" size={20} color="#F9F9F9" />
+              </View>
+              <View style={styles.personalStatCopy}>
                 <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {personalStats.completedSessions}
+                  {personalStats.activeDays}
+                </Text>
+                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
+                  DÍAS ACTIVOS
                 </Text>
               </View>
-              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                SESIONES{"\n"}COMPLETADAS
-              </Text>
-            </View>
-            <View style={styles.personalStatDivider} />
-            <View style={styles.personalStatItem}>
-              <View style={styles.personalStatMetricRow}>
-                <View style={styles.personalStatIcon}>
-                  <Feather name="flag" size={20} color={WIDGET_GREEN_SOLID} />
-                </View>
-                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {maxStreak} {maxStreak === 1 ? "día" : "días"}
-                </Text>
-              </View>
-              <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                RACHA{"\n"}MÁXIMA
-              </Text>
             </View>
           </View>
         </View>
 
-        <HistorialCalendar embedded />
+        <HistorialCalendar embedded backgroundColor={sectionBackground} />
       </ScrollView>
     </LinearGradient>
   );
@@ -274,43 +247,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     marginBottom: 15,
-  },
-  streakHeadingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 18,
-  },
-  streakHeadingMain: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  streakLotusIcon: {
-    width: 61,
-    height: 61,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  streakLotusMask: { width: 61, height: 61 },
-  streakHeadingCopy: { flex: 1, gap: 1 },
-  streakTitleRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-  streakCountText: {
-    fontFamily: "Manrope",
-    fontSize: 21,
-    fontWeight: "700",
-  },
-  sectionTitle: {
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-  },
-  streakSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 17,
   },
   personalStatsSection: {
     borderRadius: 18,
@@ -351,31 +287,32 @@ const styles = StyleSheet.create({
   },
   personalStatsValues: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: 24,
+    alignItems: "center",
+    marginTop: 18,
   },
+  personalStatsValuesNoTitle: { marginTop: 0 },
   personalStatItem: {
     flex: 1,
     minWidth: 0,
+    minHeight: 46,
+    flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  personalStatMetricRow: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
+    gap: 10,
   },
   personalStatIcon: {
-    width: 28,
-    height: 28,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
+  personalStatCopy: { flex: 1, minWidth: 0 },
   personalStatDivider: {
     width: 1,
-    height: 58,
-    marginHorizontal: 4,
+    height: 42,
+    marginHorizontal: 10,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   personalStatValue: {
@@ -386,8 +323,14 @@ const styles = StyleSheet.create({
   personalStatLabel: {
     fontFamily: "Manrope",
     fontSize: 10,
-    lineHeight: 15,
+    lineHeight: 14,
     letterSpacing: 0.35,
-    textAlign: "center",
+    marginTop: 2,
+  },
+  streakStatsDivider: {
+    height: 1,
+    width: "100%",
+    marginVertical: 16,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
 });
