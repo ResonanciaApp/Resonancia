@@ -89,22 +89,12 @@ function Chip({
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
-  const { theme: chipTheme } = useSceneTheme();
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [
       styles.chip,
-      !sel && chipTheme.id === "tibet" && styles.chipTibet,
-      !sel && isIndigoThemeId(chipTheme.id) && styles.chipIndigo,
-      !sel && chipTheme.id === "indigo2" && styles.chipIndigo2Inactive,
       sel && styles.chipSel,
       { opacity: pressed ? 0.7 : 1 },
     ]}>
-      {chipTheme.id === "indigo2" && !sel && indigo2BackgroundColor && (
-        <Animated.View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: indigo2BackgroundColor }]}
-        />
-      )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -548,7 +538,7 @@ const styles = StyleSheet.create({
   chipRowWrapper: { position: "relative" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(181,211,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
+  chip: { height: 31, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },

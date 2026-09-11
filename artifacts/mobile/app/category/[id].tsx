@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -18,7 +18,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { SessionCard } from "@/components/SessionCard";
-import { SessionCarousel } from "@/components/SessionCarousel";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
@@ -30,7 +29,6 @@ import { CATEGORIES } from "@/data/categories";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
-import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -50,8 +48,6 @@ function Chip({
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
-  const { theme } = useSceneTheme();
-
   return (
     <Pressable
       onPress={onPress}
@@ -60,12 +56,6 @@ function Chip({
       <Animated.View
         style={[
           styles.chip,
-          theme.id === "tibet" && styles.chipTibet,
-          isIndigoThemeId(theme.id) && styles.chipIndigo,
-          !selected && theme.id === "indigo2" && styles.chipIndigo2Inactive,
-          !selected && theme.id === "indigo2" && indigo2BackgroundColor && {
-            backgroundColor: indigo2BackgroundColor,
-          },
           selected && styles.chipSelected,
         ]}
       >
@@ -126,7 +116,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const { activeSceneId, theme } = useSceneTheme();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
-  const soundPreview = useSoundPreview();
   const { isPremium } = usePremium();
   const backOverride = useBackOverride();
   const categoryOverlay = useCategoryOverlayOptional();
@@ -139,9 +128,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   );
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [searchVisible, setSearchVisible] = useState(false);
-  useFocusEffect(
-    useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
-  );
   const filteredSessions = useMemo(
     () => activeTab === null
       ? allSessions
@@ -230,40 +216,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             {category?.subtitle ?? "Estamos preparando nuevas sesiones para ti."}
           </Text>
         </View>
-      );
-    }
-
-    if (id === "ambientales") {
-      return (
-        <SessionCarousel
-          title=""
-          showHeader={false}
-          sessions={filteredSessions}
-          isPremium={isPremium}
-          onPress={handleSessionPress}
-          presentation="editorial"
-          ambientalTitleOnly
-          ambientalImageLift={9}
-          ambientalImageFillTop
-          soundPreview={{
-            activeId: soundPreview.activeId,
-            isPlaying: soundPreview.isPlaying,
-            progress: soundPreview.progress,
-            onToggle: soundPreview.toggle,
-          }}
-          ambientalCardBackground="rgba(0,0,0,0.28)"
-          ambientalCardBorderColor="rgba(249,249,249,0.2)"
-          ambientalCardBorderWidth={1}
-          ambientalCardBorderRadius={28}
-          ambientalTitleOnlyMetadataStyle={{
-            transform: [{ translateY: -2 }],
-          }}
-          ambientalTitleOnlyTitleStyle={{
-            height: 36,
-            textAlign: "center",
-            textAlignVertical: "top",
-          }}
-        />
       );
     }
 
@@ -493,7 +445,7 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
