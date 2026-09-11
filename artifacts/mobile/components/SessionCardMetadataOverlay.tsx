@@ -65,7 +65,7 @@ export function SessionCategoryPill({
   textOnly = false,
   tinted = false,
   plainIcon = false,
-  solid = false,
+  coloredIcon = false,
   showIconGlyph = true,
   iconSize = 19,
   outlineColor,
@@ -81,7 +81,7 @@ export function SessionCategoryPill({
   textOnly?: boolean;
   tinted?: boolean;
   plainIcon?: boolean;
-  solid?: boolean;
+  coloredIcon?: boolean;
   showIconGlyph?: boolean;
   iconSize?: number;
   outlineColor?: string;
@@ -101,24 +101,24 @@ export function SessionCategoryPill({
         styles.categoryPill,
         inline && styles.categoryPillInline,
         styles.categoryPillTextOnly,
-        solid && styles.categoryPillSolid,
+        coloredIcon && styles.categoryPillWithColoredIcon,
         plain && styles.categoryPillPlain,
         outlineColor && styles.categoryPillOutlined,
         outlineColor ? { borderColor: outlineColor } : null,
-        solid ? { backgroundColor: category.color } : null,
         leftInset !== undefined ? { left: leftInset } : null,
         topInset !== undefined ? { top: topInset } : null,
         bottomInset !== undefined ? { top: "auto", bottom: bottomInset } : null,
         style,
       ]}
     >
-      {!plain && !outlineColor && !solid && <SessionBadgeGlass />}
-      {solid && (
+      {!plain && !outlineColor && !coloredIcon && <SessionBadgeGlass />}
+      {coloredIcon && (
         <SessionCategoryIcon
           categoryId={categoryId}
           size={iconSize}
           showGlyph={showIconGlyph}
           backgroundColor="transparent"
+          iconColor={category.color}
         />
       )}
       <Text
@@ -142,12 +142,14 @@ export function SessionCategoryIcon({
   size = 19,
   showGlyph = true,
   backgroundColor,
+  iconColor = "#F9F9F9",
 }: {
   categoryId?: string;
   style?: object;
   size?: number;
   showGlyph?: boolean;
   backgroundColor?: string;
+  iconColor?: string;
 }) {
   const category = categoryId ? CATEGORY_PILL_META[categoryId] : undefined;
   if (!category) return null;
@@ -167,9 +169,13 @@ export function SessionCategoryIcon({
       ]}
     >
       {showGlyph && category.materialIcon ? (
-        <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color="#F9F9F9" />
+        <MaterialCommunityIcons name={category.materialIcon} size={iconSize} color={iconColor} />
       ) : showGlyph && category.icon ? (
-        <Image source={category.icon} style={[styles.categoryIcon, { width: iconSize, height: iconSize }]} resizeMode="contain" />
+        <Image
+          source={category.icon}
+          style={[styles.categoryIcon, { width: iconSize, height: iconSize, tintColor: iconColor }]}
+          resizeMode="contain"
+        />
       ) : null}
     </View>
   );
@@ -333,9 +339,12 @@ const styles = StyleSheet.create({
     gap: 5,
     paddingLeft: 7,
   },
-  categoryPillSolid: {
+  categoryPillWithColoredIcon: {
     gap: 5,
     paddingLeft: 7,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "transparent",
   },
   categoryPillOutlined: {
     borderWidth: 2,

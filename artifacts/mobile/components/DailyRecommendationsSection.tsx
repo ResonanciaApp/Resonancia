@@ -102,7 +102,8 @@ export function DailyRecommendationsSection({
               imageSize={94.3}
               showCategoryPill
               categoryPillPlain={false}
-              categoryPillSolid
+              categoryPillColoredIcon
+              categoryPillIconSize={22}
               showDurationBadge
               showChevron
               authorColor={themeAccent}
