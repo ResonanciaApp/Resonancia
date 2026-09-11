@@ -398,6 +398,7 @@ export default function DescansoScreen() {
                   onPress={handleSessionTap}
                   style={sleepCarouselStyles[index]}
                   presentation="editorial"
+                  cardVariant={isSleepMusic ? "ambiental" : undefined}
                   titleSize={19}
                   hideCategoryAboveTitle
                   showSleepCategoryPillWithInlineDuration={!isSleepMusic}
