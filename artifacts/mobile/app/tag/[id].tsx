@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -34,8 +34,6 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const COL_GAP = 12;
-const CARD_W = (width - H_PAD * 2 - COL_GAP) / 2;
 const DURATION_FILTERS = [
   { label: "5–10 min", min: 0, max: 10 },
   { label: "10–20 min", min: 11, max: 20 },
@@ -300,21 +298,33 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             </Text>
           </View>
         ) : (
-          <View style={styles.sessionGrid}>
-            {filteredSessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                width={CARD_W}
-                style={{ marginRight: 0 }}
-                editorialPresentation
-                sleepEditorialContent
-                editorialCategoryPillId={session.categoryId}
-                showAuthorAvatar={false}
-                overridePress={() => openSession(session)}
-              />
-            ))}
-          </View>
+          <SessionCarousel
+            title=""
+            sessions={filteredSessions}
+            isPremium={isPremium}
+            onPress={openSession}
+            style={styles.sessionGrid}
+            showHeader={false}
+            gridLayout
+            gridScrollEnabled={false}
+            eagerRender
+            presentation="editorial"
+            disableAmbientalVariant
+            sleepMetadataBelow
+            categoryGridPresentation
+            showCategoryPillTopLeft
+            whiteMetadataGlass
+            showDurationClock
+            sleepBelowMetadataStyle={{
+              marginTop: 3,
+              transform: [{ translateX: 3 }],
+            }}
+            trailingPeek={20}
+            cardBorderRadius={16}
+            hideCategoryAboveTitle
+            showSleepCategoryPillWithInlineDuration
+            ambientalTitleOnly
+          />
         )}
       </ScrollView>
 
@@ -463,13 +473,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   sessionGrid: {
-    paddingHorizontal: H_PAD,
-    paddingTop: 36,
-    paddingBottom: 40,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    rowGap: 35,
+    paddingHorizontal: 0,
+    marginBottom: 0,
   },
   emptySlot: {
     marginHorizontal: H_PAD,
