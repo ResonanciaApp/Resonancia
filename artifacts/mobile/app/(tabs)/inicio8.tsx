@@ -317,7 +317,12 @@ function Inicio2LotusStreak() {
   const { currentStreak } = useStreak();
 
   return (
-    <View style={styles.inicio2HeroLotusContent}>
+    <View
+      style={[
+        styles.inicio2HeroLotusContent,
+        { backgroundColor: "rgba(0,0,0,0.28)" },
+      ]}
+    >
       <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
       <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" />
     </View>
@@ -3066,13 +3071,13 @@ const styles = StyleSheet.create({
     width: 62,
     height: 37,
     borderRadius: 18.5,
-    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   inicio2HeroLotusContent: {
     width: 62,
     height: 37,
+    borderRadius: 18.5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
