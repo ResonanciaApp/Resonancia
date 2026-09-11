@@ -199,6 +199,8 @@ type SessionCarouselProps = {
   ambientalCardBackground?: string;
   /** Optional border override for Ambiental cards on a specific screen/theme. */
   ambientalCardBorderColor?: string;
+  ambientalCardBorderWidth?: number;
+  ambientalCardBorderRadius?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
@@ -281,6 +283,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardBorderColor,
+  ambientalCardBorderWidth,
+  ambientalCardBorderRadius,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -460,7 +464,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               style={[styles.card, cardStyle]}
             >
               {soundPreview && (
-                <PreviewFadeLayer active={isPreviewActive} style={styles.previewActiveCard} />
+                <PreviewFadeLayer
+                  active={isPreviewActive}
+                  style={[
+                    styles.previewActiveCard,
+                    { borderRadius: ambientalCardBorderRadius ?? 18 },
+                  ]}
+                />
               )}
               <View
                 style={[
@@ -468,7 +478,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   thumbStyle,
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
-                    borderWidth: 1,
+                    borderWidth: ambientalCardBorderWidth ?? 1,
+                    borderRadius: ambientalCardBorderRadius ?? 18,
                     borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
@@ -512,7 +523,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         </PreviewFadeLayer>
                         <PreviewFadeLayer
                           active={isPreviewActive}
-                          style={styles.previewBorder}
+                          style={[
+                            styles.previewBorder,
+                            { borderRadius: ambientalCardBorderRadius ?? 18 },
+                          ]}
                         />
                         <Pressable
                           onPress={(event) => {

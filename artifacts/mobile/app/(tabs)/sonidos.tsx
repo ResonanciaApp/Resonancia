@@ -406,12 +406,10 @@ export default function SonidosScreen() {
                    progress: soundPreview.progress,
                    onToggle: soundPreview.toggle,
                  }}
-                 ambientalCardBackground={
-                   theme.id === "indigo2" ? "rgba(0,0,0,0.28)" : undefined
-                 }
-                 ambientalCardBorderColor={
-                   theme.id === "indigo2" ? "rgba(255,255,255,0.2)" : undefined
-                 }
+                 ambientalCardBackground="rgba(0,0,0,0.28)"
+                 ambientalCardBorderColor="rgba(255,255,255,0.14)"
+                 ambientalCardBorderWidth={2}
+                 ambientalCardBorderRadius={14}
                  ambientalTitleOnlyMetadataStyle={{
                    transform: [{ translateY: -2 }],
                  }}
