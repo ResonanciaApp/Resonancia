@@ -45,6 +45,12 @@ const ROUTINE_SCENE_SURFACES = {
     divider: "rgba(255,255,255,0.10)",
     ticketSurface: "#191919",
   },
+  indigo3: {
+    surface: "rgba(191,207,255,0.096)",
+    surfaceElevated: "#1D1D25",
+    divider: "rgba(255,255,255,0.10)",
+    ticketSurface: "#191919",
+  },
 } as const;
 
 export function useRoutineTheme(): RoutineThemeTokens {
@@ -55,7 +61,7 @@ export function useRoutineTheme(): RoutineThemeTokens {
   return {
     background: theme.solid,
     surface:
-      activeSceneId === "indigo2"
+      activeSceneId === "indigo2" || activeSceneId === "indigo3"
         ? "rgba(21,13,46,0.45)"
         : activeSceneId === "resonancia"
           ? "rgba(9,11,23,0.45)"

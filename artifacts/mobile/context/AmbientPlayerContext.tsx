@@ -12,7 +12,8 @@ export type SceneId =
   | "profundo"
   | "indigo"
   | "resonancia"
-  | "indigo2";
+  | "indigo2"
+  | "indigo3";
 
 export type AmbientScene = {
   id: SceneId;
@@ -54,6 +55,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "indigo2",
     label: "Indigo 2",
+    colors: ["#2F1C4D", "#222C54"] as const,
+    icon: "layers",
+    image: require("@/assets/images/ambient/zafiro.png"),
+  },
+  {
+    id: "indigo3",
+    label: "Indigo 3",
     colors: ["#2F1C4D", "#222C54"] as const,
     icon: "layers",
     image: require("@/assets/images/ambient/zafiro.png"),
