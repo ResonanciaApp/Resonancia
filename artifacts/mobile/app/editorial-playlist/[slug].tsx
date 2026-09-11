@@ -19,7 +19,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
-import { SessionCard } from "@/components/SessionCard";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -391,13 +390,13 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
               )}
               {rows.map((row) =>
                 row.session ? (
-                  <SessionCard
+                  <MeditationSessionCard
                     key={row.id}
                     session={row.session}
-                    horizontal
-                    width={width - 40}
-                    overridePress={() => handleRowPress(row)}
-                    playing={currentIsEditorial && currentSession?.id === row.id}
+                    isPremium={isPremium}
+                    isActive={currentIsEditorial && currentSession?.id === row.id}
+                    isPlaying={displayIsPlaying && currentSession?.id === row.id}
+                    onPress={() => handleRowPress(row)}
                   />
                 ) : (
                   <View key={row.id} style={styles.missingSessionRow}>
@@ -490,6 +489,69 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
         )}
       </ScrollView>
     </View>
+  );
+}
+
+function MeditationSessionCard({
+  session,
+  isPremium,
+  isActive,
+  isPlaying,
+  onPress,
+}: {
+  session: Session;
+  isPremium: boolean;
+  isActive: boolean;
+  isPlaying: boolean;
+  onPress: () => void;
+}) {
+  const locked = !!session.isPremium && !isPremium;
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.meditationSessionCard,
+        isActive && styles.meditationSessionCardActive,
+        { opacity: pressed ? 0.78 : 1 },
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={session.title}
+    >
+      <View style={styles.meditationSessionImageWrap}>
+        <Image
+          source={session.image}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          placeholder={BLUR_PLACEHOLDER}
+          transition={IMAGE_TRANSITION}
+          cachePolicy="memory-disk"
+        />
+        <View style={styles.meditationSessionImageShade} />
+        <Text style={styles.meditationSessionDuration}>{session.durationLabel}</Text>
+      </View>
+      <View style={styles.meditationSessionCopy}>
+        <Text
+          style={[styles.meditationSessionTitle, isActive && styles.sessionTitleActive]}
+          numberOfLines={2}
+        >
+          {session.title}
+        </Text>
+        {!!session.subtitle && (
+          <Text style={styles.meditationSessionSubtitle} numberOfLines={1}>
+            {session.subtitle}
+          </Text>
+        )}
+      </View>
+      {locked ? (
+        <Feather name="lock" size={15} color={COLORS.muted} />
+      ) : isPlaying ? (
+        <EqualizerBars color="#F9F9F9" size="sm" variant="zen" />
+      ) : isActive ? (
+        <Feather name="pause" size={17} color={COLORS.gold} />
+      ) : (
+        <Feather name="play" size={17} color={COLORS.text} />
+      )}
+    </Pressable>
   );
 }
 
@@ -767,6 +829,64 @@ const styles = StyleSheet.create({
   },
   sessionsList: {
     paddingBottom: 20,
+    gap: 10,
+  },
+  meditationSessionCard: {
+    minHeight: 88,
+    padding: 8,
+    paddingRight: 14,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "rgba(255,255,255,0.055)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.09)",
+  },
+  meditationSessionCardActive: {
+    borderColor: "rgba(190,150,80,0.52)",
+    backgroundColor: "rgba(190,150,80,0.09)",
+  },
+  meditationSessionImageWrap: {
+    width: 100,
+    height: 72,
+    borderRadius: 9,
+    overflow: "hidden",
+    backgroundColor: COLORS.card,
+  },
+  meditationSessionImageShade: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.12)",
+  },
+  meditationSessionDuration: {
+    position: "absolute",
+    right: 7,
+    bottom: 5,
+    color: COLORS.text,
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "700",
+    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  meditationSessionCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  meditationSessionTitle: {
+    color: COLORS.text,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "700",
+  },
+  meditationSessionSubtitle: {
+    marginTop: 3,
+    color: COLORS.muted,
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 16,
   },
   missingSessionRow: {
     height: 64,
