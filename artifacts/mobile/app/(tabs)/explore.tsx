@@ -589,19 +589,6 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
-          <View style={styles.categoryBlocksSection}>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-              ]}
-              discoverTieredLayout
-            />
-          </View>
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -656,6 +643,19 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
+          </View>
+
+          <View style={styles.categoryBlocksSection}>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+              ]}
+              discoverTieredLayout
+            />
           </View>
 
           <View style={styles.durationSection}>
