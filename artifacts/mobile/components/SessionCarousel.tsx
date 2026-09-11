@@ -530,6 +530,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           }
                           style={[
                             styles.previewButton,
+                            styles.favoriteButton,
                             {
                               right: 12,
                               top: 12,
@@ -908,12 +909,18 @@ const styles = StyleSheet.create({
   previewButton: {
     position: "absolute",
     zIndex: 5,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 31,
+    height: 31,
+    borderRadius: 15.5,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  favoriteButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "transparent",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
