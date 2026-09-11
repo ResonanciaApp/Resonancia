@@ -152,6 +152,8 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   recommendationCard: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
   },
   row: {
     paddingVertical: 14,
