@@ -30,7 +30,7 @@ export function getDailyRecommendationSurface(
     : isIndigoThemeId(themeId)
       ? "rgba(181,211,255,0.1)"
       : themeId === "indigo2"
-        ? "rgba(191,207,255,0.1)"
+        ? "rgba(0,0,0,0.2)"
         : "rgba(181,211,255,0.1)";
 }
 
@@ -152,8 +152,6 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   recommendationCard: {
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   row: {
     paddingVertical: 14,
@@ -162,7 +160,7 @@ const styles = StyleSheet.create({
   refreshButton: {
     height: 55,
     borderRadius: 100,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.15)",
     marginTop: 16,
     paddingHorizontal: 18,
