@@ -2107,7 +2107,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     gap: 16,
-    paddingHorizontal: 24,
+    paddingLeft: 24,
+    paddingRight: 15,
   },
   profileDetailsRow: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: 8 },
   profileDetails: { flex: 1, minWidth: 0, alignItems: "flex-start", gap: 6 },
@@ -2148,7 +2149,7 @@ const styles = StyleSheet.create({
   membershipCardHeaderPremium: {
     minHeight: 66,
     paddingVertical: 6,
-    paddingRight: 24,
+    paddingRight: 15,
   },
   membershipCardHeaderPlus: {
     minHeight: 61,
