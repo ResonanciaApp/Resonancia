@@ -318,8 +318,8 @@ function Inicio2LotusStreak() {
 
   return (
     <View style={styles.inicio2HeroLotusContent}>
-      <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
       <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
+      <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
     </View>
   );
 }
@@ -2609,6 +2609,7 @@ export default function HomeScreen2({
             squareTitleAuthorBelow
             categoryGridPresentation
             whiteMetadataGlass
+            showDurationClock
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             titleSize={19}
             titleSpacing={17}
@@ -3062,7 +3063,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio2HeroLotusButton: {
-    width: 40,
+    width: 62,
     height: 40,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.08)",
@@ -3070,20 +3071,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inicio2HeroLotusContent: {
-    width: 40,
+    width: 62,
     height: 40,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 5,
   },
   inicio2HeroLotusCount: {
-    position: "absolute",
-    right: 4,
-    bottom: 2,
-    minWidth: 11,
+    minWidth: 13,
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 15,
     fontWeight: "800",
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.9)",
