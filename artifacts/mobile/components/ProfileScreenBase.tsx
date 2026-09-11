@@ -69,8 +69,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { useStreak } from "@/hooks/useStreak";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
+import { computeMaxStreak } from "@/utils/stats";
 import { SonicStreakDays } from "@/components/SonicStreakWave";
 import {
   gradientColors,
@@ -361,9 +360,6 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsRangeOpen, setStatsRangeOpen] = useState(false);
   const resourceBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -384,25 +380,7 @@ export function ProfileScreenBase({
   const profileDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : secondaryAccent;
-  const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    const rangeEvents = statEvents.filter((event) => {
-      const playedAt = new Date(event.playedAt).getTime();
-      return Number.isFinite(playedAt) && playedAt >= rangeStartTime && playedAt <= now;
-    });
-
-    return {
-      totalMinutes: Math.round(
-        rangeEvents.reduce((total, event) => total + (event.minutes ?? 0), 0),
-      ),
-      activeDays: computeActiveDays(rangeEvents),
-      maxStreak: computeMaxStreak(statEvents),
-    };
-  }, [statEvents, statsRangeDays, todayKey]);
+  const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1278,111 +1256,8 @@ export function ProfileScreenBase({
         {/* ── Progreso, propósito y rutina (solo en el Perfil dedicado) ── */}
         {dedicated && (
           <>
-            <View style={{ flexDirection: "column-reverse" }}>
-            <View
-              style={[
-                styles.personalStatsSection,
-                { backgroundColor: profileSectionBackground },
-              ]}
-            >
-              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                Estadísticas personales
-              </Text>
-              <View style={styles.personalStatsRangeDropdown}>
-                <Pressable
-                  onPress={() => setStatsRangeOpen((open) => !open)}
-                  accessibilityRole="button"
-                  accessibilityState={{ expanded: statsRangeOpen }}
-                  accessibilityLabel={`Últimos ${statsRangeDays} días`}
-                  style={styles.personalStatsRangeTrigger}
-                >
-                  <Text style={[styles.personalStatsRangeLabel, { color: secondaryAccent }]}>
-                    Últimos {statsRangeDays} días
-                  </Text>
-                  <Feather
-                    name={statsRangeOpen ? "chevron-up" : "chevron-down"}
-                    size={14}
-                    color={secondaryAccent}
-                  />
-                </Pressable>
-                {statsRangeOpen && (
-                  <View
-                    style={[
-                      styles.personalStatsRangeMenu,
-                      {
-                        backgroundColor: activeTheme.gradient[0],
-                        borderColor: "rgba(255,255,255,0.12)",
-                      },
-                    ]}
-                  >
-                    {([7, 30, 90] as const).map((days) => {
-                      const selected = statsRangeDays === days;
-                      return (
-                        <Pressable
-                          key={days}
-                          onPress={() => {
-                            setStatsRangeDays(days);
-                            setStatsRangeOpen(false);
-                          }}
-                          accessibilityRole="menuitem"
-                          accessibilityState={{ selected }}
-                          style={[
-                            styles.personalStatsRangeOption,
-                            selected && { backgroundColor: "rgba(255,255,255,0.08)" },
-                          ]}
-                        >
-                          <Text
-                            style={[
-                              styles.personalStatsRangeOptionText,
-                              { color: selected ? "#F9F9F9" : secondaryAccent },
-                            ]}
-                          >
-                            Últimos {days} días
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                )}
-              </View>
-              <View style={styles.personalStatsValues}>
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <Feather name="clock" size={20} color="#F9F9F9" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.totalMinutes}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      MINUTOS TOTALES
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.personalStatDivider} />
-                <View style={styles.personalStatItem}>
-                  <View style={styles.personalStatIcon}>
-                    <Feather name="calendar" size={20} color="#F9F9F9" />
-                  </View>
-                  <View style={styles.personalStatCopy}>
-                    <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                      {personalStats.activeDays}
-                    </Text>
-                    <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                      DÍAS ACTIVOS
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
             <View style={styles.profileProgressSection}>
-              <View
-                style={[
-                  styles.profileProgressCard,
-                  { backgroundColor: profileSectionBackground },
-                ]}
-              >
+              <View style={styles.profileProgressCard}>
                 <SonicStreakDays
                   activeFlags={weekFlags}
                   todayIndex={todayIndex}
@@ -1414,7 +1289,7 @@ export function ProfileScreenBase({
                     </View>
                     <View style={styles.personalStatCopy}>
                       <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                        {personalStats.maxStreak}
+                        {maxStreak}
                       </Text>
                       <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
                         RACHA MÁS LARGA
@@ -1423,7 +1298,6 @@ export function ProfileScreenBase({
                   </View>
                 </View>
               </View>
-            </View>
             </View>
 
             <HistorialCalendar embedded backgroundColor={profileSectionBackground} />
