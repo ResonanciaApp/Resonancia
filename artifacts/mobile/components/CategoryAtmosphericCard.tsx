@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
 });
