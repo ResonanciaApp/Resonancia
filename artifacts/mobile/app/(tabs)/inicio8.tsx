@@ -319,7 +319,7 @@ function Inicio2LotusStreak() {
   return (
     <View style={styles.inicio2HeroLotusContent}>
       <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
-      <MaterialCommunityIcons name="spa" size={24} color="#FFFFFF" />
+      <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" />
     </View>
   );
 }
@@ -3064,15 +3064,15 @@ const styles = StyleSheet.create({
   },
   inicio2HeroLotusButton: {
     width: 62,
-    height: 40,
-    borderRadius: 20,
+    height: 37,
+    borderRadius: 18.5,
     backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
   inicio2HeroLotusContent: {
     width: 62,
-    height: 40,
+    height: 37,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -3082,8 +3082,8 @@ const styles = StyleSheet.create({
     minWidth: 13,
     color: "#FFFFFF",
     fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 15,
+    fontSize: 15,
+    lineHeight: 18,
     fontWeight: "800",
     textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.9)",
