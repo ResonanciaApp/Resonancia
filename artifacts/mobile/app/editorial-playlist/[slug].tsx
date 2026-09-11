@@ -3,9 +3,10 @@ import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -384,21 +385,12 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
           <View style={styles.sessionsContentContainer}>
             <View style={styles.sessionsTitleRow}>
               <Text style={styles.sessionsTitle}>{playlist.title}</Text>
-              <Pressable
-                onPress={() => toggleEditorialPlaylist(playlist.id)}
-                hitSlop={10}
-                style={styles.sessionsHeartButton}
-                accessibilityRole="button"
-                accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+              <AnimatedPlaylistHeart
+                saved={saved}
+                onToggle={() => toggleEditorialPlaylist(playlist.id)}
+                meditation
                 testID="editorial-meditation-playlist-save"
-              >
-                <Feather
-                  name="heart"
-                  size={26}
-                  color={saved ? COLORS.gold : COLORS.text}
-                  fill={saved ? COLORS.gold : "transparent"}
-                />
-              </Pressable>
+              />
             </View>
             {!!playlist.description && (
               <Text style={styles.sessionsDescription}>{playlist.description}</Text>
@@ -440,21 +432,11 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
           <View style={styles.contentContainer}>
             <View style={styles.titleLine}>
               <Text style={styles.title} numberOfLines={3}>{playlist.title}</Text>
-              <Pressable
-                onPress={() => toggleEditorialPlaylist(playlist.id)}
-                hitSlop={10}
-                style={styles.heartButton}
-                accessibilityRole="button"
-                accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+              <AnimatedPlaylistHeart
+                saved={saved}
+                onToggle={() => toggleEditorialPlaylist(playlist.id)}
                 testID="editorial-playlist-save"
-              >
-                <Feather
-                  name="heart"
-                  size={26}
-                  color={saved ? COLORS.gold : COLORS.text}
-                  fill={saved ? COLORS.gold : "transparent"}
-                />
-              </Pressable>
+              />
             </View>
 
             <View style={styles.creatorRow}>
@@ -518,6 +500,60 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
         )}
       </ScrollView>
     </View>
+  );
+}
+
+function AnimatedPlaylistHeart({
+  saved,
+  onToggle,
+  meditation = false,
+  testID,
+}: {
+  saved: boolean;
+  onToggle: () => void;
+  meditation?: boolean;
+  testID: string;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePress = () => {
+    onToggle();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.1,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+      hitSlop={10}
+      style={meditation ? styles.sessionsHeartButton : styles.heartButton}
+      accessibilityRole="button"
+      accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+      testID={testID}
+    >
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <Ionicons
+          name={saved || isPressed ? "heart" : "heart-outline"}
+          size={26}
+          color="#F9F9F9"
+        />
+      </Animated.View>
+    </Pressable>
   );
 }
 
