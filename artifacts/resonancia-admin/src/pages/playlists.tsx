@@ -427,7 +427,11 @@ function PlaylistForm({
       onSaved();
       onClose();
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      const apiError = err as {
+        data?: { error?: string };
+        response?: { data?: { error?: string } };
+      };
+      const msg = apiError.data?.error ?? apiError.response?.data?.error;
       toast.error(msg ?? "Error al guardar");
     } finally {
       setSaving(false);

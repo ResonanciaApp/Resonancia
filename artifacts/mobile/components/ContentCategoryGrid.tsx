@@ -33,7 +33,7 @@ const GRID_PAD = 14;
 const SECTION_GAP = 60;
 const CARD_BG = "rgba(181,211,255,0.057)";
 const CATEGORY_ICON_COLOR = "#F9F9F9";
-const DISCOVER_GRID_GAP = 12;
+const DISCOVER_GRID_GAP = 9;
 const WATERCOLOR_TRAILING_PEEK = 25;
 export const WATERCOLOR_CARD_SIZE = Math.max(
   120,
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   discoverCard: {
-    borderRadius: 14,
+    borderRadius: 13,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",

@@ -609,6 +609,7 @@ const adminPlaylistInputSchema = insertCatalogPlaylistSchema
 
 const adminPlaylistUpdateSchema = updateCatalogPlaylistSchema
   .extend({
+    editorialType: editorialPlaylistTypeSchema.optional(),
     placements: zod4.array(editorialPlaylistPlacementSchema).optional(),
   })
   .superRefine((value, ctx) => {
@@ -1050,9 +1051,16 @@ router.patch("/admin/playlists/:id", requireAuth, requireRole("admin"), async (r
       });
       return;
     }
+    const sessionIdsChanged =
+      playlistValues.sessionIds !== undefined &&
+      (playlistValues.sessionIds.length !== current.sessionIds.length ||
+        playlistValues.sessionIds.some(
+          (sessionId, index) => sessionId !== current.sessionIds[index],
+        ));
+    const becomingActive = playlistValues.isActive === true && !current.isActive;
     const shouldValidateSessions =
-      playlistValues.sessionIds !== undefined ||
-      playlistValues.isActive === true ||
+      sessionIdsChanged ||
+      becomingActive ||
       placements?.some((placement) => placement.isActive) === true;
     if (shouldValidateSessions) {
       const sessionError = await validatePublishedPlaylistSessions(

@@ -15,7 +15,10 @@ import {
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import type { EditorialPlaylist } from "@/data/playlists";
-import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import {
+  SessionBadgeGlass,
+  SessionDurationBadge,
+} from "@/components/SessionDurationBadge";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
 
 const H_PAD = 16;
@@ -59,49 +62,50 @@ export function EditorialPlaylistCarousel({
             <View style={styles.stack}>
               <View style={styles.stackStripFront} />
               <View style={styles.stackStripBack} />
-            <View style={styles.cover}>
-              {playlist.coverUrl ? (
-                <Image
-                  source={{ uri: playlist.coverUrl }}
+              <View style={styles.cover}>
+                {playlist.coverUrl ? (
+                  <Image
+                    source={{ uri: playlist.coverUrl }}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                    cachePolicy="memory-disk"
+                  />
+                ) : (
+                  <View style={styles.missingCover}>
+                    <Feather name="image" size={28} color="rgba(251,251,251,0.55)" />
+                    <Text style={styles.missingCoverText}>Sin portada</Text>
+                  </View>
+                )}
+                <LinearGradient
+                  pointerEvents="none"
+                  colors={["rgba(0,0,0,0.02)", "rgba(0,0,0,0.08)", "rgba(0,0,0,0.42)"]}
                   style={StyleSheet.absoluteFill}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                  cachePolicy="memory-disk"
                 />
-              ) : (
-                <View style={styles.missingCover}>
-                  <Feather name="image" size={28} color="rgba(251,251,251,0.55)" />
-                  <Text style={styles.missingCoverText}>Sin portada</Text>
-                </View>
-              )}
-              <LinearGradient
-                pointerEvents="none"
-                colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.76)"]}
-                style={StyleSheet.absoluteFill}
-              />
-              {playlist.editorialType !== "none" ? (
-                <View style={styles.typePill}>
-                  <Text style={styles.typeText}>
-                    {playlist.editorialType === "relaxation"
-                      ? "Relajación"
-                      : playlist.editorialType === "ritual"
-                        ? "Ritual"
-                        : "Meditativa"}
-                  </Text>
-                </View>
-              ) : null}
-              <View style={styles.meta}>
+                {playlist.editorialType !== "none" ? (
+                  <View style={styles.typePill}>
+                    <SessionBadgeGlass showBlackTint={false} />
+                    <View style={styles.whitePillTint} />
+                    <Text style={styles.typeText}>
+                      {playlist.editorialType === "relaxation"
+                        ? "Relajación"
+                        : playlist.editorialType === "ritual"
+                          ? "Ritual"
+                          : "Meditativa"}
+                    </Text>
+                  </View>
+                ) : null}
                 <SessionDurationBadge
                   label={playlist.durationLabel}
                   style={styles.duration}
+                  whiteGlass
                 />
-                <Text style={styles.cardTitle} numberOfLines={2}>
-                  {playlist.title}
-                </Text>
               </View>
             </View>
-            </View>
+            <Text style={styles.cardTitle} numberOfLines={2}>
+              {playlist.title}
+            </Text>
           </Pressable>
         ))}
       </ScrollView>
@@ -182,8 +186,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   duration: {
-    alignSelf: "flex-start",
-    marginBottom: 8,
+    position: "absolute",
+    left: 15,
+    bottom: 15,
   },
   typePill: {
     position: "absolute",
@@ -192,7 +197,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingHorizontal: 9,
     paddingVertical: 5,
-    backgroundColor: "rgba(20,20,24,0.72)",
+    overflow: "hidden",
+  },
+  whitePillTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   typeText: {
     color: "#F9F9F9",
@@ -200,20 +209,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "700",
   },
-  meta: {
-    position: "absolute",
-    left: 19,
-    right: 19,
-    bottom: 20,
-  },
   cardTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 18,
     fontWeight: "600",
-    textShadowColor: "rgba(0,0,0,0.75)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    marginTop: 3,
   },
 });

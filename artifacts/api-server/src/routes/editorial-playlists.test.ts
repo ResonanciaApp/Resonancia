@@ -202,6 +202,41 @@ describe("editorial playlist contract", () => {
     expect(invalidType.status).toBe(400);
   });
 
+  it("allows metadata edits without revalidating unchanged legacy sessions", async () => {
+    authAs(admin);
+    const [legacyPlaylist] = await db
+      .insert(catalogPlaylistsTable)
+      .values({
+        slug: `editorial-legacy-${suffix}`,
+        title: "Playlist legado",
+        playlistType: "sessions",
+        editorialType: "meditative",
+        durationLabel: "31 min",
+        sessionIds: ["legacy-session-no-disponible"],
+        isActive: true,
+      })
+      .returning();
+    createdPlaylistIds.push(legacyPlaylist.id);
+
+    const response = await request(app)
+      .patch(`/api/admin/playlists/${legacyPlaylist.id}`)
+      .send({
+        slug: legacyPlaylist.slug,
+        title: legacyPlaylist.title,
+        description: legacyPlaylist.description,
+        coverUrl: legacyPlaylist.coverUrl,
+        durationLabel: legacyPlaylist.durationLabel,
+        savedCount: legacyPlaylist.savedCount,
+        sessionIds: legacyPlaylist.sessionIds,
+        playlistType: legacyPlaylist.playlistType,
+        editorialType: "none",
+        isActive: legacyPlaylist.isActive,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.editorialType).toBe("none");
+  });
+
   it("creates placements independently and accepts sessions from any category", async () => {
     authAs(admin);
     const slug = `editorial-${suffix}`;
