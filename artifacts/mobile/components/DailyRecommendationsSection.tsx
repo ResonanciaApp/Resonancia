@@ -99,7 +99,7 @@ export function DailyRecommendationsSection({
           >
             <SessionRow
               session={session}
-              imageSize={82}
+              imageSize={94.3}
               showCategoryText
               showDurationBadge
               showChevron
