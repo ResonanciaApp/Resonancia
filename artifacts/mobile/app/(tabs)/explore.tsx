@@ -646,6 +646,9 @@ export function ExploreScreen({
           </View>
 
           <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Explora por categoría
+            </Text>
             <ContentCategoryGrid
               marginTop={0}
               marginBottom={0}
@@ -964,8 +967,11 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: 15,
+    marginTop: 0,
     marginBottom: SECTION_GAP,
+  },
+  categoryBlocksTitle: {
+    paddingHorizontal: H_PAD,
   },
   featuredMomentSection: {
     paddingHorizontal: H_PAD,
@@ -1107,7 +1113,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 0,
+    marginTop: 5,
     marginBottom: SECTION_GAP,
   },
   newInResonanceHeader: {
