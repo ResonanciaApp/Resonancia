@@ -591,6 +591,24 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Descubre por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+                "ambientales",
+                "charlas",
+              ]}
+              discoverTieredLayout
+            />
+          </View>
+
           {SHOW_FEATURED_MOMENT && featuredMoment && (
             <View style={styles.featuredMomentSection}>
               <Text style={styles.sectionTitle}>Para este momento</Text>
@@ -660,24 +678,6 @@ export function ExploreScreen({
               </Pressable>
             </View>
           )}
-
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Descubre por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-                "ambientales",
-                "charlas",
-              ]}
-              discoverTieredLayout
-            />
-          </View>
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
