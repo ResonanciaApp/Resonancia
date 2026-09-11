@@ -231,6 +231,12 @@ type SessionCarouselProps = {
   ambientalImageFillTop?: boolean;
   /** Keeps the favorite control visible without enabling sound preview. */
   showAmbientalFavorite?: boolean;
+  /** Shows duration at the lower-left corner of the filled Ambiental image. */
+  ambientalDurationAtImageBottom?: boolean;
+  /** Replaces the favorite control with a non-interactive category icon. */
+  ambientalTopRightIcon?: React.ComponentProps<
+    typeof MaterialCommunityIcons
+  >["name"];
   /** Centers title and author together in the lower Ambiental card area. */
   ambientalFooterAuthor?: boolean;
   /** Position override used only by Ambiental title-only metadata. */
@@ -316,6 +322,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalImageLift = 0,
   ambientalImageFillTop = false,
   showAmbientalFavorite = false,
+  ambientalDurationAtImageBottom = false,
+  ambientalTopRightIcon,
   ambientalFooterAuthor = false,
   ambientalTitleOnlyMetadataStyle,
   ambientalTitleOnlyTitleStyle,
@@ -643,6 +651,40 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           }
                         />
                       </Pressable>
+                    )}
+                    {ambientalTopRightIcon && (
+                      <View
+                        pointerEvents="none"
+                        style={[
+                          styles.favoriteButton,
+                          {
+                            right: 12,
+                            top: 12,
+                          },
+                        ]}
+                      >
+                        <SessionBadgeGlass showBlackTint={false} />
+                        <View style={styles.favoriteGlassTint} />
+                        <MaterialCommunityIcons
+                          name={ambientalTopRightIcon}
+                          size={18}
+                          color="#F9F9F9"
+                        />
+                      </View>
+                    )}
+                    {ambientalDurationAtImageBottom && (
+                      <SessionDurationBadge
+                        label={s.durationLabel}
+                        style={[
+                          styles.durBadge,
+                          {
+                            left: 12,
+                            top: ambientalImageBottom - 34,
+                            bottom: undefined,
+                          },
+                        ]}
+                        textStyle={styles.durText}
+                      />
                     )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
                       <AmbientalCardTitle

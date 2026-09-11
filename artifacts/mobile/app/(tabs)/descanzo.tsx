@@ -405,10 +405,15 @@ export default function DescansoScreen() {
                   ambientalTitleOnly
                   ambientalImageLift={isSleepMusic ? 9 : 0}
                   ambientalImageFillTop={isSleepMusic}
-                  showAmbientalFavorite={isSleepMusic}
+                  ambientalDurationAtImageBottom={isSleepMusic}
+                  ambientalTopRightIcon={
+                    isSleepMusic
+                      ? (collection.icon as React.ComponentProps<
+                          typeof MaterialCommunityIcons
+                        >["name"])
+                      : undefined
+                  }
                   ambientalFooterAuthor={isSleepMusic}
-                  showAmbientalCategoryPill={isSleepMusic}
-                  ambientalCategoryPillId={isSleepMusic ? "descanso" : undefined}
                   ambientalCardBackground={
                     isSleepMusic ? "rgba(0,0,0,0.28)" : undefined
                   }
