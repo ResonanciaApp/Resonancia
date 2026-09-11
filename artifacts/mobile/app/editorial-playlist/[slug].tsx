@@ -382,7 +382,24 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
         {isSessions ? (
           <View style={styles.sessionsContentContainer}>
-            <Text style={styles.sessionsTitle}>{playlist.title}</Text>
+            <View style={styles.sessionsTitleRow}>
+              <Text style={styles.sessionsTitle}>{playlist.title}</Text>
+              <Pressable
+                onPress={() => toggleEditorialPlaylist(playlist.id)}
+                hitSlop={10}
+                style={styles.sessionsHeartButton}
+                accessibilityRole="button"
+                accessibilityLabel={saved ? "Quitar de Biblioteca" : "Guardar en Biblioteca"}
+                testID="editorial-meditation-playlist-save"
+              >
+                <Feather
+                  name="heart"
+                  size={26}
+                  color={saved ? COLORS.gold : COLORS.text}
+                  fill={saved ? COLORS.gold : "transparent"}
+                />
+              </Pressable>
+            </View>
             {!!playlist.description && (
               <Text style={styles.sessionsDescription}>{playlist.description}</Text>
             )}
@@ -395,6 +412,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
                 {playlistCompletion.total} {playlistCompletion.total === 1 ? "sesión" : "sesiones"} · {playlistCompletion.percentage}% completado
               </Text>
             </View>
+
+            <View style={styles.sessionsDivider} />
 
             <View style={styles.sessionsList}>
               {rows.length === 0 && (
@@ -409,6 +428,8 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
                   isPremium={isPremium}
                   isActive={currentIsEditorial && currentSession?.id === row.id}
                   isPlaying={displayIsPlaying && currentSession?.id === row.id}
+                  isCompleted={completedSessionIds.has(row.id)}
+                  showPlayControl
                   onPress={() => handleRowPress(row)}
                 />
               ))}
@@ -505,12 +526,16 @@ function EditorialSessionRow({
   isPremium,
   isActive,
   isPlaying,
+  isCompleted = false,
+  showPlayControl = false,
   onPress,
 }: {
   session?: Session;
   isPremium: boolean;
   isActive: boolean;
   isPlaying: boolean;
+  isCompleted?: boolean;
+  showPlayControl?: boolean;
   onPress: () => void;
 }) {
   const locked = !!session?.isPremium && !isPremium;
@@ -522,6 +547,25 @@ function EditorialSessionRow({
       accessibilityRole="button"
       accessibilityLabel={session?.title ?? "Sesión no disponible"}
     >
+      {session && showPlayControl && (
+        <View style={styles.sessionPlayControl}>
+          {isPlaying ? (
+            <Svg width={16} height={16} viewBox="0 0 46 46">
+              <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill={COLORS.navy} />
+              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill={COLORS.navy} />
+            </Svg>
+          ) : (
+            <Svg width={16} height={16} viewBox="0 0 46 46">
+              <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill={COLORS.navy} />
+            </Svg>
+          )}
+          {isCompleted && (
+            <View style={styles.sessionCompletedBadge}>
+              <Feather name="check" size={11} color="#FFFFFF" />
+            </View>
+          )}
+        </View>
+      )}
       <View style={styles.sessionCopy}>
         {session ? (
           <>
@@ -538,12 +582,12 @@ function EditorialSessionRow({
         )}
       </View>
       {locked && <Feather name="lock" size={14} color={COLORS.muted} />}
-      {isPlaying && (
+      {!showPlayControl && isPlaying && (
         <View style={styles.activeWave}>
           <EqualizerBars color="#F9F9F9" size="sm" variant="zen" />
         </View>
       )}
-      {isActive && !isPlaying && <Feather name="pause" size={17} color={COLORS.gold} />}
+      {!showPlayControl && isActive && !isPlaying && <Feather name="pause" size={17} color={COLORS.gold} />}
     </Pressable>
   );
 }
@@ -678,6 +722,28 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(251,251,251,0.14)",
   },
   sessionCopy: { flex: 1, gap: 4 },
+  sessionPlayControl: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F9F9F9",
+    position: "relative",
+  },
+  sessionCompletedBadge: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#8260B5",
+    borderWidth: 1.5,
+    borderColor: "#060A0F",
+  },
   sessionTitle: { color: COLORS.text, fontSize: 14, lineHeight: 19, fontWeight: "600" },
   sessionTitleActive: { color: "#F9F9F9" },
   sessionDuration: { color: COLORS.muted, fontSize: 12 },
@@ -741,6 +807,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   sessionsTitle: {
+    flex: 1,
     color: COLORS.text,
     fontFamily: "Manrope",
     fontSize: 24,
@@ -748,8 +815,19 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textAlign: "left",
   },
+  sessionsTitleRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  sessionsHeartButton: {
+    paddingTop: 2,
+    width: 40,
+    alignItems: "flex-end",
+  },
   sessionsDescription: {
-    color: "rgba(249,249,249,0.8)",
+    color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
@@ -758,7 +836,7 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     marginTop: 24,
-    marginBottom: 24,
+    marginBottom: 0,
   },
   progressBarBackground: {
     height: 7,
@@ -778,6 +856,12 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontFamily: "Manrope",
     textAlign: "left",
+  },
+  sessionsDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: COLORS.line,
+    marginTop: 24,
+    marginBottom: 8,
   },
   sessionsList: {
     paddingBottom: 20,
