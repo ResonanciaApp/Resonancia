@@ -185,7 +185,7 @@ export function RecommendedForYouSection({
               {selected && (
                 <LinearGradient
                   pointerEvents="none"
-                  colors={["#E7C979", "#BE9650", "#8C6729"]}
+                  colors={["#E7C979", "#D1B76F"]}
                   start={{ x: 0, y: 0.5 }}
                   end={{ x: 1, y: 0.5 }}
                   style={StyleSheet.absoluteFill}
