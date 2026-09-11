@@ -1316,6 +1316,26 @@ export function ProfileScreenBase({
 
             {false && <HistorialCalendar embedded outlined backgroundColor="transparent" />}
             <View style={{ marginTop: 16, gap: 12 }}>
+              <Pressable
+                onPress={() => router.push("/notificaciones-practica" as never)}
+                style={({ pressed }) => [
+                  styles.outlinedProfileSection,
+                  styles.practiceReminderSection,
+                  { opacity: pressed ? 0.72 : 1 },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel="Administrar recordatorio de prácticas"
+              >
+                <View style={styles.practiceReminderCopy}>
+                  <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                    Recordatorio de prácticas
+                  </Text>
+                  <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                    Mañana, tarde y noche
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={22} color={colors.foreground} />
+              </Pressable>
               <View style={styles.outlinedProfileSection}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
@@ -2281,6 +2301,25 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.14)",
     backgroundColor: "transparent",
     padding: 16,
+  },
+  practiceReminderSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  practiceReminderCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  practiceReminderTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  practiceReminderSubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "500",
   },
   profileProgressHeader: {
     flexDirection: "row",
