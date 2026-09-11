@@ -17,9 +17,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { VideoCard } from "@/components/VideoCard";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useVideosState } from "@/context/VideosContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -86,6 +88,7 @@ export default function FavoritosTodosScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites, playSession, currentSession } = usePlayer();
+  const { isPremium } = usePremium();
   const { favFolders } = useFoldersPlaylists();
   const { favoriteVideoIds } = useVideosState();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
@@ -256,6 +259,34 @@ export default function FavoritosTodosScreen() {
                 Aún no tienes favoritos en esta colección.
               </Text>
             </View>
+          ) : activeTab === "ambientales" ? (
+            <SessionCarousel
+              title=""
+              sessions={tabSessions}
+              isPremium={isPremium}
+              onPress={openSession}
+              style={styles.ambientalGrid}
+              showHeader={false}
+              gridLayout
+              gridScrollEnabled={false}
+              eagerRender
+              presentation="editorial"
+              ambientalTitleOnly
+              ambientalImageLift={9}
+              ambientalImageFillTop
+              ambientalCardBackground="rgba(0,0,0,0.28)"
+              ambientalCardBorderColor="rgba(249,249,249,0.2)"
+              ambientalCardBorderWidth={1}
+              ambientalCardBorderRadius={28}
+              ambientalTitleOnlyMetadataStyle={{
+                transform: [{ translateY: -2 }],
+              }}
+              ambientalTitleOnlyTitleStyle={{
+                height: 36,
+                textAlign: "center",
+                textAlignVertical: "top",
+              }}
+            />
           ) : (
             <View style={styles.grid}>
               {tabSessions.map((session) => (
@@ -391,6 +422,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
+  },
+  ambientalGrid: {
+    paddingHorizontal: 0,
+    marginBottom: 0,
   },
   empty: {
     flexDirection: "row",
