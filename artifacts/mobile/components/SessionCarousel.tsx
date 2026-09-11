@@ -255,6 +255,8 @@ type SessionCarouselProps = {
   squareTitleAuthorBelow?: boolean;
   /** Category-grid layout: duration pill over image, title and author below. */
   categoryGridPresentation?: boolean;
+  /** Shows the session category below the image, immediately above the title. */
+  showCategoryLabelBelow?: boolean;
   /** Shows the session category as a glass pill in the image's upper-left corner. */
   showCategoryPillTopLeft?: boolean;
   /** Uses the same white glass surface as Ambiental favorite buttons. */
@@ -340,6 +342,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   squareTitleOnlyBelow = false,
   squareTitleAuthorBelow = false,
   categoryGridPresentation = false,
+  showCategoryLabelBelow = false,
   showCategoryPillTopLeft = false,
   whiteMetadataGlass = false,
   showDurationClock = false,
@@ -899,6 +902,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               </View>
               {useSleepMetadataBelow ? (
                 <View style={[styles.sleepBelowMetadata, sleepBelowMetadataStyle]}>
+                   {showCategoryLabelBelow && s.categoryLabel ? (
+                    <Text
+                      style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}
+                      numberOfLines={1}
+                    >
+                      {s.categoryLabel}
+                    </Text>
+                  ) : null}
                    {!categoryGridPresentation && !squareTitleOnlyBelow && !squareTitleAuthorBelow ? (
                     <Text
                       style={[styles.sleepBelowSecondary, { color: viewAllAccent }]}

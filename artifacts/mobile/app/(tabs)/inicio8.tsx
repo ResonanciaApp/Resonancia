@@ -2722,17 +2722,28 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && (
-          <SessionCarousel
-            title="Populares"
-            sessions={popularSessions}
-            isPremium={isPremium}
-            onPress={handleSessionCarouselPress}
-            style={inicio2SessionCarouselStyle}
-            trailingPeek={20}
-            squareTitleOnlyBelow
-            titleSize={19}
-            titleSpacing={17}
-          />
+          <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
+            <SessionCarousel
+              title="Populares"
+              sessions={popularSessions}
+              isPremium={isPremium}
+              onPress={handleSessionCarouselPress}
+              style={inicio2SessionCarouselStyle}
+              presentation="editorial"
+              disableAmbientalVariant
+              sleepMetadataBelow
+              categoryGridPresentation
+              showCategoryLabelBelow
+              whiteMetadataGlass
+              showDurationClock
+              sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+              trailingPeek={20}
+              cardBorderRadius={16}
+              titleSize={19}
+              hideCategoryAboveTitle
+              durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+            />
+          </View>
         )}
         {isInicio2 && (
           <View>

@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.16)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   dateText: {
     fontFamily: "Manrope",
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
-    backgroundColor: "rgba(255,255,255,0.17)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   moodEmoji: {
     fontSize: 18,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 18,
-    backgroundColor: "rgba(139,92,246,0.20)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   emptyTitle: {
     fontFamily: "Manrope",
