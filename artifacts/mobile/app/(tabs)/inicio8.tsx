@@ -121,9 +121,6 @@ const { width, height } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
-const INICIO2_SQUARE_CAROUSEL_CARD_W = Math.floor(
-  (width - 14 - CONTENT_CAROUSEL_GAP) / 1.9,
-);
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
@@ -2608,8 +2605,7 @@ export default function HomeScreen2({
             isPremium={isPremium}
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
-            cardWidth={INICIO2_SQUARE_CAROUSEL_CARD_W}
-            allowOversizedCardWidth
+            trailingPeek={20}
             squareTitleAuthorBelow
             categoryGridPresentation
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}

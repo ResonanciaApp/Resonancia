@@ -176,7 +176,7 @@ export default function RespiracionScreen() {
   }
 
   const safePhase = patternData.phases[Math.min(phaseIdx, patternData.phases.length - 1)];
-  const btnIcon = completed ? "rotate-ccw" : running ? "pause" : "play";
+  const btnIcon = completed ? "rotate-ccw" : running ? "pause" : "wind";
   const btnLabel = completed ? "Repetir" : running ? "Pausar" : started ? "Continuar" : "Comenzar";
 
   return (
@@ -210,12 +210,12 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#BE9650" : "rgba(190,150,80,0.24)",
-                      backgroundColor: active ? "rgba(190,150,80,0.18)" : "rgba(190,150,80,0.05)",
+                      borderColor: active ? "#F9F9F9" : "rgba(255,255,255,0.1)",
+                      backgroundColor: active ? "#F9F9F9" : "rgba(255,255,255,0.1)",
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: active ? "#E8C986" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: active ? "#060A0F" : "#F4F4F4" }]}>
                     {p.name}
                   </Text>
                 </Pressable>
@@ -231,11 +231,11 @@ export default function RespiracionScreen() {
 
         {/* Circle area */}
         <View style={styles.circleContainer}>
-          <View style={[styles.ghostRing, { borderColor: "rgba(190,150,80,0.20)" }]} />
+          <View style={[styles.ghostRing, { borderColor: "rgba(249,249,249,0.20)" }]} />
           <Animated.View
             style={[
               styles.circle,
-              { borderColor: "rgba(190,150,80,0.72)", transform: [{ scale }] },
+              { borderColor: "rgba(249,249,249,0.72)", transform: [{ scale }] },
             ]}
           >
             <LinearGradient
@@ -253,7 +253,7 @@ export default function RespiracionScreen() {
               </View>
             )}
             {!running && !completed && (
-              <Feather name="wind" size={34} color="#BE9650" />
+              <Feather name="wind" size={34} color="#F9F9F9" />
             )}
             {completed && (
               <Text style={styles.completedIcon}>✓</Text>
@@ -271,10 +271,10 @@ export default function RespiracionScreen() {
                 {
                   backgroundColor:
                     i < cycles
-                      ? "#BE9650"
+                      ? "#F9F9F9"
                       : i === cycles && running
-                        ? "rgba(190,150,80,0.50)"
-                        : "rgba(190,150,80,0.18)",
+                        ? "rgba(249,249,249,0.50)"
+                        : "rgba(249,249,249,0.18)",
                 },
               ]}
             />
@@ -298,7 +298,7 @@ export default function RespiracionScreen() {
                 <View
                   style={[
                     styles.legendDot,
-                    { backgroundColor: active ? undefined : "rgba(190,150,80,0.20)", overflow: "hidden" },
+                    { backgroundColor: active ? undefined : "rgba(249,249,249,0.20)", overflow: "hidden" },
                   ]}
                 >
                   {active && <View style={[StyleSheet.absoluteFill, styles.activeLegendDot]} />}
@@ -317,7 +317,7 @@ export default function RespiracionScreen() {
           style={({ pressed }) => [styles.mainBtn, { opacity: pressed ? 0.82 : 1 }]}
         >
           <LinearGradient
-            colors={["#D2AD67", "#BE9650"]}
+            colors={["#F9F9F9", "#F9F9F9"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: 50 }]}
@@ -351,9 +351,16 @@ const styles = StyleSheet.create({
   scroll: { paddingTop: 10 },
 
   chipWrap: { marginHorizontal: 0, marginBottom: 4 },
-  chipRow: { paddingHorizontal: 20, gap: 10 },
-  chip: { paddingHorizontal: 20, paddingVertical: 9, borderRadius: 20, borderWidth: 1 },
-  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  chipRow: { paddingHorizontal: 16, gap: 8 },
+  chip: {
+    height: 51,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   description: {
     fontFamily: "Manrope",
@@ -429,7 +436,7 @@ const styles = StyleSheet.create({
   },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 7 },
   legendDot: { width: 6, height: 6, borderRadius: 3 },
-  activeLegendDot: { backgroundColor: "#BE9650" },
+  activeLegendDot: { backgroundColor: "#F9F9F9" },
   legendText: { fontFamily: "Manrope", fontSize: 12.5 },
 
   mainBtn: {
