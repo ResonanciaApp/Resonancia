@@ -322,6 +322,25 @@ export default function SonidosScreen() {
               )}
             </Pressable>
           </View>
+          <View style={styles.stickySonidosTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.tabGrid, { marginBottom: 0 }]}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {collections.map((collection) => (
+                <CollectionPill
+                  key={collection.id}
+                  label={collection.label}
+                  icon={collection.icon}
+                  onPress={() => openCategory(`/sound-tag/${collection.id}`)}
+                  backgroundColor={inactiveTabSurface}
+                  borderColor={inactiveTabBorder}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </Animated.View>
 
         <ScrollView
@@ -579,6 +598,9 @@ const styles = StyleSheet.create({
   },
   sonidosTabsHeader: {
     marginTop: 9,
+    paddingBottom: 15,
+  },
+  stickySonidosTabsHeader: {
     paddingBottom: 15,
   },
   tabGrid: {
