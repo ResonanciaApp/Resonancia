@@ -241,7 +241,7 @@ export function ContentCategoryGrid({
                   <View style={[styles.discoverCardImage, { height: cardHeight, backgroundColor: catBlockBg }]}>
                     <View pointerEvents="none" style={styles.discoverCardContent}>
                       <View style={styles.discoverCardIcon}>
-                        {renderCategoryIcon(category, false, true, 2)}
+                        {renderCategoryIcon(category, false, true, -2)}
                       </View>
                       <Text style={styles.discoverCardTitle} numberOfLines={2}>
                         {category.id === "meditaciones-guiadas" ? "Meditación" : category.label}
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     height: 32,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 7,
+    marginBottom: 5,
   },
   discoverCardTitle: {
     color: "#FBFBFB",
