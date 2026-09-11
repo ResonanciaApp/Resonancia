@@ -524,7 +524,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.previewButton,
                             {
                               left: (cw - 31) / 2,
-                              top: ch - 91,
+                              top: ch - 49,
                             },
                           ]}
                         >
@@ -662,6 +662,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                          isEditorialPresentation && styles.editorialMetadata,
                          sleepOverlayMetadataStyle,
                           showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
+                          showAmbientalTitleOnly &&
+                            soundPreview && {
+                              top: ch - 89,
+                              bottom: undefined,
+                            },
                        ]}
                      >
                        {!showAmbientalTitleOnly && effectiveShowDurationBadge && showSleepCategoryPillWithInlineDuration ? (
