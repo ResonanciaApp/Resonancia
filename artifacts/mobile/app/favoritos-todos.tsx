@@ -184,9 +184,7 @@ export default function FavoritosTodosScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const libraryHeaderButtonBackground = isIndigoThemeId(activeSceneId)
-    ? "rgba(181,211,255,0.057)"
-    : "rgba(255,255,255,0.12)";
+  const libraryHeaderButtonBackground = "rgba(0,0,0,0.28)";
 
   const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>("all");
   const titleProgress = useRef(new Animated.Value(0)).current;
@@ -238,7 +236,13 @@ export default function FavoritosTodosScreen() {
     [favSessions, favVideos.length, favoritePlaylists.length],
   );
   const visibleContentTabs = useMemo(
-    () => visibleTabs.filter((tab) => tab.id !== "all"),
+    () => {
+      const contentTabs = visibleTabs.filter((tab) => tab.id !== "all");
+      return [
+        ...contentTabs.filter((tab) => tab.id !== "ambientales"),
+        ...contentTabs.filter((tab) => tab.id === "ambientales"),
+      ];
+    },
     [visibleTabs],
   );
 
@@ -605,7 +609,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   allCollections: {
-    paddingTop: 21,
+    paddingTop: 23,
   },
   videoCarouselSection: {
     marginBottom: 53,
