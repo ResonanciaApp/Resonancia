@@ -38,11 +38,13 @@ function ToolCard({
   tool,
   foregroundColor,
   pillBackground,
+  pillBorderColor,
   onPress,
 }: {
   tool: Tool;
   foregroundColor: string;
   pillBackground: string;
+  pillBorderColor?: string;
   onPress: (id: ToolId) => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -84,6 +86,8 @@ function ToolCard({
           tool.id === "mood-history" && styles.lastCard,
           {
             backgroundColor: pillBackground,
+            borderWidth: pillBorderColor ? 1 : 0,
+            borderColor: pillBorderColor,
             transform: [{ scale }],
           },
         ]}
@@ -165,6 +169,7 @@ export function ToolsGrid({
           tool={tool}
           foregroundColor={colors.foreground}
           pillBackground={pillBackground}
+          pillBorderColor={theme.id === "indigo2" ? "rgba(255,255,255,0.18)" : undefined}
           onPress={handlePress}
         />
       ))}
