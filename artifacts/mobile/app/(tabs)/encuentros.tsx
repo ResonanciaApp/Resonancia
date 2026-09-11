@@ -24,7 +24,7 @@ import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 import { useResonadores } from "@/hooks/useResonadores";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
-const H_PAD = 14;
+const H_PAD = 16;
 
 export default function ComunidadScreen() {
   const insets = useSafeAreaInsets();
