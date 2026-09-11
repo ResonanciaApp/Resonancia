@@ -560,9 +560,9 @@ const styles = StyleSheet.create({
     right: H_PAD,
   },
   headerSearchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",

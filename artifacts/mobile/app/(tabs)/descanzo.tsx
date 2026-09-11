@@ -324,7 +324,6 @@ export default function DescansoScreen() {
               style={[
                 styles.headerSearchButton,
                 styles.stickySearchButton,
-                indigoSurface && { backgroundColor: indigoSurface },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Dormir"
@@ -350,7 +349,7 @@ export default function DescansoScreen() {
               <Pressable
                 onPress={() => setSearchVisible(true)}
                 hitSlop={10}
-                style={[styles.headerSearchButton, indigoSurface && { backgroundColor: indigoSurface }]}
+                style={styles.headerSearchButton}
                 accessibilityRole="button"
                 accessibilityLabel="Buscar en Dormir"
                 testID="sleep-search-button"
@@ -725,12 +724,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerSearchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   heroTitle: {
     fontFamily: "Manrope",

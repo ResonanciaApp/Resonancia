@@ -547,7 +547,6 @@ export function ExploreScreen({
             style={[
               styles.headerSearchButton,
               styles.stickySearchButton,
-              { backgroundColor: durationSurfaceColor },
             ]}
             accessibilityRole="button"
             accessibilityLabel={`Buscar en ${screenTitle}`}
@@ -572,10 +571,7 @@ export function ExploreScreen({
             <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
-              style={[
-                styles.headerSearchButton,
-                { backgroundColor: durationSurfaceColor },
-              ]}
+              style={styles.headerSearchButton}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
@@ -1001,12 +997,12 @@ const styles = StyleSheet.create({
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactPageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", letterSpacing: 0.2, color: "#F9F9F9", textAlign: "center" },
   headerSearchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
