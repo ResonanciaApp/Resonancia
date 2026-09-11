@@ -158,7 +158,7 @@ function ProfileMembershipModules({
 }) {
   return (
     <View style={styles.membershipSection}>
-      {MEMBERSHIP_PLANS.map((plan, index) => {
+      {MEMBERSHIP_PLANS.filter((plan) => plan.id !== "plus").map((plan, index) => {
         const isPremium = plan.id === "premium";
 
         return (
@@ -2117,6 +2117,8 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -2330,8 +2332,8 @@ const styles = StyleSheet.create({
   },
   outlinedProfileSection: {
     borderRadius: 14,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
   },
