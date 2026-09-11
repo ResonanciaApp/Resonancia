@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,6 +17,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Path, Rect } from "react-native-svg";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EqualizerBars } from "@/components/EqualizerBars";
@@ -332,12 +334,24 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
                 accessibilityLabel={displayIsPlaying ? "Pausar playlist" : "Reproducir playlist"}
                 testID="editorial-meditation-play"
               >
-                <Ionicons
-                  name={displayIsPlaying ? "pause" : "play"}
-                  size={32}
-                  color={COLORS.navy}
-                  style={{ marginLeft: displayIsPlaying ? 0 : 4 }}
+                <BlurView
+                  intensity={Platform.OS === "android" ? 70 : 34}
+                  tint="dark"
+                  experimentalBlurMethod="dimezisBlurView"
+                  pointerEvents="none"
+                  style={StyleSheet.absoluteFill}
                 />
+                <View pointerEvents="none" style={styles.sessionsHeroPlayGlassTint} />
+                {displayIsPlaying ? (
+                  <Svg width={36} height={36} viewBox="0 0 46 46">
+                    <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                    <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  </Svg>
+                ) : (
+                  <Svg width={36} height={36} viewBox="0 0 46 46">
+                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                  </Svg>
+                )}
               </Pressable>
             </View>
           )}
@@ -388,22 +402,16 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
                   Esta selección todavía no tiene sesiones disponibles.
                 </Text>
               )}
-              {rows.map((row) =>
-                row.session ? (
-                  <MeditationSessionCard
-                    key={row.id}
-                    session={row.session}
-                    isPremium={isPremium}
-                    isActive={currentIsEditorial && currentSession?.id === row.id}
-                    isPlaying={displayIsPlaying && currentSession?.id === row.id}
-                    onPress={() => handleRowPress(row)}
-                  />
-                ) : (
-                  <View key={row.id} style={styles.missingSessionRow}>
-                    <Text style={styles.missingSessionText}>Sesión no disponible</Text>
-                  </View>
-                ),
-              )}
+              {rows.map((row) => (
+                <EditorialSessionRow
+                  key={row.id}
+                  session={row.session}
+                  isPremium={isPremium}
+                  isActive={currentIsEditorial && currentSession?.id === row.id}
+                  isPlaying={displayIsPlaying && currentSession?.id === row.id}
+                  onPress={() => handleRowPress(row)}
+                />
+              ))}
             </View>
             {loading && <Text style={styles.refreshing}>Actualizando selección…</Text>}
           </View>
@@ -489,69 +497,6 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
         )}
       </ScrollView>
     </View>
-  );
-}
-
-function MeditationSessionCard({
-  session,
-  isPremium,
-  isActive,
-  isPlaying,
-  onPress,
-}: {
-  session: Session;
-  isPremium: boolean;
-  isActive: boolean;
-  isPlaying: boolean;
-  onPress: () => void;
-}) {
-  const locked = !!session.isPremium && !isPremium;
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.meditationSessionCard,
-        isActive && styles.meditationSessionCardActive,
-        { opacity: pressed ? 0.78 : 1 },
-      ]}
-      accessibilityRole="button"
-      accessibilityLabel={session.title}
-    >
-      <View style={styles.meditationSessionImageWrap}>
-        <Image
-          source={session.image}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          placeholder={BLUR_PLACEHOLDER}
-          transition={IMAGE_TRANSITION}
-          cachePolicy="memory-disk"
-        />
-        <View style={styles.meditationSessionImageShade} />
-        <Text style={styles.meditationSessionDuration}>{session.durationLabel}</Text>
-      </View>
-      <View style={styles.meditationSessionCopy}>
-        <Text
-          style={[styles.meditationSessionTitle, isActive && styles.sessionTitleActive]}
-          numberOfLines={2}
-        >
-          {session.title}
-        </Text>
-        {!!session.subtitle && (
-          <Text style={styles.meditationSessionSubtitle} numberOfLines={1}>
-            {session.subtitle}
-          </Text>
-        )}
-      </View>
-      {locked ? (
-        <Feather name="lock" size={15} color={COLORS.muted} />
-      ) : isPlaying ? (
-        <EqualizerBars color="#F9F9F9" size="sm" variant="zen" />
-      ) : isActive ? (
-        <Feather name="pause" size={17} color={COLORS.gold} />
-      ) : (
-        <Feather name="play" size={17} color={COLORS.text} />
-      )}
-    </Pressable>
   );
 }
 
@@ -776,10 +721,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   sessionsHeroPlayButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "#F9F9F9",
+    width: 103,
+    height: 103,
+    borderRadius: 51.5,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.28)",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -788,20 +736,24 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  sessionsHeroPlayGlassTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
   sessionsTitle: {
     color: COLORS.text,
     fontFamily: "Manrope",
     fontSize: 24,
     lineHeight: 30,
     fontWeight: "800",
-    textAlign: "center",
+    textAlign: "left",
   },
   sessionsDescription: {
     color: "rgba(249,249,249,0.8)",
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: 12,
   },
   progressContainer: {
@@ -809,84 +761,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   progressBarBackground: {
-    height: 4,
+    height: 7,
     backgroundColor: "rgba(255,255,255,0.15)",
-    borderRadius: 2,
+    borderRadius: 4,
     overflow: "hidden",
     marginBottom: 8,
   },
   progressBarFill: {
     height: "100%",
     backgroundColor: "#F9F9F9",
-    borderRadius: 2,
+    borderRadius: 4,
   },
   progressText: {
     fontSize: 12,
     color: "rgba(251,251,251,0.62)",
     fontWeight: "500",
     fontFamily: "Manrope",
-    textAlign: "center",
+    textAlign: "left",
   },
   sessionsList: {
     paddingBottom: 20,
-    gap: 10,
-  },
-  meditationSessionCard: {
-    minHeight: 88,
-    padding: 8,
-    paddingRight: 14,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "rgba(255,255,255,0.055)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.09)",
-  },
-  meditationSessionCardActive: {
-    borderColor: "rgba(190,150,80,0.52)",
-    backgroundColor: "rgba(190,150,80,0.09)",
-  },
-  meditationSessionImageWrap: {
-    width: 100,
-    height: 72,
-    borderRadius: 9,
-    overflow: "hidden",
-    backgroundColor: COLORS.card,
-  },
-  meditationSessionImageShade: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.12)",
-  },
-  meditationSessionDuration: {
-    position: "absolute",
-    right: 7,
-    bottom: 5,
-    color: COLORS.text,
-    fontSize: 11,
-    lineHeight: 14,
-    fontWeight: "700",
-    textShadowColor: "rgba(0,0,0,0.9)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  meditationSessionCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  meditationSessionTitle: {
-    color: COLORS.text,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    lineHeight: 20,
-    fontWeight: "700",
-  },
-  meditationSessionSubtitle: {
-    marginTop: 3,
-    color: COLORS.muted,
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 16,
   },
   missingSessionRow: {
     height: 64,

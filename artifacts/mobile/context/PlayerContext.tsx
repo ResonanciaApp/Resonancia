@@ -1062,6 +1062,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
    *  (the clock starts at the confirmed-play moment via markPlayStarted / the isPlaying effect,
    *  so buffering/setup/switch-gap time is not counted as listened). */
   const startStatTracking = useCallback((session: Session) => {
+    // Cada sesión empieza con su propio estado de finalización. Un callback
+    // tardío de la pista anterior nunca debe marcar como completa la nueva.
+    statCompletedRef.current = false;
     statTrackerRef.current = session;
     listenedSecondsRef.current = 0;
     playStartRef.current = null;
@@ -1078,7 +1081,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Flush the tracked session's accumulated listen time, then clear the tracker (idempotent) */
   const flushActiveStat = useCallback(() => {
     const session = statTrackerRef.current;
-    if (!session) return;
+    if (!session) {
+      statCompletedRef.current = false;
+      return;
+    }
     accumulateListened();
     const seconds = listenedSecondsRef.current;
     statTrackerRef.current = null;
