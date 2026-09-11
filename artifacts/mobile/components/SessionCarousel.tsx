@@ -624,7 +624,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           <MaterialCommunityIcons
                             name={isFavorite(s.id) ? "heart" : "heart-outline"}
                             size={18}
-                            color="rgba(34,34,88,0.6)"
+                            color="rgba(34,34,88,0.7)"
                           />
                         </Pressable>
                       </>
@@ -1043,8 +1043,8 @@ const styles = StyleSheet.create({
   favoriteButton: {
     position: "absolute",
     zIndex: 5,
-    width: 34,
-    height: 34,
+    width: 32,
+    height: 32,
     borderRadius: 14,
     overflow: "hidden",
     alignItems: "center",
