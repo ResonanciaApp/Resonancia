@@ -395,7 +395,12 @@ export default function SonidosScreen() {
                  presentation="editorial"
                  ambientalTitleOnly
                  ambientalImageLift={7}
-                 showAmbientalCategoryPill
+                 ambientalCardBackground={
+                   theme.id === "indigo2" ? "rgba(0,0,0,0.28)" : undefined
+                 }
+                 ambientalCardBorderColor={
+                   theme.id === "indigo2" ? "rgba(255,255,255,0.2)" : undefined
+                 }
                  ambientalTitleOnlyMetadataStyle={{
                    transform: [{ translateY: -2 }],
                  }}

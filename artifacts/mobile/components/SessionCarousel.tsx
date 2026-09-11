@@ -134,6 +134,8 @@ type SessionCarouselProps = {
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
   ambientalCardBackground?: string;
+  /** Optional border override for Ambiental cards on a specific screen/theme. */
+  ambientalCardBorderColor?: string;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
@@ -209,6 +211,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   cardVariant,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
+  ambientalCardBorderColor,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
   presentation,
@@ -391,7 +394,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
                     borderWidth: 1,
-                    borderColor: "rgba(255,255,255,0.1)",
+                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
               >
