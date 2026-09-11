@@ -353,6 +353,24 @@ export default function DescansoScreen() {
               )}
             </Pressable>
           </View>
+          <View style={styles.stickySleepTabsHeader}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={[styles.tabGrid, { marginBottom: 0 }]}
+              contentContainerStyle={styles.tabGridContent}
+            >
+              {sleepCollections.map((tab) => (
+                <SleepPill
+                  key={tab.id}
+                  sel={false}
+                  label={tab.label}
+                  icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
+                  onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </Animated.View>
 
         <ScrollView
@@ -747,6 +765,9 @@ const styles = StyleSheet.create({
   },
   sleepTabsHeader: {
     marginTop: 9,
+    paddingBottom: 15,
+  },
+  stickySleepTabsHeader: {
     paddingBottom: 15,
   },
 
