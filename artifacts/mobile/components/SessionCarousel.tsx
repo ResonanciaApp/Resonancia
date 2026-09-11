@@ -972,6 +972,7 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     backgroundColor: "transparent",
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
