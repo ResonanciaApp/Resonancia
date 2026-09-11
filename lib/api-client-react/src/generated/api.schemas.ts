@@ -861,6 +861,41 @@ export interface PlaylistCarousel {
   playlistIds: string[];
 }
 
+export type SleepCarouselOrderType = typeof SleepCarouselOrderType[keyof typeof SleepCarouselOrderType];
+
+
+export const SleepCarouselOrderType = {
+  session: 'session',
+  playlist: 'playlist',
+} as const;
+
+export interface SleepCarouselOrder {
+  key: string;
+  type: SleepCarouselOrderType;
+  label: string;
+  visible: boolean;
+  /** @minimum 0 */
+  sortOrder: number;
+}
+
+export type SleepCarouselOrderUpdateCarouselsItem = {
+  /** @minLength 1 */
+  key: string;
+  visible: boolean;
+};
+
+export interface SleepCarouselOrderUpdate {
+  /** @minLength 1 */
+  revision: string;
+  /** @minItems 1 */
+  carousels: SleepCarouselOrderUpdateCarouselsItem[];
+}
+
+export interface SleepCarouselOrderResponse {
+  revision: string;
+  carousels: SleepCarouselOrder[];
+}
+
 export type AdminPlaylistCarouselInputSurface = typeof AdminPlaylistCarouselInputSurface[keyof typeof AdminPlaylistCarouselInputSurface];
 
 
@@ -1041,6 +1076,7 @@ export interface CatalogResponse {
   sessions: CatalogSession[];
   playlists: CatalogPlaylist[];
   playlistCarousels: PlaylistCarousel[];
+  sleepCarouselOrder: SleepCarouselOrder[];
   /** Alias legado de Inicio, filtrado a showOnHome y máximo cuatro */
   homePlaylists?: CatalogPlaylist[];
 }

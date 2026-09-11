@@ -43,7 +43,9 @@ import {
   type EditorialPlaylist,
   type PlaylistCarouselSnapshot,
   type PlaylistSnapshot,
+  applySleepCarouselOrder,
 } from "@/data/playlists";
+import type { SleepCarouselOrderItem } from "@/lib/editorial-playlist-helpers";
 
 // v3 invalida snapshots que todavía podían contener sesiones retiradas.
 const CACHE_KEY = "cdc_catalog_snapshot_v3";
@@ -81,6 +83,7 @@ type CatalogSnapshot = {
    * carousels existed.  An explicit [] is authoritative and must be kept.
    */
   playlistCarousels?: PlaylistCarouselSnapshot[];
+  sleepCarouselOrder?: SleepCarouselOrderItem[];
 };
 
 function hydrate(snapshot: CatalogSnapshot): void {
@@ -92,6 +95,9 @@ function hydrate(snapshot: CatalogSnapshot): void {
       snapshot.homePlaylists,
       snapshot.playlistCarousels,
     );
+  }
+  if (snapshot.sleepCarouselOrder !== undefined) {
+    applySleepCarouselOrder(snapshot.sleepCarouselOrder);
   }
 }
 

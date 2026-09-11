@@ -49,8 +49,48 @@ import {
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
+import { getSleepCarouselProjection, updateSleepCarouselOrder } from "../lib/sleepCarouselOrder";
 
 const router: IRouter = Router();
+
+router.get("/admin/sleep-carousel-order", requireAuth, requireRole("admin"), async (req, res): Promise<void> => {
+  try {
+    const projection = await getSleepCarouselProjection();
+    res.json({ carousels: projection.carousels, revision: projection.revision });
+  } catch (err) {
+    req.log.error({ err }, "error fetching sleep carousel order");
+    res.status(500).json({ error: "Error al obtener el orden de descanso" });
+  }
+});
+
+router.patch("/admin/sleep-carousel-order", requireAuth, requireRole("admin"), async (req, res): Promise<void> => {
+  const parsed = z.object({
+    revision: z.string().min(1),
+    carousels: z.array(z.object({
+      key: z.string().min(1),
+      visible: z.boolean(),
+    })).min(1),
+  }).safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Se esperaba un array de carousels" });
+    return;
+  }
+  try {
+    const result = await updateSleepCarouselOrder(parsed.data.revision, parsed.data.carousels);
+    if (result.status === "stale") {
+      res.status(409).json({ error: "La configuración cambió; vuelve a cargarla" });
+      return;
+    }
+    res.json({ carousels: result.projection.carousels, revision: result.projection.revision });
+  } catch (err) {
+    if (err instanceof Error && err.message === "invalid_keys") {
+      res.status(400).json({ error: "Las claves deben coincidir exactamente con los carousels existentes" });
+      return;
+    }
+    req.log.error({ err }, "error updating sleep carousel order");
+    res.status(500).json({ error: "Error al actualizar el orden de descanso" });
+  }
+});
 
 function serializeCategory(c: CatalogCategory) {
   return {

@@ -8,6 +8,7 @@ import {
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolvePlaylistCarouselRows,
+  resolveSleepCarouselOrder,
 } from "../lib/editorial-playlist-helpers.ts";
 
 test("evicts editorial detail cache only for authoritative 404/410", () => {
@@ -143,4 +144,26 @@ test("legacy conversion keeps the old Discover home fallback after inactive plac
     ["placed", "home-only", "fallback"],
   );
   assert.equal(legacy.some((carousel) => carousel.surface === "sleep"), false);
+});
+
+test("interleaves configured sleep carousels and appends newly available content", () => {
+  const configured = [
+    { key: "playlist:9", label: "Editorial", type: "playlist" as const, visible: true, sortOrder: 2 },
+    { key: "session:quiet", label: "Oculto", type: "session" as const, visible: false, sortOrder: 1 },
+  ];
+  assert.deepEqual(
+    resolveSleepCarouselOrder(
+      configured,
+      ["session:quiet", "session:rest", "playlist:9", "playlist:12"],
+      ["session:quiet", "session:rest", "playlist:9", "playlist:12"],
+    ),
+    ["playlist:9", "session:rest", "playlist:12"],
+  );
+});
+
+test("an explicit empty sleep order uses deterministic defaults", () => {
+  assert.deepEqual(
+    resolveSleepCarouselOrder([], ["session:a", "playlist:4", "session:b"]),
+    ["session:a", "playlist:4", "session:b"],
+  );
 });

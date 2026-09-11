@@ -2,6 +2,53 @@ export type EditorialDetailDisposition = "missing" | "transient";
 
 export type PlaylistCarouselSurface = "discover" | "sleep";
 
+export type SleepCarouselOrderItem = {
+  key: string;
+  label: string;
+  type: "session" | "playlist";
+  visible: boolean;
+  sortOrder: number;
+};
+
+/**
+ * Applies the optional editorial order without allowing an old publication to
+ * hide newly available content. Invalid entries are ignored; available keys
+ * not mentioned by the publication are appended in their stable default order.
+ */
+export function resolveSleepCarouselOrder(
+  configured: readonly SleepCarouselOrderItem[] | undefined,
+  availableKeys: readonly string[],
+  defaultKeys: readonly string[] = availableKeys,
+): string[] {
+  const available = new Set(availableKeys);
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  const configuredRows = (configured ?? [])
+    .filter((row) =>
+      row &&
+      typeof row.key === "string" &&
+      (row.type === "session" || row.type === "playlist") &&
+      typeof row.visible === "boolean" &&
+      typeof row.sortOrder === "number" &&
+      Number.isFinite(row.sortOrder),
+    )
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+  const configuredKeys = new Set(configuredRows.map((row) => row.key));
+  for (const row of configuredRows) {
+    if (row.visible && available.has(row.key) && !seen.has(row.key)) {
+      seen.add(row.key);
+      ordered.push(row.key);
+    }
+  }
+  for (const key of defaultKeys) {
+    if (available.has(key) && !configuredKeys.has(key) && !seen.has(key)) {
+      seen.add(key);
+      ordered.push(key);
+    }
+  }
+  return ordered;
+}
+
 /**
  * The public catalog describes a carousel by playlist slug.  Keeping this
  * resolver free of React/RN dependencies makes the ordering and filtering

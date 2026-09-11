@@ -31,6 +31,7 @@ import {
   Moon,
   AudioLines,
   UserRound,
+  ListOrdered,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -53,6 +54,7 @@ import VideosPage from "@/pages/videos";
 import DescansoSonidosPage from "@/pages/descanso-sonidos";
 import EscenasPage from "@/pages/escenas";
 import ExplorarPage from "@/pages/explorar";
+import DormirOrdenPage from "@/pages/dormir-orden";
 import ResonadoresPage from "@/pages/resonadores";
 
 const clerkPubKey = publishableKeyFromHost(
@@ -184,6 +186,7 @@ const NAV = [
   { href: "/descanso-sonidos", label: "Sonidos de descanso", icon: Moon },
   { href: "/escenas", label: "Escenas Geometrix", icon: Sparkles },
   { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
+  { href: "/dormir-orden", label: "Dormir — orden", icon: ListOrdered },
   { href: "/resonadores", label: "Resonadores", icon: UserRound },
 ];
 
@@ -342,6 +345,7 @@ function AdminGate() {
         <Route path="/descanso-sonidos" component={DescansoSonidosPage} />
         <Route path="/escenas" component={EscenasPage} />
         <Route path="/explorar" component={ExplorarPage} />
+        <Route path="/dormir-orden" component={DormirOrdenPage} />
         <Route path="/resonadores" component={ResonadoresPage} />
         <Route component={NotFound} />
       </Switch>

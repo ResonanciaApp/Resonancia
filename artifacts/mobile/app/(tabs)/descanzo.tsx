@@ -33,7 +33,11 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
-import { getEditorialPlaylistCarouselsForSurface } from "@/data/playlists";
+import {
+  getEditorialPlaylistCarouselsForSurface,
+  SLEEP_CAROUSEL_ORDER,
+} from "@/data/playlists";
+import { resolveSleepCarouselOrder } from "@/lib/editorial-playlist-helpers";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -215,15 +219,27 @@ export default function DescansoScreen() {
     () => getEditorialPlaylistCarouselsForSurface("sleep"),
     [catalogVersion],
   );
-  const sleepCarouselStyles = useMemo(
-    () =>
-      sleepCollections.map((_, index) => ({
-        marginTop: index === 0 ? 33 : 53,
-        marginBottom: 0,
-        paddingHorizontal: H_PAD,
-      })),
-    [sleepCollections],
-  );
+  const orderedSleepCarousels = useMemo(() => {
+    const sessionByKey = new Map(
+      sleepCollections.map((collection) => [`session:${collection.id}`, collection]),
+    );
+    const playlistByKey = new Map(
+      editorialSleepCarousels.map((carousel) => [`playlist:${carousel.id}`, carousel]),
+    );
+    const availableKeys = [
+      ...sleepCollections.map((collection) => `session:${collection.id}`),
+      ...editorialSleepCarousels.map((carousel) => `playlist:${carousel.id}`),
+    ];
+    return resolveSleepCarouselOrder(
+      SLEEP_CAROUSEL_ORDER,
+      availableKeys,
+      availableKeys,
+    ).map((key) => ({
+      key,
+      session: sessionByKey.get(key),
+      playlist: playlistByKey.get(key),
+    }));
+  }, [editorialSleepCarousels, sleepCollections, catalogVersion]);
   const sleepCarouselViewAllHandlers = useMemo(
     () =>
       Object.fromEntries(
@@ -385,49 +401,53 @@ export default function DescansoScreen() {
               </ScrollView>
             </View>
           </View>
-          {editorialSleepCarousels.map((carousel) => (
-            <EditorialPlaylistCarousel
-              key={carousel.id}
-              title={carousel.title}
-              playlists={carousel.playlists}
-              onPress={(playlist) =>
-                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-              }
-            />
-          ))}
           <View style={{ marginTop: -3 }}>
-            {sleepCollections.map((collection, index) => (
-              <SessionCarousel
-                key={collection.id}
-                title={collection.label}
-                sessions={collection.sessions}
-                isPremium={isPremium}
-                onPress={handleSessionTap}
-                style={sleepCarouselStyles[index]}
-                presentation="editorial"
-                disableAmbientalVariant
-                sleepMetadataBelow
-                categoryGridPresentation
-                showCategoryPillTopLeft
-                whiteMetadataGlass
-                showDurationClock
-                sleepBelowMetadataStyle={{
-                  marginTop: 3,
-                  transform: [{ translateX: 3 }],
-                }}
-                trailingPeek={20}
-                cardBorderRadius={16}
-                titleSize={19}
-                hideCategoryAboveTitle
-                showSleepCategoryPillWithInlineDuration
-                ambientalTitleOnly
-                sleepOverlayMetadataStyle={{
-                  transform: [{ translateX: 3 }, { translateY: -1 }],
-                }}
-                overlayGradientLocations={[0.18, 0.48, 1]}
-                onViewAll={sleepCarouselViewAllHandlers[collection.id]}
-              />
-            ))}
+            {orderedSleepCarousels.map((item, index) =>
+              item.session ? (
+                <SessionCarousel
+                  key={item.key}
+                  title={item.session.label}
+                  sessions={item.session.sessions}
+                  isPremium={isPremium}
+                  onPress={handleSessionTap}
+                  style={{
+                    marginTop: index === 0 ? 33 : 53,
+                    marginBottom: 0,
+                    paddingHorizontal: H_PAD,
+                  }}
+                  presentation="editorial"
+                  disableAmbientalVariant
+                  sleepMetadataBelow
+                  categoryGridPresentation
+                  showCategoryPillTopLeft
+                  whiteMetadataGlass
+                  showDurationClock
+                  sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+                  trailingPeek={20}
+                  cardBorderRadius={16}
+                  titleSize={19}
+                  hideCategoryAboveTitle
+                  showSleepCategoryPillWithInlineDuration
+                  ambientalTitleOnly
+                  sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+                  overlayGradientLocations={[0.18, 0.48, 1]}
+                  onViewAll={sleepCarouselViewAllHandlers[item.session.id]}
+                />
+              ) : item.playlist ? (
+                <EditorialPlaylistCarousel
+                  key={item.key}
+                  title={item.playlist.title}
+                  playlists={item.playlist.playlists}
+                  style={{
+                    marginTop: index === 0 ? 33 : 53,
+                    marginBottom: 0,
+                  }}
+                  onPress={(playlist) =>
+                    openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                  }
+                />
+              ) : null,
+            )}
           </View>
         </ScrollView>
       </View>

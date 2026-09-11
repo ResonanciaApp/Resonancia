@@ -1186,6 +1186,8 @@ export const getCatalogResponsePlaylistCarouselsItemSortOrderMin = 0;
 
 export const getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax = 80;
 
+export const getCatalogResponseSleepCarouselOrderItemSortOrderMin = 0;
+
 export const getCatalogResponseHomePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 
@@ -1292,6 +1294,13 @@ export const GetCatalogResponse = zod.object({
   "sortOrder": zod.number().min(getCatalogResponsePlaylistCarouselsItemSortOrderMin),
   "isActive": zod.boolean(),
   "playlistIds": zod.array(zod.string().min(1).max(getCatalogResponsePlaylistCarouselsItemPlaylistIdsItemMax))
+})),
+  "sleepCarouselOrder": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.enum(['session', 'playlist']),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(getCatalogResponseSleepCarouselOrderItemSortOrderMin)
 })),
   "homePlaylists": zod.array(zod.object({
   "id": zod.number(),
@@ -3203,6 +3212,57 @@ export const CreateAdminPlaylistCarouselBody = zod.object({
   "sortOrder": zod.number().min(createAdminPlaylistCarouselBodySortOrderMin),
   "isActive": zod.boolean(),
   "playlistIds": zod.array(zod.string().min(1).max(createAdminPlaylistCarouselBodyPlaylistIdsItemMax))
+})
+
+
+/**
+ * @summary Obtener el orden de carruseles de Descanso
+ */
+export const getAdminSleepCarouselOrderResponseCarouselsItemSortOrderMin = 0;
+
+
+
+export const GetAdminSleepCarouselOrderResponse = zod.object({
+  "revision": zod.string(),
+  "carousels": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.enum(['session', 'playlist']),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(getAdminSleepCarouselOrderResponseCarouselsItemSortOrderMin)
+}))
+})
+
+
+/**
+ * @summary Actualizar orden y visibilidad de carruseles de Descanso
+ */
+
+
+
+
+
+export const UpdateAdminSleepCarouselOrderBody = zod.object({
+  "revision": zod.string().min(1),
+  "carousels": zod.array(zod.object({
+  "key": zod.string().min(1),
+  "visible": zod.boolean()
+})).min(1)
+})
+
+export const updateAdminSleepCarouselOrderResponseCarouselsItemSortOrderMin = 0;
+
+
+
+export const UpdateAdminSleepCarouselOrderResponse = zod.object({
+  "revision": zod.string(),
+  "carousels": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.enum(['session', 'playlist']),
+  "label": zod.string(),
+  "visible": zod.boolean(),
+  "sortOrder": zod.number().min(updateAdminSleepCarouselOrderResponseCarouselsItemSortOrderMin)
+}))
 })
 
 

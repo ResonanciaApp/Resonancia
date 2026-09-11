@@ -4,11 +4,13 @@ import {
   resolvePlaylistCarouselRows,
   type PlaylistCarouselRecord,
   type PlaylistCarouselSurface,
+  type SleepCarouselOrderItem,
 } from "@/lib/editorial-playlist-helpers";
 
 export type {
   PlaylistCarouselRecord,
   PlaylistCarouselSurface,
+  SleepCarouselOrderItem,
 } from "@/lib/editorial-playlist-helpers";
 
 export type Playlist = {
@@ -50,6 +52,28 @@ export const HOME_PLAYLISTS: EditorialPlaylist[] = [];
  * Dormir, and must never make a hidden carousel reappear.
  */
 export const PLAYLIST_CAROUSELS: PlaylistCarouselRecord[] = [];
+/** Last valid server publication for the interleaved Dormir surface. */
+export let SLEEP_CAROUSEL_ORDER: SleepCarouselOrderItem[] | undefined;
+
+export function applySleepCarouselOrder(input: unknown): void {
+  if (!Array.isArray(input)) return;
+  const valid = input.map((candidate) => {
+    if (!candidate || typeof candidate !== "object") return null;
+    const row = candidate as Partial<SleepCarouselOrderItem>;
+    if (
+      typeof row.key !== "string" ||
+      typeof row.label !== "string" ||
+      (row.type !== "session" && row.type !== "playlist") ||
+      typeof row.visible !== "boolean" ||
+      typeof row.sortOrder !== "number" ||
+      !Number.isFinite(row.sortOrder)
+    ) return null;
+    return [{ key: row.key, label: row.label, type: row.type, visible: row.visible, sortOrder: row.sortOrder }];
+  });
+  if (valid.some((row) => row === null)) return;
+  // An explicit [] is valid and authoritative.
+  SLEEP_CAROUSEL_ORDER = valid.flat() as SleepCarouselOrderItem[];
+}
 
 export type PlaylistCarouselSnapshot = PlaylistCarouselRecord;
 

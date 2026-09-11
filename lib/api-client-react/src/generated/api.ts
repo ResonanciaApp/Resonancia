@@ -136,6 +136,8 @@ import type {
   SharedMixInput,
   SharedMixReportInput,
   SharedMixesPage,
+  SleepCarouselOrderResponse,
+  SleepCarouselOrderUpdate,
   StreakResponse,
   Submission,
   SubmissionFilterOptions,
@@ -7343,6 +7345,154 @@ export const useCreateAdminPlaylistCarousel = <TError = ErrorType<ErrorResponse>
         TContext
       > => {
       return useMutation(getCreateAdminPlaylistCarouselMutationOptions(options));
+    }
+
+export const getGetAdminSleepCarouselOrderUrl = () => {
+
+
+
+
+  return `/api/admin/sleep-carousel-order`
+}
+
+/**
+ * @summary Obtener el orden de carruseles de Descanso
+ */
+export const getAdminSleepCarouselOrder = async ( options?: RequestInit): Promise<SleepCarouselOrderResponse> => {
+
+  return customFetch<SleepCarouselOrderResponse>(getGetAdminSleepCarouselOrderUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSleepCarouselOrderQueryKey = () => {
+    return [
+    `/api/admin/sleep-carousel-order`
+    ] as const;
+    }
+
+
+export const getGetAdminSleepCarouselOrderQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSleepCarouselOrderQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>> = ({ signal }) => getAdminSleepCarouselOrder({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSleepCarouselOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>>
+export type GetAdminSleepCarouselOrderQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Obtener el orden de carruseles de Descanso
+ */
+
+export function useGetAdminSleepCarouselOrder<TData = Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSleepCarouselOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSleepCarouselOrderQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminSleepCarouselOrderUrl = () => {
+
+
+
+
+  return `/api/admin/sleep-carousel-order`
+}
+
+/**
+ * @summary Actualizar orden y visibilidad de carruseles de Descanso
+ */
+export const updateAdminSleepCarouselOrder = async (sleepCarouselOrderUpdate: SleepCarouselOrderUpdate, options?: RequestInit): Promise<SleepCarouselOrderResponse> => {
+
+  return customFetch<SleepCarouselOrderResponse>(getUpdateAdminSleepCarouselOrderUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      sleepCarouselOrderUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminSleepCarouselOrderMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>, TError,{data: BodyType<SleepCarouselOrderUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>, TError,{data: BodyType<SleepCarouselOrderUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminSleepCarouselOrder'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>, {data: BodyType<SleepCarouselOrderUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAdminSleepCarouselOrder(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSleepCarouselOrderMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>>
+    export type UpdateAdminSleepCarouselOrderMutationBody = BodyType<SleepCarouselOrderUpdate>
+    export type UpdateAdminSleepCarouselOrderMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar orden y visibilidad de carruseles de Descanso
+ */
+export const useUpdateAdminSleepCarouselOrder = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>, TError,{data: BodyType<SleepCarouselOrderUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSleepCarouselOrder>>,
+        TError,
+        {data: BodyType<SleepCarouselOrderUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSleepCarouselOrderMutationOptions(options));
     }
 
 export const getUpdateAdminPlaylistCarouselUrl = (id: number,) => {

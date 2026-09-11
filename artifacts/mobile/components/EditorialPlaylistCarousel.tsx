@@ -6,9 +6,11 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
+  type StyleProp,
   StyleSheet,
   Text,
   View,
+  type ViewStyle,
 } from "react-native";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -25,15 +27,17 @@ export function EditorialPlaylistCarousel({
   title,
   playlists,
   onPress,
+  style,
 }: {
   title: string;
   playlists: EditorialPlaylist[];
   onPress?: (playlist: EditorialPlaylist) => void;
+  style?: StyleProp<ViewStyle>;
 }) {
   if (playlists.length === 0) return null;
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, style]}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>{title}</Text>
       </View>

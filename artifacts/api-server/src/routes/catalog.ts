@@ -37,6 +37,7 @@ import {
 } from "../lib/objectAccess";
 import { getCatalogReadiness } from "../lib/catalogReadiness";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
+import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
 
 const router: IRouter = Router();
 
@@ -328,7 +329,7 @@ async function loadPlaylistPlacements(
 
 // GET /catalog — catálogo público (sesiones publicadas + todas las playlists activas).
 router.get("/catalog", async (req, res) => {
-  const [categories, sessions, playlists, playlistCarousels] = await Promise.all([
+  const [categories, sessions, playlists, playlistCarousels, sleepCarouselOrder] = await Promise.all([
     db.select().from(catalogCategoriesTable)
       .orderBy(asc(catalogCategoriesTable.sortOrder), asc(catalogCategoriesTable.id))
       .limit(200),
@@ -342,6 +343,7 @@ router.get("/catalog", async (req, res) => {
       .where(eq(catalogPlaylistsTable.isActive, true))
       .orderBy(asc(catalogPlaylistsTable.sortOrder), asc(catalogPlaylistsTable.id)),
     loadPlaylistCarousels(true),
+    getSleepCarouselProjection(true),
   ]);
 
   const sessionIds = sessions.map((s) => s.id);
@@ -388,6 +390,7 @@ router.get("/catalog", async (req, res) => {
       ),
     ),
     playlistCarousels,
+    sleepCarouselOrder: sleepCarouselOrder.carousels,
     // Alias legado para Inicio: la fuente editorial nueva es `playlists`,
     // mientras que consumidores antiguos pueden seguir mostrando solo las
     // ubicaciones explícitas de home (máximo cuatro por posición).
