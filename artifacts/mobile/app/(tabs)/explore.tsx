@@ -288,6 +288,12 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const searchTabBarSurface =
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -571,24 +577,119 @@ export function ExploreScreen({
         <View style={[styles.pageHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.titleRow}>
             <Text style={styles.pageTitle}>{screenTitle}</Text>
+          </View>
+          <View style={styles.searchWrap}>
             <Pressable
               onPress={() => setSearchVisible(true)}
-              hitSlop={10}
-              style={styles.headerSearchButton}
+              style={[
+                styles.searchBox,
+                activeSceneId === "tibet"
+                  ? styles.searchBoxTibet
+                  : isIndigoThemeId(activeSceneId)
+                    ? styles.searchBoxIndigo
+                    : activeSceneId === "indigo2"
+                      ? styles.searchBoxIndigo2
+                      : null,
+                styles.searchBoxWhiteBorder,
+                { backgroundColor: searchTabBarSurface },
+              ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${screenTitle}`}
               testID="discover-search-button"
             >
-              {Platform.OS === "ios" ? (
-                <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
-              ) : (
-                <Feather name="search" size={24} color="#F4F4F4" />
-              )}
+              <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
+              <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
             </Pressable>
           </View>
         </View>
 
         <View style={styles.scrollContent}>
+          {SHOW_FEATURED_MOMENT && featuredMoment && (
+            <View style={styles.featuredMomentSection}>
+              <Text style={styles.sectionTitle}>Para este momento</Text>
+              <Pressable
+                onPress={() => handleSessionPress(featuredMoment)}
+                accessibilityRole="button"
+                accessibilityLabel={featuredMoment.title}
+                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
+              >
+                <View style={styles.featuredMomentImageContainer}>
+                  <Image
+                    source={featuredMoment.image}
+                    style={styles.featuredMomentImage}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                  <SessionDurationBadge
+                    label={featuredMoment.durationLabel}
+                    style={styles.featuredMomentDuration}
+                  />
+                </View>
+                {(() => {
+                  const guide = featuredMoment.guideId
+                    ? getGuide(featuredMoment.guideId)
+                    : undefined;
+                  const artist = featuredMoment.artistId
+                    ? getArtist(featuredMoment.artistId)
+                    : undefined;
+                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                  const authorPhoto = guide?.photo ?? artist?.photo;
+                  return (
+                    <View style={styles.featuredMomentInfo}>
+                      {authorPhoto && (
+                        <Image
+                          source={authorPhoto}
+                          style={styles.featuredMomentAvatar}
+                          contentFit="cover"
+                          cachePolicy="memory-disk"
+                        />
+                      )}
+                      <View style={styles.featuredMomentCopy}>
+                        <Text
+                          style={[
+                            styles.featuredMomentMeta,
+                            { color: activeTheme.accent },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {featuredMoment.categoryLabel}
+                        </Text>
+                        <Text style={styles.featuredMomentTitle} numberOfLines={2}>
+                          {featuredMoment.title}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.featuredMomentAuthor,
+                            { color: activeTheme.accent },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {authorName}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })()}
+              </Pressable>
+            </View>
+          )}
+
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Explora por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+              ]}
+              discoverTieredLayout
+            />
+          </View>
+
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -643,22 +744,6 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
-          </View>
-
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Explora por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-              ]}
-              discoverTieredLayout
-            />
           </View>
 
           <View style={styles.durationSection}>
