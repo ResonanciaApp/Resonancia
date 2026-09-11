@@ -18,7 +18,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { ENCUENTROS } from "@/data/encuentros";
 import { EncuentrosResonadoresSection } from "@/components/EncuentrosResonadoresSection";
-import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { ActivityFeedCard } from "@/components/ActivityFeedCard";
 import { ResonadoresSection } from "@/components/ResonadoresSection";
 import { useCommunityFeed } from "@/hooks/useCommunityFeed";
@@ -115,11 +114,8 @@ export default function ComunidadScreen() {
 
   const header = (
     <View>
-      <ResonadoresSection marginTop={40} marginBottom={32} />
       <EncuentrosResonadoresSection />
-      <View style={styles.mixesSection}>
-        <CommunityMixesCarousel />
-      </View>
+      <ResonadoresSection marginTop={36} marginBottom={32} />
       <View style={styles.feedSection}>
         <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
         {loading && (
@@ -256,7 +252,6 @@ const styles = StyleSheet.create({
     marginTop: -9,
     transform: [{ translateX: -2 }, { translateY: -2 }],
   },
-  mixesSection: { marginTop: 36 },
   feedSection: {
     marginTop: 36,
     paddingHorizontal: H_PAD,

@@ -60,7 +60,7 @@ function getTabBarBackground(activeSceneId: string) {
 }
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "herramientas", "explore"]);
+const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "herramientas", "explore", "profile"]);
 
 const TAB_CONFIG: Record<
   string,
