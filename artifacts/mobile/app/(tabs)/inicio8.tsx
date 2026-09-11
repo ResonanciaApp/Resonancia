@@ -358,7 +358,8 @@ function Inicio2HeroControl({
               cx={INICIO2_CONTROL_SIZE / 2}
               cy={INICIO2_CONTROL_SIZE / 2}
               r={INICIO2_CONTROL_RADIUS}
-              fill="rgba(0,0,0,0.17)"
+              fill="#F9F9F9"
+              fillOpacity={0.95}
               stroke="rgba(255,255,255,0.42)"
               strokeWidth={INICIO2_CONTROL_STROKE_WIDTH}
             />
@@ -3195,7 +3196,7 @@ const styles = StyleSheet.create({
     width: INICIO2_CONTROL_SIZE,
     height: INICIO2_CONTROL_SIZE,
     borderRadius: INICIO2_CONTROL_SIZE / 2,
-    backgroundColor: "rgba(0,0,0,0.17)",
+    backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
   stickyHeader: {

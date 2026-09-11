@@ -121,7 +121,7 @@ export function ToolsGrid({
   const pillBackground = theme.id === "tibet"
     ? "rgba(0,0,0,0.14)"
     : theme.id === "indigo2"
-      ? "rgba(191,207,255,0.14)"
+      ? "rgba(0,0,0,0.23)"
       : isIndigoThemeId(theme.id)
         ? "rgba(181,211,255,0.14)"
         : "rgba(181,211,255,0.14)";
