@@ -403,15 +403,12 @@ export default function DescansoScreen() {
                 whiteMetadataGlass={collection.id === "musica-para-dormir"}
                 sleepBelowMetadataStyle={
                   collection.id === "musica-para-dormir"
-                    ? { transform: [{ translateX: 3 }] }
+                    ? { marginTop: 4, transform: [{ translateX: 3 }] }
                     : undefined
                 }
                 trailingPeek={collection.id === "musica-para-dormir" ? 55 : undefined}
-                cardHeightAdjustment={
-                  collection.id === "musica-para-dormir" ? 25 : 0
-                }
                 cardBorderRadius={
-                  collection.id === "musica-para-dormir" ? 21 : undefined
+                  collection.id === "musica-para-dormir" ? 23 : undefined
                 }
                 titleSize={19}
                 hideCategoryAboveTitle
