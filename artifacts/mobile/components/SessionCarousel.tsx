@@ -209,6 +209,9 @@ type SessionCarouselProps = {
   ambientalCardBorderRadius?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
+  /** Renders the same cards in a two-column vertical grid. */
+  gridLayout?: boolean;
+  gridBottomPadding?: number;
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
   presentation?: "sleep-category" | "tall-overlay" | "editorial";
   /** Places title and author over the image without a category pill. */
@@ -295,6 +298,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalCardBorderRadius,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
+  gridLayout = false,
+  gridBottomPadding = 0,
   presentation,
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
@@ -442,7 +447,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: titleSpacing ?? 17 }]}>{title}</Text>
       ))}
       <FlatList
-        horizontal
+        horizontal={!gridLayout}
+        numColumns={gridLayout ? 2 : undefined}
         data={sessions}
         keyExtractor={(session) => session.id}
         initialNumToRender={eagerRender ? sessions.length : 3}
@@ -450,8 +456,23 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         windowSize={eagerRender ? 11 : 3}
         removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -GRID_PAD }}
-        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={
+          gridLayout
+            ? { justifyContent: "center", gap: CONTENT_CAROUSEL_GAP }
+            : undefined
+        }
+        style={gridLayout ? { flex: 1 } : { marginHorizontal: -GRID_PAD }}
+        contentContainerStyle={
+          gridLayout
+            ? {
+                paddingHorizontal: GRID_PAD,
+                paddingTop: 30,
+                paddingBottom: gridBottomPadding,
+                rowGap: 18,
+              }
+            : { paddingHorizontal: GRID_PAD, gap: CONTENT_CAROUSEL_GAP }
+        }
         renderItem={({ item: s }) => {
           const locked = !!s.isPremium && !isPremium;
           const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);

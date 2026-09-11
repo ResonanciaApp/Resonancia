@@ -1,13 +1,11 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo } from "react";
 import {
-  Dimensions,
   Platform,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -15,8 +13,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PremiumBadge } from "@/components/PremiumBadge";
-import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -30,17 +27,9 @@ import { useColors } from "@/hooks/useColors";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
-import {
-  CONTENT_CAROUSEL_GAP,
-  getTwoCardCarouselCardWidth,
-} from "@/constants/carousel";
+import { useSoundPreview } from "@/hooks/useSoundPreview";
 
-const { width } = Dimensions.get("window");
 const H_PAD = 20;
-const GAP = CONTENT_CAROUSEL_GAP;
-const CARD_W = getTwoCardCarouselCardWidth(width, 14, 25);
-const AMBIENTAL_IMAGE_SIZE = Math.round(CARD_W * 0.72);
 
 export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -54,15 +43,12 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const { version } = useCatalog();
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
+  const soundPreview = useSoundPreview();
+  useFocusEffect(
+    useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
+  );
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const cardBackground = theme.id === "tibet"
-    ? "rgba(0,0,0,0.1)"
-    : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.1)"
-      : theme.id === "indigo2"
-        ? "rgba(191,207,255,0.1)"
-        : "rgba(181,211,255,0.1)";
   const tag = SONIDOS_TAG_CARDS.find((candidate) => candidate.id === id);
   const sessions = useMemo(
     () => tag ? getSessionsBySonidosTag(tag.label) : [],
@@ -132,34 +118,47 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           {tag.label}
         </Text>
       </View>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
-        showsVerticalScrollIndicator={false}
-      >
-        {sessions.length === 0 ? (
+      {sessions.length === 0 ? (
+        <View style={styles.scroll}>
           <View style={[styles.empty, { borderColor: colors.border }]}>
             <Feather name="headphones" size={28} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Próximamente</Text>
           </View>
-        ) : (
-          <View style={styles.grid}>
-            {sessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                width={CARD_W}
-                cardVariant="ambiental"
-                editorialPresentation
-                showAuthor={false}
-                showAuthorAvatar={false}
-                style={styles.card}
-                overridePress={() => openSession(session)}
-              />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+        </View>
+      ) : (
+        <SessionCarousel
+          title=""
+          sessions={sessions}
+          isPremium={isPremium}
+          onPress={openSession}
+          style={styles.scroll}
+          showHeader={false}
+          gridLayout
+          gridBottomPadding={60 + bottomPad}
+          presentation="editorial"
+          ambientalTitleOnly
+          ambientalImageLift={9}
+          ambientalImageFillTop
+          soundPreview={{
+            activeId: soundPreview.activeId,
+            isPlaying: soundPreview.isPlaying,
+            progress: soundPreview.progress,
+            onToggle: soundPreview.toggle,
+          }}
+          ambientalCardBackground="rgba(0,0,0,0.28)"
+          ambientalCardBorderColor="rgba(249,249,249,0.2)"
+          ambientalCardBorderWidth={1}
+          ambientalCardBorderRadius={14}
+          ambientalTitleOnlyMetadataStyle={{
+            transform: [{ translateY: -2 }],
+          }}
+          ambientalTitleOnlyTitleStyle={{
+            height: 36,
+            textAlign: "center",
+            textAlignVertical: "top",
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -192,36 +191,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   scroll: { flex: 1 },
-  grid: {
-    paddingHorizontal: H_PAD,
-    paddingTop: 30,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    columnGap: GAP,
-    rowGap: 18,
-  },
-  card: { marginRight: 0, marginBottom: 4 },
-  image: {
-    width: CARD_W,
-    height: CARD_W,
-    borderRadius: 18,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ambientalImage: {
-    width: AMBIENTAL_IMAGE_SIZE,
-    height: AMBIENTAL_IMAGE_SIZE,
-    borderRadius: AMBIENTAL_IMAGE_SIZE / 2,
-  },
-  cardTitle: {
-    marginTop: 8,
-    fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 18,
-    fontWeight: "700",
-  },
   empty: {
     marginHorizontal: H_PAD,
     marginTop: 32,
