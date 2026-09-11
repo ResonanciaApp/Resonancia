@@ -6,10 +6,12 @@ import {
   buildEditorialQueue,
   classifyEditorialDetailStatus,
   computePlaylistCompletion,
+  formatMeditationSessionOrdinal,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolvePlaylistCarouselRows,
   resolveMeditationPlaylistPlayAction,
+  resolveMeditationPlaylistResume,
   resolveSleepCarouselOrder,
 } from "../lib/editorial-playlist-helpers.ts";
 
@@ -34,6 +36,32 @@ test("computes meditation playlist completion at 0%, partial and 100%", () => {
     computePlaylistCompletion([], ["a"]),
     { total: 0, completed: 0, percentage: 0 },
   );
+});
+
+test("continues a meditation playlist from its first pending session", () => {
+  assert.deepEqual(
+    resolveMeditationPlaylistResume(["a", "b", "c"], ["a", "b"]),
+    { sessionId: "c", index: 2 },
+  );
+  assert.deepEqual(
+    resolveMeditationPlaylistResume(["a", "b", "c"], ["a"], ["a", "c"]),
+    { sessionId: "c", index: 2 },
+  );
+  assert.deepEqual(
+    resolveMeditationPlaylistResume(["a", "b", "c"], ["b"]),
+    { sessionId: "c", index: 2 },
+  );
+  assert.deepEqual(
+    resolveMeditationPlaylistResume(["a", "b", "c"], ["c"]),
+    { sessionId: "a", index: 0 },
+  );
+  assert.deepEqual(
+    resolveMeditationPlaylistResume(["a", "b", "c"], ["a", "b", "c"]),
+    { sessionId: "a", index: 0 },
+  );
+  assert.equal(resolveMeditationPlaylistResume(["a"], [], []), null);
+  assert.equal(formatMeditationSessionOrdinal(2), "tercera");
+  assert.equal(formatMeditationSessionOrdinal(10), "11.ª");
 });
 
 test("resolves every meditation playlist hero play state", () => {

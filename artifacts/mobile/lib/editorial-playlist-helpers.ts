@@ -260,6 +260,58 @@ export function computePlaylistCompletion(
   };
 }
 
+export type MeditationPlaylistResume = {
+  sessionId: string;
+  index: number;
+};
+
+/**
+ * Continúa desde la primera sesión reproducible pendiente. Si toda la
+ * selección reproducible está completada, reinicia desde la primera.
+ */
+export function resolveMeditationPlaylistResume(
+  sessionIds: readonly string[],
+  completedSessionIds: Iterable<string>,
+  playableSessionIds: Iterable<string> = sessionIds,
+): MeditationPlaylistResume | null {
+  const completed = new Set(completedSessionIds);
+  const playable = new Set(playableSessionIds);
+  const firstPlayableIndex = sessionIds.findIndex((id) => playable.has(id));
+  if (firstPlayableIndex < 0) return null;
+  let lastCompletedIndex = -1;
+  sessionIds.forEach((id, index) => {
+    if (completed.has(id)) lastCompletedIndex = index;
+  });
+  let pendingIndex = sessionIds.findIndex(
+    (id, index) =>
+      index > lastCompletedIndex && playable.has(id) && !completed.has(id),
+  );
+  if (pendingIndex < 0) {
+    pendingIndex = sessionIds.findIndex(
+      (id) => playable.has(id) && !completed.has(id),
+    );
+  }
+  const index = pendingIndex >= 0 ? pendingIndex : firstPlayableIndex;
+  return { sessionId: sessionIds[index], index };
+}
+
+/** Ordinal femenino para el mensaje "Continúa desde la … sesión". */
+export function formatMeditationSessionOrdinal(index: number): string {
+  const ordinals = [
+    "primera",
+    "segunda",
+    "tercera",
+    "cuarta",
+    "quinta",
+    "sexta",
+    "séptima",
+    "octava",
+    "novena",
+    "décima",
+  ];
+  return ordinals[index] ?? `${index + 1}.ª`;
+}
+
 export type MeditationPlaylistPlayAction =
   | "toggle"
   | "play-first"

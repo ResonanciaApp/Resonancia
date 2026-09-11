@@ -38,9 +38,11 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import {
   classifyEditorialDetailStatus,
   computePlaylistCompletion,
+  formatMeditationSessionOrdinal,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolveMeditationPlaylistPlayAction,
+  resolveMeditationPlaylistResume,
 } from "@/lib/editorial-playlist-helpers";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -180,6 +182,36 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const currentIsEditorial = ownsQueue && !!currentSession &&
     rows.some((row) => row.id === currentSession.id);
   const displayIsPlaying = currentIsEditorial && isPlaying;
+  const completedSessionIds = useMemo(() => {
+    const completed = new Set<string>();
+    for (const event of statEvents) {
+      if (event.completed) completed.add(event.sessionId);
+    }
+    return completed;
+  }, [statEvents]);
+  const playlistResume = useMemo(
+    () => resolveMeditationPlaylistResume(
+      rows.map((row) => row.id),
+      completedSessionIds,
+      playableIds,
+    ),
+    [completedSessionIds, playableIds, rows],
+  );
+  const resumeRow = playlistResume
+    ? availableRows.find((row) => row.id === playlistResume.sessionId)
+    : undefined;
+  const heroTargetIndex =
+    currentIsEditorial && currentSession
+      ? rows.findIndex((row) => row.id === currentSession.id)
+      : playlistResume?.index ?? -1;
+  const hasCompletedPlaylistSession = rows.some((row) => completedSessionIds.has(row.id));
+  const hasPendingPlayableSession = availableRows.some(
+    (row) => !completedSessionIds.has(row.id),
+  );
+  const continuationMessage =
+    hasCompletedPlaylistSession && hasPendingPlayableSession && heroTargetIndex >= 0
+      ? `Continúa desde la ${formatMeditationSessionOrdinal(heroTargetIndex)} sesión`
+      : null;
 
   const goBack = () => {
     if (backOverride) {
@@ -236,16 +268,6 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
   const isSessions = playlist?.playlistType === "sessions";
 
-  const completedSessionIds = useMemo(() => {
-    const completed = new Set<string>();
-    for (const event of statEvents) {
-      if (event.completed) {
-        completed.add(event.sessionId);
-      }
-    }
-    return completed;
-  }, [statEvents]);
-
   const playlistCompletion = useMemo(
     () => computePlaylistCompletion(
       rows.map((row) => row.id),
@@ -255,7 +277,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   );
 
   const handleTogglePlay = () => {
-    const firstPlayable = availableRows[0]?.session;
+    const firstPlayable = resumeRow?.session ?? availableRows[0]?.session;
     const action = resolveMeditationPlaylistPlayAction({
       currentIsEditorial,
       hasPlayableSessions: !!firstPlayable,
@@ -354,6 +376,11 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
                   </Svg>
                 )}
               </Pressable>
+              {continuationMessage ? (
+                <Text style={styles.sessionsHeroContinuation}>
+                  {continuationMessage}
+                </Text>
+              ) : null}
             </View>
           )}
 
@@ -821,6 +848,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 10,
+  },
+  sessionsHeroContinuation: {
+    position: "absolute",
+    top: "50%",
+    left: 16,
+    right: 16,
+    marginTop: 65,
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 19,
+    fontWeight: "600",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.7)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   sessionsHeroPlayButton: {
     width: 103,
