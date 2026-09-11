@@ -163,7 +163,6 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             disableAmbientalVariant
             sleepMetadataBelow
             categoryGridPresentation
-            showCategoryPillTopLeft
             whiteMetadataGlass
             showDurationClock
             sleepBelowMetadataStyle={{
