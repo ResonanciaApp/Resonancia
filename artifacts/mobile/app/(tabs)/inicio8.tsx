@@ -106,7 +106,6 @@ import {
 } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
-import { RecommendedForYouSection } from "@/components/RecommendedForYouSection";
 import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
@@ -2649,14 +2648,6 @@ export default function HomeScreen2({
               ))}
             </ScrollView>
           </View>
-        )}
-        {isInicio2 && (
-          <RecommendedForYouSection
-            selectedMoods={selectedMoods}
-            catalogVersion={catalogVersion}
-            onPress={handleSessionCarouselPress}
-            marginBottom={INICIO2_SECTION_GAP}
-          />
         )}
         {isInicio2 && (
           <MiRutinaSection
