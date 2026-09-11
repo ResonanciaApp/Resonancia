@@ -26,6 +26,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -280,6 +281,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { openForSession } = useAmbientalDuration();
+  const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
@@ -502,12 +504,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: (cw - 34) / 2,
+                              left: 12,
                               top:
                                 (ch - ambientalImageSize) / 2 -
                                 ambientalImageLift +
                                 ambientalImageSize +
-                                -1,
+                                -26,
                             },
                           ]}
                         >
@@ -516,6 +518,36 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             size={19}
                             color="#F9F9F9"
                             style={!isPreviewActive || !soundPreview.isPlaying ? { marginLeft: 2 } : undefined}
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={(event) => {
+                            event.stopPropagation();
+                            toggleFavorite(s.id);
+                          }}
+                          hitSlop={8}
+                          accessibilityRole="button"
+                          accessibilityLabel={
+                            isFavorite(s.id)
+                              ? `Quitar ${s.title} de favoritos`
+                              : `Agregar ${s.title} a favoritos`
+                          }
+                          style={[
+                            styles.previewButton,
+                            {
+                              right: 12,
+                              top:
+                                (ch - ambientalImageSize) / 2 -
+                                ambientalImageLift +
+                                ambientalImageSize +
+                                -26,
+                            },
+                          ]}
+                        >
+                          <MaterialCommunityIcons
+                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
+                            size={19}
+                            color="#F9F9F9"
                           />
                         </Pressable>
                       </>
@@ -887,9 +919,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    borderWidth: 1.5,
-    borderColor: NEON_VIOLET,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
