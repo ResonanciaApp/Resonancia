@@ -1271,6 +1271,30 @@ function Inicio2HeroStatic({
     || "Explorador";
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
+  const today = new Date();
+  const inicio3Weekday = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ][today.getDay()];
+  const inicio3Month = [
+    "Ene.",
+    "Feb.",
+    "Mar.",
+    "Abr.",
+    "May.",
+    "Jun.",
+    "Jul.",
+    "Ago.",
+    "Sep.",
+    "Oct.",
+    "Nov.",
+    "Dic.",
+  ][today.getMonth()];
 
   return (
     <View
@@ -1278,13 +1302,35 @@ function Inicio2HeroStatic({
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
+      {isInicio3 && (
+        <View
+          style={[styles.inicio3MonthlySelection, { top: topInset + 161 }]}
+          testID="inicio3-monthly-selection"
+        >
+          <View style={styles.inicio3MonthlyDate}>
+            <Text style={styles.inicio3MonthlyWeekday}>{inicio3Weekday}</Text>
+            <Text style={styles.inicio3MonthlyDay}>{today.getDate()}</Text>
+            <Text style={styles.inicio3MonthlyMonth}>{inicio3Month}</Text>
+          </View>
+          <View style={styles.inicio3MonthlyDivider} />
+          <View style={styles.inicio3MonthlyCopy}>
+            <Text style={styles.inicio3MonthlyEyebrow}>SELECCIÓN DEL MES</Text>
+            <Text style={styles.inicio3MonthlyTitle}>Todo vuelve a empezar</Text>
+            <Text style={styles.inicio3MonthlyDescription}>
+              Cada ciclo trae una nueva oportunidad para volver a ti y comenzar
+              con intención.
+            </Text>
+          </View>
+        </View>
+      )}
+
       <View
         pointerEvents="none"
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
             top: topInset + (isInicio3 ? 286 : 66),
-            bottom: isInicio3 ? 27 : 18,
+            bottom: isInicio3 ? 52 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
@@ -1418,7 +1464,7 @@ function Inicio2HeroStatic({
           styles.inicio2HeroStaticCopy,
           {
             top: topInset + (isInicio3 ? 286 : 66),
-            bottom: isInicio3 ? 27 : 18,
+            bottom: isInicio3 ? 52 : 18,
           },
           isInicio3 && styles.inicio3HeroCopy,
         ]}
@@ -3247,6 +3293,73 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "500",
+  },
+  inicio3MonthlySelection: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    zIndex: 11,
+    minHeight: 102,
+    flexDirection: "row",
+    alignItems: "stretch",
+  },
+  inicio3MonthlyDate: {
+    width: 70,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio3MonthlyWeekday: {
+    color: "rgba(249,249,249,0.72)",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    lineHeight: 16,
+  },
+  inicio3MonthlyDay: {
+    color: "#BE9650",
+    fontFamily: "Manrope",
+    fontSize: 46,
+    fontWeight: "500",
+    lineHeight: 50,
+  },
+  inicio3MonthlyMonth: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 19,
+  },
+  inicio3MonthlyDivider: {
+    width: 1,
+    marginHorizontal: 15,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  inicio3MonthlyCopy: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  inicio3MonthlyEyebrow: {
+    color: "#BE9650",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    lineHeight: 16,
+    marginBottom: 4,
+  },
+  inicio3MonthlyTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 19,
+    fontWeight: "700",
+    lineHeight: 24,
+    marginBottom: 5,
+  },
+  inicio3MonthlyDescription: {
+    color: "rgba(249,249,249,0.72)",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "400",
+    lineHeight: 18,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
