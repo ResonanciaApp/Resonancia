@@ -111,7 +111,6 @@ import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
   CONTENT_CAROUSEL_GAP,
-  CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 
@@ -1301,13 +1300,9 @@ function Inicio2HeroStatic({
   const inicio3HeroTop = topInset + 161;
   const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 20;
   const inicio3MonthlyCardsTop = inicio3MonthlyTop + 102 + 20;
-  const inicio3MonthlyCardWidth = getTwoCardCarouselCardWidth(width, 14) - 3.5;
-  const inicio3MonthlyCardHeight =
-    Math.round(
-      (inicio3MonthlyCardWidth + 50) *
-        SESSION_CARD_METADATA_HEIGHT_SCALE *
-        CONTENT_CAROUSEL_HEIGHT_SCALE,
-    ) - 11;
+  const inicio3MonthlyCardWidth =
+    (width - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 2;
+  const inicio3MonthlyCardHeight = inicio3MonthlyCardWidth + 62;
   const inicio3MonthlySessions = SESSIONS.filter(
     (session) =>
       !session.isPlaceholder &&
@@ -1336,6 +1331,7 @@ function Inicio2HeroStatic({
           ]}
           testID="inicio3-monthly-selection"
         >
+          <View style={styles.inicio3MonthlyTopDivider} />
           <View style={styles.inicio3MonthlyDate}>
             <Text style={styles.inicio3MonthlyWeekday}>{inicio3Weekday}</Text>
             <Text style={styles.inicio3MonthlyDay}>{today.getDate()}</Text>
@@ -1366,10 +1362,11 @@ function Inicio2HeroStatic({
               key={session.id}
               session={session}
               width={inicio3MonthlyCardWidth}
-              editorialPresentation
-              sleepEditorialContent
-              showSleepCategoryPill={false}
+              squareMetaBelow
+              categoryGridPresentation
               showAuthor
+              showAuthorAvatar={false}
+              style={styles.inicio3MonthlyCard}
             />
           ))}
         </View>
@@ -3356,6 +3353,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "stretch",
   },
+  inicio3MonthlyTopDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: -14,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.18)",
+  },
   inicio3MonthlyDate: {
     width: 70,
     alignItems: "center",
@@ -3421,7 +3426,10 @@ const styles = StyleSheet.create({
     zIndex: 11,
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 14,
+    gap: CONTENT_CAROUSEL_GAP,
+  },
+  inicio3MonthlyCard: {
+    marginRight: 0,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
