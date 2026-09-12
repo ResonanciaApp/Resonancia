@@ -119,6 +119,9 @@ const { width, height } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
+const INICIO3_SESSION_CARD_WIDTH = Math.round(
+  (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+);
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
@@ -2543,7 +2546,11 @@ export default function HomeScreen2({
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
             dayKey={todayKey}
-            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
+            onRefreshRecommendations={
+              variant === "inicio3"
+                ? undefined
+                : () => setRecoOffset((offset) => offset + 1)
+            }
             style={{ paddingHorizontal: GRID_PAD, marginTop: -5 }}
             inicio3Compact={variant === "inicio3"}
           />
@@ -2637,7 +2644,10 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             trailingPeek={20}
+            cardWidth={variant === "inicio3" ? INICIO3_SESSION_CARD_WIDTH : undefined}
+            allowOversizedCardWidth={variant === "inicio3"}
             squareTitleOnlyBelow
+            sleepBelowMetadataStyle={variant === "inicio3" ? { marginTop: 5 } : undefined}
             titleSize={19}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
@@ -2653,7 +2663,10 @@ export default function HomeScreen2({
             onPress={handleSessionCarouselPress}
             style={inicio2SessionCarouselStyle}
             trailingPeek={20}
+            cardWidth={variant === "inicio3" ? INICIO3_SESSION_CARD_WIDTH : undefined}
+            allowOversizedCardWidth={variant === "inicio3"}
             squareTitleAuthorBelow
+            sleepBelowMetadataStyle={variant === "inicio3" ? { marginTop: 5 } : undefined}
             categoryGridPresentation
             whiteMetadataGlass
             showDurationClock
