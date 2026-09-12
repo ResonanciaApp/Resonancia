@@ -476,7 +476,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
   const ambientalFilledImageTop =
-    (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 10;
+    (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 4;
   const ambientalFilledImageBottom =
     ambientalFilledImageTop + ambientalFilledImageHeight;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 20;
