@@ -1151,7 +1151,7 @@ const styles = StyleSheet.create({
   },
   themeGridVioletOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(31,12,48,0.56)",
+    backgroundColor: "rgba(0,0,0,0.56)",
     zIndex: 1,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },

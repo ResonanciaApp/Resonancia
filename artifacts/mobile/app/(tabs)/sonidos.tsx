@@ -430,8 +430,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                  presentation="editorial"
                  ambientalTitleOnly
-                 cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
-                 allowOversizedCardWidth
+                 ambientalCardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  ambientalImageLift={9}
                  ambientalImageFillTop
                  soundPreview={{

@@ -446,7 +446,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     gridLayout && fillGridWidth
       ? (viewportWidth - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 2
       : (isEditorialPresentation
-          ? sleepCategoryCardWidth
+          ? cardWidth ?? sleepCategoryCardWidth
           : useSleepMetadataBelow
             ? cardWidth ?? sleepCategoryCardWidth
             : isTallOverlayPresentation
