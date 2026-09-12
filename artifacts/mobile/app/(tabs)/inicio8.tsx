@@ -187,22 +187,7 @@ const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
-const INICIO3_TOOL_GAP = 7;
-const INICIO3_TOOL_W = Math.floor((width - GRID_PAD * 2 - INICIO3_TOOL_GAP * 3) / 4);
-const INICIO3_TOOL_WIDE_W = Math.floor((width - GRID_PAD * 2 - INICIO3_TOOL_GAP * 2) / 3);
 const SHOW_CONTINUE_LISTENING = false;
-
-const INICIO3_TOOL_BLOCKS = [
-  { id: "favorites", label: "Favoritos", icon: "heart-outline" },
-  { id: "library", label: "Biblioteca", icon: "bookshelf" },
-  { id: "mixer", label: "Mezclador", icon: "tune-vertical" },
-  { id: "notes", label: "Mis Notas", icon: "notebook-outline" },
-  { id: "mood-register", label: "Registro de ánimo", icon: "emoticon-happy-outline" },
-  { id: "breathing", label: "Ejercicios de respiración", icon: "weather-windy" },
-  { id: "mood-history", label: "Historial de estado de ánimo", icon: "chart-timeline-variant" },
-] as const;
-
-type Inicio3ToolBlockId = (typeof INICIO3_TOOL_BLOCKS)[number]["id"];
 
 const HEADER_PHRASES = [
   "Tu paz es tu práctica.",
@@ -1554,7 +1539,7 @@ export default function HomeScreen2({
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
-  const { open: openDrawer, openOverlay, moodPickerRequest } = useDrawer();
+  const { open: openDrawer, moodPickerRequest } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const handleOpenDrawer = useCallback(() => {
     openDrawer({ mode: variant === "inicio3" ? "inicio3" : "default" });
@@ -1613,31 +1598,6 @@ export default function HomeScreen2({
   }, [activeSceneId]);
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
-  const handleInicio3ToolPress = useCallback((id: Inicio3ToolBlockId) => {
-    switch (id) {
-      case "favorites":
-        openOverlay("/favoritos-todos");
-        break;
-      case "library":
-        router.push("/(tabs)/biblioteca" as never);
-        break;
-      case "mixer":
-        openMixer();
-        break;
-      case "notes":
-        openOverlay("/diario");
-        break;
-      case "mood-register":
-        setMoodSheetVisible(true);
-        break;
-      case "breathing":
-        router.push("/respiracion" as never);
-        break;
-      case "mood-history":
-        router.push("/historial-emociones" as never);
-        break;
-    }
-  }, [openMixer, openOverlay]);
   const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
   const [immersive, setImmersive] = useState(false);
   const [immersiveRendered, setImmersiveRendered] = useState(false);
@@ -2655,37 +2615,6 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
-        {variant === "inicio3" && (
-          <View style={styles.inicio3ToolGrid} testID="inicio3-tool-grid">
-            {INICIO3_TOOL_BLOCKS.map((tool, index) => (
-              <Pressable
-                key={tool.id}
-                accessibilityRole="button"
-                accessibilityLabel={`Abrir ${tool.label}`}
-                testID={`inicio3-tool-${tool.id}`}
-                onPress={() => handleInicio3ToolPress(tool.id)}
-                style={({ pressed }) => [
-                  styles.inicio3ToolCell,
-                  index < 4 && styles.inicio3ToolCellCompact,
-                  index >= 4 && styles.inicio3ToolCellWide,
-                  { opacity: pressed ? 0.72 : 1 },
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name={tool.icon}
-                  size={24}
-                  color="#F9F9F9"
-                />
-                <Text
-                  style={[styles.inicio3ToolLabel, { color: colors.foreground }]}
-                  numberOfLines={2}
-                >
-                  {tool.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        )}
         {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
@@ -3329,40 +3258,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     lineHeight: 23,
-  },
-  inicio3ToolGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: INICIO3_TOOL_GAP,
-    marginHorizontal: GRID_PAD,
-    marginBottom: INICIO2_SECTION_GAP,
-  },
-  inicio3ToolCell: {
-    width: INICIO3_TOOL_W,
-    minHeight: 92,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    borderRadius: 15,
-    paddingHorizontal: 5,
-    paddingVertical: 12,
-  },
-  inicio3ToolCellCompact: {
-    minHeight: 87,
-  },
-  inicio3ToolCellWide: {
-    width: INICIO3_TOOL_WIDE_W,
-  },
-  inicio3ToolLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 14,
   },
   inicio2HeroCategory: {
     marginBottom: 10,
