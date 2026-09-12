@@ -62,6 +62,10 @@ const CATEGORY_GROUPS = [
     tab: "Digital",
     items: [
       { id: "solfeggio", label: "Solfeggio" },
+      { id: "ruidos", label: "Ruidos" },
+      { id: "frecuencias", label: "Frecuencias" },
+      { id: "asmr", label: "ASMR" },
+      { id: "binaural", label: "Binaurales" },
     ],
   },
   {
@@ -76,7 +80,7 @@ type CategoryId =
   | "animales" | "bosque" | "mar" | "fuego" | "desierto"
   | "cuencos_tibetanos" | "cuencos_cuarzo" | "gongs" | "campanas_viento"
   | "vientos" | "cantos" | "percusion"
-  | "mantras" | "solfeggio" | "frecuencias"
+  | "mantras" | "solfeggio" | "ruidos" | "frecuencias" | "asmr" | "binaural"
   | "bpm";
 
 // Lista plana derivada — usada para catLabel y chips de filtro
@@ -90,6 +94,7 @@ const SOUND_TAGS = [
   { id: "psicodelicas", label: "Atmósferas psicodélicas" },
   { id: "solfeggio",    label: "Solfeggio" },
   { id: "naturaleza",   label: "Naturaleza" },
+  { id: "binaural",     label: "Binaural" },
 ] as const;
 
 const BPM_OPTIONS = [44, 50, 68, 72] as const;

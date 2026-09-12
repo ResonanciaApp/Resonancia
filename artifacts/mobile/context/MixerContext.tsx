@@ -16,7 +16,12 @@ import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
 import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
 import { sendHeartbeat } from "@/lib/communityApi";
-import { soundMatchesBpm, resolveSoundBpm, type MixSound } from "@/data/sounds";
+import {
+  hasAudioSourceRevision,
+  soundMatchesBpm,
+  resolveSoundBpm,
+  type MixSound,
+} from "@/data/sounds";
 import { useSounds } from "@/context/SoundsContext";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
@@ -229,6 +234,7 @@ const MixerContext = createContext<MixerContextType | null>(null);
 export function MixerProvider({ children }: { children: React.ReactNode }) {
   const { sounds: catalogSounds, loaded: catalogLoaded } = useSounds();
   const catalogSoundsRef = useRef<MixSound[]>([]);
+  const previousCatalogSoundsRef = useRef<MixSound[]>([]);
   catalogSoundsRef.current = catalogSounds;
   // The published API catalog is authoritative for metadata and availability.
   // Keeping this lookup ref-based lets long-lived audio callbacks see updates
@@ -781,68 +787,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     try {
       baseVolumesRef.current.set(id, volume);
 
-      // ── Loops BPM: ganancia constante + loop por RELOJ MAESTRO ────────────
-      // Dos motivos para NO usar el crossfade de dos capas en los drums:
-      //   1) gain=|sin(π·pos/dur)| vale 0 en pos=0 → silenciaría el primer beat.
-      //   2) las dos capas van desfasadas dur/2 → sonarían beats DISTINTOS a la
-      //      vez (golpes fantasma). El crossfade sirve para texturas continuas,
-      //      no para ritmo.
-      //
-      // Y NO se puede usar el loop NATIVO (a.loop=true): expo-audio reinicia el
-      // loop esperando AVPlayerItemDidPlayToEndTime y recién ahí hace seek(0)+
-      // play() → SIEMPRE deja un hueco audible en el empalme. Para ritmo ese
-      // hueco arruina el groove.
-      //
-      // Solución (ver startBpmScheduler): loop=false y un ÚNICO reloj maestro
-      // determinista (timer alineado a bpmClockRef) hace seekTo(0) de TODOS los
-      // players BPM a la vez en cada borde de compás. No depende de
-      // status.currentTime (que llegaba tarde → dejaba el hueco). El archivo trae
-      // 0.5 s de silencio extra al final (buffer) que absorbe el jitter del timer
-      // para que el player nunca toque el fin del archivo. Acá el player solo se
-      // crea y arranca; el wrap y la sincronía entre capas los hace el scheduler.
-      // El listener queda SOLO para sincronizar el volumen master.
       const soundBpm = getCatalogSoundById(id)?.bpm;
-      // Only bundled files can use the gapless PCM engine. Remote catalog
-      // sounds must stay on expo-audio: the native engine's decoder resolves
-      // SOUND_MAP ids and cannot fetch an API URL.
-      const isBpmLoop = soundBpm !== undefined && !!SOUND_MAP[id];
-      if (isBpmLoop) {
-        const a = createAudioPlayer(null, { updateInterval: 200 });
-        a.loop = false; // el loop lo maneja el reloj maestro, NO el nativo
-        a.replace(file);
-        a.volume = 0; // arranca mudo; se rampa abajo para evitar el click de arranque
-        const b = createAudioPlayer(null, { updateInterval: 200 });
-        b.loop = false;
-        b.volume = 0;
-        const pair: SoundPlayers = { a, b };
-        playersRef.current.set(id, pair);
-        const sub = a.addListener("playbackStatusUpdate", () => {
-          const cur = playersRef.current.get(id);
-          if (!cur || cur.a !== a) return;
-          // Sincronizar volumen si cambió el master.
-          const base = baseVolumesRef.current.get(id) ?? volume;
-          const target = base * masterVolumeRef.current;
-          if (Math.abs(a.volume - target) > 0.004) {
-            try { a.volume = target; } catch { /* ignore */ }
-          }
-        });
-        loopSubsRef.current.set(id, [sub]);
-        a.play();
-        // Fade-in de 80 ms para el BPM expo-fallback (evita el "tac" de arranque).
-        const _bpmTarget = volume * masterVolumeRef.current;
-        let _bpmStep = 0;
-        const _bpmRamp = setInterval(() => {
-          _bpmStep++;
-          const cur = playersRef.current.get(id);
-          if (!cur || cur.a !== a || _bpmStep >= 8) {
-            clearInterval(_bpmRamp);
-            if (cur?.a === a) { try { a.volume = _bpmTarget; } catch { /* ignore */ } }
-            return;
-          }
-          try { a.volume = (_bpmStep / 8) * _bpmTarget; } catch { /* ignore */ }
-        }, 10); // 8 pasos × 10 ms = 80 ms
-        return pair;
-      }
+      // BPM layers are always created through bpmAudioEngine. Never let this
+      // expo-audio helper become an accidental fallback for a remote BPM row.
+      if (soundBpm !== undefined) return null;
 
       // ── Sonidos con ESTRUCTURA (binaurales): loop nativo de UNA sola capa ──
       // El crossfade de dos capas desfasadas dur/2 (más abajo) es INAUDIBLE para
@@ -1288,6 +1236,115 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setSleepTimerRemaining(null);
   }, []);
 
+  // A catalog row can remain active while its resolved object URL changes.
+  // Rebuild that layer against the new source rather than allowing a decoded
+  // old buffer/player to continue indefinitely.
+  useEffect(() => {
+    const previousById = new Map(
+      previousCatalogSoundsRef.current.map((sound) => [sound.id, sound]),
+    );
+    const changed = catalogLoaded
+      ? catalogSounds.filter((sound) => {
+          const previous = previousById.get(sound.id);
+          return hasAudioSourceRevision(previous, sound);
+        })
+      : [];
+    previousCatalogSoundsRef.current = catalogSounds;
+    if (changed.length === 0) return;
+
+    const wasPlaying = isPlayingRef.current;
+    let lockOwnerReplaced = false;
+    for (const sound of changed) {
+      // A toggled-off ambient layer remains parked in idlePlayersRef for fast
+      // resume. Its AudioPlayer still owns the old URI, so invalidate it before
+      // the active-layer check; otherwise the next tap would resume stale audio.
+      if (idlePlayersRef.current.has(sound.id)) {
+        destroyPlayer(sound.id);
+      }
+      const active = activeSoundsRef.current.find((item) => item.id === sound.id);
+      if (!active) continue;
+      const oldPair = playersRef.current.get(sound.id);
+      if (oldPair?.a === lockOwnerRef.current) lockOwnerReplaced = true;
+      if (oldPair?.a === lockOwnerRef.current) clearLockScreen();
+      bpmAudioEngine.stop(sound.id);
+      binauralEngineActiveRef.current.delete(sound.id);
+      destroyPlayer(sound.id);
+
+      const sourceUrl = sound.audioUrl ?? REMOTE_SOUND_MAP[sound.id] ?? null;
+      let replacement: SoundPlayers | null = null;
+      if (sound.bpm !== undefined) {
+        void (async () => {
+          if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
+          if (!bpmAudioEngine.isReady()) return;
+          const bpm =
+            resolveSoundBpm(sound, bpmValueRef.current) ??
+            (Array.isArray(sound.bpm) ? sound.bpm[0] : sound.bpm);
+          const resumeContext = wasPlaying;
+          if (SOUND_MAP[sound.id]) {
+            await bpmAudioEngine.play(sound.id, {
+              bpm,
+              loopBars: sound.loopBars ?? 2,
+              volume: active.volume,
+              resumeContext,
+            });
+          } else if (sourceUrl) {
+            await bpmAudioEngine.playRemote(sound.id, sourceUrl, {
+              bpm,
+              loopBars: sound.loopBars ?? 2,
+              volume: active.volume,
+              resumeContext,
+            });
+          }
+        })();
+      } else if (sound.category === "binaural") {
+        void (async () => {
+          if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
+          if (!bpmAudioEngine.isReady()) return;
+          if (SOUND_MAP[sound.id]) {
+            await bpmAudioEngine.playLoop(
+              sound.id,
+              active.volume,
+              wasPlaying,
+            );
+          } else if (sourceUrl) {
+            await bpmAudioEngine.playLoopRemote(
+              sound.id,
+              sourceUrl,
+              active.volume,
+              wasPlaying,
+            );
+          }
+        })();
+        binauralEngineActiveRef.current.add(sound.id);
+      } else {
+        replacement = createPlayerFor(sound.id, active.volume);
+        if (replacement && !wasPlaying) {
+          try {
+            replacement.a.pause();
+            replacement.b.pause();
+          } catch {
+            // ignore
+          }
+        }
+      }
+      // Native engine voices do not own lock-screen metadata. An expo player
+      // replacement does, and syncLockScreen below transfers ownership.
+      if (replacement && !wasPlaying) {
+        isPlayingRef.current = false;
+      }
+    }
+    if (lockOwnerReplaced) {
+      if (activeSoundsRef.current.length > 0) syncLockScreen();
+    }
+  }, [
+    catalogLoaded,
+    catalogSounds,
+    clearLockScreen,
+    createPlayerFor,
+    destroyPlayer,
+    syncLockScreen,
+  ]);
+
   // The API snapshot is authoritative. When a sound is deactivated, deleted,
   // or loses its playable asset, stop every route for it (including parked
   // expo-audio players) and remove the stale layer from mixer state. Wait for
@@ -1407,18 +1464,29 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       void ensureAudioMode();
 
       // ── Sonido BPM por el MOTOR nativo (react-native-audio-api) ─────────
-      // Siempre usamos bpmAudioEngine. Si el init() todavía está en vuelo
-      // (arranque en frío muy rápido), lo esperamos dentro del void async antes
-      // de reproducir; el estado React se actualiza de inmediato para que la UI
-      // no quede bloqueada.
-      if (effectiveSoundBpm !== undefined && !!SOUND_MAP[id]) {
+      // Both bundled assets and catalog URLs use the PCM engine. There is no
+      // expo-audio fallback for BPM: it would lose the gapless phase contract.
+      if (effectiveSoundBpm !== undefined) {
+        const remoteUrl =
+          soundDef?.audioUrl ?? REMOTE_SOUND_MAP[id] ?? null;
+        const canUseEngine = !!SOUND_MAP[id] || !!remoteUrl;
+        if (!canUseEngine) return false;
         void (async () => {
           if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
-          void bpmAudioEngine.play(id, {
-            bpm: effectiveSoundBpm,
-            loopBars: soundDef?.loopBars ?? 2,
-            volume: DEFAULT_VOLUME,
-          });
+          if (!bpmAudioEngine.isReady()) return;
+          if (SOUND_MAP[id]) {
+            void bpmAudioEngine.play(id, {
+              bpm: effectiveSoundBpm,
+              loopBars: soundDef?.loopBars ?? 2,
+              volume: DEFAULT_VOLUME,
+            });
+          } else if (remoteUrl) {
+            void bpmAudioEngine.playRemote(id, remoteUrl, {
+              bpm: effectiveSoundBpm,
+              loopBars: soundDef?.loopBars ?? 2,
+              volume: DEFAULT_VOLUME,
+            });
+          }
         })();
         if (bpmValueRef.current === null) {
           bpmValueRef.current = effectiveSoundBpm;
@@ -1435,12 +1503,19 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // El loop nativo de expo-audio deja un hueco de ~48 ms por el encoder
       // delay del AAC. `AudioBufferSourceNode` decodifica a PCM (sin delay) y
       // loopea a precisión de muestra: empalme completamente imperceptible.
-      if (
-        getCatalogSoundById(id)?.category === "binaural" &&
-        !!SOUND_MAP[id] &&
-        bpmAudioEngine.isReady()
-      ) {
-        void bpmAudioEngine.playLoop(id, DEFAULT_VOLUME);
+      if (getCatalogSoundById(id)?.category === "binaural") {
+        const remoteUrl =
+          soundDef?.audioUrl ?? REMOTE_SOUND_MAP[id] ?? null;
+        if (!SOUND_MAP[id] && !remoteUrl) return false;
+        void (async () => {
+          if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
+          if (!bpmAudioEngine.isReady()) return;
+          if (SOUND_MAP[id]) {
+            void bpmAudioEngine.playLoop(id, DEFAULT_VOLUME);
+          } else if (remoteUrl) {
+            void bpmAudioEngine.playLoopRemote(id, remoteUrl, DEFAULT_VOLUME);
+          }
+        })();
         binauralEngineActiveRef.current.add(id);
         if (!isPlayingRef.current) applyPlaying(true);
         setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
@@ -1449,19 +1524,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         return true;
       }
 
-      // ── Camino expo-audio (sonidos no-BPM, o BPM en fallback) ─────────────
+      // ── Camino expo-audio (sonidos no-BPM) ────────────────────────────────
       // Si está estacionado (apagado hace poco), retomarlo al instante; si no,
       // crear el player desde cero (decodifica el mp3).
       const player = resumePlayer(id, DEFAULT_VOLUME) ?? createPlayerFor(id, DEFAULT_VOLUME);
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
-
-      // Remote BPM files use expo-audio, but still participate in the mix's
-      // BPM compatibility lock just like bundled native-engine files.
-      if (effectiveSoundBpm !== undefined && bpmValueRef.current === null) {
-        bpmValueRef.current = effectiveSoundBpm;
-        setActiveBpm(effectiveSoundBpm);
-      }
 
       // Si la mezcla estaba pausada, retomar todos al sumar un sonido
       if (!isPlayingRef.current) {
@@ -1955,23 +2023,40 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const created: ActiveSound[] = [];
       playable.forEach((s) => {
         const def = getCatalogSoundById(s.id);
-        if (def?.bpm !== undefined && !!SOUND_MAP[s.id]) {
+        if (def?.bpm !== undefined) {
+          const remoteUrl = def.audioUrl ?? REMOTE_SOUND_MAP[s.id] ?? null;
           // Fire-and-forget: init() es idempotente y dedup-safe.
           void (async () => {
             if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
-            void bpmAudioEngine.play(s.id, {
-              bpm: resolveSoundBpm(def, bpmValueRef.current) ?? (Array.isArray(def.bpm) ? def.bpm[0] : def.bpm),
-              loopBars: def.loopBars ?? 2,
-              volume: s.volume,
-            });
+            if (!bpmAudioEngine.isReady()) return;
+            const bpm = resolveSoundBpm(def, bpmValueRef.current) ??
+              (Array.isArray(def.bpm) ? def.bpm[0] : def.bpm);
+            if (SOUND_MAP[s.id]) {
+              void bpmAudioEngine.play(s.id, {
+                bpm,
+                loopBars: def.loopBars ?? 2,
+                volume: s.volume,
+              });
+            } else if (remoteUrl) {
+              void bpmAudioEngine.playRemote(s.id, remoteUrl, {
+                bpm,
+                loopBars: def.loopBars ?? 2,
+                volume: s.volume,
+              });
+            }
           })();
           created.push({ id: s.id, volume: s.volume });
-        } else if (
-          def?.category === "binaural" &&
-          !!SOUND_MAP[s.id] &&
-          bpmAudioEngine.isReady()
-        ) {
-          void bpmAudioEngine.playLoop(s.id, s.volume);
+        } else if (def?.category === "binaural") {
+          const remoteUrl = def.audioUrl ?? REMOTE_SOUND_MAP[s.id] ?? null;
+          void (async () => {
+            if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
+            if (!bpmAudioEngine.isReady()) return;
+            if (SOUND_MAP[s.id]) {
+              void bpmAudioEngine.playLoop(s.id, s.volume);
+            } else if (remoteUrl) {
+              void bpmAudioEngine.playLoopRemote(s.id, remoteUrl, s.volume);
+            }
+          })();
           binauralEngineActiveRef.current.add(s.id);
           created.push({ id: s.id, volume: s.volume });
         } else {

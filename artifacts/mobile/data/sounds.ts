@@ -128,6 +128,18 @@ export function getMeditationBackgroundSounds(
   );
 }
 
+/** True when an active catalog row points at a new resolved audio source. */
+export function hasAudioSourceRevision(
+  previous: MixSound | undefined,
+  current: MixSound,
+): boolean {
+  return (
+    !!previous &&
+    previous.audioUrl !== current.audioUrl &&
+    (!!previous.audioUrl || !!current.audioUrl)
+  );
+}
+
 export function getSoundById(id: string): MixSound | undefined {
   return SOUNDS.find((s) => s.id === id);
 }

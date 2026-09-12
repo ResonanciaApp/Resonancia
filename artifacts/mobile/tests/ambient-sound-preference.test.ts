@@ -11,6 +11,7 @@ import {
 } from "../lib/ambient-sound-preference.ts";
 import {
   getMeditationBackgroundSounds,
+  hasAudioSourceRevision,
   type MixSound,
 } from "../data/sounds.ts";
 
@@ -80,5 +81,38 @@ test("meditation backgrounds require the admin flag and a playable audio URL", (
   assert.deepEqual(
     getMeditationBackgroundSounds(sounds).map((sound) => sound.id),
     ["enabled"],
+  );
+});
+
+test("detects resolved audio URL revisions without treating missing sources as revisions", () => {
+  const previous: MixSound = {
+    id: "remote",
+    name: "Remote",
+    icon: "music",
+    iconSet: "feather",
+    category: "bpm",
+    audioUrl: "https://audio.test/v1.mp3",
+  };
+  assert.equal(
+    hasAudioSourceRevision(previous, {
+      ...previous,
+      audioUrl: "https://audio.test/v2.mp3",
+    }),
+    true,
+  );
+  assert.equal(hasAudioSourceRevision(previous, previous), false);
+  assert.equal(
+    hasAudioSourceRevision(
+      previous,
+      { ...previous, audioUrl: undefined },
+    ),
+    true,
+  );
+  assert.equal(
+    hasAudioSourceRevision(undefined, {
+      ...previous,
+      audioUrl: "https://audio.test/v2.mp3",
+    }),
+    false,
   );
 });

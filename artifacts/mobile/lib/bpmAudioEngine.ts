@@ -46,6 +46,8 @@ type PlayOptions = {
   loopBars: number;
   /** Volumen base 0-1 elegido por el usuario para este sonido. */
   volume: number;
+  /** Create the voice while the context remains suspended (catalog refresh). */
+  resumeContext?: boolean;
 };
 
 type Voice = {
@@ -99,6 +101,8 @@ class BpmAudioEngine {
    */
   private wanted = new Map<string, number>();
   private playSeq = 0;
+  /** Last decoded source key for each logical sound id. */
+  private sourceKeys = new Map<string, string>();
 
   /** ¿El motor está listo para reproducir (módulo nativo presente)? */
   isReady(): boolean {
@@ -180,7 +184,12 @@ class BpmAudioEngine {
 
   /** Decodifica (y cachea) el WAV de un id del mixer (SOUND_MAP). */
   private getBuffer(id: string): Promise<AudioBufferType | null> {
-    return this.getBufferFor(id, SOUND_MAP[id] as number | undefined);
+    this.useSource(id, `local:${id}`);
+    return this.getBufferFor(
+      `local:${id}`,
+      SOUND_MAP[id] as number | undefined,
+      id,
+    );
   }
 
   /**
@@ -189,7 +198,8 @@ class BpmAudioEngine {
    */
   private getBufferFor(
     key: string,
-    asset: number | null | undefined,
+    asset: number | string | null | undefined,
+    sourceId?: string,
   ): Promise<AudioBufferType | null> {
     const cached = this.buffers.get(key);
     if (cached) return Promise.resolve(cached);
@@ -199,9 +209,13 @@ class BpmAudioEngine {
     if (!ctx || asset == null) return Promise.resolve(null);
     const p = (async () => {
       try {
-        // decodeAudioData acepta el id numérico del require() (DecodeDataInput).
-        const buf = await ctx.decodeAudioData(asset as unknown as number);
-        this.buffers.set(key, buf);
+        // AudioDecoder accepts both bundled require ids and remote URL strings.
+        const buf = await ctx.decodeAudioData(asset);
+        // A URL may have been superseded while this request was decoding.
+        // Do not resurrect that obsolete buffer in the cache.
+        if (!sourceId || this.sourceKeys.get(sourceId) === key) {
+          this.buffers.set(key, buf);
+        }
         return buf;
       } catch {
         return null;
@@ -213,18 +227,47 @@ class BpmAudioEngine {
     return p;
   }
 
+  /** Drop the previous URL buffer for an id before decoding a new revision. */
+  private useSource(id: string, key: string): void {
+    const previous = this.sourceKeys.get(id);
+    if (previous && previous !== key) {
+      this.buffers.delete(previous);
+      this.decoding.delete(previous);
+    }
+    this.sourceKeys.set(id, key);
+  }
+
+  private getRemoteBuffer(id: string, url: string): Promise<AudioBufferType | null> {
+    const key = `remote:${id}:${url}`;
+    this.useSource(id, key);
+    return this.getBufferFor(key, url, id);
+  }
+
   /**
    * Reproduce (o reinicia) un loop BPM, alineado en fase con los que ya suenan.
    * Async por el decode del buffer la primera vez; re-taps son instantáneos.
    */
   async play(id: string, opts: PlayOptions): Promise<void> {
+    return this.playBuffer(id, () => this.getBuffer(id), opts);
+  }
+
+  /** Reproduce un BPM remoto con el decoder PCM gapless del motor nativo. */
+  async playRemote(id: string, url: string, opts: PlayOptions): Promise<void> {
+    return this.playBuffer(id, () => this.getRemoteBuffer(id, url), opts);
+  }
+
+  private async playBuffer(
+    id: string,
+    getBuffer: () => Promise<AudioBufferType | null>,
+    opts: PlayOptions,
+  ): Promise<void> {
     if (!this.isReady()) return;
     // Token de esta solicitud. Si el sonido se quita / stopAll / dispose / re-tap
     // mientras el buffer decodifica, al volver del await el token ya no coincide
     // y abortamos ANTES de crear el source (si no, queda audio huérfano sonando).
     const token = ++this.playSeq;
     this.wanted.set(id, token);
-    const buffer = await this.getBuffer(id);
+    const buffer = await getBuffer();
     const ctx = this.ctx;
     const masterGain = this.masterGain;
     // Re-chequear tras el await: el motor pudo cerrarse (dispose) o el sonido
@@ -268,7 +311,7 @@ class BpmAudioEngine {
 
     // Agregar un sonido implica que la mezcla está sonando: asegurar el contexto
     // activo (pudo quedar suspendido tras el init o una pausa previa).
-    if (ctx.state !== "running") {
+    if (opts.resumeContext !== false && ctx.state !== "running") {
       try {
         await ctx.resume();
       } catch {
@@ -283,8 +326,34 @@ class BpmAudioEngine {
    * decodificado (sin silencio de encoder delay), igual de preciso que el
    * loop BPM pero sin necesidad de tempo ni reloj maestro.
    */
-  async playLoop(id: string, volume: number): Promise<void> {
-    return this.playLoopBuffer(id, () => this.getBuffer(id), volume, false);
+  async playLoop(
+    id: string,
+    volume: number,
+    resumeContext = true,
+  ): Promise<void> {
+    return this.playLoopBuffer(
+      id,
+      () => this.getBuffer(id),
+      volume,
+      false,
+      resumeContext,
+    );
+  }
+
+  /** Reproduce un binaural remoto con loop gapless nativo. */
+  async playLoopRemote(
+    id: string,
+    url: string,
+    volume: number,
+    resumeContext = true,
+  ): Promise<void> {
+    return this.playLoopBuffer(
+      id,
+      () => this.getRemoteBuffer(id, url),
+      volume,
+      false,
+      resumeContext,
+    );
   }
 
   /**
@@ -305,6 +374,7 @@ class BpmAudioEngine {
     getBuffer: () => Promise<AudioBufferType | null>,
     volume: number,
     external: boolean,
+    resumeContext = true,
   ): Promise<void> {
     if (!this.isReady()) return;
     const token = ++this.playSeq;
@@ -344,7 +414,7 @@ class BpmAudioEngine {
     if (prev) this.fadeOutAndStop(prev, now, XFADE_SEC);
     this.voices.set(id, { source, gain, base: volume, external });
 
-    if (ctx.state !== "running") {
+    if (resumeContext && ctx.state !== "running") {
       try {
         await ctx.resume();
       } catch {
@@ -510,6 +580,7 @@ class BpmAudioEngine {
     this.voices.clear();
     this.buffers.clear();
     this.decoding.clear();
+    this.sourceKeys.clear();
     const ctx = this.ctx;
     this.ctx = null;
     this.masterGain = null;
