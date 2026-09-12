@@ -339,7 +339,17 @@ export function DrawerMenu() {
               <View style={styles.profileInfo}>
                 {loggedIn ? (
                   <>
-                    <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
+                    <Pressable
+                      onPress={() => navigate("/(tabs)/profile")}
+                      style={styles.profileNameRow}
+                      accessibilityRole="button"
+                      accessibilityLabel="Ver perfil"
+                    >
+                      <Text style={styles.profileName} numberOfLines={1}>
+                        {fullName || "Mi perfil"}
+                      </Text>
+                      <Feather name="chevron-right" size={17} color="#F9F9F9" />
+                    </Pressable>
                     {isEditingDecree ? (
                       <TextInput
                         autoFocus
@@ -367,7 +377,7 @@ export function DrawerMenu() {
                           </Text>
                         ) : (
                           <View style={styles.decreePlaceholderRow}>
-                            <Text style={[styles.decreePlaceholder, { color: activeTheme.accent }]}>
+                            <Text style={styles.decreePlaceholder}>
                               Escribe tu decreto
                             </Text>
                             <Animated.View
@@ -637,6 +647,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
+    flexShrink: 1,
+  },
+  profileNameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 3,
   },
   profileNameMuted: {
     fontFamily: "Manrope",
@@ -677,6 +694,7 @@ const styles = StyleSheet.create({
   },
   decreePlaceholder: {
     fontFamily: "Manrope",
+    color: "#757575",
     fontSize: 12,
     lineHeight: 18,
     fontWeight: "500",
@@ -711,9 +729,12 @@ const styles = StyleSheet.create({
   closeBtn: {
     width: 32,
     height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 2,
+    transform: [{ translateY: -25 }],
   },
 
   // ── Items ──
