@@ -78,7 +78,12 @@ export function DailyRecommendationsSection({
         {formatDailyDate(dayKey)}
       </Text>
 
-      <View style={styles.recommendationsList}>
+      <View
+        style={[
+          styles.recommendationsList,
+          inicio3Compact && styles.inicio3RecommendationsList,
+        ]}
+      >
         {recommendations.map((session, index) => (
           <React.Fragment key={session.id}>
             <CategoryAtmosphericCard
@@ -149,20 +154,26 @@ const styles = StyleSheet.create({
   recommendationsList: {
     gap: 12,
   },
+  inicio3RecommendationsList: {
+    gap: 0,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 27,
+    overflow: "hidden",
+  },
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3RecommendationCard: {
-    borderRadius: 27,
+    borderRadius: 0,
     backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: 0,
+    borderColor: "transparent",
   },
   inicio3CardDivider: {
     height: StyleSheet.hairlineWidth,
-    marginHorizontal: 11,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   row: {
