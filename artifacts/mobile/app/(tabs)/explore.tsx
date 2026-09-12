@@ -1110,11 +1110,11 @@ const styles = StyleSheet.create({
   themeGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 14,
-    rowGap: 18,
+    columnGap: 7,
+    rowGap: 9,
   },
   themeGridCard: {
-    width: (width - H_PAD * 2 - 14) / 2,
+    width: (width - H_PAD * 2 - 7) / 2,
   },
   themeGridImageWrap: {
     width: "100%",
