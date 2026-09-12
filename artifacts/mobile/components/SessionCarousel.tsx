@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -9,6 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import {
+  Animated as RNAnimated,
   Pressable,
   FlatList,
   ScrollView,
@@ -51,6 +53,68 @@ const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
+const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
+
+function AmbientalFavoriteButton({
+  session,
+  favorite,
+  onToggle,
+}: {
+  session: Session;
+  favorite: boolean;
+  onToggle: (sessionId: string) => void;
+}) {
+  const scale = React.useRef(new RNAnimated.Value(1)).current;
+
+  const handlePress = (event: Parameters<NonNullable<React.ComponentProps<typeof Pressable>["onPress"]>>[0]) => {
+    event.stopPropagation();
+    scale.setValue(1);
+    RNAnimated.sequence([
+      RNAnimated.timing(scale, {
+        toValue: 1.25,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      RNAnimated.spring(scale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    onToggle(session.id);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  return (
+    <AnimatedPressable
+      onPress={handlePress}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={
+        favorite
+          ? `Quitar ${session.title} de favoritos`
+          : `Agregar ${session.title} a favoritos`
+      }
+      style={[
+        styles.favoriteButton,
+        {
+          right: 12,
+          top: 12,
+          transform: [{ scale }],
+        },
+      ]}
+    >
+      <SessionBadgeGlass showBlackTint={false} />
+      <View pointerEvents="none" style={styles.favoriteGlassTint} />
+      <MaterialCommunityIcons
+        name={favorite ? "heart" : "heart-outline"}
+        size={18}
+        color={favorite ? "#F9F9F9" : "rgba(249,249,249,0.5)"}
+      />
+    </AnimatedPressable>
+  );
+}
 
 function LineAwareAmbientalTitle({
   children,
@@ -637,41 +701,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             color="#F9F9F9"
                           />
                         </Pressable>
-                        <Pressable
-                          onPress={(event) => {
-                            event.stopPropagation();
-                            toggleFavorite(s.id);
-                          }}
-                          hitSlop={8}
-                          accessibilityRole="button"
-                          accessibilityLabel={
-                            isFavorite(s.id)
-                              ? `Quitar ${s.title} de favoritos`
-                              : `Agregar ${s.title} a favoritos`
-                          }
-                          style={[
-                            styles.favoriteButton,
-                            {
-                              right: 12,
-                              top: 12,
-                            },
-                          ]}
-                        >
-                          <SessionBadgeGlass showBlackTint={false} />
-                          <View
-                            pointerEvents="none"
-                            style={styles.favoriteGlassTint}
-                          />
-                          <MaterialCommunityIcons
-                            name={isFavorite(s.id) ? "heart" : "heart-outline"}
-                            size={18}
-                            color={
-                              isFavorite(s.id)
-                                ? "#F9F9F9"
-                                : "rgba(249,249,249,0.5)"
-                            }
-                          />
-                        </Pressable>
+                        <AmbientalFavoriteButton
+                          session={s}
+                          favorite={isFavorite(s.id)}
+                          onToggle={toggleFavorite}
+                        />
                       </>
                     )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
