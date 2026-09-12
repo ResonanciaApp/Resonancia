@@ -1298,7 +1298,7 @@ function Inicio2HeroStatic({
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
   const inicio3HeroTop = topInset + 161;
-  const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 20;
+  const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 50;
   const inicio3MonthlyCardsTop = inicio3MonthlyTop + 102 + 20;
   const inicio3MonthlyCardWidth =
     (width - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 2;
