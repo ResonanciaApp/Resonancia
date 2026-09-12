@@ -581,8 +581,8 @@ const styles = StyleSheet.create({
   pillSel: { backgroundColor: "#FFFFFF", borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   pillIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pillText: {
     fontFamily: "Manrope",

@@ -36,8 +36,8 @@ const SWATCH_SIZE = 34;
 const c = {
   fg:         "rgba(255,255,255,0.9)",
   mutedDim:   "rgba(255,255,255,0.6)",
-  chipBg:     "rgba(255,255,255,0.03)",
-  chipBorder: "rgba(80,42,247,0.07)",
+  chipBg:     "rgba(0,0,0,0.2)",
+  chipBorder: "rgba(255,255,255,0.1)",
   chipSel:    "rgba(190,150,80,0.22)",
 };
 

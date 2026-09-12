@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
    chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   chipIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
-  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },
+  chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.2)", borderColor: "rgba(255,255,255,0.1)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
