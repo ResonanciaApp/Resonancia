@@ -6,7 +6,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
-  Alert,
   Animated,
   PanResponder,
   Platform,
@@ -67,14 +66,6 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
   },
-  {
-    title: "Cuenta",
-    items: [
-      { id: "settings", label: "Configuración", icon: "settings", mciIcon: "cog-outline", route: "/configuraciones" },
-      { id: "support", label: "Ayuda y soporte", icon: "help-circle", mciIcon: "lifebuoy", route: "/ayuda" },
-      { id: "logout", label: "Cerrar sesión", icon: "log-out", mciIcon: "logout", route: "__logout" },
-    ],
-  },
 ];
 
 const MAIN_ITEMS: MenuItem[] = [
@@ -121,7 +112,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 export function DrawerMenu() {
   const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, mode, requestMoodPicker } = useDrawer();
   const insets = useSafeAreaInsets();
-  const { isRegistered, isSignedIn, logout } = useAuth();
+  const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
   const { activeSceneId, setActiveSceneWithFade, theme: activeTheme } = useSceneTheme();
@@ -209,25 +200,6 @@ export function DrawerMenu() {
     if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
     if (route === "__mixer") { onClose(); openMixer(); return; }
     if (route === "__geometrix") { onClose(); openGeometrix(); return; }
-    if (route === "__logout") {
-      Alert.alert(
-        "Cerrar sesión",
-        "Saldrás de RESONANCE. Tu progreso queda guardado.",
-        [
-          { text: "Cancelar", style: "cancel" },
-          {
-            text: "Cerrar sesión",
-            style: "destructive",
-            onPress: async () => {
-              onClose();
-              await logout();
-              router.replace("/onboarding");
-            },
-          },
-        ],
-      );
-      return;
-    }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
@@ -347,12 +319,12 @@ export function DrawerMenu() {
                         >
                           <View style={styles.itemIcon}>
                             {item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={20} color="#FFFFFF" />
+                              <MaterialCommunityIcons name={item.mciIcon} size={22} color="#FFFFFF" />
                             ) : (
-                              <Feather name={item.icon} size={17} color="#FFFFFF" />
+                              <Feather name={item.icon} size={19} color="#FFFFFF" />
                             )}
                           </View>
-                          <Text style={styles.itemLabel}>{item.label}</Text>
+                          <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
                         </Pressable>
                       ))}
                     </View>
@@ -614,6 +586,9 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginBottom: 4,
     paddingHorizontal: 2,
+  },
+  inicio3ItemLabel: {
+    fontSize: 14,
   },
 
   // ── Swatches de Escena ──
