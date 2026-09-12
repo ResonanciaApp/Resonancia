@@ -535,22 +535,40 @@ export function ExploreScreen({
           >
             {screenTitle}
           </Animated.Text>
+        </View>
+        <View style={[styles.searchWrap, styles.stickySearchWrap]}>
           <Pressable
             onPress={() => setSearchVisible(true)}
-            hitSlop={10}
             style={[
-              styles.headerSearchButton,
-              styles.stickySearchButton,
+              styles.searchBox,
+              activeSceneId === "tibet"
+                ? styles.searchBoxTibet
+                : isIndigoThemeId(activeSceneId)
+                  ? styles.searchBoxIndigo
+                  : activeSceneId === "indigo2"
+                    ? styles.searchBoxIndigo2
+                    : null,
+              styles.searchBoxWhiteBorder,
+              { backgroundColor: searchTabBarSurface },
             ]}
             accessibilityRole="button"
             accessibilityLabel={`Buscar en ${screenTitle}`}
             testID="discover-sticky-search-button"
           >
             {Platform.OS === "ios" ? (
-              <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+              <SymbolView
+                name="magnifyingglass"
+                tintColor="rgba(249,249,249,0.72)"
+                size={20}
+              />
             ) : (
-              <Feather name="search" size={24} color="#F4F4F4" />
+              <Feather
+                name="search"
+                size={20}
+                color="rgba(249,249,249,0.72)"
+              />
             )}
+            <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
           </Pressable>
         </View>
       </Animated.View>
@@ -1014,6 +1032,7 @@ const styles = StyleSheet.create({
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
+  stickySearchWrap: { paddingTop: 0, paddingBottom: 12 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
     borderColor: "#F9F9F9",
