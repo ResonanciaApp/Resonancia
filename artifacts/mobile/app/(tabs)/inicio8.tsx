@@ -2532,6 +2532,7 @@ export default function HomeScreen2({
             dayKey={todayKey}
             onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -5 }}
+            inicio3Compact={variant === "inicio3"}
           />
         )}
         {isInicio2 && featuredMoment && (

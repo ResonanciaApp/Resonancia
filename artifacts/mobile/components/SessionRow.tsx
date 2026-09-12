@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
@@ -11,6 +11,7 @@ import {
   SessionCategoryPill,
 } from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { SessionBadgeGlass } from "@/components/SessionDurationBadge";
 import { getVoiceLabel } from "@/config/audio-map";
 import { getArtist } from "@/data/artists";
 import { getGuideById } from "@/data/guides";
@@ -39,6 +40,8 @@ type Props = {
   showChevron?: boolean;
   authorColor?: string;
   authorFontSize?: number;
+  titleFontSize?: number;
+  staticPlayBadge?: boolean;
   hideMeta?: boolean;
   secondaryText?: string;
   chevronColor?: string;
@@ -66,6 +69,8 @@ export function SessionRow({
   showChevron = false,
   authorColor,
   authorFontSize,
+  titleFontSize,
+  staticPlayBadge = false,
   hideMeta = false,
   secondaryText,
   chevronColor,
@@ -122,6 +127,17 @@ export function SessionRow({
               transition={IMAGE_TRANSITION}
             />
             <PremiumBadge session={session} />
+            {staticPlayBadge && (
+              <View pointerEvents="none" style={styles.staticPlayBadge}>
+                <SessionBadgeGlass showBlackTint={false} />
+                <View style={styles.staticPlayBadgeTint} />
+                <MaterialCommunityIcons
+                  name="play"
+                  size={22}
+                  color="#F9F9F9"
+                />
+              </View>
+            )}
             {showDurationBadge && (
               <SessionDurationBadge
                 label={session.durationLabel}
@@ -176,7 +192,17 @@ export function SessionRow({
               </View>
             )
           )}
-          <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
+          <Text
+            style={[
+              styles.sessionTitle,
+              { color: colors.foreground },
+              titleFontSize !== undefined && {
+                fontSize: titleFontSize,
+                lineHeight: titleFontSize + 5,
+              },
+            ]}
+            numberOfLines={2}
+          >
             {session.title}
           </Text>
           <Text
@@ -237,6 +263,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     position: "relative",
+  },
+  staticPlayBadge: {
+    position: "absolute",
+    zIndex: 5,
+    left: 8,
+    top: 8,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  staticPlayBadgeTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   rowDurationBadge: {
     position: "absolute",

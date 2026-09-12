@@ -19,6 +19,7 @@ type Props = {
   dayKey?: string;
   onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
+  inicio3Compact?: boolean;
 };
 
 const WEEKDAYS = [
@@ -59,6 +60,7 @@ export function DailyRecommendationsSection({
   dayKey,
   onRefreshRecommendations,
   style,
+  inicio3Compact = false,
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -81,18 +83,23 @@ export function DailyRecommendationsSection({
           <CategoryAtmosphericCard
             key={session.id}
             categoryId={session.categoryId}
-            style={styles.recommendationCard}
+            style={[
+              styles.recommendationCard,
+              inicio3Compact && styles.inicio3RecommendationCard,
+            ]}
           >
             <SessionRow
               session={session}
-              imageSize={103.7}
+              imageSize={inicio3Compact ? 88.1 : 103.7}
               imageOffsetX={-4}
               metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-              showChevron
+              showChevron={!inicio3Compact}
+              titleFontSize={inicio3Compact ? 18 : undefined}
+              staticPlayBadge={inicio3Compact}
               authorColor={themeAccent}
               authorFontSize={theme.id === "indigo2" ? 11 : undefined}
               chevronColor={theme.id === "indigo2" ? themeAccent : undefined}
-              style={styles.row}
+              style={[styles.row, inicio3Compact && styles.inicio3Row]}
             />
           </CategoryAtmosphericCard>
         ))}
@@ -142,9 +149,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  inicio3RecommendationCard: {
+    borderRadius: 27,
+  },
   row: {
     paddingVertical: 9.3,
     paddingHorizontal: 16,
+  },
+  inicio3Row: {
+    paddingVertical: 7,
   },
   refreshButton: {
     height: 55,
