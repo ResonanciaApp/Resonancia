@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     gap: 0,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 27,
+    borderRadius: 16,
     overflow: "hidden",
   },
   recommendationCard: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   inicio3RecommendationCard: {
-    borderRadius: 0,
+    borderRadius: 16,
     backgroundColor: "transparent",
     borderWidth: 0,
     borderColor: "transparent",
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
   inicio3CardDivider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: 11,
+    marginVertical: 3,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   row: {
