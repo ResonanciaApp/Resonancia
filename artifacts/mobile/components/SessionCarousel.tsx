@@ -5,9 +5,11 @@ import { router } from "expo-router";
 import React from "react";
 import Animated, {
   type SharedValue,
+  useAnimatedProps,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import Svg, { Circle } from "react-native-svg";
 import {
   Pressable,
   FlatList,
@@ -51,6 +53,7 @@ const CARD_W = 150;
 const GRID_PAD = 14;
 const SECTION_GAP = 53;
 const NEON_VIOLET = "#A970FF";
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 function LineAwareAmbientalTitle({
   children,
   style,
@@ -91,18 +94,37 @@ function PreviewFadeLayer({
   );
 }
 
-function PreviewProgressEdge({
-  width,
+function PreviewCircularProgress({
+  diameter,
   progress,
 }: {
-  width: number;
+  diameter: number;
   progress: SharedValue<number>;
 }) {
-  const animatedStyle = useAnimatedStyle(() => ({
-    width: width * Math.max(0, Math.min(1, progress.value)),
+  const strokeWidth = 3;
+  const radius = (diameter - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset:
+      circumference * (1 - Math.max(0, Math.min(1, progress.value))),
   }));
 
-  return <Animated.View style={[styles.previewProgressEdge, animatedStyle]} />;
+  return (
+    <Svg width={diameter} height={diameter}>
+      <AnimatedCircle
+        animatedProps={animatedProps}
+        cx={diameter / 2}
+        cy={diameter / 2}
+        r={radius}
+        fill="none"
+        stroke={NEON_VIOLET}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeDasharray={`${circumference} ${circumference}`}
+        transform={`rotate(-90 ${diameter / 2} ${diameter / 2})`}
+      />
+    </Svg>
+  );
 }
 
 type CarouselImageProps = {
@@ -457,6 +479,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 10;
   const ambientalFilledImageBottom =
     ambientalFilledImageTop + ambientalFilledImageHeight;
+  const ambientalPlayButtonSize = 34 * ambientalFillScale + 20;
+  const ambientalPlayIconSize = 22 * ambientalFillScale + 20;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
@@ -612,16 +636,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         <PreviewFadeLayer
                           active={isPreviewActive}
                           style={[
-                            styles.previewProgressEdgeWrap,
+                            styles.previewCircularProgress,
                             {
-                              width: ambientalFilledImageWidth,
+                              width: ambientalFilledImageDiameter,
+                              height: ambientalFilledImageDiameter,
                               left: ambientalFilledImageLeft,
-                              top: ambientalFilledImageBottom - 3,
+                              top: ambientalFilledImageTop,
                             },
                           ]}
                         >
-                          <PreviewProgressEdge
-                            width={ambientalFilledImageWidth}
+                          <PreviewCircularProgress
+                            diameter={ambientalFilledImageDiameter}
                             progress={soundPreview.progress}
                           />
                         </PreviewFadeLayer>
@@ -643,18 +668,18 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              width: 34 * ambientalFillScale,
-                              height: 34 * ambientalFillScale,
-                              borderRadius: 17 * ambientalFillScale,
+                              width: ambientalPlayButtonSize,
+                              height: ambientalPlayButtonSize,
+                              borderRadius: ambientalPlayButtonSize / 2,
                               left:
                                 ambientalFilledImageLeft +
                                 (ambientalFilledImageWidth -
-                                  34 * ambientalFillScale) /
+                                  ambientalPlayButtonSize) /
                                   2,
                               top:
                                 ambientalFilledImageTop +
                                 (ambientalFilledImageHeight -
-                                  34 * ambientalFillScale) /
+                                  ambientalPlayButtonSize) /
                                   2,
                             },
                           ]}
@@ -666,7 +691,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
-                            size={22 * ambientalFillScale}
+                            size={ambientalPlayIconSize}
                             color="#F9F9F9"
                           />
                         </Pressable>
@@ -1109,15 +1134,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  previewProgressEdgeWrap: {
+  previewCircularProgress: {
     position: "absolute",
     zIndex: 6,
-    height: 3,
-    overflow: "hidden",
-  },
-  previewProgressEdge: {
-    height: 3,
-    backgroundColor: NEON_VIOLET,
   },
   favoriteButton: {
     position: "absolute",
