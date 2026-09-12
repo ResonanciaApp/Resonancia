@@ -2802,7 +2802,10 @@ export default function HomeScreen2({
         )}
         {isInicio2 && (
           <View style={variant === "inicio3" ? { marginTop: INICIO2_SECTION_GAP } : undefined}>
-            <DailyWisdomCard backgroundColor="rgba(0,0,0,0.25)" />
+            <DailyWisdomCard
+              backgroundColor="rgba(0,0,0,0.25)"
+              decorativeGradient={variant === "inicio3"}
+            />
           </View>
         )}
         {isInicio2 && <AlmaCommunitySection />}
