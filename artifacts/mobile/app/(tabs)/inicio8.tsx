@@ -1271,72 +1271,21 @@ function Inicio2HeroStatic({
     || "Explorador";
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
-  const today = new Date();
-  const inicio3Weekday = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ][today.getDay()];
-  const inicio3Month = [
-    "Ene.",
-    "Feb.",
-    "Mar.",
-    "Abr.",
-    "May.",
-    "Jun.",
-    "Jul.",
-    "Ago.",
-    "Sep",
-    "Oct.",
-    "Nov.",
-    "Dic.",
-  ][today.getMonth()];
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
   const inicio3HeroTop = topInset + 161;
-  const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 50;
 
   return (
     <View
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height: inicio3MonthlyTop + 102 + 28,
+          height: inicio3HeroTop + inicio3HeroHeight + 28,
         },
       ]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
-      {isInicio3 && (
-        <View
-          style={[
-            styles.inicio3MonthlySelection,
-            { top: inicio3MonthlyTop },
-          ]}
-          testID="inicio3-monthly-selection"
-        >
-          <View style={styles.inicio3MonthlyTopDivider} />
-          <View style={styles.inicio3MonthlyDate}>
-            <Text style={styles.inicio3MonthlyWeekday}>{inicio3Weekday}</Text>
-            <Text style={styles.inicio3MonthlyDay}>{today.getDate()}</Text>
-            <Text style={styles.inicio3MonthlyMonth}>{inicio3Month}</Text>
-          </View>
-          <View style={styles.inicio3MonthlyDivider} />
-          <View style={styles.inicio3MonthlyCopy}>
-            <Text style={styles.inicio3MonthlyEyebrow}>SELECCIÓN DEL MES</Text>
-            <Text style={styles.inicio3MonthlyTitle}>Todo vuelve a empezar</Text>
-            <Text style={styles.inicio3MonthlyDescription}>
-              Cada ciclo trae una nueva oportunidad para volver a ti y comenzar
-              con intención.
-            </Text>
-          </View>
-        </View>
-      )}
-
       <View
         pointerEvents="none"
         style={[
@@ -3308,83 +3257,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "500",
-  },
-  inicio3MonthlySelection: {
-    position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
-    zIndex: 11,
-    minHeight: 102,
-    flexDirection: "row",
-    alignItems: "stretch",
-    borderRadius: 18,
-  },
-  inicio3MonthlyTopDivider: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: -24,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(249,249,249,0.18)",
-  },
-  inicio3MonthlyDate: {
-    width: 70,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inicio3MonthlyWeekday: {
-    color: "rgba(249,249,249,0.72)",
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
-    lineHeight: 16,
-  },
-  inicio3MonthlyDay: {
-    color: "#BE9650",
-    fontFamily: "Manrope",
-    fontSize: 46,
-    fontWeight: "500",
-    lineHeight: 50,
-    transform: [{ translateY: 5 }],
-  },
-  inicio3MonthlyMonth: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 19,
-  },
-  inicio3MonthlyDivider: {
-    width: 1,
-    marginHorizontal: 15,
-    backgroundColor: "rgba(249,249,249,0.18)",
-  },
-  inicio3MonthlyCopy: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  inicio3MonthlyEyebrow: {
-    color: "#BE9650",
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
-    lineHeight: 16,
-    marginBottom: 4,
-  },
-  inicio3MonthlyTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    lineHeight: 24,
-    marginBottom: 5,
-  },
-  inicio3MonthlyDescription: {
-    color: "rgba(249,249,249,0.72)",
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "400",
-    lineHeight: 18,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
