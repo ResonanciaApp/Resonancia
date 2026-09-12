@@ -1278,7 +1278,7 @@ function Inicio2HeroStatic({
   const initial = displayName.charAt(0).toUpperCase();
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
-  const inicio3HeroTop = topInset + 161;
+  const inicio3HeroTop = topInset + 175;
 
   return (
     <View
@@ -1400,7 +1400,7 @@ function Inicio2HeroStatic({
       {isInicio3 && (
         <>
           <View
-            style={[styles.inicio3StreakRow, { top: topInset + 80 }]}
+            style={[styles.inicio3StreakRow, { top: topInset + 87 }]}
             testID="inicio3-streak-row"
           >
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
