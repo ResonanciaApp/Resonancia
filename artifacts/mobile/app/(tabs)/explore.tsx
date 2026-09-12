@@ -284,12 +284,7 @@ export function ExploreScreen({
   const { playSession, history } = usePlayerBrowse();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const searchTabBarSurface =
-    activeSceneId === "indigo2"
-      ? "rgba(21,13,46,0.7)"
-      : activeSceneId === "resonancia"
-        ? "rgba(9,11,23,0.7)"
-        : "rgba(14,14,23,0.7)";
+  const searchTabBarSurface = "rgba(0,0,0,0.28)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -955,9 +950,8 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: 0,
+    marginTop: 15,
     marginBottom: SECTION_GAP,
-    transform: [{ translateY: 15 }],
   },
   durationSection: {
     marginBottom: SECTION_GAP,
