@@ -138,3 +138,4 @@
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
 - [Límite de limpieza del catálogo Mixer](mixer-catalog-cleanup-boundary.md) — limpiar el bundle local no autoriza borrar sonidos creados en Admin ni sesiones Ambientales de prueba
 - [Expo dev bundle con entrada local](expo-local-entry-bundle-url.md) — usar index.js local evita URLs internas de pnpm que el development build de iOS no logra descargar
+- [Memoria de Metro en RESONANCE](metro-memory-limit.md) — web+iOS pueden superar 4 GB durante rebuild limpio; conservar heap de 6 GB en el workflow móvil
