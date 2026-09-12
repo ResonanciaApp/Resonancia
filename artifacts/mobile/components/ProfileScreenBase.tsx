@@ -1076,7 +1076,7 @@ export function ProfileScreenBase({
           ]}>
             {asTab && (
               <Pressable
-                onPress={onBack ?? (() => router.navigate("/(tabs)/inicio-copia" as never))}
+                onPress={onBack ?? (() => router.navigate("/(tabs)/inicio3" as never))}
                 hitSlop={6}
                 style={styles.libraryTabBackHitArea}
                 accessibilityRole="button"
@@ -1155,7 +1155,7 @@ export function ProfileScreenBase({
               onPress={() =>
                 router.canGoBack()
                   ? router.back()
-                  : router.navigate("/(tabs)/inicio-copia" as never)
+                  : router.navigate("/(tabs)/inicio3" as never)
               }
               hitSlop={8}
               style={({ pressed }) => [
