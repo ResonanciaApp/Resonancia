@@ -1304,6 +1304,16 @@ function Inicio2HeroStatic({
     >
       {isInicio3 && (
         <View
+          pointerEvents="none"
+          style={[
+            styles.inicio3MonthlyHeroFrame,
+            { top: topInset + 151 },
+          ]}
+        />
+      )}
+
+      {isInicio3 && (
+        <View
           style={[styles.inicio3MonthlySelection, { top: topInset + 161 }]}
           testID="inicio3-monthly-selection"
         >
@@ -3302,6 +3312,16 @@ const styles = StyleSheet.create({
     minHeight: 102,
     flexDirection: "row",
     alignItems: "stretch",
+  },
+  inicio3MonthlyHeroFrame: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    bottom: 42,
+    zIndex: 20,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 27,
   },
   inicio3MonthlyDate: {
     width: 70,
