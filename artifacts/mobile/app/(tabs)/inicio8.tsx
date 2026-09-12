@@ -1274,7 +1274,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 104 }]}
+      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 184 }]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -1283,7 +1283,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 206 : 66),
+            top: topInset + (isInicio3 ? 286 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
@@ -1417,7 +1417,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: topInset + (isInicio3 ? 206 : 66),
+            top: topInset + (isInicio3 ? 286 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroCopy,
