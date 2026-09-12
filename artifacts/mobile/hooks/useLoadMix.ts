@@ -14,24 +14,27 @@ import { Alert } from "react-native";
 
 import { useMixer, type MixPreset } from "@/context/MixerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { getSoundById, hasSoundFile } from "@/data/sounds";
+import { useSounds } from "@/context/SoundsContext";
+import { hasSoundFile } from "@/data/sounds";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 
 export function useLoadMix() {
   const { isPremium } = usePremium();
   const { loadPreset } = useMixer();
+  const { sounds: catalogSounds } = useSounds();
 
   return useCallback(
     (preset: MixPreset): boolean => {
       const accessible = preset.sounds.filter((s) => {
-        const snd = getSoundById(s.id);
-        if (!snd || !hasSoundFile(s.id)) return false;
+        const snd = catalogSounds.find((candidate) => candidate.id === s.id);
+        if (!snd || (!snd.audioUrl && !hasSoundFile(s.id) && !REMOTE_SOUND_MAP[s.id])) return false;
         if (snd.isPremium && !isPremium) return false;
         return true;
       });
 
       if (accessible.length === 0) {
         const hasLockedPremium = preset.sounds.some(
-          (s) => getSoundById(s.id)?.isPremium && !isPremium,
+          (s) => catalogSounds.find((candidate) => candidate.id === s.id)?.isPremium && !isPremium,
         );
         if (hasLockedPremium) {
           Alert.alert("Mezcla Premium", "Esta mezcla usa sonidos exclusivos de Premium.", [
@@ -47,6 +50,6 @@ export function useLoadMix() {
       loadPreset({ ...preset, sounds: accessible });
       return true;
     },
-    [isPremium, loadPreset],
+    [catalogSounds, isPremium, loadPreset],
   );
 }

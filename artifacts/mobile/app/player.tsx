@@ -45,7 +45,7 @@ import Svg, { Path, Rect } from "react-native-svg";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
-import { PLAYABLE_AMBIENT_SOUND_IDS } from "@/data/playable-ambient-sounds";
+import { useSounds } from "@/context/SoundsContext";
 import {
   loadAmbientSoundPreference,
   saveAmbientSoundPreference,
@@ -54,7 +54,7 @@ import {
 import { GhostPill } from "@/components/GhostPill";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { SOUNDS } from "@/data/sounds";
+import { getMeditationBackgroundSounds } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 import { useDownloads } from "@/context/DownloadContext";
@@ -103,6 +103,11 @@ export default function PlayerScreen() {
     stop,
   } = usePlayer();
   const { downloads, download, remove } = useDownloads();
+  const { sounds: catalogSounds, loaded: soundsLoaded } = useSounds();
+  const meditationSoundIds = React.useMemo(
+    () => getMeditationBackgroundSounds(catalogSounds).map((sound) => sound.id),
+    [catalogSounds],
+  );
 
   // Options sheet
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
@@ -216,10 +221,11 @@ export default function PlayerScreen() {
       return;
     }
 
+    const catalogSound = catalogSounds.find((sound) => sound.id === selectedAmbientSoundId);
     const file: Parameters<typeof p.replace>[0] | null =
       SOUND_MAP[selectedAmbientSoundId] ??
-      (REMOTE_SOUND_MAP[selectedAmbientSoundId]
-        ? { uri: REMOTE_SOUND_MAP[selectedAmbientSoundId] }
+      (catalogSound?.audioUrl ?? REMOTE_SOUND_MAP[selectedAmbientSoundId]
+        ? { uri: catalogSound?.audioUrl ?? REMOTE_SOUND_MAP[selectedAmbientSoundId]! }
         : null);
 
     if (!file) {
@@ -232,7 +238,7 @@ export default function PlayerScreen() {
     p.replace(file);
     p.play();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAmbientSoundId]);
+  }, [catalogSounds, selectedAmbientSoundId]);
 
   // Sincroniza play/pause con el player principal (no depende de selectedAmbientSoundId:
   // el cambio de sonido ya arranca la reproducción desde el effect de carga)
@@ -273,15 +279,17 @@ export default function PlayerScreen() {
     const sid = currentSession?.id;
     if (!sid) return;
     let cancelled = false;
-    setSelectedAmbientSoundId(null);
-    ambientOverlayRef.current?.pause();
-    if (shouldAutoStartAmbientSound(currentSession.categoryId)) {
-      void loadAmbientSoundPreference(
-        AsyncStorage,
-        PLAYABLE_AMBIENT_SOUND_IDS,
-      ).then((soundId) => {
-        if (!cancelled) setSelectedAmbientSoundId(soundId);
-      });
+    if (soundsLoaded) {
+      setSelectedAmbientSoundId(null);
+      ambientOverlayRef.current?.pause();
+      if (shouldAutoStartAmbientSound(currentSession.categoryId)) {
+        void loadAmbientSoundPreference(
+          AsyncStorage,
+          meditationSoundIds,
+        ).then((soundId) => {
+          if (!cancelled) setSelectedAmbientSoundId(soundId);
+        });
+      }
     }
     setShowOptionsSheet(false);
     setShowPlaylistSheet(false);
@@ -295,7 +303,7 @@ export default function PlayerScreen() {
     return () => {
       cancelled = true;
     };
-  }, [currentSession?.id, currentSession?.categoryId]);
+  }, [currentSession?.id, currentSession?.categoryId, meditationSoundIds, soundsLoaded]);
 
   const handleRate = useCallback(async (stars: number) => {
     const sid = currentSession?.id;
@@ -438,7 +446,7 @@ export default function PlayerScreen() {
 
   const catId = currentSession.categoryId;
   const selectedAmbientSoundName =
-    SOUNDS.find((sound) => sound.id === selectedAmbientSoundId)?.name ?? "Seleccionar sonido";
+    catalogSounds.find((sound) => sound.id === selectedAmbientSoundId)?.name ?? "Seleccionar sonido";
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
   const isNature = !!getNatureSounds(currentSession.id);
@@ -1016,7 +1024,7 @@ export default function PlayerScreen() {
             void saveAmbientSoundPreference(
               AsyncStorage,
               id,
-              PLAYABLE_AMBIENT_SOUND_IDS,
+              meditationSoundIds,
             ).catch((error) => {
               console.warn("[ambient-sound] no se pudo guardar la preferencia", error);
             });

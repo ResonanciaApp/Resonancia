@@ -461,6 +461,7 @@ function serializeMixerSound(s: MixerSound) {
     iconName: s.iconName,
     iconSet: s.iconSet,
     isPremium: s.isPremium,
+    showInMeditationBackgrounds: s.showInMeditationBackgrounds,
     isActive: s.isActive,
     sortOrder: s.sortOrder,
     objectPath: s.objectPath ?? null,

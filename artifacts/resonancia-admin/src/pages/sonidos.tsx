@@ -102,6 +102,7 @@ interface FormState {
   iconName: string;
   iconSet: "feather" | "ionicons";
   isPremium: boolean;
+  showInMeditationBackgrounds: boolean;
   objectPath: string;
   thumbnailObjectPath: string;
   tags: string[];
@@ -118,6 +119,7 @@ const emptyForm = (): FormState => ({
   iconName: "music",
   iconSet: "feather",
   isPremium: false,
+  showInMeditationBackgrounds: false,
   objectPath: "",
   thumbnailObjectPath: "",
   tags: [],
@@ -208,6 +210,7 @@ export default function SonidosPage() {
       iconName: s.iconName,
       iconSet: s.iconSet as "feather" | "ionicons",
       isPremium: s.isPremium,
+      showInMeditationBackgrounds: s.showInMeditationBackgrounds,
       objectPath: s.objectPath ?? "",
       thumbnailObjectPath: s.thumbnailObjectPath ?? "",
       tags: s.tags ?? [],
@@ -284,7 +287,7 @@ export default function SonidosPage() {
             iconName: form.iconName,
             iconSet: form.iconSet,
             isPremium: form.isPremium,
-            isActive: true,
+            showInMeditationBackgrounds: form.showInMeditationBackgrounds,
             objectPath,
             thumbnailObjectPath,
             tags: tagsVal,
@@ -303,6 +306,7 @@ export default function SonidosPage() {
             iconName: form.iconName,
             iconSet: form.iconSet,
             isPremium: form.isPremium,
+            showInMeditationBackgrounds: form.showInMeditationBackgrounds,
             objectPath,
             thumbnailObjectPath,
             tags: tagsVal,
@@ -335,6 +339,18 @@ export default function SonidosPage() {
   async function togglePremium(s: (typeof sounds)[number]) {
     try {
       await updateSound({ id: s.id, data: { isPremium: !s.isPremium } });
+      await qc.invalidateQueries({ queryKey: getGetAdminSoundsQueryKey() });
+    } catch {
+      toast.error("Error al actualizar");
+    }
+  }
+
+  async function toggleMeditationBackgrounds(s: (typeof sounds)[number]) {
+    try {
+      await updateSound({
+        id: s.id,
+        data: { showInMeditationBackgrounds: !s.showInMeditationBackgrounds },
+      });
       await qc.invalidateQueries({ queryKey: getGetAdminSoundsQueryKey() });
     } catch {
       toast.error("Error al actualizar");
@@ -552,6 +568,22 @@ export default function SonidosPage() {
               </div>
             )}
 
+            {/* Fondos de meditación */}
+            {form.soundType !== "" && (
+              <div className="space-y-1">
+                <Label>Fondos de meditación</Label>
+                <div className="flex items-center gap-3 h-9">
+                  <Switch
+                    checked={form.showInMeditationBackgrounds}
+                    onCheckedChange={(v) => field("showInMeditationBackgrounds", v)}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {form.showInMeditationBackgrounds ? "Sí" : "No"}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Etiquetas */}
             {form.soundType !== "" && (
               <div className="space-y-2 md:col-span-2">
@@ -715,6 +747,7 @@ export default function SonidosPage() {
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">BPM</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Audio</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Premium</th>
+                <th className="text-left px-4 py-3 text-muted-foreground font-medium">Fondos de meditación</th>
                 <th className="text-left px-4 py-3 text-muted-foreground font-medium">Activo</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -778,6 +811,13 @@ export default function SonidosPage() {
                   {/* Premium */}
                   <td className="px-4 py-3">
                     <Switch checked={s.isPremium} onCheckedChange={() => togglePremium(s)} />
+                  </td>
+                  {/* Fondos de meditación */}
+                  <td className="px-4 py-3">
+                    <Switch
+                      checked={s.showInMeditationBackgrounds}
+                      onCheckedChange={() => toggleMeditationBackgrounds(s)}
+                    />
                   </td>
                   {/* Activo */}
                   <td className="px-4 py-3">

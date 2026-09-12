@@ -81,7 +81,6 @@ import {
   stopGeometrixIntro,
 } from "@/lib/geometrixIntro";
 import colorsConst from "@/constants/colors";
-import { SOUND_MAP } from "@/config/sound-map";
 import { GEOMETRIES, GEOMETRY_CATEGORIES, PALETTE, baseOf, categoryOf, getGeometry, INSTANCE_SEP, type GeometryId, type GeometryMeta, type GeometryCategory } from "@/data/geometries";
 import { type GeometryMetaExtended } from "@/hooks/useGeometrixCatalog";
 import {

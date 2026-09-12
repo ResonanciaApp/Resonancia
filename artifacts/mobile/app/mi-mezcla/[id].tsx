@@ -129,7 +129,7 @@ export function MixCover({
           {stackedSounds.map((sound, index) => {
             const localImage = getSoundImage(sound.id);
             const remoteImage = REMOTE_SOUND_IMAGE_MAP[sound.id];
-            const source = localImage ?? (remoteImage ? { uri: remoteImage } : undefined);
+            const source = remoteImage ? { uri: remoteImage } : localImage;
 
             return (
               <View
@@ -380,7 +380,9 @@ export default function MiMezclaScreen() {
               const sound = catalogSounds.find((candidate) => candidate.id === activeSound.id);
               const localImage = getSoundImage(activeSound.id);
               const remoteImage = REMOTE_SOUND_IMAGE_MAP[activeSound.id];
-              const source = localImage ?? (remoteImage ? { uri: remoteImage } : undefined);
+              const source = sound?.imageUrl
+                ? { uri: sound.imageUrl }
+                : (remoteImage ? { uri: remoteImage } : localImage);
               const fallbackName = activeSound.id.replace(/[-_]/g, " ");
 
               return (

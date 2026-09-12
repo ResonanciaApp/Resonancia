@@ -37,7 +37,6 @@ import {
   type MixSound,
   type SoundCategoryId,
   type SoundTagId,
-  SOUNDS,
   SOUND_CATEGORIES,
   SOUND_TAGS,
   hasSoundFile,
@@ -682,7 +681,7 @@ export default function MezcladorScreen() {
   };
 
   const handleSoundPress = (sound: MixSound) => {
-    if (!hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
+    if (!sound.audioUrl && !hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
     if (sound.isPremium && !isPremium) {
       router.push("/membresia" as never);
       return;
@@ -709,7 +708,7 @@ export default function MezcladorScreen() {
   };
 
   const popularSounds = useMemo(() =>
-    allSounds.filter((s) => hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id])
+    allSounds.filter((s) => !!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id])
       .slice()
       .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
       .slice(0, 50),
@@ -928,7 +927,7 @@ export default function MezcladorScreen() {
                         active={isActive(s.id)}
                         locked={!!s.isPremium && !isPremium}
                         available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
-                        image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
+                        image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
                         borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[sec.tab.id][0], TAB_HEADER_GRADIENT[sec.tab.id][1], TAB_HEADER_GRADIENT[sec.tab.id][2]]}
                         textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                         bgPaletteId={bgPaletteId}
@@ -962,7 +961,7 @@ export default function MezcladorScreen() {
                     active={isActive(s.id)}
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
-                    image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
+                        image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
                     borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}

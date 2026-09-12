@@ -26,6 +26,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useSounds } from "@/context/SoundsContext";
 
 const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 37;
@@ -94,6 +95,7 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
     removeSound,
   } = useMixer();
   const { isMixerOpen, openMixer } = useMixerPanel();
+  const { sounds: catalogSounds } = useSounds();
 
   const colors = useColors();
 
@@ -287,7 +289,8 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
                 contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
               >
                 {activeSounds.map((s, i) => {
-                  const image      = getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id];
+                  const catalogSound = catalogSounds.find((sound) => sound.id === s.id);
+                  const image = catalogSound?.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
                     inputRange:  [0, 1],
                     outputRange: [0, i * openDelta],

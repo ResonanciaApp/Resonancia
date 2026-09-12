@@ -6311,7 +6311,7 @@ components:
           format: date-time
     MixerSoundItem:
       type: object
-      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars]
+      required: [id, name, categoryId, iconName, iconSet, isPremium, showInMeditationBackgrounds, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars]
       properties:
         id:
           type: string
@@ -6324,6 +6324,8 @@ components:
         iconSet:
           type: string
         isPremium:
+          type: boolean
+        showInMeditationBackgrounds:
           type: boolean
         isActive:
           type: boolean
@@ -6348,7 +6350,7 @@ components:
           nullable: true
     AdminMixerSoundItem:
       type: object
-      required: [id, name, categoryId, iconName, iconSet, isPremium, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars, createdAt]
+      required: [id, name, categoryId, iconName, iconSet, isPremium, showInMeditationBackgrounds, isActive, sortOrder, objectPath, thumbnailObjectPath, tags, bpm, loopBars, createdAt]
       properties:
         id:
           type: string
@@ -6361,6 +6363,8 @@ components:
         iconSet:
           type: string
         isPremium:
+          type: boolean
+        showInMeditationBackgrounds:
           type: boolean
         isActive:
           type: boolean
@@ -6407,6 +6411,8 @@ components:
           enum: [feather, ionicons]
         isPremium:
           type: boolean
+        showInMeditationBackgrounds:
+          type: boolean
         objectPath:
           type: string
           nullable: true
@@ -6442,6 +6448,8 @@ components:
           type: string
           enum: [feather, ionicons]
         isPremium:
+          type: boolean
+        showInMeditationBackgrounds:
           type: boolean
         isActive:
           type: boolean

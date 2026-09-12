@@ -9,6 +9,10 @@ import {
   shouldAutoStartAmbientSound,
   type AmbientPreferenceStorage,
 } from "../lib/ambient-sound-preference.ts";
+import {
+  getMeditationBackgroundSounds,
+  type MixSound,
+} from "../data/sounds.ts";
 
 const PLAYABLE = ["rain", "forest", "ocean"] as const;
 
@@ -57,4 +61,24 @@ test("auto-start is restricted to meditation sessions", () => {
   assert.equal(shouldAutoStartAmbientSound("musica"), false);
   assert.equal(shouldAutoStartAmbientSound("ambientales"), false);
   assert.equal(shouldAutoStartAmbientSound(undefined), false);
+});
+
+test("meditation backgrounds require the admin flag and a playable audio URL", () => {
+  const base: MixSound = {
+    id: "base",
+    name: "Base",
+    icon: "music",
+    iconSet: "feather",
+    category: "bosque",
+  };
+  const sounds: MixSound[] = [
+    { ...base, id: "enabled", showInMeditationBackgrounds: true, audioUrl: "https://audio.test/enabled.mp3" },
+    { ...base, id: "missing-audio", showInMeditationBackgrounds: true },
+    { ...base, id: "mixer-only", showInMeditationBackgrounds: false, audioUrl: "https://audio.test/mixer.mp3" },
+  ];
+
+  assert.deepEqual(
+    getMeditationBackgroundSounds(sounds).map((sound) => sound.id),
+    ["enabled"],
+  );
 });

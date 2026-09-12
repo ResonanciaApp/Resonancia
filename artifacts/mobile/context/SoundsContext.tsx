@@ -1,7 +1,9 @@
 /**
- * SoundsContext — carga sonidos del mixer desde la API y los fusiona con
- * los sonidos locales hardcodeados. Los sonidos con `objectPath` remoto
- * se registran en REMOTE_SOUND_MAP para que MixerContext los reproduzca.
+ * SoundsContext — catálogo publicado del mixer.
+ *
+ * La API es la única fuente de sonidos que se muestran en móvil. Los mapas
+ * remotos se mantienen sincronizados aquí para que el motor de audio pueda
+ * reproducir el mismo catálogo sin depender de assets bundleados.
  */
 import React, {
   createContext,
@@ -10,18 +12,18 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { SOUNDS as LOCAL_SOUNDS, type MixSound } from "@/data/sounds";
-import { applyRemoteSounds } from "@/lib/remoteSoundMap";
+import { replaceSoundCatalog, type MixSound } from "@/data/sounds";
+import { applyRemoteSounds, resolveRemoteObjectUrl } from "@/lib/remoteSoundMap";
 
 interface SoundsContextValue {
-  /** Lista combinada (locales + remotos sin duplicar). */
+  /** Lista activa publicada por la API. */
   sounds: MixSound[];
   loaded: boolean;
   refresh: () => void;
 }
 
 const SoundsContext = createContext<SoundsContextValue>({
-  sounds: LOCAL_SOUNDS,
+  sounds: [],
   loaded: false,
   refresh: () => {},
 });
@@ -34,32 +36,39 @@ interface ApiSound {
   iconSet: string;
   isPremium: boolean;
   isActive: boolean;
+  sortOrder?: number;
   objectPath: string | null;
   thumbnailObjectPath: string | null;
   tags: string[] | null;
   bpm: number | null;
   loopBars: number | null;
+  // This field may be absent until the shared generated client is regenerated.
+  showInMeditationBackgrounds?: boolean;
 }
 
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
-  const [sounds, setSounds] = useState<MixSound[]>(LOCAL_SOUNDS);
+  const [sounds, setSounds] = useState<MixSound[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const fetchAndMerge = useCallback(async () => {
     try {
       const apiBase = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
       const res = await fetch(`${apiBase}/api/sounds`);
-      if (!res.ok) return;
-      const data = (await res.json()) as { sounds: ApiSound[] };
+      if (!res.ok) {
+        applyRemoteSounds([]);
+        replaceSoundCatalog([]);
+        setSounds([]);
+        return;
+      }
+      const body = (await res.json()) as { sounds?: ApiSound[] };
+      const remoteSounds = Array.isArray(body.sounds) ? body.sounds : [];
 
-      // Popula el mapa de sonidos remotos (usado por MixerContext).
-      applyRemoteSounds(data.sounds);
+      // Only active API rows participate in the mobile catalog or maps.
+      const activeSounds = remoteSounds.filter((s) => s.isActive === true);
+      applyRemoteSounds(activeSounds);
 
-      // Fusiona con los locales: los remotos que ya existen localmente
-      // actualizan solo el campo isPremium; los nuevos se agregan al final.
-      const localIds = new Set(LOCAL_SOUNDS.map((s) => s.id));
-      const extra: MixSound[] = data.sounds
-        .filter((s) => !localIds.has(s.id))
+      const catalog: MixSound[] = activeSounds
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
         .map((s) => ({
           id: s.id,
           name: s.name,
@@ -69,31 +78,23 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
             : "feather") as "feather" | "ionicons",
           category: s.categoryId as MixSound["category"],
           isPremium: s.isPremium,
+          isActive: true,
+          showInMeditationBackgrounds: s.showInMeditationBackgrounds === true,
+          ...(s.objectPath ? { audioUrl: resolveRemoteObjectUrl(s.objectPath) } : {}),
+          ...(s.thumbnailObjectPath
+            ? { imageUrl: resolveRemoteObjectUrl(s.thumbnailObjectPath) }
+            : {}),
           ...(s.tags && s.tags.length > 0 ? { tags: s.tags as MixSound["tags"] } : {}),
           ...(s.bpm != null ? { bpm: s.bpm as MixSound["bpm"] } : {}),
           ...(s.loopBars != null ? { loopBars: s.loopBars } : {}),
         }));
-
-      // Actualiza isPremium y campos remotizables para los locales.
-      const remoteMap = new Map(data.sounds.map((s) => [s.id, s]));
-      const merged: MixSound[] = [
-        ...LOCAL_SOUNDS.map((s) => {
-          const remote = remoteMap.get(s.id);
-          if (!remote) return s;
-          return {
-            ...s,
-            isPremium: remote.isPremium,
-            ...(remote.bpm != null ? { bpm: remote.bpm as MixSound["bpm"] } : {}),
-            ...(remote.loopBars != null ? { loopBars: remote.loopBars } : {}),
-            ...(remote.tags && remote.tags.length > 0 ? { tags: remote.tags as MixSound["tags"] } : {}),
-          };
-        }),
-        ...extra,
-      ];
-
-      setSounds(merged);
+      replaceSoundCatalog(catalog);
+      setSounds(catalog);
     } catch {
-      // Fallo silencioso — se usan los locales
+      // No local fallback: an error must not resurrect an obsolete catalog.
+      applyRemoteSounds([]);
+      replaceSoundCatalog([]);
+      setSounds([]);
     } finally {
       setLoaded(true);
     }

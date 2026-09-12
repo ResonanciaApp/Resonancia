@@ -34,13 +34,14 @@ import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
+import { getMeditationBackgroundSounds } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
-import { PLAYABLE_AMBIENT_SOUND_IDS } from "@/data/playable-ambient-sounds";
+import { useSounds } from "@/context/SoundsContext";
 import {
   loadAmbientSoundPreference,
   saveAmbientSoundPreference,
@@ -104,6 +105,11 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     clearSessionProgress,
   } = usePlayer();
   const { downloads, download, remove } = useDownloads();
+  const { sounds: catalogSounds, loaded: soundsLoaded } = useSounds();
+  const meditationSoundIds = React.useMemo(
+    () => getMeditationBackgroundSounds(catalogSounds).map((sound) => sound.id),
+    [catalogSounds],
+  );
   const { shouldSuppressRating } = useStreakCelebration();
   const { theme: sceneTheme } = useSceneTheme();
   const { requestHide, showMenu, setRevealHandleHidden } = useTabBarVisibility();
@@ -169,6 +175,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const ambientOverlayRef = useRef<AudioPlayer | null>(null);
 
   useEffect(() => {
+    if (!soundsLoaded) return;
     if (!shouldAutoStartAmbientSound(session.categoryId)) {
       setPreferredAmbientSoundId(null);
       return;
@@ -176,14 +183,14 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     let cancelled = false;
     void loadAmbientSoundPreference(
       AsyncStorage,
-      PLAYABLE_AMBIENT_SOUND_IDS,
+      meditationSoundIds,
     ).then((soundId) => {
       if (!cancelled) setPreferredAmbientSoundId(soundId);
     });
     return () => {
       cancelled = true;
     };
-  }, [session.categoryId]);
+  }, [session.categoryId, meditationSoundIds, soundsLoaded]);
 
   useEffect(() => {
     if (!ambientOverlayRef.current) {
@@ -194,10 +201,11 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       p.pause();
       return;
     }
+    const catalogSound = catalogSounds.find((sound) => sound.id === selectedAmbientSoundId);
     const file: Parameters<typeof p.replace>[0] | null =
       SOUND_MAP[selectedAmbientSoundId] ??
-      (REMOTE_SOUND_MAP[selectedAmbientSoundId]
-        ? { uri: REMOTE_SOUND_MAP[selectedAmbientSoundId] }
+      (catalogSound?.audioUrl ?? REMOTE_SOUND_MAP[selectedAmbientSoundId]
+        ? { uri: catalogSound?.audioUrl ?? REMOTE_SOUND_MAP[selectedAmbientSoundId]! }
         : null);
     if (!file) {
       p.pause();
@@ -208,7 +216,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
     p.replace(file);
     p.play();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAmbientSoundId]);
+  }, [catalogSounds, selectedAmbientSoundId]);
 
   useEffect(() => {
     if (ambientOverlayRef.current) {
@@ -731,7 +739,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
             void saveAmbientSoundPreference(
               AsyncStorage,
               sid,
-              PLAYABLE_AMBIENT_SOUND_IDS,
+              meditationSoundIds,
             ).catch((error) => {
               console.warn("[ambient-sound] no se pudo guardar la preferencia", error);
             });

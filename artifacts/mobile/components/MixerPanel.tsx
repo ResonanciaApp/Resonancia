@@ -16,7 +16,8 @@ import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
-import { type MixSound, getSoundById } from "@/data/sounds";
+import { type MixSound } from "@/data/sounds";
+import { useSounds } from "@/context/SoundsContext";
 import { useColors } from "@/hooks/useColors";
 
 const isIOS = Platform.OS === "ios";
@@ -34,13 +35,14 @@ export function MixerPanel() {
     loadedPresetId,
     openSheet,
   } = useMixer();
+  const { sounds: catalogSounds } = useSounds();
 
   const activeMix = useMemo(
     () =>
       activeSounds
-        .map((a) => ({ active: a, sound: getSoundById(a.id) }))
+        .map((a) => ({ active: a, sound: catalogSounds.find((sound) => sound.id === a.id) }))
         .filter((x): x is { active: typeof x.active; sound: MixSound } => !!x.sound),
-    [activeSounds],
+    [activeSounds, catalogSounds],
   );
 
   const loadedPreset = useMemo(
@@ -66,7 +68,7 @@ export function MixerPanel() {
         {/* Stack de imágenes */}
         <View style={[styles.stackWrap, { width: stackWidth }]}>
           {visible.map((x, i) => {
-            const img = getSoundImage(x.sound.id) ?? REMOTE_SOUND_IMAGE_MAP[x.sound.id];
+            const img = x.sound.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[x.sound.id] ?? getSoundImage(x.sound.id);
             return (
               <View key={x.sound.id} style={[styles.stackThumb, { left: i * STACK_SHIFT, zIndex: i }]}>
                 {img ? (

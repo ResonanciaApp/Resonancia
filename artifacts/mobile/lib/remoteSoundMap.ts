@@ -12,7 +12,7 @@ export const REMOTE_SOUND_MAP: Record<string, string> = {};
 export const REMOTE_SOUND_IMAGE_MAP: Record<string, string> = {};
 
 /** Convierte un objectPath del servidor a URL de serving. */
-function resolveObjectUrl(objectPath: string): string {
+export function resolveRemoteObjectUrl(objectPath: string): string {
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
   const servingPath = objectPath.startsWith("/objects/")
     ? objectPath.replace(/^\/objects\//, "/api/storage/objects/")
@@ -26,12 +26,16 @@ function resolveObjectUrl(objectPath: string): string {
 export function applyRemoteSounds(
   sounds: { id: string; objectPath: string | null; thumbnailObjectPath?: string | null }[]
 ) {
+  // The API response is the authoritative catalog. Do not retain an object
+  // that was removed, deactivated, or had its asset cleared remotely.
+  for (const id of Object.keys(REMOTE_SOUND_MAP)) delete REMOTE_SOUND_MAP[id];
+  for (const id of Object.keys(REMOTE_SOUND_IMAGE_MAP)) delete REMOTE_SOUND_IMAGE_MAP[id];
   for (const s of sounds) {
     if (s.objectPath) {
-      REMOTE_SOUND_MAP[s.id] = resolveObjectUrl(s.objectPath);
+      REMOTE_SOUND_MAP[s.id] = resolveRemoteObjectUrl(s.objectPath);
     }
     if (s.thumbnailObjectPath) {
-      REMOTE_SOUND_IMAGE_MAP[s.id] = resolveObjectUrl(s.thumbnailObjectPath);
+      REMOTE_SOUND_IMAGE_MAP[s.id] = resolveRemoteObjectUrl(s.thumbnailObjectPath);
     }
   }
 }

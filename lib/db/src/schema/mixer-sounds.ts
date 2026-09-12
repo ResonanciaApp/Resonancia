@@ -40,6 +40,7 @@ export const mixerSoundsTable = pgTable("mixer_sounds", {
   iconName: text("icon_name").notNull().default("music"),
   iconSet: text("icon_set").notNull().default("feather"),
   isPremium: boolean("is_premium").notNull().default(false),
+  showInMeditationBackgrounds: boolean("show_in_meditation_backgrounds").notNull().default(false),
   objectPath: text("object_path"),
   thumbnailObjectPath: text("thumbnail_object_path"),
   tags: jsonb("tags").$type<string[]>(),

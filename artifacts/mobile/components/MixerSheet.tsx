@@ -57,7 +57,9 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
-import { type MixSound, getSoundById } from "@/data/sounds";
+import { type MixSound } from "@/data/sounds";
+import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
+import { useSounds } from "@/context/SoundsContext";
 import { useColors } from "@/hooks/useColors";
 import { consumeReopenMixer } from "@/utils/immersivo-flags";
 import {
@@ -353,9 +355,15 @@ function DraggableSoundList({
 
 // ─── TrackThumb ───────────────────────────────────────────────────────────────
 function TrackThumb({ sound }: { sound: MixSound }) {
-  const image = getSoundImage(sound.id);
+  const image = sound.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[sound.id] ?? getSoundImage(sound.id);
   if (image) {
-    return <ImageBackground source={image} style={styles.thumb} imageStyle={styles.thumbRadius} />;
+    return (
+      <ImageBackground
+        source={typeof image === "string" ? { uri: image } : image}
+        style={styles.thumb}
+        imageStyle={styles.thumbRadius}
+      />
+    );
   }
   return (
     <LinearGradient
@@ -483,6 +491,7 @@ export function MixerSheet() {
     breathingIds,
     toggleBreathe,
   } = useMixer();
+  const { sounds: catalogSounds } = useSounds();
 
   // Preset del que partió esta edición (sobrevive a cambios de pistas, que
   // resetean loadedPresetId). Permite "Actualizar" aunque se agreguen/quiten
@@ -644,9 +653,9 @@ export function MixerSheet() {
   const activeMix = useMemo(
     () =>
       activeSounds
-        .map((a) => ({ active: a, sound: getSoundById(a.id) }))
+        .map((a) => ({ active: a, sound: catalogSounds.find((sound) => sound.id === a.id) }))
         .filter((x): x is { active: typeof x.active; sound: MixSound } => !!x.sound),
-    [activeSounds],
+    [activeSounds, catalogSounds],
   );
 
   const originPreset = useMemo(

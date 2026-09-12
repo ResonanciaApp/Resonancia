@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Modal,
@@ -17,8 +17,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getSoundImage } from "@/config/sound-images";
 import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { PLAYABLE_AMBIENT_SOUNDS } from "@/data/playable-ambient-sounds";
-import { SOUNDS, type MixSound } from "@/data/sounds";
+import { useSounds } from "@/context/SoundsContext";
+import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
+import { getMeditationBackgroundSounds, type MixSound } from "@/data/sounds";
 
 type Props = {
   visible: boolean;
@@ -39,6 +40,11 @@ export function AmbientSoundPickerSheet({
 }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
+  const { sounds, loaded } = useSounds();
+  const meditationSounds = useMemo(
+    () => getMeditationBackgroundSounds(sounds),
+    [sounds],
+  );
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
   const [ambientVolume, setAmbientVolume] = useState(initialAmbientVolume ?? 0.5);
   const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
@@ -62,7 +68,7 @@ export function AmbientSoundPickerSheet({
   };
 
   const selectedSound = localSelected
-    ? SOUNDS.find((sound) => sound.id === localSelected) ?? null
+    ? meditationSounds.find((sound) => sound.id === localSelected) ?? null
     : null;
 
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -124,14 +130,28 @@ export function AmbientSoundPickerSheet({
             ]}
           >
             <View style={styles.grid}>
-              {PLAYABLE_AMBIENT_SOUNDS.map((sound) => (
-                <SoundCard
-                  key={sound.id}
-                  sound={sound}
-                  selected={localSelected === sound.id}
-                  onPress={() => selectSound(sound.id)}
-                />
-              ))}
+              {meditationSounds.length > 0 ? (
+                meditationSounds.map((sound) => (
+                  <SoundCard
+                    key={sound.id}
+                    sound={sound}
+                    selected={localSelected === sound.id}
+                    onPress={() => selectSound(sound.id)}
+                  />
+                ))
+              ) : (
+                <View style={styles.emptyState}>
+                  <Feather name="volume-2" size={24} color="rgba(255,255,255,0.5)" />
+                  <Text style={styles.emptyTitle}>
+                    {loaded ? "No hay sonidos de fondo disponibles" : "Cargando sonidos…"}
+                  </Text>
+                  {loaded && (
+                    <Text style={styles.emptyMessage}>
+                      Los sonidos de fondo aparecerán aquí cuando estén publicados.
+                    </Text>
+                  )}
+                </View>
+              )}
             </View>
           </Animated.ScrollView>
           {scrollContentHeight > scrollViewportHeight && (
@@ -189,7 +209,9 @@ function AmbientVolumeControl({
   const trackRef = useRef<View>(null);
   const trackWidth = useRef(0);
   const trackPageX = useRef(0);
-  const image = sound ? getSoundImage(sound.id) : null;
+  const image = sound
+    ? sound.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[sound.id] ?? getSoundImage(sound.id)
+    : null;
 
   const computeValue = (pageX: number) =>
     Math.max(0, Math.min(1, (pageX - trackPageX.current) / (trackWidth.current || 1)));
@@ -258,7 +280,7 @@ function SoundCard({
   selected: boolean;
   onPress: () => void;
 }) {
-  const image = getSoundImage(sound.id);
+  const image = sound.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[sound.id] ?? getSoundImage(sound.id);
 
   return (
     <View style={styles.cardWrap}>
@@ -397,6 +419,29 @@ const styles = StyleSheet.create({
   cardNameSelected: {
     fontWeight: "700",
     color: "#FFFFFF",
+  },
+  emptyState: {
+    width: "100%",
+    minHeight: 180,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  emptyTitle: {
+    marginTop: 12,
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textAlign: "center",
+  },
+  emptyMessage: {
+    marginTop: 6,
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    color: "rgba(255,255,255,0.65)",
+    textAlign: "center",
   },
   footer: {
     position: "absolute",

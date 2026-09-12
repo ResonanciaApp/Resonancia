@@ -1708,6 +1708,7 @@ export interface MixerSoundItem {
   iconName: string;
   iconSet: string;
   isPremium: boolean;
+  showInMeditationBackgrounds: boolean;
   isActive: boolean;
   sortOrder: number;
   objectPath: string | null;
@@ -1724,6 +1725,7 @@ export interface AdminMixerSoundItem {
   iconName: string;
   iconSet: string;
   isPremium: boolean;
+  showInMeditationBackgrounds: boolean;
   isActive: boolean;
   sortOrder: number;
   objectPath: string | null;
@@ -1777,6 +1779,7 @@ export interface CreateMixerSoundBody {
   iconName: string;
   iconSet: CreateMixerSoundBodyIconSet;
   isPremium?: boolean;
+  showInMeditationBackgrounds?: boolean;
   objectPath?: string | null;
   thumbnailObjectPath?: string | null;
   tags?: string[] | null;
@@ -1826,6 +1829,7 @@ export interface UpdateMixerSoundBody {
   iconName?: string;
   iconSet?: UpdateMixerSoundBodyIconSet;
   isPremium?: boolean;
+  showInMeditationBackgrounds?: boolean;
   isActive?: boolean;
   objectPath?: string | null;
   thumbnailObjectPath?: string | null;

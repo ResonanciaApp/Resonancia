@@ -16,7 +16,8 @@ import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
 import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
 import { sendHeartbeat } from "@/lib/communityApi";
-import { getSoundById, soundMatchesBpm, resolveSoundBpm } from "@/data/sounds";
+import { soundMatchesBpm, resolveSoundBpm, type MixSound } from "@/data/sounds";
+import { useSounds } from "@/context/SoundsContext";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
@@ -226,6 +227,22 @@ type MixerContextType = {
 const MixerContext = createContext<MixerContextType | null>(null);
 
 export function MixerProvider({ children }: { children: React.ReactNode }) {
+  const { sounds: catalogSounds, loaded: catalogLoaded } = useSounds();
+  const catalogSoundsRef = useRef<MixSound[]>([]);
+  catalogSoundsRef.current = catalogSounds;
+  // The published API catalog is authoritative for metadata and availability.
+  // Keeping this lookup ref-based lets long-lived audio callbacks see updates
+  // without rebuilding every player callback.
+  const getCatalogSoundById = useCallback(
+    (id: string) => catalogSoundsRef.current.find((sound) => sound.id === id),
+    [],
+  );
+  const isPlayableCatalogSound = useCallback(
+    (id: string) =>
+      !!getCatalogSoundById(id) &&
+      !!(SOUND_MAP[id] || getCatalogSoundById(id)?.audioUrl || REMOTE_SOUND_MAP[id]),
+    [getCatalogSoundById],
+  );
   const [activeSounds, setActiveSounds] = useState<ActiveSound[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [presets, setPresets] = useState<MixPreset[]>([]);
@@ -374,7 +391,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     // ── Motor BPM + binaurales (react-native-audio-api): pausar/reanudar ───
     // El contexto nativo congela/restaura la fase exacta con suspend()/resume():
     // no hay reloj JS que re-anclar.
-    const hasBpmSounds = activeSoundsRef.current.some((s) => getSoundById(s.id)?.bpm !== undefined);
+    const hasBpmSounds = activeSoundsRef.current.some((s) => getCatalogSoundById(s.id)?.bpm !== undefined);
     if (hasBpmSounds || binauralEngineActiveRef.current.size > 0) {
       if (next) void bpmAudioEngine.resume();
       else void bpmAudioEngine.suspend();
@@ -756,7 +773,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const createPlayerFor = useCallback((id: string, volume: number): SoundPlayers | null => {
     const file: Parameters<AudioPlayer["replace"]>[0] | null =
-      SOUND_MAP[id] ?? (REMOTE_SOUND_MAP[id] ? { uri: REMOTE_SOUND_MAP[id] } : null);
+      SOUND_MAP[id] ??
+      (getCatalogSoundById(id)?.audioUrl ?? REMOTE_SOUND_MAP[id]
+        ? { uri: getCatalogSoundById(id)?.audioUrl ?? REMOTE_SOUND_MAP[id]! }
+        : null);
     if (!file) return null;
     try {
       baseVolumesRef.current.set(id, volume);
@@ -781,8 +801,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // para que el player nunca toque el fin del archivo. Acá el player solo se
       // crea y arranca; el wrap y la sincronía entre capas los hace el scheduler.
       // El listener queda SOLO para sincronizar el volumen master.
-      const soundBpm = getSoundById(id)?.bpm;
-      const isBpmLoop = soundBpm !== undefined;
+      const soundBpm = getCatalogSoundById(id)?.bpm;
+      // Only bundled files can use the gapless PCM engine. Remote catalog
+      // sounds must stay on expo-audio: the native engine's decoder resolves
+      // SOUND_MAP ids and cannot fetch an API URL.
+      const isBpmLoop = soundBpm !== undefined && !!SOUND_MAP[id];
       if (isBpmLoop) {
         const a = createAudioPlayer(null, { updateInterval: 200 });
         a.loop = false; // el loop lo maneja el reloj maestro, NO el nativo
@@ -835,8 +858,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // conocemos su estructura interna y el crossfade de dos capas desfasadas
       // genera ECO audible en audio con estructura (pulsos, melodías, ritmos).
       const isSingleLoop =
-        getSoundById(id)?.category === "binaural" ||
-        (!SOUND_MAP[id] && !!REMOTE_SOUND_MAP[id]);
+        getCatalogSoundById(id)?.category === "binaural" ||
+        (!SOUND_MAP[id] && !!(getCatalogSoundById(id)?.audioUrl ?? REMOTE_SOUND_MAP[id]));
       if (isSingleLoop) {
         const STARTUP_FADE_MS = 350;
         const a = createAudioPlayer(null, { updateInterval: 200 });
@@ -1265,6 +1288,66 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setSleepTimerRemaining(null);
   }, []);
 
+  // The API snapshot is authoritative. When a sound is deactivated, deleted,
+  // or loses its playable asset, stop every route for it (including parked
+  // expo-audio players) and remove the stale layer from mixer state. Wait for
+  // the first response so an existing mix is not torn down during loading.
+  useEffect(() => {
+    if (!catalogLoaded) return;
+    const playableIds = new Set(
+      catalogSounds
+        .filter(
+          (sound) =>
+            !!SOUND_MAP[sound.id] ||
+            !!sound.audioUrl ||
+            !!REMOTE_SOUND_MAP[sound.id],
+        )
+        .map((sound) => sound.id),
+    );
+    const stale = activeSoundsRef.current.filter(
+      (sound) => !playableIds.has(sound.id),
+    );
+    if (stale.length === 0) return;
+
+    let lockOwnerRemoved = false;
+    for (const sound of stale) {
+      const pair = playersRef.current.get(sound.id);
+      if (pair?.a === lockOwnerRef.current) lockOwnerRemoved = true;
+      // Harmless for expo-audio sounds and guarantees stale native voices stop.
+      bpmAudioEngine.stop(sound.id);
+      binauralEngineActiveRef.current.delete(sound.id);
+      destroyPlayer(sound.id);
+      breatheStateRef.current.delete(sound.id);
+      baseVolumesRef.current.delete(sound.id);
+    }
+
+    const next = activeSoundsRef.current.filter((sound) =>
+      playableIds.has(sound.id),
+    );
+    activeSoundsRef.current = next;
+    setActiveSounds(next);
+    setBreathingIds((ids) => ids.filter((id) => playableIds.has(id)));
+    if (next.length === 0) {
+      bpmValueRef.current = null;
+      setActiveBpm(null);
+      setIsPlaying(false);
+      isPlayingRef.current = false;
+      setLoadedPresetId(null);
+      loadedPresetIdRef.current = null;
+      clearSleepTimer();
+      if (lockOwnerRemoved) clearLockScreen();
+    } else if (lockOwnerRemoved) {
+      syncLockScreen();
+    }
+  }, [
+    catalogLoaded,
+    catalogSounds,
+    clearLockScreen,
+    clearSleepTimer,
+    destroyPlayer,
+    syncLockScreen,
+  ]);
+
   const toggleSound = useCallback(
     (id: string, hintBpm?: number | null): boolean => {
       const prev = activeSoundsRef.current;
@@ -1276,9 +1359,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // Estacionar (no destruir) para que reactivarlo sea instantáneo. Si el
         // sonido corre en el motor BPM/binaural, apagarlo ahí (parkPlayer es no-op
         // para sonidos que nunca tuvieron player expo).
-        if (getSoundById(id)?.bpm !== undefined) {
+        if (getCatalogSoundById(id)?.bpm !== undefined) {
           bpmAudioEngine.stop(id);
-        } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+        } else if (getCatalogSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
           bpmAudioEngine.stop(id);
           binauralEngineActiveRef.current.delete(id);
         }
@@ -1288,7 +1371,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         setLoadedPresetId(null);
 
         // Si ya no quedan sonidos rítmicos, liberar el BPM activo.
-        const anyBpmLeft = next.some((s) => getSoundById(s.id)?.bpm !== undefined);
+        const anyBpmLeft = next.some((s) => getCatalogSoundById(s.id)?.bpm !== undefined);
         if (!anyBpmLeft && bpmValueRef.current !== null) {
           bpmValueRef.current = null;
           setActiveBpm(null);
@@ -1311,7 +1394,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // ── Compatibilidad de BPM ──────────────────────────────────────────────
       // Sonidos de distintos BPM no se pueden mezclar: rechazar si el BPM del
       // nuevo sonido es distinto al que ya está fijado en la mezcla.
-      const soundDef = getSoundById(id);
+      const soundDef = getCatalogSoundById(id);
       const soundBpm = soundDef?.bpm;
       const effectiveSoundBpm = soundDef ? resolveSoundBpm(soundDef, bpmValueRef.current ?? hintBpm ?? null) : undefined;
       if (soundBpm !== undefined && bpmValueRef.current !== null && !soundMatchesBpm(soundDef!, bpmValueRef.current)) {
@@ -1328,7 +1411,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // (arranque en frío muy rápido), lo esperamos dentro del void async antes
       // de reproducir; el estado React se actualiza de inmediato para que la UI
       // no quede bloqueada.
-      if (effectiveSoundBpm !== undefined) {
+      if (effectiveSoundBpm !== undefined && !!SOUND_MAP[id]) {
         void (async () => {
           if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
           void bpmAudioEngine.play(id, {
@@ -1352,7 +1435,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // El loop nativo de expo-audio deja un hueco de ~48 ms por el encoder
       // delay del AAC. `AudioBufferSourceNode` decodifica a PCM (sin delay) y
       // loopea a precisión de muestra: empalme completamente imperceptible.
-      if (getSoundById(id)?.category === "binaural" && bpmAudioEngine.isReady()) {
+      if (
+        getCatalogSoundById(id)?.category === "binaural" &&
+        !!SOUND_MAP[id] &&
+        bpmAudioEngine.isReady()
+      ) {
         void bpmAudioEngine.playLoop(id, DEFAULT_VOLUME);
         binauralEngineActiveRef.current.add(id);
         if (!isPlayingRef.current) applyPlaying(true);
@@ -1368,6 +1455,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const player = resumePlayer(id, DEFAULT_VOLUME) ?? createPlayerFor(id, DEFAULT_VOLUME);
       // Sin archivo de audio (o falla de carga): no agregar un sonido "fantasma"
       if (!player) return true;
+
+      // Remote BPM files use expo-audio, but still participate in the mix's
+      // BPM compatibility lock just like bundled native-engine files.
+      if (effectiveSoundBpm !== undefined && bpmValueRef.current === null) {
+        bpmValueRef.current = effectiveSoundBpm;
+        setActiveBpm(effectiveSoundBpm);
+      }
 
       // Si la mezcla estaba pausada, retomar todos al sumar un sonido
       if (!isPlayingRef.current) {
@@ -1395,7 +1489,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     // gain de cada capa en el próximo tick (~120 ms). NO setear player.volume
     // directo acá: pisaría el gain del fade y daría un salto de volumen en el
     // empalme del loop.
-    const def = getSoundById(id);
+    const def = getCatalogSoundById(id);
     if (def?.bpm !== undefined || (def?.category === "binaural" && binauralEngineActiveRef.current.has(id))) {
       bpmAudioEngine.setVolume(id, volume);
     }
@@ -1406,7 +1500,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   /** Aplica volumen de respiración al audio + slider SIN modificar baseVolumesRef. */
   const applyBreathVolume = useCallback((id: string, vol: number) => {
     const clamped = Math.max(0, Math.min(1, vol));
-    const def = getSoundById(id);
+    const def = getCatalogSoundById(id);
     if (def?.bpm !== undefined || (def?.category === "binaural" && binauralEngineActiveRef.current.has(id))) {
       bpmAudioEngine.setVolume(id, clamped);
     }
@@ -1496,9 +1590,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
       if (removingOwner) clearLockScreen();
       // Si el sonido corre en el motor BPM/binaural, apagarlo ahí (parkPlayer es no-op).
-      if (getSoundById(id)?.bpm !== undefined) {
+      if (getCatalogSoundById(id)?.bpm !== undefined) {
         bpmAudioEngine.stop(id);
-      } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+      } else if (getCatalogSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
         bpmAudioEngine.stop(id);
         binauralEngineActiveRef.current.delete(id);
       }
@@ -1508,7 +1602,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       setActiveSounds(next);
       setLoadedPresetId(null);
       // Si ya no quedan sonidos rítmicos, liberar el reloj maestro BPM.
-      const anyBpmLeft = next.some((s) => getSoundById(s.id)?.bpm !== undefined);
+      const anyBpmLeft = next.some((s) => getCatalogSoundById(s.id)?.bpm !== undefined);
       if (!anyBpmLeft && bpmValueRef.current !== null) {
         bpmValueRef.current = null;
         setActiveBpm(null);
@@ -1701,14 +1795,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const savePreset = useCallback(
     (input: SaveMixInput) => {
-      if (activeSoundsRef.current.length === 0) return null;
+      const availableSounds = activeSoundsRef.current.filter((sound) =>
+        isPlayableCatalogSound(sound.id),
+      );
+      if (availableSounds.length === 0) return null;
       const preset: MixPreset = {
         id: Date.now().toString(),
         name: input.name.trim() || "Mi mezcla",
         description: input.description?.trim() || undefined,
         image: input.image,
         category: input.category,
-        sounds: activeSoundsRef.current.map((s) => ({ ...s })),
+        sounds: availableSounds.map((s) => ({ ...s })),
         createdAt: new Date().toISOString(),
       };
       persistPresets([preset, ...presetsRef.current]);
@@ -1718,13 +1815,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       loadedPresetIdRef.current = preset.id;
       return preset.id;
     },
-    [persistPresets],
+    [isPlayableCatalogSound, persistPresets],
   );
 
   const updatePreset = useCallback(
     (id: string, input: SaveMixInput) => {
       const exists = presetsRef.current.some((p) => p.id === id);
       if (!exists) return;
+      const availableSounds = activeSoundsRef.current.filter((sound) =>
+        isPlayableCatalogSound(sound.id),
+      );
       persistPresets(
         presetsRef.current.map((p) =>
           p.id === id
@@ -1737,7 +1837,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
                 coverGeometryId: input.coverGeometryId,
                 coverCreationId: input.coverCreationId,
                 category: input.category,
-                sounds: activeSoundsRef.current.map((s) => ({ ...s })),
+                sounds: availableSounds.map((s) => ({ ...s })),
               }
             : p,
         ),
@@ -1746,7 +1846,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       setLoadedPresetId(id);
       loadedPresetIdRef.current = id;
     },
-    [persistPresets],
+    [isPlayableCatalogSound, persistPresets],
   );
 
   const updatePresetMeta = useCallback(
@@ -1845,7 +1945,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
       void ensureAudioMode();
       const playable = preset.sounds
-        .filter((s) => SOUND_MAP[s.id])
+        .filter((s) => isPlayableCatalogSound(s.id))
         .slice(0, MAX_ACTIVE_SOUNDS);
       // Liberar el BPM activo y detener el motor antes de armar la nueva mezcla.
       bpmValueRef.current = null;
@@ -1854,8 +1954,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       binauralEngineActiveRef.current.clear();
       const created: ActiveSound[] = [];
       playable.forEach((s) => {
-        const def = getSoundById(s.id);
-        if (def?.bpm !== undefined) {
+        const def = getCatalogSoundById(s.id);
+        if (def?.bpm !== undefined && !!SOUND_MAP[s.id]) {
           // Fire-and-forget: init() es idempotente y dedup-safe.
           void (async () => {
             if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
@@ -1866,7 +1966,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             });
           })();
           created.push({ id: s.id, volume: s.volume });
-        } else if (def?.category === "binaural" && bpmAudioEngine.isReady()) {
+        } else if (
+          def?.category === "binaural" &&
+          !!SOUND_MAP[s.id] &&
+          bpmAudioEngine.isReady()
+        ) {
           void bpmAudioEngine.playLoop(s.id, s.volume);
           binauralEngineActiveRef.current.add(s.id);
           created.push({ id: s.id, volume: s.volume });
@@ -1877,7 +1981,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       });
       // Si el preset trae algún sonido rítmico, fijar el BPM activo.
       const firstBpm = created
-        .map((s) => { const def = getSoundById(s.id); return def ? resolveSoundBpm(def, null) : undefined; })
+        .map((s) => { const def = getCatalogSoundById(s.id); return def ? resolveSoundBpm(def, null) : undefined; })
         .find((bpm) => bpm !== undefined);
       if (firstBpm !== undefined) {
         bpmValueRef.current = firstBpm;
@@ -2050,7 +2154,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
       void bpmAudioEngine.dispose();
     };
-  }, [clearLockScreen]);
+  }, [clearLockScreen, isPlayableCatalogSound]);
 
   const isActive = useCallback(
     (id: string) => activeSounds.some((s) => s.id === id),
