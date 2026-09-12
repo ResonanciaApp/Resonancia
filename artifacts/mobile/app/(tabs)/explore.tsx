@@ -635,7 +635,7 @@ export function ExploreScreen({
 
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
-              marginTop={15}
+              marginTop={0}
               marginBottom={0}
               hiddenIds={[
                 "__descanzo__",
