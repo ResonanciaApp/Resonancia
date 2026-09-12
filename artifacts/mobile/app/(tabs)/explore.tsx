@@ -46,7 +46,6 @@ import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import {
-  useGetPinnedFeatured,
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
 } from "@workspace/api-client-react";
@@ -68,8 +67,6 @@ const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
-const FEATURED_MOMENT_HEIGHT = 220;
-const SHOW_FEATURED_MOMENT = true;
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
 const DURATION_GAP = 9;
@@ -289,7 +286,6 @@ export function ExploreScreen({
   const { playSession, history } = usePlayerBrowse();
   const { videos } = useVideos();
   const { version: catalogVersion } = useCatalog();
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const searchTabBarSurface =
     activeSceneId === "indigo2"
@@ -329,24 +325,6 @@ export function ExploreScreen({
     () => SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10),
     [catalogVersion],
   );
-
-  const featuredMoment = React.useMemo(() => {
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
-      return getSessionById(pinned.id) ?? undefined;
-    }
-    const pool = SESSIONS.filter(
-      (session) =>
-        session.categoryId === "meditaciones-guiadas" &&
-        session.isFeatured &&
-        !session.isPlaceholder,
-    );
-    if (!pool.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return pool[dayOfYear % pool.length];
-  }, [pinnedFeaturedData, catalogVersion]);
 
   // ── Nuevo en Resonancia (últimas 3 meditaciones agregadas) ──
   const recientesMeditaciones = React.useMemo(() => {
@@ -612,92 +590,6 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
-          {SHOW_FEATURED_MOMENT && featuredMoment && (
-            <View style={styles.featuredMomentSection}>
-              <Text style={styles.sectionTitle}>Para este momento</Text>
-              <Pressable
-                onPress={() => handleSessionPress(featuredMoment)}
-                accessibilityRole="button"
-                accessibilityLabel={featuredMoment.title}
-                style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}
-              >
-                <View style={styles.featuredMomentImageContainer}>
-                  <Image
-                    source={featuredMoment.image}
-                    style={styles.featuredMomentImage}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                  <SessionDurationBadge
-                    label={featuredMoment.durationLabel}
-                    style={styles.featuredMomentDuration}
-                  />
-                </View>
-                {(() => {
-                  const guide = featuredMoment.guideId
-                    ? getGuide(featuredMoment.guideId)
-                    : undefined;
-                  const artist = featuredMoment.artistId
-                    ? getArtist(featuredMoment.artistId)
-                    : undefined;
-                  const authorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
-                  const authorPhoto = guide?.photo ?? artist?.photo;
-                  return (
-                    <View style={styles.featuredMomentInfo}>
-                      {authorPhoto && (
-                        <Image
-                          source={authorPhoto}
-                          style={styles.featuredMomentAvatar}
-                          contentFit="cover"
-                          cachePolicy="memory-disk"
-                        />
-                      )}
-                      <View style={styles.featuredMomentCopy}>
-                        <Text
-                          style={[
-                            styles.featuredMomentMeta,
-                            { color: activeTheme.accent },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {featuredMoment.categoryLabel}
-                        </Text>
-                        <Text style={styles.featuredMomentTitle} numberOfLines={2}>
-                          {featuredMoment.title}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.featuredMomentAuthor,
-                            { color: activeTheme.accent },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {authorName}
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })()}
-              </Pressable>
-            </View>
-          )}
-
-          <View style={styles.categoryBlocksSection}>
-            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
-              Explora por categoría
-            </Text>
-            <ContentCategoryGrid
-              marginTop={0}
-              marginBottom={0}
-              hiddenIds={[
-                "__descanzo__",
-                "__mezcla__",
-                "__geometrix__",
-              ]}
-              discoverTieredLayout
-            />
-          </View>
-
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
               <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
@@ -752,6 +644,22 @@ export function ExploreScreen({
                 </Pressable>
               ))}
             </ScrollView>
+          </View>
+
+          <View style={styles.categoryBlocksSection}>
+            <Text style={[styles.sectionTitle, styles.categoryBlocksTitle]}>
+              Explora por categoría
+            </Text>
+            <ContentCategoryGrid
+              marginTop={0}
+              marginBottom={0}
+              hiddenIds={[
+                "__descanzo__",
+                "__mezcla__",
+                "__geometrix__",
+              ]}
+              discoverTieredLayout
+            />
           </View>
 
           {videos.length > 0 && (
@@ -1090,60 +998,6 @@ const styles = StyleSheet.create({
   },
   categoryBlocksTitle: {
     paddingHorizontal: H_PAD,
-  },
-  featuredMomentSection: {
-    paddingHorizontal: H_PAD,
-    marginTop: 20,
-    marginBottom: SECTION_GAP,
-  },
-  featuredMomentImageContainer: {
-    width: "100%",
-    height: FEATURED_MOMENT_HEIGHT,
-    borderRadius: 15,
-    overflow: "hidden",
-  },
-  featuredMomentImage: {
-    width: "100%",
-    height: "100%",
-  },
-  featuredMomentDuration: {
-    position: "absolute",
-    left: 12,
-    bottom: 12,
-  },
-  featuredMomentInfo: {
-    marginTop: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  featuredMomentAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(181,211,255,0.057)",
-  },
-  featuredMomentCopy: {
-    flex: 1,
-  },
-  featuredMomentMeta: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 14,
-    marginBottom: 6,
-  },
-  featuredMomentTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 20,
-    color: "#FBFBFB",
-    marginBottom: 4,
-  },
-  featuredMomentAuthor: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    marginTop: 2,
   },
   durationSection: {
     marginBottom: SECTION_GAP,

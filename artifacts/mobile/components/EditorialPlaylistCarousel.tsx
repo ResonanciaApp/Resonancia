@@ -19,11 +19,11 @@ import {
   SessionBadgeGlass,
   SessionDurationBadge,
 } from "@/components/SessionDurationBadge";
-import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
-
 const H_PAD = 16;
 const CARD_GAP = 14;
-const CARD_WIDTH = getTwoCardCarouselCardWidth(Dimensions.get("window").width, CARD_GAP) - 3.5;
+const CARD_WIDTH = Math.round(
+  (Dimensions.get("window").width - H_PAD - CARD_GAP) / 1.9,
+);
 const CARD_HEIGHT = CARD_WIDTH;
 
 export function EditorialPlaylistCarousel({
@@ -62,6 +62,7 @@ export function EditorialPlaylistCarousel({
             <View style={styles.stack}>
               <View style={styles.stackStripFront} />
               <View style={styles.stackStripBack} />
+               <View style={styles.stackStripThird} />
               <View style={styles.cover}>
                 {playlist.coverUrl ? (
                   <Image
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   },
   stack: {
     width: CARD_WIDTH,
-    height: CARD_HEIGHT + 11,
+    height: CARD_HEIGHT + 14,
   },
   stackStripFront: {
     position: "absolute",
@@ -163,6 +164,15 @@ const styles = StyleSheet.create({
     height: 2,
     borderRadius: 1,
     backgroundColor: "#48474D",
+  },
+  stackStripThird: {
+    position: "absolute",
+    top: CARD_HEIGHT + 9,
+    left: 22,
+    right: 22,
+    height: 1.5,
+    borderRadius: 0.75,
+    backgroundColor: "#38373D",
   },
   cover: {
     width: CARD_WIDTH,
