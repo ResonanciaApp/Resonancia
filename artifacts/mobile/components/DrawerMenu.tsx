@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { router } from "expo-router";
 import React, { useEffect } from "react";
@@ -13,6 +14,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -38,6 +40,7 @@ import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 
 const ND = Platform.OS !== "web";
+const DECREE_STORAGE_PREFIX = "@resonance/drawer-decree";
 
 type MenuItem = {
   id?: string;
@@ -123,6 +126,71 @@ export function DrawerMenu() {
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
+  const [decree, setDecree] = React.useState("");
+  const [decreeDraft, setDecreeDraft] = React.useState("");
+  const [isEditingDecree, setIsEditingDecree] = React.useState(false);
+  const decreeCursorOpacity = React.useRef(new Animated.Value(1)).current;
+  const decreeStorageKey = `${DECREE_STORAGE_PREFIX}:${clerkUser?.id ?? "local"}`;
+
+  useEffect(() => {
+    let active = true;
+    AsyncStorage.getItem(decreeStorageKey)
+      .then((storedDecree) => {
+        if (!active) return;
+        const nextDecree = storedDecree ?? "";
+        setDecree(nextDecree);
+        setDecreeDraft(nextDecree);
+      })
+      .catch(() => {
+        if (!active) return;
+        setDecree("");
+        setDecreeDraft("");
+      });
+    return () => {
+      active = false;
+    };
+  }, [decreeStorageKey]);
+
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.timing(decreeCursorOpacity, {
+          toValue: 0,
+          duration: 520,
+          useNativeDriver: true,
+        }),
+        Animated.timing(decreeCursorOpacity, {
+          toValue: 1,
+          duration: 520,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    blink.start();
+    return () => blink.stop();
+  }, [decreeCursorOpacity]);
+
+  const beginDecreeEdit = React.useCallback(() => {
+    setDecreeDraft(decree);
+    setIsEditingDecree(true);
+  }, [decree]);
+
+  const updateDecreeDraft = React.useCallback((value: string) => {
+    const words = value.trim().split(/\s+/).filter(Boolean);
+    setDecreeDraft(words.length > 8 ? words.slice(0, 8).join(" ") : value);
+  }, []);
+
+  const finishDecreeEdit = React.useCallback(() => {
+    const nextDecree = decreeDraft.trim().replace(/\s+/g, " ");
+    setDecree(nextDecree);
+    setDecreeDraft(nextDecree);
+    setIsEditingDecree(false);
+    if (nextDecree) {
+      void AsyncStorage.setItem(decreeStorageKey, nextDecree);
+    } else {
+      void AsyncStorage.removeItem(decreeStorageKey);
+    }
+  }, [decreeDraft, decreeStorageKey]);
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -272,10 +340,49 @@ export function DrawerMenu() {
                 {loggedIn ? (
                   <>
                     <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
-                    <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
-                      <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                      <Feather name="chevron-right" size={11} color="#F9F9F9" />
-                    </Pressable>
+                    {isEditingDecree ? (
+                      <TextInput
+                        autoFocus
+                        value={decreeDraft}
+                        onChangeText={updateDecreeDraft}
+                        onBlur={finishDecreeEdit}
+                        onSubmitEditing={finishDecreeEdit}
+                        returnKeyType="done"
+                        blurOnSubmit
+                        cursorColor={activeTheme.accent}
+                        selectionColor={activeTheme.accent}
+                        style={styles.decreeInput}
+                        accessibilityLabel="Editar decreto personal"
+                      />
+                    ) : (
+                      <Pressable
+                        onPress={beginDecreeEdit}
+                        style={styles.decreeButton}
+                        accessibilityRole="button"
+                        accessibilityLabel={decree ? "Editar decreto personal" : "Escribir decreto personal"}
+                      >
+                        {decree ? (
+                          <Text style={styles.decreeText} numberOfLines={2}>
+                            {decree}
+                          </Text>
+                        ) : (
+                          <View style={styles.decreePlaceholderRow}>
+                            <Text style={[styles.decreePlaceholder, { color: activeTheme.accent }]}>
+                              Escribe tu decreto
+                            </Text>
+                            <Animated.View
+                              style={[
+                                styles.decreeCursor,
+                                {
+                                  backgroundColor: activeTheme.accent,
+                                  opacity: decreeCursorOpacity,
+                                },
+                              ]}
+                            />
+                          </View>
+                        )}
+                      </Pressable>
+                    )}
                   </>
                 ) : (
                   <>
@@ -515,9 +622,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   inicio3ProfilePhoto: {
-    width: 67,
-    height: 67,
-    borderRadius: 33.5,
+    width: 73,
+    height: 73,
+    borderRadius: 36.5,
     borderWidth: 1,
   },
   profileInfo: {
@@ -557,6 +664,49 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
+  },
+  decreeButton: {
+    minHeight: 22,
+    alignSelf: "stretch",
+    justifyContent: "center",
+  },
+  decreePlaceholderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+  },
+  decreePlaceholder: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: "500",
+    letterSpacing: 0.2,
+  },
+  decreeCursor: {
+    width: 1.5,
+    height: 15,
+    marginLeft: 2,
+    borderRadius: 1,
+  },
+  decreeText: {
+    fontFamily: "Manrope",
+    color: "#BE9650",
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+  decreeInput: {
+    alignSelf: "stretch",
+    minHeight: 22,
+    padding: 0,
+    margin: 0,
+    fontFamily: "Manrope",
+    color: "#BE9650",
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: "600",
+    letterSpacing: 0.2,
   },
   closeBtn: {
     width: 32,
