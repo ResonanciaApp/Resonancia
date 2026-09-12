@@ -42,12 +42,14 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
 } from "@workspace/api-client-react";
 import {
+  CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
   getTwoCardCarouselCardWidth,
@@ -78,6 +80,9 @@ const NEW_IN_RESONANCE_CARD_WIDTH = Math.round(
 );
 const NEW_IN_RESONANCE_CARD_HEIGHT = Math.round(
   (NEW_IN_RESONANCE_CARD_WIDTH / (16 / 9)) * 1.1,
+);
+const POPULAR_CARD_WIDTH = Math.round(
+  (width - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
 );
 const COLLECTION_CARD_W =
   getTwoCardCarouselCardWidth(width, 14) - 3.5;
@@ -408,6 +413,19 @@ export function ExploreScreen({
       .filter((s): s is Session => !!s && s.categoryId === "meditaciones-guiadas")
       .slice(0, 10);
   }, [popularData, catalogVersion]);
+  const popularSessions = React.useMemo(
+    () =>
+      (popularData?.sessions ?? [])
+        .map((session) => getSessionById(session.id))
+        .filter(
+          (session): session is Session =>
+            session !== undefined
+            && !session.isPlaceholder
+            && session.categoryId !== "ambientales",
+        )
+        .slice(0, 10),
+    [popularData, catalogVersion],
+  );
 
   const discoverSearchItems = React.useMemo(
     () =>
@@ -630,6 +648,26 @@ export function ExploreScreen({
               </View>
             </View>
           </View>
+
+          <View style={styles.sectionDivider} />
+
+          <SessionCarousel
+            title="Populares"
+            sessions={popularSessions}
+            isPremium={isPremium}
+            onPress={handleSessionPress}
+            style={styles.popularSection}
+            trailingPeek={20}
+            cardWidth={POPULAR_CARD_WIDTH}
+            allowOversizedCardWidth
+            squareTitleAuthorBelow
+            sleepBelowMetadataStyle={{ marginTop: 5 }}
+            categoryGridPresentation
+            whiteMetadataGlass
+            showDurationClock
+            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+            titleSize={17}
+          />
 
           <View style={styles.sectionDivider} />
 
@@ -1011,6 +1049,11 @@ const styles = StyleSheet.create({
     marginTop: -27,
     marginBottom: 26,
     backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  popularSection: {
+    marginTop: 0,
+    marginBottom: SECTION_GAP,
+    paddingHorizontal: H_PAD,
   },
   monthlySoundTherapySection: {
     paddingHorizontal: H_PAD,

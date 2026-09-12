@@ -2705,27 +2705,6 @@ export default function HomeScreen2({
           />
         )}
         {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
-        {variant === "inicio3" && (
-          <SessionCarousel
-            title="Populares"
-            sessions={popularSessions}
-            isPremium={isPremium}
-            onPress={handleSessionCarouselPress}
-            style={inicio2SessionCarouselStyle}
-            trailingPeek={20}
-            cardWidth={INICIO3_SESSION_CARD_WIDTH}
-            allowOversizedCardWidth
-            squareTitleAuthorBelow
-            sleepBelowMetadataStyle={{ marginTop: 5 }}
-            categoryGridPresentation
-            whiteMetadataGlass
-            showDurationClock
-            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={17}
-            viewAllColor={carouselViewAllColor}
-          />
-        )}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {variant === "inicio3" && videos.length > 0 && (
           <View
             style={{
@@ -3288,7 +3267,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 2 }],
   },
   inicio3HeroLotusCount: {
-    color: "#BE9650",
+    color: "#F9F9F9",
   },
   inicioViewAllText: {
     color: "#067D74",
