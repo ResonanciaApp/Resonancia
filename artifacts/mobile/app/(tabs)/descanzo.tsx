@@ -801,8 +801,8 @@ const styles = StyleSheet.create({
   sleepPillTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   sleepPillIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   sleepPillIndigo2Inactive: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    borderColor: "rgba(255,255,255,0.078)",
   },
   sleepPillInactive: { backgroundColor: "rgba(255,255,255,0.1)" },
   sleepPillSel: {},
