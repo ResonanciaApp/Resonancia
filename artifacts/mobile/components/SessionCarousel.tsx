@@ -620,20 +620,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 {isAmbiental ? (
                   <>
                     {ambientalImageFillTop && (
-                      <LinearGradient
+                      <View
                         pointerEvents="none"
-                        colors={[
-                          "rgba(255,255,255,0.1)",
-                          "rgba(255,255,255,0.035)",
-                          "rgba(255,255,255,0)",
-                        ]}
-                        locations={[0, 0.38, 1]}
                         style={[
                           styles.ambientalImageUnderGlow,
                           {
-                            width: cw - 16,
-                            left: 8,
-                            top: ambientalImageBottom - 2,
+                            width: cw - 40,
+                            left: 20,
+                            top: ambientalImageBottom + 1,
                           },
                         ]}
                       />
@@ -1175,8 +1169,12 @@ const styles = StyleSheet.create({
   },
   ambientalImageUnderGlow: {
     position: "absolute",
-    height: 18,
-    borderRadius: 9,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    shadowColor: "#FFFFFF",
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
   },
   previewButton: {
     position: "absolute",
