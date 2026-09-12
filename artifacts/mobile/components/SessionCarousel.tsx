@@ -59,10 +59,16 @@ function AmbientalFavoriteButton({
   session,
   favorite,
   onToggle,
+  visualScale = 1,
+  right = 12,
+  top = 12,
 }: {
   session: Session;
   favorite: boolean;
   onToggle: (sessionId: string) => void;
+  visualScale?: number;
+  right?: number;
+  top?: number;
 }) {
   const scale = React.useRef(new RNAnimated.Value(1)).current;
 
@@ -99,8 +105,11 @@ function AmbientalFavoriteButton({
       style={[
         styles.favoriteButton,
         {
-          right: 12,
-          top: 12,
+          width: 32 * visualScale,
+          height: 32 * visualScale,
+          borderRadius: 14 * visualScale,
+          right,
+          top,
           transform: [{ scale }],
         },
       ]}
@@ -109,7 +118,7 @@ function AmbientalFavoriteButton({
       <View pointerEvents="none" style={styles.favoriteGlassTint} />
       <MaterialCommunityIcons
         name={favorite ? "heart" : "heart-outline"}
-        size={18}
+        size={18 * visualScale}
         color={favorite ? "#F9F9F9" : "rgba(249,249,249,0.5)"}
       />
     </AnimatedPressable>
@@ -515,6 +524,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalImageSize = Math.round(cw * 0.72);
   const ambientalImageBottom =
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
+  const ambientalFillScale = 0.75;
+  const ambientalFilledImageWidth = (cw + 1) * ambientalFillScale;
+  const ambientalFilledImageHeight = ambientalImageBottom * ambientalFillScale;
+  const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
+  const ambientalFilledImageTop =
+    (ambientalImageBottom - ambientalFilledImageHeight) / 2;
+  const ambientalFilledImageBottom =
+    ambientalFilledImageTop + ambientalFilledImageHeight;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
@@ -625,9 +642,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.ambientalImageUnderGlow,
                           {
-                            width: cw - 40,
-                            left: 20,
-                            top: ambientalImageBottom + 1,
+                            width: ambientalFilledImageWidth - 40,
+                            left: ambientalFilledImageLeft + 20,
+                            top: ambientalFilledImageBottom + 1,
                           },
                         ]}
                       />
@@ -638,18 +655,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         styles.ambientalImage,
                         ambientalImageFillTop
                           ? {
-                              width: cw + 1,
-                              height:
-                                (ch - ambientalImageSize) / 2 -
-                                1 -
-                                ambientalImageLift +
-                                ambientalImageSize,
-                              left: -1,
-                              top: 0,
+                              width: ambientalFilledImageWidth,
+                              height: ambientalFilledImageHeight,
+                              left: ambientalFilledImageLeft,
+                              top: ambientalFilledImageTop,
                               borderTopLeftRadius: ambientalCardBorderRadius ?? 18,
                               borderTopRightRadius: ambientalCardBorderRadius ?? 18,
-                              borderBottomLeftRadius: 17,
-                              borderBottomRightRadius: 17,
+                              borderBottomLeftRadius: ambientalCardBorderRadius ?? 18,
+                              borderBottomRightRadius: ambientalCardBorderRadius ?? 18,
                             }
                           : {
                               width: ambientalImageSize,
@@ -666,9 +679,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.ambientalImageBottomEdge,
                           {
-                            width: cw + 1,
-                            height: ambientalImageBottom,
-                            left: -1,
+                            width: ambientalFilledImageWidth,
+                            height: ambientalFilledImageHeight,
+                            left: ambientalFilledImageLeft,
+                            top: ambientalFilledImageTop,
+                            borderBottomLeftRadius: ambientalCardBorderRadius ?? 18,
+                            borderBottomRightRadius: ambientalCardBorderRadius ?? 18,
                           },
                         ]}
                       >
@@ -689,14 +705,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewProgressEdgeWrap,
                             {
-                              width: cw,
-                              left: 0,
-                              top: ambientalImageBottom - 3,
+                              width: ambientalFilledImageWidth,
+                              left: ambientalFilledImageLeft,
+                              top: ambientalFilledImageBottom - 3,
                             },
                           ]}
                         >
                           <PreviewProgressEdge
-                            width={cw}
+                            width={ambientalFilledImageWidth}
                             progress={soundPreview.progress}
                           />
                         </PreviewFadeLayer>
@@ -718,8 +734,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewButton,
                             {
-                              left: 12,
-                              top: 12,
+                              width: 34 * ambientalFillScale,
+                              height: 34 * ambientalFillScale,
+                              borderRadius: 17 * ambientalFillScale,
+                              left: ambientalFilledImageLeft + 9,
+                              top: ambientalFilledImageTop + 9,
                             },
                           ]}
                         >
@@ -730,7 +749,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
-                            size={22}
+                            size={22 * ambientalFillScale}
                             color="#F9F9F9"
                           />
                         </Pressable>
@@ -738,6 +757,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           session={s}
                           favorite={isFavorite(s.id)}
                           onToggle={toggleFavorite}
+                          visualScale={ambientalFillScale}
+                          right={cw - ambientalFilledImageLeft - ambientalFilledImageWidth + 9}
+                          top={ambientalFilledImageTop + 9}
                         />
                       </>
                     )}
