@@ -92,7 +92,6 @@ function QuickAccessCard({
   profileWide,
   cardHeightOffset,
   foregroundColor,
-  preserveBackgroundOnPress,
   onPress,
 }: {
   access: AccessCardItem;
@@ -111,7 +110,6 @@ function QuickAccessCard({
   profileWide: boolean;
   cardHeightOffset: number;
   foregroundColor: string;
-  preserveBackgroundOnPress: boolean;
   onPress: () => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -158,10 +156,7 @@ function QuickAccessCard({
           {
             width,
             height: cardHeight,
-            backgroundColor:
-              isPressed && !preserveBackgroundOnPress
-                ? WIDGET_GREEN_SOLID
-                : cardBackground,
+            backgroundColor: isPressed ? WIDGET_GREEN_SOLID : cardBackground,
             borderWidth: showCardBorders ? cardBorderWidth : 0,
             borderColor: cardBorderColor,
             borderRadius: cardCornerRadius,
@@ -198,11 +193,7 @@ function QuickAccessCard({
         <MaterialCommunityIcons
           name={access.icon}
           size={22}
-          color={
-            isPressed && !preserveBackgroundOnPress
-              ? "#0E0E17"
-              : foregroundColor
-          }
+          color={isPressed ? "#0E0E17" : foregroundColor}
         />
         <Text
           style={[
@@ -211,12 +202,7 @@ function QuickAccessCard({
             largeLabel && styles.largeLabel,
             profile && styles.profileLabel,
             profileWide && styles.profileWideLabel,
-            {
-              color:
-                isPressed && !preserveBackgroundOnPress
-                  ? "#0E0E17"
-                  : foregroundColor,
-            },
+            { color: isPressed ? "#0E0E17" : foregroundColor },
           ]}
           numberOfLines={1}
         >
@@ -247,7 +233,6 @@ export function QuickAccessSection({
   cardBackgroundColor,
   cardOpacity = 1,
   cardHeightOffset = 0,
-  preserveBackgroundOnPress = false,
   horizontalPadding = GRID_PAD,
   twoRowCarousel = false,
   twoRowThirdCardPeek,
@@ -272,7 +257,6 @@ export function QuickAccessSection({
   cardBackgroundColor?: string;
   cardOpacity?: number;
   cardHeightOffset?: number;
-  preserveBackgroundOnPress?: boolean;
   horizontalPadding?: number;
   twoRowCarousel?: boolean;
   twoRowThirdCardPeek?: number;
@@ -402,7 +386,6 @@ export function QuickAccessSection({
                   profileWide={false}
                   cardHeightOffset={cardHeightOffset}
                   foregroundColor={colors.foreground}
-                  preserveBackgroundOnPress={preserveBackgroundOnPress}
                   onPress={() => handlePress(access.id)}
                 />
               ))}
@@ -446,7 +429,6 @@ export function QuickAccessSection({
               }
               cardHeightOffset={cardHeightOffset}
               foregroundColor={colors.foreground}
-              preserveBackgroundOnPress={preserveBackgroundOnPress}
               onPress={() => handlePress(access.id)}
             />
           ))}

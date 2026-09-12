@@ -106,7 +106,6 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
-import { QuickAccessSection } from "@/components/QuickAccessSection";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
@@ -2527,24 +2526,6 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
-        {variant === "inicio3" && (
-          <QuickAccessSection
-            profileLayout
-            accessIds={["favorites", "history"]}
-            horizontalIds={["favorites", "history"]}
-            leftPillIds={["favorites"]}
-            rightPillIds={["history"]}
-            showTitle={false}
-            cardGap={0}
-            cardCornerRadius={0}
-            cardBackgroundColor="rgba(0,0,0,0.28)"
-            cardHeightOffset={-5}
-            preserveBackgroundOnPress
-            horizontalPadding={GRID_PAD}
-            style={styles.inicio3QuickAccess}
-          />
-        )}
-
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
@@ -3026,11 +3007,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: "transparent",
-  },
-  inicio3QuickAccess: {
-    marginTop: 0,
-    marginBottom: 24,
-    paddingHorizontal: GRID_PAD,
   },
   inicio2ToolsSection: {
     marginBottom: INICIO2_SECTION_GAP,
