@@ -285,13 +285,11 @@ export function ExploreScreen({
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const searchTabBarSurface =
-    activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.15)"
-      : isIndigoThemeId(activeSceneId)
-        ? "rgba(181,211,255,0.057)"
-        : activeSceneId === "indigo2"
-          ? "rgba(0,0,0,0.28)"
-          : "rgba(181,211,255,0.057)";
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
   const durationSurfaceColor =
     activeSceneId === "tibet"
       ? "rgba(0,0,0,0.14)"
@@ -926,7 +924,7 @@ const styles = StyleSheet.create({
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {
