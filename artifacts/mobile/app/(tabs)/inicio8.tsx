@@ -1284,7 +1284,7 @@ function Inicio2HeroStatic({
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
   const inicio3HeroHeight =
-    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
+    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175;
 
   return (
