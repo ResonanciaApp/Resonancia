@@ -3337,7 +3337,7 @@ const styles = StyleSheet.create({
   },
   inicio3StreakDayActive: {
     borderWidth: 2,
-    borderColor: "#D99698",
+    borderColor: "#BE9650",
   },
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
