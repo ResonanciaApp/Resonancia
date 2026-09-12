@@ -2801,7 +2801,7 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View>
+          <View style={variant === "inicio3" ? { marginTop: INICIO2_SECTION_GAP } : undefined}>
             <DailyWisdomCard backgroundColor="rgba(0,0,0,0.25)" />
           </View>
         )}

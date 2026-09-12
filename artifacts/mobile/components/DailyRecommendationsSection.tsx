@@ -71,12 +71,14 @@ export function DailyRecommendationsSection({
 
   return (
     <View style={[styles.section, style]} testID="inicio2-daily-recommendations">
-      <Text style={[styles.title, { color: colors.foreground }]}>
-        Recomendaciones diarias
-      </Text>
-      <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
-        {formatDailyDate(dayKey)}
-      </Text>
+      <View style={inicio3Compact ? styles.inicio3HeaderShift : undefined}>
+        <Text style={[styles.title, { color: colors.foreground }]}>
+          Recomendaciones diarias
+        </Text>
+        <Text style={[styles.date, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]}>
+          {formatDailyDate(dayKey)}
+        </Text>
+      </View>
 
       <View
         style={[
@@ -160,6 +162,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "400",
     marginBottom: 27,
+  },
+  inicio3HeaderShift: {
+    transform: [{ translateY: 10 }],
   },
   recommendationsList: {
     gap: 12,
