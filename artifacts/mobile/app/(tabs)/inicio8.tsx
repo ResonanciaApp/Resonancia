@@ -111,6 +111,7 @@ import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
   CONTENT_CAROUSEL_GAP,
+  CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
 
@@ -1295,16 +1296,44 @@ function Inicio2HeroStatic({
     "Nov.",
     "Dic.",
   ][today.getMonth()];
+  const inicio3HeroHeight =
+    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
+  const inicio3HeroTop = topInset + 161;
+  const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 20;
+  const inicio3MonthlyCardsTop = inicio3MonthlyTop + 102 + 20;
+  const inicio3MonthlyCardWidth = getTwoCardCarouselCardWidth(width, 14) - 3.5;
+  const inicio3MonthlyCardHeight =
+    Math.round(
+      (inicio3MonthlyCardWidth + 50) *
+        SESSION_CARD_METADATA_HEIGHT_SCALE *
+        CONTENT_CAROUSEL_HEIGHT_SCALE,
+    ) - 11;
+  const inicio3MonthlySessions = SESSIONS.filter(
+    (session) =>
+      !session.isPlaceholder &&
+      session.categoryId !== "ambientales",
+  ).slice(0, 2);
 
   return (
     <View
-      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 184 }]}
+      style={[
+        styles.inicio2Hero,
+        isInicio3 && {
+          height:
+            inicio3MonthlyCardsTop +
+            inicio3MonthlyCardHeight +
+            28,
+        },
+      ]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
       {isInicio3 && (
         <View
-          style={[styles.inicio3MonthlySelection, { top: topInset + 161 }]}
+          style={[
+            styles.inicio3MonthlySelection,
+            { top: inicio3MonthlyTop },
+          ]}
           testID="inicio3-monthly-selection"
         >
           <View style={styles.inicio3MonthlyDate}>
@@ -1324,13 +1353,36 @@ function Inicio2HeroStatic({
         </View>
       )}
 
+      {isInicio3 && (
+        <View
+          style={[
+            styles.inicio3MonthlyCards,
+            { top: inicio3MonthlyCardsTop },
+          ]}
+          testID="inicio3-monthly-cards"
+        >
+          {inicio3MonthlySessions.map((session) => (
+            <SessionCard
+              key={session.id}
+              session={session}
+              width={inicio3MonthlyCardWidth}
+              editorialPresentation
+              sleepEditorialContent
+              showSleepCategoryPill={false}
+              showAuthor
+            />
+          ))}
+        </View>
+      )}
+
       <View
         pointerEvents="none"
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 286 : 66),
-            bottom: isInicio3 ? 52 : 18,
+            top: isInicio3 ? inicio3HeroTop : topInset + 66,
+            bottom: isInicio3 ? undefined : 18,
+            height: isInicio3 ? inicio3HeroHeight : undefined,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
@@ -1463,8 +1515,9 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: topInset + (isInicio3 ? 286 : 66),
-            bottom: isInicio3 ? 52 : 18,
+            top: isInicio3 ? inicio3HeroTop : topInset + 66,
+            bottom: isInicio3 ? undefined : 18,
+            height: isInicio3 ? inicio3HeroHeight : undefined,
           },
           isInicio3 && styles.inicio3HeroCopy,
         ]}
@@ -3360,6 +3413,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "400",
     lineHeight: 18,
+  },
+  inicio3MonthlyCards: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    zIndex: 11,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 14,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
