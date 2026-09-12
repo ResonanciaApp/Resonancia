@@ -132,19 +132,13 @@ function LineAwareAmbientalTitle({
   children: string;
   style: StyleProp<TextStyle>;
 }) {
-  const [lineCount, setLineCount] = React.useState(1);
-
   return (
     <Text
       style={[
         style,
-        { transform: [{ translateY: lineCount > 1 ? -2 : 7 }] },
+        { transform: [{ translateY: -2 }] },
       ]}
       numberOfLines={2}
-      onTextLayout={(event) => {
-        const nextLineCount = Math.min(event.nativeEvent.lines.length, 2);
-        setLineCount((current) => current === nextLineCount ? current : nextLineCount);
-      }}
     >
       {children}
     </Text>
@@ -525,10 +519,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalImageBottom =
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
   const ambientalFillScale = 0.75;
-  const ambientalFilledImageDiameter = Math.min(
-    (cw + 1) * ambientalFillScale + 15,
-    ambientalImageBottom * ambientalFillScale + 15,
-  );
+  const ambientalFilledImageDiameter =
+    Math.min(
+      (cw + 1) * ambientalFillScale + 15,
+      ambientalImageBottom * ambientalFillScale + 15,
+    ) * 0.9;
   const ambientalFilledImageWidth = ambientalFilledImageDiameter;
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
@@ -640,19 +635,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 )}
                 {isAmbiental ? (
                   <>
-                    {ambientalImageFillTop && (
-                      <View
-                        pointerEvents="none"
-                        style={[
-                          styles.ambientalImageUnderGlow,
-                          {
-                            width: ambientalFilledImageWidth - 40,
-                            left: ambientalFilledImageLeft + 20,
-                            top: ambientalFilledImageBottom + 1,
-                          },
-                        ]}
-                      />
-                    )}
                     <CarouselImage
                       source={s.image}
                       style={[
@@ -1207,15 +1189,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 9,
-  },
-  ambientalImageUnderGlow: {
-    position: "absolute",
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    shadowColor: "#FFFFFF",
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
   },
   previewButton: {
     position: "absolute",
