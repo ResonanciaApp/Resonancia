@@ -607,26 +607,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     borderRadius: cardBorderRadius,
                   },
                   isAmbiental && {
+                    backgroundColor: ambientalCardBackground,
+                    borderWidth: ambientalCardBorderWidth ?? 1,
                     borderRadius: ambientalCardBorderRadius ?? 18,
+                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
               >
-                {isAmbiental && (
-                  <View
-                    pointerEvents="none"
-                    style={[
-                      StyleSheet.absoluteFill,
-                      {
-                        left: 1,
-                        backgroundColor: ambientalCardBackground,
-                        borderWidth: ambientalCardBorderWidth ?? 1,
-                        borderRadius: ambientalCardBorderRadius ?? 18,
-                        borderColor:
-                          ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
-                      },
-                    ]}
-                  />
-                )}
                 {!isAmbiental && (
                   <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
                 )}
@@ -638,7 +625,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         styles.ambientalImage,
                         ambientalImageFillTop
                           ? {
-                               right: 0,
+                              width: cw,
                               height:
                                 (ch - ambientalImageSize) / 2 -
                                 1 -
@@ -648,8 +635,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               top: 0,
                               borderTopLeftRadius: ambientalCardBorderRadius ?? 18,
                               borderTopRightRadius: ambientalCardBorderRadius ?? 18,
-                               borderBottomLeftRadius: ambientalCardBorderRadius ?? 18,
-                               borderBottomRightRadius: ambientalCardBorderRadius ?? 18,
                             }
                           : {
                               width: ambientalImageSize,
