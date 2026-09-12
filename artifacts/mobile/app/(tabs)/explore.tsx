@@ -926,7 +926,7 @@ const styles = StyleSheet.create({
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
-    borderColor: "rgba(255,255,255,0.7)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {

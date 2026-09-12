@@ -154,12 +154,12 @@ export default function SonidosScreen() {
         ? "rgba(191,207,255,0.1)"
         : "rgba(181,211,255,0.1)";
   const inactiveTabSurface = theme.id === "tibet"
-    ? "rgba(0,0,0,0.1)"
+    ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(theme.id)
-      ? "rgba(181,211,255,0.1)"
+      ? "rgba(181,211,255,0.057)"
       : theme.id === "indigo2"
-        ? "rgba(0,0,0,0.2)"
-        : "rgba(181,211,255,0.1)";
+        ? "rgba(181,211,255,0.057)"
+        : "rgba(181,211,255,0.057)";
   const inactiveTabBorder = theme.id === "indigo2"
     ? "rgba(255,255,255,0.1)"
     : "rgba(255,255,255,0.1)";
