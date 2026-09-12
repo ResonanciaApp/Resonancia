@@ -694,7 +694,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             },
                           ]}
                         >
-                          <SessionBadgeGlass />
+                          <SessionBadgeGlass showBlackTint={false} />
+                          <View
+                            pointerEvents="none"
+                            style={styles.favoriteGlassTint}
+                          />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={22}
