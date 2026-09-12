@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   View,
+  type TextStyle,
   type ViewStyle,
 } from "react-native";
 
@@ -129,8 +130,8 @@ const styles = StyleSheet.create({
   title: {
     color: "#FBFBFB",
     fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
+    fontSize: 17,
+    fontWeight: 690 as TextStyle["fontWeight"],
     letterSpacing: 0.3,
   },
   carousel: {
