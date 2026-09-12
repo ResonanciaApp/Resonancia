@@ -319,9 +319,9 @@ export function DrawerMenu() {
                         >
                           <View style={styles.itemIcon}>
                             {item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={22} color="#FFFFFF" />
+                              <MaterialCommunityIcons name={item.mciIcon} size={22} color="#BE9650" />
                             ) : (
-                              <Feather name={item.icon} size={19} color="#FFFFFF" />
+                              <Feather name={item.icon} size={19} color="#BE9650" />
                             )}
                           </View>
                           <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>

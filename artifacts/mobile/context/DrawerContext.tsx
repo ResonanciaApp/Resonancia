@@ -46,7 +46,7 @@ const Ctx = createContext<DrawerCtx | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<DrawerMode>("default");
+  const [mode, setMode] = useState<DrawerMode>("inicio3");
   const [moodPickerRequest, setMoodPickerRequest] = useState(0);
   const [instantNav, setInstantNav] = useState(false);
   const instantNavTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -80,7 +80,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     if (options && typeof options === "object" && "mode" in options) {
       setMode((options as { mode: DrawerMode }).mode);
     } else {
-      setMode("default");
+      setMode("inicio3");
     }
     setIsOpen(true);
     animate(true);
