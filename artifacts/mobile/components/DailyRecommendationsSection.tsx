@@ -95,16 +95,22 @@ export function DailyRecommendationsSection({
             >
               <SessionRow
                 session={session}
-                imageSize={inicio3Compact ? 88.1 : 103.7}
+                imageSize={inicio3Compact ? 81.9 : 103.7}
                 imageOffsetX={inicio3Compact ? 0 : -4}
                 metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-                showChevron={!inicio3Compact}
+                showDurationBadge={inicio3Compact}
+                showChevron
                 titleFontSize={inicio3Compact ? 18 : undefined}
                 titleFontWeight={inicio3Compact ? "600" : undefined}
-                staticPlayBadge={inicio3Compact}
                 authorColor={themeAccent}
                 authorFontSize={theme.id === "indigo2" ? 11 : undefined}
-                chevronColor={theme.id === "indigo2" ? themeAccent : undefined}
+                chevronColor={
+                  inicio3Compact
+                    ? "#F9F9F9"
+                    : theme.id === "indigo2"
+                      ? themeAccent
+                      : undefined
+                }
                 style={[styles.row, inicio3Compact && styles.inicio3Row]}
               />
             </CategoryAtmosphericCard>
@@ -174,6 +180,7 @@ const styles = StyleSheet.create({
   },
   inicio3CardDivider: {
     height: StyleSheet.hairlineWidth,
+    marginHorizontal: 11,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   row: {
@@ -181,7 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inicio3Row: {
-    paddingVertical: 9,
+    paddingVertical: 8.3,
     paddingHorizontal: 11,
   },
   refreshButton: {
