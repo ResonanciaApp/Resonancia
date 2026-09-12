@@ -690,7 +690,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.previewButton,
                             {
                               left: 12,
-                              top: ambientalImageBottom - 46,
+                              top: 12,
                             },
                           ]}
                         >
