@@ -97,10 +97,14 @@ export function DailyRecommendationsSection({
                 session={session}
                 imageSize={inicio3Compact ? 81.9 : 103.7}
                 imageOffsetX={inicio3Compact ? 0 : -4}
-                metaText={`${session.categoryLabel} · ${session.durationLabel}`}
+                metaText={
+                  inicio3Compact
+                    ? session.categoryLabel
+                    : `${session.categoryLabel} · ${session.durationLabel}`
+                }
                 showDurationBadge={inicio3Compact}
                 showChevron
-                titleFontSize={inicio3Compact ? 18 : undefined}
+                titleFontSize={inicio3Compact ? 16 : undefined}
                 titleFontWeight={inicio3Compact ? "600" : undefined}
                 authorColor={themeAccent}
                 authorFontSize={theme.id === "indigo2" ? 11 : undefined}
@@ -162,6 +166,8 @@ const styles = StyleSheet.create({
   },
   inicio3RecommendationsList: {
     gap: 0,
+    paddingTop: 8,
+    paddingBottom: 8,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
     borderRadius: 16,
