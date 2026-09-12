@@ -488,7 +488,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalFilledImageBottom =
     ambientalFilledImageTop + ambientalFilledImageHeight;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 20;
-  const ambientalPlayIconSize = 22 * ambientalFillScale + 20;
+  const ambientalPlayIconSize = 22 * ambientalFillScale + 14;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
