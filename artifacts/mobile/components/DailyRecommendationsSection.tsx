@@ -79,30 +79,34 @@ export function DailyRecommendationsSection({
       </Text>
 
       <View style={styles.recommendationsList}>
-        {recommendations.map((session) => (
-          <CategoryAtmosphericCard
-            key={session.id}
-            categoryId={session.categoryId}
-            style={[
-              styles.recommendationCard,
-              inicio3Compact && styles.inicio3RecommendationCard,
-            ]}
-          >
-            <SessionRow
-              session={session}
-              imageSize={inicio3Compact ? 88.1 : 103.7}
-              imageOffsetX={inicio3Compact ? 0 : -4}
-              metaText={`${session.categoryLabel} · ${session.durationLabel}`}
-              showChevron={!inicio3Compact}
-              titleFontSize={inicio3Compact ? 18 : undefined}
-              titleFontWeight={inicio3Compact ? "600" : undefined}
-              staticPlayBadge={inicio3Compact}
-              authorColor={themeAccent}
-              authorFontSize={theme.id === "indigo2" ? 11 : undefined}
-              chevronColor={theme.id === "indigo2" ? themeAccent : undefined}
-              style={[styles.row, inicio3Compact && styles.inicio3Row]}
-            />
-          </CategoryAtmosphericCard>
+        {recommendations.map((session, index) => (
+          <React.Fragment key={session.id}>
+            <CategoryAtmosphericCard
+              categoryId={session.categoryId}
+              style={[
+                styles.recommendationCard,
+                inicio3Compact && styles.inicio3RecommendationCard,
+              ]}
+            >
+              <SessionRow
+                session={session}
+                imageSize={inicio3Compact ? 88.1 : 103.7}
+                imageOffsetX={inicio3Compact ? 0 : -4}
+                metaText={`${session.categoryLabel} · ${session.durationLabel}`}
+                showChevron={!inicio3Compact}
+                titleFontSize={inicio3Compact ? 18 : undefined}
+                titleFontWeight={inicio3Compact ? "600" : undefined}
+                staticPlayBadge={inicio3Compact}
+                authorColor={themeAccent}
+                authorFontSize={theme.id === "indigo2" ? 11 : undefined}
+                chevronColor={theme.id === "indigo2" ? themeAccent : undefined}
+                style={[styles.row, inicio3Compact && styles.inicio3Row]}
+              />
+            </CategoryAtmosphericCard>
+            {inicio3Compact && index < recommendations.length - 1 ? (
+              <View style={styles.inicio3CardDivider} />
+            ) : null}
+          </React.Fragment>
         ))}
       </View>
       {onRefreshRecommendations && (
@@ -152,6 +156,14 @@ const styles = StyleSheet.create({
   },
   inicio3RecommendationCard: {
     borderRadius: 27,
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  inicio3CardDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: 11,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   row: {
     paddingVertical: 9.3,

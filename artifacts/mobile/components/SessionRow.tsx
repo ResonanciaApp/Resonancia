@@ -141,7 +141,7 @@ export function SessionRow({
                 <View style={styles.staticPlayBadgeTint} />
                 <MaterialCommunityIcons
                   name="play"
-                  size={22}
+                  size={17}
                   color="#F9F9F9"
                 />
               </View>
@@ -279,10 +279,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 5,
     left: 8,
-    top: 8,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    bottom: 8,
+    width: 29,
+    height: 29,
+    borderRadius: 14.5,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
