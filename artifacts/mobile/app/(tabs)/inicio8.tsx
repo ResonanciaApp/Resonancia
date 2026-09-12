@@ -187,8 +187,9 @@ const INICIO2_SCROLL_START_THRESHOLD = 8;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
-const INICIO3_TOOL_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 3) / 4);
-const INICIO3_TOOL_WIDE_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
+const INICIO3_TOOL_GAP = 7;
+const INICIO3_TOOL_W = Math.floor((width - GRID_PAD * 2 - INICIO3_TOOL_GAP * 3) / 4);
+const INICIO3_TOOL_WIDE_W = Math.floor((width - GRID_PAD * 2 - INICIO3_TOOL_GAP * 2) / 3);
 const SHOW_CONTINUE_LISTENING = false;
 
 const INICIO3_TOOL_BLOCKS = [
@@ -2665,6 +2666,7 @@ export default function HomeScreen2({
                 onPress={() => handleInicio3ToolPress(tool.id)}
                 style={({ pressed }) => [
                   styles.inicio3ToolCell,
+                  index < 4 && styles.inicio3ToolCellCompact,
                   index >= 4 && styles.inicio3ToolCellWide,
                   { opacity: pressed ? 0.72 : 1 },
                 ]}
@@ -3331,7 +3333,7 @@ const styles = StyleSheet.create({
   inicio3ToolGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: TEMA_GAP,
+    gap: INICIO3_TOOL_GAP,
     marginHorizontal: GRID_PAD,
     marginBottom: INICIO2_SECTION_GAP,
   },
@@ -3348,6 +3350,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 5,
     paddingVertical: 12,
+  },
+  inicio3ToolCellCompact: {
+    minHeight: 87,
   },
   inicio3ToolCellWide: {
     width: INICIO3_TOOL_WIDE_W,
