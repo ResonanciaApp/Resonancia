@@ -1339,8 +1339,8 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 292 : 66),
-            bottom: isInicio3 ? 46 : 18,
+            top: topInset + (isInicio3 ? 294 : 66),
+            bottom: isInicio3 ? 44 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
@@ -3309,9 +3309,10 @@ const styles = StyleSheet.create({
     left: GRID_PAD,
     right: GRID_PAD,
     zIndex: 11,
-    minHeight: 102,
+    minHeight: 112,
     flexDirection: "row",
     alignItems: "stretch",
+    paddingVertical: 4,
   },
   inicio3MonthlyHeroFrame: {
     position: "absolute",
@@ -3324,7 +3325,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
   },
   inicio3MonthlyDate: {
-    width: 70,
+    width: 72,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3334,6 +3335,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     lineHeight: 16,
+    width: "100%",
+    textAlign: "center",
+    marginBottom: 2,
   },
   inicio3MonthlyDay: {
     color: "#BE9650",
@@ -3341,6 +3345,8 @@ const styles = StyleSheet.create({
     fontSize: 46,
     fontWeight: "500",
     lineHeight: 50,
+    width: "100%",
+    textAlign: "center",
   },
   inicio3MonthlyMonth: {
     color: "#F9F9F9",
@@ -3348,10 +3354,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 19,
+    width: "100%",
+    textAlign: "center",
+    marginTop: 2,
   },
   inicio3MonthlyDivider: {
     width: 1,
-    marginHorizontal: 15,
+    marginHorizontal: 12,
     backgroundColor: "rgba(249,249,249,0.18)",
   },
   inicio3MonthlyCopy: {
@@ -3364,7 +3373,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700",
     lineHeight: 16,
-    marginBottom: 4,
+    marginBottom: 7,
   },
   inicio3MonthlyTitle: {
     color: "#F9F9F9",
@@ -3372,14 +3381,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "700",
     lineHeight: 24,
-    marginBottom: 5,
+    marginBottom: 8,
   },
   inicio3MonthlyDescription: {
     color: "rgba(249,249,249,0.72)",
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
-    lineHeight: 18,
+    lineHeight: 19,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
