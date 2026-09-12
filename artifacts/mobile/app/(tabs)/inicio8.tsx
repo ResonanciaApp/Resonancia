@@ -1425,10 +1425,6 @@ function Inicio2HeroStatic({
               );
             })}
           </View>
-          <View
-            pointerEvents="none"
-            style={[styles.inicio3HeaderDivider, { top: topInset + 146 }]}
-          />
         </>
       )}
 
@@ -2537,8 +2533,6 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
-
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
@@ -2565,7 +2559,6 @@ export default function HomeScreen2({
             inicio3Compact={variant === "inicio3"}
           />
         )}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
@@ -2853,7 +2846,6 @@ export default function HomeScreen2({
             }}
           />
         )}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -2886,11 +2878,7 @@ export default function HomeScreen2({
             />
           </View>
         )}
-        {variant === "inicio3" && (
-          <View style={styles.inicio3SectionDivider} />
-        )}
         {isInicio2 && <AlmaCommunitySection />}
-        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
@@ -3332,14 +3320,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    zIndex: 12,
-  },
-  inicio3HeaderDivider: {
-    position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(249,249,249,0.18)",
     zIndex: 12,
   },
   inicio3StreakDayWrapper: {
