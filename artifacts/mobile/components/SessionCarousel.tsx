@@ -635,8 +635,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               top: 0,
                               borderTopLeftRadius: ambientalCardBorderRadius ?? 18,
                               borderTopRightRadius: ambientalCardBorderRadius ?? 18,
-                              borderBottomLeftRadius: 13,
-                              borderBottomRightRadius: 13,
+                              borderBottomLeftRadius: 17,
+                              borderBottomRightRadius: 17,
                             }
                           : {
                               width: ambientalImageSize,
@@ -647,6 +647,28 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             },
                       ]}
                     />
+                    {ambientalImageFillTop && (
+                      <View
+                        pointerEvents="none"
+                        style={[
+                          styles.ambientalImageBottomEdge,
+                          {
+                            width: cw + 1,
+                            height: ambientalImageBottom,
+                            left: -1,
+                          },
+                        ]}
+                      >
+                        <LinearGradient
+                          colors={[
+                            "rgba(255,255,255,0)",
+                            "rgba(255,255,255,0.035)",
+                          ]}
+                          locations={[0, 1]}
+                          style={styles.ambientalImageBottomFade}
+                        />
+                      </View>
+                    )}
                     {soundPreview && (
                       <>
                         <PreviewFadeLayer
@@ -1115,6 +1137,22 @@ const styles = StyleSheet.create({
   ambientalImage: {
     position: "absolute",
     overflow: "hidden",
+  },
+  ambientalImageBottomEdge: {
+    position: "absolute",
+    top: 0,
+    overflow: "hidden",
+    borderBottomLeftRadius: 17,
+    borderBottomRightRadius: 17,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+  },
+  ambientalImageBottomFade: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 9,
   },
   previewButton: {
     position: "absolute",
