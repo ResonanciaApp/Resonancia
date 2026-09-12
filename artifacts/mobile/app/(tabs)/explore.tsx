@@ -64,6 +64,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 16;
 const GAP = 16;
 const SECTION_GAP = 53;
+const MONTHLY_SOUND_THERAPY_HERO_HEIGHT = 220;
 const EXPLORE_SECTIONS_CACHE_KEY = "cdc_explore_sections_v1";
 
 const SQCARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -582,6 +583,54 @@ export function ExploreScreen({
         </View>
 
         <View style={styles.scrollContent}>
+          <View style={styles.monthlySoundTherapySection}>
+            <View style={styles.monthlySoundTherapyHeader}>
+              <Image
+                source={require("@/assets/images/avatar-fundador.png")}
+                style={styles.monthlySoundTherapyAvatar}
+                contentFit="cover"
+                cachePolicy="memory-disk"
+              />
+              <View style={styles.monthlySoundTherapyHeaderCopy}>
+                <Text style={styles.monthlySoundTherapySectionTitle}>
+                  Sonoterapia del mes
+                </Text>
+                <Text style={styles.monthlySoundTherapyDescription}>
+                  Sesiones de sonidos de la tierra y el universo.
+                </Text>
+              </View>
+            </View>
+
+            <View
+              accessibilityRole="image"
+              accessibilityLabel="Sonoterapia del mes de Casa del Cuenco"
+            >
+              <View style={styles.monthlySoundTherapyHero}>
+                <Image
+                  source={require("@/assets/images/ambient/universo.jpg")}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                  transition={IMAGE_TRANSITION}
+                  placeholder={BLUR_PLACEHOLDER}
+                />
+              </View>
+              <View style={styles.monthlySoundTherapyMeta}>
+                <Text style={styles.monthlySoundTherapyContentTitle}>
+                  Sonidos de la Tierra y el Universo
+                </Text>
+                <Text
+                  style={[
+                    styles.monthlySoundTherapyAuthor,
+                    { color: activeTheme.accent },
+                  ]}
+                >
+                  Casa del Cuenco
+                </Text>
+              </View>
+            </View>
+          </View>
+
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={15}
@@ -946,6 +995,66 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  monthlySoundTherapySection: {
+    paddingHorizontal: H_PAD,
+    marginTop: 20,
+    marginBottom: SECTION_GAP,
+  },
+  monthlySoundTherapyHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 17,
+  },
+  monthlySoundTherapyAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(181,211,255,0.057)",
+  },
+  monthlySoundTherapyHeaderCopy: {
+    flex: 1,
+  },
+  monthlySoundTherapySectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    color: "#FBFBFB",
+    marginBottom: 3,
+  },
+  monthlySoundTherapyDescription: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "400",
+    color: "rgba(251,251,251,0.72)",
+  },
+  monthlySoundTherapyHero: {
+    width: "100%",
+    height: MONTHLY_SOUND_THERAPY_HERO_HEIGHT,
+    borderRadius: 15,
+    overflow: "hidden",
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  monthlySoundTherapyMeta: {
+    marginTop: 12,
+  },
+  monthlySoundTherapyContentTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "700",
+    color: "#FBFBFB",
+    marginBottom: 4,
+  },
+  monthlySoundTherapyAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: "500",
+  },
   contentCategorySection: {
     marginBottom: SECTION_GAP,
   },
