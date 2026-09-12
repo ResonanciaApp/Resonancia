@@ -154,7 +154,7 @@ export default function SonidosScreen() {
     : isIndigoThemeId(theme.id)
       ? "rgba(181,211,255,0.1)"
       : theme.id === "indigo2"
-        ? "rgba(0,0,0,0.2)"
+        ? "rgba(255,255,255,0.045)"
         : "rgba(181,211,255,0.1)";
   const inactiveTabBorder = theme.id === "indigo2"
     ? "rgba(255,255,255,0.1)"
@@ -434,7 +434,11 @@ export default function SonidosScreen() {
                    progress: soundPreview.progress,
                    onToggle: soundPreview.toggle,
                  }}
-                 ambientalCardBackground="rgba(0,0,0,0.28)"
+                 ambientalCardBackground={
+                   theme.id === "indigo2"
+                     ? "rgba(255,255,255,0.045)"
+                     : "rgba(0,0,0,0.28)"
+                 }
                  ambientalCardBorderColor="rgba(255,255,255,0.1)"
                  ambientalCardBorderWidth={1}
                  ambientalCardBorderRadius={28}
