@@ -95,7 +95,7 @@ export function AmbientSoundPickerSheet({
           <Pressable onPress={onClose} hitSlop={8} accessibilityRole="button">
             <Text style={styles.closeText}>Cerrar</Text>
           </Pressable>
-          <Text style={styles.topTitle}>Sonido de fondo</Text>
+          <Text style={styles.topTitle}>Sonidos de fondo</Text>
           <View style={styles.topBarSpacer} />
         </View>
 
@@ -107,7 +107,6 @@ export function AmbientSoundPickerSheet({
             { paddingBottom: 116 + bottomPad },
           ]}
         >
-          <Text style={styles.sectionTitle}>Elige un sonido</Text>
           <View style={styles.grid}>
             {PLAYABLE_SOUNDS.map((sound) => (
               <SoundCard
@@ -120,7 +119,15 @@ export function AmbientSoundPickerSheet({
           </View>
         </ScrollView>
 
-        <View style={[styles.footer, { paddingBottom: bottomPad + 12 }]}>
+        <View
+          style={[
+            styles.footer,
+            {
+              paddingBottom: bottomPad + 12,
+              backgroundColor: theme.gradient[0] as string,
+            },
+          ]}
+        >
           <AmbientVolumeControl
             sound={selectedSound}
             volume={ambientVolume}
@@ -244,11 +251,6 @@ function SoundCard({
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
-        {selected && (
-          <View style={styles.selectedBadge}>
-            <Feather name="check" size={14} color="#FFFFFF" />
-          </View>
-        )}
       </Pressable>
       <Text style={[styles.cardName, selected && styles.cardNameSelected]} numberOfLines={2}>
         {sound.name}
@@ -259,7 +261,7 @@ function SoundCard({
 
 const GRID_HORIZONTAL_PADDING = 16;
 const GRID_GAP = 12;
-const CARD_WIDTH = `${(100 - 4) / 3}%` as `${number}%`;
+const CARD_WIDTH = `${(100 - 6) / 4}%` as `${number}%`;
 
 const styles = StyleSheet.create({
   root: {
@@ -294,13 +296,6 @@ const styles = StyleSheet.create({
     paddingTop: 22,
     paddingHorizontal: GRID_HORIZONTAL_PADDING,
   },
-  sectionTitle: {
-    marginBottom: 17,
-    fontFamily: "Manrope",
-    fontSize: 19,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -320,24 +315,13 @@ const styles = StyleSheet.create({
   },
   cardSelected: {
     borderWidth: 2,
-    borderColor: "#BE9650",
+    borderColor: "#F9F9F9",
   },
   cardPressed: {
     opacity: 0.78,
   },
   cardFallback: {
     backgroundColor: "rgba(255,255,255,0.08)",
-  },
-  selectedBadge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 25,
-    height: 25,
-    borderRadius: 13,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#BE9650",
   },
   cardName: {
     minHeight: 35,
@@ -348,6 +332,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontWeight: "500",
     color: "rgba(255,255,255,0.78)",
+    textAlign: "center",
   },
   cardNameSelected: {
     fontWeight: "700",
@@ -360,7 +345,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: 12,
     paddingHorizontal: 16,
-    backgroundColor: "rgba(5,4,12,0.9)",
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(255,255,255,0.12)",
   },
@@ -391,7 +375,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#F9F9F9",
   },
   sliderRow: {
     flexDirection: "row",
@@ -404,18 +388,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sliderTrack: {
-    height: 3,
-    borderRadius: 2,
+    height: 5,
+    borderRadius: 3,
     backgroundColor: "rgba(255,255,255,0.25)",
   },
   sliderFill: {
-    height: 3,
-    borderRadius: 2,
+    height: 5,
+    borderRadius: 3,
     backgroundColor: "#FFFFFF",
   },
   sliderThumb: {
     position: "absolute",
-    top: -5,
+    top: -4,
     width: 13,
     height: 13,
     marginLeft: -6,
