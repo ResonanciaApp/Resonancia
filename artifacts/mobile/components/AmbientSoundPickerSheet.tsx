@@ -3,6 +3,7 @@ import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Modal,
   Platform,
   Pressable,
@@ -46,6 +47,9 @@ export function AmbientSoundPickerSheet({
   const { theme } = useSceneTheme();
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
   const [ambientVolume, setAmbientVolume] = useState(initialAmbientVolume ?? 0.5);
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
+  const [scrollContentHeight, setScrollContentHeight] = useState(0);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (!visible) return;
@@ -69,6 +73,13 @@ export function AmbientSoundPickerSheet({
 
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const topPad = (Platform.OS === "web" ? 20 : insets.top) + 8;
+  const scrollRailHeight = Math.max(0, scrollViewportHeight - 24);
+  const scrollThumbHeight =
+    scrollContentHeight > scrollViewportHeight
+      ? Math.max(40, scrollRailHeight * (scrollViewportHeight / scrollContentHeight))
+      : scrollRailHeight;
+  const maxScrollOffset = Math.max(1, scrollContentHeight - scrollViewportHeight);
+  const maxThumbOffset = Math.max(0, scrollRailHeight - scrollThumbHeight);
 
   return (
     <Modal
@@ -99,25 +110,58 @@ export function AmbientSoundPickerSheet({
           <View style={styles.topBarSpacer} />
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingBottom: 116 + bottomPad },
-          ]}
-        >
-          <View style={styles.grid}>
-            {PLAYABLE_SOUNDS.map((sound) => (
-              <SoundCard
-                key={sound.id}
-                sound={sound}
-                selected={localSelected === sound.id}
-                onPress={() => selectSound(sound.id)}
+        <View style={styles.scrollFrame}>
+          <Animated.ScrollView
+            showsVerticalScrollIndicator={false}
+            bounces
+            alwaysBounceVertical
+            overScrollMode="always"
+            decelerationRate="normal"
+            scrollEventThrottle={16}
+            onLayout={(event) => setScrollViewportHeight(event.nativeEvent.layout.height)}
+            onContentSizeChange={(_width, height) => setScrollContentHeight(height)}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: true },
+            )}
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingBottom: 116 + bottomPad },
+            ]}
+          >
+            <View style={styles.grid}>
+              {PLAYABLE_SOUNDS.map((sound) => (
+                <SoundCard
+                  key={sound.id}
+                  sound={sound}
+                  selected={localSelected === sound.id}
+                  onPress={() => selectSound(sound.id)}
+                />
+              ))}
+            </View>
+          </Animated.ScrollView>
+          {scrollContentHeight > scrollViewportHeight && (
+            <View pointerEvents="none" style={styles.scrollRail}>
+              <Animated.View
+                style={[
+                  styles.scrollThumb,
+                  {
+                    height: scrollThumbHeight,
+                    transform: [
+                      {
+                        translateY: scrollY.interpolate({
+                          inputRange: [0, maxScrollOffset],
+                          outputRange: [0, maxThumbOffset],
+                          extrapolate: "clamp",
+                        }),
+                      },
+                    ],
+                  },
+                ]}
               />
-            ))}
-          </View>
-        </ScrollView>
+            </View>
+          )}
+        </View>
 
         <View
           style={[
@@ -296,6 +340,28 @@ const styles = StyleSheet.create({
     paddingTop: 22,
     paddingHorizontal: GRID_HORIZONTAL_PADDING,
   },
+  scrollFrame: {
+    flex: 1,
+  },
+  scrollRail: {
+    position: "absolute",
+    top: 12,
+    right: 5,
+    bottom: 12,
+    width: 2,
+    overflow: "hidden",
+    borderRadius: 2,
+    backgroundColor: "rgba(249,249,249,0.1)",
+  },
+  scrollThumb: {
+    width: 2,
+    borderRadius: 2,
+    backgroundColor: "rgba(249,249,249,0.62)",
+    shadowColor: "#F9F9F9",
+    shadowOpacity: 0.28,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 0 },
+  },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -309,7 +375,7 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 1,
     overflow: "hidden",
-    borderRadius: 22,
+    borderRadius: 999,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.08)",
   },
