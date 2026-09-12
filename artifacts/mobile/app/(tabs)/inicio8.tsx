@@ -1304,16 +1304,6 @@ function Inicio2HeroStatic({
     >
       {isInicio3 && (
         <View
-          pointerEvents="none"
-          style={[
-            styles.inicio3MonthlyHeroFrame,
-            { top: topInset + 151 },
-          ]}
-        />
-      )}
-
-      {isInicio3 && (
-        <View
           style={[styles.inicio3MonthlySelection, { top: topInset + 161 }]}
           testID="inicio3-monthly-selection"
         >
@@ -1339,8 +1329,8 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 294 : 66),
-            bottom: isInicio3 ? 44 : 18,
+            top: topInset + (isInicio3 ? 286 : 66),
+            bottom: isInicio3 ? 52 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
@@ -3309,23 +3299,12 @@ const styles = StyleSheet.create({
     left: GRID_PAD,
     right: GRID_PAD,
     zIndex: 11,
-    minHeight: 112,
+    minHeight: 102,
     flexDirection: "row",
     alignItems: "stretch",
-    paddingVertical: 4,
-  },
-  inicio3MonthlyHeroFrame: {
-    position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
-    bottom: 42,
-    zIndex: 20,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 27,
   },
   inicio3MonthlyDate: {
-    width: 72,
+    width: 70,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3335,9 +3314,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     lineHeight: 16,
-    width: "100%",
-    textAlign: "center",
-    marginBottom: 2,
   },
   inicio3MonthlyDay: {
     color: "#BE9650",
@@ -3345,8 +3321,6 @@ const styles = StyleSheet.create({
     fontSize: 46,
     fontWeight: "500",
     lineHeight: 50,
-    width: "100%",
-    textAlign: "center",
   },
   inicio3MonthlyMonth: {
     color: "#F9F9F9",
@@ -3354,13 +3328,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 19,
-    width: "100%",
-    textAlign: "center",
-    marginTop: 2,
   },
   inicio3MonthlyDivider: {
     width: 1,
-    marginHorizontal: 12,
+    marginHorizontal: 15,
     backgroundColor: "rgba(249,249,249,0.18)",
   },
   inicio3MonthlyCopy: {
@@ -3373,7 +3344,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700",
     lineHeight: 16,
-    marginBottom: 7,
+    marginBottom: 4,
   },
   inicio3MonthlyTitle: {
     color: "#F9F9F9",
@@ -3381,14 +3352,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "700",
     lineHeight: 24,
-    marginBottom: 8,
+    marginBottom: 5,
   },
   inicio3MonthlyDescription: {
     color: "rgba(249,249,249,0.72)",
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
-    lineHeight: 19,
+    lineHeight: 18,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
