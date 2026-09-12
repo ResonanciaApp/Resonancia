@@ -625,7 +625,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         styles.ambientalImage,
                         ambientalImageFillTop
                           ? {
-                              width: cw,
+                               right: 0,
                               height:
                                 (ch - ambientalImageSize) / 2 -
                                 1 -
