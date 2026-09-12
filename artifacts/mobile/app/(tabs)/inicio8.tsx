@@ -1299,25 +1299,13 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52;
   const inicio3HeroTop = topInset + 161;
   const inicio3MonthlyTop = inicio3HeroTop + inicio3HeroHeight + 50;
-  const inicio3MonthlyCardsTop = inicio3MonthlyTop + 102 + 20;
-  const inicio3MonthlyCardWidth =
-    (width - GRID_PAD * 2 - CONTENT_CAROUSEL_GAP) / 2;
-  const inicio3MonthlyCardHeight = inicio3MonthlyCardWidth + 62;
-  const inicio3MonthlySessions = SESSIONS.filter(
-    (session) =>
-      !session.isPlaceholder &&
-      session.categoryId !== "ambientales",
-  ).slice(0, 2);
 
   return (
     <View
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height:
-            inicio3MonthlyCardsTop +
-            inicio3MonthlyCardHeight +
-            28,
+          height: inicio3MonthlyTop + 102 + 28,
         },
       ]}
       testID="inicio2-hero-static"
@@ -1346,29 +1334,6 @@ function Inicio2HeroStatic({
               con intención.
             </Text>
           </View>
-        </View>
-      )}
-
-      {isInicio3 && (
-        <View
-          style={[
-            styles.inicio3MonthlyCards,
-            { top: inicio3MonthlyCardsTop },
-          ]}
-          testID="inicio3-monthly-cards"
-        >
-          {inicio3MonthlySessions.map((session) => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              width={inicio3MonthlyCardWidth}
-              squareMetaBelow
-              categoryGridPresentation
-              showAuthor
-              showAuthorAvatar={false}
-              style={styles.inicio3MonthlyCard}
-            />
-          ))}
         </View>
       )}
 
@@ -3352,6 +3317,8 @@ const styles = StyleSheet.create({
     minHeight: 102,
     flexDirection: "row",
     alignItems: "stretch",
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   inicio3MonthlyTopDivider: {
     position: "absolute",
@@ -3419,18 +3386,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "400",
     lineHeight: 18,
-  },
-  inicio3MonthlyCards: {
-    position: "absolute",
-    left: GRID_PAD,
-    right: GRID_PAD,
-    zIndex: 11,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: CONTENT_CAROUSEL_GAP,
-  },
-  inicio3MonthlyCard: {
-    marginRight: 0,
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
