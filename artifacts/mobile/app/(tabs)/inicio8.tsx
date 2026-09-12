@@ -1290,7 +1290,7 @@ function Inicio2HeroStatic({
     "Jun.",
     "Jul.",
     "Ago.",
-    "Sep.",
+    "Sep",
     "Oct.",
     "Nov.",
     "Dic.",
@@ -3357,9 +3357,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    top: -14,
+    top: -24,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(249,249,249,0.18)",
   },
   inicio3MonthlyDate: {
     width: 70,
@@ -3379,6 +3379,7 @@ const styles = StyleSheet.create({
     fontSize: 46,
     fontWeight: "500",
     lineHeight: 50,
+    transform: [{ translateY: 5 }],
   },
   inicio3MonthlyMonth: {
     color: "#F9F9F9",
