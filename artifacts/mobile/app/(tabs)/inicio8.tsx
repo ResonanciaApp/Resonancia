@@ -1300,7 +1300,7 @@ function Inicio2HeroStatic({
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
-          { paddingTop: topInset + 8 },
+          { paddingTop: topInset + 8 + (isInicio3 ? 10 : 0) },
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
