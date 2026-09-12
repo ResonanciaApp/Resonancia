@@ -328,7 +328,14 @@ function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boo
         { backgroundColor: lightBackground ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.28)" },
       ]}
     >
-      <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
+      <Text
+        style={[
+          styles.inicio2HeroLotusCount,
+          lightBackground && styles.inicio3HeroLotusCount,
+        ]}
+      >
+        {currentStreak}
+      </Text>
       <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" />
     </View>
   );
@@ -1440,6 +1447,18 @@ function Inicio2HeroStatic({
           isInicio3 && styles.inicio3HeroCopy,
         ]}
       >
+        {isInicio3 && (
+          <View style={styles.inicio3HeroPill}>
+            <MaterialCommunityIcons
+              name="creation"
+              size={13}
+              color="#F9F9F9"
+            />
+            <Text style={styles.inicio3HeroPillText}>
+              Inspiración semanal
+            </Text>
+          </View>
+        )}
         <Text style={[
           styles.inicio2HeroTitle,
           styles.inicio2HeroStaticTitle,
@@ -3268,6 +3287,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     transform: [{ translateY: 2 }],
   },
+  inicio3HeroLotusCount: {
+    color: "#BE9650",
+  },
   inicioViewAllText: {
     color: "#067D74",
     fontFamily: "Manrope",
@@ -3350,12 +3372,33 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   inicio3HeroCopy: {
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  inicio3HeroPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginBottom: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(6,10,15,0.56)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(249,249,249,0.32)",
+  },
+  inicio3HeroPillText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: "600",
+    color: "#F9F9F9",
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
-    textAlign: "center",
+    textAlign: "left",
     fontSize: 18,
     lineHeight: 23,
   },
