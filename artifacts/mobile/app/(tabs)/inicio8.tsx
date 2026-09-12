@@ -102,9 +102,7 @@ import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { ProgresoModal } from "@/components/ProgresoModal";
-import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
-import { useVideos } from "@/hooks/useVideos";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
@@ -214,7 +212,6 @@ const INICIO2_DURATION_PILL_GAP = 9;
 const INICIO2_DURATION_PILL_WIDTH = Math.floor(
   (width - GRID_PAD * 2 - INICIO2_DURATION_PILL_GAP * 2) / 3,
 );
-const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 0.85);
 
 function DurationExplorePill({
   label,
@@ -1548,7 +1545,6 @@ export default function HomeScreen2({
   const todayKey = useDayRollover();
 
   const { isPremium } = usePremium();
-  const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
@@ -2677,6 +2673,26 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
           />
         )}
+        {variant === "inicio3" && (
+          <SessionCarousel
+            title="Populares"
+            sessions={popularSessions}
+            isPremium={isPremium}
+            onPress={handleSessionCarouselPress}
+            style={inicio2SessionCarouselStyle}
+            trailingPeek={20}
+            cardWidth={INICIO3_SESSION_CARD_WIDTH}
+            allowOversizedCardWidth
+            squareTitleAuthorBelow
+            sleepBelowMetadataStyle={{ marginTop: 5 }}
+            categoryGridPresentation
+            whiteMetadataGlass
+            showDurationClock
+            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+            titleSize={19}
+            viewAllColor={carouselViewAllColor}
+          />
+        )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
             <Text style={[styles.sectionTitle, styles.continueSectionTitle]}>
@@ -2744,25 +2760,6 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
-        {isInicio2 && videos.length > 0 && (
-          <View style={{ marginBottom: INICIO2_SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 17 }}>
-              <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 0 }]}>Videos destacados</Text>
-              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
-                <Text style={[styles.inicioViewAllText, { color: carouselViewAllColor }]}>Ver todos</Text>
-              </Pressable>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
-            >
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
         {isInicio2 && (
           <MiRutinaSection
             cardBackgroundColor={
@@ -2779,7 +2776,7 @@ export default function HomeScreen2({
             }}
           />
         )}
-        {isInicio2 && (
+        {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
               title="Populares"

@@ -43,6 +43,8 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { VideoCard } from "@/components/VideoCard";
+import { useVideos } from "@/hooks/useVideos";
 import {
   useGetPinnedFeatured,
   useGetPopularSessions,
@@ -285,6 +287,7 @@ export function ExploreScreen({
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
+  const { videos } = useVideos();
   const { version: catalogVersion } = useCatalog();
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -750,6 +753,42 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          {videos.length > 0 && (
+            <View style={styles.newInResonanceSection}>
+              <View style={styles.newInResonanceHeader}>
+                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                  Videos destacados
+                </Text>
+                <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                  <Text
+                    style={{
+                      fontFamily: "Manrope",
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: activeTheme.accent ?? "#c2c2c2",
+                    }}
+                  >
+                    Ver todos
+                  </Text>
+                </Pressable>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginHorizontal: -H_PAD }}
+                contentContainerStyle={styles.newInResonanceRow}
+              >
+                {videos.slice(0, 8).map((video) => (
+                  <VideoCard
+                    key={video.id}
+                    video={video}
+                    width={NEW_IN_RESONANCE_CARD_WIDTH}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          )}
 
           {editorialDiscoverCarousels.map((carousel) => (
             <EditorialPlaylistCarousel
