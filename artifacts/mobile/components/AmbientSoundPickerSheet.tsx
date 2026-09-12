@@ -17,14 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getSoundImage } from "@/config/sound-images";
 import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { SOUNDS, hasSoundFile, type MixSound } from "@/data/sounds";
-import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
-
-function isPlayable(id: string): boolean {
-  return hasSoundFile(id) || !!REMOTE_SOUND_MAP[id];
-}
-
-const PLAYABLE_SOUNDS = SOUNDS.filter((sound) => isPlayable(sound.id));
+import { PLAYABLE_AMBIENT_SOUNDS } from "@/data/playable-ambient-sounds";
+import { SOUNDS, type MixSound } from "@/data/sounds";
 
 type Props = {
   visible: boolean;
@@ -130,7 +124,7 @@ export function AmbientSoundPickerSheet({
             ]}
           >
             <View style={styles.grid}>
-              {PLAYABLE_SOUNDS.map((sound) => (
+              {PLAYABLE_AMBIENT_SOUNDS.map((sound) => (
                 <SoundCard
                   key={sound.id}
                   sound={sound}

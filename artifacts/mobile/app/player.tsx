@@ -45,6 +45,12 @@ import Svg, { Path, Rect } from "react-native-svg";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
+import { PLAYABLE_AMBIENT_SOUND_IDS } from "@/data/playable-ambient-sounds";
+import {
+  loadAmbientSoundPreference,
+  saveAmbientSoundPreference,
+  shouldAutoStartAmbientSound,
+} from "@/lib/ambient-sound-preference";
 import { GhostPill } from "@/components/GhostPill";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -266,7 +272,17 @@ export default function PlayerScreen() {
   useEffect(() => {
     const sid = currentSession?.id;
     if (!sid) return;
+    let cancelled = false;
     setSelectedAmbientSoundId(null);
+    ambientOverlayRef.current?.pause();
+    if (shouldAutoStartAmbientSound(currentSession.categoryId)) {
+      void loadAmbientSoundPreference(
+        AsyncStorage,
+        PLAYABLE_AMBIENT_SOUND_IDS,
+      ).then((soundId) => {
+        if (!cancelled) setSelectedAmbientSoundId(soundId);
+      });
+    }
     setShowOptionsSheet(false);
     setShowPlaylistSheet(false);
     setShowFolderSheet(false);
@@ -276,7 +292,10 @@ export default function PlayerScreen() {
       const map: Record<string, number> = JSON.parse(val);
       setRating(map[sid] ?? 0);
     });
-  }, [currentSession?.id]);
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSession?.id, currentSession?.categoryId]);
 
   const handleRate = useCallback(async (stars: number) => {
     const sid = currentSession?.id;
@@ -991,7 +1010,18 @@ export default function PlayerScreen() {
         selectedSoundId={selectedAmbientSoundId}
         onClose={() => setShowAmbientPicker(false)}
         initialAmbientVolume={ambientOverlayVolume}
-        onPreviewStart={(id) => setSelectedAmbientSoundId(id)}
+        onPreviewStart={(id) => {
+          setSelectedAmbientSoundId(id);
+          if (shouldAutoStartAmbientSound(currentSession?.categoryId)) {
+            void saveAmbientSoundPreference(
+              AsyncStorage,
+              id,
+              PLAYABLE_AMBIENT_SOUND_IDS,
+            ).catch((error) => {
+              console.warn("[ambient-sound] no se pudo guardar la preferencia", error);
+            });
+          }
+        }}
         onAmbientVolumeChange={(vol) => {
           setAmbientOverlayVolume(vol);
           if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;

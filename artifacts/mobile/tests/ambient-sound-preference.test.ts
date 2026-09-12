@@ -1,0 +1,60 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import {
+  AMBIENT_SOUND_PREFERENCE_KEY,
+  loadAmbientSoundPreference,
+  resolveAmbientSoundPreference,
+  saveAmbientSoundPreference,
+  shouldAutoStartAmbientSound,
+  type AmbientPreferenceStorage,
+} from "../lib/ambient-sound-preference.ts";
+
+const PLAYABLE = ["rain", "forest", "ocean"] as const;
+
+function createStorage(initial: string | null = null): AmbientPreferenceStorage {
+  let value = initial;
+  return {
+    async getItem(key) {
+      assert.equal(key, AMBIENT_SOUND_PREFERENCE_KEY);
+      return value;
+    },
+    async setItem(key, nextValue) {
+      assert.equal(key, AMBIENT_SOUND_PREFERENCE_KEY);
+      value = nextValue;
+    },
+  };
+}
+
+test("uses the first playable sound when no preference exists", () => {
+  assert.equal(resolveAmbientSoundPreference(null, PLAYABLE), "rain");
+});
+
+test("keeps a stored preference when it is still playable", () => {
+  assert.equal(resolveAmbientSoundPreference("ocean", PLAYABLE), "ocean");
+});
+
+test("falls back when the stored sound is no longer playable", () => {
+  assert.equal(resolveAmbientSoundPreference("removed", PLAYABLE), "rain");
+});
+
+test("persists and reloads the most recently selected sound", async () => {
+  const storage = createStorage();
+  await saveAmbientSoundPreference(storage, "forest", PLAYABLE);
+  assert.equal(await loadAmbientSoundPreference(storage, PLAYABLE), "forest");
+});
+
+test("rejects unavailable sounds instead of persisting them", async () => {
+  const storage = createStorage();
+  await assert.rejects(
+    saveAmbientSoundPreference(storage, "removed", PLAYABLE),
+    /unavailable ambient sound/,
+  );
+});
+
+test("auto-start is restricted to meditation sessions", () => {
+  assert.equal(shouldAutoStartAmbientSound("meditaciones-guiadas"), true);
+  assert.equal(shouldAutoStartAmbientSound("musica"), false);
+  assert.equal(shouldAutoStartAmbientSound("ambientales"), false);
+  assert.equal(shouldAutoStartAmbientSound(undefined), false);
+});

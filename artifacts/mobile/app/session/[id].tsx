@@ -40,6 +40,12 @@ import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
+import { PLAYABLE_AMBIENT_SOUND_IDS } from "@/data/playable-ambient-sounds";
+import {
+  loadAmbientSoundPreference,
+  saveAmbientSoundPreference,
+  shouldAutoStartAmbientSound,
+} from "@/lib/ambient-sound-preference";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { GhostPill } from "@/components/GhostPill";
@@ -158,8 +164,26 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   // ── Sonido ambiente (mismo picker que el reproductor) ─────────────────────
   const [showAmbientPicker, setShowAmbientPicker] = useState(false);
   const [selectedAmbientSoundId, setSelectedAmbientSoundId] = useState<string | null>(null);
+  const [preferredAmbientSoundId, setPreferredAmbientSoundId] = useState<string | null>(null);
   const [ambientOverlayVolume, setAmbientOverlayVolume] = useState(0.5);
   const ambientOverlayRef = useRef<AudioPlayer | null>(null);
+
+  useEffect(() => {
+    if (!shouldAutoStartAmbientSound(session.categoryId)) {
+      setPreferredAmbientSoundId(null);
+      return;
+    }
+    let cancelled = false;
+    void loadAmbientSoundPreference(
+      AsyncStorage,
+      PLAYABLE_AMBIENT_SOUND_IDS,
+    ).then((soundId) => {
+      if (!cancelled) setPreferredAmbientSoundId(soundId);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [session.categoryId]);
 
   useEffect(() => {
     if (!ambientOverlayRef.current) {
@@ -697,10 +721,22 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       <AddToFolderSheet visible={showFolderSheet} sessionId={session.id} onClose={() => setShowFolderSheet(false)} />
       <AmbientSoundPickerSheet
         visible={showAmbientPicker}
-        selectedSoundId={selectedAmbientSoundId}
+        selectedSoundId={selectedAmbientSoundId ?? preferredAmbientSoundId}
         onClose={() => setShowAmbientPicker(false)}
         initialAmbientVolume={ambientOverlayVolume}
-        onPreviewStart={(sid) => setSelectedAmbientSoundId(sid)}
+        onPreviewStart={(sid) => {
+          setSelectedAmbientSoundId(sid);
+          if (isGuiada) {
+            setPreferredAmbientSoundId(sid);
+            void saveAmbientSoundPreference(
+              AsyncStorage,
+              sid,
+              PLAYABLE_AMBIENT_SOUND_IDS,
+            ).catch((error) => {
+              console.warn("[ambient-sound] no se pudo guardar la preferencia", error);
+            });
+          }
+        }}
         onAmbientVolumeChange={(vol) => {
           setAmbientOverlayVolume(vol);
           if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;
