@@ -1283,7 +1283,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 171 : 66),
+            top: topInset + (isInicio3 ? 146 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
@@ -1382,7 +1382,7 @@ function Inicio2HeroStatic({
 
       {isInicio3 && (
         <View
-          style={[styles.inicio3StreakRow, { top: topInset + 95 }]}
+          style={[styles.inicio3StreakRow, { top: topInset + 70 }]}
           testID="inicio3-streak-row"
         >
           {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
@@ -1414,7 +1414,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: topInset + (isInicio3 ? 171 : 66),
+            top: topInset + (isInicio3 ? 146 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroCopy,
