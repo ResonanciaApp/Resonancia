@@ -631,6 +631,8 @@ export function ExploreScreen({
             </View>
           </View>
 
+          <View style={styles.sectionDivider} />
+
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={15}
@@ -643,6 +645,8 @@ export function ExploreScreen({
               discoverTieredLayout
             />
           </View>
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.newInResonanceSection}>
             <View style={styles.newInResonanceHeader}>
@@ -700,15 +704,19 @@ export function ExploreScreen({
             </ScrollView>
           </View>
 
+          <View style={styles.sectionDivider} />
+
           {editorialDiscoverCarousels.map((carousel) => (
-            <EditorialPlaylistCarousel
-              key={carousel.id}
-              title={carousel.title}
-              playlists={carousel.playlists}
-              onPress={(playlist) =>
-                openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
-              }
-            />
+            <React.Fragment key={carousel.id}>
+              <EditorialPlaylistCarousel
+                title={carousel.title}
+                playlists={carousel.playlists}
+                onPress={(playlist) =>
+                  openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
+                }
+              />
+              <View style={styles.sectionDivider} />
+            </React.Fragment>
           ))}
 
           <View style={styles.durationSection}>
@@ -741,6 +749,8 @@ export function ExploreScreen({
               ))}
             </ScrollView>
           </View>
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.otherThemesSection}>
             <View style={styles.otherThemesHeader}>
@@ -968,7 +978,7 @@ const styles = StyleSheet.create({
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "#F9F9F9",
   },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
   searchBoxTibet: {
@@ -995,6 +1005,13 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: -27,
+    marginBottom: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
   monthlySoundTherapySection: {
     paddingHorizontal: H_PAD,
     marginTop: 20,
