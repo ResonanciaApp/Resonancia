@@ -348,7 +348,6 @@ export function DrawerMenu() {
                       <Text style={styles.profileName} numberOfLines={1}>
                         {fullName || "Mi perfil"}
                       </Text>
-                      <Feather name="chevron-right" size={17} color="#F9F9F9" />
                     </Pressable>
                     {isEditingDecree ? (
                       <TextInput
@@ -404,6 +403,18 @@ export function DrawerMenu() {
                   </>
                 )}
               </View>
+
+              {loggedIn && (
+                <Pressable
+                  onPress={() => navigate("/(tabs)/profile")}
+                  hitSlop={10}
+                  style={styles.profileChevronButton}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ver perfil"
+                >
+                  <Feather name="chevron-right" size={23} color="#F9F9F9" />
+                </Pressable>
+              )}
 
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
                 <Feather name="x" size={20} color="#F9F9F9" />
@@ -603,6 +614,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   profileSection: {
+    position: "relative",
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
@@ -654,6 +666,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-start",
     gap: 3,
+  },
+  profileChevronButton: {
+    width: 32,
+    height: 44,
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   profileNameMuted: {
     fontFamily: "Manrope",
@@ -727,14 +745,17 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   closeBtn: {
+    position: "absolute",
+    top: "50%",
+    right: 4,
     width: 32,
     height: 32,
     borderRadius: 16,
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 2,
-    transform: [{ translateY: -25 }],
+    marginTop: -16,
+    transform: [{ translateY: -50 }],
   },
 
   // ── Items ──
