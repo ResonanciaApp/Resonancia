@@ -3241,8 +3241,8 @@ const styles = StyleSheet.create({
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 11,
+    fontWeight: "500",
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
