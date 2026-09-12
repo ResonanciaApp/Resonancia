@@ -3367,8 +3367,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   inicio3HeroStaticImageFrame: {
-    left: GRID_PAD,
-    right: GRID_PAD,
+    left: GRID_PAD - 4,
+    right: GRID_PAD - 4,
     borderRadius: 25,
   },
   inicio3HeroCopy: {
