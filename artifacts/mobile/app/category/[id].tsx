@@ -245,7 +245,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             onToggle: soundPreview.toggle,
           }}
           ambientalCardBackground="rgba(0,0,0,0.28)"
-          ambientalCardBorderColor="rgba(249,249,249,0.2)"
+          ambientalCardBorderColor="rgba(255,255,255,0.1)"
           ambientalCardBorderWidth={1}
           ambientalCardBorderRadius={28}
           ambientalTitleOnlyMetadataStyle={{ transform: [{ translateY: -2 }] }}

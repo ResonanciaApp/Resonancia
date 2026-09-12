@@ -86,6 +86,7 @@ export function DailyRecommendationsSection({
             <SessionRow
               session={session}
               imageSize={103.7}
+              imageOffsetX={-4}
               metaText={`${session.categoryLabel} · ${session.durationLabel}`}
               showChevron
               authorColor={themeAccent}
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(130,96,181,0.06)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   row: {
     paddingVertical: 9.3,
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.7)",
+    borderColor: "rgba(255,255,255,0.1)",
     marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",

@@ -257,6 +257,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     transform: [{ translateY: 2 }],
   },
   stickySearchButton: {

@@ -24,6 +24,7 @@ type Props = {
   rating?: number;
   style?: object;
   imageSize?: number;
+  imageOffsetX?: number;
   metaText?: string;
   showCategoryPill?: boolean;
   showCategoryText?: boolean;
@@ -50,6 +51,7 @@ export function SessionRow({
   rating,
   style,
   imageSize = 80,
+  imageOffsetX = 0,
   metaText,
   showCategoryPill = false,
   showCategoryText = false,
@@ -101,7 +103,16 @@ export function SessionRow({
         }}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
       >
-        <View style={[styles.sessionThumb, { width: imageSize, height: imageSize }]}>
+        <View
+          style={[
+            styles.sessionThumb,
+            {
+              width: imageSize,
+              height: imageSize,
+              transform: [{ translateX: imageOffsetX }],
+            },
+          ]}
+        >
           <View style={[styles.sessionImgWrap, { width: imageSize, height: imageSize }]}>
             <Image
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

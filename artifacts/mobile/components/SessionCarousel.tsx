@@ -511,15 +511,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
-    ambientalCardBackgroundOverride ?? (
-      theme.id === "tibet"
-        ? "rgba(0,0,0,0.14)"
-        : theme.id === "indigo2"
-          ? "rgba(191,207,255,0.14)"
-          : isIndigoThemeId(theme.id)
-            ? "rgba(181,211,255,0.14)"
-            : "rgba(181,211,255,0.14)"
-    );
+    ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.28)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const ambientalImageBottom =
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
