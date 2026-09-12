@@ -42,6 +42,7 @@ import { useColors } from "@/hooks/useColors";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import {
+  CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
@@ -58,6 +59,9 @@ const COMPACT_CARD_H =
       CONTENT_CAROUSEL_HEIGHT_SCALE,
   ) - 25;
 const AMBIENTAL_CARD_W = (W - 20 * 2 - 12) / 2;
+const AMBIENTAL_CAROUSEL_CARD_W = Math.round(
+  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+);
 const AMBIENTAL_CARD_H = Math.round(
   (AMBIENTAL_CARD_W + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
 );
@@ -426,6 +430,8 @@ export default function SonidosScreen() {
                 style={[styles.carousel, index === 0 && styles.firstCarousel]}
                  presentation="editorial"
                  ambientalTitleOnly
+                 cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
+                 allowOversizedCardWidth
                  ambientalImageLift={9}
                  ambientalImageFillTop
                  soundPreview={{

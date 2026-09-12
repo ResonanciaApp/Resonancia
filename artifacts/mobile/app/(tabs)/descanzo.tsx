@@ -39,6 +39,7 @@ import {
   SLEEP_CAROUSEL_ORDER,
 } from "@/data/playlists";
 import { resolveSleepCarouselOrder } from "@/lib/editorial-playlist-helpers";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -124,6 +125,9 @@ function SleepPill({
 const H_PAD = 16;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
+const SLEEP_CAROUSEL_CARD_W = Math.round(
+  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+);
 const SOUND_CARD_W  = 120;
 
 function SleepHeaderActions({
@@ -516,6 +520,8 @@ export default function DescansoScreen() {
                   showDurationClock
                   sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
                   trailingPeek={20}
+                  cardWidth={SLEEP_CAROUSEL_CARD_W}
+                  allowOversizedCardWidth
                   cardBorderRadius={16}
                   titleSize={19}
                   hideCategoryAboveTitle

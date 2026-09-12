@@ -743,10 +743,14 @@ export function ExploreScreen({
                       ) : (
                         <Feather name="circle" size={27} color="#C8A6FF" />
                       )}
+                      <View
+                        pointerEvents="none"
+                        style={styles.themeGridVioletOverlay}
+                      />
+                      <Text style={styles.themeGridLabel} numberOfLines={2}>
+                        {card.label}
+                      </Text>
                     </View>
-                    <Text style={styles.themeGridLabel} numberOfLines={2}>
-                      {card.label}
-                    </Text>
                   </Pressable>
                 );
               })}
@@ -1130,13 +1134,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   themeGridLabel: {
+    position: "absolute",
+    left: 12,
+    right: 12,
     fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 14,
     lineHeight: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
-    marginTop: 8,
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+    zIndex: 2,
+  },
+  themeGridVioletOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(31,12,48,0.56)",
+    zIndex: 1,
   },
   categoryCarouselTitle: { marginHorizontal: H_PAD, marginBottom: 12 },
   // Playlists para ti

@@ -122,6 +122,9 @@ const INICIO2_SECTION_GAP = 53;
 const INICIO3_SESSION_CARD_WIDTH = Math.round(
   (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
 );
+const INICIO3_VIDEO_CARD_WIDTH = Math.round(
+  (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.25,
+);
 
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
@@ -2740,7 +2743,7 @@ export default function HomeScreen2({
                 <VideoCard
                   key={video.id}
                   video={video}
-                  width={INICIO3_SESSION_CARD_WIDTH}
+                  width={INICIO3_VIDEO_CARD_WIDTH}
                 />
               ))}
             </ScrollView>
