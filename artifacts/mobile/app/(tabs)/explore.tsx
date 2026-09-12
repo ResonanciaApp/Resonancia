@@ -584,7 +584,7 @@ export function ExploreScreen({
         <View style={styles.scrollContent}>
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
-              marginTop={0}
+              marginTop={15}
               marginBottom={0}
               hiddenIds={[
                 "__descanzo__",
@@ -950,7 +950,6 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    paddingTop: 15,
     marginBottom: SECTION_GAP,
   },
   durationSection: {
