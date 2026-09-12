@@ -3169,9 +3169,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 5,
     borderRadius: 999,
-    backgroundColor: "#0D0A1E",
+    backgroundColor: "#321C70",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.4)",
     transform: [{ translateY: 15 }],
   },
   inicio2HeroStaticActionButton: {
