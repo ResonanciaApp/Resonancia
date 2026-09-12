@@ -556,7 +556,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
               }}
               style={[styles.card, cardStyle]}
             >
-              {soundPreview && (
+              {soundPreview && !isAmbiental && (
                 <PreviewFadeLayer
                   active={isPreviewActive}
                   style={[
@@ -650,13 +650,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             progress={soundPreview.progress}
                           />
                         </PreviewFadeLayer>
-                        <PreviewFadeLayer
-                          active={isPreviewActive}
-                          style={[
-                            styles.previewBorder,
-                            { borderRadius: ambientalCardBorderRadius ?? 18 },
-                          ]}
-                        />
                         <Pressable
                           onPress={(event) => {
                             event.stopPropagation();
@@ -1134,7 +1127,7 @@ const styles = StyleSheet.create({
   },
   previewCircularProgress: {
     position: "absolute",
-    zIndex: 6,
+    zIndex: 4,
   },
   favoriteButton: {
     position: "absolute",
