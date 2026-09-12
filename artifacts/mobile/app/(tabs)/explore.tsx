@@ -568,7 +568,9 @@ export function ExploreScreen({
                 color="rgba(249,249,249,0.72)"
               />
             )}
-            <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
+            <Text style={styles.searchPlaceholder}>
+              Busca por título, categoría o autor
+            </Text>
           </Pressable>
         </View>
       </Animated.View>
@@ -613,7 +615,9 @@ export function ExploreScreen({
               ) : (
                 <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
               )}
-              <Text style={styles.searchPlaceholder}>Buscar en Resonancia</Text>
+              <Text style={styles.searchPlaceholder}>
+                Busca por título, categoría o autor
+              </Text>
             </Pressable>
           </View>
         </View>
