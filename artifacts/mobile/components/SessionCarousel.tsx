@@ -526,7 +526,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
   const ambientalFillScale = 0.75;
   const ambientalFilledImageWidth = (cw + 1) * ambientalFillScale;
-  const ambientalFilledImageHeight = ambientalImageBottom * ambientalFillScale;
+  const ambientalFilledImageHeight =
+    ambientalImageBottom * ambientalFillScale + 15;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
   const ambientalFilledImageTop =
     (ambientalImageBottom - ambientalFilledImageHeight) / 2;
@@ -738,7 +739,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               height: 34 * ambientalFillScale,
                               borderRadius: 17 * ambientalFillScale,
                               left: ambientalFilledImageLeft + 9,
-                              top: ambientalFilledImageTop + 9,
+                              top:
+                                ambientalFilledImageBottom -
+                                34 * ambientalFillScale -
+                                9,
                             },
                           ]}
                         >
@@ -759,7 +763,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           onToggle={toggleFavorite}
                           visualScale={ambientalFillScale}
                           right={cw - ambientalFilledImageLeft - ambientalFilledImageWidth + 9}
-                          top={ambientalFilledImageTop + 9}
+                          top={
+                            ambientalFilledImageBottom -
+                            32 * ambientalFillScale -
+                            9
+                          }
                         />
                       </>
                     )}
@@ -932,8 +940,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.sleepOverlayTitle,
                             sleepOverlayTitleStyle,
-                            ambientalTitleOnlyTitleStyle,
                             styles.ambientalTitleMatchSleep,
+                            ambientalTitleOnlyTitleStyle,
                             {
                               height: 38,
                               textAlignVertical: "center",
@@ -950,8 +958,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             effectiveShowCategoryAboveTitle && styles.sleepOverlayTitleAfterCategory,
                             showSleepCategoryPillWithInlineDuration && styles.sleepInlineTitleLowered,
                             sleepOverlayTitleStyle,
-                            showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
                             showAmbientalTitleOnly && styles.ambientalTitleMatchSleep,
+                            showAmbientalTitleOnly && ambientalTitleOnlyTitleStyle,
                           ]}
                           numberOfLines={2}
                         >
