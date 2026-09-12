@@ -677,10 +677,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                   ambientalPlayButtonSize) /
                                   2,
                               top:
-                                ambientalFilledImageTop +
-                                (ambientalFilledImageHeight -
-                                  ambientalPlayButtonSize) /
-                                  2,
+                                ambientalFilledImageBottom -
+                                ambientalPlayButtonSize / 2,
                             },
                           ]}
                         >
