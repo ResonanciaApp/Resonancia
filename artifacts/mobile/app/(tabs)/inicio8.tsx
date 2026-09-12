@@ -1251,15 +1251,18 @@ function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  isInicio3,
 }: {
   topInset: number;
   isPremium: boolean;
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  isInicio3?: boolean;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
+  const { weekFlags, todayIndex } = useStreak();
   const displayName =
     username
     || clerkUser?.firstName
@@ -1279,7 +1282,10 @@ function Inicio2HeroStatic({
         pointerEvents="none"
         style={[
           styles.inicio2HeroStaticImageFrame,
-          { top: topInset + 66 },
+          {
+            top: topInset + (isInicio3 ? 127 : 66),
+            bottom: isInicio3 ? 27 : 18,
+          },
         ]}
       >
         <Image
@@ -1373,14 +1379,53 @@ function Inicio2HeroStatic({
         </Pressable>
       </View>
 
+      {isInicio3 && (
+        <View
+          style={[styles.inicio3StreakRow, { top: topInset + 80 }]}
+          testID="inicio3-streak-row"
+        >
+          {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
+            const active = weekFlags[i];
+            const isToday = todayIndex === i;
+            return (
+              <View
+                key={initial}
+                style={[
+                  styles.inicio3StreakDay,
+                  active && styles.inicio3StreakDayActive,
+                  isToday && styles.inicio3StreakDayToday,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.inicio3StreakDayText,
+                    active && styles.inicio3StreakDayTextActive,
+                  ]}
+                >
+                  {initial}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
       <View
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroStaticCopy,
-          { top: topInset + 66 },
+          {
+            top: topInset + (isInicio3 ? 127 : 66),
+            bottom: isInicio3 ? 27 : 18,
+          },
+          isInicio3 && styles.inicio3HeroCopy,
         ]}
       >
-        <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
+        <Text style={[
+          styles.inicio2HeroTitle,
+          styles.inicio2HeroStaticTitle,
+          isInicio3 && styles.inicio3HeroTitle,
+        ]}>
           Aprendamos a conectar con lo esencial
         </Text>
         <Pressable
@@ -1462,14 +1507,14 @@ type InicioMoodRecommendationsProps = {
   onPlaySession: (session: Session) => void;
   openCategory: (route: string) => void;
 };
-export type InicioVariant = "original" | "copy";
+export type InicioVariant = "original" | "copy" | "inicio3";
 
 export default function HomeScreen2({
   variant = "original",
 }: {
   variant?: InicioVariant;
 } = {}) {
-  const isInicio2 = variant === "copy";
+  const isInicio2 = variant === "copy" || variant === "inicio3";
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const {
@@ -1495,8 +1540,18 @@ export default function HomeScreen2({
   const { openCategory } = useCategoryOverlay();
   const { openForSession } = useAmbientalDuration();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
-  const { open: openDrawer } = useDrawer();
+  const { open: openDrawer, moodPickerRequest } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const handleOpenDrawer = useCallback(() => {
+    openDrawer({ mode: variant === "inicio3" ? "inicio3" : "default" });
+  }, [variant, openDrawer]);
+  const handledMoodPickerRequest = useRef(moodPickerRequest);
+  useEffect(() => {
+    if (variant !== "inicio3" || moodPickerRequest === handledMoodPickerRequest.current) return;
+    handledMoodPickerRequest.current = moodPickerRequest;
+    setMoodSheetVisible(true);
+  }, [moodPickerRequest, variant]);
+
   const carouselViewAllColor = activeTheme.accent ?? colors.accent;
   // La tab bar flotante usa la misma separación inferior que su propio layout.
   // El widget queda 25 px por encima de la parte superior de esa barra.
@@ -2220,7 +2275,7 @@ export default function HomeScreen2({
         {/* Izquierda: Menú */}
         <View style={{ alignItems: "center", marginLeft: 3 }}>
           <Pressable
-            onPress={openDrawer}
+            onPress={handleOpenDrawer}
             hitSlop={10}
             style={({ pressed }) => ({
               opacity: pressed ? 0.7 : 1,
@@ -2351,8 +2406,9 @@ export default function HomeScreen2({
               topInset={topPad}
               isPremium={isPremium}
               giftScale={giftScaleAnim}
-              onOpenDrawer={openDrawer}
+              onOpenDrawer={handleOpenDrawer}
               onOpenProfile={() => router.push("/progreso" as never)}
+              isInicio3={variant === "inicio3"}
             />
           </>
         ) : showAnimatedScene ? (
@@ -2461,7 +2517,7 @@ export default function HomeScreen2({
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
-        {isInicio2 && (
+        {isInicio2 && variant !== "inicio3" && (
           <View
             style={[
               styles.inicio2ToolsSection,
@@ -3157,6 +3213,50 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlign: "left",
     transform: [],
+  },
+  inicio3StreakRow: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
+    zIndex: 12,
+  },
+  inicio3StreakDay: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio3StreakDayActive: {
+    backgroundColor: "#BE9650",
+  },
+  inicio3StreakDayToday: {
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+  },
+  inicio3StreakDayText: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  inicio3StreakDayTextActive: {
+    color: "#0E0E17",
+  },
+  inicio3HeroCopy: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio3HeroTitle: {
+    maxWidth: "86%",
+    textAlign: "center",
+    fontSize: 18,
+    lineHeight: 23,
   },
   inicio2HeroCategory: {
     marginBottom: 10,

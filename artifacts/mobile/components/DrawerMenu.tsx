@@ -24,6 +24,7 @@ import { openCategoryGlobal } from "@/context/CategoryOverlayContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
@@ -39,10 +40,22 @@ import { useGetSceneAnimations } from "@workspace/api-client-react";
 const ND = Platform.OS !== "web";
 
 type MenuItem = {
+  id?: string;
   label: string;
   icon: React.ComponentProps<typeof Feather>["name"];
+  mciIcon?: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   route: string;
 };
+
+const INICIO3_ITEMS: MenuItem[] = [
+  { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
+  { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
+  { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
+  { id: "mixer", label: "Mezclador", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
+  { id: "notes", label: "Mis Notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
+  { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion" },
+  { id: "mood-history", label: "Historial de estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
+];
 
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
@@ -86,15 +99,16 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, mode, requestMoodPicker } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
-  const { activeSceneId, setActiveSceneWithFade } = useSceneTheme();
+  const { activeSceneId, setActiveSceneWithFade, theme: activeTheme } = useSceneTheme();
   const { escenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { openGeometrix } = useGeometrixPanel();
+  const { openMixer } = useMixerPanel();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
@@ -172,6 +186,8 @@ export function DrawerMenu() {
   const navigate = (route: string) => {
     // Overlays sobre el drawer (menú queda abierto debajo)
     if (route === "__biblioteca_overlay") { openLib(); return; }
+    if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
+    if (route === "__mixer") { onClose(); openMixer(); return; }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
@@ -209,7 +225,7 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={styles.drawerInner}
-          colors={["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
+          colors={mode === "inicio3" ? [activeTheme.solid, activeTheme.solid] : ["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
@@ -266,9 +282,10 @@ export function DrawerMenu() {
             contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
             <View style={[styles.itemGroup, { marginTop: 8 }]}>
-              {MAIN_ITEMS.map((item) => (
+              {(mode === "inicio3" ? INICIO3_ITEMS : MAIN_ITEMS).map((item) => (
                 <Pressable
                   key={item.label}
+                  testID={item.id ? `drawer-item-${item.id}` : undefined}
                   onPress={() => navigate(item.route)}
                   style={styles.item}
                 >
@@ -279,6 +296,8 @@ export function DrawerMenu() {
                         style={{ width: 17, height: 17 }}
                         contentFit="contain"
                       />
+                    ) : item.mciIcon ? (
+                      <MaterialCommunityIcons name={item.mciIcon} size={20} color="#FFFFFF" />
                     ) : (
                       <Feather name={item.icon} size={17} color="#FFFFFF" />
                     )}
@@ -295,81 +314,85 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
+            {mode !== "inicio3" && (
+              <>
+                <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
 
-            {/* ── Selector de Escena (tema visual) ── */}
-            <View style={styles.sceneSwatch}>
-              <Text style={styles.sceneSwatchTitle}>Escena</Text>
-              <View style={styles.sceneSwatchRow}>
-                {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).filter((t) => t.id !== "profundo").map((t) => {
-                  const isActive = t.id === activeSceneId;
-                  return (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => { setActiveSceneWithFade(t.id as SceneId); }}
-                      style={({ pressed }) => [styles.swatchItem, { opacity: pressed ? 0.7 : 1 }]}
-                    >
-                      <View style={[
-                        styles.swatchCircle,
-                        { backgroundColor: t.solid },
-                        isActive && styles.swatchCircleActive,
-                      ]} />
-                      <Text style={[styles.swatchLabel, isActive && styles.swatchLabelActive]}>
-                        {t.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-
-            <FadeToggleSection visible={escenasAnimadasEnabled}>
-            <View style={{ marginTop: 18 }}>
-              <View style={styles.sceneGrid}>
-                {geoScenes.map((scene) => (
-                  <SceneAnimationCard
-                    key={`admin-${scene.id}`}
-                    scene={scene}
-                    size={DRAWER_ANIM_CARD_SIZE}
-                    height={DRAWER_ANIM_CARD_H}
-                    onPress={() => {
-                      setBgScene(scene);
-                      onClose();
-                    }}
-                  />
-                ))}
-                {geometrixCreations.length > 0 && (
-                  <View style={styles.sceneSectionRow}>
-                    <View style={styles.sceneSectionLine} />
-                    <Text style={styles.sceneSectionLabel}>Mis animaciones</Text>
-                    <View style={styles.sceneSectionLine} />
+                {/* ── Selector de Escena (tema visual) ── */}
+                <View style={styles.sceneSwatch}>
+                  <Text style={styles.sceneSwatchTitle}>Escena</Text>
+                  <View style={styles.sceneSwatchRow}>
+                    {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).filter((t) => t.id !== "profundo").map((t) => {
+                      const isActive = t.id === activeSceneId;
+                      return (
+                        <Pressable
+                          key={t.id}
+                          onPress={() => { setActiveSceneWithFade(t.id as SceneId); }}
+                          style={({ pressed }) => [styles.swatchItem, { opacity: pressed ? 0.7 : 1 }]}
+                        >
+                          <View style={[
+                            styles.swatchCircle,
+                            { backgroundColor: t.solid },
+                            isActive && styles.swatchCircleActive,
+                          ]} />
+                          <Text style={[styles.swatchLabel, isActive && styles.swatchLabelActive]}>
+                            {t.label}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
                   </View>
-                )}
-                {geometrixCreations.map((creation) => (
-                  <SceneAnimationCard
-                    key={`user-${creation.id}`}
-                    scene={creationToSceneItem(creation)}
-                    size={DRAWER_ANIM_CARD_SIZE}
-                    height={DRAWER_ANIM_CARD_H}
-                    onPress={() => {
-                      setBgScene(creationToSceneAnimation(creation));
-                      onClose();
-                    }}
-                  />
-                ))}
-                {/* CTA: siempre al final */}
-                <View style={styles.ctaDivider} />
-                <SceneAnimationCtaCard
-                  size={DRAWER_ANIM_CARD_SIZE}
-                  height={DRAWER_ANIM_CARD_H}
-                  onPress={() => {
-                    onClose();
-                    openGeometrix();
-                  }}
-                />
-              </View>
-            </View>
-            </FadeToggleSection>
+                </View>
+
+                <FadeToggleSection visible={escenasAnimadasEnabled}>
+                <View style={{ marginTop: 18 }}>
+                  <View style={styles.sceneGrid}>
+                    {geoScenes.map((scene) => (
+                      <SceneAnimationCard
+                        key={`admin-${scene.id}`}
+                        scene={scene}
+                        size={DRAWER_ANIM_CARD_SIZE}
+                        height={DRAWER_ANIM_CARD_H}
+                        onPress={() => {
+                          setBgScene(scene);
+                          onClose();
+                        }}
+                      />
+                    ))}
+                    {geometrixCreations.length > 0 && (
+                      <View style={styles.sceneSectionRow}>
+                        <View style={styles.sceneSectionLine} />
+                        <Text style={styles.sceneSectionLabel}>Mis animaciones</Text>
+                        <View style={styles.sceneSectionLine} />
+                      </View>
+                    )}
+                    {geometrixCreations.map((creation) => (
+                      <SceneAnimationCard
+                        key={`user-${creation.id}`}
+                        scene={creationToSceneItem(creation)}
+                        size={DRAWER_ANIM_CARD_SIZE}
+                        height={DRAWER_ANIM_CARD_H}
+                        onPress={() => {
+                          setBgScene(creationToSceneAnimation(creation));
+                          onClose();
+                        }}
+                      />
+                    ))}
+                    {/* CTA: siempre al final */}
+                    <View style={styles.ctaDivider} />
+                    <SceneAnimationCtaCard
+                      size={DRAWER_ANIM_CARD_SIZE}
+                      height={DRAWER_ANIM_CARD_H}
+                      onPress={() => {
+                        onClose();
+                        openGeometrix();
+                      }}
+                    />
+                  </View>
+                </View>
+                </FadeToggleSection>
+              </>
+            )}
 
           </ScrollView>
         </LinearGradient>

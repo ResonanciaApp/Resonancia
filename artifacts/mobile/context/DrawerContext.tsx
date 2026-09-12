@@ -7,10 +7,15 @@ export type LibraryTab = "playlists" | "mezclas" | "geometrix" | "historial" | "
 export const DRAWER_W = Math.min(Dimensions.get("window").width * 0.78, 300);
 export const DRAWER_PUSH = DRAWER_W + 50;
 
+export type DrawerMode = "default" | "inicio3";
+
 type DrawerCtx = {
   isOpen: boolean;
-  open: () => void;
+  open: (options?: { mode?: DrawerMode } | unknown) => void;
   close: () => void;
+  mode: DrawerMode;
+  moodPickerRequest: number;
+  requestMoodPicker: () => void;
   drawerAnim: Animated.Value;
   /** True durante una navegación iniciada desde el menú: las pantallas destino
    *  del drawer entran SIN animación propia, así el único movimiento es el cierre
@@ -41,6 +46,8 @@ const Ctx = createContext<DrawerCtx | null>(null);
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mode, setMode] = useState<DrawerMode>("default");
+  const [moodPickerRequest, setMoodPickerRequest] = useState(0);
   const [instantNav, setInstantNav] = useState(false);
   const instantNavTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drawerAnim = useRef(new Animated.Value(0)).current;
@@ -69,7 +76,12 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     [drawerAnim],
   );
 
-  const open = useCallback(() => {
+  const open = useCallback((options?: { mode?: DrawerMode } | unknown) => {
+    if (options && typeof options === "object" && "mode" in options) {
+      setMode((options as { mode: DrawerMode }).mode);
+    } else {
+      setMode("default");
+    }
     setIsOpen(true);
     animate(true);
   }, [animate]);
@@ -78,6 +90,9 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(false);
     animate(false);
   }, [animate]);
+  const requestMoodPicker = useCallback(() => {
+    setMoodPickerRequest((request) => request + 1);
+  }, []);
 
   const [libOpen, setLibOpen] = useState(false);
   const libraryParallax = useRef(new Animated.Value(0)).current;
@@ -121,8 +136,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const closeChat = useCallback(() => setChatUserId(null), []);
 
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
+    () => ({ isOpen, open, close, mode, moodPickerRequest, requestMoodPicker, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat }),
+    [isOpen, open, close, mode, moodPickerRequest, requestMoodPicker, drawerAnim, instantNav, markInstantNav, libOpen, libraryParallax, libraryInitialTab, openLib, closeLib, overlayRoute, openOverlay, closeOverlay, overlayParallax, chatUserId, openChat, closeChat],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

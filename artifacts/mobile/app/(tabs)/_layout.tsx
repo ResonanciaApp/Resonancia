@@ -82,7 +82,8 @@ const TAB_CONFIG: Record<
   }
 > = {
   inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  "inicio-copia": { label: "Inicio", sfIcon: "house",              sfIconFill: "house.fill",           featherIcon: "home" },
+  "inicio-copia": { label: "Inicio", sfIcon: "house",                sfIconFill: "house.fill",           featherIcon: "home" },
+  inicio3:    { label: "Inicio 3",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   "explore-copia": { label: "Descubrir", sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass", featherIcon: "search" },
   herramientas: { label: "Recursos", sfIcon: "square.grid.2x2", sfIconFill: "square.grid.2x2.fill", featherIcon: "grid", iconSize: 25 },
@@ -456,6 +457,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="index"          options={{ href: null }} />
         <Tabs.Screen name="inicio8"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="inicio-copia"   options={{ title: "Inicio" }} />
+        <Tabs.Screen name="inicio3"        options={{ title: "Inicio 3" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="category/meditaciones-guiadas" options={{ href: null }} />
         <Tabs.Screen name="category/musica-sonidos"       options={{ href: null }} />
