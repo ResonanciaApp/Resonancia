@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
+  Alert,
   Animated,
   PanResponder,
   Platform,
@@ -47,14 +48,33 @@ type MenuItem = {
   route: string;
 };
 
-const INICIO3_ITEMS: MenuItem[] = [
-  { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
-  { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
-  { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
-  { id: "mixer", label: "Mezclador", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
-  { id: "notes", label: "Mis Notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
-  { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion" },
-  { id: "mood-history", label: "Historial de estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
+const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
+  {
+    title: "Mi espacio",
+    items: [
+      { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
+      { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
+      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
+      { id: "notes", label: "Mis notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
+      { id: "mood-history", label: "Historial estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
+    ],
+  },
+  {
+    title: "Herramientas",
+    items: [
+      { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
+      { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion" },
+      { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
+    ],
+  },
+  {
+    title: "Cuenta",
+    items: [
+      { id: "settings", label: "Configuración", icon: "settings", mciIcon: "cog-outline", route: "/configuraciones" },
+      { id: "support", label: "Ayuda y soporte", icon: "help-circle", mciIcon: "lifebuoy", route: "/ayuda" },
+      { id: "logout", label: "Cerrar sesión", icon: "log-out", mciIcon: "logout", route: "__logout" },
+    ],
+  },
 ];
 
 const MAIN_ITEMS: MenuItem[] = [
@@ -101,7 +121,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 export function DrawerMenu() {
   const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, mode, requestMoodPicker } = useDrawer();
   const insets = useSafeAreaInsets();
-  const { isRegistered, isSignedIn } = useAuth();
+  const { isRegistered, isSignedIn, logout } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
   const { activeSceneId, setActiveSceneWithFade, theme: activeTheme } = useSceneTheme();
@@ -188,6 +208,26 @@ export function DrawerMenu() {
     if (route === "__biblioteca_overlay") { openLib(); return; }
     if (route === "__mood_register") { onClose(); requestMoodPicker(); return; }
     if (route === "__mixer") { onClose(); openMixer(); return; }
+    if (route === "__geometrix") { onClose(); openGeometrix(); return; }
+    if (route === "__logout") {
+      Alert.alert(
+        "Cerrar sesión",
+        "Saldrás de RESONANCE. Tu progreso queda guardado.",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Cerrar sesión",
+            style: "destructive",
+            onPress: async () => {
+              onClose();
+              await logout();
+              router.replace("/onboarding");
+            },
+          },
+        ],
+      );
+      return;
+    }
     if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     if (route.startsWith("__cat:")) {
       const target = route.replace("__cat:", "");
@@ -237,13 +277,21 @@ export function DrawerMenu() {
             {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
               {displayPhoto ? (
-                <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
+                <Image
+                  source={{ uri: displayPhoto }}
+                  style={[styles.profilePhoto, mode === "inicio3" && styles.inicio3ProfilePhoto]}
+                  contentFit="cover"
+                />
               ) : loggedIn && initial ? (
-                <View style={styles.profilePhotoFallback}>
+                <View style={[styles.profilePhotoFallback, mode === "inicio3" && styles.inicio3ProfilePhoto]}>
                   <Text style={styles.profileInitial}>{initial}</Text>
                 </View>
               ) : (
-                <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
+                <View style={[
+                  styles.profilePhotoFallback,
+                  !loggedIn && styles.profilePhotoGuest,
+                  mode === "inicio3" && styles.inicio3ProfilePhoto,
+                ]}>
                   <Feather name="user" size={22} color={loggedIn ? "#F9F9F9" : "#c2c2c2"} />
                 </View>
               )}
@@ -283,38 +331,65 @@ export function DrawerMenu() {
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
-            <View style={[styles.itemGroup, { marginTop: 8 }]}>
-              {(mode === "inicio3" ? INICIO3_ITEMS : MAIN_ITEMS).map((item) => (
-                <Pressable
-                  key={item.label}
-                  testID={item.id ? `drawer-item-${item.id}` : undefined}
-                  onPress={() => navigate(item.route)}
-                  style={styles.item}
-                >
-                  <View style={styles.itemIcon}>
-                    {item.label === "Tu Premium" ? (
-                      <Image
-                        source={require("../assets/images/estrella-premium.png")}
-                        style={{ width: 17, height: 17 }}
-                        contentFit="contain"
-                      />
-                    ) : item.mciIcon ? (
-                      <MaterialCommunityIcons name={item.mciIcon} size={20} color="#FFFFFF" />
-                    ) : (
-                      <Feather name={item.icon} size={17} color="#FFFFFF" />
-                    )}
+            {mode === "inicio3" ? (
+              <View style={styles.inicio3Sections}>
+                {INICIO3_SECTIONS.map((section, sectionIndex) => (
+                  <View key={section.title}>
+                    {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
+                    <Text style={styles.inicio3SectionTitle}>{section.title}</Text>
+                    <View style={styles.itemGroup}>
+                      {section.items.map((item) => (
+                        <Pressable
+                          key={item.label}
+                          testID={item.id ? `drawer-item-${item.id}` : undefined}
+                          onPress={() => navigate(item.route)}
+                          style={styles.item}
+                        >
+                          <View style={styles.itemIcon}>
+                            {item.mciIcon ? (
+                              <MaterialCommunityIcons name={item.mciIcon} size={20} color="#FFFFFF" />
+                            ) : (
+                              <Feather name={item.icon} size={17} color="#FFFFFF" />
+                            )}
+                          </View>
+                          <Text style={styles.itemLabel}>{item.label}</Text>
+                        </Pressable>
+                      ))}
+                    </View>
                   </View>
-                  <Text
-                    style={[
-                      styles.itemLabel,
-                      item.label === "Tu Premium" && { color: "#BE9650" },
-                    ]}
+                ))}
+              </View>
+            ) : (
+              <View style={[styles.itemGroup, { marginTop: 8 }]}>
+                {MAIN_ITEMS.map((item) => (
+                  <Pressable
+                    key={item.label}
+                    onPress={() => navigate(item.route)}
+                    style={styles.item}
                   >
-                    {item.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+                    <View style={styles.itemIcon}>
+                      {item.label === "Tu Premium" ? (
+                        <Image
+                          source={require("../assets/images/estrella-premium.png")}
+                          style={{ width: 17, height: 17 }}
+                          contentFit="contain"
+                        />
+                      ) : (
+                        <Feather name={item.icon} size={17} color="#FFFFFF" />
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        styles.itemLabel,
+                        item.label === "Tu Premium" && { color: "#BE9650" },
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
 
             {mode !== "inicio3" && (
               <>
@@ -467,6 +542,12 @@ const styles = StyleSheet.create({
     borderColor: "rgba(250,240,238,0.18)",
     backgroundColor: "rgba(255,255,255,0.04)",
   },
+  inicio3ProfilePhoto: {
+    width: 53,
+    height: 53,
+    borderRadius: 26.5,
+    borderWidth: 1,
+  },
   profileInfo: {
     flex: 1,
     gap: 3,
@@ -516,6 +597,24 @@ const styles = StyleSheet.create({
   // ── Items ──
   itemGroup: { gap: 2 },
   divider: { height: 1, marginBottom: 8 },
+  inicio3Sections: {
+    marginTop: 8,
+  },
+  inicio3SectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    marginVertical: 12,
+  },
+  inicio3SectionTitle: {
+    fontFamily: "Manrope",
+    color: "rgba(255,255,255,0.58)",
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    marginBottom: 4,
+    paddingHorizontal: 2,
+  },
 
   // ── Swatches de Escena ──
   sceneSwatch: { marginTop: 4, marginBottom: 4 },
