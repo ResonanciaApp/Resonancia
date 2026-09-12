@@ -411,7 +411,7 @@ export default function SonidosScreen() {
                 style={[styles.carousel, styles.recentCarousel]}
                 cardWidth={RECENT_CARD_W}
                 allowOversizedCardWidth
-                titleSize={19}
+                titleSize={17}
                 titleOffset={10}
                 titleSpacing={17}
                 squareCards
@@ -450,7 +450,7 @@ export default function SonidosScreen() {
                    textAlign: "center",
                    textAlignVertical: "top",
                  }}
-                titleSize={19}
+                titleSize={17}
                 onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
               />
             ))}

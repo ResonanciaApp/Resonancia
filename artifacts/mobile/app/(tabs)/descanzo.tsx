@@ -523,7 +523,7 @@ export default function DescansoScreen() {
                   cardWidth={SLEEP_CAROUSEL_CARD_W}
                   allowOversizedCardWidth
                   cardBorderRadius={16}
-                  titleSize={19}
+                  titleSize={17}
                   hideCategoryAboveTitle
                   showSleepCategoryPillWithInlineDuration
                   ambientalTitleOnly

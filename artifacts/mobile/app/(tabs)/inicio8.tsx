@@ -2650,7 +2650,7 @@ export default function HomeScreen2({
             allowOversizedCardWidth={variant === "inicio3"}
             squareTitleOnlyBelow
             sleepBelowMetadataStyle={variant === "inicio3" ? { marginTop: 5 } : undefined}
-            titleSize={19}
+            titleSize={17}
             titleSpacing={17}
             onViewAll={handleViewAllRecent}
             viewAllColor={carouselViewAllColor}
@@ -2673,7 +2673,7 @@ export default function HomeScreen2({
             whiteMetadataGlass
             showDurationClock
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={19}
+            titleSize={17}
             titleSpacing={17}
             onViewAll={handleViewAllFavorites}
             viewAllColor={carouselViewAllColor}
@@ -2695,7 +2695,7 @@ export default function HomeScreen2({
             whiteMetadataGlass
             showDurationClock
             durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={19}
+            titleSize={17}
             viewAllColor={carouselViewAllColor}
           />
         )}
@@ -2850,7 +2850,7 @@ export default function HomeScreen2({
               sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
               trailingPeek={20}
               cardBorderRadius={16}
-              titleSize={19}
+              titleSize={17}
               hideCategoryAboveTitle
               durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
             />
@@ -2922,7 +2922,7 @@ export default function HomeScreen2({
             titleOffset={10}
             presentation="editorial"
             hideCategoryAboveTitle
-            titleSize={20}
+            titleSize={17}
           />
         )}
         {!isInicio2 && (
