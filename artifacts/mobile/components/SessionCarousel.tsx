@@ -672,6 +672,16 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalPlayButtonSize,
                               height: ambientalPlayButtonSize,
                               borderRadius: ambientalPlayButtonSize / 2,
+                              borderTopLeftRadius:
+                                ambientalPlayButtonSize * 0.54,
+                              borderTopRightRadius:
+                                ambientalPlayButtonSize * 0.44,
+                              borderBottomRightRadius:
+                                ambientalPlayButtonSize * 0.52,
+                              borderBottomLeftRadius:
+                                ambientalPlayButtonSize * 0.46,
+                              borderWidth: 0.75,
+                              borderColor: "rgba(255,255,255,0.18)",
                               left:
                                 ambientalFilledImageLeft +
                                 (ambientalFilledImageWidth -
