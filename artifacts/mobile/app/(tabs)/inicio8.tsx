@@ -3170,8 +3170,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 999,
     backgroundColor: "#0D0A1E",
-    borderWidth: 0.5,
-    borderColor: "rgba(249,249,249,0.5)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     transform: [{ translateY: 15 }],
   },
   inicio2HeroStaticActionButton: {
@@ -3183,8 +3183,8 @@ const styles = StyleSheet.create({
   },
   inicio2HeroActionButtonText: {
     fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "550" as any,
     color: "#F9F9F9",
     textAlign: "center",
   },
