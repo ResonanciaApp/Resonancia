@@ -607,13 +607,26 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     borderRadius: cardBorderRadius,
                   },
                   isAmbiental && {
-                    backgroundColor: ambientalCardBackground,
-                    borderWidth: ambientalCardBorderWidth ?? 1,
                     borderRadius: ambientalCardBorderRadius ?? 18,
-                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
                   },
                 ]}
               >
+                {isAmbiental && (
+                  <View
+                    pointerEvents="none"
+                    style={[
+                      StyleSheet.absoluteFill,
+                      {
+                        left: 1,
+                        backgroundColor: ambientalCardBackground,
+                        borderWidth: ambientalCardBorderWidth ?? 1,
+                        borderRadius: ambientalCardBorderRadius ?? 18,
+                        borderColor:
+                          ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
+                      },
+                    ]}
+                  />
+                )}
                 {!isAmbiental && (
                   <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
                 )}
