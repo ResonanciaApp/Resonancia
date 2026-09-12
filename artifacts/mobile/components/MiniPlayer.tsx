@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Animated,
   Image,
-  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -94,26 +93,9 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
     openSheet,
     removeSound,
   } = useMixer();
+  const { isMixerOpen, openMixer } = useMixerPanel();
 
   const colors = useColors();
-
-  // ── Swipe-up en handle → abre la sheet ─────────────────────────
-  const openSheetRef = useRef(openSheet);
-  useEffect(() => { openSheetRef.current = openSheet; }, [openSheet]);
-
-  const handlePan = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder:  (_, g) => g.dy < -4,
-      onPanResponderRelease: (_, g) => {
-        if (Math.abs(g.dy) < 8) {
-          openSheetRef.current();
-        } else if (g.dy < -10) {
-          openSheetRef.current();
-        }
-      },
-    })
-  ).current;
 
   // ── Ondas sutiles ──────────────────────────────────────────────
   const wave1 = useRef(new Animated.Value(0)).current;
@@ -243,10 +225,15 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
       : null;
     const title = presetName || "Tu mezcla";
 
-    const handleOpen = () =>
-      loadedPresetId?.startsWith("community-")
-        ? router.push("/(tabs)/musica" as never)
-        : openSheet();
+    const handleOpen = () => {
+      if (loadedPresetId?.startsWith("community-")) {
+        router.push("/(tabs)/musica" as never);
+      } else if (isMixerOpen) {
+        openSheet();
+      } else {
+        openMixer();
+      }
+    };
 
     return (
       <Animated.View
@@ -285,7 +272,7 @@ export function MiniPlayer({ forceMix = false }: { forceMix?: boolean }) {
           <View style={styles.mixRow}>
 
             {/* Chevron arriba — toca para abrir la sheet */}
-            <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
+            <Pressable onPress={handleOpen} hitSlop={8} style={styles.chevronLeft}>
               <Feather name="chevron-up" size={27} color="rgba(255,255,255,0.95)" />
             </Pressable>
 
