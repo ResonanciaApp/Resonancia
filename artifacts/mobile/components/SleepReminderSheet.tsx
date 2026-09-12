@@ -184,9 +184,6 @@ export function SleepReminderSheet({
             contentContainerStyle={styles.sheetContent}
           >
           <View style={styles.headingRow}>
-            <View style={styles.headingIcon}>
-              <Feather name="bell" size={22} color="#FFFFFF" />
-            </View>
             <Pressable
               onPress={onClose}
               hitSlop={10}
@@ -363,16 +360,8 @@ const styles = StyleSheet.create({
   headingRow: {
     minHeight: 42,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
-  },
-  headingIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
   },
   closeButton: {
     width: 38,

@@ -561,7 +561,7 @@ export default function DescansoScreen() {
       <SleepReminderSheet
         visible={reminderVisible}
         onClose={() => setReminderVisible(false)}
-        onSaved={setNightReminder}
+        onSaved={(preference) => setNightReminder({ ...preference })}
       />
 
       {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
