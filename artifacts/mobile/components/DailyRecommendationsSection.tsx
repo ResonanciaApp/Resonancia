@@ -85,9 +85,8 @@ export function DailyRecommendationsSection({
           >
             <SessionRow
               session={session}
-              imageSize={94.3}
-              showCategoryText
-              showDurationBadge
+              imageSize={103.7}
+              metaText={`${session.categoryLabel} · ${session.durationLabel}`}
               showChevron
               authorColor={themeAccent}
               authorFontSize={theme.id === "indigo2" ? 11 : undefined}
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 27,
   },
   recommendationsList: {
-    gap: 15,
+    gap: 12,
   },
   recommendationCard: {
     backgroundColor: "rgba(0,0,0,0.28)",
@@ -143,14 +142,14 @@ const styles = StyleSheet.create({
     borderColor: "rgba(130,96,181,0.06)",
   },
   row: {
-    paddingVertical: 14,
+    paddingVertical: 9.3,
     paddingHorizontal: 16,
   },
   refreshButton: {
     height: 55,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "rgba(130,96,181,0.06)",
+    borderColor: "rgba(190,150,80,0.7)",
     marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",

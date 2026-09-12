@@ -3168,9 +3168,9 @@ const styles = StyleSheet.create({
   },
   inicio2HeroTitle: {
     fontFamily: "Manrope",
-    fontSize: 22,
-    fontWeight: "800",
-    lineHeight: 28,
+    fontSize: 19,
+    fontWeight: "700",
+    lineHeight: 25,
     color: "#FFFFFF",
     textAlign: "left",
     textShadowColor: "rgba(0,0,0,0.62)",
@@ -3180,8 +3180,8 @@ const styles = StyleSheet.create({
   },
   inicio2HeroStaticTitle: {
     maxWidth: "76%",
-    fontSize: 24,
-    lineHeight: 29,
+    fontSize: 21,
+    lineHeight: 26,
     textAlign: "left",
     transform: [],
   },
