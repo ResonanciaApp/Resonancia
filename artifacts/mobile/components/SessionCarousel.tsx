@@ -635,6 +635,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               top: 0,
                               borderTopLeftRadius: ambientalCardBorderRadius ?? 18,
                               borderTopRightRadius: ambientalCardBorderRadius ?? 18,
+                              borderBottomLeftRadius: 13,
+                              borderBottomRightRadius: 13,
                             }
                           : {
                               width: ambientalImageSize,
