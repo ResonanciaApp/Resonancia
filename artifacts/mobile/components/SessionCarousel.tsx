@@ -1145,7 +1145,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 17,
     borderBottomRightRadius: 17,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: "rgba(255,255,255,0.2)",
   },
   ambientalImageBottomFade: {
     position: "absolute",
