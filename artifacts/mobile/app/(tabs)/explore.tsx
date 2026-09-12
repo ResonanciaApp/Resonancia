@@ -950,7 +950,7 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   categoryBlocksSection: {
-    marginTop: 15,
+    paddingTop: 15,
     marginBottom: SECTION_GAP,
   },
   durationSection: {
