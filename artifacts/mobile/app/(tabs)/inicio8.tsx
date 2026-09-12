@@ -1274,7 +1274,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 15 }]}
+      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 44 }]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -1283,7 +1283,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 142 : 66),
+            top: topInset + (isInicio3 ? 171 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
@@ -1389,26 +1389,20 @@ function Inicio2HeroStatic({
             const active = weekFlags[i];
             const isToday = todayIndex === i;
             return (
-              <View
-                key={initial}
-                style={[
-                  styles.inicio3StreakDay,
-                  active && styles.inicio3StreakDayActive,
-                  isToday && styles.inicio3StreakDayToday,
-                ]}
-              >
-                {active ? (
-                  <Feather name="check" size={18} color="#0E0E17" />
-                ) : (
-                  <Text
-                    style={[
-                      styles.inicio3StreakDayText,
-                      active && styles.inicio3StreakDayTextActive,
-                    ]}
-                  >
-                    {initial}
-                  </Text>
-                )}
+              <View key={initial} style={styles.inicio3StreakDayWrapper}>
+                <View
+                  style={[
+                    styles.inicio3StreakDay,
+                    (active || isToday) && styles.inicio3StreakDayActive,
+                  ]}
+                >
+                  {active && (
+                    <Feather name="check" size={20} color="#F9F9F9" />
+                  )}
+                </View>
+                <Text style={styles.inicio3StreakDayLabel}>
+                  {initial}
+                </Text>
               </View>
             );
           })}
@@ -1420,7 +1414,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: topInset + (isInicio3 ? 142 : 66),
+            top: topInset + (isInicio3 ? 171 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroCopy,
@@ -3228,29 +3222,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 12,
   },
+  inicio3StreakDayWrapper: {
+    alignItems: "center",
+    gap: 6,
+  },
   inicio3StreakDay: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   inicio3StreakDayActive: {
-    backgroundColor: "#F9F9F9",
+    borderWidth: 2,
+    borderColor: "#BE9650",
   },
-  inicio3StreakDayToday: {
-    borderWidth: 1.5,
-    borderColor: "#F9F9F9",
-  },
-  inicio3StreakDayText: {
+  inicio3StreakDayLabel: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-  },
-  inicio3StreakDayTextActive: {
-    color: "#0E0E17",
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD,
