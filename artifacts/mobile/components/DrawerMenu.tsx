@@ -225,7 +225,9 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={styles.drawerInner}
-          colors={mode === "inicio3" ? [activeTheme.solid, activeTheme.solid] : ["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
+          colors={mode === "inicio3"
+            ? [...activeTheme.gradient] as [string, string, ...string[]]
+            : ["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >

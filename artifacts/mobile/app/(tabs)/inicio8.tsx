@@ -313,14 +313,14 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
-function Inicio2LotusStreak() {
+function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boolean } = {}) {
   const { currentStreak } = useStreak();
 
   return (
     <View
       style={[
         styles.inicio2HeroLotusContent,
-        { backgroundColor: "rgba(0,0,0,0.28)" },
+        { backgroundColor: lightBackground ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.28)" },
       ]}
     >
       <Text style={styles.inicio2HeroLotusCount}>{currentStreak}</Text>
@@ -1375,7 +1375,7 @@ function Inicio2HeroStatic({
           testID="inicio2-open-progress-control"
         >
           <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <Inicio2LotusStreak />
+            <Inicio2LotusStreak lightBackground={isInicio3} />
           </Animated.View>
         </Pressable>
       </View>
@@ -1397,7 +1397,7 @@ function Inicio2HeroStatic({
                   ]}
                 >
                   {active && (
-                    <Feather name="check" size={20} color="#F9F9F9" />
+                    <Feather name="check" size={22} color="#F9F9F9" />
                   )}
                 </View>
                 <Text style={styles.inicio3StreakDayLabel}>
@@ -2366,7 +2366,7 @@ export default function HomeScreen2({
               testID="inicio-sticky-open-progress"
             >
               <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <Inicio2LotusStreak />
+                <Inicio2LotusStreak lightBackground={variant === "inicio3"} />
               </Animated.View>
             </Pressable>
           </View>
@@ -3241,7 +3241,7 @@ const styles = StyleSheet.create({
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
   },
   inicio3HeroStaticImageFrame: {
