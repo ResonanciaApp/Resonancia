@@ -619,6 +619,25 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 )}
                 {isAmbiental ? (
                   <>
+                    {ambientalImageFillTop && (
+                      <LinearGradient
+                        pointerEvents="none"
+                        colors={[
+                          "rgba(255,255,255,0.1)",
+                          "rgba(255,255,255,0.035)",
+                          "rgba(255,255,255,0)",
+                        ]}
+                        locations={[0, 0.38, 1]}
+                        style={[
+                          styles.ambientalImageUnderGlow,
+                          {
+                            width: cw - 16,
+                            left: 8,
+                            top: ambientalImageBottom - 2,
+                          },
+                        ]}
+                      />
+                    )}
                     <CarouselImage
                       source={s.image}
                       style={[
@@ -1153,6 +1172,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 9,
+  },
+  ambientalImageUnderGlow: {
+    position: "absolute",
+    height: 18,
+    borderRadius: 9,
   },
   previewButton: {
     position: "absolute",
