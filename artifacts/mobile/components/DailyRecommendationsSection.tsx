@@ -95,6 +95,7 @@ export function DailyRecommendationsSection({
               metaText={`${session.categoryLabel} · ${session.durationLabel}`}
               showChevron={!inicio3Compact}
               titleFontSize={inicio3Compact ? 18 : undefined}
+              titleFontWeight={inicio3Compact ? "600" : undefined}
               staticPlayBadge={inicio3Compact}
               authorColor={themeAccent}
               authorFontSize={theme.id === "indigo2" ? 11 : undefined}
@@ -157,7 +158,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inicio3Row: {
-    paddingVertical: 7,
+    paddingVertical: 9,
+    paddingHorizontal: 11,
   },
   refreshButton: {
     height: 55,

@@ -1274,7 +1274,7 @@ function Inicio2HeroStatic({
 
   return (
     <View
-      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 44 }]}
+      style={[styles.inicio2Hero, isInicio3 && { height: INICIO2_HERO_HEIGHT + 54 }]}
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
@@ -1283,7 +1283,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 146 : 66),
+            top: topInset + (isInicio3 ? 156 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
@@ -1369,7 +1369,10 @@ function Inicio2HeroStatic({
             }).start()
           }
           hitSlop={12}
-          style={styles.inicio2HeroLotusButton}
+          style={[
+            styles.inicio2HeroLotusButton,
+            isInicio3 && { transform: [{ translateX: 2 }] },
+          ]}
           accessibilityRole="button"
           accessibilityLabel="Abrir Tu progreso"
           testID="inicio2-open-progress-control"
@@ -1382,7 +1385,7 @@ function Inicio2HeroStatic({
 
       {isInicio3 && (
         <View
-          style={[styles.inicio3StreakRow, { top: topInset + 70 }]}
+          style={[styles.inicio3StreakRow, { top: topInset + 80 }]}
           testID="inicio3-streak-row"
         >
           {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
@@ -1414,7 +1417,7 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: topInset + (isInicio3 ? 146 : 66),
+            top: topInset + (isInicio3 ? 156 : 66),
             bottom: isInicio3 ? 27 : 18,
           },
           isInicio3 && styles.inicio3HeroCopy,

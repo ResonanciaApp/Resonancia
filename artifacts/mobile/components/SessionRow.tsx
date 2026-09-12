@@ -2,7 +2,13 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type TextStyle,
+} from "react-native";
 import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -41,6 +47,7 @@ type Props = {
   authorColor?: string;
   authorFontSize?: number;
   titleFontSize?: number;
+  titleFontWeight?: TextStyle["fontWeight"];
   staticPlayBadge?: boolean;
   hideMeta?: boolean;
   secondaryText?: string;
@@ -70,6 +77,7 @@ export function SessionRow({
   authorColor,
   authorFontSize,
   titleFontSize,
+  titleFontWeight,
   staticPlayBadge = false,
   hideMeta = false,
   secondaryText,
@@ -199,6 +207,9 @@ export function SessionRow({
               titleFontSize !== undefined && {
                 fontSize: titleFontSize,
                 lineHeight: titleFontSize + 5,
+              },
+              titleFontWeight !== undefined && {
+                fontWeight: titleFontWeight,
               },
             ]}
             numberOfLines={2}
