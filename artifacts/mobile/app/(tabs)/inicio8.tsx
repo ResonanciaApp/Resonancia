@@ -2537,6 +2537,9 @@ export default function HomeScreen2({
             showTitle={false}
             cardGap={0}
             cardCornerRadius={0}
+            cardBackgroundColor="rgba(0,0,0,0.28)"
+            cardHeightOffset={-5}
+            preserveBackgroundOnPress
             horizontalPadding={GRID_PAD}
             style={styles.inicio3QuickAccess}
           />
