@@ -135,3 +135,4 @@
 - [Alto canónico de cards editoriales](editorial-card-canonical-size.md) — mantienen el alto de Música para dormir; las grids conservan su ancho local para llenar la fila
 - [Cards Ambientales en Sonidos](ambiental-cards-sonidos.md) — tratamiento propio de Sonidos: título centrado y categoría; sin autor, duración ni overlay oscuro
 - [Playlists editoriales](editorial-playlist-boundaries.md) — publicación por pantalla, no por tags; guardar referencia editorial no crea una playlist privada editable
+- [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza

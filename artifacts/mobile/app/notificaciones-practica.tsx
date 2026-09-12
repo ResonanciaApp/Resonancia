@@ -26,9 +26,7 @@ import {
   PRACTICE_NOTIFICATION_DEFAULTS,
   PRACTICE_NOTIFICATION_LABELS,
   requestPracticeNotificationPermission,
-  savePracticeNotificationSettings,
-  schedulePracticeNotification,
-  cancelPracticeNotification,
+  updatePracticeNotificationPreference,
   type PracticeNotificationPreference,
   type PracticeNotificationSettings,
   type PracticeNotificationSlot,
@@ -90,14 +88,7 @@ export default function PracticeNotificationsScreen() {
       partial: Partial<PracticeNotificationPreference>,
     ) => {
       const nextPreference = { ...settings[slot], ...partial };
-      const next = { ...settings, [slot]: nextPreference };
-
-      if (nextPreference.enabled) {
-        await schedulePracticeNotification(slot, nextPreference);
-      } else {
-        await cancelPracticeNotification(slot);
-      }
-      await savePracticeNotificationSettings(next);
+      const next = await updatePracticeNotificationPreference(slot, nextPreference);
       setSettings(next);
     },
     [settings],

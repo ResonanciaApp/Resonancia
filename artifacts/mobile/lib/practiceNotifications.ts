@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import { commitPracticeNotificationUpdate } from "@/lib/practice-notification-transaction";
 
 export type PracticeNotificationSlot = "manana" | "tarde" | "noche";
 
@@ -248,6 +249,27 @@ export async function savePracticeNotificationSettings(
   );
 }
 
+export async function updatePracticeNotificationPreference(
+  slot: PracticeNotificationSlot,
+  preference: PracticeNotificationPreference,
+): Promise<PracticeNotificationSettings> {
+  const current = await loadPracticeNotificationSettings();
+  const next = { ...current, [slot]: preference };
+  return commitPracticeNotificationUpdate({
+    current,
+    next,
+    persist: savePracticeNotificationSettings,
+    applyNext: () =>
+      preference.enabled
+        ? schedulePracticeNotification(slot, preference)
+        : cancelPracticeNotificationStrict(slot),
+    restoreCurrent: () =>
+      current[slot].enabled
+        ? schedulePracticeNotification(slot, current[slot])
+        : cancelPracticeNotificationStrict(slot),
+  });
+}
+
 async function ensurePracticeChannel() {
   if (Platform.OS !== "android") return;
   await Notifications.setNotificationChannelAsync(PRACTICE_CHANNEL_ID, {
@@ -289,7 +311,7 @@ export async function schedulePracticeNotification(
   if (Platform.OS === "web") return;
   await ensurePracticeChannel();
   const identifier = PRACTICE_NOTIFICATION_IDS[slot];
-  await Notifications.cancelScheduledNotificationAsync(identifier).catch(() => {});
+  await Notifications.cancelScheduledNotificationAsync(identifier);
   await Notifications.scheduleNotificationAsync({
     identifier,
     content: {
@@ -312,9 +334,16 @@ export async function cancelPracticeNotification(
   slot: PracticeNotificationSlot,
 ): Promise<void> {
   if (Platform.OS === "web") return;
+  await cancelPracticeNotificationStrict(slot).catch(() => {});
+}
+
+async function cancelPracticeNotificationStrict(
+  slot: PracticeNotificationSlot,
+): Promise<void> {
+  if (Platform.OS === "web") return;
   await Notifications.cancelScheduledNotificationAsync(
     PRACTICE_NOTIFICATION_IDS[slot],
-  ).catch(() => {});
+  );
 }
 
 export async function cancelLegacyDailyReminder(): Promise<void> {
@@ -334,4 +363,16 @@ export async function cancelAllPracticeNotifications(): Promise<void> {
 
 export function formatPracticeNotificationTime(hour: number, minute: number): string {
   return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+export function formatPracticeNotificationTimeLocal(
+  hour: number,
+  minute: number,
+  locale?: string,
+): string {
+  const date = new Date(2020, 0, 1, hour, minute, 0, 0);
+  return new Intl.DateTimeFormat(locale, {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
 }
