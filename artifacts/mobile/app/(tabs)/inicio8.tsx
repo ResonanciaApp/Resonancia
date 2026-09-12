@@ -807,14 +807,6 @@ function Inicio2HeroSlider({
               onError={(error) => handleSlideError(index, error)}
               style={styles.inicio2HeroImage}
             />
-            {/* El overlay pertenece a cada slide para que el desplazamiento,
-                parallax y estiramiento no puedan separarlo de la imagen. */}
-            <LinearGradient
-              colors={["rgba(8,8,8,0.42)", "rgba(8,8,8,0.02)", "rgba(8,8,8,0)"]}
-              locations={[0, 0.48, 1]}
-              style={styles.inicio2HeroImage}
-              pointerEvents="none"
-            />
           </Animated.View>
           </RAnimated.View>
           </RAnimated.View>
@@ -1124,16 +1116,6 @@ function Inicio2HeroSliderRebuilt({
                     resizeMode="cover"
                     style={styles.inicio2HeroImage}
                   />
-                  <LinearGradient
-                    colors={[
-                      "rgba(8,8,8,0.42)",
-                      "rgba(8,8,8,0.02)",
-                      "rgba(8,8,8,0)",
-                    ]}
-                    locations={[0, 0.48, 1]}
-                    style={styles.inicio2HeroImage}
-                    pointerEvents="none"
-                  />
                 </Animated.View>
               </View>
             ))}
@@ -1303,15 +1285,6 @@ function Inicio2HeroStatic({
         <Image
           source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
           resizeMode="cover"
-          style={styles.inicio2HeroImage}
-        />
-        <LinearGradient
-          colors={[
-            "rgba(8,8,8,0.42)",
-            "rgba(8,8,8,0.02)",
-            "rgba(8,8,8,0)",
-          ]}
-          locations={[0, 0.48, 1]}
           style={styles.inicio2HeroImage}
         />
       </View>
