@@ -2145,7 +2145,7 @@ const styles = StyleSheet.create({
   },
   wisdomSectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     marginBottom: 17,
   },
@@ -2362,8 +2362,8 @@ const styles = StyleSheet.create({
   },
   practiceReminderTitle: {
     fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "800",
+    fontSize: 17,
+    fontWeight: "700",
   },
   practiceReminderSubtitle: {
     fontFamily: "Manrope",

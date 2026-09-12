@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   },
   feedTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "700",
     color: "#F9F9F9",
     marginBottom: 14,

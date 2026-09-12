@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
   },
   todosSectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",

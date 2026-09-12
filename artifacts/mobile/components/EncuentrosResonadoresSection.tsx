@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     color: "#F4F4F4",
     paddingHorizontal: HORIZONTAL_PAD,

@@ -2559,7 +2559,7 @@ export default function HomeScreen2({
         )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
-            <Text style={[styles.sectionTitle, { fontSize: 19, marginBottom: 17 }]}>
+            <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
               Para este momento
             </Text>
             <Pressable
@@ -3873,8 +3873,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, marginBottom: 17, color: "#FBFBFB" },
-  inicio2SectionTitle: { fontSize: 19, marginBottom: 17 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 17, color: "#FBFBFB" },
+  inicio2SectionTitle: { fontSize: 17, marginBottom: 17 },
   continueSection: {
     marginTop: 0,
     marginBottom: INICIO2_SECTION_GAP,

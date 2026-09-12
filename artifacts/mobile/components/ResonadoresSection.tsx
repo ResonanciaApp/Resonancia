@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 0,
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     color: "#F4F4F4",
   },
