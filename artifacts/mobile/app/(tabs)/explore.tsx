@@ -11,7 +11,6 @@ import {
   StyleSheet,
   Text,
   View,
-  type TextStyle,
 } from "react-native";
 import { Image } from "expo-image";
 import { SymbolView } from "expo-symbols";
@@ -946,7 +945,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 17 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: 690 as TextStyle["fontWeight"], letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 17 },
   contentCategorySection: {
     marginBottom: SECTION_GAP,
   },
