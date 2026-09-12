@@ -1339,8 +1339,8 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: topInset + (isInicio3 ? 286 : 66),
-            bottom: isInicio3 ? 52 : 18,
+            top: topInset + (isInicio3 ? 292 : 66),
+            bottom: isInicio3 ? 46 : 18,
           },
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
