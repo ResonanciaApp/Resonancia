@@ -525,10 +525,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalImageBottom =
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
   const ambientalFillScale = 0.75;
-  const ambientalFilledImageWidth = (cw + 1) * ambientalFillScale;
+  const ambientalFilledImageWidth = cw + 1;
   const ambientalFilledImageHeight =
     ambientalImageBottom * ambientalFillScale + 15;
-  const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
+  const ambientalFilledImageLeft = -1;
   const ambientalFilledImageTop =
     (ambientalImageBottom - ambientalFilledImageHeight) / 2;
   const ambientalFilledImageBottom =
@@ -943,7 +943,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             styles.ambientalTitleMatchSleep,
                             ambientalTitleOnlyTitleStyle,
                             {
-                              height: 38,
+                              height: 42,
                               textAlignVertical: "center",
                             },
                           ]}

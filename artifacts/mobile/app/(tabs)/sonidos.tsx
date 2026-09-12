@@ -446,7 +446,7 @@ export default function SonidosScreen() {
                    transform: [{ translateY: -2 }],
                  }}
                  ambientalTitleOnlyTitleStyle={{
-                   height: 36,
+                   height: 42,
                    fontSize: 16,
                    lineHeight: 20,
                    textAlign: "center",
