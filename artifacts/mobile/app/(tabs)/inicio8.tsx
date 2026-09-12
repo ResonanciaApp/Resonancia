@@ -188,6 +188,7 @@ const INICIO2_SCROLL_START_THRESHOLD = 8;
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
 const INICIO3_TOOL_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 3) / 4);
+const INICIO3_TOOL_WIDE_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 const SHOW_CONTINUE_LISTENING = false;
 
 const INICIO3_TOOL_BLOCKS = [
@@ -2653,6 +2654,36 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {variant === "inicio3" && (
+          <View style={styles.inicio3ToolGrid} testID="inicio3-tool-grid">
+            {INICIO3_TOOL_BLOCKS.map((tool, index) => (
+              <Pressable
+                key={tool.id}
+                accessibilityRole="button"
+                accessibilityLabel={`Abrir ${tool.label}`}
+                testID={`inicio3-tool-${tool.id}`}
+                onPress={() => handleInicio3ToolPress(tool.id)}
+                style={({ pressed }) => [
+                  styles.inicio3ToolCell,
+                  index >= 4 && styles.inicio3ToolCellWide,
+                  { opacity: pressed ? 0.72 : 1 },
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name={tool.icon}
+                  size={24}
+                  color="#F9F9F9"
+                />
+                <Text
+                  style={[styles.inicio3ToolLabel, { color: colors.foreground }]}
+                  numberOfLines={2}
+                >
+                  {tool.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
         {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
@@ -2772,35 +2803,6 @@ export default function HomeScreen2({
                 <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
               ))}
             </ScrollView>
-          </View>
-        )}
-        {variant === "inicio3" && (
-          <View style={styles.inicio3ToolGrid} testID="inicio3-tool-grid">
-            {INICIO3_TOOL_BLOCKS.map((tool) => (
-              <Pressable
-                key={tool.id}
-                accessibilityRole="button"
-                accessibilityLabel={`Abrir ${tool.label}`}
-                testID={`inicio3-tool-${tool.id}`}
-                onPress={() => handleInicio3ToolPress(tool.id)}
-                style={({ pressed }) => [
-                  styles.inicio3ToolCell,
-                  { backgroundColor: cardBg, opacity: pressed ? 0.72 : 1 },
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name={tool.icon}
-                  size={24}
-                  color="#F9F9F9"
-                />
-                <Text
-                  style={[styles.inicio3ToolLabel, { color: colors.foreground }]}
-                  numberOfLines={2}
-                >
-                  {tool.label}
-                </Text>
-              </Pressable>
-            ))}
           </View>
         )}
         {isInicio2 && (
@@ -3336,6 +3338,9 @@ const styles = StyleSheet.create({
   inicio3ToolCell: {
     width: INICIO3_TOOL_W,
     minHeight: 92,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -3343,6 +3348,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 5,
     paddingVertical: 12,
+  },
+  inicio3ToolCellWide: {
+    width: INICIO3_TOOL_WIDE_W,
   },
   inicio3ToolLabel: {
     fontFamily: "Manrope",
