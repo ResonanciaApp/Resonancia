@@ -319,9 +319,9 @@ export function DrawerMenu() {
                         >
                           <View style={styles.itemIcon}>
                             {item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={29} color="#F9F9F9" />
+                              <MaterialCommunityIcons name={item.mciIcon} size={24} color="#F9F9F9" />
                             ) : (
-                              <Feather name={item.icon} size={26} color="#F9F9F9" />
+                              <Feather name={item.icon} size={21} color="#F9F9F9" />
                             )}
                           </View>
                           <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
   headerDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(212,175,55,0.18)",
-    marginTop: -3,
+    marginTop: 2,
     marginBottom: 0,
   },
   profileSection: {
@@ -515,9 +515,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   inicio3ProfilePhoto: {
-    width: 53,
-    height: 53,
-    borderRadius: 26.5,
+    width: 67,
+    height: 67,
+    borderRadius: 33.5,
     borderWidth: 1,
   },
   profileInfo: {
