@@ -3169,7 +3169,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 5,
     borderRadius: 999,
-    backgroundColor: "#321C70",
+    backgroundColor: "#F9F9F9",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.4)",
     transform: [{ translateY: 15 }],
@@ -3185,7 +3185,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "550" as any,
-    color: "#F9F9F9",
+    color: "#0D0A1E",
     textAlign: "center",
   },
   inicio2HeroControls: {
