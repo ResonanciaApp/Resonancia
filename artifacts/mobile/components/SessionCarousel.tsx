@@ -61,13 +61,21 @@ function LineAwareAmbientalTitle({
   children: string;
   style: StyleProp<TextStyle>;
 }) {
+  const [lineCount, setLineCount] = React.useState(1);
+
   return (
     <Text
       style={[
         style,
-        { transform: [{ translateY: -2 }] },
+        { transform: [{ translateY: lineCount > 1 ? -2 : 7 }] },
       ]}
       numberOfLines={2}
+      onTextLayout={(event) => {
+        const nextLineCount = Math.min(event.nativeEvent.lines.length, 2);
+        setLineCount((current) =>
+          current === nextLineCount ? current : nextLineCount,
+        );
+      }}
     >
       {children}
     </Text>
