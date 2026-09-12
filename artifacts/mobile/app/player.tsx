@@ -989,25 +989,12 @@ export default function PlayerScreen() {
       <AmbientSoundPickerSheet
         visible={showAmbientPicker}
         selectedSoundId={selectedAmbientSoundId}
-        session={currentSession ? { title: currentSession.title, image: currentSession.image } : undefined}
         onClose={() => setShowAmbientPicker(false)}
-        initialStep={selectedAmbientSoundId ? "controles" : "pick"}
-        initialSessionVolume={mainVolume}
         initialAmbientVolume={ambientOverlayVolume}
         onPreviewStart={(id) => setSelectedAmbientSoundId(id)}
-        onSessionVolumeChange={(vol) => setMainVolume(vol)}
         onAmbientVolumeChange={(vol) => {
           setAmbientOverlayVolume(vol);
           if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;
-        }}
-        onSelect={(id, vol, sessVol) => {
-          setSelectedAmbientSoundId(id);
-          setAmbientOverlayVolume(vol);
-          setMainVolume(sessVol);
-        }}
-        onRemoveConfirm={() => {
-          setSelectedAmbientSoundId(null);
-          setShowAmbientPicker(false);
         }}
       />
     </View>
@@ -1160,7 +1147,7 @@ const styles = StyleSheet.create({
     height: 47,
     paddingHorizontal: 0,
     paddingVertical: 0,
-    backgroundColor: "rgba(130,96,181,0.32)",
+    backgroundColor: "rgba(130,96,181,0.48)",
     transform: [{ translateX: -14 }],
   },
   ambientPillContent: {

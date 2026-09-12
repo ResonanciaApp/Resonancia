@@ -698,22 +698,12 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
       <AmbientSoundPickerSheet
         visible={showAmbientPicker}
         selectedSoundId={selectedAmbientSoundId}
-        session={{ title: session.title, image: session.image }}
         onClose={() => setShowAmbientPicker(false)}
-        initialStep={selectedAmbientSoundId ? "controles" : "pick"}
         initialAmbientVolume={ambientOverlayVolume}
         onPreviewStart={(sid) => setSelectedAmbientSoundId(sid)}
         onAmbientVolumeChange={(vol) => {
           setAmbientOverlayVolume(vol);
           if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;
-        }}
-        onSelect={(sid, vol) => {
-          setSelectedAmbientSoundId(sid);
-          setAmbientOverlayVolume(vol);
-        }}
-        onRemoveConfirm={() => {
-          setSelectedAmbientSoundId(null);
-          setShowAmbientPicker(false);
         }}
       />
 
