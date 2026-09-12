@@ -1398,32 +1398,38 @@ function Inicio2HeroStatic({
       </View>
 
       {isInicio3 && (
-        <View
-          style={[styles.inicio3StreakRow, { top: topInset + 80 }]}
-          testID="inicio3-streak-row"
-        >
-          {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
-            const active = weekFlags[i];
-            const isToday = todayIndex === i;
-            return (
-              <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                <View
-                  style={[
-                    styles.inicio3StreakDay,
-                    (active || isToday) && styles.inicio3StreakDayActive,
-                  ]}
-                >
-                  {active && (
-                    <Feather name="check" size={22} color="#F9F9F9" />
-                  )}
+        <>
+          <View
+            style={[styles.inicio3StreakRow, { top: topInset + 80 }]}
+            testID="inicio3-streak-row"
+          >
+            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
+              const active = weekFlags[i];
+              const isToday = todayIndex === i;
+              return (
+                <View key={initial} style={styles.inicio3StreakDayWrapper}>
+                  <View
+                    style={[
+                      styles.inicio3StreakDay,
+                      (active || isToday) && styles.inicio3StreakDayActive,
+                    ]}
+                  >
+                    {active && (
+                      <Feather name="check" size={22} color="#F9F9F9" />
+                    )}
+                  </View>
+                  <Text style={styles.inicio3StreakDayLabel}>
+                    {initial}
+                  </Text>
                 </View>
-                <Text style={styles.inicio3StreakDayLabel}>
-                  {initial}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
+              );
+            })}
+          </View>
+          <View
+            pointerEvents="none"
+            style={[styles.inicio3HeaderDivider, { top: topInset + 146 }]}
+          />
+        </>
       )}
 
       <View
@@ -2531,6 +2537,8 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
+
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
@@ -2557,6 +2565,7 @@ export default function HomeScreen2({
             inicio3Compact={variant === "inicio3"}
           />
         )}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
@@ -2638,6 +2647,9 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {variant === "inicio3" && featuredMoment && (
+          <View style={styles.inicio3SectionDivider} />
+        )}
         {isInicio2 && (
           <SessionCarousel
             title="Sesiones recientes"
@@ -2657,6 +2669,7 @@ export default function HomeScreen2({
             eagerRender
           />
         )}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {isInicio2 && (
           <SessionCarousel
             title="Mis favoritos"
@@ -2679,6 +2692,7 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
           />
         )}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {variant === "inicio3" && (
           <SessionCarousel
             title="Populares"
@@ -2699,6 +2713,7 @@ export default function HomeScreen2({
             viewAllColor={carouselViewAllColor}
           />
         )}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {variant === "inicio3" && videos.length > 0 && (
           <View
             style={{
@@ -2748,6 +2763,9 @@ export default function HomeScreen2({
               ))}
             </ScrollView>
           </View>
+        )}
+        {variant === "inicio3" && videos.length > 0 && (
+          <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
@@ -2816,6 +2834,9 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
+        {variant === "inicio3" && SHOW_CONTINUE_LISTENING && continueSession && (
+          <View style={styles.inicio3SectionDivider} />
+        )}
         {isInicio2 && (
           <MiRutinaSection
             cardBackgroundColor={
@@ -2832,6 +2853,7 @@ export default function HomeScreen2({
             }}
           />
         )}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -2864,7 +2886,11 @@ export default function HomeScreen2({
             />
           </View>
         )}
+        {variant === "inicio3" && (
+          <View style={styles.inicio3SectionDivider} />
+        )}
         {isInicio2 && <AlmaCommunitySection />}
+        {variant === "inicio3" && <View style={styles.inicio3SectionDivider} />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
         {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
@@ -2972,6 +2998,9 @@ export default function HomeScreen2({
               </View>
             </Pressable>
           </View>
+        )}
+        {variant === "inicio3" && !isPremium && (
+          <View style={styles.inicio3SectionDivider} />
         )}
 
         {/* ── 10. BANNER PREMIUM ── */}
@@ -3303,6 +3332,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    zIndex: 12,
+  },
+  inicio3HeaderDivider: {
+    position: "absolute",
+    left: GRID_PAD,
+    right: GRID_PAD,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(249,249,249,0.18)",
     zIndex: 12,
   },
   inicio3StreakDayWrapper: {
@@ -3866,6 +3903,13 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  inicio3SectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: GRID_PAD,
+    marginTop: -27,
+    marginBottom: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
   },
   sectionRow: {
     flexDirection: "row",
