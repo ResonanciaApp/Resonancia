@@ -106,6 +106,8 @@ import { CardTint } from "@/components/CardTint";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
+import { VideoCard } from "@/components/VideoCard";
+import { useVideos } from "@/hooks/useVideos";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -1545,6 +1547,7 @@ export default function HomeScreen2({
   const todayKey = useDayRollover();
 
   const { isPremium } = usePremium();
+  const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
@@ -2692,6 +2695,56 @@ export default function HomeScreen2({
             titleSize={19}
             viewAllColor={carouselViewAllColor}
           />
+        )}
+        {variant === "inicio3" && videos.length > 0 && (
+          <View
+            style={{
+              marginHorizontal: GRID_PAD,
+              marginBottom: INICIO2_SECTION_GAP,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 17,
+              }}
+            >
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Videos destacados
+              </Text>
+              <Pressable hitSlop={8} onPress={() => openCategory("/videos")}>
+                <Text
+                  style={{
+                    fontFamily: "Manrope",
+                    fontSize: 13,
+                    fontWeight: "600",
+                    color: carouselViewAllColor,
+                  }}
+                >
+                  Ver todos
+                </Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -GRID_PAD }}
+              contentContainerStyle={{
+                paddingHorizontal: GRID_PAD,
+                gap: CONTENT_CAROUSEL_GAP,
+              }}
+            >
+              {videos.slice(0, 8).map((video) => (
+                <VideoCard
+                  key={video.id}
+                  video={video}
+                  width={INICIO3_SESSION_CARD_WIDTH}
+                />
+              ))}
+            </ScrollView>
+          </View>
         )}
         {isInicio2 && SHOW_CONTINUE_LISTENING && continueSession && (
           <View style={styles.continueSection} testID="inicio2-continue-listening">
