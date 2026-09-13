@@ -113,7 +113,8 @@ function PreviewCircularProgress({
   progress: SharedValue<number>;
 }) {
   const strokeWidth = 3;
-  const radius = (diameter - strokeWidth) / 2;
+  const canvasSize = diameter + strokeWidth * 2;
+  const radius = diameter / 2 + strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset:
@@ -121,18 +122,18 @@ function PreviewCircularProgress({
   }));
 
   return (
-    <Svg width={diameter} height={diameter}>
+    <Svg width={canvasSize} height={canvasSize}>
       <AnimatedCircle
         animatedProps={animatedProps}
-        cx={diameter / 2}
-        cy={diameter / 2}
+        cx={canvasSize / 2}
+        cy={canvasSize / 2}
         r={radius}
         fill="none"
         stroke={NEON_VIOLET}
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={`${circumference} ${circumference}`}
-        transform={`rotate(-90 ${diameter / 2} ${diameter / 2})`}
+        transform={`rotate(-90 ${canvasSize / 2} ${canvasSize / 2})`}
       />
     </Svg>
   );
@@ -675,10 +676,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           style={[
                             styles.previewCircularProgress,
                             {
-                              width: ambientalFilledImageDiameter,
-                              height: ambientalFilledImageDiameter,
-                              left: ambientalFilledImageLeft,
-                              top: ambientalFilledImageTop,
+                              width: ambientalFilledImageDiameter + 6,
+                              height: ambientalFilledImageDiameter + 6,
+                              left: ambientalFilledImageLeft - 3,
+                              top: ambientalFilledImageTop - 3,
                             },
                           ]}
                         >
