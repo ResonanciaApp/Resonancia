@@ -476,7 +476,6 @@ function RutinaCalendarioScreenContent() {
         backgroundColor="#0E0821"
         visible
         enteredOffset={35}
-        height={60}
       />
     </View>
   );
