@@ -107,6 +107,7 @@ import { ProgresoModal } from "@/components/ProgresoModal";
 import { CardTint } from "@/components/CardTint";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { DailyRecommendationsSection } from "@/components/DailyRecommendationsSection";
+import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { DailyWisdomCard } from "@/components/DailyWisdomCard";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
@@ -115,6 +116,11 @@ import {
   CONTENT_CAROUSEL_GAP,
   getTwoCardCarouselCardWidth,
 } from "@/constants/carousel";
+import { PLAYLISTS } from "@/data/playlists";
+import {
+  computePlaylistCompletion,
+  isMeditativeSessionPlaylist,
+} from "@/lib/editorial-playlist-helpers";
 
 const { width, height } = Dimensions.get("window");
 
@@ -1632,7 +1638,7 @@ export default function HomeScreen2({
 
   const { isPremium } = usePremium();
   const { videos } = useVideos();
-  const { playlists } = useFoldersPlaylists();
+  const { activeMeditationPlaylist, playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openCategory } = useCategoryOverlay();
@@ -1855,6 +1861,28 @@ export default function HomeScreen2({
 
   const { version: catalogVersion, status: catalogStatus } = useCatalog();
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+
+  const continueMeditationPlaylist = useMemo(() => {
+    if (!activeMeditationPlaylist) return null;
+    const playlist = PLAYLISTS.find(
+      (candidate) => candidate.id === activeMeditationPlaylist.slug,
+    );
+    if (!playlist || !isMeditativeSessionPlaylist(playlist)) return null;
+
+    const completedSessionIds = new Set(
+      statEvents
+        .filter((event) => event.completed)
+        .map((event) => event.sessionId),
+    );
+    const completion = computePlaylistCompletion(
+      playlist.sessionIds,
+      completedSessionIds,
+    );
+    if (completion.total === 0 || completion.completed === completion.total) {
+      return null;
+    }
+    return { playlist, completion };
+  }, [activeMeditationPlaylist, catalogVersion, statEvents]);
 
   const featuredMoment = React.useMemo(() => {
     const pinned = pinnedFeaturedData?.session;
@@ -2519,6 +2547,27 @@ export default function HomeScreen2({
             style={{ paddingHorizontal: GRID_PAD, marginTop: -5 }}
             inicio3Compact={variant === "inicio3"}
           />
+        )}
+        {variant === "inicio3" && continueMeditationPlaylist && (
+          <>
+            <ContinueMeditationPlaylistCard
+              title={continueMeditationPlaylist.playlist.title}
+              description={continueMeditationPlaylist.playlist.description}
+              coverSource={
+                continueMeditationPlaylist.playlist.coverUrl
+                  ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                  : continueMeditationPlaylist.playlist.cover
+              }
+              completion={continueMeditationPlaylist.completion}
+              onPress={() => {
+                router.push({
+                  pathname: "/editorial-playlist/[slug]",
+                  params: { slug: continueMeditationPlaylist.playlist.id },
+                } as never);
+              }}
+            />
+            <View style={styles.inicio3SectionDivider} />
+          </>
         )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>

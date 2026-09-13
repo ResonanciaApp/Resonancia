@@ -39,6 +39,7 @@ import {
   classifyEditorialDetailStatus,
   computePlaylistCompletion,
   formatMeditationSessionOrdinal,
+  isMeditativeSessionPlaylist,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolveMeditationPlaylistPlayAction,
@@ -66,6 +67,7 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
   const { isPremium } = usePremium();
   const {
     isEditorialPlaylistSaved,
+    markMeditationPlaylistStarted,
     toggleEditorialPlaylist,
   } = useFoldersPlaylists();
   const {
@@ -225,6 +227,9 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
 
   const openPlayerFrom = (session: Session, shuffle = false) => {
     if (!owner || playableIds.length === 0) return;
+    if (slug && isMeditativeSessionPlaylist(playlist)) {
+      markMeditationPlaylistStarted(slug);
+    }
     playSessionInPlaylist(session, playableIds, owner, shuffle);
     router.push({
       pathname: "/player",

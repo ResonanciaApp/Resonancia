@@ -242,6 +242,45 @@ export type PlaylistCompletion = {
   percentage: number;
 };
 
+export type ActiveMeditationPlaylist = {
+  slug: string;
+  startedAt: string;
+};
+
+export type MeditationPlaylistKind = {
+  playlistType?: string | null;
+  editorialType?: string | null;
+};
+
+export function isMeditativeSessionPlaylist(
+  playlist: MeditationPlaylistKind | null | undefined,
+): boolean {
+  return playlist?.playlistType === "sessions" && playlist.editorialType === "meditative";
+}
+
+export function parseActiveMeditationPlaylist(
+  value: unknown,
+): ActiveMeditationPlaylist | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as Partial<ActiveMeditationPlaylist>;
+  if (
+    typeof candidate.slug !== "string" ||
+    !candidate.slug ||
+    typeof candidate.startedAt !== "string" ||
+    Number.isNaN(Date.parse(candidate.startedAt))
+  ) return null;
+  return { slug: candidate.slug, startedAt: candidate.startedAt };
+}
+
+export function pickLatestMeditationPlaylist(
+  local: ActiveMeditationPlaylist | null,
+  server: ActiveMeditationPlaylist | null,
+): ActiveMeditationPlaylist | null {
+  if (!local) return server;
+  if (!server) return local;
+  return Date.parse(local.startedAt) >= Date.parse(server.startedAt) ? local : server;
+}
+
 /** Progreso editorial por sesiones terminadas, deduplicando IDs en ambos lados. */
 export function computePlaylistCompletion(
   sessionIds: readonly string[],

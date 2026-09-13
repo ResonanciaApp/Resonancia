@@ -8,6 +8,11 @@ import React, {
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getMyLibrary, setMyLibrary } from "@workspace/api-client-react";
+import {
+  parseActiveMeditationPlaylist,
+  pickLatestMeditationPlaylist,
+  type ActiveMeditationPlaylist,
+} from "@/lib/editorial-playlist-helpers";
 import { useAuth } from "@/context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -110,6 +115,8 @@ interface FoldersPlaylistsCtx {
   savedEditorialPlaylistIds: EditorialPlaylistLibraryRef[];
   isEditorialPlaylistSaved: (slug: string) => boolean;
   toggleEditorialPlaylist: (slug: string) => void;
+  activeMeditationPlaylist: ActiveMeditationPlaylist | null;
+  markMeditationPlaylistStarted: (slug: string) => void;
 }
 
 // ─── Storage keys ─────────────────────────────────────────────────────────────
@@ -146,6 +153,7 @@ const DEFAULT_PLAYLISTS: Playlist[] = [
 const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 const EDITORIAL_PLAYLISTS_KEY = "@resonance_saved_editorial_playlist_ids";
+const ACTIVE_MEDITATION_PLAYLIST_KEY = "@resonance_active_meditation_playlist";
 
 /**
  * Marca de primera sincronización de biblioteca con la nube.
@@ -187,13 +195,17 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const [favFolders, setFavFolders] = useState<FavFolder[]>([]);
   const [pinnedFavoriteIds, setPinnedFavoriteIds] = useState<string[]>([]);
   const [savedEditorialPlaylistIds, setSavedEditorialPlaylistIds] = useState<string[]>([]);
+  const [activeMeditationPlaylist, setActiveMeditationPlaylist] =
+    useState<ActiveMeditationPlaylist | null>(null);
 
   // True mientras se carga desde storage (no empujar al server aún)
   const hydrating = useRef(true);
   // Debounce timer para no saturar el server con un push por cada keystroke
   const pushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { isSignedIn } = useAuth();
+  const { clerkUserId, isSignedIn } = useAuth();
+  const activeMeditationStorageKey =
+    `${ACTIVE_MEDITATION_PLAYLIST_KEY}:${clerkUserId ?? "anonymous"}`;
 
   // ── Carga inicial desde AsyncStorage + merge con server ─────────────────────
 
@@ -213,9 +225,19 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       FAV_FOLDERS_KEY,
       PINNED_FAVORITES_KEY,
       EDITORIAL_PLAYLISTS_KEY,
+      activeMeditationStorageKey,
       DEFAULT_PLAYLISTS_SEEDED_KEY,
       LIBRARY_FIRST_SYNC_KEY,
-    ]).then(async ([fEntry, pEntry, ffEntry, pfEntry, editorialEntry, seededEntry, firstSyncEntry]) => {
+    ]).then(async ([
+      fEntry,
+      pEntry,
+      ffEntry,
+      pfEntry,
+      editorialEntry,
+      activeMeditationEntry,
+      seededEntry,
+      firstSyncEntry,
+    ]) => {
       if (cancelled) return;
       // ── Folders ──
       const localFolders: Folder[] = fEntry[1] ? JSON.parse(fEntry[1]) : [];
@@ -244,6 +266,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       const localFavFolders: FavFolder[] = ffEntry[1] ? JSON.parse(ffEntry[1]) : [];
       const localPinned: string[] = pfEntry[1] ? JSON.parse(pfEntry[1]) : [];
       const localEditorial: string[] = editorialEntry[1] ? JSON.parse(editorialEntry[1]) : [];
+      const localActiveMeditation = parseActiveMeditationPlaylist(
+        activeMeditationEntry[1] ? JSON.parse(activeMeditationEntry[1]) : null,
+      );
 
       // ── Sync con server ──────────────────────────────────────────────────────
       if (isSignedIn) {
@@ -257,6 +282,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
            const serverEditorial = (
              (snap as typeof snap & { savedEditorialPlaylistIds?: unknown }).savedEditorialPlaylistIds ?? []
            ) as string[];
+            const serverActiveMeditation = parseActiveMeditationPlaylist(
+              snap.activeMeditationPlaylist,
+            );
 
           const firstSync = !firstSyncEntry[1];
 
@@ -265,6 +293,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
           let finalFavFolders: FavFolder[];
           let finalPinned: string[];
            let finalEditorial: string[];
+            let finalActiveMeditation: ActiveMeditationPlaylist | null;
 
           if (firstSync) {
             // Primera sync de este dispositivo: unión para recuperar datos de la nube
@@ -273,6 +302,10 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
             finalFavFolders = mergeById(localFavFolders, serverFavFolders);
             finalPinned = mergeStringArrays(localPinned, serverPinned);
              finalEditorial = mergeStringArrays(localEditorial, serverEditorial);
+              finalActiveMeditation = pickLatestMeditationPlaylist(
+                localActiveMeditation,
+                serverActiveMeditation,
+              );
             await AsyncStorage.setItem(LIBRARY_FIRST_SYNC_KEY, "1");
             // Guardar el resultado fusionado localmente
             AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(finalFolders));
@@ -287,13 +320,32 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
             finalFavFolders = localFavFolders;
             finalPinned = localPinned;
              finalEditorial = localEditorial;
+              finalActiveMeditation = pickLatestMeditationPlaylist(
+                localActiveMeditation,
+                serverActiveMeditation,
+              );
           }
+
+            if (finalActiveMeditation) {
+              AsyncStorage.setItem(
+                activeMeditationStorageKey,
+                JSON.stringify(finalActiveMeditation),
+              );
+              if (
+                !serverActiveMeditation ||
+                finalActiveMeditation.slug !== serverActiveMeditation.slug ||
+                finalActiveMeditation.startedAt !== serverActiveMeditation.startedAt
+              ) {
+                setMyLibrary({ activeMeditationPlaylist: finalActiveMeditation }).catch(() => {});
+              }
+            }
 
           setFolders(finalFolders);
           setPlaylists(finalPlaylists);
           setFavFolders(finalFavFolders);
           setPinnedFavoriteIds(finalPinned);
            setSavedEditorialPlaylistIds(finalEditorial);
+            setActiveMeditationPlaylist(finalActiveMeditation);
         } catch {
           // Sin red: usar datos locales
           setFolders(localFolders);
@@ -301,6 +353,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
           setFavFolders(localFavFolders);
           setPinnedFavoriteIds(localPinned);
            setSavedEditorialPlaylistIds(localEditorial);
+            setActiveMeditationPlaylist(localActiveMeditation);
         }
       } else {
         setFolders(localFolders);
@@ -308,6 +361,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         setFavFolders(localFavFolders);
         setPinnedFavoriteIds(localPinned);
          setSavedEditorialPlaylistIds(localEditorial);
+          setActiveMeditationPlaylist(localActiveMeditation);
       }
 
        if (!cancelled) hydrating.current = false;
@@ -315,7 +369,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     return () => {
       cancelled = true;
     };
-  }, [isSignedIn]);
+  }, [activeMeditationStorageKey, clerkUserId, isSignedIn]);
 
   // ── Push debounced al server cuando cambian los datos ─────────────────────
 
@@ -337,7 +391,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         // Sin red: silencioso; se intentará en la siguiente sesión
       });
     }, 1500);
-  }, [folders, playlists, favFolders, pinnedFavoriteIds, savedEditorialPlaylistIds, isSignedIn]);
+  }, [
+    folders,
+    playlists,
+    favFolders,
+    pinnedFavoriteIds,
+    savedEditorialPlaylistIds,
+    isSignedIn,
+  ]);
 
   // Functional updaters — always read latest state (no stale closure)
   const updateFolders = useCallback((updater: (prev: Folder[]) => Folder[]) => {
@@ -738,6 +799,15 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updateEditorialPlaylistSlugs]);
 
+  const markMeditationPlaylistStarted = useCallback((slug: string) => {
+    const next = { slug, startedAt: new Date().toISOString() };
+    setActiveMeditationPlaylist(next);
+    AsyncStorage.setItem(activeMeditationStorageKey, JSON.stringify(next)).catch(() => {});
+    if (isSignedIn) {
+      setMyLibrary({ activeMeditationPlaylist: next }).catch(() => {});
+    }
+  }, [activeMeditationStorageKey, isSignedIn]);
+
   return (
     <Ctx.Provider
       value={{
@@ -792,6 +862,8 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
          savedEditorialPlaylistIds,
          isEditorialPlaylistSaved,
          toggleEditorialPlaylist,
+         activeMeditationPlaylist,
+         markMeditationPlaylistStarted,
       }}
     >
       {children}

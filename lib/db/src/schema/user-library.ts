@@ -26,6 +26,8 @@ export const userLibraryTable = pgTable("user_library", {
   savedEditorialPlaylistIds: jsonb("saved_editorial_playlist_ids")
     .notNull()
     .default([]),
+  /** Última playlist meditativa iniciada, para continuarla desde Inicio. */
+  activeMeditationPlaylist: jsonb("active_meditation_playlist"),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

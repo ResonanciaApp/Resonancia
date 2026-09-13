@@ -1520,12 +1520,20 @@ export const SetPinnedFeaturedResponse = zod.object({
 /**
  * @summary Get the current user's full library snapshot (folders, playlists, fav-folders, pinned favorites)
  */
+export const getMyLibraryResponseActiveMeditationPlaylistOneSlugMax = 200;
+
+
+
 export const GetMyLibraryResponse = zod.object({
   "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
   "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
   "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
+  "activeMeditationPlaylist": zod.object({
+  "slug": zod.string().min(1).max(getMyLibraryResponseActiveMeditationPlaylistOneSlugMax),
+  "startedAt": zod.coerce.date()
+}).nullish().describe('Última playlist editorial meditativa iniciada por el usuario'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
@@ -1534,15 +1542,27 @@ export const GetMyLibraryResponse = zod.object({
 /**
  * @summary Replace the current user's library snapshot
  */
+export const setMyLibraryBodyActiveMeditationPlaylistOneSlugMax = 200;
+
+
+
 export const SetMyLibraryBody = zod.object({
   "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
   "playlists": zod.array(zod.unknown()).optional().describe('Playlists ordenadas (Playlist[])'),
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
   "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
+  "activeMeditationPlaylist": zod.object({
+  "slug": zod.string().min(1).max(setMyLibraryBodyActiveMeditationPlaylistOneSlugMax),
+  "startedAt": zod.coerce.date()
+}).nullish().describe('Última playlist editorial meditativa iniciada por el usuario'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')
+
+export const setMyLibraryResponseActiveMeditationPlaylistOneSlugMax = 200;
+
+
 
 export const SetMyLibraryResponse = zod.object({
   "folders": zod.array(zod.unknown()).optional().describe('Carpetas de sesiones\/playlists (Folder[])'),
@@ -1550,6 +1570,10 @@ export const SetMyLibraryResponse = zod.object({
   "favFolders": zod.array(zod.unknown()).optional().describe('Carpetas de favoritos (FavFolder[])'),
   "pinnedFavoriteIds": zod.array(zod.string()).optional().describe('IDs de favoritos fijados'),
   "savedEditorialPlaylistIds": zod.array(zod.string()).optional().describe('Slugs estables de playlists editoriales guardadas'),
+  "activeMeditationPlaylist": zod.object({
+  "slug": zod.string().min(1).max(setMyLibraryResponseActiveMeditationPlaylistOneSlugMax),
+  "startedAt": zod.coerce.date()
+}).nullish().describe('Última playlist editorial meditativa iniciada por el usuario'),
   "mixerPresets": zod.array(zod.unknown()).optional().describe('Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite'),
   "geometrixCreations": zod.array(zod.unknown()).optional().describe('Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite')
 }).describe('Snapshot completo de la biblioteca personal del usuario')

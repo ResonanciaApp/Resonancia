@@ -610,7 +610,29 @@ describe("editorial playlist contract", () => {
       userId: regularUser.id,
       folders: [{ id: "keep-me" }],
       savedEditorialPlaylistIds: [],
+      activeMeditationPlaylist: null,
     });
+
+    const startedAt = "2026-09-13T12:00:00.000Z";
+    const activeMeditationPlaylist = {
+      slug: `meditation-${suffix}`,
+      startedAt,
+    };
+    const activeResponse = await request(app)
+      .put("/api/me/library")
+      .send({ activeMeditationPlaylist });
+    expect(activeResponse.status).toBe(200);
+    expect(activeResponse.body.activeMeditationPlaylist).toEqual(activeMeditationPlaylist);
+    const staleResponse = await request(app)
+      .put("/api/me/library")
+      .send({
+        activeMeditationPlaylist: {
+          slug: `older-${suffix}`,
+          startedAt: "2026-09-12T12:00:00.000Z",
+        },
+      });
+    expect(staleResponse.status).toBe(200);
+    expect(staleResponse.body.activeMeditationPlaylist).toEqual(activeMeditationPlaylist);
 
     const response = await request(app)
       .put("/api/me/library")
@@ -618,15 +640,30 @@ describe("editorial playlist contract", () => {
     expect(response.status).toBe(200);
     expect(response.body.savedEditorialPlaylistIds).toEqual([`editorial-${suffix}`]);
     expect(response.body.folders).toEqual([{ id: "keep-me" }]);
+    expect(response.body.activeMeditationPlaylist).toEqual(activeMeditationPlaylist);
 
     const invalid = await request(app)
       .put("/api/me/library")
       .send({ savedEditorialPlaylistIds: [123] });
     expect(invalid.status).toBe(400);
+    const invalidActive = await request(app)
+      .put("/api/me/library")
+      .send({ activeMeditationPlaylist: { slug: "", startedAt: "not-a-date" } });
+    expect(invalidActive.status).toBe(400);
+    const oversizedActive = await request(app)
+      .put("/api/me/library")
+      .send({
+        activeMeditationPlaylist: {
+          slug: "x".repeat(201),
+          startedAt,
+        },
+      });
+    expect(oversizedActive.status).toBe(400);
 
     const get = await request(app).get("/api/me/library");
     expect(get.status).toBe(200);
     expect(get.body.savedEditorialPlaylistIds).toEqual([`editorial-${suffix}`]);
+    expect(get.body.activeMeditationPlaylist).toEqual(activeMeditationPlaylist);
   });
 });
 

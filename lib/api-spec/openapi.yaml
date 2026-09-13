@@ -4149,6 +4149,11 @@ components:
           items:
             type: string
           description: Slugs estables de playlists editoriales guardadas
+        activeMeditationPlaylist:
+          allOf:
+            - $ref: "#/components/schemas/ActiveMeditationPlaylist"
+          nullable: true
+          description: Última playlist editorial meditativa iniciada por el usuario
         mixerPresets:
           type: array
           items: {}
@@ -4159,6 +4164,17 @@ components:
           description: Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite
       # Todos los campos son opcionales en el PUT: cada campo omitido se preserva
       # en el servidor, permitiendo que módulos distintos sincronicen solo lo suyo.
+    ActiveMeditationPlaylist:
+      type: object
+      properties:
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 200
+        startedAt:
+          type: string
+          format: date-time
+      required: [slug, startedAt]
     StreakResponse:
       type: object
       properties:

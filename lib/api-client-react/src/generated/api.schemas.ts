@@ -56,6 +56,15 @@ export interface PlaybackEvent {
   playedAt: string;
 }
 
+export interface ActiveMeditationPlaylist {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  slug: string;
+  startedAt: string;
+}
+
 /**
  * Snapshot completo de la biblioteca personal del usuario
  */
@@ -70,6 +79,8 @@ export interface LibrarySnapshot {
   pinnedFavoriteIds?: string[];
   /** Slugs estables de playlists editoriales guardadas */
   savedEditorialPlaylistIds?: string[];
+  /** Última playlist editorial meditativa iniciada por el usuario */
+  activeMeditationPlaylist?: ActiveMeditationPlaylist | null;
   /** Presets del mezclador (MixPreset[]) — opcional, se preserva si se omite */
   mixerPresets?: unknown[];
   /** Composiciones de Geometrix (GeometrixCreation[]) — opcional, se preserva si se omite */

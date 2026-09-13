@@ -7,6 +7,9 @@ import {
   classifyEditorialDetailStatus,
   computePlaylistCompletion,
   formatMeditationSessionOrdinal,
+  isMeditativeSessionPlaylist,
+  parseActiveMeditationPlaylist,
+  pickLatestMeditationPlaylist,
   parseEditorialPlaylistCache,
   pickRandomQueueStart,
   resolvePlaylistCarouselRows,
@@ -36,6 +39,43 @@ test("computes meditation playlist completion at 0%, partial and 100%", () => {
     computePlaylistCompletion([], ["a"]),
     { total: 0, completed: 0, percentage: 0 },
   );
+});
+
+test("only session-based meditative playlists activate home continuation", () => {
+  assert.equal(
+    isMeditativeSessionPlaylist({
+      playlistType: "sessions",
+      editorialType: "meditative",
+    }),
+    true,
+  );
+  assert.equal(
+    isMeditativeSessionPlaylist({
+      playlistType: "music",
+      editorialType: "meditative",
+    }),
+    false,
+  );
+  assert.equal(
+    isMeditativeSessionPlaylist({
+      playlistType: "sessions",
+      editorialType: "relaxation",
+    }),
+    false,
+  );
+});
+
+test("keeps the most recently started meditation playlist across devices", () => {
+  const older = { slug: "programa-a", startedAt: "2026-09-12T10:00:00.000Z" };
+  const newer = { slug: "programa-b", startedAt: "2026-09-13T10:00:00.000Z" };
+  assert.deepEqual(pickLatestMeditationPlaylist(older, newer), newer);
+  assert.deepEqual(pickLatestMeditationPlaylist(newer, older), newer);
+  assert.deepEqual(pickLatestMeditationPlaylist(null, older), older);
+  assert.deepEqual(
+    parseActiveMeditationPlaylist(JSON.parse(JSON.stringify(newer))),
+    newer,
+  );
+  assert.equal(parseActiveMeditationPlaylist({ slug: "", startedAt: "bad" }), null);
 });
 
 test("continues a meditation playlist from its first pending session", () => {

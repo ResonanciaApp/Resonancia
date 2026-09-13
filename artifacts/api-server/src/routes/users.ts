@@ -22,6 +22,7 @@ import {
   UpdateMeBody,
   SearchUsersQueryParams,
   SetUserRoleBody,
+  SetMyLibraryBody,
   UpdateMyExpansorProfileBody,
 } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
@@ -774,6 +775,7 @@ router.get("/me/library", requireAuth, async (req, res) => {
       mixerPresets: [],
       geometrixCreations: [],
       savedEditorialPlaylistIds: [],
+      activeMeditationPlaylist: null,
     });
     return;
   }
@@ -786,10 +788,18 @@ router.get("/me/library", requireAuth, async (req, res) => {
     mixerPresets: r.mixerPresets,
     geometrixCreations: r.geometrixCreations,
     savedEditorialPlaylistIds: r.savedEditorialPlaylistIds,
+    activeMeditationPlaylist: r.activeMeditationPlaylist,
   });
 });
 
 router.put("/me/library", requireAuth, async (req, res) => {
+  const parsedBody = SetMyLibraryBody.safeParse(req.body ?? {});
+  if (!parsedBody.success) {
+    res.status(400).json({ error: "Payload inválido" });
+    return;
+  }
+  // Validate with the shared contract, but keep the original JSON strings:
+  // the generated Zod schema coerces date-time fields to Date instances.
   const body = (req.body ?? {}) as Record<string, unknown>;
   // Todos los campos son opcionales: cada campo omitido se preserva en el
   // servidor, permitiendo que módulos distintos (biblioteca, mezclador,
@@ -802,11 +812,34 @@ router.put("/me/library", requireAuth, async (req, res) => {
     "mixerPresets",
     "geometrixCreations",
     "savedEditorialPlaylistIds",
+    "activeMeditationPlaylist",
   ] as const;
   const updates: Record<string, unknown> = {};
   for (const f of FIELDS) {
     const v = body[f];
     if (v === undefined) continue;
+    if (f === "activeMeditationPlaylist") {
+      if (
+        v !== null &&
+        (
+          typeof v !== "object" ||
+          typeof (v as { slug?: unknown }).slug !== "string" ||
+          !(v as { slug: string }).slug ||
+          typeof (v as { startedAt?: unknown }).startedAt !== "string" ||
+          !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/.test(
+            (v as { startedAt: string }).startedAt,
+          ) ||
+          Number.isNaN(Date.parse((v as { startedAt: string }).startedAt))
+        )
+      ) {
+        res.status(400).json({
+          error: "Payload inválido: activeMeditationPlaylist debe contener slug y startedAt",
+        });
+        return;
+      }
+      updates[f] = v;
+      continue;
+    }
     if (!Array.isArray(v)) {
       res.status(400).json({ error: `Payload inválido: ${f} debe ser un array` });
       return;
@@ -828,12 +861,27 @@ router.put("/me/library", requireAuth, async (req, res) => {
   }
   const me = req.currentUser!;
   const now = new Date();
+  const updateSet: Record<string, unknown> = { ...updates, updatedAt: now };
+  const activeMeditationUpdate = updates.activeMeditationPlaylist;
+  if (activeMeditationUpdate && typeof activeMeditationUpdate === "object") {
+    const nextStartedAt = (activeMeditationUpdate as { startedAt: string }).startedAt;
+    const nextJson = JSON.stringify(activeMeditationUpdate);
+    updateSet.activeMeditationPlaylist = sql`
+      CASE
+        WHEN ${userLibraryTable.activeMeditationPlaylist} IS NULL
+          OR (${userLibraryTable.activeMeditationPlaylist}->>'startedAt')::timestamptz
+             <= ${nextStartedAt}::timestamptz
+        THEN ${nextJson}::jsonb
+        ELSE ${userLibraryTable.activeMeditationPlaylist}
+      END
+    `;
+  }
   const [row] = await db
     .insert(userLibraryTable)
     .values({ userId: me.id, ...updates, updatedAt: now })
     .onConflictDoUpdate({
       target: userLibraryTable.userId,
-      set: { ...updates, updatedAt: now },
+      set: updateSet,
     })
     .returning();
   res.json({
@@ -844,6 +892,7 @@ router.put("/me/library", requireAuth, async (req, res) => {
     mixerPresets: row.mixerPresets,
     geometrixCreations: row.geometrixCreations,
     savedEditorialPlaylistIds: row.savedEditorialPlaylistIds,
+    activeMeditationPlaylist: row.activeMeditationPlaylist,
   });
 });
 
