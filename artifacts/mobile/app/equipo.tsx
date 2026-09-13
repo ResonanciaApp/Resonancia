@@ -51,7 +51,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (
         <LinearGradient
-          colors={["#784576", "#50326E"]}
+          colors={["#F9F9F9", "#F9F9F9"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[StyleSheet.absoluteFill, { margin: -1 }]}
@@ -212,7 +212,7 @@ const ResonadorCard = memo(function ResonadorCard({
   const d = item.data;
   const { expansorId } = useUserProfile();
 
-  const photoSize = Math.round((cardW - 16) * 0.85);
+  const photoSize = Math.round((cardW - 16) * 0.85 * 1.17);
 
   function handlePress() {
     router.push(`/resonador-perfil/${d.id}` as never);
@@ -273,7 +273,7 @@ export default function EquipoScreen() {
     }).map((r) => ({ kind: "resonador" as const, data: r }));
   }, [resonadores, activeFilter]);
 
-  const numCols = 2;
+  const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
   const cardW = Math.floor(
     (screenWidth - SCREEN_PAD - CARD_GAP * (numCols - 1)) / numCols,
@@ -323,6 +323,7 @@ export default function EquipoScreen() {
 
       {/* ── Grid ── */}
       <FlatList
+        key={`resonadores-${numCols}`}
         style={{ marginTop: -2 }}
         data={items}
         keyExtractor={(item) => item.data.id}
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
-  chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
+  chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
   grid: { paddingHorizontal: H_PAD, paddingTop: 25 },
   row: { gap: CARD_GAP, marginBottom: 31 },
   card: {
