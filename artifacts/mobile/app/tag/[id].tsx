@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     borderColor: WIDGET_GREEN_SOLID,
   },
   filterPillIdle: {
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderColor: "rgba(255,255,255,0.1)",
   },
   filterLabel: {
