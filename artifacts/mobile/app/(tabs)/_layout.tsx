@@ -18,12 +18,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, {
-  Defs as SvgDefs,
-  RadialGradient as SvgRadialGradient,
-  Rect as SvgRect,
-  Stop as SvgStop,
-} from "react-native-svg";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { useMixer } from "@/context/MixerContext";
@@ -52,13 +46,7 @@ const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
 
 function getTabBarBackground(activeSceneId: string) {
-  return activeSceneId === "indigo3"
-    ? "#000000"
-    : activeSceneId === "indigo2"
-    ? "#150D2E"
-    : activeSceneId === "resonancia"
-      ? "#090B17"
-      : "#0E0E17";
+  return "#0E0821";
 }
 
 // Rutas que nunca aparecen en el menú inferior
@@ -266,43 +254,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             { backgroundColor: tabBarBackground },
           ]}
         />
-        {indigo2Mode && (
-          <Svg
-            pointerEvents="none"
-            width="100%"
-            height="100%"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            style={StyleSheet.absoluteFill}
-          >
-            <SvgDefs>
-              <SvgRadialGradient
-                id="tabBarVioletGlow"
-                cx="82%"
-                cy="12%"
-                rx="70%"
-                ry="130%"
-              >
-                <SvgStop offset="0" stopColor="#8A63C7" stopOpacity={0.16} />
-                <SvgStop offset="0.34" stopColor="#7656B5" stopOpacity={0.08} />
-                <SvgStop offset="0.82" stopColor="#7656B5" stopOpacity={0} />
-              </SvgRadialGradient>
-              <SvgRadialGradient
-                id="tabBarIndigoGlow"
-                cx="15%"
-                cy="95%"
-                rx="78%"
-                ry="140%"
-              >
-                <SvgStop offset="0" stopColor="#566CC4" stopOpacity={0.13} />
-                <SvgStop offset="0.36" stopColor="#3D4B9A" stopOpacity={0.06} />
-                <SvgStop offset="0.84" stopColor="#3D4B9A" stopOpacity={0} />
-              </SvgRadialGradient>
-            </SvgDefs>
-            <SvgRect width="100" height="100" fill="url(#tabBarVioletGlow)" />
-            <SvgRect width="100" height="100" fill="url(#tabBarIndigoGlow)" />
-          </Svg>
-        )}
         <View
           style={[
             styles.row,
