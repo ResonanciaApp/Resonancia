@@ -44,8 +44,6 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
-import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
-import { useMixerPanel } from "@/context/MixerPanelContext";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
@@ -261,7 +259,6 @@ export function ExploreScreen({
   collapseCategoryHeader?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
-  const { openMixer } = useMixerPanel();
   const { openForSession } = useAmbientalDuration();
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
@@ -669,23 +666,23 @@ export function ExploreScreen({
           <View style={styles.sectionDivider} />
 
           <Pressable
-            onPress={openMixer}
+            onPress={() => router.push("/resonadores" as never)}
             accessibilityRole="button"
-            accessibilityLabel="Abrir Mezclador para dormir"
+            accessibilityLabel="Conoce a los Resonadores"
             style={({ pressed }) => [
               styles.sleepMixerBanner,
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
             <View style={styles.sleepMixerBannerIcon}>
-              <MoonCrescentIcon color="#C4A8F5" size={24} />
+              <Feather name="users" color="#F9F9F9" size={24} />
             </View>
             <View style={styles.sleepMixerBannerCopy}>
               <Text style={styles.sleepMixerBannerTitle}>
-                Mezclador para dormir
+                Conoce a los Resonadores
               </Text>
               <Text style={styles.sleepMixerBannerSubtitle}>
-                Crea tu propia mezcla de sonidos
+                La esencia que le da vida a este espacio
               </Text>
             </View>
             <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
