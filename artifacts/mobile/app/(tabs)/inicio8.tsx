@@ -2824,7 +2824,7 @@ export default function HomeScreen2({
                 <Text style={styles.inicio3PremiumPlusText}>Premium Plus</Text>
               </Text>
               <Text style={styles.inicio3ResonadoresBannerSubtitle}>
-                Accede a todos los beneficios de Premium + sesiones 1:1 con Resonadores + Geometrix
+                Sesiones 1:1 con Resonadores + Mezclador de sonidos + Geometrix
               </Text>
             </View>
             <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
@@ -4050,7 +4050,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
-    marginBottom: 3,
+    marginBottom: 5,
   },
   inicio3ResonadoresBannerSubtitle: {
     color: "#F4F4F4",

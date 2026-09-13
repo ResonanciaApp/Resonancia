@@ -974,6 +974,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: 2 }],
   },
   sleepMixerBannerCopy: {
     flex: 1,
@@ -984,7 +985,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
-    marginBottom: 3,
+    marginBottom: 5,
   },
   sleepMixerBannerSubtitle: {
     fontFamily: "Manrope",
