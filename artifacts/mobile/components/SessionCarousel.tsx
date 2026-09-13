@@ -1128,6 +1128,8 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
     backgroundColor: "transparent",
     overflow: "hidden",
     alignItems: "center",
