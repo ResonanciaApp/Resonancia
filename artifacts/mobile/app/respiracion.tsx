@@ -210,8 +210,8 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#F9F9F9" : "rgba(255,255,255,0.1)",
-                      backgroundColor: active ? "#F9F9F9" : "rgba(255,255,255,0.1)",
+                      borderColor: "rgba(255,255,255,0.2)",
+                      backgroundColor: active ? "#F9F9F9" : "rgba(0,0,0,0.28)",
                     },
                   ]}
                 >
@@ -351,7 +351,12 @@ const styles = StyleSheet.create({
   scroll: { paddingTop: 10 },
 
   chipWrap: { marginHorizontal: 0, marginBottom: 4 },
-  chipRow: { paddingHorizontal: 16, gap: 8 },
+  chipRow: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    gap: 8,
+  },
   chip: {
     height: 51,
     paddingHorizontal: 16,
