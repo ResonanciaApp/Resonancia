@@ -272,7 +272,7 @@ export default function RespiracionScreen() {
               style={[
                 styles.circle,
                 {
-                  borderColor: "rgba(249,249,249,0.72)",
+                  borderColor: "rgba(255,255,255,0.3)",
                   backgroundColor: "rgba(0,0,0,0.28)",
                 },
               ]}
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     width: CIRCLE_SIZE,
     height: CIRCLE_SIZE,
     borderRadius: CIRCLE_SIZE / 2,
-    borderWidth: 1.5,
+    borderWidth: 2,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
