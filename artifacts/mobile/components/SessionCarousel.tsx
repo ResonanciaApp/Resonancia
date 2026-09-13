@@ -11,6 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 import {
+  Animated as RNAnimated,
   Pressable,
   FlatList,
   ScrollView,
@@ -23,6 +24,8 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
+
+const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -376,6 +379,32 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const { openForSession } = useAmbientalDuration();
   const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
+  const previewScaleById = React.useRef(new Map<string, RNAnimated.Value>()).current;
+  const getPreviewScale = React.useCallback((sessionId: string) => {
+    let scale = previewScaleById.get(sessionId);
+    if (!scale) {
+      scale = new RNAnimated.Value(1);
+      previewScaleById.set(sessionId, scale);
+    }
+    return scale;
+  }, [previewScaleById]);
+  const bouncePreview = React.useCallback((sessionId: string) => {
+    const scale = getPreviewScale(sessionId);
+    scale.stopAnimation();
+    RNAnimated.sequence([
+      RNAnimated.timing(scale, {
+        toValue: 0.9,
+        duration: 70,
+        useNativeDriver: true,
+      }),
+      RNAnimated.spring(scale, {
+        toValue: 1,
+        speed: 24,
+        bounciness: 12,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [getPreviewScale]);
   if (sessions.length === 0) return null;
   const forceAmbientalVariant = cardVariant === "ambiental";
   const isEditorialPresentation = presentation === "editorial";
@@ -658,9 +687,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             progress={soundPreview.progress}
                           />
                         </PreviewFadeLayer>
-                        <Pressable
+                        <AnimatedPressable
                           onPress={(event) => {
                             event.stopPropagation();
+                            bouncePreview(s.id);
                             soundPreview.onToggle(s);
                           }}
                           hitSlop={8}
@@ -680,6 +710,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               top:
                                 ambientalFilledImageBottom -
                                 ambientalPlayButtonSize / 2,
+                              transform: [{ scale: getPreviewScale(s.id) }],
                             },
                           ]}
                         >
@@ -693,7 +724,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             size={ambientalPlayIconSize}
                             color="#F9F9F9"
                           />
-                        </Pressable>
+                        </AnimatedPressable>
                       </>
                     )}
                     {!useOverlayMetadata && !shouldHideAmbientalTitle && (
