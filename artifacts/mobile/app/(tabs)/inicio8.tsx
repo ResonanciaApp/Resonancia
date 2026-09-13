@@ -298,6 +298,15 @@ function hexTint(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+function brightenStreakColor(hex: string, pct: number): string {
+  const value = hex.replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
+  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
+  return `rgb(${channels
+    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
+    .join(",")})`;
+}
+
 const ND = Platform.OS !== "web";
 
 function BlinkingCursor({ color }: { color: string }) {
@@ -1281,6 +1290,14 @@ function Inicio2HeroStatic({
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const { weekFlags, todayIndex } = useStreak();
+  const { theme } = useSceneTheme();
+  const streakGradient = useMemo(
+    () =>
+      theme.gradient.map((color) =>
+        brightenStreakColor(color, 20),
+      ) as unknown as [string, string, ...string[]],
+    [theme.gradient],
+  );
   const displayName =
     username
     || clerkUser?.firstName
@@ -1452,14 +1469,22 @@ function Inicio2HeroStatic({
               const isToday = todayIndex === i;
               return (
                 <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                  <View
-                    style={[
-                      styles.inicio3StreakDay,
-                      (active || isToday) && styles.inicio3StreakDayActive,
-                    ]}
-                  >
-                    {active && <Feather name="check" size={22} color="#F9F9F9" />}
-                  </View>
+                  {active ? (
+                    <LinearGradient
+                      colors={streakGradient}
+                      locations={theme.gradientLocations}
+                      style={[styles.inicio3StreakDay, styles.inicio3StreakDayActive]}
+                    >
+                      <Feather name="check" size={22} color="#F9F9F9" />
+                    </LinearGradient>
+                  ) : (
+                    <View
+                      style={[
+                        styles.inicio3StreakDay,
+                        isToday && styles.inicio3StreakDayActive,
+                      ]}
+                    />
+                  )}
                   <Text style={styles.inicio3StreakDayLabel}>
                     {initial}
                   </Text>
@@ -3343,7 +3368,7 @@ const styles = StyleSheet.create({
   },
   inicio3StreakDayActive: {
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.3)",
+    borderColor: "rgba(255,255,255,0.45)",
   },
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
