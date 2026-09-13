@@ -266,6 +266,8 @@ type SessionCarouselProps = {
     colors: [string, string, ...string[]];
     locations?: readonly [number, number, ...number[]];
   };
+  /** Brightness added to the canonical Ambiental gradient. Defaults to 5%. */
+  ambientalGradientBrightness?: number;
   /** Optional border override for Ambiental cards on a specific screen/theme. */
   ambientalCardBorderColor?: string;
   ambientalCardBorderWidth?: number;
@@ -372,6 +374,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardGradient,
+  ambientalGradientBrightness = 5,
   ambientalCardBorderColor,
   ambientalCardBorderWidth,
   ambientalCardBorderRadius,
@@ -419,13 +422,13 @@ export const SessionCarousel = React.memo(function SessionCarousel({
 
     return {
       colors: bottomStops.map((color) =>
-        brightenAmbientalColor(color, 5),
+        brightenAmbientalColor(color, ambientalGradientBrightness),
       ) as unknown as [string, string, ...string[]],
       locations: bottomLocations?.map(
         (location) => (location - firstLocation) / locationSpan,
       ) as unknown as [number, number, ...number[]] | undefined,
     };
-  }, [theme.gradient, theme.gradientLocations]);
+  }, [ambientalGradientBrightness, theme.gradient, theme.gradientLocations]);
   const effectiveAmbientalCardGradient =
     ambientalCardGradient ?? canonicalAmbientalGradient;
   const { openForSession } = useAmbientalDuration();

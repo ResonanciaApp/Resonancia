@@ -432,6 +432,9 @@ export default function SonidosScreen() {
                   ]}
                  presentation="editorial"
                  ambientalTitleOnly
+                  ambientalGradientBrightness={
+                    collection.label === "Todos los sonidos" ? 0 : 5
+                  }
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth
                  soundPreview={{
