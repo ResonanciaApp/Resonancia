@@ -84,15 +84,10 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   card: {
-    minHeight: 106,
+    minHeight: 82,
     flexDirection: "row",
     alignItems: "center",
     gap: 13,
-    padding: 11,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "rgba(0,0,0,0.28)",
   },
   cover: {
     width: 82,
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
     minWidth: 24,
   },
   progressTrack: {
-    flex: 1,
+    width: "60%",
     height: 4,
     borderRadius: 2,
     overflow: "hidden",
