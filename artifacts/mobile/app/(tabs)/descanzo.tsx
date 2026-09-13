@@ -499,16 +499,17 @@ export default function DescansoScreen() {
             </View>
           </View>
           <View style={{ marginTop: -3 }}>
-            {orderedSleepCarousels.map((item, index) =>
-              item.session ? (
-                <SessionCarousel
-                  key={item.key}
+            {orderedSleepCarousels.map((item, index) => (
+              <React.Fragment key={item.key}>
+                {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                {item.session ? (
+                  <SessionCarousel
                   title={item.session.label}
                   sessions={item.session.sessions}
                   isPremium={isPremium}
                   onPress={handleSessionTap}
                   style={{
-                    marginTop: index === 0 ? 33 : 53,
+                    marginTop: index === 0 ? 33 : 26,
                     marginBottom: 0,
                     paddingHorizontal: H_PAD,
                   }}
@@ -530,22 +531,22 @@ export default function DescansoScreen() {
                   sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
                   overlayGradientLocations={[0.18, 0.48, 1]}
                   onViewAll={sleepCarouselViewAllHandlers[item.session.id]}
-                />
-              ) : item.playlist ? (
-                <EditorialPlaylistCarousel
-                  key={item.key}
+                  />
+                ) : item.playlist ? (
+                  <EditorialPlaylistCarousel
                   title={item.playlist.title}
                   playlists={item.playlist.playlists}
                   style={{
-                    marginTop: index === 0 ? 33 : 53,
+                    marginTop: index === 0 ? 33 : 26,
                     marginBottom: 0,
                   }}
                   onPress={(playlist) =>
                     openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                   }
-                />
-              ) : null,
-            )}
+                  />
+                ) : null}
+              </React.Fragment>
+            ))}
           </View>
         </ScrollView>
       </View>
@@ -789,6 +790,12 @@ const styles = StyleSheet.create({
     gap: 8,
     flexDirection: "row",
     alignItems: "center",
+  },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   sleepPillBorder: {},
   sleepPillBorderSel: {},

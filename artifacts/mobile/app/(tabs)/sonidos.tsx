@@ -419,13 +419,17 @@ export default function SonidosScreen() {
               />
             )}
             {collections.map((collection, index) => (
-              <SessionCarousel
-                key={collection.id}
-                title={collection.label}
-                sessions={collection.sessions.slice(0, 5)}
-                isPremium={isPremium}
-                onPress={openSession}
-                style={[styles.carousel, index === 0 && styles.firstCarousel]}
+              <React.Fragment key={collection.id}>
+                {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                <SessionCarousel
+                  title={collection.label}
+                  sessions={collection.sessions.slice(0, 5)}
+                  isPremium={isPremium}
+                  onPress={openSession}
+                  style={[
+                    styles.carousel,
+                    index === 0 ? styles.firstCarousel : styles.carouselAfterDivider,
+                  ]}
                  presentation="editorial"
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
@@ -452,8 +456,9 @@ export default function SonidosScreen() {
                    textAlignVertical: "top",
                  }}
                 titleSize={17}
-                onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
-              />
+                  onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}
+                />
+              </React.Fragment>
             ))}
           </>
         )}
@@ -645,6 +650,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   firstCarousel: { marginTop: 33 },
+  carouselAfterDivider: { marginTop: 26 },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
   recentCarousel: { marginTop: 33 },
   empty: {
     marginHorizontal: H_PAD,
