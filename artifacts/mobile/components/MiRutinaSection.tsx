@@ -591,6 +591,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
                 { opacity: pressed ? 0.78 : 1 },
               ]}
             >
+              <Feather name="plus" size={14} color="#060A0F" />
               <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
             </Pressable>
           </Reanimated.View>
@@ -606,13 +607,12 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           style={({ pressed }) => [
             styles.addButton,
             {
-              borderColor: "rgba(249,249,249,0.5)",
               opacity: pressed ? 0.72 : 1,
             },
           ]}
         >
-          <Feather name="plus" size={20} color="#F9F9F9" />
-          <Text style={[styles.addButtonText, { color: "#F9F9F9" }]}>
+          <Feather name="plus" size={20} color="#060A0F" />
+          <Text style={[styles.addButtonText, { color: "#060A0F" }]}>
             Añadir una actividad
           </Text>
         </Pressable>
@@ -754,13 +754,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     height: 25,
     borderRadius: 15,
-    backgroundColor: "#276FC2",
+    backgroundColor: "#F9F9F9",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 5,
     paddingHorizontal: 14,
   },
   completeAddButtonText: {
-    color: "#F9F9F9",
+    color: "#060A0F",
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
@@ -769,9 +771,7 @@ const styles = StyleSheet.create({
   addButton: {
     minHeight: 68,
     borderRadius: 16,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    backgroundColor: "transparent",
+    backgroundColor: "#F9F9F9",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
