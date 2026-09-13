@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
@@ -15,11 +14,19 @@ type Props = {
   bottom: number;
   backgroundColor: string;
   visible: boolean;
+  entryDistance?: number;
+  onAddedPress?: () => void;
 };
 
-export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Props) {
+export function RoutineCompletionBanner({
+  bottom,
+  backgroundColor,
+  visible,
+  entryDistance = ENTRY_DISTANCE,
+  onAddedPress,
+}: Props) {
   const { activeEvent, dismissActiveEvent } = useRoutineCompletionBanner();
-  const translateY = useRef(new Animated.Value(ENTRY_DISTANCE)).current;
+  const translateY = useRef(new Animated.Value(entryDistance)).current;
   const countProgress = useRef(new Animated.Value(0)).current;
   const waveProgress = useRef(new Animated.Value(0)).current;
   const startedEventIdRef = useRef<number | null>(null);
@@ -49,7 +56,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
     translateY.stopAnimation();
     countProgress.stopAnimation();
     waveProgress.stopAnimation();
-    translateY.setValue(ENTRY_DISTANCE);
+    translateY.setValue(entryDistance);
     countProgress.setValue(0);
     waveProgress.setValue(0);
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
@@ -65,7 +72,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
         committedEventIdRef.current = activeEvent.id;
         holdTimer = setTimeout(() => {
           Animated.timing(translateY, {
-            toValue: ENTRY_DISTANCE,
+            toValue: entryDistance,
             duration: EXIT_DURATION,
             easing: Easing.in(Easing.cubic),
             useNativeDriver: true,
@@ -96,7 +103,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
         }).start();
         holdTimer = setTimeout(() => {
           Animated.timing(translateY, {
-            toValue: ENTRY_DISTANCE,
+            toValue: entryDistance,
             duration: EXIT_DURATION,
             easing: Easing.in(Easing.cubic),
             useNativeDriver: true,
@@ -121,6 +128,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
     activeEvent,
     countProgress,
     dismissActiveEvent,
+    entryDistance,
     translateY,
     visible,
     waveProgress,
@@ -170,7 +178,7 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
 
   return (
     <Animated.View
-      pointerEvents="none"
+      pointerEvents={activeEvent.kind === "added" ? "box-none" : "none"}
       style={[
         styles.banner,
         {
@@ -192,24 +200,33 @@ export function RoutineCompletionBanner({ bottom, backgroundColor, visible }: Pr
       </View>
       <View style={styles.counterWrap}>
         {activeEvent.kind === "completed" ? (
-          <Animated.View style={[styles.wave, waveStyle]} />
-        ) : null}
-        <View style={styles.counter}>
-          {activeEvent.kind === "completed" ? (
-            <>
-              <Animated.Text style={[styles.counterNumber, oldNumberStyle]}>
-                {activeEvent.previousCount}
-              </Animated.Text>
-              <Animated.Text style={[styles.counterNumber, styles.nextNumber, newNumberStyle]}>
-                {activeEvent.nextCount}
-              </Animated.Text>
-            </>
-          ) : (
-            <View style={styles.addedTicket}>
-              <Feather name="check" size={20} color="#060A0F" />
+          <>
+            <Animated.View style={[styles.wave, waveStyle]} />
+            <View style={styles.counter}>
+              <>
+                <Animated.Text style={[styles.counterNumber, oldNumberStyle]}>
+                  {activeEvent.previousCount}
+                </Animated.Text>
+                <Animated.Text style={[styles.counterNumber, styles.nextNumber, newNumberStyle]}>
+                  {activeEvent.nextCount}
+                </Animated.Text>
+              </>
             </View>
-          )}
-        </View>
+          </>
+        ) : (
+          <Pressable
+            onPress={() => {
+              dismissActiveEvent();
+              onAddedPress?.();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Ver actividad añadida"
+            hitSlop={10}
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
+            <Text style={styles.addedButtonText}>Ver</Text>
+          </Pressable>
+        )}
       </View>
     </Animated.View>
   );
@@ -282,12 +299,10 @@ const styles = StyleSheet.create({
   nextNumber: {
     position: "absolute",
   },
-  addedTicket: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "#F9F9F9",
-    alignItems: "center",
-    justifyContent: "center",
+  addedButtonText: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
   },
 });

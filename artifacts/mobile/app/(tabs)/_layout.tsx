@@ -1,4 +1,4 @@
-import { Tabs, usePathname } from "expo-router";
+import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
@@ -435,6 +435,7 @@ function TabLayoutInner() {
         bottom={tabBarHeight + 15}
         backgroundColor={getTabBarBackground(activeSceneId)}
         visible={completionBannerVisible}
+        onAddedPress={() => router.push("/rutina-calendario" as never)}
       />
       {barProps && <CustomTabBar {...barProps} />}
 

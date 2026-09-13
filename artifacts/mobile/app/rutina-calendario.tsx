@@ -441,8 +441,9 @@ function RutinaCalendarioScreenContent() {
       </Pressable>
       <RoutineCompletionBanner
         bottom={bottomPad + 82}
-        backgroundColor={routineTheme.background}
+        backgroundColor="#0E0821"
         visible
+        entryDistance={35}
       />
     </View>
   );
