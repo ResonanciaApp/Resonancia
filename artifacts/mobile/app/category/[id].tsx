@@ -35,6 +35,15 @@ const CARD_GAP = 12;
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
+function brightenCardColor(hex: string, pct: number): string {
+  const value = hex.replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
+  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
+  return `rgb(${channels
+    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
+    .join(",")})`;
+}
+
 function Chip({
   label,
   selected,
@@ -112,6 +121,15 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { version } = useCatalog();
   const { activeSceneId, theme } = useSceneTheme();
+  const ambientalCardGradient = useMemo(
+    () => ({
+      colors: theme.gradient.map((color) =>
+        brightenCardColor(color, 15),
+      ) as unknown as [string, string, ...string[]],
+      locations: theme.gradientLocations,
+    }),
+    [theme.gradient, theme.gradientLocations],
+  );
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
   const soundPreview = useSoundPreview();
@@ -244,7 +262,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             progress: soundPreview.progress,
             onToggle: soundPreview.toggle,
           }}
-          ambientalCardBackground="rgba(0,0,0,0.28)"
+          ambientalCardGradient={ambientalCardGradient}
           ambientalCardBorderColor="rgba(255,255,255,0.1)"
           ambientalCardBorderWidth={1}
           ambientalCardBorderRadius={28}

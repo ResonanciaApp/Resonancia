@@ -239,6 +239,11 @@ type SessionCarouselProps = {
   ambientalCardWidth?: number;
   /** Optional surface override for Ambiental cards on a specific screen/theme. */
   ambientalCardBackground?: string;
+  /** Optional full gradient surface for Ambiental cards on a specific screen/theme. */
+  ambientalCardGradient?: {
+    colors: [string, string, ...string[]];
+    locations?: readonly [number, number, ...number[]];
+  };
   /** Optional border override for Ambiental cards on a specific screen/theme. */
   ambientalCardBorderColor?: string;
   ambientalCardBorderWidth?: number;
@@ -344,6 +349,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   trailingPeek,
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
+  ambientalCardGradient,
   ambientalCardBorderColor,
   ambientalCardBorderWidth,
   ambientalCardBorderRadius,
@@ -611,13 +617,23 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     borderRadius: cardBorderRadius,
                   },
                   isAmbiental && {
-                    backgroundColor: ambientalCardBackground,
+                    backgroundColor: ambientalCardGradient
+                      ? "transparent"
+                      : ambientalCardBackground,
                     borderWidth: ambientalCardBorderWidth ?? 2,
                     borderRadius: ambientalCardBorderRadius ?? 18,
                     borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.2)",
                   },
                 ]}
               >
+                {isAmbiental && ambientalCardGradient && (
+                  <LinearGradient
+                    colors={ambientalCardGradient.colors}
+                    locations={ambientalCardGradient.locations}
+                    style={StyleSheet.absoluteFill}
+                    pointerEvents="none"
+                  />
+                )}
                 {!isAmbiental && (
                   <CarouselImage source={s.image} style={[styles.thumb, thumbStyle]} />
                 )}
