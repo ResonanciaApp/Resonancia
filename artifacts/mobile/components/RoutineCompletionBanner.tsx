@@ -9,7 +9,7 @@ const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
 const EXIT_DURATION = 320;
-const COUNTER_SURFACE = "#2E1C50";
+const COUNTER_SURFACE = "#276FC2";
 
 type Props = {
   bottom: number;
