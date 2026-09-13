@@ -212,7 +212,7 @@ const ResonadorCard = memo(function ResonadorCard({
   const d = item.data;
   const { expansorId } = useUserProfile();
 
-  const photoSize = cardW - 16;
+  const photoSize = Math.round((cardW - 16) * 0.85);
 
   function handlePress() {
     router.push(`/resonador-perfil/${d.id}` as never);
@@ -276,7 +276,9 @@ export default function EquipoScreen() {
 
   const numCols = 2;
   const SCREEN_PAD = H_PAD * 2;
-  const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
+  const cardW = Math.floor(
+    (screenWidth - SCREEN_PAD - CARD_GAP * (numCols - 1)) / numCols,
+  );
 
   return (
     <View style={styles.root}>
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 29, marginHorizontal: -H_PAD },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 19, marginHorizontal: -H_PAD },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
     width: 30,
