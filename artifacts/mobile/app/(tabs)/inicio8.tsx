@@ -2004,27 +2004,11 @@ export default function HomeScreen2({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // ── La lupa solo aparece cuando el sticky header se "activa" (6% scroll) ──
-  const STICKY_ACTIVE_THRESHOLD = 0.048;
-  const [stickyActive, setStickyActive] = useState(false);
-  const stickyActiveRef = useRef(false);
   const searchOpenRef = useRef(false);
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
-  const inicio2ScrollY = useSharedValue(0);
-  const inicio2StickyThreshold = useSharedValue(-1);
-  const inicio2BorderThreshold = useSharedValue(-1);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
-  const inicioStickyHeaderAnim = useRef(new Animated.Value(0)).current;
-
-
-  // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.01;
-  const headerBorderActiveRef = useRef(false);
-  const headerBorderAnim = useRef(new Animated.Value(0)).current;
 
   const updateSearchBtnVisibility = useCallback(() => {
     const shouldShow = scrollYRef.current > 10 || searchOpenRef.current;
@@ -2034,31 +2018,6 @@ export default function HomeScreen2({
       useNativeDriver: true,
     }).start();
   }, [searchBtnAnim]);
-
-  const updateStickyActive = useCallback(() => {
-    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-    const progress = scrollable > 0 ? scrollYRef.current / scrollable : 0;
-    const shouldBeActive = progress >= STICKY_ACTIVE_THRESHOLD;
-    if (shouldBeActive !== stickyActiveRef.current) {
-      stickyActiveRef.current = shouldBeActive;
-      setStickyActive(shouldBeActive);
-      inicioStickyHeaderAnim.stopAnimation();
-      Animated.timing(inicioStickyHeaderAnim, {
-        toValue: shouldBeActive ? 1 : 0,
-        duration: 220,
-        useNativeDriver: true,
-      }).start();
-    }
-    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-    if (shouldShowBorder !== headerBorderActiveRef.current) {
-      headerBorderActiveRef.current = shouldShowBorder;
-      Animated.timing(headerBorderAnim, {
-        toValue: shouldShowBorder ? 1 : 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [updateSearchBtnVisibility, headerBorderAnim, inicioStickyHeaderAnim]);
 
   const { greetingVisible } = useGreetingVisible();
   const backdropAnim = useRef(new Animated.Value(1)).current;
@@ -2128,37 +2087,11 @@ export default function HomeScreen2({
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
 
-      updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
     },
-    [updateStickyActive, backdropAnim],
+    [backdropAnim],
   );
-  const handleInicio2ThresholdCross = useCallback((y: number) => {
-    scrollYRef.current = y;
-    updateStickyActive();
-  }, [updateStickyActive]);
-  const handleInicio2Scroll = useAnimatedScrollHandler({
-    onScroll: (
-      event,
-      context: { beyondStickyThreshold?: boolean; beyondBorderThreshold?: boolean },
-    ) => {
-      const y = event.contentOffset.y;
-      inicio2ScrollY.value = y;
-      const beyondStickyThreshold =
-        inicio2StickyThreshold.value >= 0 && y >= inicio2StickyThreshold.value;
-      const beyondBorderThreshold =
-        inicio2BorderThreshold.value >= 0 && y >= inicio2BorderThreshold.value;
-      if (
-        context.beyondStickyThreshold !== beyondStickyThreshold
-        || context.beyondBorderThreshold !== beyondBorderThreshold
-      ) {
-        context.beyondStickyThreshold = beyondStickyThreshold;
-        context.beyondBorderThreshold = beyondBorderThreshold;
-        runOnJS(handleInicio2ThresholdCross)(y);
-      }
-    },
-  });
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -2377,81 +2310,12 @@ export default function HomeScreen2({
       </View>
       )}
 
-      {isInicio2 && (
-        <Animated.View
-          pointerEvents={stickyActive ? "auto" : "none"}
-          style={[
-            styles.inicioStickyHeader,
-            {
-              paddingTop: topPad + 2,
-              backgroundColor: activeTheme.gradient[0] as string,
-              opacity: inicioStickyHeaderAnim,
-            },
-          ]}
-        >
-          <View style={styles.inicioStickyHeaderRow}>
-            <ExpoImage
-              source={require("@/assets/images/logo-resonancia-text.png")}
-              style={styles.inicioStickyLogo}
-              contentFit="contain"
-              accessibilityLabel="Resonancia"
-            />
-            <Pressable
-              onPress={() => router.push("/progreso" as never)}
-              onPressIn={() =>
-                Animated.spring(giftScaleAnim, {
-                  toValue: 0.84,
-                  speed: 30,
-                  bounciness: 0,
-                  useNativeDriver: ND,
-                }).start()
-              }
-              onPressOut={() =>
-                Animated.spring(giftScaleAnim, {
-                  toValue: 1,
-                  speed: 8,
-                  bounciness: 16,
-                  useNativeDriver: ND,
-                }).start()
-              }
-              hitSlop={12}
-              style={styles.inicio2HeroLotusButton}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir Tu progreso"
-              testID="inicio-sticky-open-progress"
-            >
-              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <Inicio2LotusStreak lightBackground={variant === "inicio3"} />
-              </Animated.View>
-            </Pressable>
-          </View>
-        </Animated.View>
-      )}
-
       <RAnimated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        onScroll={isInicio2 ? handleInicio2Scroll : handleMainScroll}
+        onScroll={isInicio2 ? undefined : handleMainScroll}
         scrollEventThrottle={16}
-        onLayout={(e) => {
-          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          const scrollable = scrollContentHeightRef.current - e.nativeEvent.layout.height;
-          inicio2StickyThreshold.value =
-            scrollable > 0 ? scrollable * STICKY_ACTIVE_THRESHOLD : -1;
-          inicio2BorderThreshold.value =
-            scrollable > 0 ? scrollable * HEADER_BORDER_THRESHOLD : -1;
-          updateStickyActive();
-        }}
-        onContentSizeChange={(_w, h) => {
-          scrollContentHeightRef.current = h;
-          const scrollable = h - scrollLayoutHeightRef.current;
-          inicio2StickyThreshold.value =
-            scrollable > 0 ? scrollable * STICKY_ACTIVE_THRESHOLD : -1;
-          inicio2BorderThreshold.value =
-            scrollable > 0 ? scrollable * HEADER_BORDER_THRESHOLD : -1;
-          updateStickyActive();
-        }}
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
         {isInicio2 ? (
@@ -3469,42 +3333,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.42)",
   },
   rootGradient: { ...StyleSheet.absoluteFillObject, top: 25 },
-  stickyHeader: {
-    paddingHorizontal: GRID_PAD,
-    paddingBottom: 0,
-    backgroundColor: "transparent",
-    zIndex: 10,
-  },
-  stickyHeaderBorder: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.035)",
-  },
-  inicioStickyHeader: {
-    position: "absolute",
-    top: -5,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-  },
-  inicioStickyHeaderRow: {
-    minHeight: 54,
-    paddingLeft: 0,
-    paddingRight: 18,
-    paddingTop: 7,
-    paddingBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  inicioStickyLogo: {
-    width: 177,
-    height: 33,
-    marginLeft: -32,
-  },
   scroll: { flex: 1 },
 
   divider: {
