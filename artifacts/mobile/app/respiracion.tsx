@@ -180,10 +180,29 @@ export default function RespiracionScreen() {
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
       <LinearGradient
-        colors={["#3B6D3C", "#285E3E", "#0B4B3D"]}
-        locations={[0, 0.5, 1]}
+        colors={[
+          "#4A7D48",
+          "#3B6D3C",
+          "#326740",
+          "#285E3E",
+          "#175543",
+          "#0B4B3D",
+          "#073B32",
+        ]}
+        locations={[0, 0.16, 0.33, 0.5, 0.68, 0.84, 1]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={[
+          "rgba(126,170,101,0.22)",
+          "rgba(40,94,62,0.04)",
+          "rgba(3,37,31,0.28)",
+        ]}
+        locations={[0, 0.52, 1]}
+        start={{ x: 0, y: 0.15 }}
+        end={{ x: 1, y: 0.82 }}
         style={StyleSheet.absoluteFill}
       />
 
