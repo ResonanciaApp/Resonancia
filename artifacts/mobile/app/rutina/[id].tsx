@@ -25,6 +25,7 @@ import {
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
+import { markRoutineCompletionTransition } from "@/lib/routineCompletionTransition";
 
 function repeatLabel(days: number[], repeatEnabled: boolean, timesPerDay: number): string {
   if (!repeatEnabled) return "No se repite";
@@ -93,10 +94,11 @@ function ActionRow({
 }
 
 export default function RutinaDetailScreen() {
-  const { id, dateKey: routeDateKey, occurrence: routeOccurrence } = useLocalSearchParams<{
+  const { id, dateKey: routeDateKey, occurrence: routeOccurrence, from } = useLocalSearchParams<{
     id: string;
     dateKey?: string;
     occurrence?: string;
+    from?: string;
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
@@ -132,9 +134,12 @@ export default function RutinaDetailScreen() {
 
   const markComplete = useCallback(() => {
     if (!activity || completed || !isToday || activity.archivedAt) return;
+    if (from === "calendar") {
+      markRoutineCompletionTransition(activity.id, dateKey, occurrenceIndex);
+    }
     completeActivity(activity.id, dateKey, occurrenceIndex);
     router.back();
-  }, [activity, completeActivity, completed, dateKey, isToday, occurrenceIndex]);
+  }, [activity, completeActivity, completed, dateKey, from, isToday, occurrenceIndex]);
 
   const skipToday = useCallback(() => {
     if (!activity || skipped || !isToday || activity.archivedAt) return;

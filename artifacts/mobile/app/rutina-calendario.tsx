@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Platform,
@@ -25,6 +25,12 @@ import {
 } from "@/context/RutinaContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
+import { consumeRoutineCompletionTransition } from "@/lib/routineCompletionTransition";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const DAY_LABELS = ["lu", "ma", "mi", "ju", "vi", "sá", "do"] as const;
 
@@ -65,10 +71,12 @@ function CalendarActivityRow({
   activity,
   dateKey,
   occurrenceIndex,
+  completionToken,
 }: {
   activity: RoutineActivity;
   dateKey: string;
   occurrenceIndex: number;
+  completionToken: number;
 }) {
   const routineTheme = useRoutineTheme();
   const { toggleActivity } = useRutina();
@@ -76,6 +84,15 @@ function CalendarActivityRow({
   const completed = status === "completed";
   const skipped = status === "skipped";
   const category = getRoutineActivityCategory(activity);
+  const completionProgress = useSharedValue(0);
+  useEffect(() => {
+    if (!completionToken) return;
+    completionProgress.value = 0;
+    completionProgress.value = withTiming(1, { duration: 500 });
+  }, [completionProgress, completionToken]);
+  const completionOverlayStyle = useAnimatedStyle(() => ({
+    opacity: completionProgress.value,
+  }));
   const confirmUncheck = () => {
     Alert.alert(
       "¿Estás seguro que quieres desmarcar tu tarea?",
@@ -96,7 +113,7 @@ function CalendarActivityRow({
       onPress={
         completed
           ? undefined
-          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}&occurrence=${occurrenceIndex}` as never)
+          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}&occurrence=${occurrenceIndex}&from=calendar` as never)
       }
       accessibilityRole="button"
       accessibilityLabel={`${activity.title}, ${
@@ -110,6 +127,10 @@ function CalendarActivityRow({
         },
       ]}
     >
+      <Reanimated.View
+        pointerEvents="none"
+        style={[styles.completionOverlay, completionOverlayStyle]}
+      />
       <View style={styles.activityCopy}>
         {category ? (
           <Text style={[styles.category, { color: "#B5B5B5" }]}>
@@ -182,11 +203,23 @@ export default function RutinaCalendarioScreen() {
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
   const [showAll, setShowAll] = useState(true);
+  const [completionTokens, setCompletionTokens] = useState<Record<string, number>>({});
   const { activities, isHydrated } = useRutina();
   const selectedKey = getRoutineDateKey(selectedDate);
   const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
+  useFocusEffect(
+    useCallback(() => {
+      const transition = consumeRoutineCompletionTransition();
+      if (!transition || transition.dateKey !== selectedKey) return;
+      const itemId = `${transition.activityId}::${transition.occurrenceIndex}`;
+      setCompletionTokens((current) => ({
+        ...current,
+        [itemId]: transition.token,
+      }));
+    }, [selectedKey]),
+  );
   const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)),
@@ -348,6 +381,7 @@ export default function RutinaCalendarioScreen() {
                 activity={activity}
                 dateKey={selectedKey}
                 occurrenceIndex={occurrenceIndex}
+                completionToken={completionTokens[itemId] ?? 0}
               />
             ))}
           </View>
@@ -474,6 +508,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+    overflow: "hidden",
+  },
+  completionOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#276FC2",
   },
   activityCopy: {
     flex: 1,
