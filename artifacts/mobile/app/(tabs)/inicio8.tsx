@@ -1469,22 +1469,14 @@ function Inicio2HeroStatic({
               const isToday = todayIndex === i;
               return (
                 <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                  {isToday ? (
-                    <LinearGradient
-                      colors={streakGradient}
-                      locations={theme.gradientLocations}
-                      style={styles.inicio3StreakDay}
-                    >
-                      {active && <Feather name="check" size={22} color="#F9F9F9" />}
-                    </LinearGradient>
-                  ) : active ? (
+                  {active || isToday ? (
                     <LinearGradient
                       colors={streakGradient}
                       locations={theme.gradientLocations}
                       style={styles.inicio3StreakDayGradientBorder}
                     >
                       <View style={styles.inicio3StreakDayInner}>
-                        <Feather name="check" size={22} color="#F9F9F9" />
+                        {active && <Feather name="check" size={22} color="#F9F9F9" />}
                       </View>
                     </LinearGradient>
                   ) : (
