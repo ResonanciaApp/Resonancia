@@ -2797,23 +2797,28 @@ export default function HomeScreen2({
         )}
         {variant === "inicio3" && featuredMoment && (
           <Pressable
-            onPress={() => router.push("/equipo" as never)}
+            onPress={() => router.push("/membresia" as never)}
             accessibilityRole="button"
-            accessibilityLabel="Conoce a los Resonadores"
+            accessibilityLabel="Suscríbete al plan Premium Plus"
             style={({ pressed }) => [
               styles.inicio3ResonadoresBanner,
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
             <View style={styles.inicio3ResonadoresBannerIcon}>
-              <Feather name="users" color="#F9F9F9" size={24} />
+              <MaterialCommunityIcons
+                name="diamond-stone"
+                color={MEMBERSHIP_AURORA.plus.accent}
+                size={24}
+              />
             </View>
             <View style={styles.inicio3ResonadoresBannerCopy}>
               <Text style={styles.inicio3ResonadoresBannerTitle}>
-                Conoce a los Resonadores
+                Suscríbete al plan{" "}
+                <Text style={styles.inicio3PremiumPlusText}>Premium Plus</Text>
               </Text>
               <Text style={styles.inicio3ResonadoresBannerSubtitle}>
-                La esencia que le da vida a este espacio
+                Accede a todos los beneficios de Premium + sesiones 1:1 con Resonadores + Geometrix
               </Text>
             </View>
             <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
@@ -4035,6 +4040,9 @@ const styles = StyleSheet.create({
     color: "rgba(249,249,249,0.68)",
     fontFamily: "Manrope",
     fontSize: 12,
+  },
+  inicio3PremiumPlusText: {
+    color: MEMBERSHIP_AURORA.plus.accent,
   },
   verTodasLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
 
