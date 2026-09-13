@@ -405,15 +405,27 @@ export const SessionCarousel = React.memo(function SessionCarousel({
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const canonicalAmbientalGradient = React.useMemo(
-    () => ({
-      colors: theme.gradient.map((color) =>
+  const canonicalAmbientalGradient = React.useMemo(() => {
+    const withoutPurpleStop =
+      theme.gradient.length > 2 ? theme.gradient.slice(1) : theme.gradient;
+    const withoutPurpleLocation =
+      theme.gradient.length > 2 && theme.gradientLocations
+        ? theme.gradientLocations.slice(1)
+        : theme.gradientLocations;
+    const firstLocation = withoutPurpleLocation?.[0] ?? 0;
+    const lastLocation =
+      withoutPurpleLocation?.[withoutPurpleLocation.length - 1] ?? 1;
+    const locationSpan = lastLocation - firstLocation || 1;
+
+    return {
+      colors: withoutPurpleStop.map((color) =>
         brightenAmbientalColor(color, 5),
       ) as unknown as [string, string, ...string[]],
-      locations: theme.gradientLocations,
-    }),
-    [theme.gradient, theme.gradientLocations],
-  );
+      locations: withoutPurpleLocation?.map(
+        (location) => (location - firstLocation) / locationSpan,
+      ) as unknown as [number, number, ...number[]] | undefined,
+    };
+  }, [theme.gradient, theme.gradientLocations]);
   const effectiveAmbientalCardGradient =
     ambientalCardGradient ?? canonicalAmbientalGradient;
   const { openForSession } = useAmbientalDuration();
