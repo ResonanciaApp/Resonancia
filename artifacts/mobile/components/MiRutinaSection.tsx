@@ -607,12 +607,13 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           style={({ pressed }) => [
             styles.addButton,
             {
+              borderColor: "rgba(249,249,249,0.5)",
               opacity: pressed ? 0.72 : 1,
             },
           ]}
         >
-          <Feather name="plus" size={20} color="#060A0F" />
-          <Text style={[styles.addButtonText, { color: "#060A0F" }]}>
+          <Feather name="plus" size={20} color="#F9F9F9" />
+          <Text style={[styles.addButtonText, { color: "#F9F9F9" }]}>
             Añadir una actividad
           </Text>
         </Pressable>
@@ -773,7 +774,9 @@ const styles = StyleSheet.create({
   addButton: {
     minHeight: 68,
     borderRadius: 16,
-    backgroundColor: "#F9F9F9",
+    borderWidth: 1,
+    borderStyle: "dashed",
+    backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
