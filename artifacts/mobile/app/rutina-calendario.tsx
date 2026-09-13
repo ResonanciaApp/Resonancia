@@ -443,7 +443,7 @@ function RutinaCalendarioScreenContent() {
         bottom={bottomPad + 82}
         backgroundColor="#0E0821"
         visible
-        entryDistance={35}
+        enteredOffset={35}
       />
     </View>
   );

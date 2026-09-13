@@ -15,6 +15,7 @@ type Props = {
   backgroundColor: string;
   visible: boolean;
   entryDistance?: number;
+  enteredOffset?: number;
   onAddedPress?: () => void;
 };
 
@@ -23,6 +24,7 @@ export function RoutineCompletionBanner({
   backgroundColor,
   visible,
   entryDistance = ENTRY_DISTANCE,
+  enteredOffset = 0,
   onAddedPress,
 }: Props) {
   const { activeEvent, dismissActiveEvent } = useRoutineCompletionBanner();
@@ -62,7 +64,7 @@ export function RoutineCompletionBanner({
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
 
     Animated.timing(translateY, {
-      toValue: 0,
+      toValue: enteredOffset,
       duration: ENTRY_DURATION,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
@@ -129,6 +131,7 @@ export function RoutineCompletionBanner({
     countProgress,
     dismissActiveEvent,
     entryDistance,
+    enteredOffset,
     translateY,
     visible,
     waveProgress,
