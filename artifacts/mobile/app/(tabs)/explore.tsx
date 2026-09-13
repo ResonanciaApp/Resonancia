@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(249,249,249,0.18)",
   },
   sleepMixerBanner: {
-    minHeight: 80,
+    minHeight: 110,
     marginTop: 0,
     marginBottom: 53,
     marginHorizontal: H_PAD,

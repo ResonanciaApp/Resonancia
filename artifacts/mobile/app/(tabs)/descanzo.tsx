@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   sleepMixerBanner: {
-    minHeight: 80,
+    minHeight: 110,
     marginTop: 26,
     marginHorizontal: H_PAD,
     paddingHorizontal: 16,
