@@ -3144,15 +3144,15 @@ const styles = StyleSheet.create({
   },
   inicio2HeroLotusButton: {
     width: 62,
-    height: 37,
-    borderRadius: 18.5,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
   },
   inicio2HeroLotusContent: {
     width: 62,
-    height: 37,
-    borderRadius: 18.5,
+    height: 43,
+    borderRadius: 21.5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -3177,6 +3177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
+    transform: [{ translateY: -1 }],
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
