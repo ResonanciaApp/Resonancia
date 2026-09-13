@@ -51,7 +51,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (
         <LinearGradient
-          colors={["#F9F9F9", "#F9F9F9"]}
+          colors={["#784576", "#50326E"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[StyleSheet.absoluteFill, { margin: -1 }]}
@@ -289,11 +289,26 @@ export default function EquipoScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
-          <View style={{ flex: 1 }}>
-            <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -23 }] }} />
-            <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
-            <Text style={[styles.titleSub, { transform: [{ translateY: 4 }] }]}>La esencia de Resonancia</Text>
+          <BackPill
+            onPress={backOverride ?? (() => router.back())}
+            size={28}
+            bgColor="rgba(255,255,255,0.10)"
+            iconOffsetX={-1}
+          />
+          <View pointerEvents="none" style={styles.centeredTitle}>
+            <Text style={styles.title}>Resonadores</Text>
           </View>
+          <Pressable
+            onPress={() => router.push("/equipo-info" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Únete a Resonancia"
+            style={({ pressed }) => [
+              styles.joinPill,
+              { opacity: pressed ? 0.75 : 1 },
+            ]}
+          >
+            <Text style={styles.joinPillText}>Únete</Text>
+          </Pressable>
         </View>
 
         <AnimatedFilterRow
@@ -332,10 +347,16 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   titleRow: {
+    position: "relative",
     flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 10,
-    paddingBottom: 4,
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 43,
+  },
+  centeredTitle: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: "Manrope",
@@ -343,14 +364,24 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F9F9F9",
     letterSpacing: 0.3,
+    textAlign: "center",
   },
-  titleSub: {
+  joinPill: {
+    minWidth: 62,
+    height: 32,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  joinPillText: {
     fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "400",
-    color: "rgba(249,249,249,0.50)",
-    letterSpacing: 0.2,
-    marginTop: 2,
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#F4F4F4",
   },
   tabPill: {
     flexDirection: "row",
@@ -368,7 +399,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 15, marginHorizontal: -H_PAD },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 9, marginHorizontal: -H_PAD },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
     width: 30,
@@ -381,25 +412,27 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: {
-    height: 31,
-    paddingHorizontal: 13,
-    borderRadius: 999,
+    height: 51,
+    paddingHorizontal: 16,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
-  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
-  chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
+  chipTextSel: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
   grid: { paddingHorizontal: H_PAD, paddingTop: 25 },
   row: { gap: CARD_GAP, marginBottom: 31 },
   card: {
     alignItems: "center",
     paddingVertical: 8,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   photoOuter: {
     alignItems: "center",
