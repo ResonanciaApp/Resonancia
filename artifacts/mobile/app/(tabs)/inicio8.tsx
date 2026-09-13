@@ -1393,22 +1393,6 @@ function Inicio2HeroStatic({
         </View>
 
         <View style={styles.inicio3HeroRightActions}>
-          {isInicio3 && (
-            <Pressable
-              onPress={onOpenSearch}
-              hitSlop={10}
-              style={styles.inicio3HeroSearchButton}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Inicio"
-              testID="inicio3-search-button"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
-              ) : (
-                <Feather name="search" size={24} color="#FFFFFF" />
-              )}
-            </Pressable>
-          )}
           <Pressable
             onPress={onOpenProfile}
             onPressIn={() =>
@@ -1437,6 +1421,22 @@ function Inicio2HeroStatic({
               <Inicio2LotusStreak lightBackground={isInicio3} />
             </Animated.View>
           </Pressable>
+          {isInicio3 && (
+            <Pressable
+              onPress={onOpenSearch}
+              hitSlop={10}
+              style={styles.inicio3HeroSearchButton}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Inicio"
+              testID="inicio3-search-button"
+            >
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
+              ) : (
+                <Feather name="search" size={24} color="#FFFFFF" />
+              )}
+            </Pressable>
+          )}
         </View>
       </View>
 
@@ -3165,6 +3165,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+    transform: [{ translateX: -8 }],
   },
   inicio3HeroSearchButton: {
     width: 43,
