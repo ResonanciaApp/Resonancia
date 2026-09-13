@@ -2391,7 +2391,7 @@ export default function HomeScreen2({
         >
           <View style={styles.inicioStickyHeaderRow}>
             <ExpoImage
-              source={require("@/assets/images/logo-resonancia-new.png")}
+              source={require("@/assets/images/logo-resonancia-text.png")}
               style={styles.inicioStickyLogo}
               contentFit="contain"
               accessibilityLabel="Resonancia"
