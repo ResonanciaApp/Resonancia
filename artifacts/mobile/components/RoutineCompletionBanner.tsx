@@ -29,6 +29,7 @@ export function RoutineCompletionBanner({
 }: Props) {
   const { activeEvent, dismissActiveEvent } = useRoutineCompletionBanner();
   const translateY = useRef(new Animated.Value(entryDistance)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
   const countProgress = useRef(new Animated.Value(0)).current;
   const waveProgress = useRef(new Animated.Value(0)).current;
   const startedEventIdRef = useRef<number | null>(null);
@@ -56,9 +57,11 @@ export function RoutineCompletionBanner({
     startedEventIdRef.current = activeEvent.id;
     committedEventIdRef.current = null;
     translateY.stopAnimation();
+    opacity.stopAnimation();
     countProgress.stopAnimation();
     waveProgress.stopAnimation();
     translateY.setValue(entryDistance);
+    opacity.setValue(1);
     countProgress.setValue(0);
     waveProgress.setValue(0);
     setSubtitleCount(activeEvent.kind === "completed" ? activeEvent.previousCount : 0);
@@ -73,12 +76,20 @@ export function RoutineCompletionBanner({
       if (activeEvent.kind === "added") {
         committedEventIdRef.current = activeEvent.id;
         holdTimer = setTimeout(() => {
-          Animated.timing(translateY, {
-            toValue: entryDistance,
-            duration: EXIT_DURATION,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }).start(({ finished: exited }) => {
+          Animated.parallel([
+            Animated.timing(translateY, {
+              toValue: entryDistance,
+              duration: EXIT_DURATION,
+              easing: Easing.in(Easing.cubic),
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: EXIT_DURATION,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
+          ]).start(({ finished: exited }) => {
             if (exited) {
               startedEventIdRef.current = null;
               committedEventIdRef.current = null;
@@ -104,12 +115,20 @@ export function RoutineCompletionBanner({
           useNativeDriver: true,
         }).start();
         holdTimer = setTimeout(() => {
-          Animated.timing(translateY, {
-            toValue: entryDistance,
-            duration: EXIT_DURATION,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }).start(({ finished: exited }) => {
+          Animated.parallel([
+            Animated.timing(translateY, {
+              toValue: entryDistance,
+              duration: EXIT_DURATION,
+              easing: Easing.in(Easing.cubic),
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: EXIT_DURATION,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
+          ]).start(({ finished: exited }) => {
             if (exited) {
               startedEventIdRef.current = null;
               committedEventIdRef.current = null;
@@ -123,6 +142,7 @@ export function RoutineCompletionBanner({
     return () => {
       if (holdTimer) clearTimeout(holdTimer);
       translateY.stopAnimation();
+      opacity.stopAnimation();
       countProgress.stopAnimation();
       waveProgress.stopAnimation();
     };
@@ -132,6 +152,7 @@ export function RoutineCompletionBanner({
     dismissActiveEvent,
     entryDistance,
     enteredOffset,
+    opacity,
     translateY,
     visible,
     waveProgress,
@@ -187,6 +208,7 @@ export function RoutineCompletionBanner({
         {
           bottom,
           backgroundColor,
+          opacity,
           transform: [{ translateY }],
         },
       ]}

@@ -430,7 +430,7 @@ function RutinaCalendarioScreenContent() {
         style={({ pressed }) => [
           styles.addActivity,
           {
-            bottom: bottomPad + 18,
+            bottom: bottomPad + 38,
             backgroundColor: "#276FC2",
             opacity: pressed ? 0.78 : 1,
           },
