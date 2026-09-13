@@ -2277,7 +2277,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     overflow: "hidden",
     marginTop: 15,
-    marginBottom: 19,
+    marginBottom: 12,
     gap: 0,
   },
   wisdomSection: {
