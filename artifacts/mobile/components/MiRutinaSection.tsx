@@ -578,7 +578,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
                 Rutina completa
               </Text>
               <Text style={styles.completeSubtitle}>
-                Hasta mañana.
+                ¡Hasta mañana!
               </Text>
             </View>
             <Pressable
