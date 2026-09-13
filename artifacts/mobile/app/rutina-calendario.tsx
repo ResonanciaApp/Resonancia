@@ -105,7 +105,7 @@ function CalendarActivityRow({
       style={({ pressed }) => [
         styles.activityRow,
         {
-          backgroundColor: "rgba(255,255,255,0.025)",
+          backgroundColor: "rgba(0,0,0,0.28)",
           opacity: pressed && !completed ? 0.72 : 1,
         },
       ]}
