@@ -70,8 +70,8 @@ import {
 } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { useStreak } from "@/hooks/useStreak";
-import { computeMaxStreak } from "@/utils/stats";
-import { SonicStreakDays } from "@/components/SonicStreakWave";
+import { useDayRollover } from "@/hooks/useDayRollover";
+import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 import {
   gradientColors,
   type GeoSettings,
@@ -81,6 +81,17 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useDownloads } from "@/context/DownloadContext";
+
+function brightenProfileStreakColor(hex: string, pct: number): string {
+  const value = hex.replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
+  const channels = [0, 2, 4].map((offset) =>
+    Number.parseInt(value.slice(offset, offset + 2), 16),
+  );
+  return `rgb(${channels
+    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
+    .join(",")})`;
+}
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -345,6 +356,9 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const todayKey = useDayRollover();
+  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
+  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const resourceBlockBackground = "rgba(0,0,0,0.28)";
   const profileSectionBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -354,6 +368,34 @@ export function ProfileScreenBase({
     ? "#F0F0F0"
     : secondaryAccent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
+  const streakGradient = useMemo(
+    () =>
+      activeTheme.gradient.map((color) =>
+        brightenProfileStreakColor(color, 20),
+      ) as unknown as [string, string, ...string[]],
+    [activeTheme.gradient],
+  );
+  const personalStats = useMemo(() => {
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
+    const rangeStartTime = rangeStart.getTime();
+    const now = Date.now();
+    let totalMinutes = 0;
+    const rangeEvents = [];
+
+    for (const event of statEvents) {
+      const playedAt = new Date(event.playedAt).getTime();
+      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
+      rangeEvents.push(event);
+      totalMinutes += event.minutes;
+    }
+
+    return {
+      totalMinutes: Math.round(totalMinutes),
+      activeDays: computeActiveDays(rangeEvents),
+    };
+  }, [statEvents, statsRangeDays, todayKey]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1262,13 +1304,33 @@ export function ProfileScreenBase({
                 </Text>
               </View>
               <View style={styles.profileProgressCard}>
-                <SonicStreakDays
-                  activeFlags={weekFlags}
-                  todayIndex={todayIndex}
-                  edgeAligned
-                  daysMarginTop={0}
-                  activeBorderColor="#BE9650"
-                />
+                <View style={styles.profileStreakRow}>
+                  {["L", "M", "X", "J", "V", "S", "D"].map((initial, index) => {
+                    const active = weekFlags[index];
+                    const isToday = todayIndex === index;
+                    return (
+                      <View key={`${initial}-${index}`} style={styles.profileStreakDayWrapper}>
+                        {active ? (
+                          <LinearGradient
+                            colors={streakGradient}
+                            locations={activeTheme.gradientLocations}
+                            style={[styles.profileStreakDay, styles.profileStreakDayActive]}
+                          >
+                            <Feather name="check" size={22} color="#F9F9F9" />
+                          </LinearGradient>
+                        ) : (
+                          <View
+                            style={[
+                              styles.profileStreakDay,
+                              isToday && styles.profileStreakDayActive,
+                            ]}
+                          />
+                        )}
+                        <Text style={styles.profileStreakDayLabel}>{initial}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
                 <View style={styles.streakStatsDivider} />
                 <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
                   <View style={styles.personalStatItem}>
@@ -1300,9 +1362,88 @@ export function ProfileScreenBase({
                   </View>
                 </View>
               </View>
+
+              <View style={styles.personalStatsSection}>
+                <View style={styles.personalStatsHeader}>
+                  <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                    Estadísticas personales
+                  </Text>
+                  <Pressable
+                    onPress={() => setStatsFilterOpen((open) => !open)}
+                    style={styles.statsFilterTrigger}
+                    accessibilityRole="button"
+                    accessibilityLabel="Elegir filtro de días"
+                    accessibilityState={{ expanded: statsFilterOpen }}
+                  >
+                    <Text style={[styles.statsFilterText, { color: secondaryAccent }]}>
+                      Últimos {statsRangeDays} días
+                    </Text>
+                    <Feather name="chevron-down" size={17} color={secondaryAccent} />
+                  </Pressable>
+                  {statsFilterOpen && (
+                    <View
+                      style={[
+                        styles.statsFilterMenu,
+                        { backgroundColor: activeTheme.gradient[0] },
+                      ]}
+                    >
+                      {([7, 30, 90] as const).map((days) => (
+                        <Pressable
+                          key={days}
+                          onPress={() => {
+                            setStatsRangeDays(days);
+                            setStatsFilterOpen(false);
+                          }}
+                          style={[
+                            styles.statsFilterOption,
+                            statsRangeDays === days && styles.statsFilterOptionSelected,
+                          ]}
+                        >
+                          <Text style={[styles.statsFilterText, { color: secondaryAccent }]}>
+                            Últimos {days} días
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  )}
+                </View>
+                <View style={styles.personalStatsValues}>
+                  <View style={styles.personalStatItem}>
+                    <View style={styles.personalStatIcon}>
+                      <Feather name="clock" size={20} color="#F9F9F9" />
+                    </View>
+                    <View style={styles.personalStatCopy}>
+                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                        {personalStats.totalMinutes}
+                      </Text>
+                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                        MINUTOS TOTALES
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.personalStatDivider} />
+                  <View style={styles.personalStatItem}>
+                    <View style={styles.personalStatIcon}>
+                      <Feather name="calendar" size={20} color="#F9F9F9" />
+                    </View>
+                    <View style={styles.personalStatCopy}>
+                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
+                        {personalStats.activeDays}
+                      </Text>
+                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
+                        DÍAS ACTIVOS
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <HistorialCalendar
+                embedded
+                backgroundColor={profileSectionBackground}
+              />
             </View>
 
-            {false && <HistorialCalendar embedded outlined backgroundColor="transparent" />}
             <View style={{ marginTop: 12, gap: 12 }}>
               <Pressable
                 onPress={() => router.push("/notificaciones-practica" as never)}
@@ -2435,7 +2576,11 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
+    marginTop: 12,
     marginBottom: 19,
+  },
+  personalStatsHeader: {
+    gap: 7,
   },
   personalStatsTitle: {
     fontFamily: "Manrope",
@@ -2480,6 +2625,32 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
+  },
+  statsFilterTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 4,
+    paddingVertical: 1,
+  },
+  statsFilterMenu: {
+    alignSelf: "flex-start",
+    minWidth: 148,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: 1,
+  },
+  statsFilterOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  statsFilterOptionSelected: {
+    backgroundColor: "rgba(152,93,212,0.16)",
+  },
+  statsFilterText: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "700",
   },
   personalStatsValues: {
     flexDirection: "row",
@@ -2570,6 +2741,33 @@ const styles = StyleSheet.create({
     width: "100%",
     marginVertical: 16,
     backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  profileStreakRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  profileStreakDayWrapper: {
+    alignItems: "center",
+    gap: 6,
+  },
+  profileStreakDay: {
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profileStreakDayActive: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.45)",
+  },
+  profileStreakDayLabel: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "500",
   },
   menuRow: {
     flexDirection: "row",
