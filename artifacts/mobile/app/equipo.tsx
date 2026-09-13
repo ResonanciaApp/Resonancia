@@ -274,7 +274,7 @@ export default function EquipoScreen() {
     }).map((r) => ({ kind: "resonador" as const, data: r }));
   }, [resonadores, activeFilter]);
 
-  const numCols = 3;
+  const numCols = 2;
   const SCREEN_PAD = H_PAD * 2;
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
@@ -292,8 +292,9 @@ export default function EquipoScreen() {
           <BackPill
             onPress={backOverride ?? (() => router.back())}
             size={28}
-            bgColor="rgba(255,255,255,0.10)"
+            bgColor="rgba(0,0,0,0.28)"
             iconOffsetX={-1}
+            style={styles.backButton}
           />
           <View pointerEvents="none" style={styles.centeredTitle}>
             <Text style={styles.title}>Resonadores</Text>
@@ -350,13 +351,18 @@ const styles = StyleSheet.create({
     position: "relative",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     minHeight: 43,
   },
   centeredTitle: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  backButton: {
+    position: "absolute",
+    left: 0,
+    zIndex: 2,
   },
   title: {
     fontFamily: "Manrope",
@@ -367,13 +373,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   joinPill: {
+    position: "absolute",
+    right: 0,
+    zIndex: 2,
     minWidth: 62,
     height: 32,
     paddingHorizontal: 12,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -399,7 +408,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 9, marginHorizontal: -H_PAD },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 29, marginHorizontal: -H_PAD },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
     width: 30,
@@ -417,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
@@ -440,8 +449,7 @@ const styles = StyleSheet.create({
   },
   photoWrap: {
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.50)",
+    borderWidth: 0,
     position: "relative",
   },
   cardInfo: { alignItems: "center", paddingHorizontal: 6 },
