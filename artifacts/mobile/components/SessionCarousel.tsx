@@ -612,9 +612,9 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                   },
                   isAmbiental && {
                     backgroundColor: ambientalCardBackground,
-                    borderWidth: ambientalCardBorderWidth ?? 1,
+                    borderWidth: ambientalCardBorderWidth ?? 2,
                     borderRadius: ambientalCardBorderRadius ?? 18,
-                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.1)",
+                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.2)",
                   },
                 ]}
               >
