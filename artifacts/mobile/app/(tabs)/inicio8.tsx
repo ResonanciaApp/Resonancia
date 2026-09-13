@@ -87,10 +87,6 @@ import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
-import {
-  getDrawerDecreeStorageKey,
-  subscribeToDrawerDecree,
-} from "@/lib/drawer-decree";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
@@ -1279,25 +1275,6 @@ function Inicio2HeroStatic({
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const { weekFlags, todayIndex } = useStreak();
-  const [decree, setDecree] = useState("");
-  const decreeStorageKey = getDrawerDecreeStorageKey(clerkUser?.id);
-  useEffect(() => {
-    let active = true;
-    const unsubscribe = subscribeToDrawerDecree(decreeStorageKey, (nextDecree) => {
-      if (active) setDecree(nextDecree);
-    });
-    AsyncStorage.getItem(decreeStorageKey)
-      .then((storedDecree) => {
-        if (active) setDecree(storedDecree ?? "");
-      })
-      .catch(() => {
-        if (active) setDecree("");
-      });
-    return () => {
-      active = false;
-      unsubscribe();
-    };
-  }, [decreeStorageKey]);
   const displayName =
     username
     || clerkUser?.firstName
@@ -1404,7 +1381,7 @@ function Inicio2HeroStatic({
             <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
             {isInicio3 ? (
               <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
-                {decree || greeting}
+                {greeting}
               </Text>
             ) : null}
           </Pressable>

@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { router } from "expo-router";
 import React, { useEffect } from "react";
@@ -14,7 +13,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -38,10 +36,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import type { GeometrixCreation } from "@/data/geometrix-creations";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
-import {
-  getDrawerDecreeStorageKey,
-  publishDrawerDecree,
-} from "@/lib/drawer-decree";
 
 const ND = Platform.OS !== "web";
 
@@ -129,72 +123,6 @@ export function DrawerMenu() {
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
-  const [decree, setDecree] = React.useState("");
-  const [decreeDraft, setDecreeDraft] = React.useState("");
-  const [isEditingDecree, setIsEditingDecree] = React.useState(false);
-  const decreeCursorOpacity = React.useRef(new Animated.Value(1)).current;
-  const decreeStorageKey = getDrawerDecreeStorageKey(clerkUser?.id);
-
-  useEffect(() => {
-    let active = true;
-    AsyncStorage.getItem(decreeStorageKey)
-      .then((storedDecree) => {
-        if (!active) return;
-        const nextDecree = storedDecree ?? "";
-        setDecree(nextDecree);
-        setDecreeDraft(nextDecree);
-      })
-      .catch(() => {
-        if (!active) return;
-        setDecree("");
-        setDecreeDraft("");
-      });
-    return () => {
-      active = false;
-    };
-  }, [decreeStorageKey]);
-
-  useEffect(() => {
-    const blink = Animated.loop(
-      Animated.sequence([
-        Animated.timing(decreeCursorOpacity, {
-          toValue: 0,
-          duration: 520,
-          useNativeDriver: true,
-        }),
-        Animated.timing(decreeCursorOpacity, {
-          toValue: 1,
-          duration: 520,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    blink.start();
-    return () => blink.stop();
-  }, [decreeCursorOpacity]);
-
-  const beginDecreeEdit = React.useCallback(() => {
-    setDecreeDraft(decree);
-    setIsEditingDecree(true);
-  }, [decree]);
-
-  const updateDecreeDraft = React.useCallback((value: string) => {
-    const words = value.trim().split(/\s+/).filter(Boolean);
-    setDecreeDraft(words.length > 8 ? words.slice(0, 8).join(" ") : value);
-  }, []);
-
-  const finishDecreeEdit = React.useCallback(() => {
-    const nextDecree = decreeDraft.trim().replace(/\s+/g, " ");
-    setDecree(nextDecree);
-    setDecreeDraft(nextDecree);
-    setIsEditingDecree(false);
-    publishDrawerDecree(decreeStorageKey, nextDecree);
-    if (nextDecree) {
-      void AsyncStorage.setItem(decreeStorageKey, nextDecree);
-    } else {
-      void AsyncStorage.removeItem(decreeStorageKey);
-    }
-  }, [decreeDraft, decreeStorageKey]);
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -315,6 +243,26 @@ export function DrawerMenu() {
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
+          <Pressable
+            onPress={onClose}
+            style={[
+              styles.drawerEmptyCloseZone,
+              styles.drawerTopCloseZone,
+              { height: topPad + 12 },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar menú"
+          />
+          <Pressable
+            onPress={onClose}
+            style={[
+              styles.drawerEmptyCloseZone,
+              styles.drawerBottomCloseZone,
+              { height: bottomPad + 24 },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar menú"
+          />
 
           {/* ── Header de perfil ── */}
           <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
@@ -353,49 +301,16 @@ export function DrawerMenu() {
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>
-                    {isEditingDecree ? (
-                      <TextInput
-                        autoFocus
-                        value={decreeDraft}
-                        onChangeText={updateDecreeDraft}
-                        onBlur={finishDecreeEdit}
-                        onSubmitEditing={finishDecreeEdit}
-                        returnKeyType="done"
-                        blurOnSubmit
-                        cursorColor={activeTheme.accent}
-                        selectionColor={activeTheme.accent}
-                        style={styles.decreeInput}
-                        accessibilityLabel="Editar decreto personal"
-                      />
-                    ) : (
-                      <Pressable
-                        onPress={beginDecreeEdit}
-                        style={styles.decreeButton}
-                        accessibilityRole="button"
-                        accessibilityLabel={decree ? "Editar decreto personal" : "Escribir decreto personal"}
-                      >
-                        {decree ? (
-                          <Text style={styles.decreeText} numberOfLines={2}>
-                            {decree}
-                          </Text>
-                        ) : (
-                          <View style={styles.decreePlaceholderRow}>
-                            <Text style={styles.decreePlaceholder}>
-                              Escribe tu decreto
-                            </Text>
-                            <Animated.View
-                              style={[
-                                styles.decreeCursor,
-                                {
-                                  backgroundColor: activeTheme.accent,
-                                  opacity: decreeCursorOpacity,
-                                },
-                              ]}
-                            />
-                          </View>
-                        )}
-                      </Pressable>
-                    )}
+                    <Pressable
+                      onPress={() => navigate("/(tabs)/profile")}
+                      style={styles.verPerfilBtn}
+                      accessibilityRole="button"
+                      accessibilityLabel="Ver perfil"
+                    >
+                      <Text style={[styles.verPerfilText, styles.inicio3VerPerfilText]}>
+                        Ver perfil
+                      </Text>
+                    </Pressable>
                   </>
                 ) : (
                   <>
@@ -416,13 +331,9 @@ export function DrawerMenu() {
                   accessibilityRole="button"
                   accessibilityLabel="Ver perfil"
                 >
-                  <Feather name="chevron-right" size={23} color="#F9F9F9" />
+                  <Feather name="chevron-right" size={23} color="#DEDEDE" />
                 </Pressable>
               )}
-
-              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#F9F9F9" />
-              </Pressable>
             </View>
 
             {/* Divisor — dentro del gradiente */}
@@ -605,6 +516,18 @@ const styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     borderRightColor: "rgba(180,180,180,0.10)",
   },
+  drawerEmptyCloseZone: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 30,
+  },
+  drawerTopCloseZone: {
+    top: 0,
+  },
+  drawerBottomCloseZone: {
+    bottom: 0,
+  },
 
   // ── Header ──
   profileHeader: {
@@ -660,7 +583,7 @@ const styles = StyleSheet.create({
   profileName: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
-    fontSize: 15,
+    fontSize: 19,
     fontWeight: "700",
     letterSpacing: 0.2,
     flexShrink: 1,
@@ -676,6 +599,7 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateX: 15 }],
   },
   profileNameMuted: {
     fontFamily: "Manrope",
@@ -704,62 +628,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.3,
   },
-  decreeButton: {
-    minHeight: 22,
-    alignSelf: "stretch",
-    justifyContent: "center",
-  },
-  decreePlaceholderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-  },
-  decreePlaceholder: {
-    fontFamily: "Manrope",
-    color: "#757575",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "500",
-    letterSpacing: 0.2,
-  },
-  decreeCursor: {
-    width: 1.5,
-    height: 15,
-    marginLeft: 2,
-    borderRadius: 1,
-  },
-  decreeText: {
-    fontFamily: "Manrope",
-    color: "#C2C2C2",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "600",
-    letterSpacing: 0.2,
-  },
-  decreeInput: {
-    alignSelf: "stretch",
-    minHeight: 22,
-    padding: 0,
-    margin: 0,
-    fontFamily: "Manrope",
-    color: "#C2C2C2",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "600",
-    letterSpacing: 0.2,
-  },
-  closeBtn: {
-    position: "absolute",
-    top: "50%",
-    right: 4,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: -16,
-    transform: [{ translateY: -60 }],
+  inicio3VerPerfilText: {
+    color: "#C8A6FF",
   },
 
   // ── Items ──
