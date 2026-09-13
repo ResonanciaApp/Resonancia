@@ -644,6 +644,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             },
                       ]}
                     />
+                    {soundPreview && (
+                      <PreviewFadeLayer
+                        active={isPreviewActive && soundPreview.isPlaying}
+                        style={[
+                          styles.ambientalPreviewBorder,
+                          {
+                            borderRadius: ambientalCardBorderRadius ?? 18,
+                          },
+                        ]}
+                      />
+                    )}
                     {ambientalImageFillTop && (
                       <View
                         pointerEvents="none"
@@ -1170,6 +1181,12 @@ const styles = StyleSheet.create({
   previewCircularProgress: {
     position: "absolute",
     zIndex: 4,
+  },
+  ambientalPreviewBorder: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 6,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.8)",
   },
   favoriteButton: {
     position: "absolute",
