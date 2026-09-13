@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 16,
+    borderRadius: 29,
     overflow: "hidden",
   },
   recommendationCard: {
