@@ -7,4 +7,4 @@ Cuando una sección de Inicio sustituye contenido al terminar una animación, el
 
 **Why:** Al completar la última actividad de Mi rutina, la separación interna de 53 px se ignoraba durante la actualización en vivo y “Frase del día” se montaba sobre la card final. Al remontar la pantalla, la medición volvía a ser correcta.
 
-**How to apply:** Para transiciones equivalentes, conserva el tamaño natural o mínimo de la superficie entrante y coloca el gap como padding superior de un wrapper estable alrededor de la sección siguiente. No fijes la altura solo para corregir el gap: puede comprimir el contenido.
+**How to apply:** Para transiciones equivalentes, coloca el gap como padding superior de un wrapper estable alrededor de la sección siguiente. Además, cuando una lista absoluta se sustituye por una card final, conserva un wrapper de layout montado alrededor de ambas ramas y dale el `minHeight` de la card final al activar ese estado; la animación de opacidad debe vivir dentro. No fijes la altura del contenido para corregir el gap.

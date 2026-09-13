@@ -557,53 +557,55 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
         </View>
       </View>
 
-      {!isHydrated ? null : todayActivities.length > 0 ? (
-        <Reanimated.View style={[styles.activityList, listHeightStyle]}>
-          {todayActivities.map(({ activity, occurrenceIndex, itemId }, index) => (
-            <ActivityRow
-              key={itemId}
-              activity={activity}
-              occurrenceIndex={occurrenceIndex}
-              itemId={itemId}
-              initialIndex={index}
-              completing={completingIds.has(itemId)}
-              itemCount={todayActivities.length}
-              orderSV={orderSV}
-              draggingId={draggingId}
-              dragOriginSlot={dragOriginSlot}
-              dragDeltaY={dragDeltaY}
-              insertAt={insertAt}
-              onOpen={openActivity}
-              onComplete={handleComplete}
-              onDragEnd={handleDragEnd}
-              cardBackgroundColor={cardBackgroundColor}
-            />
-          ))}
-        </Reanimated.View>
-      ) : hasScheduledToday ? (
-        <Reanimated.View style={[styles.completeState, completeFadeStyle]}>
-          <View style={styles.completeCopy}>
-            <Text style={styles.completeTitle}>
-              Rutina completa
-            </Text>
-            <Text style={styles.completeSubtitle}>
-              Hasta mañana.
-            </Text>
-          </View>
-          <Pressable
-            onPress={openCreate}
-            accessibilityRole="button"
-            accessibilityLabel="Añadir una actividad"
-            testID="mi-rutina-complete-add-button"
-            style={({ pressed }) => [
-              styles.completeAddButton,
-              { opacity: pressed ? 0.78 : 1 },
-            ]}
-          >
-            <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
-          </Pressable>
-        </Reanimated.View>
-      ) : null}
+      <View style={showCompleteState ? styles.completeStateSlot : undefined}>
+        {!isHydrated ? null : todayActivities.length > 0 ? (
+          <Reanimated.View style={[styles.activityList, listHeightStyle]}>
+            {todayActivities.map(({ activity, occurrenceIndex, itemId }, index) => (
+              <ActivityRow
+                key={itemId}
+                activity={activity}
+                occurrenceIndex={occurrenceIndex}
+                itemId={itemId}
+                initialIndex={index}
+                completing={completingIds.has(itemId)}
+                itemCount={todayActivities.length}
+                orderSV={orderSV}
+                draggingId={draggingId}
+                dragOriginSlot={dragOriginSlot}
+                dragDeltaY={dragDeltaY}
+                insertAt={insertAt}
+                onOpen={openActivity}
+                onComplete={handleComplete}
+                onDragEnd={handleDragEnd}
+                cardBackgroundColor={cardBackgroundColor}
+              />
+            ))}
+          </Reanimated.View>
+        ) : hasScheduledToday ? (
+          <Reanimated.View style={[styles.completeState, completeFadeStyle]}>
+            <View style={styles.completeCopy}>
+              <Text style={styles.completeTitle}>
+                Rutina completa
+              </Text>
+              <Text style={styles.completeSubtitle}>
+                Hasta mañana.
+              </Text>
+            </View>
+            <Pressable
+              onPress={openCreate}
+              accessibilityRole="button"
+              accessibilityLabel="Añadir una actividad"
+              testID="mi-rutina-complete-add-button"
+              style={({ pressed }) => [
+                styles.completeAddButton,
+                { opacity: pressed ? 0.78 : 1 },
+              ]}
+            >
+              <Text style={styles.completeAddButtonText}>Añadir una actividad</Text>
+            </Pressable>
+          </Reanimated.View>
+        ) : null}
+      </View>
 
       {!(isHydrated && todayActivities.length === 0 && hasScheduledToday) ? (
         <Pressable
@@ -728,6 +730,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 18,
+  },
+  completeStateSlot: {
+    minHeight: 156,
   },
   completeCopy: {
     alignItems: "center",
