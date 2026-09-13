@@ -385,7 +385,7 @@ export default function RutinaCalendarioScreen() {
           styles.addActivity,
           {
             bottom: bottomPad + 18,
-            backgroundColor: routineTheme.completion,
+            backgroundColor: "#276FC2",
             opacity: pressed ? 0.78 : 1,
           },
         ]}
