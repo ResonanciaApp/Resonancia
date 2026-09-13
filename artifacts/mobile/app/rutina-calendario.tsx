@@ -472,10 +472,11 @@ function RutinaCalendarioScreenContent() {
         <Text style={styles.addActivityText}>Añadir actividad</Text>
       </Pressable>
       <RoutineCompletionBanner
-        bottom={bottomPad + 52}
+        bottom={bottomPad + 22}
         backgroundColor="#0E0821"
         visible
         enteredOffset={35}
+        height={60}
       />
     </View>
   );
@@ -630,7 +631,7 @@ const styles = StyleSheet.create({
   addActivity: {
     position: "absolute",
     right: 20,
-    height: 52,
+    height: 47,
     borderRadius: 18,
     paddingHorizontal: 18,
     flexDirection: "row",

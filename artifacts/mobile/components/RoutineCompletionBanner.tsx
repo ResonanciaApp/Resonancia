@@ -16,6 +16,7 @@ type Props = {
   visible: boolean;
   entryDistance?: number;
   enteredOffset?: number;
+  height?: number;
   onAddedPress?: () => void;
 };
 
@@ -25,6 +26,7 @@ export function RoutineCompletionBanner({
   visible,
   entryDistance = ENTRY_DISTANCE,
   enteredOffset = 0,
+  height,
   onAddedPress,
 }: Props) {
   const { activeEvent, dismissActiveEvent } = useRoutineCompletionBanner();
@@ -208,6 +210,7 @@ export function RoutineCompletionBanner({
         {
           bottom,
           backgroundColor,
+          height,
           opacity,
           transform: [{ translateY }],
         },
