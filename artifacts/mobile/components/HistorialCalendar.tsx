@@ -491,9 +491,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   outlinedCalendarCard: {
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   calendarNav: {
     flexDirection: "row",
