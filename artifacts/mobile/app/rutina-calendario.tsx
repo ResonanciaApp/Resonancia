@@ -472,7 +472,7 @@ function RutinaCalendarioScreenContent() {
         <Text style={styles.addActivityText}>Añadir actividad</Text>
       </Pressable>
       <RoutineCompletionBanner
-        bottom={bottomPad + 82}
+        bottom={bottomPad + 52}
         backgroundColor="#0E0821"
         visible
         enteredOffset={35}
