@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { RoutineCompletionBanner } from "@/components/RoutineCompletionBanner";
 import {
   getRoutineActivityCategory,
   getRoutineDateKey,
@@ -25,7 +26,10 @@ import {
 } from "@/context/RutinaContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
-import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
+import {
+  RoutineCompletionBannerProvider,
+  useRoutineCompletionBanner,
+} from "@/context/RoutineCompletionBannerContext";
 import {
   consumeRoutineAdditionTransition,
   consumeRoutineCompletionTransition,
@@ -200,7 +204,7 @@ function CalendarActivityRow({
   );
 }
 
-export default function RutinaCalendarioScreen() {
+function RutinaCalendarioScreenContent() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
   const { announceActivityAdded } = useRoutineCompletionBanner();
@@ -435,7 +439,20 @@ export default function RutinaCalendarioScreen() {
         <Feather name="plus" size={19} color="#FFFFFF" />
         <Text style={styles.addActivityText}>Añadir actividad</Text>
       </Pressable>
+      <RoutineCompletionBanner
+        bottom={bottomPad + 82}
+        backgroundColor={routineTheme.background}
+        visible
+      />
     </View>
+  );
+}
+
+export default function RutinaCalendarioScreen() {
+  return (
+    <RoutineCompletionBannerProvider>
+      <RutinaCalendarioScreenContent />
+    </RoutineCompletionBannerProvider>
   );
 }
 
