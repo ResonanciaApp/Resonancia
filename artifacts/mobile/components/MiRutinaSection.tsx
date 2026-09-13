@@ -672,6 +672,8 @@ const styles = StyleSheet.create({
   activityCard: {
     height: ROUTINE_CARD_HEIGHT,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 10,
