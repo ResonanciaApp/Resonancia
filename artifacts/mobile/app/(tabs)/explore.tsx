@@ -666,7 +666,7 @@ export function ExploreScreen({
           <View style={styles.sectionDivider} />
 
           <Pressable
-            onPress={() => router.push("/resonadores" as never)}
+            onPress={() => router.push("/equipo" as never)}
             accessibilityRole="button"
             accessibilityLabel="Conoce a los Resonadores"
             style={({ pressed }) => [
