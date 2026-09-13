@@ -443,7 +443,8 @@ export default function SonidosScreen() {
                    onToggle: soundPreview.toggle,
                  }}
                 ambientalCardBackground="rgba(0,0,0,0.21)"
-                ambientalCardBorderWidth={0}
+                 ambientalCardBorderWidth={2}
+                 ambientalCardBorderColor="rgba(255,255,255,0.2)"
                  ambientalCardBorderRadius={21}
                  ambientalTitleOnlyMetadataStyle={{
                    transform: [{ translateY: -2 }],
