@@ -312,9 +312,9 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             disableAmbientalVariant
             sleepMetadataBelow
             categoryGridPresentation
-            showCategoryPillTopLeft
             whiteMetadataGlass
             showDurationClock
+            showCategoryLabelBelow
             sleepBelowMetadataStyle={{
               marginTop: 3,
               transform: [{ translateX: 3 }],
