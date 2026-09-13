@@ -26,8 +26,8 @@ import {
 } from "react-native";
 
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
-const CANONICAL_AMBIENTAL_BORDER_COLOR = "rgba(255,255,255,0.2)";
-const CANONICAL_AMBIENTAL_BORDER_WIDTH = 0;
+const CANONICAL_AMBIENTAL_BORDER_COLOR = "rgba(255,255,255,0.25)";
+const CANONICAL_AMBIENTAL_BORDER_WIDTH = 1;
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 31;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
