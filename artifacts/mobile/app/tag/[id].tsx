@@ -230,12 +230,6 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             style={[
               styles.filterPill,
               durationFilter === null ? styles.filterPillSelected : styles.filterPillIdle,
-              durationFilter === null
-                ? null
-                : {
-                    backgroundColor: "rgba(181,211,255,0.057)",
-                    borderColor: "rgba(255,255,255,0.1)",
-                  },
             ]}
           >
             <Text
@@ -256,12 +250,6 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 style={[
                   styles.filterPill,
                   active ? styles.filterPillSelected : styles.filterPillIdle,
-                  active
-                    ? null
-                    : {
-                        backgroundColor: "rgba(181,211,255,0.057)",
-                        borderColor: "rgba(255,255,255,0.1)",
-                      },
                 ]}
               >
                 <Text
@@ -316,7 +304,7 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
             showDurationClock
             showCategoryLabelBelow
             sleepBelowMetadataStyle={{
-              marginTop: 3,
+              marginTop: 7,
               transform: [{ translateX: 3 }],
             }}
             trailingPeek={20}
