@@ -247,7 +247,7 @@ export default function CrearRutinaScreen() {
             pointerEvents={suggestionEditing ? "none" : "auto"}
             style={suggestionsFadeStyle}
           >
-            <View style={[styles.tabRail, { borderBottomColor: tabAccentColor }]}>
+            <View style={[styles.tabRail, { borderBottomColor: ROUTINE_MUTED }]}>
               <ScrollView
                 horizontal
                 style={styles.tabScroller}
@@ -275,7 +275,12 @@ export default function CrearRutinaScreen() {
                         },
                       ]}
                     >
-                      <Text style={[styles.tabText, { color: selected ? ROUTINE_SELECTED : tabAccentColor }]}>
+                      <Text
+                        style={[
+                          styles.tabText,
+                          { color: selected ? ROUTINE_SELECTED : ROUTINE_MUTED },
+                        ]}
+                      >
                         {tab}
                       </Text>
                     </Pressable>
@@ -295,7 +300,7 @@ export default function CrearRutinaScreen() {
                   style={({ pressed }) => [
                     styles.suggestionRow,
                     {
-                      backgroundColor: suggestionSurface,
+                      backgroundColor: "rgba(0,0,0,0.28)",
                       opacity: pressed ? 0.72 : 1,
                     },
                   ]}

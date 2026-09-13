@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { isIndigoThemeId } from "@/config/scene-themes";
 import {
   getRoutineDateFromKey,
   getRoutineDateKey,
@@ -101,15 +100,8 @@ export default function RutinaDetailScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
-  const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const actionBackground =
-    activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.1)"
-      : activeSceneId === "indigo2"
-        ? "rgba(191,207,255,0.1)"
-        : isIndigoThemeId(activeSceneId)
-          ? "rgba(181,211,255,0.1)"
-          : "rgba(181,211,255,0.1)";
+  const { theme: activeTheme } = useSceneTheme();
+  const actionBackground = "rgba(0,0,0,0.28)";
   const todayKey = useDayRollover();
   const {
     isHydrated,
