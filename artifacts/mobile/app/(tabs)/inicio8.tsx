@@ -2815,7 +2815,7 @@ export default function HomeScreen2({
               <MaterialCommunityIcons
                 name="diamond-stone"
                 color={MEMBERSHIP_AURORA.plus.accent}
-                size={24}
+                size={26}
               />
             </View>
             <View style={styles.inicio3ResonadoresBannerCopy}>
@@ -4036,7 +4036,7 @@ const styles = StyleSheet.create({
   inicio3ResonadoresBannerIcon: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 21,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
@@ -4048,12 +4048,12 @@ const styles = StyleSheet.create({
   inicio3ResonadoresBannerTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "700",
     marginBottom: 3,
   },
   inicio3ResonadoresBannerSubtitle: {
-    color: "rgba(249,249,249,0.68)",
+    color: MEMBERSHIP_AURORA.plus.accent,
     fontFamily: "Manrope",
     fontSize: 12,
   },
