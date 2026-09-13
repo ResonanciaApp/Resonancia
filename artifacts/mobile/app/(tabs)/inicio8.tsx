@@ -3166,7 +3166,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    transform: [{ translateX: -21 }],
+    transform: [{ translateX: -23 }, { translateY: -2 }],
   },
   inicio3HeroSearchButton: {
     width: 43,
