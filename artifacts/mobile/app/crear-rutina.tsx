@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
   Keyboard,
@@ -31,6 +31,7 @@ import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { markRoutineAdditionTransition } from "@/lib/routineCompletionTransition";
 
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 const ROUTINE_MUTED = "#7F7F7F";
@@ -42,6 +43,7 @@ function repeatLabel(repeatEnabled: boolean, timesPerDay: number) {
 }
 
 export default function CrearRutinaScreen() {
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const colors = useColors();
   const { activeSceneId, theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -134,6 +136,7 @@ export default function CrearRutinaScreen() {
       repeatEnabled,
       timesPerDay,
     });
+    if (from === "calendar") markRoutineAdditionTransition();
     router.back();
   };
 

@@ -25,7 +25,11 @@ import {
 } from "@/context/RutinaContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
-import { consumeRoutineCompletionTransition } from "@/lib/routineCompletionTransition";
+import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
+import {
+  consumeRoutineAdditionTransition,
+  consumeRoutineCompletionTransition,
+} from "@/lib/routineCompletionTransition";
 import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
@@ -199,6 +203,7 @@ function CalendarActivityRow({
 export default function RutinaCalendarioScreen() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
+  const { announceActivityAdded } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
@@ -211,6 +216,9 @@ export default function RutinaCalendarioScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
   useFocusEffect(
     useCallback(() => {
+      if (consumeRoutineAdditionTransition()) {
+        announceActivityAdded();
+      }
       const transition = consumeRoutineCompletionTransition();
       if (!transition || transition.dateKey !== selectedKey) return;
       const itemId = `${transition.activityId}::${transition.occurrenceIndex}`;
@@ -218,7 +226,7 @@ export default function RutinaCalendarioScreen() {
         ...current,
         [itemId]: transition.token,
       }));
-    }, [selectedKey]),
+    }, [announceActivityAdded, selectedKey]),
   );
   const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
@@ -412,7 +420,7 @@ export default function RutinaCalendarioScreen() {
       </ScrollView>
 
       <Pressable
-        onPress={() => router.push("/crear-rutina" as never)}
+        onPress={() => router.push("/crear-rutina?from=calendar" as never)}
         accessibilityRole="button"
         accessibilityLabel="Añadir una actividad a Mi Rutina"
         style={({ pressed }) => [

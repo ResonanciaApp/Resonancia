@@ -6,6 +6,7 @@ type RoutineCompletionTransition = {
 };
 
 let pendingTransition: RoutineCompletionTransition | null = null;
+let pendingAddition = false;
 let nextToken = 1;
 
 export function markRoutineCompletionTransition(
@@ -25,4 +26,14 @@ export function consumeRoutineCompletionTransition() {
   const transition = pendingTransition;
   pendingTransition = null;
   return transition;
+}
+
+export function markRoutineAdditionTransition() {
+  pendingAddition = true;
+}
+
+export function consumeRoutineAdditionTransition() {
+  const shouldAnnounce = pendingAddition;
+  pendingAddition = false;
+  return shouldAnnounce;
 }
