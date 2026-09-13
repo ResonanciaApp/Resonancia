@@ -562,7 +562,7 @@ export default function DescansoScreen() {
                       ]}
                     >
                       <View style={styles.sleepMixerBannerIcon}>
-                        <MoonCrescentIcon color="#C4A8F5" size={26} />
+                        <MoonCrescentIcon color="#C4A8F5" size={30} />
                       </View>
                       <View style={styles.sleepMixerBannerCopy}>
                         <Text style={styles.sleepMixerBannerTitle}>
@@ -970,7 +970,7 @@ const styles = StyleSheet.create({
   sleepMixerBannerIcon: {
     width: 44,
     height: 44,
-    borderRadius: 21,
+    borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
@@ -982,7 +982,7 @@ const styles = StyleSheet.create({
   sleepMixerBannerTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "700",
     marginBottom: 3,
   },

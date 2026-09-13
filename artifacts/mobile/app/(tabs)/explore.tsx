@@ -675,7 +675,7 @@ export function ExploreScreen({
             ]}
           >
             <View style={styles.sleepMixerBannerIcon}>
-              <Feather name="users" color="#F9F9F9" size={26} />
+              <Feather name="users" color="#F9F9F9" size={30} />
             </View>
             <View style={styles.sleepMixerBannerCopy}>
               <Text style={styles.sleepMixerBannerTitle}>
@@ -1088,7 +1088,7 @@ const styles = StyleSheet.create({
   sleepMixerBannerIcon: {
     width: 44,
     height: 44,
-    borderRadius: 21,
+    borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
@@ -1100,7 +1100,7 @@ const styles = StyleSheet.create({
   sleepMixerBannerTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "700",
     marginBottom: 3,
   },
