@@ -4034,8 +4034,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   inicio3ResonadoresBannerIcon: {
-    width: 44,
-    height: 44,
+    width: 51,
+    height: 51,
     borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
@@ -4048,7 +4048,7 @@ const styles = StyleSheet.create({
   inicio3ResonadoresBannerTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "700",
     marginBottom: 3,
   },

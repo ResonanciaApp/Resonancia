@@ -1086,8 +1086,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   sleepMixerBannerIcon: {
-    width: 44,
-    height: 44,
+    width: 51,
+    height: 51,
     borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",

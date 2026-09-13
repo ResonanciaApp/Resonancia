@@ -568,7 +568,7 @@ export default function DescansoScreen() {
                         <Text style={styles.sleepMixerBannerTitle}>
                           Mezclador para dormir
                         </Text>
-                        <Text style={styles.sleepMixerBannerSubtitle}>
+                        <Text style={[styles.sleepMixerBannerSubtitle, { color: colors.accent }]}>
                           Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
                           <MaterialCommunityIcons
                             name="diamond-stone"
@@ -968,8 +968,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   sleepMixerBannerIcon: {
-    width: 44,
-    height: 44,
+    width: 51,
+    height: 51,
     borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
@@ -987,7 +987,6 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   sleepMixerBannerSubtitle: {
-    color: "#C4A8F5",
     fontFamily: "Manrope",
     fontSize: 12,
   },
