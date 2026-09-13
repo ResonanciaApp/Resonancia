@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
   profileChevronButton: {
     width: 32,
     height: 44,
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "center",
   },
   profileNameMuted: {
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: -16,
-    transform: [{ translateY: -50 }],
+    transform: [{ translateY: -60 }],
   },
 
   // ── Items ──
