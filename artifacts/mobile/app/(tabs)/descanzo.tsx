@@ -549,28 +549,31 @@ export default function DescansoScreen() {
                   />
                 ) : null}
                 {index === 2 ? (
-                  <Pressable
-                    onPress={openMixer}
-                    accessibilityRole="button"
-                    accessibilityLabel="Abrir Mezclador para dormir"
-                    style={({ pressed }) => [
-                      styles.sleepMixerBanner,
-                      { opacity: pressed ? 0.82 : 1 },
-                    ]}
-                  >
-                    <View style={styles.sleepMixerBannerIcon}>
-                      <MoonCrescentIcon color="#F9F9F9" size={24} />
-                    </View>
-                    <View style={styles.sleepMixerBannerCopy}>
-                      <Text style={styles.sleepMixerBannerTitle}>
-                        Mezclador para dormir
-                      </Text>
-                      <Text style={styles.sleepMixerBannerSubtitle}>
-                        Crea tu propia mezcla de sonidos
-                      </Text>
-                    </View>
-                    <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-                  </Pressable>
+                  <>
+                    <View style={styles.sectionDivider} />
+                    <Pressable
+                      onPress={openMixer}
+                      accessibilityRole="button"
+                      accessibilityLabel="Abrir Mezclador para dormir"
+                      style={({ pressed }) => [
+                        styles.sleepMixerBanner,
+                        { opacity: pressed ? 0.82 : 1 },
+                      ]}
+                    >
+                      <View style={styles.sleepMixerBannerIcon}>
+                        <MoonCrescentIcon color="#C4A8F5" size={24} />
+                      </View>
+                      <View style={styles.sleepMixerBannerCopy}>
+                        <Text style={styles.sleepMixerBannerTitle}>
+                          Mezclador para dormir
+                        </Text>
+                        <Text style={styles.sleepMixerBannerSubtitle}>
+                          Crea tu propia mezcla de sonidos
+                        </Text>
+                      </View>
+                      <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+                    </Pressable>
+                  </>
                 ) : null}
               </React.Fragment>
             ))}
@@ -913,7 +916,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.34)",
   },
   headerActions: {
     flexDirection: "row",
