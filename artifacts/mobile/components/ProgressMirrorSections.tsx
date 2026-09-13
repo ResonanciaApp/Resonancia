@@ -24,7 +24,11 @@ function brightenColor(hex: string, pct: number): string {
     .join(",")})`;
 }
 
-export function ProgressMirrorSections() {
+export function ProgressMirrorSections({
+  showSectionBorders = true,
+}: {
+  showSectionBorders?: boolean;
+}) {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { statEvents } = usePlayer();
@@ -65,7 +69,7 @@ export function ProgressMirrorSections() {
 
   return (
     <>
-      <View style={styles.streakSection}>
+      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
         <View style={styles.streakRow}>
           {["L", "M", "X", "J", "V", "S", "D"].map((initial, index) => {
             const active = weekFlags[index];
@@ -106,7 +110,7 @@ export function ProgressMirrorSections() {
         </View>
       </View>
 
-      <View style={styles.personalStatsSection}>
+      <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
         <View style={styles.personalStatsHeader}>
           <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
             Estadísticas personales
@@ -162,7 +166,11 @@ export function ProgressMirrorSections() {
         </View>
       </View>
 
-      <HistorialCalendar embedded outlined backgroundColor={SECTION_BACKGROUND} />
+      <HistorialCalendar
+        embedded
+        outlined={showSectionBorders}
+        backgroundColor={SECTION_BACKGROUND}
+      />
     </>
   );
 }
@@ -237,6 +245,9 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 12,
     marginBottom: 12,
+  },
+  borderlessSection: {
+    borderWidth: 0,
   },
   personalStatsHeader: { gap: 7 },
   personalStatsTitle: {

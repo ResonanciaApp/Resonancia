@@ -1256,7 +1256,7 @@ export function ProfileScreenBase({
                   Tu progreso en Resonancia
                 </Text>
               </View>
-              <ProgressMirrorSections />
+              <ProgressMirrorSections showSectionBorders={false} />
             </View>
 
             <View style={{ marginTop: 12, gap: 12 }}>
@@ -2084,8 +2084,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 0,
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -2300,8 +2299,7 @@ const styles = StyleSheet.create({
   },
   outlinedProfileSection: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
   },
