@@ -44,6 +44,8 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
@@ -259,6 +261,7 @@ export function ExploreScreen({
   collapseCategoryHeader?: boolean;
 }) {
   const { openCategory } = useCategoryOverlay();
+  const { openMixer } = useMixerPanel();
   const { openForSession } = useAmbientalDuration();
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
@@ -683,6 +686,29 @@ export function ExploreScreen({
             titleSize={17}
           />
 
+          <Pressable
+            onPress={openMixer}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir Mezclador para dormir"
+            style={({ pressed }) => [
+              styles.sleepMixerBanner,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <View style={styles.sleepMixerBannerIcon}>
+              <MoonCrescentIcon color="#C4A8F5" size={24} />
+            </View>
+            <View style={styles.sleepMixerBannerCopy}>
+              <Text style={styles.sleepMixerBannerTitle}>
+                Mezclador para dormir
+              </Text>
+              <Text style={styles.sleepMixerBannerSubtitle}>
+                Crea tu propia mezcla de sonidos
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+          </Pressable>
+
           <View style={styles.sectionDivider} />
 
           <View style={styles.categoryBlocksSection}>
@@ -1064,6 +1090,45 @@ const styles = StyleSheet.create({
     marginTop: -27,
     marginBottom: 26,
     backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  sleepMixerBanner: {
+    minHeight: 80,
+    marginTop: -27,
+    marginBottom: 53,
+    marginHorizontal: H_PAD,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.34)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  sleepMixerBannerIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sleepMixerBannerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  sleepMixerBannerTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+  sleepMixerBannerSubtitle: {
+    color: "rgba(249,249,249,0.68)",
+    fontFamily: "Manrope",
+    fontSize: 12,
   },
   popularSection: {
     marginTop: 0,
