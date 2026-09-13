@@ -121,6 +121,7 @@ const { width, height } = Dimensions.get("window");
 const GRID_GAP = 12;
 const GRID_PAD = 16;
 const INICIO2_SECTION_GAP = 53;
+const INICIO3_VERTICAL_LIFT = 11;
 const INICIO3_SESSION_CARD_WIDTH = Math.round(
   (width - GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
 );
@@ -1291,7 +1292,7 @@ function Inicio2HeroStatic({
   const greeting = getGreeting();
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
-  const inicio3HeroTop = topInset + 175;
+  const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
 
   return (
     <View
@@ -1327,7 +1328,7 @@ function Inicio2HeroStatic({
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
-          { paddingTop: topInset + 8 + (isInicio3 ? 10 : 0) },
+          { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
@@ -1443,7 +1444,7 @@ function Inicio2HeroStatic({
       {isInicio3 && (
         <>
           <View
-            style={[styles.inicio3StreakRow, { top: topInset + 87 }]}
+            style={[styles.inicio3StreakRow, { top: topInset + 87 - INICIO3_VERTICAL_LIFT }]}
             testID="inicio3-streak-row"
           >
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
