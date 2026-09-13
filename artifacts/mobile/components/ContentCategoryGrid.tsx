@@ -429,14 +429,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   discoverCard: {
-    borderRadius: 21,
+    borderRadius: 23,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
   discoverCardImage: {
     width: "100%",
-    borderRadius: 21,
+    borderRadius: 23,
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.25)",
   },
