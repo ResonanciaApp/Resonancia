@@ -568,7 +568,7 @@ export default function DescansoScreen() {
                           Mezclador para dormir
                         </Text>
                         <Text style={styles.sleepMixerBannerSubtitle}>
-                          Crea tu propia mezcla de sonidos
+                          Crea tu propio universo sonoro con más de 400 sonidos para tu relajación. Solo para Premium Plus
                         </Text>
                       </View>
                       <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />

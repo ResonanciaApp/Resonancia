@@ -682,7 +682,7 @@ export function ExploreScreen({
                 Conoce a los Resonadores
               </Text>
               <Text style={styles.sleepMixerBannerSubtitle}>
-                La esencia que le da vida a este espacio
+                La esencia que le da vida a este espacio y que nos conecta con su maravilloso arte
               </Text>
             </View>
             <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
