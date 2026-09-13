@@ -1,6 +1,5 @@
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { BlurView } from "expo-blur";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
 import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
@@ -45,7 +44,6 @@ const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 3;
 const MINI_PLAYER_MARGIN_H = 15;
-const TAB_BAR_GLASS = "rgba(14,8,33,0.68)";
 
 function getTabBarBackground(activeSceneId: string) {
   return "#0E0821";
@@ -173,6 +171,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
   const indigo2Mode = activeSceneId === "indigo2";
+  const tabBarBackground = getTabBarBackground(activeSceneId);
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const isLibraryRoute = state.routes[state.index]?.name === "biblioteca";
@@ -247,20 +246,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
-        <BlurView
-          pointerEvents="none"
-          intensity={Platform.OS === "android" ? 75 : 45}
-          tint="dark"
-          experimentalBlurMethod={
-            Platform.OS === "android" ? "dimezisBlurView" : undefined
-          }
-          style={StyleSheet.absoluteFill}
-        />
         <View
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
-            { backgroundColor: TAB_BAR_GLASS },
+            { backgroundColor: tabBarBackground },
           ]}
         />
         <View
@@ -524,8 +514,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     overflow: "hidden",
     zIndex: 50,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255,255,255,0.12)",
   },
   row: {
     height: PILL_H,
