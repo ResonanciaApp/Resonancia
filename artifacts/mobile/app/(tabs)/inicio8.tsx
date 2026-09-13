@@ -1327,12 +1327,12 @@ function Inicio2HeroStatic({
       >
         <View style={styles.inicio2HeroProfileButton}>
           <Pressable
-            onPress={() => router.push("/(tabs)/profile" as never)}
+            onPress={onOpenDrawer}
             hitSlop={10}
             style={styles.inicio2HeroAvatarButton}
             accessibilityRole="button"
-            accessibilityLabel="Abrir mi perfil"
-            testID="inicio2-open-profile"
+            accessibilityLabel="Abrir menú"
+            testID="inicio2-avatar-open-drawer"
           >
             {displayPhoto ? (
               <ExpoImage
