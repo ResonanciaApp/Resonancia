@@ -2391,10 +2391,10 @@ export default function HomeScreen2({
         >
           <View style={styles.inicioStickyHeaderRow}>
             <ExpoImage
-              source={require("@/assets/images/icons/pulso-logo.png")}
+              source={require("@/assets/images/logo-resonancia-new.png")}
               style={styles.inicioStickyLogo}
               contentFit="contain"
-              accessibilityLabel="Pulso"
+              accessibilityLabel="Resonancia"
             />
             <Pressable
               onPress={() => router.push("/progreso" as never)}
