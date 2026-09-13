@@ -558,7 +558,11 @@ export default function DescansoScreen() {
                       accessibilityLabel="Abrir Mezclador para dormir"
                       style={({ pressed }) => [
                         styles.sleepMixerBanner,
-                        { opacity: pressed ? 0.82 : 1 },
+                        {
+                          borderWidth: 2,
+                          borderColor: "rgba(255,255,255,0.27)",
+                          opacity: pressed ? 0.82 : 1,
+                        },
                       ]}
                     >
                       <View style={styles.sleepMixerBannerIcon}>
@@ -960,8 +964,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.27)",
     backgroundColor: "rgba(0,0,0,0.28)",
     flexDirection: "row",
     alignItems: "center",
