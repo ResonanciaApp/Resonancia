@@ -406,22 +406,22 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const canonicalAmbientalGradient = React.useMemo(() => {
-    const withoutPurpleStop =
-      theme.gradient.length > 2 ? theme.gradient.slice(1) : theme.gradient;
-    const withoutPurpleLocation =
+    const bottomStops =
+      theme.gradient.length > 2 ? theme.gradient.slice(-2) : theme.gradient;
+    const bottomLocations =
       theme.gradient.length > 2 && theme.gradientLocations
-        ? theme.gradientLocations.slice(1)
+        ? theme.gradientLocations.slice(-2)
         : theme.gradientLocations;
-    const firstLocation = withoutPurpleLocation?.[0] ?? 0;
+    const firstLocation = bottomLocations?.[0] ?? 0;
     const lastLocation =
-      withoutPurpleLocation?.[withoutPurpleLocation.length - 1] ?? 1;
+      bottomLocations?.[bottomLocations.length - 1] ?? 1;
     const locationSpan = lastLocation - firstLocation || 1;
 
     return {
-      colors: withoutPurpleStop.map((color) =>
+      colors: bottomStops.map((color) =>
         brightenAmbientalColor(color, 5),
       ) as unknown as [string, string, ...string[]],
-      locations: withoutPurpleLocation?.map(
+      locations: bottomLocations?.map(
         (location) => (location - firstLocation) / locationSpan,
       ) as unknown as [number, number, ...number[]] | undefined,
     };
