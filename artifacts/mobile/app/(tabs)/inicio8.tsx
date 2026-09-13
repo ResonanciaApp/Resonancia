@@ -296,6 +296,7 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const ND = Platform.OS !== "web";
+const DRAWER_DECREE_STORAGE_PREFIX = "@resonance/drawer-decree";
 
 function BlinkingCursor({ color }: { color: string }) {
   const opacity = useRef(new Animated.Value(1)).current;
@@ -1273,8 +1274,25 @@ function Inicio2HeroStatic({
   isInicio3?: boolean;
 }) {
   const { user: clerkUser } = useUser();
+  const { isOpen: drawerOpen } = useDrawer();
   const { username, photoUri } = useUserProfile();
   const { weekFlags, todayIndex } = useStreak();
+  const [decree, setDecree] = useState("");
+  const decreeStorageKey = `${DRAWER_DECREE_STORAGE_PREFIX}:${clerkUser?.id ?? "local"}`;
+  useEffect(() => {
+    if (drawerOpen) return;
+    let active = true;
+    AsyncStorage.getItem(decreeStorageKey)
+      .then((storedDecree) => {
+        if (active) setDecree(storedDecree ?? "");
+      })
+      .catch(() => {
+        if (active) setDecree("");
+      });
+    return () => {
+      active = false;
+    };
+  }, [decreeStorageKey, drawerOpen]);
   const displayName =
     username
     || clerkUser?.firstName
@@ -1336,15 +1354,23 @@ function Inicio2HeroStatic({
             {displayPhoto ? (
               <ExpoImage
                 source={{ uri: displayPhoto }}
-                style={styles.inicio2HeroAvatar}
+                style={[
+                  styles.inicio2HeroAvatar,
+                  isInicio3 && styles.inicio3HeroAvatarBorder,
+                ]}
                 contentFit="cover"
               />
             ) : (
-              <View style={styles.inicio2HeroAvatarFallback}>
+              <View
+                style={[
+                  styles.inicio2HeroAvatarFallback,
+                  isInicio3 && styles.inicio3HeroAvatarBorder,
+                ]}
+              >
                 <Text style={styles.inicio2HeroAvatarInitial}>{initial}</Text>
               </View>
             )}
-            {isPremium && (
+            {isPremium && !isInicio3 && (
               <View
                 pointerEvents="none"
                 style={styles.inicio2HeroPremiumBadge}
@@ -1366,8 +1392,15 @@ function Inicio2HeroStatic({
             accessibilityLabel="Abrir menú de perfil"
             testID="inicio2-open-drawer"
           >
-            <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+            {!isInicio3 && (
+              <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
+            )}
             <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
+            {isInicio3 && decree ? (
+              <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
+                {decree}
+              </Text>
+            ) : null}
           </Pressable>
         </View>
 
@@ -3138,6 +3171,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  inicio3HeroAvatarBorder: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
   inicio2HeroAvatarButton: {
     position: "relative",
   },
@@ -3192,6 +3229,17 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.65)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  inicio3HeroDecree: {
+    color: "#BE9650",
+    fontFamily: "Manrope",
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+    textShadowColor: "rgba(0,0,0,0.55)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   inicio2HeroLotusButton: {
     width: 62,
