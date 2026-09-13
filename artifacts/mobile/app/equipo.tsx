@@ -243,11 +243,10 @@ const ResonadorCard = memo(function ResonadorCard({
           />
         </View>
       </View>
-
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
         <Text style={styles.cardTag} numberOfLines={1}>
-          {item.data.subtipo}
+          {d.subtipo}
         </Text>
       </View>
     </Pressable>
@@ -439,11 +438,7 @@ const styles = StyleSheet.create({
   row: { gap: CARD_GAP, marginBottom: 31 },
   card: {
     alignItems: "center",
-    paddingVertical: 8,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
   },
   photoOuter: {
     alignItems: "center",
