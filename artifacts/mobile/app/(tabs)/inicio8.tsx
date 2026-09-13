@@ -2497,30 +2497,6 @@ export default function HomeScreen2({
             inicio3Compact={variant === "inicio3"}
           />
         )}
-        {variant === "inicio3" && featuredMoment && (
-          <Pressable
-            onPress={() => router.push("/equipo" as never)}
-            accessibilityRole="button"
-            accessibilityLabel="Conoce a los Resonadores"
-            style={({ pressed }) => [
-              styles.inicio3ResonadoresBanner,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <View style={styles.inicio3ResonadoresBannerIcon}>
-              <Feather name="users" color="#F9F9F9" size={24} />
-            </View>
-            <View style={styles.inicio3ResonadoresBannerCopy}>
-              <Text style={styles.inicio3ResonadoresBannerTitle}>
-                Conoce a los Resonadores
-              </Text>
-              <Text style={styles.inicio3ResonadoresBannerSubtitle}>
-                La esencia que le da vida a este espacio
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-          </Pressable>
-        )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
@@ -2818,6 +2794,30 @@ export default function HomeScreen2({
               decorativeGradient={variant === "inicio3"}
             />
           </View>
+        )}
+        {variant === "inicio3" && featuredMoment && (
+          <Pressable
+            onPress={() => router.push("/equipo" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Conoce a los Resonadores"
+            style={({ pressed }) => [
+              styles.inicio3ResonadoresBanner,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <View style={styles.inicio3ResonadoresBannerIcon}>
+              <Feather name="users" color="#F9F9F9" size={24} />
+            </View>
+            <View style={styles.inicio3ResonadoresBannerCopy}>
+              <Text style={styles.inicio3ResonadoresBannerTitle}>
+                Conoce a los Resonadores
+              </Text>
+              <Text style={styles.inicio3ResonadoresBannerSubtitle}>
+                La esencia que le da vida a este espacio
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+          </Pressable>
         )}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
