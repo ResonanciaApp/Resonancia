@@ -2497,6 +2497,30 @@ export default function HomeScreen2({
             inicio3Compact={variant === "inicio3"}
           />
         )}
+        {variant === "inicio3" && featuredMoment && (
+          <Pressable
+            onPress={() => router.push("/equipo" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Conoce a los Resonadores"
+            style={({ pressed }) => [
+              styles.inicio3ResonadoresBanner,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <View style={styles.inicio3ResonadoresBannerIcon}>
+              <Feather name="users" color="#F9F9F9" size={24} />
+            </View>
+            <View style={styles.inicio3ResonadoresBannerCopy}>
+              <Text style={styles.inicio3ResonadoresBannerTitle}>
+                Conoce a los Resonadores
+              </Text>
+              <Text style={styles.inicio3ResonadoresBannerSubtitle}>
+                La esencia que le da vida a este espacio
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+          </Pressable>
+        )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
@@ -3972,6 +3996,45 @@ const styles = StyleSheet.create({
   },
   resonadoresBannerChevron: {
     marginLeft: 8,
+  },
+  inicio3ResonadoresBanner: {
+    minHeight: 110,
+    marginTop: -27,
+    marginBottom: INICIO2_SECTION_GAP,
+    marginHorizontal: GRID_PAD,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.34)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  inicio3ResonadoresBannerIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio3ResonadoresBannerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  inicio3ResonadoresBannerTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+  inicio3ResonadoresBannerSubtitle: {
+    color: "rgba(249,249,249,0.68)",
+    fontFamily: "Manrope",
+    fontSize: 12,
   },
   verTodasLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
 
