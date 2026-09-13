@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   refreshButtonText: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
     color: "#F9F9F9",
     textAlign: "center",
