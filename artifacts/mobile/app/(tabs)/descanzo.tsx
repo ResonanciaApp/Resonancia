@@ -33,7 +33,9 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
+import { MoonCrescentIcon } from "@/components/MoonCrescentIcon";
 import {
   getEditorialPlaylistCarouselsForSurface,
   SLEEP_CAROUSEL_ORDER,
@@ -204,6 +206,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
+  const { openMixer } = useMixerPanel();
   const bgGradient = sceneTheme.gradient;
   const indigoSurface = sceneTheme.id === "tibet"
     ? "rgba(0,0,0,0.1)"
@@ -544,6 +547,30 @@ export default function DescansoScreen() {
                     openCategory(`/editorial-playlist/${encodeURIComponent(playlist.id)}`)
                   }
                   />
+                ) : null}
+                {index === 2 ? (
+                  <Pressable
+                    onPress={openMixer}
+                    accessibilityRole="button"
+                    accessibilityLabel="Abrir Mezclador para dormir"
+                    style={({ pressed }) => [
+                      styles.sleepMixerBanner,
+                      { opacity: pressed ? 0.82 : 1 },
+                    ]}
+                  >
+                    <View style={styles.sleepMixerBannerIcon}>
+                      <MoonCrescentIcon color="#F9F9F9" size={24} />
+                    </View>
+                    <View style={styles.sleepMixerBannerCopy}>
+                      <Text style={styles.sleepMixerBannerTitle}>
+                        Mezclador para dormir
+                      </Text>
+                      <Text style={styles.sleepMixerBannerSubtitle}>
+                        Crea tu propia mezcla de sonidos
+                      </Text>
+                    </View>
+                    <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+                  </Pressable>
                 ) : null}
               </React.Fragment>
             ))}
@@ -916,6 +943,44 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
+  },
+  sleepMixerBanner: {
+    minHeight: 80,
+    marginTop: 26,
+    marginHorizontal: H_PAD,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  sleepMixerBannerIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sleepMixerBannerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  sleepMixerBannerTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+  sleepMixerBannerSubtitle: {
+    color: "rgba(249,249,249,0.68)",
+    fontFamily: "Manrope",
+    fontSize: 12,
   },
   heroTitle: {
     fontFamily: "Manrope",
