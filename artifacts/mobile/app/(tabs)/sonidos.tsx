@@ -434,7 +434,7 @@ export default function SonidosScreen() {
                   cardVariant="ambiental"
                  ambientalTitleOnly
                   ambientalGradientBrightness={
-                    collection.label === "Todos los sonidos" ? 0 : 5
+                    collection.label === "Todos los sonidos" ? 4 : 5
                   }
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth

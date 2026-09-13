@@ -7,4 +7,4 @@ Las cards de los carruseles Ambientales de la pantalla Sonidos son la referencia
 
 **Why:** La pestaña Sonidos, las categorías Ambientales, Todos los sonidos y Favoritos llegaron a mantener overrides visuales distintos. El usuario confirmó que Sonidos es la card madre y todas las demás deben permanecer idénticas.
 
-**How to apply:** Cambiar el preset ambiental compartido. Los carruseles de Sonidos y sus pantallas por tag deben forzar `cardVariant="ambiental"`. Excepción deliberada: en la pantalla Sonidos, el carrusel “Todos los sonidos” usa 0% de brillo adicional, cinco puntos menos que el 5% canónico del resto.
+**How to apply:** Cambiar el preset ambiental compartido. Los carruseles de Sonidos y sus pantallas por tag deben forzar `cardVariant="ambiental"`. Excepción deliberada: en la pantalla Sonidos, el carrusel “Todos los sonidos” usa 4% de brillo adicional; el resto conserva el 5% canónico.
