@@ -258,7 +258,7 @@ const ActivityRow = React.memo(function ActivityRow({
             pointerEvents="none"
             style={[
               styles.completionOverlay,
-              { backgroundColor: "#732971" },
+              { backgroundColor: "#276FC2" },
               completionOverlayStyle,
             ]}
           />
