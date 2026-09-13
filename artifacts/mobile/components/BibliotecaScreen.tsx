@@ -68,11 +68,8 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-export function getLibraryTabSurface(sceneId: SceneId): string {
-  if (sceneId === "tibet") return "rgba(0,0,0,0.1)";
-  if (isIndigoThemeId(sceneId)) return "rgba(181,211,255,0.1)";
-  if (sceneId === "indigo2") return "rgba(191,207,255,0.1)";
-  return "rgba(181,211,255,0.1)";
+export function getLibraryTabSurface(_sceneId: SceneId): string {
+  return "rgba(0,0,0,0.28)";
 }
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
@@ -2207,7 +2204,7 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 10,
     borderRadius: 100,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
