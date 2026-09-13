@@ -31,7 +31,6 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
 
 type Props = {
@@ -50,19 +49,6 @@ type RoutineOccurrence = {
   occurrenceIndex: number;
   itemId: string;
 };
-
-function lightenHexColor(color: string, amount = 0.1) {
-  const match = /^#([0-9a-f]{6})$/i.exec(color);
-  if (!match) return color;
-  const value = Number.parseInt(match[1], 16);
-  const channel = (shift: number) => {
-    const original = (value >> shift) & 0xff;
-    return Math.round(original + (255 - original) * amount);
-  };
-  return `#${[channel(16), channel(8), channel(0)]
-    .map((part) => part.toString(16).padStart(2, "0"))
-    .join("")}`;
-}
 
 const ActivityRow = React.memo(function ActivityRow({
   activity,
@@ -98,7 +84,6 @@ const ActivityRow = React.memo(function ActivityRow({
   cardBackgroundColor?: string;
 }) {
   const routineTheme = useRoutineTheme();
-  const { theme } = useSceneTheme();
   const completionProgress = useSharedValue(completing ? 1 : 0);
   const didActivate = useSharedValue(0);
   const activityId = itemId;
@@ -222,16 +207,15 @@ const ActivityRow = React.memo(function ActivityRow({
     opacity: completionProgress.value,
   }));
   const ticketCircleColor = "rgba(255,255,255,0.1)";
-  const ticketCircleCompletedColor = useMemo(
-    () => lightenHexColor(theme.gradient[0], 0.1),
-    [theme.gradient],
-  );
   const ticketCircleStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       completionProgress.value,
       [0, 1],
-      [ticketCircleColor, ticketCircleCompletedColor],
+      [ticketCircleColor, "#F9F9F9"],
     ),
+  }));
+  const completedCheckStyle = useAnimatedStyle(() => ({
+    opacity: completionProgress.value,
   }));
 
   const completeFromTicket = useCallback(
@@ -313,6 +297,12 @@ const ActivityRow = React.memo(function ActivityRow({
               ]}
             >
               <Feather name="check" size={20} color="#F9F9F9" />
+              <Reanimated.View
+                pointerEvents="none"
+                style={[styles.completedCheck, completedCheckStyle]}
+              >
+                <Feather name="check" size={20} color="#060A0F" />
+              </Reanimated.View>
             </Pressable>
           </View>
         </Reanimated.View>
@@ -713,6 +703,11 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  completedCheck: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
   },
