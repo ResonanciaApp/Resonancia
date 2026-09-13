@@ -722,7 +722,7 @@ const styles = StyleSheet.create({
   completeState: {
     minHeight: 156,
     borderRadius: 16,
-    backgroundColor: "rgba(191,207,255,0.14)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 16,
