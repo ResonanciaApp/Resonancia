@@ -2580,7 +2580,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
     marginTop: 12,
-    marginBottom: 19,
+    marginBottom: 12,
   },
   personalStatsHeader: {
     gap: 7,
