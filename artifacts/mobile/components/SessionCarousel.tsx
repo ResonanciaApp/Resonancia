@@ -26,6 +26,28 @@ import {
 } from "react-native";
 
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
+const CANONICAL_AMBIENTAL_BORDER_COLOR = "rgba(255,255,255,0.2)";
+const CANONICAL_AMBIENTAL_BORDER_WIDTH = 0;
+const CANONICAL_AMBIENTAL_BORDER_RADIUS = 31;
+const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
+  transform: [{ translateY: -2 }],
+};
+const CANONICAL_AMBIENTAL_TITLE_STYLE: TextStyle = {
+  height: 42,
+  fontSize: 15,
+  lineHeight: 19,
+  textAlign: "center",
+  textAlignVertical: "top",
+};
+
+function brightenAmbientalColor(hex: string, pct: number): string {
+  const value = hex.replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
+  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
+  return `rgb(${channels
+    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
+    .join(",")})`;
+}
 
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -365,10 +387,10 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   showSleepCategoryPillWithInlineDuration = false,
   showSleepCategoryPill = true,
   ambientalTitleOnly = false,
-  ambientalImageLift = 0,
-  ambientalImageFillTop = false,
-  ambientalTitleOnlyMetadataStyle,
-  ambientalTitleOnlyTitleStyle,
+  ambientalImageLift = 9,
+  ambientalImageFillTop = true,
+  ambientalTitleOnlyMetadataStyle = CANONICAL_AMBIENTAL_METADATA_STYLE,
+  ambientalTitleOnlyTitleStyle = CANONICAL_AMBIENTAL_TITLE_STYLE,
   showAmbientalCategoryPill = false,
   sleepMetadataBelow = false,
   squareMetadataBelow = false,
@@ -383,6 +405,17 @@ export const SessionCarousel = React.memo(function SessionCarousel({
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const canonicalAmbientalGradient = React.useMemo(
+    () => ({
+      colors: theme.gradient.map((color) =>
+        brightenAmbientalColor(color, 5),
+      ) as unknown as [string, string, ...string[]],
+      locations: theme.gradientLocations,
+    }),
+    [theme.gradient, theme.gradientLocations],
+  );
+  const effectiveAmbientalCardGradient =
+    ambientalCardGradient ?? canonicalAmbientalGradient;
   const { openForSession } = useAmbientalDuration();
   const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
@@ -617,19 +650,22 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     borderRadius: cardBorderRadius,
                   },
                   isAmbiental && {
-                    backgroundColor: ambientalCardGradient
+                    backgroundColor: effectiveAmbientalCardGradient
                       ? "transparent"
                       : ambientalCardBackground,
-                    borderWidth: ambientalCardBorderWidth ?? 2,
-                    borderRadius: ambientalCardBorderRadius ?? 18,
-                    borderColor: ambientalCardBorderColor ?? "rgba(255,255,255,0.2)",
+                    borderWidth:
+                      ambientalCardBorderWidth ?? CANONICAL_AMBIENTAL_BORDER_WIDTH,
+                    borderRadius:
+                      ambientalCardBorderRadius ?? CANONICAL_AMBIENTAL_BORDER_RADIUS,
+                    borderColor:
+                      ambientalCardBorderColor ?? CANONICAL_AMBIENTAL_BORDER_COLOR,
                   },
                 ]}
               >
-                {isAmbiental && ambientalCardGradient && (
+                {isAmbiental && effectiveAmbientalCardGradient && (
                   <LinearGradient
-                    colors={ambientalCardGradient.colors}
-                    locations={ambientalCardGradient.locations}
+                    colors={effectiveAmbientalCardGradient.colors}
+                    locations={effectiveAmbientalCardGradient.locations}
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
                   />
@@ -666,7 +702,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                         style={[
                           styles.ambientalPreviewBorder,
                           {
-                            borderRadius: ambientalCardBorderRadius ?? 18,
+                            borderRadius:
+                              ambientalCardBorderRadius ?? CANONICAL_AMBIENTAL_BORDER_RADIUS,
                           },
                         ]}
                       />

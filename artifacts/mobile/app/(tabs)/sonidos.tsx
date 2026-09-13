@@ -434,27 +434,11 @@ export default function SonidosScreen() {
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth
-                 ambientalImageLift={9}
-                 ambientalImageFillTop
                  soundPreview={{
                    activeId: soundPreview.activeId,
                    isPlaying: soundPreview.isPlaying,
                    progress: soundPreview.progress,
                    onToggle: soundPreview.toggle,
-                 }}
-                ambientalCardBackground="rgba(0,0,0,0.21)"
-                 ambientalCardBorderWidth={2}
-                 ambientalCardBorderColor="rgba(255,255,255,0.2)"
-                 ambientalCardBorderRadius={21}
-                 ambientalTitleOnlyMetadataStyle={{
-                   transform: [{ translateY: -2 }],
-                 }}
-                 ambientalTitleOnlyTitleStyle={{
-                   height: 42,
-                   fontSize: 15,
-                   lineHeight: 19,
-                   textAlign: "center",
-                   textAlignVertical: "top",
                  }}
                 titleSize={17}
                   onViewAll={() => openCategory(`/sound-tag/${collection.id}`)}

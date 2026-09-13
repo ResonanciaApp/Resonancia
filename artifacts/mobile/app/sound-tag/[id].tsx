@@ -137,25 +137,11 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           gridBottomPadding={60 + bottomPad}
           presentation="editorial"
           ambientalTitleOnly
-          ambientalImageLift={9}
-          ambientalImageFillTop
           soundPreview={{
             activeId: soundPreview.activeId,
             isPlaying: soundPreview.isPlaying,
             progress: soundPreview.progress,
             onToggle: soundPreview.toggle,
-          }}
-          ambientalCardBackground="rgba(0,0,0,0.28)"
-          ambientalCardBorderColor="rgba(255,255,255,0.1)"
-          ambientalCardBorderWidth={1}
-          ambientalCardBorderRadius={28}
-          ambientalTitleOnlyMetadataStyle={{
-            transform: [{ translateY: -2 }],
-          }}
-          ambientalTitleOnlyTitleStyle={{
-            height: 36,
-            textAlign: "center",
-            textAlignVertical: "top",
           }}
         />
       )}

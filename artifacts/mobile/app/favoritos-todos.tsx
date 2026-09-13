@@ -132,12 +132,6 @@ function FavoriteSessionsCarousel({
       allowOversizedCardWidth
       titleSize={17}
       ambientalTitleOnly
-      ambientalImageLift={9}
-      ambientalImageFillTop
-      ambientalCardBackground="rgba(0,0,0,0.28)"
-      ambientalCardBorderColor="rgba(255,255,255,0.1)"
-      ambientalCardBorderWidth={1}
-      ambientalCardBorderRadius={28}
     />
   );
 }
@@ -451,20 +445,6 @@ export default function FavoritosTodosScreen() {
               eagerRender
               presentation="editorial"
               ambientalTitleOnly
-              ambientalImageLift={9}
-              ambientalImageFillTop
-              ambientalCardBackground="rgba(0,0,0,0.28)"
-              ambientalCardBorderColor="rgba(255,255,255,0.1)"
-              ambientalCardBorderWidth={1}
-              ambientalCardBorderRadius={28}
-              ambientalTitleOnlyMetadataStyle={{
-                transform: [{ translateY: -2 }],
-              }}
-              ambientalTitleOnlyTitleStyle={{
-                height: 36,
-                textAlign: "center",
-                textAlignVertical: "top",
-              }}
             />
           ) : (
             <SessionCarousel
