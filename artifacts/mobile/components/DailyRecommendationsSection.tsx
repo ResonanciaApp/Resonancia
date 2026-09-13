@@ -125,8 +125,22 @@ export function DailyRecommendationsSection({
             ) : null}
           </React.Fragment>
         ))}
+        {inicio3Compact && onRefreshRecommendations ? (
+          <Pressable
+            onPress={onRefreshRecommendations}
+            accessibilityRole="button"
+            accessibilityLabel="Actualizar recomendaciones"
+            style={({ pressed }) => [
+              styles.refreshButton,
+              styles.inicio3RefreshButton,
+              { opacity: pressed ? 0.72 : 1 },
+            ]}
+          >
+            <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+          </Pressable>
+        ) : null}
       </View>
-      {onRefreshRecommendations && (
+      {!inicio3Compact && onRefreshRecommendations && (
         <Pressable
           onPress={onRefreshRecommendations}
           accessibilityRole="button"
@@ -207,11 +221,16 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
     marginTop: 16,
     paddingHorizontal: 18,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  inicio3RefreshButton: {
+    marginHorizontal: 11,
+    marginBottom: 3,
   },
   refreshButtonText: {
     fontFamily: "Manrope",

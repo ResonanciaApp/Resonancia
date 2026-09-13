@@ -1,5 +1,6 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
+import { BlurView } from "expo-blur";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useState } from "react";
 import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
@@ -246,11 +247,18 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           },
         ]}
       >
+        <BlurView
+          pointerEvents="none"
+          tint="dark"
+          intensity={48}
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+        />
         <View
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFill,
-            { backgroundColor: tabBarBackground },
+            { backgroundColor: "rgba(14,8,33,0.62)" },
           ]}
         />
         <View
