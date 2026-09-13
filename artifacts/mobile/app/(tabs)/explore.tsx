@@ -625,20 +625,9 @@ export function ExploreScreen({
         <View style={styles.scrollContent}>
           <View style={styles.monthlySoundTherapySection}>
             <View style={styles.monthlySoundTherapyHeader}>
-              <Image
-                source={require("@/assets/images/avatar-fundador.png")}
-                style={styles.monthlySoundTherapyAvatar}
-                contentFit="cover"
-                cachePolicy="memory-disk"
-              />
-              <View style={styles.monthlySoundTherapyHeaderCopy}>
-                <Text style={styles.monthlySoundTherapySectionTitle}>
-                  Sonoterapia del mes
-                </Text>
-                <Text style={styles.monthlySoundTherapyDescription}>
-                  Sesiones de sonidos de la tierra y el universo.
-                </Text>
-              </View>
+              <Text style={styles.monthlySoundTherapySectionTitle}>
+                Sonoterapia del mes
+              </Text>
             </View>
 
             <View
@@ -656,17 +645,25 @@ export function ExploreScreen({
                 />
               </View>
               <View style={styles.monthlySoundTherapyMeta}>
-                <Text style={styles.monthlySoundTherapyContentTitle}>
-                  Sonidos de la Tierra y el Universo
-                </Text>
-                <Text
-                  style={[
-                    styles.monthlySoundTherapyAuthor,
-                    { color: activeTheme.accent },
-                  ]}
-                >
-                  Casa del Cuenco
-                </Text>
+                <Image
+                  source={require("@/assets/images/avatar-fundador.png")}
+                  style={styles.monthlySoundTherapyAvatar}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
+                <View style={styles.monthlySoundTherapyMetaCopy}>
+                  <Text style={styles.monthlySoundTherapyContentTitle}>
+                    Sonidos de la Tierra y el Universo
+                  </Text>
+                  <Text
+                    style={[
+                      styles.monthlySoundTherapyAuthor,
+                      { color: activeTheme.accent },
+                    ]}
+                  >
+                    Casa del Cuenco
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
@@ -1084,9 +1081,6 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   monthlySoundTherapyHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
     marginBottom: 17,
   },
   monthlySoundTherapyAvatar: {
@@ -1095,9 +1089,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: "rgba(181,211,255,0.057)",
   },
-  monthlySoundTherapyHeaderCopy: {
-    flex: 1,
-  },
   monthlySoundTherapySectionTitle: {
     fontFamily: "Manrope",
     fontSize: 17,
@@ -1105,14 +1096,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FBFBFB",
-    marginBottom: 3,
-  },
-  monthlySoundTherapyDescription: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: "400",
-    color: "rgba(251,251,251,0.72)",
   },
   monthlySoundTherapyHero: {
     width: "100%",
@@ -1123,6 +1106,12 @@ const styles = StyleSheet.create({
   },
   monthlySoundTherapyMeta: {
     marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  monthlySoundTherapyMetaCopy: {
+    flex: 1,
   },
   monthlySoundTherapyContentTitle: {
     fontFamily: "Manrope",
