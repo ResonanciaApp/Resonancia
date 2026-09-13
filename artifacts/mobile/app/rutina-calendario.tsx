@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Platform,
@@ -80,11 +80,13 @@ function CalendarActivityRow({
   dateKey,
   occurrenceIndex,
   completionToken,
+  onComplete,
 }: {
   activity: RoutineActivity;
   dateKey: string;
   occurrenceIndex: number;
   completionToken: number;
+  onComplete: () => void;
 }) {
   const routineTheme = useRoutineTheme();
   const { toggleActivity } = useRutina();
@@ -172,11 +174,21 @@ function CalendarActivityRow({
       <Pressable
         onPress={(event) => {
           event.stopPropagation();
-          if (completed) confirmUncheck();
+          if (completed) {
+            confirmUncheck();
+          } else if (!skipped) {
+            onComplete();
+          }
         }}
-        disabled={!completed}
-        accessibilityRole={completed ? "button" : undefined}
-        accessibilityLabel={completed ? `Desmarcar ${activity.title}` : undefined}
+        disabled={skipped}
+        accessibilityRole="button"
+        accessibilityLabel={
+          completed
+            ? `Desmarcar ${activity.title}`
+            : skipped
+              ? `${activity.title} saltada`
+              : `Completar ${activity.title}`
+        }
         hitSlop={8}
         style={[
           styles.stateSquare,
@@ -207,13 +219,13 @@ function CalendarActivityRow({
 function RutinaCalendarioScreenContent() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
-  const { announceActivityAdded } = useRoutineCompletionBanner();
+  const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
   const [showAll, setShowAll] = useState(true);
   const [completionTokens, setCompletionTokens] = useState<Record<string, number>>({});
-  const { activities, isHydrated } = useRutina();
+  const { activities, completeActivity, isHydrated } = useRutina();
   const selectedKey = getRoutineDateKey(selectedDate);
   const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -269,6 +281,25 @@ function RutinaCalendarioScreenContent() {
   const completedCount = historyForDate.filter(({ activity, occurrenceIndex }) =>
     activity.completedDates.includes(getRoutineOccurrenceKey(selectedKey, occurrenceIndex)),
   ).length;
+  const completedCountRef = useRef(completedCount);
+  useEffect(() => {
+    completedCountRef.current = completedCount;
+  }, [completedCount, selectedKey]);
+  const handleComplete = useCallback(
+    (activityId: string, occurrenceIndex: number, itemId: string) => {
+      if (isFutureDate) return;
+      const previousCount = completedCountRef.current;
+      const nextCount = previousCount + 1;
+      completedCountRef.current = nextCount;
+      completeActivity(activityId, selectedKey, occurrenceIndex);
+      setCompletionTokens((current) => ({
+        ...current,
+        [itemId]: (current[itemId] ?? 0) + 1,
+      }));
+      announceCompletion(previousCount, nextCount);
+    },
+    [announceCompletion, completeActivity, isFutureDate, selectedKey],
+  );
   const visibleActivities = showAll
     ? scheduledForDate
     : historyForDate.filter(({ activity, occurrenceIndex }) =>
@@ -394,6 +425,7 @@ function RutinaCalendarioScreenContent() {
                 dateKey={selectedKey}
                 occurrenceIndex={occurrenceIndex}
                 completionToken={completionTokens[itemId] ?? 0}
+                onComplete={() => handleComplete(activity.id, occurrenceIndex, itemId)}
               />
             ))}
           </View>
