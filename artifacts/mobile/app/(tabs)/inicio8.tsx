@@ -2763,6 +2763,9 @@ export default function HomeScreen2({
             }}
           />
         )}
+        {variant === "inicio3" && (
+          <View style={styles.inicio3StandaloneDivider} />
+        )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
             <SessionCarousel
@@ -2788,12 +2791,15 @@ export default function HomeScreen2({
           </View>
         )}
         {isInicio2 && (
-          <View style={variant === "inicio3" ? { paddingTop: INICIO2_SECTION_GAP } : undefined}>
+          <View>
             <DailyWisdomCard
               backgroundColor="rgba(0,0,0,0.25)"
               decorativeGradient={variant === "inicio3"}
             />
           </View>
+        )}
+        {variant === "inicio3" && (
+          <View style={styles.inicio3SectionDivider} />
         )}
         {variant === "inicio3" && featuredMoment && (
           <Pressable
@@ -2823,6 +2829,9 @@ export default function HomeScreen2({
             </View>
             <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
           </Pressable>
+        )}
+        {variant === "inicio3" && featuredMoment && (
+          <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
@@ -3877,6 +3886,13 @@ const styles = StyleSheet.create({
     marginBottom: 26,
     backgroundColor: "rgba(249,249,249,0.18)",
   },
+  inicio3StandaloneDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: GRID_PAD,
+    marginTop: 26,
+    marginBottom: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
   sectionRow: {
     flexDirection: "row",
     alignItems: "baseline",
@@ -4004,7 +4020,7 @@ const styles = StyleSheet.create({
   },
   inicio3ResonadoresBanner: {
     minHeight: 110,
-    marginTop: -27,
+    marginTop: 0,
     marginBottom: INICIO2_SECTION_GAP,
     marginHorizontal: GRID_PAD,
     paddingHorizontal: 16,
