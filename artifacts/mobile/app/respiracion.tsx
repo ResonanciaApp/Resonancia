@@ -16,7 +16,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ND = Platform.OS !== "web";
 const CIRCLE_SIZE = 210;
@@ -80,7 +79,6 @@ function getPhaseStartScale(pattern: PatternConfig, idx: number): number {
 
 export default function RespiracionScreen() {
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { pattern } = useLocalSearchParams<{ pattern?: string }>();
 
@@ -246,30 +244,33 @@ export default function RespiracionScreen() {
           <View style={[styles.ghostRing, { borderColor: "rgba(249,249,249,0.20)" }]} />
           <Animated.View
             style={[
-              styles.circle,
-              { borderColor: "rgba(249,249,249,0.72)", transform: [{ scale }] },
+              styles.circleGlowWrap,
+              { transform: [{ scale }] },
             ]}
           >
-            <LinearGradient
-              colors={[
-                theme.gradient[0],
-                theme.gradient[theme.gradient.length - 1],
-              ] as [string, string]}
-              style={StyleSheet.absoluteFill}
-            />
-
-            {running && !completed && (
-              <View style={styles.circleContent} pointerEvents="none">
-                <Text style={styles.phaseLabel}>{safePhase.label}</Text>
-                <Text style={styles.countdownNum}>{countdown}</Text>
-              </View>
-            )}
-            {!running && !completed && (
-              <Feather name="wind" size={34} color="#F9F9F9" />
-            )}
-            {completed && (
-              <Text style={styles.completedIcon}>✓</Text>
-            )}
+            <View pointerEvents="none" style={styles.circleGlowHalo} />
+            <View
+              style={[
+                styles.circle,
+                {
+                  borderColor: "rgba(249,249,249,0.72)",
+                  backgroundColor: "rgba(0,0,0,0.28)",
+                },
+              ]}
+            >
+              {running && !completed && (
+                <View style={styles.circleContent} pointerEvents="none">
+                  <Text style={styles.phaseLabel}>{safePhase.label}</Text>
+                  <Text style={styles.countdownNum}>{countdown}</Text>
+                </View>
+              )}
+              {!running && !completed && (
+                <Feather name="wind" size={34} color="#F9F9F9" />
+              )}
+              {completed && (
+                <Text style={styles.completedIcon}>✓</Text>
+              )}
+            </View>
           </Animated.View>
         </View>
 
@@ -411,6 +412,26 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+  },
+  circleGlowWrap: {
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#0B4B3D",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 24,
+    elevation: 14,
+  },
+  circleGlowHalo: {
+    position: "absolute",
+    top: -13,
+    right: -13,
+    bottom: -13,
+    left: -13,
+    borderRadius: (CIRCLE_SIZE + 26) / 2,
+    backgroundColor: "rgba(11,75,61,0.22)",
   },
   circleContent: { alignItems: "center" },
   phaseLabel: {
