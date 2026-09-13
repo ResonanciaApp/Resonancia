@@ -345,13 +345,7 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const { currentStreak, weekFlags, todayIndex } = useStreak();
-  const resourceBlockBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.057)"
-      : activeSceneId === "indigo2"
-        ? "rgba(0,0,0,0.28)"
-        : "rgba(181,211,255,0.057)";
+  const resourceBlockBackground = "rgba(0,0,0,0.28)";
   const profileSectionBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
@@ -2109,7 +2103,11 @@ const styles = StyleSheet.create({
   comingSoonText: { fontFamily: "Manrope", fontSize: 15, color: "rgba(244,218,213,0.45)", fontWeight: "600" },
 
   // Registros
-  registrosCard: { borderRadius: 16, overflow: "hidden" },
+  registrosCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
   registrosRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -2315,7 +2313,7 @@ const styles = StyleSheet.create({
   followCountDivider: { width: 1, height: 28 },
 
   // Plan card
-  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
+  planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10, backgroundColor: "rgba(0,0,0,0.28)" },
   planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   planTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 2 },
   planSub: { fontFamily: "Manrope", fontSize: 12 },
@@ -2404,6 +2402,7 @@ const styles = StyleSheet.create({
   profileNotificationsCard: {
     minHeight: 66,
     borderRadius: 17,
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingHorizontal: 15,
     paddingVertical: 12,
     flexDirection: "row",
@@ -2434,6 +2433,7 @@ const styles = StyleSheet.create({
   // Estadísticas personales
   personalStatsSection: {
     borderRadius: 17,
+    backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
     marginBottom: 19,
   },
@@ -2531,6 +2531,7 @@ const styles = StyleSheet.create({
   // Membresía
   membershipRow: {
     borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     padding: 16,
     flexDirection: "row",
@@ -2548,6 +2549,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.28)",
     padding: 10,
     gap: 12,
     marginBottom: 10,
@@ -2561,6 +2563,7 @@ const styles = StyleSheet.create({
   menuCard: {
     borderRadius: 18,
     overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   streakStatsDivider: {
     height: 1,
@@ -2615,6 +2618,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingHorizontal: 8,
     borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,

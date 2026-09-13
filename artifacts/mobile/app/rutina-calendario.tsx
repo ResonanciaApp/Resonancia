@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -27,7 +26,6 @@ import {
 } from "@/context/RutinaContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useRoutineTheme } from "@/hooks/useRoutineTheme";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   RoutineCompletionBannerProvider,
   useRoutineCompletionBanner,
@@ -43,15 +41,6 @@ import Reanimated, {
 } from "react-native-reanimated";
 
 const DAY_LABELS = ["lu", "ma", "mi", "ju", "vi", "sá", "do"] as const;
-
-function brightenHex(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
-}
 
 function addDays(date: Date, amount: number): Date {
   const next = new Date(date);
@@ -230,16 +219,7 @@ function CalendarActivityRow({
 function RutinaCalendarioScreenContent() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
-  const { theme } = useSceneTheme();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
-  const streakGradient = useMemo(
-    () =>
-      [
-        brightenHex(theme.gradient[0], 15),
-        brightenHex(theme.gradient[1] ?? theme.gradient[0], 15),
-      ] as const,
-    [theme.gradient],
-  );
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
@@ -393,51 +373,36 @@ function RutinaCalendarioScreenContent() {
                 >
                   {DAY_LABELS[index]}
                 </Text>
-                {selected ? (
-                  <LinearGradient
-                    colors={streakGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={styles.dayCircle}
-                  >
-                    <Text style={[styles.dayNumber, { color: "#F9F9F9" }]}>
-                      {date.getDate()}
-                    </Text>
-                  </LinearGradient>
-                ) : hasCompletion ? (
-                  <LinearGradient
-                    colors={streakGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    style={styles.dayCircleGradientBorder}
-                  >
-                    <View
-                      style={[
-                        styles.dayCircleInner,
-                        { backgroundColor: routineTheme.background },
-                      ]}
-                    >
-                      <Text style={[styles.dayNumber, { color: routineTheme.text }]}>
-                        {date.getDate()}
-                      </Text>
-                    </View>
-                  </LinearGradient>
-                ) : (
-                  <View
+                <View
+                  style={[
+                    styles.dayCircle,
+                    {
+                      backgroundColor: selected
+                        ? "#F9F9F9"
+                        : "rgba(255,255,255,0.1)",
+                      borderColor:
+                        isToday && !selected
+                          ? "#FFFFFF"
+                          : selected
+                            ? "#F9F9F9"
+                            : routineTheme.divider,
+                      borderWidth: isToday && !selected ? 1 : StyleSheet.hairlineWidth,
+                    },
+                  ]}
+                >
+                  <Text
                     style={[
-                      styles.dayCircle,
+                      styles.dayNumber,
                       {
-                        backgroundColor: "rgba(255,255,255,0.1)",
-                        borderColor: isToday ? "#FFFFFF" : routineTheme.divider,
-                        borderWidth: isToday ? 1 : StyleSheet.hairlineWidth,
+                        color: selected
+                          ? "#060A0F"
+                          : routineTheme.text,
                       },
                     ]}
                   >
-                    <Text style={[styles.dayNumber, { color: routineTheme.text }]}>
-                      {date.getDate()}
-                    </Text>
-                  </View>
-                )}
+                    {date.getDate()}
+                  </Text>
+                </View>
               </Pressable>
             );
           })}
@@ -570,18 +535,6 @@ const styles = StyleSheet.create({
     height: 37,
     borderRadius: 18.5,
     borderWidth: StyleSheet.hairlineWidth,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayCircleGradientBorder: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-    padding: 2,
-  },
-  dayCircleInner: {
-    flex: 1,
-    borderRadius: 16.5,
     alignItems: "center",
     justifyContent: "center",
   },
