@@ -366,9 +366,12 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
       >
-        <LinearGradient
-          colors={theme.gradient as unknown as [string, string, ...string[]]}
-          style={StyleSheet.absoluteFill}
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: theme.gradient[0] as string },
+          ]}
         />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />

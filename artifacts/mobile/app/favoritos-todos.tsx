@@ -290,15 +290,14 @@ export default function FavoritosTodosScreen() {
         >
           <Animated.View
             pointerEvents="none"
-            style={[StyleSheet.absoluteFill, { opacity: titleProgress }]}
-          >
-            <LinearGradient
-              colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: sceneTheme.gradient[0] as string,
+                opacity: titleProgress,
+              },
+            ]}
+          />
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}

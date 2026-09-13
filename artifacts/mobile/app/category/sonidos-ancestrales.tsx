@@ -669,7 +669,13 @@ export default function SonidosAncestalesScreen() {
 
       {/* ── Sticky header ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: theme.gradient[0] as string },
+          ]}
+        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
