@@ -41,7 +41,7 @@ import {
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
-const CARD_W = (W - H_PAD * 2 - 14) / 2;
+const CAROUSEL_CARD_W = Math.round((W - H_PAD - 14) / 1.9);
 function FavPill({
   sel, label, indigo2BackgroundColor, onPress,
 }: {
@@ -108,8 +108,10 @@ function FavoriteSessionsCarousel({
         showDurationClock
         sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
         trailingPeek={20}
+        cardWidth={CAROUSEL_CARD_W}
+        allowOversizedCardWidth
         cardBorderRadius={16}
-        titleSize={19}
+        titleSize={17}
         hideCategoryAboveTitle
         showSleepCategoryPillWithInlineDuration
         ambientalTitleOnly
@@ -126,6 +128,9 @@ function FavoriteSessionsCarousel({
       onPress={onPress}
       presentation="editorial"
       trailingPeek={16}
+      cardWidth={CAROUSEL_CARD_W}
+      allowOversizedCardWidth
+      titleSize={17}
       ambientalTitleOnly
       ambientalImageLift={9}
       ambientalImageFillTop
@@ -159,7 +164,7 @@ function FavoriteVideosCarousel({
           <VideoCard
             key={video.id}
             video={video}
-            width={CARD_W}
+            width={CAROUSEL_CARD_W}
             onOptionsPress={() => onOptionsPress(video)}
           />
         ))}
@@ -617,7 +622,7 @@ const styles = StyleSheet.create({
   carouselTitle: {
     color: "#FBFBFB",
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
     marginHorizontal: H_PAD,

@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   },
   decreeText: {
     fontFamily: "Manrope",
-    color: "#F4F4F4",
+    color: "#C2C2C2",
     fontSize: 12,
     lineHeight: 18,
     fontWeight: "600",
@@ -742,7 +742,7 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     fontFamily: "Manrope",
-    color: "#F4F4F4",
+    color: "#C2C2C2",
     fontSize: 12,
     lineHeight: 18,
     fontWeight: "600",

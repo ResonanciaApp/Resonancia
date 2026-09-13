@@ -46,7 +46,7 @@ import Svg, {
 } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GreetingHeader } from "@/components/GreetingHeader";
+import { getGreeting, GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
@@ -1306,6 +1306,7 @@ function Inicio2HeroStatic({
     || "Explorador";
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
+  const greeting = getGreeting();
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175;
@@ -1401,9 +1402,9 @@ function Inicio2HeroStatic({
               <Text style={styles.inicio2HeroGreetingLabel}>Buenas tardes</Text>
             )}
             <Text style={styles.inicio2HeroGreetingName}>{displayName}</Text>
-            {isInicio3 && decree ? (
+            {isInicio3 ? (
               <Text style={styles.inicio3HeroDecree} numberOfLines={2}>
-                {decree}
+                {decree || greeting}
               </Text>
             ) : null}
           </Pressable>
@@ -3236,7 +3237,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroDecree: {
-    color: "#F4F4F4",
+    color: "#C2C2C2",
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,
