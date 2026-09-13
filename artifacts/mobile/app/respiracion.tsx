@@ -15,7 +15,6 @@ import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
@@ -182,7 +181,13 @@ export default function RespiracionScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar hidden />
-      <SacredBackground variant="gradient" />
+      <LinearGradient
+        colors={["#3B6D3C", "#285E3E", "#0B4B3D"]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
 
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <BackPill
