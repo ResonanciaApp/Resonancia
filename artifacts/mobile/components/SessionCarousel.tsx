@@ -40,17 +40,6 @@ const CANONICAL_AMBIENTAL_TITLE_STYLE: TextStyle = {
   textAlignVertical: "top",
 };
 
-function brightenAmbientalColor(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) =>
-    Number.parseInt(value.slice(offset, offset + 2), 16),
-  );
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
-}
-
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -268,8 +257,6 @@ type SessionCarouselProps = {
     colors: [string, string, ...string[]];
     locations?: readonly [number, number, ...number[]];
   };
-  /** Brightness added to the canonical Ambiental gradient. Defaults to 5%. */
-  ambientalGradientBrightness?: number;
   /** Optional border override for Ambiental cards on a specific screen/theme. */
   ambientalCardBorderColor?: string;
   ambientalCardBorderWidth?: number;
@@ -376,7 +363,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardGradient,
-  ambientalGradientBrightness = 5,
   ambientalCardBorderColor,
   ambientalCardBorderWidth,
   ambientalCardBorderRadius,
@@ -410,29 +396,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
 }: SessionCarouselProps) {
   const colors = useColors();
   const { theme } = useSceneTheme();
-  const canonicalAmbientalGradient = React.useMemo(() => {
-    const bottomStops =
-      theme.gradient.length > 2 ? theme.gradient.slice(-2) : theme.gradient;
-    const bottomLocations =
-      theme.gradient.length > 2 && theme.gradientLocations
-        ? theme.gradientLocations.slice(-2)
-        : theme.gradientLocations;
-    const firstLocation = bottomLocations?.[0] ?? 0;
-    const lastLocation =
-      bottomLocations?.[bottomLocations.length - 1] ?? 1;
-    const locationSpan = lastLocation - firstLocation || 1;
-
-    return {
-      colors: bottomStops.map((color) =>
-        brightenAmbientalColor(color, ambientalGradientBrightness),
-      ) as unknown as [string, string, ...string[]],
-      locations: bottomLocations?.map(
-        (location) => (location - firstLocation) / locationSpan,
-      ) as unknown as [number, number, ...number[]] | undefined,
-    };
-  }, [ambientalGradientBrightness, theme.gradient, theme.gradientLocations]);
-  const effectiveAmbientalCardGradient =
-    ambientalCardGradient ?? canonicalAmbientalGradient;
+  const effectiveAmbientalCardGradient = ambientalCardGradient;
   const { openForSession } = useAmbientalDuration();
   const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
