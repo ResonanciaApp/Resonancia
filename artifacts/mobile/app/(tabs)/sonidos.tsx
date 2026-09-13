@@ -431,6 +431,7 @@ export default function SonidosScreen() {
                     index === 0 ? styles.firstCarousel : styles.carouselAfterDivider,
                   ]}
                  presentation="editorial"
+                  cardVariant="ambiental"
                  ambientalTitleOnly
                  cardWidth={AMBIENTAL_CAROUSEL_CARD_W}
                  allowOversizedCardWidth

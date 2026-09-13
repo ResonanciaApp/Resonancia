@@ -136,6 +136,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           gridLayout
           gridBottomPadding={60 + bottomPad}
           presentation="editorial"
+          cardVariant="ambiental"
           ambientalTitleOnly
           soundPreview={{
             activeId: soundPreview.activeId,
