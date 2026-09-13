@@ -668,24 +668,6 @@ export function ExploreScreen({
 
           <View style={styles.sectionDivider} />
 
-          <SessionCarousel
-            title="Populares"
-            sessions={popularSessions}
-            isPremium={isPremium}
-            onPress={handleSessionPress}
-            style={styles.popularSection}
-            trailingPeek={20}
-            cardWidth={POPULAR_CARD_WIDTH}
-            allowOversizedCardWidth
-            squareTitleAuthorBelow
-            sleepBelowMetadataStyle={{ marginTop: 5 }}
-            categoryGridPresentation
-            whiteMetadataGlass
-            showDurationClock
-            durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-            titleSize={17}
-          />
-
           <Pressable
             onPress={openMixer}
             accessibilityRole="button"
@@ -1093,7 +1075,7 @@ const styles = StyleSheet.create({
   },
   sleepMixerBanner: {
     minHeight: 80,
-    marginTop: -27,
+    marginTop: 0,
     marginBottom: 53,
     marginHorizontal: H_PAD,
     paddingHorizontal: 16,
