@@ -360,39 +360,45 @@ export default function FavoritosTodosScreen() {
               </View>
             ) : (
               <View style={styles.allCollections}>
-                {visibleContentTabs.map((tab) => {
+                {visibleContentTabs.map((tab, index) => {
                   if (tab.id === "videos") {
                     return (
-                      <FavoriteVideosCarousel
-                        key={tab.id}
-                        title={tab.label}
-                        videos={favVideos}
-                        onOptionsPress={setActionsVideo}
-                      />
+                      <React.Fragment key={tab.id}>
+                        {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                        <FavoriteVideosCarousel
+                          title={tab.label}
+                          videos={favVideos}
+                          onOptionsPress={setActionsVideo}
+                        />
+                      </React.Fragment>
                     );
                   }
                   if (tab.id === "playlists") {
                     return (
-                      <EditorialPlaylistCarousel
-                        key={tab.id}
-                        title={tab.label}
-                        playlists={favoritePlaylists}
-                        onPress={openEditorialPlaylist}
-                      />
+                      <React.Fragment key={tab.id}>
+                        {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                        <EditorialPlaylistCarousel
+                          title={tab.label}
+                          playlists={favoritePlaylists}
+                          onPress={openEditorialPlaylist}
+                        />
+                      </React.Fragment>
                     );
                   }
                   const sessions = favSessions.filter(
                     (session) => session.categoryId === tab.categoryId,
                   );
                   return (
-                    <FavoriteSessionsCarousel
-                      key={tab.id}
-                      title={tab.label}
-                      tabId={tab.id}
-                      sessions={sessions}
-                      isPremium={isPremium}
-                      onPress={openSession}
-                    />
+                    <React.Fragment key={tab.id}>
+                      {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                      <FavoriteSessionsCarousel
+                        title={tab.label}
+                        tabId={tab.id}
+                        sessions={sessions}
+                        isPremium={isPremium}
+                        onPress={openSession}
+                      />
+                    </React.Fragment>
                   );
                 })}
               </View>
@@ -580,14 +586,14 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(181,211,255,0.1)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   pillTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
   pillSel: { backgroundColor: "#FFFFFF", borderWidth: 0 },
   pillIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   pillIndigo2Inactive: {
     backgroundColor: "rgba(0,0,0,0.2)",
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   pillText: {
     fontFamily: "Manrope",
@@ -615,6 +621,13 @@ const styles = StyleSheet.create({
   },
   allCollections: {
     paddingTop: 23,
+  },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: -27,
+    marginBottom: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   videoCarouselSection: {
     marginBottom: 53,
