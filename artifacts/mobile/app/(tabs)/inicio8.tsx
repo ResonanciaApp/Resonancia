@@ -7,6 +7,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -53,6 +54,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import {
@@ -325,7 +327,8 @@ function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boo
     <View
       style={[
         styles.inicio2HeroLotusContent,
-        { backgroundColor: lightBackground ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.28)" },
+        { backgroundColor: "rgba(0,0,0,0.28)" },
+        lightBackground && styles.inicio3HeroLotusSurface,
       ]}
     >
       <Text
@@ -1263,6 +1266,7 @@ function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  onOpenSearch,
   isInicio3,
 }: {
   topInset: number;
@@ -1270,6 +1274,7 @@ function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  onOpenSearch: () => void;
   isInicio3?: boolean;
 }) {
   const { user: clerkUser } = useUser();
@@ -1387,37 +1392,52 @@ function Inicio2HeroStatic({
           </Pressable>
         </View>
 
-        <Pressable
-          onPress={onOpenProfile}
-          onPressIn={() =>
-            Animated.spring(giftScale, {
-              toValue: 0.84,
-              speed: 30,
-              bounciness: 0,
-              useNativeDriver: ND,
-            }).start()
-          }
-          onPressOut={() =>
-            Animated.spring(giftScale, {
-              toValue: 1,
-              speed: 8,
-              bounciness: 16,
-              useNativeDriver: ND,
-            }).start()
-          }
-          hitSlop={12}
-          style={[
-            styles.inicio2HeroLotusButton,
-            isInicio3 && { transform: [{ translateX: 2 }] },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel="Abrir Tu progreso"
-          testID="inicio2-open-progress-control"
-        >
-          <Animated.View style={{ transform: [{ scale: giftScale }] }}>
-            <Inicio2LotusStreak lightBackground={isInicio3} />
-          </Animated.View>
-        </Pressable>
+        <View style={styles.inicio3HeroRightActions}>
+          {isInicio3 && (
+            <Pressable
+              onPress={onOpenSearch}
+              hitSlop={10}
+              style={styles.inicio3HeroSearchButton}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Inicio"
+              testID="inicio3-search-button"
+            >
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
+              ) : (
+                <Feather name="search" size={24} color="#FFFFFF" />
+              )}
+            </Pressable>
+          )}
+          <Pressable
+            onPress={onOpenProfile}
+            onPressIn={() =>
+              Animated.spring(giftScale, {
+                toValue: 0.84,
+                speed: 30,
+                bounciness: 0,
+                useNativeDriver: ND,
+              }).start()
+            }
+            onPressOut={() =>
+              Animated.spring(giftScale, {
+                toValue: 1,
+                speed: 8,
+                bounciness: 16,
+                useNativeDriver: ND,
+              }).start()
+            }
+            hitSlop={12}
+            style={styles.inicio2HeroLotusButton}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir Tu progreso"
+            testID="inicio2-open-progress-control"
+          >
+            <Animated.View style={{ transform: [{ scale: giftScale }] }}>
+              <Inicio2LotusStreak lightBackground={isInicio3} />
+            </Animated.View>
+          </Pressable>
+        </View>
       </View>
 
       {isInicio3 && (
@@ -2144,6 +2164,23 @@ export default function HomeScreen2({
         (s.subtitle ?? "").toLowerCase().includes(searchTerm)
     ).slice(0, 20);
   }, [searchTerm]);
+  const homeSearchItems = useMemo(
+    () =>
+      SESSIONS.map((session) => ({
+        id: session.id,
+        title: session.title,
+        meta: session.categoryLabel,
+        subtitle: session.subtitle ?? undefined,
+        searchText: [
+          session.title,
+          session.categoryLabel,
+          session.subtitle ?? "",
+        ].join(" "),
+        image: session.image,
+        duration: session.duration,
+      })),
+    [catalogVersion],
+  );
 
   const handleSelectSearchResult = useCallback(
     (s: Session) => {
@@ -2326,6 +2363,7 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={() => router.push("/progreso" as never)}
+              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
             />
           </>
@@ -2908,6 +2946,21 @@ export default function HomeScreen2({
         onClose={() => setActionsSession(null)}
       />
 
+      <ContextSearchModal
+        visible={searchOpen}
+        onClose={closeSearch}
+        items={homeSearchItems}
+        placeholder="Buscar en Inicio..."
+        emptyTitle="Encuentra lo que necesitas"
+        emptySubtitle="Busca sesiones, sonidos y prácticas"
+        onSelect={(item) => {
+          const session = SESSIONS.find((candidate) => candidate.id === item.id);
+          if (!session) return false;
+          handleSelectSearchResult(session);
+          return true;
+        }}
+      />
+
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
       {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
@@ -3103,6 +3156,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
+  },
+  inicio3HeroLotusSurface: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+  },
+  inicio3HeroRightActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  inicio3HeroSearchButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
