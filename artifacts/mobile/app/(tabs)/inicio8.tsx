@@ -87,6 +87,10 @@ import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
+import {
+  getDrawerDecreeStorageKey,
+  subscribeToDrawerDecree,
+} from "@/lib/drawer-decree";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
@@ -296,7 +300,6 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const ND = Platform.OS !== "web";
-const DRAWER_DECREE_STORAGE_PREFIX = "@resonance/drawer-decree";
 
 function BlinkingCursor({ color }: { color: string }) {
   const opacity = useRef(new Animated.Value(1)).current;
@@ -1274,14 +1277,15 @@ function Inicio2HeroStatic({
   isInicio3?: boolean;
 }) {
   const { user: clerkUser } = useUser();
-  const { isOpen: drawerOpen } = useDrawer();
   const { username, photoUri } = useUserProfile();
   const { weekFlags, todayIndex } = useStreak();
   const [decree, setDecree] = useState("");
-  const decreeStorageKey = `${DRAWER_DECREE_STORAGE_PREFIX}:${clerkUser?.id ?? "local"}`;
+  const decreeStorageKey = getDrawerDecreeStorageKey(clerkUser?.id);
   useEffect(() => {
-    if (drawerOpen) return;
     let active = true;
+    const unsubscribe = subscribeToDrawerDecree(decreeStorageKey, (nextDecree) => {
+      if (active) setDecree(nextDecree);
+    });
     AsyncStorage.getItem(decreeStorageKey)
       .then((storedDecree) => {
         if (active) setDecree(storedDecree ?? "");
@@ -1291,8 +1295,9 @@ function Inicio2HeroStatic({
       });
     return () => {
       active = false;
+      unsubscribe();
     };
-  }, [decreeStorageKey, drawerOpen]);
+  }, [decreeStorageKey]);
   const displayName =
     username
     || clerkUser?.firstName
@@ -3231,7 +3236,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   inicio3HeroDecree: {
-    color: "#BE9650",
+    color: "#F4F4F4",
     fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,

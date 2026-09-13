@@ -38,9 +38,12 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import type { GeometrixCreation } from "@/data/geometrix-creations";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
+import {
+  getDrawerDecreeStorageKey,
+  publishDrawerDecree,
+} from "@/lib/drawer-decree";
 
 const ND = Platform.OS !== "web";
-const DECREE_STORAGE_PREFIX = "@resonance/drawer-decree";
 
 type MenuItem = {
   id?: string;
@@ -130,7 +133,7 @@ export function DrawerMenu() {
   const [decreeDraft, setDecreeDraft] = React.useState("");
   const [isEditingDecree, setIsEditingDecree] = React.useState(false);
   const decreeCursorOpacity = React.useRef(new Animated.Value(1)).current;
-  const decreeStorageKey = `${DECREE_STORAGE_PREFIX}:${clerkUser?.id ?? "local"}`;
+  const decreeStorageKey = getDrawerDecreeStorageKey(clerkUser?.id);
 
   useEffect(() => {
     let active = true;
@@ -185,6 +188,7 @@ export function DrawerMenu() {
     setDecree(nextDecree);
     setDecreeDraft(nextDecree);
     setIsEditingDecree(false);
+    publishDrawerDecree(decreeStorageKey, nextDecree);
     if (nextDecree) {
       void AsyncStorage.setItem(decreeStorageKey, nextDecree);
     } else {
@@ -726,7 +730,7 @@ const styles = StyleSheet.create({
   },
   decreeText: {
     fontFamily: "Manrope",
-    color: "#BE9650",
+    color: "#F4F4F4",
     fontSize: 12,
     lineHeight: 18,
     fontWeight: "600",
@@ -738,7 +742,7 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     fontFamily: "Manrope",
-    color: "#BE9650",
+    color: "#F4F4F4",
     fontSize: 12,
     lineHeight: 18,
     fontWeight: "600",
