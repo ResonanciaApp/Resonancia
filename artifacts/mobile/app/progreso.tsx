@@ -1,7 +1,7 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React from "react";
 import {
   Platform,
   Pressable,
@@ -13,51 +13,20 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { HistorialCalendar } from "@/components/HistorialCalendar";
-import { SonicStreakDays } from "@/components/SonicStreakWave";
-import { usePlayer } from "@/context/PlayerContext";
+import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { useStreak } from "@/hooks/useStreak";
 import { useColors } from "@/hooks/useColors";
-import { computeActiveDays } from "@/utils/stats";
+import { useStreak } from "@/hooks/useStreak";
 
 export default function ProgresoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
-  const { currentStreak, maxStreak, weekFlags, todayIndex } = useStreak();
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
+  const { weekFlags } = useStreak();
+  const completedWeekDays = weekFlags.filter(Boolean).length;
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const sectionBackground = "rgba(0,0,0,0.28)";
-  const progressAccent = theme.accent ?? colors.accent;
-
-  const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    let totalMinutes = 0;
-    const rangeEvents = [];
-
-    for (const event of statEvents) {
-      const playedAt = new Date(event.playedAt).getTime();
-      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
-      rangeEvents.push(event);
-      totalMinutes += event.minutes;
-    }
-
-    return {
-      totalMinutes: Math.round(totalMinutes),
-      activeDays: computeActiveDays(rangeEvents),
-    };
-  }, [statEvents, statsRangeDays, todayKey]);
 
   return (
     <LinearGradient
@@ -88,128 +57,39 @@ export default function ProgresoScreen() {
           { paddingBottom: bottomPad + 32 },
         ]}
       >
-        <View
-          style={[
-            styles.streakSection,
-            { backgroundColor: sectionBackground },
-          ]}
-        >
-          <SonicStreakDays
-            activeFlags={weekFlags}
-            todayIndex={todayIndex}
-            edgeAligned
-            daysMarginTop={0}
-            activeBorderColor="#BE9650"
-          />
-          <View style={styles.streakStatsDivider} />
-          <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
-            <View style={styles.personalStatItem}>
-              <View style={styles.personalStatIcon}>
-                <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
-              </View>
-              <View style={styles.personalStatCopy}>
-                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {currentStreak}
-                </Text>
-                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                  RACHA ACTUAL
-                </Text>
-              </View>
-            </View>
-            <View style={styles.personalStatDivider} />
-            <View style={styles.personalStatItem}>
-              <View style={styles.personalStatIcon}>
-                <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
-              </View>
-              <View style={styles.personalStatCopy}>
-                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {maxStreak}
-                </Text>
-                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                  RACHA MÁS LARGA
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <View
-          style={[
-            styles.personalStatsSection,
-            { backgroundColor: sectionBackground },
-          ]}
-        >
-          <View style={styles.personalStatsHeader}>
-            <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-              Estadísticas personales
-            </Text>
-            <Pressable
-              onPress={() => setStatsFilterOpen((open) => !open)}
-              style={styles.statsFilterTrigger}
-              accessibilityRole="button"
-              accessibilityLabel="Elegir filtro de días"
-              accessibilityState={{ expanded: statsFilterOpen }}
-            >
-              <Text style={[styles.statsFilterText, { color: progressAccent }]}>
-                Últimos {statsRangeDays} días
-              </Text>
-              <Feather name="chevron-down" size={17} color={progressAccent} />
-            </Pressable>
-            {statsFilterOpen && (
-              <View style={[styles.statsFilterMenu, { backgroundColor: theme.gradient[0] }]}>
-                {([7, 30, 90] as const).map((days) => (
-                  <Pressable
-                    key={days}
-                    onPress={() => {
-                      setStatsRangeDays(days);
-                      setStatsFilterOpen(false);
-                    }}
-                    style={[
-                      styles.statsFilterOption,
-                      statsRangeDays === days && styles.statsFilterOptionSelected,
-                    ]}
-                  >
-                    <Text style={[styles.statsFilterText, { color: progressAccent }]}>
-                      Últimos {days} días
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+        <View style={styles.streakIntro}>
+          <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+            {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
+          </Text>
+          <Text style={styles.streakIntroDescription}>
+            Medita al menos 3 días a la semana y transforma tu vida
+          </Text>
+          <View
+            style={styles.streakProgressBars}
+            accessibilityRole="progressbar"
+            accessibilityLabel={`${completedWeekDays} de 3 días de práctica semanal`}
+            accessibilityValue={{
+              min: 0,
+              max: 3,
+              now: Math.min(completedWeekDays, 3),
+            }}
+          >
+            {[0, 1, 2].map((index) =>
+              index < completedWeekDays ? (
+                <View
+                  key={index}
+                  style={[
+                    styles.streakProgressBarActive,
+                    { backgroundColor: theme.accent ?? colors.accent },
+                  ]}
+                />
+              ) : (
+                <View key={index} style={styles.streakProgressBarInactive} />
+              ),
             )}
           </View>
-
-          <View style={styles.personalStatsValues}>
-            <View style={styles.personalStatItem}>
-              <View style={styles.personalStatIcon}>
-                <Feather name="clock" size={20} color="#F9F9F9" />
-              </View>
-              <View style={styles.personalStatCopy}>
-                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {personalStats.totalMinutes}
-                </Text>
-                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                  MINUTOS TOTALES
-                </Text>
-              </View>
-            </View>
-            <View style={styles.personalStatDivider} />
-            <View style={styles.personalStatItem}>
-              <View style={styles.personalStatIcon}>
-                <Feather name="calendar" size={20} color="#F9F9F9" />
-              </View>
-              <View style={styles.personalStatCopy}>
-                <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                  {personalStats.activeDays}
-                </Text>
-                <Text style={[styles.personalStatLabel, { color: progressAccent }]}>
-                  DÍAS ACTIVOS
-                </Text>
-              </View>
-            </View>
-          </View>
         </View>
-
-        <HistorialCalendar embedded backgroundColor={sectionBackground} />
+        <ProgressMirrorSections />
       </ScrollView>
     </LinearGradient>
   );
@@ -242,6 +122,39 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     paddingTop: 16,
+  },
+  streakIntro: {
+    marginBottom: 16,
+  },
+  streakIntroCount: {
+    fontFamily: "Manrope",
+    fontSize: 24,
+    lineHeight: 31,
+    fontWeight: "700",
+  },
+  streakIntroDescription: {
+    color: "rgba(249,249,249,0.78)",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 4,
+  },
+  streakProgressBars: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 14,
+  },
+  streakProgressBarActive: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  streakProgressBarInactive: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255,255,255,0.16)",
   },
   streakSection: {
     borderRadius: 18,

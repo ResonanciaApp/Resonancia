@@ -68,10 +68,7 @@ import {
   getLibraryTabSurface,
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
-import { HistorialCalendar } from "@/components/HistorialCalendar";
-import { useStreak } from "@/hooks/useStreak";
-import { useDayRollover } from "@/hooks/useDayRollover";
-import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
+import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import {
   gradientColors,
   type GeoSettings,
@@ -81,17 +78,6 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useDownloads } from "@/context/DownloadContext";
-
-function brightenProfileStreakColor(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) =>
-    Number.parseInt(value.slice(offset, offset + 2), 16),
-  );
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
-}
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -342,7 +328,7 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites, statEvents, history } = usePlayer();
+  const { favorites, history } = usePlayer();
   const { downloads } = useDownloads();
   const {
     username,
@@ -355,10 +341,6 @@ export function ProfileScreenBase({
     setPhotoUri,
   } = useUserProfile();
 
-  const { currentStreak, weekFlags, todayIndex } = useStreak();
-  const todayKey = useDayRollover();
-  const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
-  const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const resourceBlockBackground = "rgba(0,0,0,0.28)";
   const profileSectionBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
@@ -367,35 +349,6 @@ export function ProfileScreenBase({
   const profileDescriptionColor = activeSceneId === "indigo2"
     ? "#F0F0F0"
     : secondaryAccent;
-  const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
-  const streakGradient = useMemo(
-    () =>
-      activeTheme.gradient.map((color) =>
-        brightenProfileStreakColor(color, 20),
-      ) as unknown as [string, string, ...string[]],
-    [activeTheme.gradient],
-  );
-  const personalStats = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    rangeStart.setDate(rangeStart.getDate() - (statsRangeDays - 1));
-    const rangeStartTime = rangeStart.getTime();
-    const now = Date.now();
-    let totalMinutes = 0;
-    const rangeEvents = [];
-
-    for (const event of statEvents) {
-      const playedAt = new Date(event.playedAt).getTime();
-      if (!Number.isFinite(playedAt) || playedAt < rangeStartTime || playedAt > now) continue;
-      rangeEvents.push(event);
-      totalMinutes += event.minutes;
-    }
-
-    return {
-      totalMinutes: Math.round(totalMinutes),
-      activeDays: computeActiveDays(rangeEvents),
-    };
-  }, [statEvents, statsRangeDays, todayKey]);
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
@@ -1303,146 +1256,7 @@ export function ProfileScreenBase({
                   Tu progreso en Resonancia
                 </Text>
               </View>
-              <View style={styles.profileProgressCard}>
-                <View style={styles.profileStreakRow}>
-                  {["L", "M", "X", "J", "V", "S", "D"].map((initial, index) => {
-                    const active = weekFlags[index];
-                    const isToday = todayIndex === index;
-                    return (
-                      <View key={`${initial}-${index}`} style={styles.profileStreakDayWrapper}>
-                        {active ? (
-                          <LinearGradient
-                            colors={streakGradient}
-                            locations={activeTheme.gradientLocations}
-                            style={[styles.profileStreakDay, styles.profileStreakDayActive]}
-                          >
-                            <Feather name="check" size={22} color="#F9F9F9" />
-                          </LinearGradient>
-                        ) : (
-                          <View
-                            style={[
-                              styles.profileStreakDay,
-                              isToday && styles.profileStreakDayActive,
-                            ]}
-                          />
-                        )}
-                        <Text style={styles.profileStreakDayLabel}>{initial}</Text>
-                      </View>
-                    );
-                  })}
-                </View>
-                <View style={styles.streakStatsDivider} />
-                <View style={[styles.personalStatsValues, styles.personalStatsValuesNoTitle]}>
-                  <View style={styles.personalStatItem}>
-                    <View style={styles.personalStatIcon}>
-                      <MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />
-                    </View>
-                    <View style={styles.personalStatCopy}>
-                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                        {currentStreak}
-                      </Text>
-                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                        RACHA ACTUAL
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.personalStatDivider} />
-                  <View style={styles.personalStatItem}>
-                    <View style={styles.personalStatIcon}>
-                      <MaterialCommunityIcons name="spa" size={20} color="#BE9650" />
-                    </View>
-                    <View style={styles.personalStatCopy}>
-                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                        {maxStreak}
-                      </Text>
-                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                        RACHA MÁS LARGA
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.personalStatsSection}>
-                <View style={styles.personalStatsHeader}>
-                  <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-                    Estadísticas personales
-                  </Text>
-                  <Pressable
-                    onPress={() => setStatsFilterOpen((open) => !open)}
-                    style={styles.statsFilterTrigger}
-                    accessibilityRole="button"
-                    accessibilityLabel="Elegir filtro de días"
-                    accessibilityState={{ expanded: statsFilterOpen }}
-                  >
-                    <Text style={[styles.statsFilterText, { color: secondaryAccent }]}>
-                      Últimos {statsRangeDays} días
-                    </Text>
-                    <Feather name="chevron-down" size={17} color={secondaryAccent} />
-                  </Pressable>
-                  {statsFilterOpen && (
-                    <View
-                      style={[
-                        styles.statsFilterMenu,
-                        { backgroundColor: activeTheme.gradient[0] },
-                      ]}
-                    >
-                      {([7, 30, 90] as const).map((days) => (
-                        <Pressable
-                          key={days}
-                          onPress={() => {
-                            setStatsRangeDays(days);
-                            setStatsFilterOpen(false);
-                          }}
-                          style={[
-                            styles.statsFilterOption,
-                            statsRangeDays === days && styles.statsFilterOptionSelected,
-                          ]}
-                        >
-                          <Text style={[styles.statsFilterText, { color: secondaryAccent }]}>
-                            Últimos {days} días
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  )}
-                </View>
-                <View style={styles.personalStatsValues}>
-                  <View style={styles.personalStatItem}>
-                    <View style={styles.personalStatIcon}>
-                      <Feather name="clock" size={20} color="#F9F9F9" />
-                    </View>
-                    <View style={styles.personalStatCopy}>
-                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                        {personalStats.totalMinutes}
-                      </Text>
-                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                        MINUTOS TOTALES
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.personalStatDivider} />
-                  <View style={styles.personalStatItem}>
-                    <View style={styles.personalStatIcon}>
-                      <Feather name="calendar" size={20} color="#F9F9F9" />
-                    </View>
-                    <View style={styles.personalStatCopy}>
-                      <Text style={[styles.personalStatValue, { color: colors.foreground }]}>
-                        {personalStats.activeDays}
-                      </Text>
-                      <Text style={[styles.personalStatLabel, { color: secondaryAccent }]}>
-                        DÍAS ACTIVOS
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              <HistorialCalendar
-                embedded
-                outlined
-                backgroundColor={profileSectionBackground}
-              />
+              <ProgressMirrorSections />
             </View>
 
             <View style={{ marginTop: 12, gap: 12 }}>

@@ -140,3 +140,4 @@
 - [Expo dev bundle con entrada local](expo-local-entry-bundle-url.md) — usar index.js local evita URLs internas de pnpm que el development build de iOS no logra descargar
 - [Memoria de Metro en RESONANCE](metro-memory-limit.md) — web+iOS pueden superar 4 GB durante rebuild limpio; conservar heap de 6 GB en el workflow móvil
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
+- [Progreso espejo Perfil](progress-profile-mirror.md) — racha semanal, estadísticas personales y calendario son un solo bloque compartido; Perfil y Tu progreso nunca deben divergir
