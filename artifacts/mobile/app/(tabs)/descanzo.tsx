@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
+import { MEMBERSHIP_AURORA } from "@/constants/colors";
 import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } from "@/data/sessions";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useCatalog } from "@/context/CatalogContext";
@@ -568,7 +569,12 @@ export default function DescansoScreen() {
                           Mezclador para dormir
                         </Text>
                         <Text style={styles.sleepMixerBannerSubtitle}>
-                          Crea tu propio universo sonoro con más de 400 sonidos para tu relajación. Solo para Premium Plus
+                          Crea tu propio universo sonoro con más de 400 sonidos ambientales{" "}
+                          <MaterialCommunityIcons
+                            name="diamond-stone"
+                            size={14}
+                            color={MEMBERSHIP_AURORA.plus.accent}
+                          />
                         </Text>
                       </View>
                       <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
