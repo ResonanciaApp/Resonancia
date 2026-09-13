@@ -10,14 +10,32 @@ interface BackPillProps {
   size?: number;
   hitSlop?: number;
   bgColor?: string;
+  borderColor?: string;
+  borderWidth?: number;
   /** Desplazamiento horizontal del icono dentro del pill (positivo = derecha). */
   iconOffsetX?: number;
 }
 
-export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 10, bgColor, iconOffsetX }: BackPillProps) {
+export function BackPill({
+  onPress,
+  style,
+  color = "#fff",
+  size = 22,
+  hitSlop = 10,
+  bgColor,
+  borderColor,
+  borderWidth,
+  iconOffsetX,
+}: BackPillProps) {
   return (
     <PressableScale onPress={onPress} containerStyle={style} hitSlop={hitSlop}>
-      <View style={[styles.base, bgColor ? { backgroundColor: bgColor, borderRadius: 19 } : undefined]}>
+      <View
+        style={[
+          styles.base,
+          bgColor ? { backgroundColor: bgColor, borderRadius: 19 } : undefined,
+          borderWidth ? { borderWidth, borderColor } : undefined,
+        ]}
+      >
         <View style={iconOffsetX ? { transform: [{ translateX: iconOffsetX }] } : undefined}>
           <Feather name="chevron-left" size={size} color={color} />
         </View>

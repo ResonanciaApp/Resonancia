@@ -185,7 +185,14 @@ export default function RespiracionScreen() {
       <SacredBackground variant="gradient" />
 
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(190,150,80,0.16)" iconOffsetX={-1} />
+        <BackPill
+          onPress={() => router.back()}
+          size={28}
+          bgColor="rgba(0,0,0,0.28)"
+          borderWidth={1}
+          borderColor="rgba(255,255,255,0.2)"
+          iconOffsetX={-1}
+        />
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Respiración</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -350,7 +357,7 @@ const styles = StyleSheet.create({
 
   scroll: { paddingTop: 10 },
 
-  chipWrap: { marginHorizontal: 0, marginBottom: 4 },
+  chipWrap: { marginHorizontal: 0, marginTop: 30, marginBottom: 4 },
   chipRow: {
     flexGrow: 1,
     justifyContent: "center",

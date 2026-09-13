@@ -300,12 +300,7 @@ export function ExploreScreen({
           ? "rgba(181,211,255,0.14)"
           : "rgba(181,211,255,0.14)";
   const contentCardSurfaceColor = durationSurfaceColor;
-  const otherThemeCardSurfaceColor =
-    activeSceneId === "tibet"
-      ? "rgba(0,0,0,0.07)"
-      : activeSceneId === "indigo2"
-        ? "rgba(0,0,0,0.28)"
-        : "rgba(181,211,255,0.07)";
+  const otherThemeCardSurfaceColor = "rgba(0,0,0,0.28)";
   const editorialDiscoverCarousels = useMemo(
     () => getEditorialPlaylistCarouselsForSurface("discover"),
     [catalogVersion],
@@ -1301,6 +1296,8 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 1.35,
     borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

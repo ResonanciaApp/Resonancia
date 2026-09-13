@@ -50,7 +50,7 @@ function getTabBarBackground(activeSceneId: string) {
 }
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["inicio8", "musica", "biblioteca", "video", "emocion", "herramientas", "explore", "profile"]);
+const HIDDEN_ROUTES = new Set(["musica", "biblioteca", "video", "emocion", "herramientas", "explore", "profile"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -69,7 +69,6 @@ const TAB_CONFIG: Record<
     activeColor?: string;
   }
 > = {
-  inicio8:    { label: "Inicio 1",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   inicio3:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   "explore-copia": { label: "Descubrir", sfIcon: "magnifyingglass", sfIconFill: "magnifyingglass", featherIcon: "search" },
@@ -405,7 +404,6 @@ function TabLayoutInner() {
         tabBar={(props) => <TabBarPropsBridge props={props} onProps={setBarProps} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
-        <Tabs.Screen name="inicio8"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="inicio3"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="category/meditaciones-guiadas" options={{ href: null }} />

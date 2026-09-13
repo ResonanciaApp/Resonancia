@@ -1597,8 +1597,8 @@ export default function HomeScreen2({
   const { open: openDrawer, moodPickerRequest } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const handleOpenDrawer = useCallback(() => {
-    openDrawer({ mode: variant === "inicio3" ? "inicio3" : "default" });
-  }, [variant, openDrawer]);
+    openDrawer();
+  }, [openDrawer]);
   const handledMoodPickerRequest = useRef(moodPickerRequest);
   useEffect(() => {
     if (variant !== "inicio3" || moodPickerRequest === handledMoodPickerRequest.current) return;

@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Animated,
   PanResponder,
@@ -25,17 +25,6 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import { SCENE_THEMES } from "@/config/scene-themes";
-import type { SceneId } from "@/context/AmbientPlayerContext";
-import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
-import { FadeToggleSection } from "@/components/FadeToggleSection";
-import { useSelectedScene } from "@/context/SelectedSceneContext";
-import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
-import { SceneAnimationCtaCard } from "@/components/EscenasSheet";
-import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
-import type { GeometrixCreation } from "@/data/geometrix-creations";
-import type { SceneAnimation } from "@workspace/api-client-react";
-import { useGetSceneAnimations } from "@workspace/api-client-react";
 
 const ND = Platform.OS !== "web";
 
@@ -68,61 +57,16 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
   },
 ];
 
-const MAIN_ITEMS: MenuItem[] = [
-  { label: "Tu Premium",    icon: "star",      route: "/membresia" },
-  { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
-  { label: "Mis favoritos", icon: "heart",     route: "__overlay:/favoritos-todos" },
-  { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
-  { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
-  { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },
-];
-
-// ── Sección Escenas (dentro del drawer) ──────────────────────────────────────
-const DRAWER_CONTENT_W = DRAWER_PUSH - 40; // ancho real del drawer − paddingHorizontal 20 (ScrollView) × 2 lados
-const DRAWER_ANIM_CARD_SIZE = Math.floor((DRAWER_CONTENT_W - 16) / 2);
-const DRAWER_ANIM_CARD_H = Math.round(DRAWER_ANIM_CARD_SIZE * 1.32);
-
-/** Convierte una creación de Geometrix al shape mínimo que necesita SceneAnimationCard. */
-function creationToSceneItem(c: GeometrixCreation): SceneItem {
-  return {
-    name: c.name,
-    isPremium: false,
-    recipe: { active: c.active, master: c.master, settings: c.settings },
-  };
-}
-
-/** Convierte una creación de Geometrix al tipo SceneAnimation para el contexto. */
-function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
-  return {
-    id: parseInt(c.id, 10) || 0,
-    name: c.name,
-    description: null,
-    phrase: null,
-    recipe: { active: c.active, master: c.master, settings: c.settings },
-    isActive: true,
-    isPremium: false,
-    sortOrder: 0,
-    submittedBy: null,
-    createdAt: c.createdAt,
-    updatedAt: c.updatedAt,
-  } as unknown as SceneAnimation;
-}
-
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, mode, requestMoodPicker } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay, overlayParallax, requestMoodPicker } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
-  const { activeSceneId, setActiveSceneWithFade, theme: activeTheme } = useSceneTheme();
-  const { escenasAnimadasEnabled } = useIntencionDiaria();
-  const { setBgScene } = useSelectedScene();
+  const { theme: activeTheme } = useSceneTheme();
   const { openGeometrix } = useGeometrixPanel();
   const { openMixer } = useMixerPanel();
-  const { data: sceneAnimationsData } = useGetSceneAnimations();
-  const geoScenes = sceneAnimationsData?.scenes ?? [];
-  const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -184,9 +128,11 @@ export function DrawerMenu() {
     })
   ).current;
 
-  useEffect(() => {
-    if (visible) reloadCreations();
-  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+  React.useLayoutEffect(() => {
+    if (!visible) return;
+    dragX.stopAnimation();
+    dragX.setValue(0);
+  }, [dragX, visible]);
 
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
@@ -237,9 +183,7 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={styles.drawerInner}
-          colors={mode === "inicio3"
-            ? [...activeTheme.gradient] as [string, string, ...string[]]
-            : ["rgba(5,16,35,0.5)", "rgba(5,16,35,0.5)"]}
+          colors={[...activeTheme.gradient] as [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
@@ -271,18 +215,18 @@ export function DrawerMenu() {
               {displayPhoto ? (
                 <Image
                   source={{ uri: displayPhoto }}
-                  style={[styles.profilePhoto, mode === "inicio3" && styles.inicio3ProfilePhoto]}
+                  style={[styles.profilePhoto, styles.inicio3ProfilePhoto]}
                   contentFit="cover"
                 />
               ) : loggedIn && initial ? (
-                <View style={[styles.profilePhotoFallback, mode === "inicio3" && styles.inicio3ProfilePhoto]}>
+                <View style={[styles.profilePhotoFallback, styles.inicio3ProfilePhoto]}>
                   <Text style={styles.profileInitial}>{initial}</Text>
                 </View>
               ) : (
                 <View style={[
                   styles.profilePhotoFallback,
                   !loggedIn && styles.profilePhotoGuest,
-                  mode === "inicio3" && styles.inicio3ProfilePhoto,
+                  styles.inicio3ProfilePhoto,
                 ]}>
                   <Feather name="user" size={22} color={loggedIn ? "#F9F9F9" : "#c2c2c2"} />
                 </View>
@@ -346,145 +290,33 @@ export function DrawerMenu() {
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
-            {mode === "inicio3" ? (
-              <View style={styles.inicio3Sections}>
-                {INICIO3_SECTIONS.map((section, sectionIndex) => (
-                  <View key={section.title}>
-                    {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
-                    <Text style={styles.inicio3SectionTitle}>{section.title}</Text>
-                    <View style={styles.itemGroup}>
-                      {section.items.map((item) => (
-                        <Pressable
-                          key={item.label}
-                          testID={item.id ? `drawer-item-${item.id}` : undefined}
-                          onPress={() => navigate(item.route)}
-                          style={styles.item}
-                        >
-                          <View style={styles.itemIcon}>
-                            {item.mciIcon ? (
-                              <MaterialCommunityIcons name={item.mciIcon} size={24} color="#F9F9F9" />
-                            ) : (
-                              <Feather name={item.icon} size={21} color="#F9F9F9" />
-                            )}
-                          </View>
-                          <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  </View>
-                ))}
-              </View>
-            ) : (
-              <View style={[styles.itemGroup, { marginTop: 8 }]}>
-                {MAIN_ITEMS.map((item) => (
-                  <Pressable
-                    key={item.label}
-                    onPress={() => navigate(item.route)}
-                    style={styles.item}
-                  >
-                    <View style={styles.itemIcon}>
-                      {item.label === "Tu Premium" ? (
-                        <Image
-                          source={require("../assets/images/estrella-premium.png")}
-                          style={{ width: 17, height: 17 }}
-                          contentFit="contain"
-                        />
-                      ) : (
-                        <Feather name={item.icon} size={17} color="#FFFFFF" />
-                      )}
-                    </View>
-                    <Text
-                      style={[
-                        styles.itemLabel,
-                        item.label === "Tu Premium" && { color: "#BE9650" },
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-
-            {mode !== "inicio3" && (
-              <>
-                <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
-
-                {/* ── Selector de Escena (tema visual) ── */}
-                <View style={styles.sceneSwatch}>
-                  <Text style={styles.sceneSwatchTitle}>Escena</Text>
-                  <View style={styles.sceneSwatchRow}>
-                    {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).filter((t) => t.id !== "profundo").map((t) => {
-                      const isActive = t.id === activeSceneId;
-                      return (
-                        <Pressable
-                          key={t.id}
-                          onPress={() => { setActiveSceneWithFade(t.id as SceneId); }}
-                          style={({ pressed }) => [styles.swatchItem, { opacity: pressed ? 0.7 : 1 }]}
-                        >
-                          <View style={[
-                            styles.swatchCircle,
-                            { backgroundColor: t.solid },
-                            isActive && styles.swatchCircleActive,
-                          ]} />
-                          <Text style={[styles.swatchLabel, isActive && styles.swatchLabelActive]}>
-                            {t.label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
+            <View style={styles.inicio3Sections}>
+              {INICIO3_SECTIONS.map((section, sectionIndex) => (
+                <View key={section.title}>
+                  {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
+                  <Text style={styles.inicio3SectionTitle}>{section.title}</Text>
+                  <View style={styles.itemGroup}>
+                    {section.items.map((item) => (
+                      <Pressable
+                        key={item.label}
+                        testID={item.id ? `drawer-item-${item.id}` : undefined}
+                        onPress={() => navigate(item.route)}
+                        style={styles.item}
+                      >
+                        <View style={styles.itemIcon}>
+                          {item.mciIcon ? (
+                            <MaterialCommunityIcons name={item.mciIcon} size={24} color="#F9F9F9" />
+                          ) : (
+                            <Feather name={item.icon} size={21} color="#F9F9F9" />
+                          )}
+                        </View>
+                        <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
+                      </Pressable>
+                    ))}
                   </View>
                 </View>
-
-                <FadeToggleSection visible={escenasAnimadasEnabled}>
-                <View style={{ marginTop: 18 }}>
-                  <View style={styles.sceneGrid}>
-                    {geoScenes.map((scene) => (
-                      <SceneAnimationCard
-                        key={`admin-${scene.id}`}
-                        scene={scene}
-                        size={DRAWER_ANIM_CARD_SIZE}
-                        height={DRAWER_ANIM_CARD_H}
-                        onPress={() => {
-                          setBgScene(scene);
-                          onClose();
-                        }}
-                      />
-                    ))}
-                    {geometrixCreations.length > 0 && (
-                      <View style={styles.sceneSectionRow}>
-                        <View style={styles.sceneSectionLine} />
-                        <Text style={styles.sceneSectionLabel}>Mis animaciones</Text>
-                        <View style={styles.sceneSectionLine} />
-                      </View>
-                    )}
-                    {geometrixCreations.map((creation) => (
-                      <SceneAnimationCard
-                        key={`user-${creation.id}`}
-                        scene={creationToSceneItem(creation)}
-                        size={DRAWER_ANIM_CARD_SIZE}
-                        height={DRAWER_ANIM_CARD_H}
-                        onPress={() => {
-                          setBgScene(creationToSceneAnimation(creation));
-                          onClose();
-                        }}
-                      />
-                    ))}
-                    {/* CTA: siempre al final */}
-                    <View style={styles.ctaDivider} />
-                    <SceneAnimationCtaCard
-                      size={DRAWER_ANIM_CARD_SIZE}
-                      height={DRAWER_ANIM_CARD_H}
-                      onPress={() => {
-                        onClose();
-                        openGeometrix();
-                      }}
-                    />
-                  </View>
-                </View>
-                </FadeToggleSection>
-              </>
-            )}
+              ))}
+            </View>
 
           </ScrollView>
         </LinearGradient>
@@ -657,42 +489,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // ── Swatches de Escena ──
-  sceneSwatch: { marginTop: 4, marginBottom: 4 },
-  sceneSwatchTitle: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "rgba(249,249,249,0.5)",
-    letterSpacing: 1.1,
-    textTransform: "uppercase",
-    marginBottom: 10,
-    paddingHorizontal: 2,
-  },
-  sceneSwatchRow: { flexDirection: "row", gap: 10 },
-  swatchItem: { alignItems: "center", gap: 6 },
-  swatchCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: "rgba(249,249,249,0.15)",
-  },
-  swatchCircleActive: {
-    borderWidth: 2.5,
-    borderColor: "#F9F9F9",
-    shadowColor: "#F9F9F9",
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 0 },
-  },
-  swatchLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    color: "rgba(249,249,249,0.5)",
-    fontWeight: "400",
-  },
-  swatchLabelActive: { color: "#F9F9F9", fontWeight: "600" },
   item: {
     flexDirection: "row",
     alignItems: "center",
@@ -701,7 +497,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 14,
   },
-  itemPressed: { backgroundColor: "rgba(212,175,55,0.08)" },
   itemIcon: { width: 26, alignItems: "center" },
   itemLabel: {
     fontFamily: "Manrope",
@@ -709,79 +504,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,
-  },
-  itemLabelMuted: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.7)",
-    fontSize: 14,
-    fontWeight: "400",
-  },
-
-  // ── Sección Escenas ──
-  controlRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    backgroundColor: "rgba(249,249,249,0.075)",
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginTop: 4,
-  },
-  controlIcon: { width: 20 },
-  controlLabel: {
-    fontFamily: "Manrope",
-    flex: 1,
-    fontSize: 14,
-    fontWeight: "400",
-    color: "#F9F9F9",
-  },
-  sceneTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-    marginBottom: 10,
-  },
-  sceneTitle: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.9)",
-    letterSpacing: 0.2,
-  },
-  ctaDivider: {
-    width: "100%",
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    marginVertical: 4,
-  },
-  sceneGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    justifyContent: "center",
-    paddingBottom: 12,
-  },
-  sceneSectionRow: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 4,
-    marginTop: 4,
-    marginBottom: 4,
-  },
-  sceneSectionLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "rgba(190,150,80,0.18)",
-  },
-  sceneSectionLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "rgba(190,150,80,0.65)",
-    letterSpacing: 1.1,
-    textTransform: "uppercase",
   },
 });
