@@ -52,16 +52,14 @@ function tagsForSession(session: Session, categoryId: string) {
 }
 
 function FilterTabs({
-  label,
   active,
   onSelect,
 }: {
-  label: string;
   active: DurationFilter;
   onSelect: (filter: DurationFilter) => void;
 }) {
   const tabs: { id: DurationFilter; label: string }[] = [
-    { id: "all", label },
+    { id: "all", label: "Ver todo" },
     { id: "duration-5", label: "5 min" },
     { id: "duration-10", label: "10 min" },
     { id: "duration-11", label: "11+ min" },
@@ -185,6 +183,8 @@ export default function CategoryTagScreen({
       categoryGridPresentation={decodedCategory !== "ambientales"}
       whiteMetadataGlass={decodedCategory !== "ambientales"}
       showDurationClock={decodedCategory !== "ambientales"}
+      hideCategoryAboveTitle={decodedCategory !== "ambientales"}
+      showSleepCategoryPillWithInlineDuration={decodedCategory !== "ambientales"}
       ambientalTitleOnly={decodedCategory === "ambientales"}
       soundPreview={decodedCategory === "ambientales" ? {
         activeId: soundPreview.activeId,
@@ -223,7 +223,7 @@ export default function CategoryTagScreen({
           <CategoryScreenHeader categoryId={decodedCategory} title={title} description={category?.subtitle} />
         </View>
         <View style={styles.tabsArea} onLayout={(event) => setTabsOffsetY(event.nativeEvent.layout.y)}>
-          <FilterTabs label={decodedTag} active={activeFilter} onSelect={setActiveFilter} />
+          <FilterTabs active={activeFilter} onSelect={setActiveFilter} />
         </View>
         {list}
       </ScrollView>
@@ -237,7 +237,7 @@ export default function CategoryTagScreen({
           <Feather name="chevron-left" size={26} color="#FBFBFB" />
         </Pressable>
         <View style={styles.stickyTabs}>
-          <FilterTabs label={decodedTag} active={activeFilter} onSelect={setActiveFilter} />
+          <FilterTabs active={activeFilter} onSelect={setActiveFilter} />
         </View>
       </Animated.View>
     </View>
