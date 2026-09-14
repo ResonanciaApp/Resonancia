@@ -154,7 +154,7 @@ function Chip({
 
 function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: {
   tabs: {id: string; label: string}[];
-  activeTab: CatTab|null;
+  activeTab: CatTab|null|undefined;
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (id: CatTab|null)=>void;
 }) {
@@ -676,7 +676,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab}
+          <ChipRow tabs={TABS} activeTab={undefined}
             indigo2BackgroundColor={indigo2ChipBackgroundColor}
             onSelect={(id) => id && openCategory(
               `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
@@ -740,7 +740,7 @@ export default function SonidosAncestalesScreen() {
         <View style={{ marginTop: 19 }}>
           <ChipRow
             tabs={TABS}
-            activeTab={activeTab}
+            activeTab={undefined}
             indigo2BackgroundColor={indigo2ChipBackgroundColor}
              onSelect={(id) => id && openCategory(
                `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,

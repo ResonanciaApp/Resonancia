@@ -117,7 +117,7 @@ function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; 
   );
 }
 
-function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
+function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null|undefined; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -377,7 +377,7 @@ export default function MusicaSonidosScreen() {
   );
 
   const openMusicCollection = (tagId: string) => {
-    const route = `/music-tag/${encodeURIComponent(tagId)}`;
+    const route = `/category-tag/${encodeURIComponent("musica-sonidos")}/${encodeURIComponent(tagId)}`;
     if (categoryOverlay) {
       categoryOverlay.openCategory(route);
       return;
@@ -532,7 +532,7 @@ export default function MusicaSonidosScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor}
+          <ChipRow tabs={TABS} activeTab={undefined} indigo2BackgroundColor={indigo2TabsBackgroundColor}
             onSelect={(id) => id && openMusicCollection(id)}
           />
         </View>

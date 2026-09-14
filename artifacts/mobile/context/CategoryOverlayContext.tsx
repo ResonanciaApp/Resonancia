@@ -11,6 +11,8 @@ type CategoryOverlayCtx = {
   categoryRoute: string | null;
   /** Abre una ruta como overlay (se apila sobre las anteriores). */
   openCategory: (route: string) => void;
+  /** Reemplaza la ruta visible sin aumentar la profundidad de la pila. */
+  replaceCategory: (route: string) => void;
   /** Cierra el overlay del tope de la pila. */
   closeCategory: () => void;
   /** Cierra TODA la pila de overlays (p.ej. al cambiar de tab). */
@@ -58,6 +60,14 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
     setStack((prev) => (prev.length ? prev.slice(0, -1) : prev));
   }, []);
 
+  const replaceCategory = useCallback((route: string) => {
+    setStack((prev) => {
+      if (!prev.length) return [{ key: nextKey.current++, route }];
+      if (prev[prev.length - 1].route === route) return prev;
+      return [...prev.slice(0, -1), { key: nextKey.current++, route }];
+    });
+  }, []);
+
   const closeAllCategories = useCallback(() => {
     setStack((prev) => (prev.length ? [] : prev));
   }, []);
@@ -70,8 +80,8 @@ export function CategoryOverlayProvider({ children }: { children: React.ReactNod
   const categoryRoute = stack.length ? stack[stack.length - 1].route : null;
 
   const value = React.useMemo(
-    () => ({ stack, categoryRoute, openCategory, closeCategory, closeAllCategories, parallaxAnim }),
-    [stack, categoryRoute, openCategory, closeCategory, closeAllCategories, parallaxAnim],
+    () => ({ stack, categoryRoute, openCategory, replaceCategory, closeCategory, closeAllCategories, parallaxAnim }),
+    [stack, categoryRoute, openCategory, replaceCategory, closeCategory, closeAllCategories, parallaxAnim],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

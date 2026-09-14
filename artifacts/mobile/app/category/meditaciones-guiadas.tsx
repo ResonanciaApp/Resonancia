@@ -100,7 +100,7 @@ function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; 
   );
 }
 
-function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
+function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null|undefined; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -541,7 +541,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor}
+          <ChipRow tabs={TABS} activeTab={undefined} indigo2BackgroundColor={indigo2TabsBackgroundColor}
              onSelect={(id) => id && openCategory(
                `/category-tag/${encodeURIComponent("meditaciones-guiadas")}/${encodeURIComponent(id)}`,
              )}
@@ -626,7 +626,7 @@ export default function MeditacionesGuiadasScreen() {
         <View style={{ marginTop: 19 }}>
            <ChipRow
              tabs={TABS}
-             activeTab={activeTab}
+             activeTab={undefined}
              indigo2BackgroundColor={indigo2TabsBackgroundColor}
              onSelect={(id) => id && openCategory(
                `/category-tag/${encodeURIComponent("meditaciones-guiadas")}/${encodeURIComponent(id)}`,

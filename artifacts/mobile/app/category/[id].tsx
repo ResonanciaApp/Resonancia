@@ -72,7 +72,7 @@ function ChipRow({
   onSelect,
 }: {
   tabs: string[];
-  activeTab: string | null;
+  activeTab: string | null | undefined;
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (tab: string | null) => void;
 }) {
@@ -292,7 +292,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         >
           <ChipRow
             tabs={tabs}
-            activeTab={activeTab}
+            activeTab={undefined}
             indigo2BackgroundColor={indigo2TabsBackgroundColor}
              onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
@@ -360,7 +360,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         <View style={styles.stickyChipsArea}>
           <ChipRow
             tabs={tabs}
-            activeTab={activeTab}
+            activeTab={undefined}
             indigo2BackgroundColor={indigo2TabsBackgroundColor}
              onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
