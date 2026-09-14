@@ -1538,31 +1538,34 @@ function Inicio2HeroStatic({
                   style={[
                     styles.inicio3StreakDay,
                     !isToday && styles.inicio3StreakDayActive,
-                    isToday && styles.inicio3StreakDayBorderInner,
                   ]}
                 >
                   <Feather name="check" size={22} color="#F9F9F9" />
                 </LinearGradient>
               ) : (
                 <View
-                  style={[
-                    styles.inicio3StreakDay,
-                    isToday && styles.inicio3StreakDayBorderInner,
-                  ]}
+                  style={styles.inicio3StreakDay}
                 />
               );
               return (
                 <View key={initial} style={styles.inicio3StreakDayWrapper}>
                   {isToday ? (
-                    <LinearGradient
-                      colors={theme.gradient as unknown as [string, string, ...string[]]}
-                      locations={theme.gradientLocations}
-                      start={theme.gradientStart}
-                      end={theme.gradientEnd}
-                      style={styles.inicio3StreakDayGradientBorder}
-                    >
+                    <View style={styles.inicio3StreakDayRingHost}>
                       {dayCircle}
-                    </LinearGradient>
+                      <MaskedView
+                        pointerEvents="none"
+                        style={StyleSheet.absoluteFill}
+                        maskElement={<View style={styles.inicio3StreakDayRingMask} />}
+                      >
+                        <LinearGradient
+                          colors={theme.gradient as unknown as [string, string, ...string[]]}
+                          locations={theme.gradientLocations}
+                          start={theme.gradientStart}
+                          end={theme.gradientEnd}
+                          style={StyleSheet.absoluteFill}
+                        />
+                      </MaskedView>
+                    </View>
                   ) : (
                     dayCircle
                   )}
@@ -3503,18 +3506,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.45)",
   },
-  inicio3StreakDayGradientBorder: {
+  inicio3StreakDayRingHost: {
     width: 37,
     height: 37,
     borderRadius: 18.5,
-    padding: 2,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  inicio3StreakDayBorderInner: {
-    width: 33,
-    height: 33,
-    borderRadius: 16.5,
+  inicio3StreakDayRingMask: {
+    flex: 1,
+    borderRadius: 18.5,
+    borderWidth: 2,
+    borderColor: "#000000",
+    backgroundColor: "transparent",
   },
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
