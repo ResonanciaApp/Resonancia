@@ -1324,20 +1324,19 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
   const heroExpansion = useSharedValue(0);
-  const heroHalfCoveredAt = inicio3HeroTop + inicio3HeroHeight * 0.5;
   const heroExpandedScale = width / (width - 2 * (GRID_PAD - 4));
   useAnimatedReaction(
-    () => isInicio3 && effectiveScrollY.value >= heroHalfCoveredAt,
+    () => isInicio3 && effectiveScrollY.value > 1,
     (shouldExpand, wasExpanded) => {
       if (shouldExpand === wasExpanded) return;
       heroExpansion.value = reduceMotion
         ? (shouldExpand ? 1 : 0)
         : withTiming(shouldExpand ? 1 : 0, {
-            duration: 700,
+            duration: 1600,
             easing: Easing.inOut(Easing.quad),
           });
     },
-    [heroHalfCoveredAt, isInicio3, reduceMotion],
+    [isInicio3, reduceMotion],
   );
   const heroExpansionStyle = useAnimatedStyle(() => ({
     transform: [
