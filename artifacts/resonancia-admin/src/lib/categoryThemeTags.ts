@@ -4,6 +4,41 @@ export type CategoryThemeTagConfig = {
   defaults: string[];
 };
 
+export const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
+export const MEDITATION_TAGS = ["No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría"];
+export const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica","Música Tribal"];
+export const DESCANSO_TAGS = [
+  "Música para dormir",
+  "Meditaciones para dormir",
+  "Historias para dormir",
+  "Sonidos para dormir",
+  "Paisajes sonoros",
+  "Para niños",
+  "Sonidos de lluvia",
+  "Ruido",
+];
+export const OTHER_THEME_TAGS = [
+  "Para la ansiedad",
+  "Energiza tus mañanas",
+  "Foco y concentración",
+  "Suelto la Rabia",
+  "Crecimiento personal",
+  "Armonía familiar",
+  "Respiración consciente",
+  "Meditaciones Activas",
+  "Astrología",
+];
+export const SONIDOS_COLLECTION_TAGS = [
+  "Todos los sonidos",
+  "Sonidos de naturaleza",
+  "Sonidos binaurales",
+  "Frecuencias Astrales",
+  "Música de enfoque",
+  "Cantos medicinales",
+  "Sonidos de lluvia",
+  "Sonidos para Chakras",
+];
+
 export const CATEGORY_THEME_TAGS: Record<string, CategoryThemeTagConfig> = {
   "musica-sonidos": {
     tagType: "theme",

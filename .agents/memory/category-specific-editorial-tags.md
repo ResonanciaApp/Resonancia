@@ -16,3 +16,5 @@ En Admin, la sección “Subcategoría” muestra solo la subcategoría canónic
 “Etiqueta Dormir” y sus opciones históricas (Binaurales, Ancestrales y ASMR) también están obsoletas y no deben mostrarse al crear o editar Música. Los datos heredados pueden conservarse internamente al guardar sesiones antiguas.
 
 En modo edición, las secciones “Subcategoría” y “Etiquetas” deben renderizarse siempre para cualquier sesión. La primera muestra el selector canónico aplicable o informa que la categoría no tiene subcategorías; la segunda conserva todos los grupos editoriales.
+
+Admin tiene dos superficies de edición: la página completa y el diálogo de Moderación. Toda modificación de taxonomías debe mantenerse idéntica en ambas; el diálogo antiguo fue la causa de que reapareciera “Etiqueta de sueño (Grupo 2)” y faltaran colecciones.

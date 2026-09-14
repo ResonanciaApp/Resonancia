@@ -24,8 +24,17 @@ import type {
 import { uploadFile as uploadFileShared } from "@/lib/uploadFile";
 import {
   CATEGORY_THEME_TAGS,
+  SUPERCATEGORY_THEME_TAGS,
+  ANCESTRAL_TAGS,
+  MEDITATION_TAGS,
+  SOUND_TAGS,
+  DESCANSO_TAGS,
+  OTHER_THEME_TAGS,
+  SONIDOS_COLLECTION_TAGS,
   categoryThemeSelectedLabels,
   categoryThemeStoredValue,
+  themeTagSelectedLabels,
+  themeTagStoredValue,
 } from "@/lib/categoryThemeTags";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -310,11 +319,6 @@ function RejectDialog({
 }
 
 // Defaults por categoryId para los selectores de tags
-const ANCESTRAL_DEFAULTS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Gongs","Gongs Planetarios","Cuencos y Gongs","Campanas","Flautas","Digeridoo","Tambores","Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"];
-const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga Nidra","Meditación Zen","Kundalini","Metta","Body Scan"];
-const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
-const SLEEP_DEFAULTS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
-
 function EditDialog({
   submission,
   open,
@@ -341,7 +345,8 @@ function EditDialog({
   const [ancestralTag, setAncestralTag] = useState(submission.ancestralTag ?? "");
   const [meditationTag, setMeditationTag] = useState(submission.meditationTag ?? "");
   const [soundTag, setSoundTag] = useState(submission.soundTag ?? "");
-  const [sleepTag, setSleepTag] = useState(submission.sleepTag ?? "");
+  const [descansoTags, setDescansoTags] = useState<string[]>(submission.descansoTags ?? []);
+  const [sonidosTags, setSonidosTags] = useState<string[]>(submission.sonidosTags ?? []);
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(submission.temaTag ?? []);
   const [playerDescription, setPlayerDescription] = useState(submission.playerDescription ?? "");
@@ -403,6 +408,31 @@ function EditDialog({
     setTemaTag((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+
+  const toggleDescanso = (tag: string) =>
+    setDescansoTags((prev) => {
+      const next = prev.includes(tag) ? prev.filter((value) => value !== tag) : [...prev, tag];
+      if (next.length === 0) {
+        const prefix = `__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`;
+        setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+      }
+      return next;
+    });
+
+  const toggleSonidos = (tag: string) => {
+    setSonidosTags((current) => {
+      const selected = new Set(current);
+      if (selected.has(tag)) selected.delete(tag);
+      else selected.add(tag);
+      if (selected.size > 0) selected.add("Todos los sonidos");
+      const next = SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+      if (next.length === 0) {
+        const prefix = `__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`;
+        setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+      }
+      return next;
+    });
+  };
 
   // ── Portada handlers ──
   const handleImageSelect = async (file: File) => {
@@ -670,7 +700,7 @@ function EditDialog({
             {isAncestral && (
               <SingleTagOptionSelector
                 tagType="ancestral"
-                defaults={ANCESTRAL_DEFAULTS}
+                  defaults={ANCESTRAL_TAGS}
                 label="Subcategoría Ancestral"
                 selected={ancestralTag}
                 onSelect={setAncestralTag}
@@ -680,7 +710,7 @@ function EditDialog({
               <>
                 <SingleTagOptionSelector
                   tagType="meditation"
-                  defaults={MEDITATION_DEFAULTS}
+                  defaults={MEDITATION_TAGS}
                   label="Subcategoría Meditación"
                   selected={meditationTag}
                   onSelect={setMeditationTag}
@@ -703,7 +733,7 @@ function EditDialog({
             {isMusic && (
               <SingleTagOptionSelector
                 tagType="sound"
-                defaults={SOUND_DEFAULTS}
+                  defaults={SOUND_TAGS}
                 label="Subcategoría Música/Sonidos"
                 selected={soundTag}
                 onSelect={setSoundTag}
@@ -734,14 +764,88 @@ function EditDialog({
               />
             )}
 
-            {/* Etiqueta de sueño (Grupo 2) */}
-            <SingleTagOptionSelector
-              tagType="sleep"
-              defaults={SLEEP_DEFAULTS}
-              label="Etiqueta de sueño (Grupo 2)"
-              selected={sleepTag}
-              onSelect={setSleepTag}
+            <TagOptionSelector
+              tagType="other_theme"
+              defaults={OTHER_THEME_TAGS}
+              label="Otras temáticas (opcional)"
+              selected={themeTag.filter((tag) => !tag.startsWith("__"))}
+              onToggle={toggleTheme}
+              pill
             />
+
+            <TagOptionSelector
+              tagType="descanso"
+              defaults={DESCANSO_TAGS}
+              label="Colecciones de Dormir (opcional)"
+              selected={descansoTags}
+              onToggle={toggleDescanso}
+              pill
+              fixed
+            />
+
+            {descansoTags.length > 0 && (() => {
+              const config = SUPERCATEGORY_THEME_TAGS.descanso;
+              return (
+                <TagOptionSelector
+                  tagType={config.tagType}
+                  defaults={config.defaults}
+                  label={config.label}
+                  selected={themeTagSelectedLabels(config.tagType, themeTag)}
+                  onToggle={(label) => {
+                    const stored = themeTagStoredValue(config.tagType, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === themeTagStoredValue(config.tagType, from)
+                      ? themeTagStoredValue(config.tagType, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((tag) => tag !== themeTagStoredValue(config.tagType, label))
+                  )}
+                  pill
+                />
+              );
+            })()}
+
+            <TagOptionSelector
+              tagType="sonidos_collection"
+              defaults={SONIDOS_COLLECTION_TAGS}
+              label="Colecciones de Sonidos (opcional)"
+              selected={sonidosTags}
+              onToggle={toggleSonidos}
+              pill
+              fixed
+            />
+
+            {sonidosTags.length > 0 && (() => {
+              const config = SUPERCATEGORY_THEME_TAGS.sonidos;
+              return (
+                <TagOptionSelector
+                  tagType={config.tagType}
+                  defaults={config.defaults}
+                  label={config.label}
+                  selected={themeTagSelectedLabels(config.tagType, themeTag)}
+                  onToggle={(label) => {
+                    const stored = themeTagStoredValue(config.tagType, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === themeTagStoredValue(config.tagType, from)
+                      ? themeTagStoredValue(config.tagType, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((tag) => tag !== themeTagStoredValue(config.tagType, label))
+                  )}
+                  pill
+                />
+              );
+            })()}
           </div>
         </ScrollArea>
         <DialogFooter>
@@ -752,6 +856,9 @@ function EditDialog({
             disabled={title.trim().length === 0 || subtitle.trim().length === 0 || mutation.isPending || imageUploading}
             onClick={() => {
               const dur = parseInt(duration, 10);
+              const persistedThemeTags = themeTag.filter((tag) =>
+                (descansoTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`)) &&
+                (sonidosTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`)));
               mutation.mutate({
                 id: submission.id,
                 data: {
@@ -769,8 +876,10 @@ function EditDialog({
                   ...(isAncestral ? { ancestralTag: ancestralTag || null } : {}),
                   ...(isMeditation ? { meditationTag: meditationTag || null } : {}),
                   ...(isMusic ? { soundTag: soundTag || null } : {}),
-                  sleepTag: sleepTag || null,
-                  themeTag,
+                  sleepTag: null,
+                  descansoTags,
+                  sonidosTags,
+                  themeTag: persistedThemeTags,
                   temaTag,
                   playerDescription: playerDescription.trim() ? playerDescription.trim() : null,
                   ...(newImageObjectPath && newImageFile
