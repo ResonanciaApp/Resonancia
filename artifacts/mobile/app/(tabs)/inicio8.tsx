@@ -1359,7 +1359,17 @@ function Inicio2HeroStatic({
         {isInicio3 ? (
           <RAnimated.View
             style={[styles.inicio3HeroTopShadow, heroShadowStyle]}
-          />
+          >
+            <LinearGradient
+              colors={[
+                "rgba(0,0,0,0)",
+                "rgba(0,0,0,0.18)",
+                "rgba(0,0,0,0)",
+              ]}
+              locations={[0, 0.48, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
           <Image
@@ -3475,17 +3485,10 @@ const styles = StyleSheet.create({
   },
   inicio3HeroTopShadow: {
     position: "absolute",
-    top: -8,
-    left: 10,
-    right: 10,
-    height: 16,
-    borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.18)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 9,
-    elevation: 8,
+    top: -3,
+    left: 2,
+    right: 2,
+    height: 28,
   },
   inicio3HeroCopy: {
     zIndex: 30,
