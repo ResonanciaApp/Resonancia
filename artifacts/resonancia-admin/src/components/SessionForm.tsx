@@ -113,7 +113,6 @@ const SONIDOS_COLLECTION_TAGS = [
   "Sonidos de lluvia",
   "Sonidos para Chakras",
 ];
-const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -998,15 +997,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               );
             })()}
 
-            {(categoryId === "musica-sonidos" || categoryId === "descanso") && (
-              <SingleTagOptionSelector
-                tagType="sleep"
-                defaults={SLEEP_TAGS}
-                label="Etiqueta Dormir (opcional)"
-                selected={sleepTag}
-                onSelect={setSleepTag}
-              />
-            )}
           </div>
         </Section>
       )}
