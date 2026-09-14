@@ -1307,6 +1307,13 @@ function Inicio2HeroStatic({
       ) as unknown as [string, string, ...string[]],
     [theme.gradient],
   );
+  const streakBorderGradient = useMemo(
+    () =>
+      theme.gradient.map((color) =>
+        brightenStreakColor(color, 30),
+      ) as unknown as [string, string, ...string[]],
+    [theme.gradient],
+  );
   const displayName =
     username
     || clerkUser?.firstName
@@ -1558,7 +1565,7 @@ function Inicio2HeroStatic({
                         maskElement={<View style={styles.inicio3StreakDayRingMask} />}
                       >
                         <LinearGradient
-                          colors={streakGradient}
+                          colors={streakBorderGradient}
                           locations={theme.gradientLocations}
                           start={theme.gradientStart}
                           end={theme.gradientEnd}
