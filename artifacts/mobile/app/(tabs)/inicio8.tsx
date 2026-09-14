@@ -1323,24 +1323,16 @@ function Inicio2HeroStatic({
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
   const headerParallaxStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return {};
-    const y = Math.max(0, scrollY.value);
-    const progress = Math.min(1, y / 180);
+    const y = Math.max(-60, scrollY.value);
     return {
-      transform: [
-        { translateY: y * 0.72 },
-        { scale: 1 - progress * 0.035 },
-      ],
+      transform: [{ translateY: y * 0.72 }],
     };
   }, [isInicio3, reduceMotion]);
   const streakParallaxStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return {};
-    const y = Math.max(0, scrollY.value);
-    const progress = Math.min(1, y / 180);
+    const y = Math.max(-60, scrollY.value);
     return {
-      transform: [
-        { translateY: y * 0.72 },
-        { scale: 1 - progress * 0.035 },
-      ],
+      transform: [{ translateY: y * 0.72 }],
     };
   }, [isInicio3, reduceMotion]);
   const heroTopShadowStyle = useAnimatedStyle(() => {
@@ -2145,7 +2137,7 @@ export default function HomeScreen2({
 
   const inicio3ScrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      inicio3ScrollY.value = Math.max(0, event.contentOffset.y);
+      inicio3ScrollY.value = event.contentOffset.y;
     },
   });
 
