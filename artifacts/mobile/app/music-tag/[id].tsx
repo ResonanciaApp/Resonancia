@@ -133,7 +133,7 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
     const themeTags = Array.from(
       new Set(
         sessions.flatMap((session) =>
-          (session.themeTag ?? [])
+          [...(session.themeTag ?? []), ...(session.temaTag ?? [])]
             .map((tag) => tag.trim())
             .filter((tag) => LEVEL_ONE_THEME_TAGS.has(tag)),
         ),
@@ -157,7 +157,10 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
     if (activeFilter.startsWith("theme:")) {
       const tag = activeFilter.slice("theme:".length);
       return sessions.filter((session) =>
-        (session.themeTag as readonly string[] | undefined)?.includes(tag),
+        [
+          ...(session.themeTag ?? []),
+          ...(session.temaTag ?? []),
+        ].includes(tag),
       );
     }
 
