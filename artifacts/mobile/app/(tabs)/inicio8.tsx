@@ -1356,13 +1356,6 @@ function Inicio2HeroStatic({
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
       >
-        {isInicio3 ? (
-          <RAnimated.View
-            style={[styles.inicio3HeroShadowViewport, heroShadowStyle]}
-          >
-            <View style={styles.inicio3HeroShadowCaster} />
-          </RAnimated.View>
-        ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
           <Image
             source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
@@ -1370,6 +1363,21 @@ function Inicio2HeroStatic({
             style={styles.inicio2HeroImage}
           />
         </View>
+        {isInicio3 ? (
+          <RAnimated.View
+            style={[styles.inicio3HeroTopShade, heroShadowStyle]}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(0,0,0,0.40)",
+                "rgba(0,0,0,0.15)",
+                "rgba(0,0,0,0)",
+              ]}
+              locations={[0, 0.38, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </RAnimated.View>
+        ) : null}
       </RAnimated.View>
 
       <RAnimated.View
@@ -3475,27 +3483,15 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
   },
-  inicio3HeroShadowViewport: {
+  inicio3HeroTopShade: {
     position: "absolute",
-    top: -18,
-    left: -18,
-    right: -18,
-    height: 50,
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 42,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     overflow: "hidden",
-  },
-  inicio3HeroShadowCaster: {
-    position: "absolute",
-    top: 21,
-    left: 18,
-    right: 18,
-    height: 90,
-    borderRadius: 25,
-    backgroundColor: "rgba(0,0,0,0.07)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.32,
-    shadowRadius: 14,
-    elevation: 8,
   },
   inicio3HeroCopy: {
     zIndex: 30,
