@@ -1356,6 +1356,21 @@ function Inicio2HeroStatic({
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
       >
+        {isInicio3 ? (
+          <RAnimated.View
+            style={[styles.inicio3HeroBackShadow, heroShadowStyle]}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(0,0,0,0)",
+                "rgba(0,0,0,0.15)",
+                "rgba(0,0,0,0.40)",
+              ]}
+              locations={[0, 0.62, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </RAnimated.View>
+        ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
           <Image
             source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
@@ -1363,21 +1378,6 @@ function Inicio2HeroStatic({
             style={styles.inicio2HeroImage}
           />
         </View>
-        {isInicio3 ? (
-          <RAnimated.View
-            style={[styles.inicio3HeroTopShade, heroShadowStyle]}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(0,0,0,0.40)",
-                "rgba(0,0,0,0.15)",
-                "rgba(0,0,0,0)",
-              ]}
-              locations={[0, 0.38, 1]}
-              style={StyleSheet.absoluteFill}
-            />
-          </RAnimated.View>
-        ) : null}
       </RAnimated.View>
 
       <RAnimated.View
@@ -3483,15 +3483,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
   },
-  inicio3HeroTopShade: {
+  inicio3HeroBackShadow: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
+    top: -42,
+    left: 5,
+    right: 5,
     height: 42,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    overflow: "hidden",
   },
   inicio3HeroCopy: {
     zIndex: 30,
