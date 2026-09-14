@@ -5593,6 +5593,9 @@ components:
             maxLength: 80
         isPremium:
           type: boolean
+        isFeaturedCategory:
+          type: boolean
+          default: false
         skipDetail:
           type: boolean
           default: false

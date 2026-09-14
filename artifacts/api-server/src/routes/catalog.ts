@@ -720,6 +720,7 @@ router.post(
           imageKey: body.imageObjectPath ?? null,
           imageUrl: body.imageObjectPath ?? null,
           isPremium: body.isPremium ?? false,
+          isFeaturedCategory: body.isFeaturedCategory ?? false,
           skipDetail: body.skipDetail ?? false,
           skipMiniPlayer: body.isPlaceholder ? false : (body.skipMiniPlayer ?? false),
           isLoop: body.isLoop ?? false,

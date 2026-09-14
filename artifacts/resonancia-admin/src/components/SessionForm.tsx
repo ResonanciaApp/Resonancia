@@ -404,6 +404,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         skipDetail,
         skipMiniPlayer,
         isLoop,
+        isFeaturedCategory,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
@@ -1125,6 +1126,17 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             </div>
           </div>
 
+          <div className="flex items-center gap-3">
+            <Switch
+              id="isFeaturedCategory"
+              checked={isFeaturedCategory}
+              onCheckedChange={setIsFeaturedCategory}
+            />
+            <Label htmlFor="isFeaturedCategory" className="cursor-pointer">
+              Destacada en su categoría
+            </Label>
+          </div>
+
           {isEdit && (
             <>
               <Field label="Orden (sortOrder)">
@@ -1138,10 +1150,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               <div className="flex items-center gap-3">
                 <Switch id="isFeatured" checked={isFeatured} onCheckedChange={setIsFeatured} />
                 <Label htmlFor="isFeatured" className="cursor-pointer">Destacada en Inicio</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Switch id="isFeaturedCategory" checked={isFeaturedCategory} onCheckedChange={setIsFeaturedCategory} />
-                <Label htmlFor="isFeaturedCategory" className="cursor-pointer">Destacada en su categoría</Label>
               </div>
               <div className="flex items-center gap-3">
                 <Switch id="isNew" checked={isNew} onCheckedChange={setIsNew} />

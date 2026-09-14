@@ -1227,6 +1227,7 @@ export interface CreatorSubmissionInput {
   /** @maxItems 12 */
   instruments?: string[];
   isPremium?: boolean;
+  isFeaturedCategory?: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isLoop?: boolean;

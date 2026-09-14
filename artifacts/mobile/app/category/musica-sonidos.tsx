@@ -8,6 +8,7 @@ import {
 } from "@/components/SessionCardMetadataOverlay";
 import { SessionCard } from "@/components/SessionCard";
 import {
+  CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
@@ -45,6 +46,10 @@ const CARD_GAP = 12;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
+const MUSIC_FEATURED_CARD_W = Math.round(
+  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.25,
+);
+const MUSIC_FEATURED_CARD_H = Math.round(MUSIC_FEATURED_CARD_W * 9 / 16);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -357,8 +362,8 @@ export default function MusicaSonidosScreen() {
   },[allTabSessions]);
 
   const featuredSessions = useMemo(
-    () => (activeTab === null ? allTabSessions.filter((s) => s.isFeaturedCategory) : []),
-    [allTabSessions, activeTab]
+    () => getSessionsForTab(null).filter((session) => session.isFeaturedCategory),
+    [version],
   );
 
   const musicCollections = useMemo(
@@ -402,9 +407,43 @@ export default function MusicaSonidosScreen() {
     );
     return (
       <View style={styles.carouselSections}>
+        {featuredSessions.length > 0 ? (
+          <SessionCarousel
+            title="Contenido destacado"
+            sessions={featuredSessions}
+            isPremium={isPremium}
+            onPress={handleMusicSessionTap}
+            onLongPress={setSelectedSession}
+            style={{
+              marginTop: 33,
+              marginBottom: 0,
+              paddingHorizontal: H_PAD,
+            }}
+            presentation="editorial"
+            disableAmbientalVariant
+            sleepMetadataBelow
+            categoryGridPresentation
+            whiteMetadataGlass
+            showDurationClock
+            sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+            trailingPeek={20}
+            cardWidth={MUSIC_FEATURED_CARD_W}
+            cardHeight={MUSIC_FEATURED_CARD_H}
+            allowOversizedCardWidth
+            cardBorderRadius={16}
+            hideCategoryAboveTitle
+            showSleepCategoryPillWithInlineDuration
+            ambientalTitleOnly
+            sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
+            overlayGradientLocations={[0.18, 0.48, 1]}
+            titleSize={17}
+          />
+        ) : null}
         {musicCollections.map((collection, index) => (
           <React.Fragment key={collection.id}>
-            {index > 0 ? <View style={styles.sectionDivider} /> : null}
+            {featuredSessions.length > 0 || index > 0 ? (
+              <View style={styles.sectionDivider} />
+            ) : null}
             <SessionCarousel
               title={collection.label}
               sessions={collection.sessions}
@@ -412,7 +451,7 @@ export default function MusicaSonidosScreen() {
               onPress={handleMusicSessionTap}
               onLongPress={setSelectedSession}
               style={{
-                marginTop: index === 0 ? 33 : 26,
+                marginTop: index === 0 && featuredSessions.length === 0 ? 33 : 26,
                 marginBottom: 0,
                 paddingHorizontal: H_PAD,
               }}

@@ -1752,6 +1752,7 @@ export const createSubmissionBodyInstrumentsItemMax = 80;
 
 export const createSubmissionBodyInstrumentsMax = 12;
 
+export const createSubmissionBodyIsFeaturedCategoryDefault = false;
 export const createSubmissionBodySkipDetailDefault = false;
 export const createSubmissionBodySkipMiniPlayerDefault = false;
 export const createSubmissionBodyIsLoopDefault = false;
@@ -1787,6 +1788,7 @@ export const CreateSubmissionBody = zod.object({
   "benefits": zod.array(zod.string().max(createSubmissionBodyBenefitsItemMax)).max(createSubmissionBodyBenefitsMax).optional(),
   "instruments": zod.array(zod.string().max(createSubmissionBodyInstrumentsItemMax)).max(createSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
+  "isFeaturedCategory": zod.boolean().default(createSubmissionBodyIsFeaturedCategoryDefault),
   "skipDetail": zod.boolean().default(createSubmissionBodySkipDetailDefault),
   "skipMiniPlayer": zod.boolean().default(createSubmissionBodySkipMiniPlayerDefault),
   "isLoop": zod.boolean().default(createSubmissionBodyIsLoopDefault),
