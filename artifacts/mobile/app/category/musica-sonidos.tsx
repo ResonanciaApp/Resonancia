@@ -36,6 +36,7 @@ import {
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
+import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { isIndigoThemeId } from "@/config/scene-themes";
 
@@ -111,10 +112,8 @@ function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: 
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Ver todo" sel={activeTab === null} indigo2BackgroundColor={indigo2BackgroundColor}
-          onPress={() => onSelect(null)} />
         {tabs.map((t) => (
-          <Chip key={t.id} label={t.label} sel={activeTab === t.id} indigo2BackgroundColor={indigo2BackgroundColor}
+          <Chip key={t.id} label={t.label} sel={false} indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => onSelect(t.id)} />
         ))}
       </ScrollView>
@@ -272,6 +271,7 @@ export default function MusicaSonidosScreen() {
   const { activeSceneId, theme } = useSceneTheme();
   const { history, playSession } = usePlayer();
   const { isPremium } = usePremium();
+  const categoryOverlay = useCategoryOverlayOptional();
   const backOverride = useBackOverride();
   const profileSectionBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
@@ -361,90 +361,61 @@ export default function MusicaSonidosScreen() {
     [allTabSessions, activeTab]
   );
 
+  const musicCollections = useMemo(
+    () =>
+      TABS.map((tab) => ({
+        ...tab,
+        sessions: getSessionsForTab(tab.id).slice(0, 5),
+      })).filter((collection) => collection.sessions.length > 0),
+    [TABS, version],
+  );
+
+  const openMusicCollection = (tagId: string) => {
+    const route = `/music-tag/${encodeURIComponent(tagId)}`;
+    if (categoryOverlay) {
+      categoryOverlay.openCategory(route);
+      return;
+    }
+    router.push(route as never);
+  };
+
+  const handleMusicSessionTap = (session: Session) => {
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia" as never);
+      return;
+    }
+    if (session.skipMiniPlayer) {
+      playSession(session);
+      return;
+    }
+    playSession(session);
+    router.push("/player" as never);
+  };
+
   const renderContent = () => {
-    if (shuffledSessions.length===0) return (
+    if (musicCollections.length === 0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
-        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Música"}</Text>
+        <Text style={styles.emptyTitle}>Próximamente en Música</Text>
         <Text style={styles.emptySub}>Estamos componiendo los mejores paisajes sonoros.</Text>
       </View>
     );
-    const visibleSessions = shuffledSessions.slice(0, visibleCount);
-    const hasMore = visibleCount < shuffledSessions.length;
     return (
-      <>
-        {false && featuredSessions.length > 0 && (
-          <>
-            <Text style={styles.featuredTitle}>Contenido destacado</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.featuredRow}>
-              {featuredSessions.map((s)=>(
-                <CategoryCard key={`feat-${s.id}`} session={s} landscape onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
-              ))}
-            </ScrollView>
-          </>
-        )}
-        {false && activeTab === null && recentInCategory.length > 0 && (
-          <>
+      <View style={styles.carouselSections}>
+        {musicCollections.map((collection, index) => (
+          <React.Fragment key={collection.id}>
+            {index > 0 ? <View style={styles.sectionDivider} /> : null}
             <SessionCarousel
-              title="Sesiones recientes"
-              sessions={recentInCategory}
+              title={collection.label}
+              sessions={collection.sessions}
               isPremium={isPremium}
-              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-               style={{ marginTop: 33, marginBottom: 0 }}
-              presentation="editorial"
-              titleSize={19}
-              titleOffset={10}
-              titleSpacing={17}
-            />
-          </>
-        )}
-        {false && activeTab === null && (() => {
-          const visibleTabs = TABS.filter((tab) => getSessionsForTab(tab.id).length > 0);
-          return visibleTabs.map((tab, idx) => {
-            const tabSessions = getSessionsForTab(tab.id);
-            const preview = tabSessions.slice(0, 5);
-            const hasMore = tabSessions.length > 5;
-            const isLast = idx === visibleTabs.length - 1;
-            return (
-              <React.Fragment key={tab.id}>
-                <SessionCarousel
-                  title={tab.label}
-                  sessions={preview}
-                  isPremium={isPremium}
-                  onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
-                   style={{ marginTop: idx === 0 ? 33 : 53, marginBottom: 0 }}
-                   presentation="editorial"
-                  titleSize={18}
-                  onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
-                />
-              </React.Fragment>
-            );
-          });
-        })()}
-        {false && activeTab === null && (
-          <Pressable
-            onPress={() => setAllVisible(true)}
-            style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>Toda la Música y Sonidos</Text>
-            <Feather name="chevron-right" size={16} color="#F9F9F9" />
-          </Pressable>
-        )}
-        {(
-          <>
-            <SessionCarousel
-              title=""
-              sessions={visibleSessions}
-              isPremium={isPremium}
-              style={{ paddingHorizontal: 0 }}
-              onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } playSession(s); router.push("/player" as never); }}
+              onPress={handleMusicSessionTap}
               onLongPress={setSelectedSession}
-              showHeader={false}
-              gridLayout
-              fillGridWidth
-              gridScrollEnabled={false}
-              eagerRender
+              style={{
+                marginTop: index === 0 ? 33 : 26,
+                marginBottom: 0,
+                paddingHorizontal: H_PAD,
+              }}
               presentation="editorial"
               disableAmbientalVariant
               sleepMetadataBelow
@@ -452,17 +423,21 @@ export default function MusicaSonidosScreen() {
               whiteMetadataGlass
               showDurationClock
               sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
+              trailingPeek={20}
+              cardWidth={Math.round((W - H_PAD - 14) / 1.9)}
+              allowOversizedCardWidth
               cardBorderRadius={16}
               hideCategoryAboveTitle
               showSleepCategoryPillWithInlineDuration
               ambientalTitleOnly
               sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
               overlayGradientLocations={[0.18, 0.48, 1]}
+              titleSize={17}
+              onViewAll={() => openMusicCollection(collection.id)}
             />
-            {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
-          </>
-        )}
-      </>
+          </React.Fragment>
+        ))}
+      </View>
     );
   };
 
@@ -526,13 +501,13 @@ export default function MusicaSonidosScreen() {
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor}
-            onSelect={(id) => setActiveTab(id)}
+            onSelect={(id) => id && openMusicCollection(id)}
           />
         </View>
 
 
         {/* ── Contenido ── */}
-        <AnimatedTabContent animKey={activeTab ?? "all"}>
+        <AnimatedTabContent animKey="music-carousels">
           {renderContent()}
         </AnimatedTabContent>
       </ScrollView>
@@ -606,7 +581,12 @@ export default function MusicaSonidosScreen() {
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
         <View style={{ marginTop: 19 }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor} onSelect={setActiveTab} />
+          <ChipRow
+            tabs={TABS}
+            activeTab={null}
+            indigo2BackgroundColor={indigo2TabsBackgroundColor}
+            onSelect={(id) => id && openMusicCollection(id)}
+          />
         </View>
       </Animated.View>
 
@@ -673,6 +653,13 @@ const styles = StyleSheet.create({
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", gap: CARD_GAP, paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 6 },
   featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 13, paddingTop: 21 },
+  carouselSections: { marginTop: -3 },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },

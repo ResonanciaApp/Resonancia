@@ -36,6 +36,7 @@ const LazyPlaylist      = React.lazy(() => import("@/app/playlist/[id]"));
 const LazyEditorialPlaylist = React.lazy(() => import("@/app/editorial-playlist/[slug]"));
 const LazySleepTag      = React.lazy(() => import("@/app/sleep-tag/[id]"));
 const LazySoundTag      = React.lazy(() => import("@/app/sound-tag/[id]"));
+const LazyMusicTag      = React.lazy(() => import("@/app/music-tag/[id]"));
 
 const W = Dimensions.get("window").width;
 
@@ -66,7 +67,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
       eager: false,
     };
   }
-  const m = route.match(/^\/(session|mezcla|tema|chakra|tag|sleep-tag|sound-tag)\/(.+)$/);
+  const m = route.match(/^\/(session|mezcla|tema|chakra|tag|sleep-tag|sound-tag|music-tag)\/(.+)$/);
   if (m) {
     const id = decodeURIComponent(m[2]);
     // defer: la pantalla de sesión es muy pesada de renderizar; si se monta
@@ -82,6 +83,7 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
     if (m[1] === "tag") return { node: <LazyTag id={m[2]} />, eager: false };
     if (m[1] === "sleep-tag") return { node: <LazySleepTag id={id} />, eager: false };
     if (m[1] === "sound-tag") return { node: <LazySoundTag id={id} />, eager: false };
+    if (m[1] === "music-tag") return { node: <LazyMusicTag id={id} />, eager: false };
   }
   return null;
 }
