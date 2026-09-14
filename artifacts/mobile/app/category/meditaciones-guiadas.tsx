@@ -623,7 +623,7 @@ export default function MeditacionesGuiadasScreen() {
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={{ marginTop: 19 }}>
+        <View style={{ marginTop: 2 }}>
            <ChipRow
              tabs={TABS}
              activeTab={undefined}

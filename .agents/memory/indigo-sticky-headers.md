@@ -10,3 +10,5 @@ En Índigo 2, los tabs inactivos pasan de blanco con alpha 0.025 a alpha 0.075 m
 **Why:** Esta dirección fue elegida para que el contenido siga siendo visible bajo el header sin que aparezcan bloques opacos, tintes o líneas que rompan el efecto glass morphing.
 
 **How to apply:** Mantener esta convención en Descubrir, Dormir, Sonidos, categorías, Mis Favoritos, Biblioteca y Perfil, y reutilizarla en nuevas pantallas equivalentes. En Índigo 2, la barra inferior usa el mismo `theme.solid` que Inicio, no negro puro.
+
+En las páginas principales de categorías, la fila de tabs del sticky header mantiene 2 px de separación respecto del fondo circular de la lupa. La medida es común a Música, Meditaciones, Sonoterapia y categorías dinámicas.

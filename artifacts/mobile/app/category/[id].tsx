@@ -528,5 +528,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "center",
   },
-  stickyChipsArea: { width: "100%", marginTop: 19 },
+  stickyChipsArea: { width: "100%", marginTop: 2 },
 });
