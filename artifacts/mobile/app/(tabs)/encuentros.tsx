@@ -88,7 +88,9 @@ export default function ComunidadScreen() {
         </Pressable>
       </View>
       <EncuentrosResonadoresSection titleMarginTop={5} />
+      <View style={styles.sectionDivider} />
       <ResonadoresSection marginTop={36} marginBottom={32} />
+      <View style={styles.sectionDivider} />
       <View style={styles.feedSection}>
         <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
         {loading && (
@@ -270,6 +272,11 @@ const styles = StyleSheet.create({
     marginTop: 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 8,
+  },
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.14)",
+    marginHorizontal: H_PAD,
   },
   feedItem: {
     paddingHorizontal: H_PAD,

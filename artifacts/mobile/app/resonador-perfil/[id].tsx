@@ -409,31 +409,28 @@ export default function ResonadorPerfilScreen() {
 
           {/* Mis servicios */}
           {resonador.servicesDescription ? (
-            <>
-              <View style={styles.sectionDivider} />
-              <View style={styles.sectionBlock}>
-                <Text style={styles.sectionTitle}>Mis servicios</Text>
-                <Text
-                  style={styles.serviceDesc}
-                  numberOfLines={descExpanded ? undefined : 7}
-                  onTextLayout={(e) => {
-                    if (!descOverflows && e.nativeEvent.lines.length > 7)
-                      setDescOverflows(true);
-                  }}
+            <View style={styles.sectionBlock}>
+              <Text style={styles.sectionTitle}>Mis servicios</Text>
+              <Text
+                style={styles.serviceDesc}
+                numberOfLines={descExpanded ? undefined : 7}
+                onTextLayout={(e) => {
+                  if (!descOverflows && e.nativeEvent.lines.length > 7)
+                    setDescOverflows(true);
+                }}
+              >
+                {resonador.servicesDescription}
+              </Text>
+              {descOverflows && (
+                <Pressable
+                  onPress={() => setDescExpanded((v) => !v)}
+                  style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
                 >
-                  {resonador.servicesDescription}
-                </Text>
-                {descOverflows && (
-                  <Pressable
-                    onPress={() => setDescExpanded((v) => !v)}
-                    style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
-                  >
-                    <Text style={styles.readMoreText}>{descExpanded ? "Leer menos" : "Leer más"}</Text>
-                    <Feather name={descExpanded ? "chevron-up" : "chevron-down"} size={13} color={GOLD} />
-                  </Pressable>
-                )}
-              </View>
-            </>
+                  <Text style={styles.readMoreText}>{descExpanded ? "Leer menos" : "Leer más"}</Text>
+                  <Feather name={descExpanded ? "chevron-up" : "chevron-down"} size={13} color={GOLD} />
+                </Pressable>
+              )}
+            </View>
           ) : null}
 
         </View>
@@ -937,10 +934,6 @@ const styles = StyleSheet.create({
   /* Banner */
 
   sectionBlock: { gap: 10 },
-  sectionDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.14)",
-  },
   sectionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
   chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
