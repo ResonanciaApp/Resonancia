@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { Image as ExpoImage, type ImageSource } from "expo-image";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -70,6 +71,12 @@ export function ContinueMeditationPlaylistCard({
             </View>
           </View>
         </View>
+        <Feather
+          name="chevron-right"
+          size={22}
+          color="rgba(249,249,249,0.72)"
+          style={styles.chevron}
+        />
       </Pressable>
     </View>
   );
@@ -89,46 +96,46 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   card: {
-    minHeight: 117,
+    minHeight: 138,
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: 19,
   },
   coverStack: {
-    width: 103,
-    height: 117,
+    width: 124,
+    height: 138,
   },
   stackStripFront: {
     position: "absolute",
-    top: 103,
-    left: 9,
-    right: 9,
+    top: 124,
+    left: 11,
+    right: 11,
     height: 3,
     borderRadius: 1.5,
     backgroundColor: "#717172",
   },
   stackStripBack: {
     position: "absolute",
-    top: 108,
-    left: 13,
-    right: 13,
+    top: 129,
+    left: 16,
+    right: 16,
     height: 2,
     borderRadius: 1,
     backgroundColor: "#48474D",
   },
   stackStripThird: {
     position: "absolute",
-    top: 112,
-    left: 17,
-    right: 17,
+    top: 133,
+    left: 20,
+    right: 20,
     height: 1.5,
     borderRadius: 0.75,
     backgroundColor: "#38373D",
   },
   cover: {
-    width: 103,
-    height: 103,
-    borderRadius: 15,
+    width: 124,
+    height: 124,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   copy: {
@@ -145,11 +152,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   description: {
+    width: "88%",
     color: "rgba(249,249,249,0.68)",
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 15,
     marginTop: 3,
+  },
+  chevron: {
+    marginLeft: -5,
+    marginRight: -2,
   },
   progressRow: {
     flexDirection: "row",
