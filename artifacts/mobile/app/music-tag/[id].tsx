@@ -29,6 +29,17 @@ import {
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const LEVEL_ONE_THEME_TAGS = new Set([
+  "Yoga",
+  "Respiración",
+  "Ansiedad",
+  "Rituales",
+  "Crecimiento",
+  "ASMR",
+  "Estrés",
+  "Spa",
+  "Familia",
+]);
 
 type MusicFilterId = "all" | "duration-5" | "duration-10" | "duration-11" | `theme:${string}`;
 
@@ -124,7 +135,7 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
         sessions.flatMap((session) =>
           (session.themeTag ?? [])
             .map((tag) => tag.trim())
-            .filter(Boolean),
+            .filter((tag) => LEVEL_ONE_THEME_TAGS.has(tag)),
         ),
       ),
     );
