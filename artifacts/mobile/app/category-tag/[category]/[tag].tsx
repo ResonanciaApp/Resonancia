@@ -245,7 +245,7 @@ export default function CategoryTagScreen({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
-  backButton: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(181,211,255,0.057)", alignItems: "center", justifyContent: "center", zIndex: 2 },
+  backButton: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center", zIndex: 2 },
   tabsArea: { paddingTop: 9, paddingBottom: 15, paddingHorizontal: H_PAD },
   chipRowWrapper: { marginHorizontal: -H_PAD },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
