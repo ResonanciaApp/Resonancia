@@ -1529,23 +1529,42 @@ function Inicio2HeroStatic({
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
               const active = weekFlags[i];
               const isToday = todayIndex === i;
+              const dayCircle = active ? (
+                <LinearGradient
+                  colors={streakGradient}
+                  locations={theme.gradientLocations}
+                  start={theme.gradientStart}
+                  end={theme.gradientEnd}
+                  style={[
+                    styles.inicio3StreakDay,
+                    !isToday && styles.inicio3StreakDayActive,
+                    isToday && styles.inicio3StreakDayBorderInner,
+                  ]}
+                >
+                  <Feather name="check" size={22} color="#F9F9F9" />
+                </LinearGradient>
+              ) : (
+                <View
+                  style={[
+                    styles.inicio3StreakDay,
+                    isToday && styles.inicio3StreakDayBorderInner,
+                  ]}
+                />
+              );
               return (
                 <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                  {active ? (
+                  {isToday ? (
                     <LinearGradient
-                      colors={streakGradient}
+                      colors={theme.gradient as unknown as [string, string, ...string[]]}
                       locations={theme.gradientLocations}
-                      style={[styles.inicio3StreakDay, styles.inicio3StreakDayActive]}
+                      start={theme.gradientStart}
+                      end={theme.gradientEnd}
+                      style={styles.inicio3StreakDayGradientBorder}
                     >
-                      <Feather name="check" size={22} color="#F9F9F9" />
+                      {dayCircle}
                     </LinearGradient>
                   ) : (
-                    <View
-                      style={[
-                        styles.inicio3StreakDay,
-                        isToday && styles.inicio3StreakDayActive,
-                      ]}
-                    />
+                    dayCircle
                   )}
                   <Text style={styles.inicio3StreakDayLabel}>
                     {initial}
@@ -3483,6 +3502,19 @@ const styles = StyleSheet.create({
   inicio3StreakDayActive: {
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.45)",
+  },
+  inicio3StreakDayGradientBorder: {
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
+    padding: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inicio3StreakDayBorderInner: {
+    width: 33,
+    height: 33,
+    borderRadius: 16.5,
   },
   inicio3StreakDayLabel: {
     color: "#F9F9F9",
