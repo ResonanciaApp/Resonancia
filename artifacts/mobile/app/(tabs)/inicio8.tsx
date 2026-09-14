@@ -1558,7 +1558,7 @@ function Inicio2HeroStatic({
                         maskElement={<View style={styles.inicio3StreakDayRingMask} />}
                       >
                         <LinearGradient
-                          colors={theme.gradient as unknown as [string, string, ...string[]]}
+                          colors={streakGradient}
                           locations={theme.gradientLocations}
                           start={theme.gradientStart}
                           end={theme.gradientEnd}
