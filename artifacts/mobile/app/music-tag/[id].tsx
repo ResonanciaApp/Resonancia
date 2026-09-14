@@ -30,6 +30,65 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 
+type MusicFilterId = "all" | "duration-5" | "duration-10" | "duration-11" | `theme:${string}`;
+
+type MusicFilterTab = {
+  id: MusicFilterId;
+  label: string;
+};
+
+function durationMinutes(label: string): number {
+  const minuteMatch = label.match(/(\d+(?:[.,]\d+)?)\s*min/i);
+  if (minuteMatch) return Number(minuteMatch[1].replace(",", "."));
+
+  const clockParts = label.split(":").map((part) => Number(part));
+  if (clockParts.length === 2 && clockParts.every(Number.isFinite)) {
+    return clockParts[0] + clockParts[1] / 60;
+  }
+
+  return Number.parseFloat(label.replace(",", "."));
+}
+
+function MusicFilterTabs({
+  tabs,
+  activeFilter,
+  onSelect,
+}: {
+  tabs: MusicFilterTab[];
+  activeFilter: MusicFilterId;
+  onSelect: (id: MusicFilterId) => void;
+}) {
+  return (
+    <View style={styles.chipRowWrapper}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipRow}
+        contentContainerStyle={styles.chipRowContent}
+      >
+        {tabs.map((tab) => {
+          const selected = tab.id === activeFilter;
+          return (
+            <Pressable
+              key={tab.id}
+              onPress={() => onSelect(tab.id)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+              accessibilityRole="tab"
+              accessibilityState={{ selected }}
+            >
+              <View style={[styles.chip, selected && styles.chipSelected]}>
+                <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+                  {tab.label}
+                </Text>
+              </View>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const rawId = idProp ?? params.id;
@@ -45,7 +104,8 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [stickyActive, setStickyActive] = useState(false);
-  const [headerBottomY, setHeaderBottomY] = useState(Number.POSITIVE_INFINITY);
+  const [tabsOffsetY, setTabsOffsetY] = useState(Number.POSITIVE_INFINITY);
+  const [activeFilter, setActiveFilter] = useState<MusicFilterId>("all");
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
 
   const sessions = useMemo(
@@ -57,6 +117,50 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
       ).sort(sortSessionsNewestFirst),
     [id, version],
   );
+
+  const filterTabs = useMemo<MusicFilterTab[]>(() => {
+    const themeTags = Array.from(
+      new Set(
+        sessions.flatMap((session) =>
+          (session.themeTag ?? [])
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+        ),
+      ),
+    );
+
+    return [
+      { id: "all", label: "Ver todo" },
+      { id: "duration-5", label: "5 min" },
+      { id: "duration-10", label: "10 min" },
+      { id: "duration-11", label: "11+ min" },
+      ...themeTags.map((tag) => ({
+        id: `theme:${tag}` as const,
+        label: tag,
+      })),
+    ];
+  }, [sessions]);
+
+  const filteredSessions = useMemo(() => {
+    if (activeFilter === "all") return sessions;
+    if (activeFilter.startsWith("theme:")) {
+      const tag = activeFilter.slice("theme:".length);
+      return sessions.filter((session) =>
+        (session.themeTag as readonly string[] | undefined)?.includes(tag),
+      );
+    }
+
+    return sessions.filter((session) => {
+      const minutes = durationMinutes(session.durationLabel);
+      if (activeFilter === "duration-5") return minutes <= 5;
+      if (activeFilter === "duration-10") return minutes > 5 && minutes <= 10;
+      return minutes > 10;
+    });
+  }, [activeFilter, sessions]);
+
+  React.useEffect(() => {
+    setActiveFilter("all");
+  }, [id]);
 
   React.useEffect(() => {
     stickyHeaderOpacity.stopAnimation();
@@ -105,17 +209,11 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
         scrollEventThrottle={16}
         onScroll={(event) => {
           const active =
-            event.nativeEvent.contentOffset.y > headerBottomY - topPad - 8;
+            event.nativeEvent.contentOffset.y > tabsOffsetY - topPad - 8;
           if (active !== stickyActive) setStickyActive(active);
         }}
       >
-        <View
-          style={[styles.header, { paddingTop: topPad + 8 }]}
-          onLayout={(event) => {
-            const { y, height } = event.nativeEvent.layout;
-            setHeaderBottomY(y + height);
-          }}
-        >
+        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
           <Pressable
             onPress={goBack}
             hitSlop={10}
@@ -138,20 +236,35 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
           </Text>
         </View>
 
-        {sessions.length === 0 ? (
+        <View
+          style={styles.chipsArea}
+          onLayout={(event) => {
+            setTabsOffsetY(event.nativeEvent.layout.y);
+          }}
+        >
+          <MusicFilterTabs
+            tabs={filterTabs}
+            activeFilter={activeFilter}
+            onSelect={setActiveFilter}
+          />
+        </View>
+
+        {filteredSessions.length === 0 ? (
           <View style={[styles.emptyState, { borderColor: colors.border }]}>
             <Feather name="music" size={28} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              Próximamente
+              {sessions.length === 0 ? "Próximamente" : "Sin resultados"}
             </Text>
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-              Estamos preparando nuevas sesiones para esta categoría
+              {sessions.length === 0
+                ? "Estamos preparando nuevas sesiones para esta categoría"
+                : "No hay sesiones para este filtro"}
             </Text>
           </View>
         ) : (
           <SessionCarousel
             title=""
-            sessions={sessions}
+            sessions={filteredSessions}
             isPremium={isPremium}
             onPress={openSession}
             style={styles.sessionGrid}
@@ -209,6 +322,13 @@ export default function MusicTagDetailScreen({ id: idProp }: { id?: string } = {
         >
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
+        <View style={styles.stickyTabs}>
+          <MusicFilterTabs
+            tabs={filterTabs}
+            activeFilter={activeFilter}
+            onSelect={setActiveFilter}
+          />
+        </View>
       </Animated.View>
     </View>
   );
@@ -243,6 +363,49 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  chipsArea: {
+    paddingTop: 9,
+    paddingBottom: 15,
+    paddingHorizontal: H_PAD,
+    overflow: "visible",
+  },
+  chipRowWrapper: {
+    position: "relative",
+    marginHorizontal: -H_PAD,
+  },
+  chipRow: { flexGrow: 0 },
+  chipRowContent: {
+    flexDirection: "row",
+    gap: 8,
+    paddingVertical: 2,
+    paddingHorizontal: H_PAD,
+  },
+  chip: {
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
+    overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  chipSelected: {
+    backgroundColor: "#F9F9F9",
+    borderWidth: 0,
+  },
+  chipText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    textAlign: "center",
+  },
+  chipTextSelected: {
+    color: "#060A0F",
   },
   sessionGrid: {
     flexDirection: "row",
@@ -298,5 +461,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     fontWeight: "700",
+  },
+  stickyTabs: {
+    marginTop: 19,
   },
 });
