@@ -10,3 +10,5 @@ Las etiquetas editoriales de categorías distintas de Música se guardan dentro 
 **How to apply:** Cualquier alta, renombrado, borrado, filtro o consumidor móvil de estas etiquetas debe usar la misma codificación por categoría. Los prefijos nunca deben mostrarse en UI ni filtros globales.
 
 En Mobile, las subcategorías históricas organizan tabs y carruseles de la pantalla principal. Al abrir una subcategoría, sus filtros son Ver todo, 5 min, 10 min, 11+ min y las etiquetas editoriales presentes en esas sesiones. Las etiquetas editoriales nunca crean tabs o carruseles principales.
+
+En Admin, la sección “Subcategoría” muestra solo la subcategoría canónica de la categoría activa. Los campos heredados “Etiqueta Sonidos” y “Etiqueta Podcast” no se muestran, aunque sus valores existentes se preservan al editar. “Otras temáticas” sigue siendo un grupo histórico visible dentro de “Etiquetas” y no debe eliminarse al añadir taxonomías editoriales nuevas.

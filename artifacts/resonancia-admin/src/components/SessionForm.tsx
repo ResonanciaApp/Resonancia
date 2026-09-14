@@ -92,11 +92,16 @@ const DESCANSO_TAGS = [
   "Sonidos de lluvia",
   "Ruido",
 ];
-const SONIDOS_TAGS = [
-  "Sonidos Binaurales",
-  "Sonidos Naturaleza",
-  "Sonidos Atmosféricos",
-  "Frecuencias Astrales",
+const OTHER_THEME_TAGS = [
+  "Para la ansiedad",
+  "Energiza tus mañanas",
+  "Foco y concentración",
+  "Suelto la Rabia",
+  "Crecimiento personal",
+  "Armonía familiar",
+  "Respiración consciente",
+  "Meditaciones Activas",
+  "Astrología",
 ];
 const SONIDOS_COLLECTION_TAGS = [
   "Todos los sonidos",
@@ -108,7 +113,6 @@ const SONIDOS_COLLECTION_TAGS = [
   "Sonidos de lluvia",
   "Sonidos para Chakras",
 ];
-const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
@@ -838,7 +842,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       </Section>
 
       {/* ── SECCIÓN: Subcategoría ── */}
-      {categoryId && (
+      {["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId) && (
         <Section
           title="Subcategoría"
           open={openSections.subcategoria}
@@ -875,21 +879,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               />
             )}
 
-            <SingleTagOptionSelector
-              tagType="sonidos"
-              defaults={SONIDOS_TAGS}
-              label="Etiqueta Sonidos (opcional)"
-              selected={sonidosTag}
-              onSelect={setSonidosTag}
-            />
-
-            <SingleTagOptionSelector
-              tagType="podcast"
-              defaults={PODCAST_TAGS}
-              label="Etiqueta Podcast (opcional)"
-              selected={podcastTag}
-              onSelect={setPodcastTag}
-            />
           </div>
         </Section>
       )}
@@ -925,6 +914,15 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                 pill
               />
             )}
+
+            <TagOptionSelector
+              tagType="other_theme"
+              defaults={OTHER_THEME_TAGS}
+              label="Otras temáticas (opcional)"
+              selected={themeTag.filter((tag) => !tag.startsWith("__"))}
+              onToggle={toggleTheme}
+              pill
+            />
 
             <TagOptionSelector
               tagType="descanso"
