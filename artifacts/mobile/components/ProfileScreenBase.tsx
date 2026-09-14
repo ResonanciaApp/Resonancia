@@ -69,6 +69,7 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import {
   gradientColors,
   type GeoSettings,
@@ -1334,6 +1335,7 @@ export function ProfileScreenBase({
                   );
                 })()}
               </View>
+              <ProfileMixCarousel marginBottom={0} />
             </View>
 
           </>
