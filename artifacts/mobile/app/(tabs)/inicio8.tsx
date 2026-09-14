@@ -1303,7 +1303,7 @@ function Inicio2HeroStatic({
   const streakBorderGradient = useMemo(
     () =>
       theme.gradient.map((color) =>
-        brightenStreakColor(color, 35),
+        brightenStreakColor(color, 40),
       ) as unknown as [string, string, ...string[]],
     [theme.gradient],
   );
