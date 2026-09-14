@@ -1358,17 +1358,9 @@ function Inicio2HeroStatic({
       >
         {isInicio3 ? (
           <RAnimated.View
-            style={[styles.inicio3HeroTopShadow, heroShadowStyle]}
+            style={[styles.inicio3HeroShadowViewport, heroShadowStyle]}
           >
-            <LinearGradient
-              colors={[
-                "rgba(0,0,0,0)",
-                "rgba(0,0,0,0.18)",
-                "rgba(0,0,0,0)",
-              ]}
-              locations={[0, 0.48, 1]}
-              style={StyleSheet.absoluteFill}
-            />
+            <View style={styles.inicio3HeroShadowCaster} />
           </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
@@ -3483,12 +3475,27 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
   },
-  inicio3HeroTopShadow: {
+  inicio3HeroShadowViewport: {
     position: "absolute",
-    top: -3,
-    left: 2,
-    right: 2,
-    height: 28,
+    top: -18,
+    left: -18,
+    right: -18,
+    height: 50,
+    overflow: "hidden",
+  },
+  inicio3HeroShadowCaster: {
+    position: "absolute",
+    top: 21,
+    left: 18,
+    right: 18,
+    height: 90,
+    borderRadius: 25,
+    backgroundColor: "rgba(0,0,0,0.04)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 13,
+    elevation: 5,
   },
   inicio3HeroCopy: {
     zIndex: 30,
