@@ -1671,15 +1671,114 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
   }
   const { type, label } = parsedBody.data;
   try {
-    const [row] = await db
-      .insert(catalogTagOptionsTable)
-      .values({ type, label })
-      .returning();
+    const row = await db.transaction(async (tx) => {
+      const duplicate = await tx.select({ id: catalogTagOptionsTable.id })
+        .from(catalogTagOptionsTable)
+        .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${label})`))
+        .limit(1);
+      if (duplicate.length) throw new Error("DUPLICATE");
+      const [created] = await tx.insert(catalogTagOptionsTable)
+        .values({ type, label })
+        .returning();
+      if (type.endsWith("_hidden")) {
+        const baseType = type.slice(0, -"_hidden".length);
+        const categoryId = CATEGORY_THEME_TYPE_TO_ID[baseType];
+        if (categoryId) {
+          const storedLabel = storedCategoryThemeLabel(baseType, label);
+          await tx.update(catalogSessionsTable)
+            .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
+            .where(and(
+              eq(catalogSessionsTable.categoryId, categoryId),
+              sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
+            ));
+        }
+      }
+      return created;
+    });
     req.log.info({ type, label }, "tag option created");
     res.status(201).json(row);
   } catch (err) {
+    if (err instanceof Error && err.message === "DUPLICATE") {
+      res.status(409).json({ error: "Ya existe una etiqueta con ese nombre" });
+      return;
+    }
     req.log.error({ err }, "error creating tag option");
     res.status(500).json({ error: "Error al crear etiqueta" });
+  }
+});
+
+const CATEGORY_THEME_TYPE_TO_ID: Record<string, string> = {
+  theme: "musica-sonidos",
+  category_theme_meditaciones: "meditaciones-guiadas",
+  category_theme_sonoterapia: "sonidos-ancestrales",
+  category_theme_charlas: "charlas",
+  category_theme_historias: "historias",
+  category_theme_ambientales: "ambientales",
+};
+
+function storedCategoryThemeLabel(type: string, label: string): string {
+  return type === "theme" ? label : `__${type}__:${label}`;
+}
+
+router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = z.object({
+    type: z.string().trim().min(1).max(60),
+    oldLabel: z.string().trim().min(1).max(120),
+    newLabel: z.string().trim().min(1).max(120),
+  }).safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos" });
+    return;
+  }
+  const { type, oldLabel, newLabel } = parsed.data;
+  if (oldLabel.toLocaleLowerCase() === newLabel.toLocaleLowerCase()) {
+    res.status(400).json({ error: "El nombre nuevo debe ser diferente" });
+    return;
+  }
+  try {
+    const result = await db.transaction(async (tx) => {
+      const duplicate = await tx.select({ id: catalogTagOptionsTable.id })
+        .from(catalogTagOptionsTable)
+        .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${newLabel})`))
+        .limit(1);
+      if (duplicate.length) throw new Error("DUPLICATE");
+
+      const existing = await tx.select().from(catalogTagOptionsTable)
+        .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${oldLabel})`))
+        .limit(1);
+      let row;
+      if (existing[0]) {
+        [row] = await tx.update(catalogTagOptionsTable)
+          .set({ label: newLabel })
+          .where(eq(catalogTagOptionsTable.id, existing[0].id))
+          .returning();
+      } else {
+        [row] = await tx.insert(catalogTagOptionsTable).values({ type, label: newLabel }).returning();
+        await tx.insert(catalogTagOptionsTable)
+          .values({ type: `${type}_hidden`, label: oldLabel });
+      }
+
+      const categoryId = CATEGORY_THEME_TYPE_TO_ID[type];
+      if (categoryId) {
+        const oldStored = storedCategoryThemeLabel(type, oldLabel);
+        const newStored = storedCategoryThemeLabel(type, newLabel);
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_replace(${catalogSessionsTable.themeTag}, ${oldStored}, ${newStored})` })
+          .where(and(
+            eq(catalogSessionsTable.categoryId, categoryId),
+            sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
+          ));
+      }
+      return row;
+    });
+    res.json(result);
+  } catch (err) {
+    if (err instanceof Error && err.message === "DUPLICATE") {
+      res.status(409).json({ error: "Ya existe una etiqueta con ese nombre" });
+      return;
+    }
+    req.log.error({ err }, "error renaming tag option");
+    res.status(500).json({ error: "Error al renombrar etiqueta" });
   }
 });
 
@@ -1687,10 +1786,24 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
   const id = parseInt(String(req.params.id), 10);
   if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
   try {
-    const [deleted] = await db
-      .delete(catalogTagOptionsTable)
-      .where(eq(catalogTagOptionsTable.id, id))
-      .returning();
+    const [deleted] = await db.transaction(async (tx) => {
+      const [option] = await tx.select().from(catalogTagOptionsTable)
+        .where(eq(catalogTagOptionsTable.id, id)).limit(1);
+      if (!option) return [];
+      const categoryId = CATEGORY_THEME_TYPE_TO_ID[option.type];
+      if (categoryId) {
+        const storedLabel = storedCategoryThemeLabel(option.type, option.label);
+        await tx.update(catalogSessionsTable)
+          .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
+          .where(and(
+            eq(catalogSessionsTable.categoryId, categoryId),
+            sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
+          ));
+      }
+      return tx.delete(catalogTagOptionsTable)
+        .where(eq(catalogTagOptionsTable.id, id))
+        .returning();
+    });
     if (!deleted) { res.status(404).json({ error: "Etiqueta no encontrada" }); return; }
     req.log.info({ id }, "tag option deleted");
     res.status(204).end();

@@ -38,11 +38,7 @@ export function CategoryLandingSections({
     (width - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
   );
   const getTags = (session: Session) =>
-    categoryId === "meditaciones-guiadas"
-      ? session.meditationTag ? [session.meditationTag] : []
-      : categoryId === "sonidos-ancestrales"
-        ? session.ancestralTag ? [session.ancestralTag] : []
-        : getCategorySessionTags(session, categoryId);
+    getCategorySessionTags(session, categoryId);
 
   const collections = tabs
     .map((tag) => ({

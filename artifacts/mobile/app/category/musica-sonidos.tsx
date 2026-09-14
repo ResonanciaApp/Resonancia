@@ -39,6 +39,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { getCategorySessionTags } from "@/data/category-tabs";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -67,7 +68,9 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
-  const filtered = tab ? all.filter((s) => s.soundTag === tab) : all;
+  const filtered = tab
+    ? all.filter((s) => getCategorySessionTags(s, "musica-sonidos").includes(tab))
+    : all;
   return filtered.sort(sortSessionsNewestFirst);
 }
 
@@ -288,8 +291,8 @@ export default function MusicaSonidosScreen() {
 
   const TABS = useMemo(() => {
     const uniqueTags = [...new Set(
-      SESSIONS.filter((s) => s.categoryId === "musica-sonidos" && s.soundTag)
-              .map((s) => s.soundTag as string)
+      SESSIONS.filter((s) => s.categoryId === "musica-sonidos")
+              .flatMap((s) => getCategorySessionTags(s, "musica-sonidos"))
     )];
     return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);

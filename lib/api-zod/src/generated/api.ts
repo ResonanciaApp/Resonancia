@@ -4270,6 +4270,23 @@ export const CreateAdminTagOptionBody = zod.object({
 
 
 /**
+ * @summary Renombrar una opción y actualizar las sesiones asociadas
+ */
+export const RenameAdminTagOptionBody = zod.object({
+  "type": zod.string(),
+  "oldLabel": zod.string(),
+  "newLabel": zod.string()
+})
+
+export const RenameAdminTagOptionResponse = zod.object({
+  "id": zod.number(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
  * @summary Eliminar opción de etiqueta/subcategoría
  */
 export const DeleteAdminTagOptionParams = zod.object({

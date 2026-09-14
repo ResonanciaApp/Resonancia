@@ -1982,6 +1982,12 @@ export interface CreateTagOptionBody {
   label: string;
 }
 
+export interface TagOptionRename {
+  type: string;
+  oldLabel: string;
+  newLabel: string;
+}
+
 export interface GuideConfigInput {
   guideId: string;
   displayName: string;

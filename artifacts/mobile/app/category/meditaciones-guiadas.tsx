@@ -34,6 +34,7 @@ import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { getCategorySessionTags } from "@/data/category-tabs";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -56,7 +57,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
   if (!tab) return all;
-  return all.filter((s) => s.meditationTag === tab);
+  return all.filter((s) => getCategorySessionTags(s, "meditaciones-guiadas").includes(tab));
 }
 
 
@@ -274,8 +275,8 @@ export default function MeditacionesGuiadasScreen() {
 
   const TABS = useMemo(() => {
     const uniqueTags = [...new Set(
-      SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.meditationTag)
-              .map((s) => s.meditationTag as string)
+      SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas")
+              .flatMap((s) => getCategorySessionTags(s, "meditaciones-guiadas"))
     )];
      return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);

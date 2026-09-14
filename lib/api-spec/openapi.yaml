@@ -3934,6 +3934,27 @@ paths:
                 $ref: "#/components/schemas/TagOption"
         "400":
           description: Datos inválidos
+    patch:
+      operationId: renameAdminTagOption
+      tags: [admin]
+      summary: Renombrar una opción y actualizar las sesiones asociadas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagOptionRename"
+      responses:
+        "200":
+          description: Opción renombrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagOption"
+        "400":
+          description: Datos inválidos
+        "409":
+          description: Ya existe una opción con ese nombre
   /admin/tag-options/{id}:
     delete:
       operationId: deleteAdminTagOption
@@ -6654,6 +6675,16 @@ components:
         type:
           type: string
         label:
+          type: string
+    TagOptionRename:
+      type: object
+      required: [type, oldLabel, newLabel]
+      properties:
+        type:
+          type: string
+        oldLabel:
+          type: string
+        newLabel:
           type: string
     GuideConfigInput:
       type: object

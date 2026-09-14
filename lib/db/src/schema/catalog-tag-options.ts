@@ -5,7 +5,10 @@ import { z } from "zod/v4";
 /**
  * Opciones de etiquetas/subcategorías configurables desde el panel admin.
  * type: "ancestral" | "meditation" | "sound" | "sonidos" | "podcast" |
- *       "sleep" | "theme" | "other_theme" | "tema"
+ *       "sleep" | "theme" | "category_theme_meditaciones" |
+ *       "category_theme_sonoterapia" | "category_theme_charlas" |
+ *       "category_theme_historias" | "category_theme_ambientales" |
+ *       "other_theme" | "tema"
  */
 export const catalogTagOptionsTable = pgTable("catalog_tag_options", {
   id: serial("id").primaryKey(),

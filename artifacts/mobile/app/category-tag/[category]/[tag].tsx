@@ -48,12 +48,6 @@ function decodeRoutePart(value: string) {
 }
 
 function tagsForSession(session: Session, categoryId: string) {
-  if (categoryId === "meditaciones-guiadas") {
-    return session.meditationTag ? [session.meditationTag] : [];
-  }
-  if (categoryId === "sonidos-ancestrales") {
-    return session.ancestralTag ? [session.ancestralTag] : [];
-  }
   return getCategorySessionTags(session, categoryId);
 }
 

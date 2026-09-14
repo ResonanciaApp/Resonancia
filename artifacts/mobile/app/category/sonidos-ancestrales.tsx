@@ -38,6 +38,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
+import { getCategorySessionTags } from "@/data/category-tabs";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -78,7 +79,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
   if (!tab) return all;
-  return all.filter((s) => s.ancestralTag === tab);
+  return all.filter((s) => getCategorySessionTags(s, "sonidos-ancestrales").includes(tab));
 }
 
 function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, playCounts: Record<string,number> = {}) {
@@ -404,7 +405,9 @@ export default function SonidosAncestalesScreen() {
   // TABS dinámicas: un chip por cada ancestralTag distinto en las sesiones
   const TABS = useMemo(() => {
     const ancestralSessions = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
-    const uniqueTags = [...new Set(ancestralSessions.map((s) => s.ancestralTag).filter(Boolean))] as string[];
+    const uniqueTags = [...new Set(ancestralSessions.flatMap((s) =>
+      getCategorySessionTags(s, "sonidos-ancestrales"),
+    ))];
     return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);
 

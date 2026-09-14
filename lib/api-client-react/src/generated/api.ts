@@ -143,6 +143,7 @@ import type {
   SubmissionFilterOptions,
   SubmissionList,
   TagOption,
+  TagOptionRename,
   TopMessageResponse,
   TypingStatus,
   UnreadCount,
@@ -10443,6 +10444,77 @@ export const useCreateAdminTagOption = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getCreateAdminTagOptionMutationOptions(options));
+    }
+
+export const getRenameAdminTagOptionUrl = () => {
+
+
+
+
+  return `/api/admin/tag-options`
+}
+
+/**
+ * @summary Renombrar una opción y actualizar las sesiones asociadas
+ */
+export const renameAdminTagOption = async (tagOptionRename: TagOptionRename, options?: RequestInit): Promise<TagOption> => {
+
+  return customFetch<TagOption>(getRenameAdminTagOptionUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      tagOptionRename,)
+  }
+);}
+
+
+
+
+export const getRenameAdminTagOptionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renameAdminTagOption>>, TError,{data: BodyType<TagOptionRename>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof renameAdminTagOption>>, TError,{data: BodyType<TagOptionRename>}, TContext> => {
+
+const mutationKey = ['renameAdminTagOption'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renameAdminTagOption>>, {data: BodyType<TagOptionRename>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  renameAdminTagOption(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RenameAdminTagOptionMutationResult = NonNullable<Awaited<ReturnType<typeof renameAdminTagOption>>>
+    export type RenameAdminTagOptionMutationBody = BodyType<TagOptionRename>
+    export type RenameAdminTagOptionMutationError = ErrorType<void>
+
+    /**
+ * @summary Renombrar una opción y actualizar las sesiones asociadas
+ */
+export const useRenameAdminTagOption = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renameAdminTagOption>>, TError,{data: BodyType<TagOptionRename>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof renameAdminTagOption>>,
+        TError,
+        {data: BodyType<TagOptionRename>},
+        TContext
+      > => {
+      return useMutation(getRenameAdminTagOptionMutationOptions(options));
     }
 
 export const getDeleteAdminTagOptionUrl = (id: number,) => {

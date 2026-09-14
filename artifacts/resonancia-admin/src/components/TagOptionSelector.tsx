@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@clerk/react";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, Pencil } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
@@ -20,6 +20,8 @@ interface TagOptionSelectorProps {
   label: string;
   selected: string[];
   onToggle: (tag: string) => void;
+  onRename?: (from: string, to: string) => void;
+  onDelete?: (tag: string) => void;
   pill?: boolean;
   fixed?: boolean;
 }
@@ -30,6 +32,8 @@ export function TagOptionSelector({
   label,
   selected,
   onToggle,
+  onRename,
+  onDelete,
   pill = false,
   fixed = false,
 }: TagOptionSelectorProps) {
@@ -40,6 +44,7 @@ export function TagOptionSelector({
   const [newLabel, setNewLabel] = useState("");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<string | null>(null);
 
   const hiddenType = `${tagType}_hidden`;
 
@@ -99,6 +104,7 @@ export function TagOptionSelector({
 
   // ── Eliminar tag custom (DB) ──────────────────────────────────────────────
   const handleDeleteCustom = async (opt: TagOption) => {
+    if (!window.confirm(`¿Eliminar la etiqueta "${opt.label}"? Se quitará también de las sesiones que la usan.`)) return;
     setDeleting(`custom-${opt.id}`);
     try {
       const token = await getToken();
@@ -109,6 +115,7 @@ export function TagOptionSelector({
       });
       if (!res.ok) throw new Error();
       setDbTags((p) => p.filter((t) => t.id !== opt.id));
+      onDelete?.(opt.label);
       toast.success(`"${opt.label}" eliminada`);
     } catch {
       toast.error("No se pudo eliminar");
@@ -119,6 +126,7 @@ export function TagOptionSelector({
 
   // ── Ocultar default (guarda en catalog_tag_options con tipo _hidden) ───────
   const handleHideDefault = async (tag: string) => {
+    if (!window.confirm(`¿Eliminar la etiqueta "${tag}" de este grupo?`)) return;
     const key = tag.toLowerCase();
     if (hiddenIds.has(key)) return;
     setDeleting(`default-${key}`);
@@ -133,11 +141,38 @@ export function TagOptionSelector({
       if (!res.ok) throw new Error();
       const created: TagOption = await res.json();
       setHiddenIds((prev) => new Map(prev).set(key, created.id));
+      onDelete?.(tag);
       toast.success(`"${tag}" eliminada`);
     } catch {
       toast.error("No se pudo eliminar");
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const handleRename = async (tag: string) => {
+    const next = window.prompt("Nuevo nombre de la etiqueta", tag)?.trim();
+    if (!next || next === tag) return;
+    setRenaming(tag);
+    try {
+      const token = await getToken();
+      const res = await fetch("/api/admin/tag-options", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
+        body: JSON.stringify({ type: tagType, oldLabel: tag, newLabel: next }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "No se pudo renombrar");
+      }
+      onRename?.(tag, next);
+      await load();
+      toast.success(`"${tag}" ahora se llama "${next}"`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo renombrar");
+    } finally {
+      setRenaming(null);
     }
   };
 
@@ -167,6 +202,18 @@ export function TagOptionSelector({
     </button>
   );
 
+  const renameBtn = (tag: string) => (
+    <button
+      type="button"
+      onClick={() => handleRename(tag)}
+      disabled={renaming === tag}
+      aria-label={`Renombrar ${tag}`}
+      className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity"
+    >
+      {renaming === tag ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Pencil className="w-2.5 h-2.5" />}
+    </button>
+  );
+
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{label}</Label>
@@ -182,6 +229,7 @@ export function TagOptionSelector({
                 {tag}
               </button>
               {!fixed && deleteBtn(key, busy, () => handleHideDefault(tag))}
+               {!fixed && renameBtn(tag)}
             </div>
           );
         })}
@@ -196,6 +244,7 @@ export function TagOptionSelector({
                 {opt.label}
               </button>
               {deleteBtn(key, busy, () => handleDeleteCustom(opt))}
+               {renameBtn(opt.label)}
             </div>
           );
         })}

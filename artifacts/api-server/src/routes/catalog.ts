@@ -887,7 +887,7 @@ router.get(
       const themeTagSet = new Set<string>();
       for (const r of rows) {
         for (const t of r.themeTag ?? []) {
-          if (t) themeTagSet.add(t);
+          if (t && !t.startsWith("__category_theme_")) themeTagSet.add(t);
         }
       }
 

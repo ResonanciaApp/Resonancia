@@ -142,3 +142,4 @@
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Progreso espejo Perfil](progress-profile-mirror.md) — racha semanal, estadísticas personales y calendario son un solo bloque compartido; Perfil y Tu progreso nunca deben divergir
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
+- [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica

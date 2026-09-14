@@ -22,6 +22,11 @@ import type {
   GetPendingSubmissionsParams,
 } from "@workspace/api-client-react";
 import { uploadFile as uploadFileShared } from "@/lib/uploadFile";
+import {
+  CATEGORY_THEME_TAGS,
+  categoryThemeSelectedLabels,
+  categoryThemeStoredValue,
+} from "@/lib/categoryThemeTags";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -308,9 +313,6 @@ function RejectDialog({
 const ANCESTRAL_DEFAULTS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Gongs","Gongs Planetarios","Cuencos y Gongs","Campanas","Flautas","Digeridoo","Tambores","Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"];
 const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga Nidra","Meditación Zen","Kundalini","Metta","Body Scan"];
 const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
-const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
-const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
-const TEMA_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","ASMR","Estrés","Spa","Familia","Insomnio"];
 const SLEEP_DEFAULTS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 
 function EditDialog({
@@ -390,6 +392,7 @@ function EditDialog({
   const isAncestral   = catId === "sonidos-ancestrales";
   const isMeditation  = catId === "meditaciones-guiadas";
   const isMusic       = catId === "musica-sonidos";
+  const categoryThemeConfig = CATEGORY_THEME_TAGS[catId];
 
   const toggleTheme = (tag: string) =>
     setThemeTag((prev) =>
@@ -707,35 +710,29 @@ function EditDialog({
               />
             )}
 
-            {/* Etiquetas Nivel 1 */}
-            <TagOptionSelector
-              tagType="theme"
-              defaults={THEME_TAGS}
-              label="Etiquetas Nivel 1 (opcional)"
-              selected={themeTag}
-              onToggle={toggleTheme}
-              pill
-            />
-
-            {/* Etiquetas Nivel 2 (Temas de "Explorar todo") */}
-            <TagOptionSelector
-              tagType="tema"
-              defaults={TEMA_TAGS}
-              label="Etiquetas Nivel 2 (opcional)"
-              selected={temaTag}
-              onToggle={toggleTema}
-              pill
-            />
-
-            {/* Otras temáticas */}
-            <TagOptionSelector
-              tagType="other_theme"
-              defaults={OTHER_THEME_TAGS}
-              label="Otras temáticas (opcional)"
-              selected={themeTag}
-              onToggle={toggleTheme}
-              pill
-            />
+            {categoryThemeConfig && (
+              <TagOptionSelector
+                tagType={categoryThemeConfig.tagType}
+                defaults={categoryThemeConfig.defaults}
+                label={categoryThemeConfig.label}
+                selected={categoryThemeSelectedLabels(catId, themeTag)}
+                onToggle={(label) => {
+                  const stored = categoryThemeStoredValue(catId, label);
+                  setThemeTag((tags) => tags.includes(stored)
+                    ? tags.filter((tag) => tag !== stored)
+                    : [...tags, stored]);
+                }}
+                onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                  tag === categoryThemeStoredValue(catId, from)
+                    ? categoryThemeStoredValue(catId, to)
+                    : tag
+                ))}
+                onDelete={(label) => setThemeTag((tags) =>
+                  tags.filter((value) => value !== categoryThemeStoredValue(catId, label))
+                )}
+                pill
+              />
+            )}
 
             {/* Etiqueta de sueño (Grupo 2) */}
             <SingleTagOptionSelector

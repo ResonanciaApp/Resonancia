@@ -15,6 +15,11 @@ import {
 } from "lucide-react";
 import { TagOptionSelector, SingleTagOptionSelector } from "@/components/TagOptionSelector";
 import {
+  CATEGORY_THEME_TAGS,
+  categoryThemeSelectedLabels,
+  categoryThemeStoredValue,
+} from "@/lib/categoryThemeTags";
+import {
   useCreateSubmission,
   useApproveSubmission,
   useRequestUploadUrl,
@@ -68,6 +73,7 @@ const CATS = [
   { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },
   { id: "historias", label: "Historias", categoryLabel: "Historias", color: "#D5A4E8" },
   { id: "charlas", label: "Charlas", categoryLabel: "Charlas", color: "#F0B17A" },
+  { id: "ambientales", label: "Ambientales", categoryLabel: "Ambientales", color: "#78AFA5" },
 ] as const;
 
 const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
@@ -101,9 +107,6 @@ const SONIDOS_COLLECTION_TAGS = [
 ];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
-const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
-const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
-const TEMA_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","ASMR","Estrés","Spa","Familia","Insomnio"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -593,6 +596,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               key={cat.id}
               type="button"
               onClick={() => {
+                if (cat.id !== categoryId) setThemeTag([]);
                 setCategoryId(cat.id);
                 if (!isEdit) {
                   // reset tags al cambiar categoría
@@ -879,23 +883,29 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           onToggle={() => toggleSection("tags")}
         >
           <div className="space-y-4">
-            <TagOptionSelector
-              tagType="theme"
-              defaults={THEME_TAGS}
-              label="Etiquetas Nivel 1 (opcional)"
-              selected={themeTag}
-              onToggle={toggleTheme}
-              pill
-            />
-
-            <TagOptionSelector
-              tagType="tema"
-              defaults={TEMA_TAGS}
-              label="Etiquetas Nivel 2 (opcional)"
-              selected={temaTag}
-              onToggle={toggleTema}
-              pill
-            />
+            {CATEGORY_THEME_TAGS[categoryId] && (
+              <TagOptionSelector
+                tagType={CATEGORY_THEME_TAGS[categoryId].tagType}
+                defaults={CATEGORY_THEME_TAGS[categoryId].defaults}
+                label={CATEGORY_THEME_TAGS[categoryId].label}
+                selected={categoryThemeSelectedLabels(categoryId, themeTag)}
+                onToggle={(label) => {
+                  const stored = categoryThemeStoredValue(categoryId, label);
+                  setThemeTag((tags) => tags.includes(stored)
+                    ? tags.filter((tag) => tag !== stored)
+                    : [...tags, stored]);
+                }}
+                onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                  tag === categoryThemeStoredValue(categoryId, from)
+                    ? categoryThemeStoredValue(categoryId, to)
+                    : tag
+                ))}
+                onDelete={(label) => setThemeTag((tags) =>
+                  tags.filter((value) => value !== categoryThemeStoredValue(categoryId, label))
+                )}
+                pill
+              />
+            )}
 
             <TagOptionSelector
               tagType="descanso"
@@ -915,15 +925,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               onToggle={toggleSonidos}
               pill
               fixed
-            />
-
-            <TagOptionSelector
-              tagType="other_theme"
-              defaults={OTHER_THEME_TAGS}
-              label="Otras temáticas (opcional)"
-              selected={themeTag}
-              onToggle={toggleTheme}
-              pill
             />
 
             {(categoryId === "musica-sonidos" || categoryId === "descanso") && (
