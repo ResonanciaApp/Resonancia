@@ -55,33 +55,35 @@ export function SupercategoryFilterTabs({
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: 18,
+    paddingTop: 9,
+    paddingBottom: 15,
   },
   content: {
     paddingHorizontal: 20,
+    paddingVertical: 2,
     gap: 8,
   },
   chip: {
-    minHeight: 36,
-    paddingHorizontal: 15,
-    borderRadius: 18,
+    height: 46,
+    paddingHorizontal: 16,
+    borderRadius: 27,
     borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.22)",
-    backgroundColor: "rgba(0,0,0,0.12)",
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   chipSelected: {
-    borderColor: "#BE9650",
-    backgroundColor: "rgba(190,150,80,0.18)",
+    borderWidth: 0,
+    backgroundColor: "#F9F9F9",
   },
   label: {
-    color: "rgba(249,249,249,0.72)",
+    color: "#FBFBFB",
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   labelSelected: {
-    color: "#F9F9F9",
+    color: "#060A0F",
   },
 });
