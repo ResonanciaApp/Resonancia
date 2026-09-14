@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
-import { SessionCarousel } from "@/components/SessionCarousel";
+import { CategoryLandingSections } from "@/components/CategoryLandingSections";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
@@ -130,14 +130,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
   );
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [searchVisible, setSearchVisible] = useState(false);
-  const filteredSessions = useMemo(
-    () => activeTab === null
-      ? allSessions
-      : allSessions.filter((session) =>
-          getCategorySessionTags(session, id).includes(activeTab),
-        ),
-    [activeTab, allSessions, id],
-  );
   const searchItems = useMemo(
     () => allSessions.map((session) => ({
       id: session.id,
@@ -208,8 +200,17 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
     router.push(`/session/${session.id}` as never);
   };
 
+  const openSubcategory = (tag: string) => {
+    const route = `/category-tag/${encodeURIComponent(id)}/${encodeURIComponent(tag)}`;
+    if (categoryOverlay) {
+      categoryOverlay.openCategory(route);
+    } else {
+      router.push(route as never);
+    }
+  };
+
   const renderSessions = () => {
-    if (filteredSessions.length === 0) {
+    if (allSessions.length === 0 || tabs.length === 0) {
       return (
         <View style={styles.emptyState}>
           <Feather name="headphones" size={48} color="#F9F9F9" style={styles.emptyIcon} />
@@ -221,57 +222,20 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       );
     }
 
-    if (id === "ambientales") {
-      return (
-        <SessionCarousel
-          title=""
-          sessions={filteredSessions}
-          isPremium={isPremium}
-          style={{ paddingHorizontal: 0 }}
-          onPress={handleSessionPress}
-          showHeader={false}
-          gridLayout
-          fillGridWidth
-          gridScrollEnabled={false}
-          eagerRender
-          presentation="editorial"
-          ambientalTitleOnly
-          soundPreview={{
-            activeId: soundPreview.activeId,
-            isPlaying: soundPreview.isPlaying,
-            progress: soundPreview.progress,
-            onToggle: soundPreview.toggle,
-          }}
-          titleSize={19}
-        />
-      );
-    }
-
     return (
-      <SessionCarousel
-        title=""
-        sessions={filteredSessions}
+      <CategoryLandingSections
+        categoryId={id}
+        sessions={allSessions}
+        tabs={tabs}
         isPremium={isPremium}
-        style={{ paddingHorizontal: 0 }}
         onPress={handleSessionPress}
-        showHeader={false}
-        gridLayout
-        fillGridWidth
-        gridScrollEnabled={false}
-        eagerRender
-        presentation="editorial"
-        disableAmbientalVariant
-        sleepMetadataBelow
-        categoryGridPresentation
-        whiteMetadataGlass
-        showDurationClock
-        sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
-        cardBorderRadius={16}
-        hideCategoryAboveTitle
-        showSleepCategoryPillWithInlineDuration
-        ambientalTitleOnly
-        sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
-        overlayGradientLocations={[0.18, 0.48, 1]}
+        onOpenSubcategory={openSubcategory}
+        soundPreview={id === "ambientales" ? {
+          activeId: soundPreview.activeId,
+          isPlaying: soundPreview.isPlaying,
+          progress: soundPreview.progress,
+          onToggle: soundPreview.toggle,
+        } : undefined}
       />
     );
   };
@@ -334,7 +298,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             tabs={tabs}
             activeTab={activeTab}
             indigo2BackgroundColor={indigo2TabsBackgroundColor}
-            onSelect={setActiveTab}
+             onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
         </View>
 
@@ -402,7 +366,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             tabs={tabs}
             activeTab={activeTab}
             indigo2BackgroundColor={indigo2TabsBackgroundColor}
-            onSelect={setActiveTab}
+             onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
         </View>
       </Animated.View>

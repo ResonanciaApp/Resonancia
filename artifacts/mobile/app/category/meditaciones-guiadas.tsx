@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { CategoryLandingSections } from "@/components/CategoryLandingSections";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
@@ -354,6 +355,32 @@ export default function MeditacionesGuiadasScreen() {
   );
 
   const renderContent = () => {
+    if (activeTab === null) {
+      return (
+        <CategoryLandingSections
+          categoryId="meditaciones-guiadas"
+          sessions={getSessionsForTab(null)}
+          tabs={TABS.map((tab) => tab.id)}
+          isPremium={isPremium}
+          onPress={(session) => {
+            if (session.skipMiniPlayer) {
+              playSession(session);
+              return;
+            }
+            if (session.skipDetail) {
+              playSession(session);
+              router.push("/player" as never);
+              return;
+            }
+            openCategory(`/session/${session.id}`);
+          }}
+          onLongPress={setSelectedSession}
+          onOpenSubcategory={(tag) => openCategory(
+            `/category-tag/${encodeURIComponent("meditaciones-guiadas")}/${encodeURIComponent(tag)}`,
+          )}
+        />
+      );
+    }
     if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="moon" size={48} color={GOLD} style={{marginBottom:16}} />
@@ -518,7 +545,9 @@ export default function MeditacionesGuiadasScreen() {
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor}
-            onSelect={(id) => setActiveTab(id)}
+             onSelect={(id) => id && openCategory(
+               `/category-tag/${encodeURIComponent("meditaciones-guiadas")}/${encodeURIComponent(id)}`,
+             )}
           />
         </View>
 
@@ -598,7 +627,14 @@ export default function MeditacionesGuiadasScreen() {
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
         <View style={{ marginTop: 19 }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} indigo2BackgroundColor={indigo2TabsBackgroundColor} onSelect={setActiveTab} />
+           <ChipRow
+             tabs={TABS}
+             activeTab={activeTab}
+             indigo2BackgroundColor={indigo2TabsBackgroundColor}
+             onSelect={(id) => id && openCategory(
+               `/category-tag/${encodeURIComponent("meditaciones-guiadas")}/${encodeURIComponent(id)}`,
+             )}
+           />
         </View>
       </Animated.View>
 

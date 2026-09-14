@@ -37,6 +37,7 @@ const LazyEditorialPlaylist = React.lazy(() => import("@/app/editorial-playlist/
 const LazySleepTag      = React.lazy(() => import("@/app/sleep-tag/[id]"));
 const LazySoundTag      = React.lazy(() => import("@/app/sound-tag/[id]"));
 const LazyMusicTag      = React.lazy(() => import("@/app/music-tag/[id]"));
+const LazyCategoryTag   = React.lazy(() => import("@/app/category-tag/[category]/[tag]"));
 
 const W = Dimensions.get("window").width;
 
@@ -46,6 +47,18 @@ function resolveRoute(route: string): { node: React.ReactNode; eager: boolean; d
   if (route === "/category/meditaciones-guiadas") return { node: <LazyMeditaciones />, eager: false };
   if (route === "/category/sonidos-ancestrales") return { node: <LazySonidos />, eager: false };
   if (route === "/category/musica-sonidos") return { node: <LazyMusica />, eager: false };
+  const categoryTag = route.match(/^\/category-tag\/([^/]+)\/(.+)$/);
+  if (categoryTag) {
+    return {
+      node: (
+        <LazyCategoryTag
+          categoryId={decodeURIComponent(categoryTag[1])}
+          tag={decodeURIComponent(categoryTag[2])}
+        />
+      ),
+      eager: false,
+    };
+  }
   const category = route.match(/^\/category\/(.+)$/);
   if (category) {
     return {

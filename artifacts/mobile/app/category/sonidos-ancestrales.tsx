@@ -3,6 +3,7 @@ import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { CategoryLandingSections } from "@/components/CategoryLandingSections";
 import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
@@ -491,6 +492,28 @@ export default function SonidosAncestalesScreen() {
   const hasMore = visibleCount < sessions.length;
 
   const renderContent = () => {
+    if (activeTab === null) {
+      return (
+        <CategoryLandingSections
+          categoryId="sonidos-ancestrales"
+          sessions={getSessionsForTab(null)}
+          tabs={TABS.map((tab) => tab.id)}
+          isPremium={isPremium}
+          onPress={(session) => {
+            if (session.skipMiniPlayer) {
+              playSession(session);
+              return;
+            }
+            playSession(session);
+            router.push("/player" as never);
+          }}
+          onLongPress={setSelectedSession}
+          onOpenSubcategory={(tag) => openCategory(
+            `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(tag)}`,
+          )}
+        />
+      );
+    }
     if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
@@ -656,7 +679,9 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab}
             indigo2BackgroundColor={indigo2ChipBackgroundColor}
-            onSelect={(id) => setActiveTab(id)}
+            onSelect={(id) => id && openCategory(
+              `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
+            )}
           />
         </View>
 
@@ -718,7 +743,9 @@ export default function SonidosAncestalesScreen() {
             tabs={TABS}
             activeTab={activeTab}
             indigo2BackgroundColor={indigo2ChipBackgroundColor}
-            onSelect={setActiveTab}
+             onSelect={(id) => id && openCategory(
+               `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
+             )}
           />
         </View>
       </Animated.View>
