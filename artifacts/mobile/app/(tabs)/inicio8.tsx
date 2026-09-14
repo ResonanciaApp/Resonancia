@@ -1360,15 +1360,33 @@ function Inicio2HeroStatic({
           <RAnimated.View
             style={[styles.inicio3HeroBackShadow, heroShadowStyle]}
           >
-            <LinearGradient
-              colors={[
-                "rgba(0,0,0,0)",
-                "rgba(0,0,0,0.15)",
-                "rgba(0,0,0,0.40)",
-              ]}
-              locations={[0, 0.62, 1]}
+            <MaskedView
               style={StyleSheet.absoluteFill}
-            />
+              maskElement={
+                <LinearGradient
+                  colors={[
+                    "rgba(0,0,0,0)",
+                    "#000000",
+                    "#000000",
+                    "rgba(0,0,0,0)",
+                  ]}
+                  locations={[0, 0.14, 0.86, 1]}
+                  start={{ x: 0, y: 0.5 }}
+                  end={{ x: 1, y: 0.5 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              }
+            >
+              <LinearGradient
+                colors={[
+                  "rgba(0,0,0,0)",
+                  "rgba(0,0,0,0.15)",
+                  "rgba(0,0,0,0.40)",
+                ]}
+                locations={[0, 0.62, 1]}
+                style={StyleSheet.absoluteFill}
+              />
+            </MaskedView>
           </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
@@ -3485,7 +3503,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroBackShadow: {
     position: "absolute",
-    top: -42,
+    top: -19,
     left: 5,
     right: 5,
     height: 42,
