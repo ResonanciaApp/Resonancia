@@ -1,27 +1,28 @@
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import type { SupercategoryFilter } from "@/data/supercategory-editorial-tags";
+import {
+  getSupercategoryFilterTabs,
+  shouldShowSupercategoryFilterTabs,
+  type SupercategoryFilter,
+} from "@/data/supercategory-editorial-tags";
 
 export function SupercategoryFilterTabs({
   editorialTags,
   active,
   onSelect,
+  includeDurationFilters = true,
+  hideWithoutEditorialTags = false,
 }: {
   editorialTags: string[];
   active: SupercategoryFilter;
   onSelect: (filter: SupercategoryFilter) => void;
+  includeDurationFilters?: boolean;
+  hideWithoutEditorialTags?: boolean;
 }) {
-  const tabs: { id: SupercategoryFilter; label: string }[] = [
-    { id: "all", label: "Ver todo" },
-    { id: "duration-5", label: "5 min" },
-    { id: "duration-10", label: "10 min" },
-    { id: "duration-11", label: "11+ min" },
-    ...editorialTags.map((tag) => ({
-      id: `editorial:${tag}` as const,
-      label: tag,
-    })),
-  ];
+  if (!shouldShowSupercategoryFilterTabs(editorialTags, hideWithoutEditorialTags)) return null;
+
+  const tabs = getSupercategoryFilterTabs(editorialTags, includeDurationFilters);
 
   return (
     <View style={styles.wrapper}>

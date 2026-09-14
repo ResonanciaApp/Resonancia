@@ -11,6 +11,38 @@ export type SupercategoryFilter =
   | "duration-11"
   | `editorial:${string}`;
 
+export type SupercategoryFilterTab = {
+  id: SupercategoryFilter;
+  label: string;
+};
+
+export function getSupercategoryFilterTabs(
+  editorialTags: readonly string[],
+  includeDurationFilters = true,
+): SupercategoryFilterTab[] {
+  return [
+    { id: "all", label: "Ver todo" },
+    ...(includeDurationFilters
+      ? [
+          { id: "duration-5" as const, label: "5 min" },
+          { id: "duration-10" as const, label: "10 min" },
+          { id: "duration-11" as const, label: "11+ min" },
+        ]
+      : []),
+    ...editorialTags.map((tag) => ({
+      id: `editorial:${tag}` as const,
+      label: tag,
+    })),
+  ];
+}
+
+export function shouldShowSupercategoryFilterTabs(
+  editorialTags: readonly string[],
+  hideWithoutEditorialTags: boolean,
+): boolean {
+  return !hideWithoutEditorialTags || editorialTags.length > 0;
+}
+
 type ThemeTagged = {
   themeTag?: readonly string[] | null;
 };

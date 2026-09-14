@@ -8,3 +8,5 @@ Dormir y Sonidos usan dos clasificaciones independientes: las colecciones determ
 **Why:** Una sesión puede pertenecer transversalmente a una colección como “Sonidos para dormir” y necesitar además una clasificación editorial interna. Usar la segunda etiqueta como colección duplica accesos y rompe la jerarquía.
 
 **How to apply:** Guardar las etiquetas editoriales de Dormir y Sonidos con familias de prefijos distintas; exigir membresía en la supercategoría correspondiente; excluir todos los valores privados prefijados de filtros globales y etiquetas de categorías principales.
+
+En las colecciones internas de Sonidos no se muestran filtros de duración porque las cards Ambientales son infinitas. La barra completa permanece desmontada mientras no exista ninguna etiqueta editorial; al aparecer una, muestra únicamente `Ver todo` y las etiquetas disponibles.

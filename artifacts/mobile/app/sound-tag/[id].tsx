@@ -149,6 +149,8 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         editorialTags={editorialTags}
         active={activeFilter}
         onSelect={setActiveFilter}
+        includeDurationFilters={false}
+        hideWithoutEditorialTags
       />
       {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
