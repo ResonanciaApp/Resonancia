@@ -342,7 +342,7 @@ export function MoodPickerSheet({
               <Text style={[styles.subtitle, { color: themeAccent }]}>
                 Depende de ti si quieres compartir esto
               </Text>
-              <View style={[styles.optionsCard, { backgroundColor: themeCardBackground }]}>
+              <View style={styles.optionsCard}>
                 {MOOD_SURVEY_OPTIONS[currentMood.id].map((option, index) => {
                   const isSelected = currentAnswer === option.id;
                   return (
@@ -354,7 +354,6 @@ export function MoodPickerSheet({
                       style={({ pressed }) => [
                         styles.optionRow,
                         index > 0 && styles.optionRowBorder,
-                        isSelected && styles.optionRowSelected,
                         { opacity: pressed ? 0.8 : 1 },
                       ]}
                       accessibilityRole="radio"
@@ -688,7 +687,7 @@ const styles = StyleSheet.create({
   optionsCard: {
     overflow: "hidden",
     borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.16)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   optionRow: {
     minHeight: 70,
@@ -700,9 +699,6 @@ const styles = StyleSheet.create({
   optionRowBorder: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(255,255,255,0.16)",
-  },
-  optionRowSelected: {
-    backgroundColor: "rgba(0,0,0,0.25)",
   },
   radio: {
     width: 26,
