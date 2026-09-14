@@ -1327,7 +1327,7 @@ function Inicio2HeroStatic({
     const progress = Math.min(1, y / 180);
     return {
       transform: [
-        { translateY: Math.min(142, y * 0.72) },
+        { translateY: y * 0.72 },
         { scale: 1 - progress * 0.035 },
       ],
     };
@@ -1338,7 +1338,7 @@ function Inicio2HeroStatic({
     const progress = Math.min(1, y / 180);
     return {
       transform: [
-        { translateY: Math.min(142, y * 0.72) },
+        { translateY: y * 0.72 },
         { scale: 1 - progress * 0.035 },
       ],
     };
