@@ -302,7 +302,13 @@ export function MoodPickerSheet({
                 })}
               </View>
             </ScrollView>
-            <View style={[styles.footer, { paddingBottom: bottomPad + 16 }]}>
+            <View
+              style={[
+                styles.footer,
+                styles.surveyFooter,
+                { paddingBottom: bottomPad + 16 },
+              ]}
+            >
               <PrimaryButton
                 label="Continuar"
                 disabled={!selected.length}
