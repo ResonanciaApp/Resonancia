@@ -1683,14 +1683,16 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
       if (type.endsWith("_hidden")) {
         const baseType = type.slice(0, -"_hidden".length);
         const categoryId = CATEGORY_THEME_TYPE_TO_ID[baseType];
-        if (categoryId) {
+        if (isManagedThemeType(baseType)) {
           const storedLabel = storedCategoryThemeLabel(baseType, label);
           await tx.update(catalogSessionsTable)
             .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
-            .where(and(
-              eq(catalogSessionsTable.categoryId, categoryId),
-              sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
-            ));
+            .where(categoryId
+              ? and(
+                  eq(catalogSessionsTable.categoryId, categoryId),
+                  sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
+                )
+              : sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
         }
       }
       return created;
@@ -1715,6 +1717,15 @@ const CATEGORY_THEME_TYPE_TO_ID: Record<string, string> = {
   category_theme_historias: "historias",
   category_theme_ambientales: "ambientales",
 };
+
+const SUPERCATEGORY_THEME_TYPES = new Set([
+  "supercategory_theme_descanso",
+  "supercategory_theme_sonidos",
+]);
+
+function isManagedThemeType(type: string): boolean {
+  return Boolean(CATEGORY_THEME_TYPE_TO_ID[type]) || SUPERCATEGORY_THEME_TYPES.has(type);
+}
 
 function storedCategoryThemeLabel(type: string, label: string): string {
   return type === "theme" ? label : `__${type}__:${label}`;
@@ -1759,15 +1770,17 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
       }
 
       const categoryId = CATEGORY_THEME_TYPE_TO_ID[type];
-      if (categoryId) {
+      if (isManagedThemeType(type)) {
         const oldStored = storedCategoryThemeLabel(type, oldLabel);
         const newStored = storedCategoryThemeLabel(type, newLabel);
         await tx.update(catalogSessionsTable)
           .set({ themeTag: sql`array_replace(${catalogSessionsTable.themeTag}, ${oldStored}, ${newStored})` })
-          .where(and(
-            eq(catalogSessionsTable.categoryId, categoryId),
-            sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
-          ));
+          .where(categoryId
+            ? and(
+                eq(catalogSessionsTable.categoryId, categoryId),
+                sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
+              )
+            : sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
       }
       return row;
     });
@@ -1791,14 +1804,16 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
         .where(eq(catalogTagOptionsTable.id, id)).limit(1);
       if (!option) return [];
       const categoryId = CATEGORY_THEME_TYPE_TO_ID[option.type];
-      if (categoryId) {
+      if (isManagedThemeType(option.type)) {
         const storedLabel = storedCategoryThemeLabel(option.type, option.label);
         await tx.update(catalogSessionsTable)
           .set({ themeTag: sql`array_remove(${catalogSessionsTable.themeTag}, ${storedLabel})` })
-          .where(and(
-            eq(catalogSessionsTable.categoryId, categoryId),
-            sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
-          ));
+          .where(categoryId
+            ? and(
+                eq(catalogSessionsTable.categoryId, categoryId),
+                sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
+              )
+            : sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
       }
       return tx.delete(catalogTagOptionsTable)
         .where(eq(catalogTagOptionsTable.id, id))

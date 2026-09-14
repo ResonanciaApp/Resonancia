@@ -15,10 +15,16 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SupercategoryFilterTabs } from "@/components/SupercategoryFilterTabs";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { getSessionsByDescansoTag } from "@/data/sessions";
+import {
+  collectSupercategoryEditorialTags,
+  matchesSupercategoryFilter,
+  type SupercategoryFilter,
+} from "@/data/supercategory-editorial-tags";
 import { useCatalog } from "@/context/CatalogContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -38,7 +44,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const { activeSceneId, theme } = useSceneTheme();
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
-  useCatalog();
+  const { version } = useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -50,6 +56,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
   const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
+  const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
 
   React.useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
@@ -60,12 +67,35 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   }, [stickyActive, stickyHeaderOpacity]);
 
   const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
+  const sessions = React.useMemo(
+    () => tag ? getSessionsByDescansoTag(tag.label) : [],
+    [tag, version],
+  );
+  const editorialTags = React.useMemo(
+    () => collectSupercategoryEditorialTags(sessions, "descanso"),
+    [sessions],
+  );
+  const filteredSessions = React.useMemo(
+    () => sessions.filter((session) =>
+      matchesSupercategoryFilter(session, "descanso", activeFilter)),
+    [activeFilter, sessions],
+  );
+
+  React.useEffect(() => {
+    setActiveFilter("all");
+  }, [id]);
+  React.useEffect(() => {
+    if (
+      activeFilter.startsWith("editorial:") &&
+      !editorialTags.includes(activeFilter.slice("editorial:".length))
+    ) {
+      setActiveFilter("all");
+    }
+  }, [activeFilter, editorialTags]);
 
   if (!tag) return null;
 
   const goBack = () => (overlayBack ? overlayBack() : router.back());
-
-  const sessions = getSessionsByDescansoTag(tag.label);
 
   return (
     <View
@@ -125,21 +155,29 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           </Text>
         </View>
 
+        <SupercategoryFilterTabs
+          editorialTags={editorialTags}
+          active={activeFilter}
+          onSelect={setActiveFilter}
+        />
+
         {/* ── Sessions grid or empty ── */}
-        {sessions.length === 0 ? (
+        {filteredSessions.length === 0 ? (
           <View style={[styles.emptySlot, { borderColor: colors.border, marginHorizontal: H_PAD }]}>
             <Feather name="moon" size={28} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              Próximamente
+              {sessions.length === 0 ? "Próximamente" : "Sin resultados"}
             </Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              Estamos preparando estas sesiones para ti
+              {sessions.length === 0
+                ? "Estamos preparando estas sesiones para ti"
+                : "No hay sesiones para este filtro"}
             </Text>
           </View>
         ) : (
           <SessionCarousel
             title=""
-            sessions={sessions}
+            sessions={filteredSessions}
             isPremium={isPremium}
             onPress={(session) => {
               if (session.skipMiniPlayer) {

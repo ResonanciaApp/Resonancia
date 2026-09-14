@@ -183,9 +183,7 @@ export default function SonidosScreen() {
     () =>
       SONIDOS_TAG_CARDS.map((tag) => ({
         ...tag,
-        sessions: tag.label === "Todos los sonidos"
-          ? getSessionsByCategory("ambientales")
-          : getSessionsBySonidosTag(tag.label),
+        sessions: getSessionsBySonidosTag(tag.label),
       })).filter((tag) => tag.sessions.length > 0),
     [version],
   );

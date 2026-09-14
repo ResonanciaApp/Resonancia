@@ -47,7 +47,7 @@ export function getCategoryEditorialTags(
     ambientales: "category_theme_ambientales",
   };
   if (categoryId === "musica-sonidos") {
-    return [...new Set((session.themeTag ?? []).filter((tag) => !tag.startsWith("__category_theme_")))];
+    return [...new Set((session.themeTag ?? []).filter((tag) => !tag.startsWith("__")))];
   }
   const categoryType = typeByCategory[categoryId];
   const prefix = categoryType ? `__${categoryType}__:` : "";

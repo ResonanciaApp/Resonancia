@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SupercategoryFilterTabs } from "@/components/SupercategoryFilterTabs";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -23,6 +24,11 @@ import {
   type Session,
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
+import {
+  collectSupercategoryEditorialTags,
+  matchesSupercategoryFilter,
+  type SupercategoryFilter,
+} from "@/data/supercategory-editorial-tags";
 import { useColors } from "@/hooks/useColors";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
@@ -44,6 +50,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
   const soundPreview = useSoundPreview();
+  const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
   useFocusEffect(
     useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
   );
@@ -54,10 +61,30 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
     () => tag ? getSessionsBySonidosTag(tag.label) : [],
     [tag, version],
   );
+  const editorialTags = useMemo(
+    () => collectSupercategoryEditorialTags(sessions, "sonidos"),
+    [sessions],
+  );
+  const filteredSessions = useMemo(
+    () => sessions.filter((session) =>
+      matchesSupercategoryFilter(session, "sonidos", activeFilter)),
+    [activeFilter, sessions],
+  );
   const queueIds = useMemo(
     () => getSonidosVisibleSessions().map((session) => session.id),
     [version],
   );
+  React.useEffect(() => {
+    setActiveFilter("all");
+  }, [id]);
+  React.useEffect(() => {
+    if (
+      activeFilter.startsWith("editorial:") &&
+      !editorialTags.includes(activeFilter.slice("editorial:".length))
+    ) {
+      setActiveFilter("all");
+    }
+  }, [activeFilter, editorialTags]);
 
   if (!tag) return null;
 
@@ -118,17 +145,24 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           {tag.label}
         </Text>
       </View>
-      {sessions.length === 0 ? (
+      <SupercategoryFilterTabs
+        editorialTags={editorialTags}
+        active={activeFilter}
+        onSelect={setActiveFilter}
+      />
+      {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
           <View style={[styles.empty, { borderColor: colors.border }]}>
             <Feather name="headphones" size={28} color={colors.mutedForeground} />
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Próximamente</Text>
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+              {sessions.length === 0 ? "Próximamente" : "Sin resultados"}
+            </Text>
           </View>
         </View>
       ) : (
         <SessionCarousel
           title=""
-          sessions={sessions}
+          sessions={filteredSessions}
           isPremium={isPremium}
           onPress={openSession}
           style={styles.scroll}

@@ -16,8 +16,11 @@ import {
 import { TagOptionSelector, SingleTagOptionSelector } from "@/components/TagOptionSelector";
 import {
   CATEGORY_THEME_TAGS,
+  SUPERCATEGORY_THEME_TAGS,
   categoryThemeSelectedLabels,
   categoryThemeStoredValue,
+  themeTagSelectedLabels,
+  themeTagStoredValue,
 } from "@/lib/categoryThemeTags";
 import {
   useCreateSubmission,
@@ -228,7 +231,12 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       if (selected.has(tag)) selected.delete(tag);
       else selected.add(tag);
       if (selected.size > 0) selected.add("Todos los sonidos");
-      return SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+      const next = SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+      if (next.length === 0) {
+        const prefix = `__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`;
+        setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+      }
+      return next;
     });
   };
   const [guideIds, setGuideIds] = useState<string[]>(initial?.guideId ? [initial.guideId] : [""]);
@@ -291,9 +299,14 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     );
 
   const toggleDescanso = (tag: string) =>
-    setDescansoTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
+    setDescansoTags((prev) => {
+      const next = prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag];
+      if (next.length === 0) {
+        const prefix = `__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`;
+        setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+      }
+      return next;
+    });
 
   const addBenefit = () => {
     const v = benefitInput.trim();
@@ -395,6 +408,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         });
       }
 
+      const persistedThemeTags = themeTag.filter((tag) =>
+        (descansoTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`)) &&
+        (sonidosTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`)));
       const body: CreateBody = {
         title: title.trim(),
         subtitle: subtitle.trim(),
@@ -412,7 +428,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
         instruments: instruments.length ? instruments : undefined,
-        themeTag: themeTag.length ? themeTag : undefined,
+        themeTag: persistedThemeTags.length ? persistedThemeTags : undefined,
         temaTag: temaTag.length ? temaTag : undefined,
         sleepTag: sleepTag || undefined,
         ancestralTag: ancestralTag || undefined,
@@ -471,6 +487,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         setUploadedImage(imgUploaded);
       }
 
+      const persistedThemeTags = themeTag.filter((tag) =>
+        (descansoTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`)) &&
+        (sonidosTags.length > 0 || !tag.startsWith(`__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`)));
       const body: EditBody = {
         title: title.trim(),
         subtitle: subtitle.trim(),
@@ -491,7 +510,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isPinnedFeatured,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag ? (voiceTag as EditBody["voiceTag"]) : null),
-        themeTag,
+        themeTag: persistedThemeTags,
         temaTag,
         sleepTag: sleepTag || null,
         ancestralTag: ancestralTag || null,
@@ -917,6 +936,33 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               fixed
             />
 
+            {descansoTags.length > 0 && (() => {
+              const config = SUPERCATEGORY_THEME_TAGS.descanso;
+              return (
+                <TagOptionSelector
+                  tagType={config.tagType}
+                  defaults={config.defaults}
+                  label={config.label}
+                  selected={themeTagSelectedLabels(config.tagType, themeTag)}
+                  onToggle={(label) => {
+                    const stored = themeTagStoredValue(config.tagType, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === themeTagStoredValue(config.tagType, from)
+                      ? themeTagStoredValue(config.tagType, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((tag) => tag !== themeTagStoredValue(config.tagType, label))
+                  )}
+                  pill
+                />
+              );
+            })()}
+
             <TagOptionSelector
               tagType="sonidos_collection"
               defaults={SONIDOS_COLLECTION_TAGS}
@@ -926,6 +972,33 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               pill
               fixed
             />
+
+            {sonidosTags.length > 0 && (() => {
+              const config = SUPERCATEGORY_THEME_TAGS.sonidos;
+              return (
+                <TagOptionSelector
+                  tagType={config.tagType}
+                  defaults={config.defaults}
+                  label={config.label}
+                  selected={themeTagSelectedLabels(config.tagType, themeTag)}
+                  onToggle={(label) => {
+                    const stored = themeTagStoredValue(config.tagType, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === themeTagStoredValue(config.tagType, from)
+                      ? themeTagStoredValue(config.tagType, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((tag) => tag !== themeTagStoredValue(config.tagType, label))
+                  )}
+                  pill
+                />
+              );
+            })()}
 
             {(categoryId === "musica-sonidos" || categoryId === "descanso") && (
               <SingleTagOptionSelector

@@ -38,6 +38,7 @@ import {
 import { getCatalogReadiness } from "../lib/catalogReadiness";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
+import { normalizeSupercategoryEditorialTags } from "../lib/supercategoryEditorialTags";
 
 const router: IRouter = Router();
 
@@ -649,6 +650,14 @@ router.post(
       res.status(400).json({ error: "Colección de Sonidos inválida" });
       return;
     }
+    const normalizedSonidosTags = normalizeSonidosTags(body.sonidosTags, body.sonidosTag);
+    const normalizedDescansoTags = body.descansoTags ?? [];
+    const normalizedThemeTags = normalizeSupercategoryEditorialTags({
+      themeTags: body.themeTag,
+      descansoTags: normalizedDescansoTags,
+      sonidosTags: normalizedSonidosTags,
+      allowEditorialTags: me.role === "admin",
+    });
 
     // Validación de assets (el server no ve los bytes; valida la metadata).
     for (const a of body.audioFiles) {
@@ -732,10 +741,10 @@ router.post(
           sabiduriaTag: body.sabiduriaTag ?? null,
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
-          sonidosTags: normalizeSonidosTags(body.sonidosTags, body.sonidosTag),
+          sonidosTags: normalizedSonidosTags,
           descansoTag: null,
-          descansoTags: body.descansoTags ?? [],
-          themeTag: body.themeTag ?? null,
+          descansoTags: normalizedDescansoTags,
+          themeTag: normalizedThemeTags,
           temaTag: body.temaTag ?? null,
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
@@ -887,7 +896,7 @@ router.get(
       const themeTagSet = new Set<string>();
       for (const r of rows) {
         for (const t of r.themeTag ?? []) {
-          if (t && !t.startsWith("__category_theme_")) themeTagSet.add(t);
+          if (t && !t.startsWith("__")) themeTagSet.add(t);
         }
       }
 
@@ -1144,6 +1153,14 @@ router.patch(
           .from(catalogAudioFilesTable)
           .where(eq(catalogAudioFilesTable.sessionId, id));
         const candidate = { ...current, ...updates };
+        const normalizedThemeTags = normalizeSupercategoryEditorialTags({
+          themeTags: candidate.themeTag,
+          descansoTags: candidate.descansoTags,
+          sonidosTags: candidate.sonidosTags,
+          allowEditorialTags: true,
+        });
+        candidate.themeTag = normalizedThemeTags;
+        updates.themeTag = normalizedThemeTags;
         if (candidate.isPlaceholder) {
           // También protege placeholders existentes cuando el PATCH no incluyó
           // isPlaceholder pero sí intentó modificar el comportamiento del card.
