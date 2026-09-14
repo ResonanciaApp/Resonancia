@@ -85,7 +85,7 @@ export function ContinueMeditationPlaylistCard({
 const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 16,
-    marginTop: -25,
+    marginTop: -5,
     marginBottom: 53,
   },
   sectionTitle: {
