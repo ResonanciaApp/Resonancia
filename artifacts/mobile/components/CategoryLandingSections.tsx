@@ -1,7 +1,11 @@
 import React from "react";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import type { Session } from "@/data/sessions";
 import { getCategorySessionTags } from "@/data/category-tabs";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
+
+const H_PAD = 16;
 
 type CategoryLandingSectionsProps = {
   categoryId: string;
@@ -29,6 +33,10 @@ export function CategoryLandingSections({
   onOpenSubcategory,
   soundPreview,
 }: CategoryLandingSectionsProps) {
+  const { width } = useWindowDimensions();
+  const cardWidth = Math.round(
+    (width - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+  );
   const getTags = (session: Session) =>
     categoryId === "meditaciones-guiadas"
       ? session.meditationTag ? [session.meditationTag] : []
@@ -48,34 +56,48 @@ export function CategoryLandingSections({
   return (
     <>
       {collections.map((collection, index) => (
-        <SessionCarousel
-          key={collection.tag}
-          title={collection.tag}
-          sessions={collection.sessions}
-          isPremium={isPremium}
-          onPress={onPress}
-          onLongPress={onLongPress}
-          onViewAll={() => onOpenSubcategory(collection.tag)}
-          style={{
-            paddingHorizontal: 0,
-            marginTop: index === 0 ? 33 : 26,
-            marginBottom: 0,
-          }}
-          presentation="editorial"
-          disableAmbientalVariant={categoryId !== "ambientales"}
-          sleepMetadataBelow={categoryId !== "ambientales"}
-          categoryGridPresentation={categoryId !== "ambientales"}
-          whiteMetadataGlass={categoryId !== "ambientales"}
-          showDurationClock={categoryId !== "ambientales"}
-          trailingPeek={20}
-          cardBorderRadius={16}
-          hideCategoryAboveTitle={categoryId !== "ambientales"}
-          showSleepCategoryPillWithInlineDuration={categoryId !== "ambientales"}
-          ambientalTitleOnly={categoryId === "ambientales"}
-          overlayGradientLocations={[0.18, 0.48, 1]}
-          soundPreview={soundPreview}
-        />
+        <React.Fragment key={collection.tag}>
+          {index > 0 ? <View style={styles.sectionDivider} /> : null}
+          <SessionCarousel
+            title={collection.tag}
+            sessions={collection.sessions}
+            isPremium={isPremium}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            onViewAll={() => onOpenSubcategory(collection.tag)}
+            style={{
+              paddingHorizontal: H_PAD,
+              marginTop: index === 0 ? 33 : 26,
+              marginBottom: 0,
+            }}
+            presentation="editorial"
+            disableAmbientalVariant={categoryId !== "ambientales"}
+            sleepMetadataBelow={categoryId !== "ambientales"}
+            categoryGridPresentation={categoryId !== "ambientales"}
+            whiteMetadataGlass={categoryId !== "ambientales"}
+            showDurationClock={categoryId !== "ambientales"}
+            trailingPeek={20}
+            cardWidth={cardWidth}
+            allowOversizedCardWidth
+            cardBorderRadius={16}
+            titleSize={17}
+            hideCategoryAboveTitle={categoryId !== "ambientales"}
+            showSleepCategoryPillWithInlineDuration={categoryId !== "ambientales"}
+            ambientalTitleOnly={categoryId === "ambientales"}
+            overlayGradientLocations={[0.18, 0.48, 1]}
+            soundPreview={soundPreview}
+          />
+        </React.Fragment>
       ))}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  sectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: H_PAD,
+    marginTop: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+});
