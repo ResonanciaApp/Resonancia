@@ -841,7 +841,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       </Section>
 
       {/* ── SECCIÓN: Subcategoría ── */}
-      {["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId) && (
+      {(isEdit || ["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId)) && (
         <Section
           title="Subcategoría"
           open={openSections.subcategoria}
@@ -878,12 +878,17 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               />
             )}
 
+            {isEdit && !["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId) && (
+              <p className="text-sm text-muted-foreground">
+                Esta categoría no tiene subcategorías configuradas. Podés cambiar la categoría para asignar una.
+              </p>
+            )}
           </div>
         </Section>
       )}
 
       {/* ── SECCIÓN: Etiquetas ── */}
-      {categoryId && (
+      {(isEdit || categoryId) && (
         <Section
           title="Etiquetas"
           open={openSections.tags}
