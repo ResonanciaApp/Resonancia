@@ -168,6 +168,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           style={styles.scroll}
           showHeader={false}
           gridLayout
+          fillGridWidth
           gridBottomPadding={60 + bottomPad}
           presentation="editorial"
           cardVariant="ambiental"
