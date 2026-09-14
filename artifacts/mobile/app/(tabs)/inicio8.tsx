@@ -36,6 +36,7 @@ import RAnimated, {
   useAnimatedProps,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
   withDelay,
   withSpring,
@@ -1284,6 +1285,7 @@ function Inicio2HeroStatic({
   onOpenProfile,
   onOpenSearch,
   isInicio3,
+  scrollY,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1292,6 +1294,7 @@ function Inicio2HeroStatic({
   onOpenProfile: () => void;
   onOpenSearch: () => void;
   isInicio3?: boolean;
+  scrollY?: SharedValue<number>;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
@@ -1313,9 +1316,22 @@ function Inicio2HeroStatic({
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
   const greeting = getGreeting();
+  const reduceMotion = useReducedMotion();
+  const fallbackScrollY = useSharedValue(0);
+  const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
+  const slowHeaderStyle = useAnimatedStyle(() => {
+    if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
+    const y = Math.max(0, effectiveScrollY.value);
+    return { transform: [{ translateY: y * 0.42 }] };
+  }, [isInicio3, reduceMotion]);
+  const heroShadowStyle = useAnimatedStyle(() => {
+    if (!isInicio3) return { opacity: 0 };
+    const y = Math.max(0, effectiveScrollY.value);
+    return { opacity: reduceMotion ? (y > 1 ? 1 : 0) : Math.min(1, y / 28) };
+  }, [isInicio3, reduceMotion]);
 
   return (
     <View
@@ -1328,7 +1344,7 @@ function Inicio2HeroStatic({
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
-      <View
+      <RAnimated.View
         pointerEvents="none"
         style={[
           styles.inicio2HeroStaticImageFrame,
@@ -1340,18 +1356,26 @@ function Inicio2HeroStatic({
           isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
       >
-        <Image
-          source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
-          resizeMode="cover"
-          style={styles.inicio2HeroImage}
-        />
-      </View>
+        {isInicio3 ? (
+          <RAnimated.View
+            style={[styles.inicio3HeroTopShadow, heroShadowStyle]}
+          />
+        ) : null}
+        <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
+          <Image
+            source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
+            resizeMode="cover"
+            style={styles.inicio2HeroImage}
+          />
+        </View>
+      </RAnimated.View>
 
-      <View
+      <RAnimated.View
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
+          isInicio3 && slowHeaderStyle,
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
@@ -1462,12 +1486,16 @@ function Inicio2HeroStatic({
             </Pressable>
           )}
         </View>
-      </View>
+      </RAnimated.View>
 
       {isInicio3 && (
         <>
-          <View
-            style={[styles.inicio3StreakRow, { top: topInset + 87 - INICIO3_VERTICAL_LIFT }]}
+          <RAnimated.View
+            style={[
+              styles.inicio3StreakRow,
+              { top: topInset + 87 - INICIO3_VERTICAL_LIFT },
+              slowHeaderStyle,
+            ]}
             testID="inicio3-streak-row"
           >
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
@@ -1497,7 +1525,7 @@ function Inicio2HeroStatic({
                 </View>
               );
             })}
-          </View>
+          </RAnimated.View>
         </>
       )}
 
@@ -2078,6 +2106,7 @@ export default function HomeScreen2({
 
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
+  const inicio3ScrollY = useSharedValue(0);
 
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
@@ -2164,6 +2193,11 @@ export default function HomeScreen2({
     },
     [backdropAnim],
   );
+  const handleInicio3Scroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      inicio3ScrollY.value = Math.max(0, event.contentOffset.y);
+    },
+  });
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -2403,7 +2437,13 @@ export default function HomeScreen2({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        onScroll={isInicio2 ? undefined : handleMainScroll}
+        onScroll={
+          variant === "inicio3"
+            ? handleInicio3Scroll
+            : isInicio2
+              ? undefined
+              : handleMainScroll
+        }
         scrollEventThrottle={16}
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
@@ -2417,6 +2457,7 @@ export default function HomeScreen2({
               onOpenProfile={() => router.push("/progreso" as never)}
               onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
+              scrollY={inicio3ScrollY}
             />
           </>
         ) : showAnimatedScene ? (
@@ -3425,8 +3466,29 @@ const styles = StyleSheet.create({
     left: GRID_PAD - 4,
     right: GRID_PAD - 4,
     borderRadius: 25,
+    overflow: "visible",
+    zIndex: 20,
+  },
+  inicio3HeroImageClip: {
+    borderRadius: 25,
+    overflow: "hidden",
+  },
+  inicio3HeroTopShadow: {
+    position: "absolute",
+    top: -8,
+    left: 10,
+    right: 10,
+    height: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.18)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 9,
+    elevation: 8,
   },
   inicio3HeroCopy: {
+    zIndex: 30,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
