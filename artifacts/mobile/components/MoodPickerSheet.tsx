@@ -371,7 +371,13 @@ export function MoodPickerSheet({
                 })}
               </View>
             </ScrollView>
-            <View style={[styles.footer, { paddingBottom: bottomPad + 16 }]}>
+            <View
+              style={[
+                styles.footer,
+                styles.surveyFooter,
+                { paddingBottom: bottomPad + 16 },
+              ]}
+            >
               <PrimaryButton
                 label="Continuar"
                 disabled={!currentAnswer}
@@ -663,6 +669,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
     backgroundColor: "rgba(7,8,16,0.22)",
+  },
+  surveyFooter: {
+    backgroundColor: "transparent",
   },
   continueButton: {
     minHeight: 56,
