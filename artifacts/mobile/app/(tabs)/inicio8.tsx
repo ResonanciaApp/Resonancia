@@ -1321,7 +1321,7 @@ function Inicio2HeroStatic({
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
-  const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
+  const inicio3HeroTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
