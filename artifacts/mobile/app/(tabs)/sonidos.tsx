@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   stickySonidosTabsHeader: {
-    paddingBottom: 15,
+    paddingBottom: 4,
   },
   tabGrid: {
     marginBottom: 43,

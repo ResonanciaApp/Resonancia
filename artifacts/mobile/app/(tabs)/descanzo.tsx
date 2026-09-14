@@ -902,7 +902,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   stickySleepTabsHeader: {
-    paddingBottom: 15,
+    paddingBottom: 4,
   },
 
   /* Hero */

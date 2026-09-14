@@ -12,3 +12,7 @@ En Índigo 2, los tabs inactivos pasan de blanco con alpha 0.025 a alpha 0.075 m
 **How to apply:** Mantener esta convención en Descubrir, Dormir, Sonidos, categorías, Mis Favoritos, Biblioteca y Perfil, y reutilizarla en nuevas pantallas equivalentes. En Índigo 2, la barra inferior usa el mismo `theme.solid` que Inicio, no negro puro.
 
 En las páginas principales de categorías, la fila de tabs del sticky header mantiene 2 px de separación respecto del fondo circular de la lupa. La medida es común a Música, Meditaciones, Sonoterapia y categorías dinámicas.
+
+Desde el final de las píldoras del sticky header hasta su borde inferior se reservan 4 px.
+
+Dormir y Sonidos usan esos mismos 4 px bajo sus píldoras sticky; Descubrir los aplica bajo la barra de búsqueda, que es su último control sticky.
