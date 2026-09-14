@@ -419,23 +419,15 @@ export default function MusicaSonidosScreen() {
               marginBottom: 0,
               paddingHorizontal: H_PAD,
             }}
-            presentation="editorial"
             disableAmbientalVariant
-            sleepMetadataBelow
-            categoryGridPresentation
             whiteMetadataGlass
             showDurationClock
-            sleepBelowMetadataStyle={{ marginTop: 3, transform: [{ translateX: 3 }] }}
             trailingPeek={20}
             cardWidth={MUSIC_FEATURED_CARD_W}
             cardHeight={MUSIC_FEATURED_CARD_H}
             allowOversizedCardWidth
             cardBorderRadius={16}
             hideCategoryAboveTitle
-            showSleepCategoryPillWithInlineDuration
-            ambientalTitleOnly
-            sleepOverlayMetadataStyle={{ transform: [{ translateX: 3 }, { translateY: -1 }] }}
-            overlayGradientLocations={[0.18, 0.48, 1]}
             titleSize={17}
           />
         ) : null}
