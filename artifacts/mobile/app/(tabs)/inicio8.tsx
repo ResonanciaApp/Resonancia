@@ -11,6 +11,7 @@ import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  AccessibilityInfo,
   Animated,
   Dimensions,
   Easing as RNEasing,
@@ -1284,6 +1285,8 @@ function Inicio2HeroStatic({
   onOpenProfile,
   onOpenSearch,
   isInicio3,
+  scrollY,
+  reduceMotion,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1292,6 +1295,8 @@ function Inicio2HeroStatic({
   onOpenProfile: () => void;
   onOpenSearch: () => void;
   isInicio3?: boolean;
+  scrollY: SharedValue<number>;
+  reduceMotion: boolean;
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
@@ -1316,6 +1321,24 @@ function Inicio2HeroStatic({
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
+  const headerParallaxStyle = useAnimatedStyle(() => {
+    if (!isInicio3 || reduceMotion) return {};
+    const y = Math.max(0, scrollY.value);
+    return {
+      transform: [{ translateY: Math.min(112, y * 0.48) }],
+    };
+  }, [isInicio3, reduceMotion]);
+  const streakParallaxStyle = useAnimatedStyle(() => {
+    if (!isInicio3 || reduceMotion) return {};
+    const y = Math.max(0, scrollY.value);
+    const progress = Math.min(1, y / 180);
+    return {
+      transform: [
+        { translateY: Math.min(142, y * 0.72) },
+        { scale: 1 - progress * 0.035 },
+      ],
+    };
+  }, [isInicio3, reduceMotion]);
 
   return (
     <View
@@ -1347,10 +1370,12 @@ function Inicio2HeroStatic({
         />
       </View>
 
-      <View
+      <RAnimated.View
         pointerEvents="box-none"
         style={[
           styles.inicio2HeroActions,
+          isInicio3 && styles.inicio3ParallaxControls,
+          headerParallaxStyle,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
         ]}
       >
@@ -1462,12 +1487,16 @@ function Inicio2HeroStatic({
             </Pressable>
           )}
         </View>
-      </View>
+      </RAnimated.View>
 
       {isInicio3 && (
         <>
-          <View
-            style={[styles.inicio3StreakRow, { top: topInset + 87 - INICIO3_VERTICAL_LIFT }]}
+          <RAnimated.View
+            style={[
+              styles.inicio3StreakRow,
+              { top: topInset + 87 - INICIO3_VERTICAL_LIFT },
+              streakParallaxStyle,
+            ]}
             testID="inicio3-streak-row"
           >
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
@@ -1497,7 +1526,7 @@ function Inicio2HeroStatic({
                 </View>
               );
             })}
-          </View>
+          </RAnimated.View>
         </>
       )}
 
@@ -2075,6 +2104,23 @@ export default function HomeScreen2({
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const inicio3ScrollY = useSharedValue(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion);
+    const subscription = AccessibilityInfo.addEventListener(
+      "reduceMotionChanged",
+      setReduceMotion,
+    );
+    return () => subscription.remove();
+  }, []);
+
+  const inicio3ScrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      inicio3ScrollY.value = Math.max(0, event.contentOffset.y);
+    },
+  });
 
   const searchOpenRef = useRef(false);
   const scrollYRef = useRef(0);
@@ -2403,7 +2449,13 @@ export default function HomeScreen2({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: isInicio2 ? 0 : topPad + 38 }}
         showsVerticalScrollIndicator={false}
-        onScroll={isInicio2 ? undefined : handleMainScroll}
+        onScroll={
+          variant === "inicio3"
+            ? inicio3ScrollHandler
+            : isInicio2
+              ? undefined
+              : handleMainScroll
+        }
         scrollEventThrottle={16}
       >
         {/* ── Slider místico Inicio 2 / escena o intención del Inicio original ── */}
@@ -2417,6 +2469,8 @@ export default function HomeScreen2({
               onOpenProfile={() => router.push("/progreso" as never)}
               onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
+              scrollY={inicio3ScrollY}
+              reduceMotion={reduceMotion}
             />
           </>
         ) : showAnimatedScene ? (
@@ -3166,6 +3220,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 18,
   },
+  inicio3ParallaxControls: {
+    zIndex: 4,
+  },
   inicio2HeroProfileButton: {
     maxWidth: "76%",
     flexDirection: "row",
@@ -3397,7 +3454,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    zIndex: 12,
+    zIndex: 4,
   },
   inicio3StreakDayWrapper: {
     alignItems: "center",
@@ -3425,6 +3482,7 @@ const styles = StyleSheet.create({
     left: GRID_PAD - 4,
     right: GRID_PAD - 4,
     borderRadius: 25,
+    zIndex: 8,
   },
   inicio3HeroCopy: {
     alignItems: "center",
