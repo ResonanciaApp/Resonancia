@@ -57,7 +57,9 @@ export function SupercategoryFilterTabs({
 const styles = StyleSheet.create({
   wrapper: {
     paddingTop: 9,
-    paddingBottom: 15,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   content: {
     paddingHorizontal: 16,

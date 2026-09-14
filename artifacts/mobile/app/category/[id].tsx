@@ -505,9 +505,11 @@ const styles = StyleSheet.create({
     zIndex: 20,
     minHeight: 48,
     paddingHorizontal: H_PAD,
-    paddingBottom: 4,
+    paddingBottom: 6,
     alignItems: "center",
     justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   stickyHeaderFadeOverflow: { overflow: "visible" },
   stickyHeaderRow: {

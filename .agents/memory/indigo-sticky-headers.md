@@ -13,6 +13,8 @@ En Índigo 2, los tabs inactivos pasan de blanco con alpha 0.025 a alpha 0.075 m
 
 En las páginas principales de categorías, la fila de tabs del sticky header mantiene 2 px de separación respecto del fondo circular de la lupa. La medida es común a Música, Meditaciones, Sonoterapia y categorías dinámicas.
 
-Desde el final de las píldoras del sticky header hasta su borde inferior se reservan 4 px.
+Desde el final de las píldoras del sticky header hasta su borde inferior se reservan 6 px.
 
-Dormir y Sonidos usan esos mismos 4 px bajo sus píldoras sticky; Descubrir los aplica bajo la barra de búsqueda, que es su último control sticky.
+Dormir y Sonidos usan esos mismos 6 px bajo sus píldoras sticky; Descubrir los aplica bajo la barra de búsqueda, que es su último control sticky. Categorías y pantallas internas siguen la misma medida.
+
+Todos esos sticky headers terminan con un borde inferior blanco de 1 px a opacidad 0,07.

@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   emptyState: { marginHorizontal: H_PAD, marginTop: 28, minHeight: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.25)", borderRadius: 18, alignItems: "center", justifyContent: "center", gap: 10, paddingHorizontal: 28 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
   emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", color: "#c2c2c2" },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickySpacer: { width: 44 },
   stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: "#FBFBFB" },

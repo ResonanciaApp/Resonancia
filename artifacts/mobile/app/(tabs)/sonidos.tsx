@@ -591,7 +591,9 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   stickySonidosTabsHeader: {
-    paddingBottom: 4,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   tabGrid: {
     marginBottom: 43,
