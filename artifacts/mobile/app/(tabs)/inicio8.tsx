@@ -1322,7 +1322,7 @@ function Inicio2HeroStatic({
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
-  const heroExpandedScale = (width + 40) / (width - 2 * (GRID_PAD - 4));
+  const heroExpandedScale = width / (width - 2 * (GRID_PAD - 4));
   const heroExpansionStyle = useAnimatedStyle(() => {
     const progress = reduceMotion
       ? 0
