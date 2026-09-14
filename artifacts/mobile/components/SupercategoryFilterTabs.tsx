@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 2,
     gap: 8,
   },

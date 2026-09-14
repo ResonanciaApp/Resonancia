@@ -35,7 +35,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
-const H_PAD = 20;
+const H_PAD = 16;
 
 export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();

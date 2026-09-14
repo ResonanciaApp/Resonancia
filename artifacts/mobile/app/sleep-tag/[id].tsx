@@ -32,7 +32,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 
-const H_PAD = 20;
+const H_PAD = 16;
 
 export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {}) {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
