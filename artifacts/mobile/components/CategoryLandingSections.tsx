@@ -37,6 +37,11 @@ export function CategoryLandingSections({
   const cardWidth = Math.round(
     (width - H_PAD * 2 - CONTENT_CAROUSEL_GAP) / 1.9,
   );
+  const featuredBaseWidth = (width - H_PAD * 2 - 56) * 0.85;
+  const featuredCardWidth = Math.round(featuredBaseWidth * 1.25 - 25);
+  const featuredCardHeight = Math.round(
+    (featuredCardWidth / (16 / 9)) * 1.1,
+  );
   const getTags = (session: Session) =>
     getCategorySessionTags(session, categoryId);
 
@@ -65,20 +70,16 @@ export function CategoryLandingSections({
               marginTop: 33,
               marginBottom: 0,
             }}
-            presentation="editorial"
-            disableAmbientalVariant={categoryId !== "ambientales"}
-            sleepMetadataBelow={categoryId !== "ambientales"}
-            categoryGridPresentation={categoryId !== "ambientales"}
-            whiteMetadataGlass={categoryId !== "ambientales"}
-            showDurationClock={categoryId !== "ambientales"}
+            disableAmbientalVariant
+            whiteMetadataGlass
+            showDurationClock
             trailingPeek={20}
-            cardWidth={cardWidth}
+            cardWidth={featuredCardWidth}
+            cardHeight={featuredCardHeight}
+            allowOversizedCardWidth
             cardBorderRadius={16}
             titleSize={17}
-            hideCategoryAboveTitle={categoryId !== "ambientales"}
-            showSleepCategoryPillWithInlineDuration={categoryId !== "ambientales"}
-            ambientalTitleOnly={categoryId === "ambientales"}
-            overlayGradientLocations={[0.18, 0.48, 1]}
+            hideCategoryAboveTitle
             soundPreview={soundPreview}
           />
           {collections.length > 0 ? <View style={styles.sectionDivider} /> : null}
