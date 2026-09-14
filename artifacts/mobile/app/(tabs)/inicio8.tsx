@@ -1385,7 +1385,7 @@ function Inicio2HeroStatic({
           pointerEvents="none"
           style={[
             styles.inicio3HeroTopShadow,
-            { top: inicio3HeroTop - 18 },
+            { top: inicio3HeroTop - 11 },
             heroTopShadowStyle,
           ]}
         >
