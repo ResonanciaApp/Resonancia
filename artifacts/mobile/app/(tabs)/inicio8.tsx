@@ -1343,6 +1343,13 @@ function Inicio2HeroStatic({
       ],
     };
   }, [isInicio3, reduceMotion]);
+  const heroTopShadowStyle = useAnimatedStyle(() => {
+    if (!isInicio3) return { opacity: 0 };
+    const y = Math.max(0, scrollY.value);
+    return {
+      opacity: Math.min(1, y / 28),
+    };
+  }, [isInicio3]);
 
   return (
     <View
@@ -1373,6 +1380,22 @@ function Inicio2HeroStatic({
           style={styles.inicio2HeroImage}
         />
       </View>
+      {isInicio3 && (
+        <RAnimated.View
+          pointerEvents="none"
+          style={[
+            styles.inicio3HeroTopShadow,
+            { top: inicio3HeroTop - 18 },
+            heroTopShadowStyle,
+          ]}
+        >
+          <LinearGradient
+            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.22)"]}
+            locations={[0, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </RAnimated.View>
+      )}
 
       <RAnimated.View
         pointerEvents="box-none"
@@ -3487,6 +3510,16 @@ const styles = StyleSheet.create({
     right: GRID_PAD - 4,
     borderRadius: 25,
     zIndex: 8,
+  },
+  inicio3HeroTopShadow: {
+    position: "absolute",
+    left: GRID_PAD + 4,
+    right: GRID_PAD + 4,
+    height: 20,
+    zIndex: 7,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: "hidden",
   },
   inicio3HeroCopy: {
     alignItems: "center",
