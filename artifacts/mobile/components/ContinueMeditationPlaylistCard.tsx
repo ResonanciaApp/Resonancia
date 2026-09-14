@@ -32,12 +32,17 @@ export function ContinueMeditationPlaylistCard({
           { opacity: pressed ? 0.84 : 1 },
         ]}
       >
-        <ExpoImage
-          source={coverSource as ImageSource}
-          style={styles.cover}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+        <View style={styles.coverStack}>
+          <View style={styles.stackStripFront} />
+          <View style={styles.stackStripBack} />
+          <View style={styles.stackStripThird} />
+          <ExpoImage
+            source={coverSource as ImageSource}
+            style={styles.cover}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
+        </View>
         <View style={styles.copy}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <Text style={styles.description} numberOfLines={2}>
@@ -84,15 +89,46 @@ const styles = StyleSheet.create({
     marginBottom: 17,
   },
   card: {
-    minHeight: 82,
+    minHeight: 117,
     flexDirection: "row",
     alignItems: "center",
-    gap: 13,
+    gap: 16,
+  },
+  coverStack: {
+    width: 103,
+    height: 117,
+  },
+  stackStripFront: {
+    position: "absolute",
+    top: 103,
+    left: 9,
+    right: 9,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#717172",
+  },
+  stackStripBack: {
+    position: "absolute",
+    top: 108,
+    left: 13,
+    right: 13,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: "#48474D",
+  },
+  stackStripThird: {
+    position: "absolute",
+    top: 112,
+    left: 17,
+    right: 17,
+    height: 1.5,
+    borderRadius: 0.75,
+    backgroundColor: "#38373D",
   },
   cover: {
-    width: 82,
-    height: 82,
-    borderRadius: 12,
+    width: 103,
+    height: 103,
+    borderRadius: 15,
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   copy: {
