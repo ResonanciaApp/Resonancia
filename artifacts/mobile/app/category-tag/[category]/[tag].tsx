@@ -23,7 +23,7 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
+import { getCategorySessionTags } from "@/data/category-tabs";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
@@ -51,28 +51,34 @@ function tagsForSession(session: Session, categoryId: string) {
   return getCategorySessionTags(session, categoryId);
 }
 
-function CategoryTabs({
-  tabs,
+function FilterTabs({
+  label,
   active,
   onSelect,
 }: {
-  tabs: string[];
-  active: string;
-  onSelect: (tag: string) => void;
+  label: string;
+  active: DurationFilter;
+  onSelect: (filter: DurationFilter) => void;
 }) {
+  const tabs: { id: DurationFilter; label: string }[] = [
+    { id: "all", label },
+    { id: "duration-5", label: "5 min" },
+    { id: "duration-10", label: "10 min" },
+    { id: "duration-11", label: "11+ min" },
+  ];
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRowContent}>
         {tabs.map((tab) => (
           <Pressable
-            key={tab}
-            onPress={() => onSelect(tab)}
+            key={tab.id}
+            onPress={() => onSelect(tab.id)}
             accessibilityRole="tab"
-            accessibilityState={{ selected: active === tab }}
+            accessibilityState={{ selected: active === tab.id }}
             style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
           >
-            <View style={[styles.chip, active === tab && styles.chipSelected]}>
-              <Text style={[styles.chipText, active === tab && styles.chipTextSelected]}>{tab}</Text>
+            <View style={[styles.chip, active === tab.id && styles.chipSelected]}>
+              <Text style={[styles.chipText, active === tab.id && styles.chipTextSelected]}>{tab.label}</Text>
             </View>
           </Pressable>
         ))}
@@ -106,24 +112,27 @@ export default function CategoryTagScreen({
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const [activeFilter, setActiveFilter] = useState<DurationFilter>("all");
   const [stickyActive, setStickyActive] = useState(false);
   const [tabsOffsetY, setTabsOffsetY] = useState(Number.POSITIVE_INFINITY);
   const stickyOpacity = useRef(new Animated.Value(0)).current;
 
   const category = CATEGORIES.find((candidate) => candidate.id === decodedCategory);
-  const categorySessions = useMemo(
-    () => getSessionsByCategory(decodedCategory),
-    [decodedCategory, version],
-  );
-  const categoryTabs = useMemo(
-    () => getCategoryTabs(categorySessions, decodedCategory),
-    [categorySessions, decodedCategory],
-  );
   const sessions = useMemo(
-    () => categorySessions.filter((session) => tagsForSession(session, decodedCategory).includes(decodedTag)),
-    [categorySessions, decodedCategory, decodedTag],
+    () => getSessionsByCategory(decodedCategory).filter((session) => tagsForSession(session, decodedCategory).includes(decodedTag)),
+    [decodedCategory, decodedTag, version],
   );
+  const filteredSessions = useMemo(() => sessions.filter((session) => {
+    if (activeFilter === "all") return true;
+    const minutes = durationMinutes(session.durationLabel);
+    if (activeFilter === "duration-5") return minutes <= 5;
+    if (activeFilter === "duration-10") return minutes > 5 && minutes <= 10;
+    return minutes > 10;
+  }), [activeFilter, sessions]);
 
+  useEffect(() => {
+    setActiveFilter("all");
+  }, [decodedCategory, decodedTag]);
   useEffect(() => {
     Animated.timing(stickyOpacity, {
       toValue: stickyActive ? 1 : 0,
@@ -136,12 +145,6 @@ export default function CategoryTagScreen({
   if (!decodedCategory || !decodedTag) return null;
   const title = decodedTag;
   const goBack = backOverride ?? (() => router.back());
-  const openTag = (nextTag: string) => {
-    if (nextTag === decodedTag) return;
-    const route = `/category-tag/${encodeURIComponent(decodedCategory)}/${encodeURIComponent(nextTag)}`;
-    if (overlay) overlay.replaceCategory(route);
-    else router.replace(route as never);
-  };
   const openSession = (session: Session) => {
     if (session.isPremium && !isPremium) {
       router.push("/membresia" as never);
@@ -164,10 +167,10 @@ export default function CategoryTagScreen({
     }
   };
 
-  const list = sessions.length > 0 ? (
+  const list = filteredSessions.length > 0 ? (
     <SessionCarousel
       title=""
-       sessions={sessions}
+       sessions={filteredSessions}
       isPremium={isPremium}
       onPress={openSession}
       style={styles.sessionGrid}
@@ -193,9 +196,9 @@ export default function CategoryTagScreen({
   ) : (
     <View style={styles.emptyState}>
       <Feather name="headphones" size={30} color="#F9F9F9" />
-       <Text style={styles.emptyTitle}>Próximamente</Text>
+       <Text style={styles.emptyTitle}>{sessions.length === 0 ? "Próximamente" : "Sin resultados"}</Text>
       <Text style={styles.emptyText}>
-         Estamos preparando nuevas sesiones para esta subcategoría.
+         {sessions.length === 0 ? "Estamos preparando nuevas sesiones para esta etiqueta." : "No hay sesiones para este filtro."}
       </Text>
     </View>
   );
@@ -220,7 +223,7 @@ export default function CategoryTagScreen({
           <CategoryScreenHeader categoryId={decodedCategory} title={title} description={category?.subtitle} />
         </View>
         <View style={styles.tabsArea} onLayout={(event) => setTabsOffsetY(event.nativeEvent.layout.y)}>
-          <CategoryTabs tabs={categoryTabs} active={decodedTag} onSelect={openTag} />
+          <FilterTabs label={decodedTag} active={activeFilter} onSelect={setActiveFilter} />
         </View>
         {list}
       </ScrollView>
@@ -234,7 +237,7 @@ export default function CategoryTagScreen({
           <Feather name="chevron-left" size={26} color="#FBFBFB" />
         </Pressable>
         <View style={styles.stickyTabs}>
-          <CategoryTabs tabs={categoryTabs} active={decodedTag} onSelect={openTag} />
+          <FilterTabs label={decodedTag} active={activeFilter} onSelect={setActiveFilter} />
         </View>
       </Animated.View>
     </View>

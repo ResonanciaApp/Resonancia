@@ -9,4 +9,4 @@ Las etiquetas editoriales de categorías distintas de Música se guardan dentro 
 
 **How to apply:** Cualquier alta, renombrado, borrado, filtro o consumidor móvil de estas etiquetas debe usar la misma codificación por categoría. Los prefijos nunca deben mostrarse en UI ni filtros globales.
 
-En Mobile, la fila de etiquetas de la pantalla principal de categoría funciona solo como navegación y no marca ninguna opción. La etiqueta activa se muestra exclusivamente en la pantalla completa de esa etiqueta; cambiar de etiqueta reemplaza el overlay actual.
+En Mobile, la fila de etiquetas de la pantalla principal de categoría funciona solo como navegación y no marca ninguna opción. La pantalla completa muestra únicamente la etiqueta activa y tres filtros de duración: 5 min, 10 min y 11+ min; nunca mezcla otras etiquetas o subcategorías.
