@@ -56,8 +56,6 @@ const SUBCATEGORIES: SubDef[] = [
   { tag: "Sonidos Ancestrales",    icon: "bowl-mix",   family: "MaterialCommunityIcons" },
 ];
 
-const NOCHES_SESSIONS = SESSIONS.filter((s) => s.categoryId === "noches");
-
 const matchTag = (s: Session, tag: string) =>
   (s as Session & { meditationTag?: string }).meditationTag === tag ||
   (s as Session & { soundTag?: string }).soundTag === tag ||
@@ -65,8 +63,9 @@ const matchTag = (s: Session, tag: string) =>
   ((s as Session & { themeTag?: string[] }).themeTag?.includes(tag) ?? false);
 
 function getSessionsForTab(tab: CatTab | null) {
-  if (!tab) return NOCHES_SESSIONS;
-  return NOCHES_SESSIONS.filter((s) => matchTag(s, tab));
+  const sessions = SESSIONS.filter((s) => s.categoryId === "noches");
+  if (!tab) return sessions;
+  return sessions.filter((s) => matchTag(s, tab));
 }
 
 function AnimatedTabContent({ animKey, children }: { animKey: string; children: React.ReactNode }) {
@@ -228,7 +227,7 @@ export default function NochesScreen() {
   const { isPremium } = usePremium();
 
   const TABS = useMemo(
-    () => SUBCATEGORIES.filter((sub) => NOCHES_SESSIONS.some((s) => matchTag(s, sub.tag))),
+    () => SUBCATEGORIES.filter((sub) => getSessionsForTab(null).some((s) => matchTag(s, sub.tag))),
     [version], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
@@ -325,7 +324,7 @@ export default function NochesScreen() {
     const hasMore = visibleCount < shuffledSessions.length;
     return (
       <>
-        {false && featuredSessions.length > 0 && (
+        {featuredSessions.length > 0 && (
           <>
             <Text style={styles.featuredTitle}>Contenido destacado</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}

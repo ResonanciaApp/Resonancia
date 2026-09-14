@@ -35,7 +35,7 @@ export function CategoryLandingSections({
 }: CategoryLandingSectionsProps) {
   const { width } = useWindowDimensions();
   const cardWidth = Math.round(
-    (width - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+    (width - H_PAD * 2 - CONTENT_CAROUSEL_GAP) / 1.9,
   );
   const getTags = (session: Session) =>
     getCategorySessionTags(session, categoryId);
@@ -46,11 +46,44 @@ export function CategoryLandingSections({
       sessions: sessions.filter((session) => getTags(session).includes(tag)).slice(0, 5),
     }))
     .filter((collection) => collection.sessions.length > 0);
+  const featuredSessions = sessions.filter((session) => session.isFeaturedCategory);
 
-  if (collections.length === 0) return null;
+  if (collections.length === 0 && featuredSessions.length === 0) return null;
 
   return (
     <>
+      {featuredSessions.length > 0 ? (
+        <>
+          <SessionCarousel
+            title="Contenido destacado"
+            sessions={featuredSessions}
+            isPremium={isPremium}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={{
+              paddingHorizontal: H_PAD,
+              marginTop: 33,
+              marginBottom: 0,
+            }}
+            presentation="editorial"
+            disableAmbientalVariant={categoryId !== "ambientales"}
+            sleepMetadataBelow={categoryId !== "ambientales"}
+            categoryGridPresentation={categoryId !== "ambientales"}
+            whiteMetadataGlass={categoryId !== "ambientales"}
+            showDurationClock={categoryId !== "ambientales"}
+            trailingPeek={20}
+            cardWidth={cardWidth}
+            cardBorderRadius={16}
+            titleSize={17}
+            hideCategoryAboveTitle={categoryId !== "ambientales"}
+            showSleepCategoryPillWithInlineDuration={categoryId !== "ambientales"}
+            ambientalTitleOnly={categoryId === "ambientales"}
+            overlayGradientLocations={[0.18, 0.48, 1]}
+            soundPreview={soundPreview}
+          />
+          {collections.length > 0 ? <View style={styles.sectionDivider} /> : null}
+        </>
+      ) : null}
       {collections.map((collection, index) => (
         <React.Fragment key={collection.tag}>
           {index > 0 ? <View style={styles.sectionDivider} /> : null}
@@ -74,7 +107,6 @@ export function CategoryLandingSections({
             showDurationClock={categoryId !== "ambientales"}
             trailingPeek={20}
             cardWidth={cardWidth}
-            allowOversizedCardWidth
             cardBorderRadius={16}
             titleSize={17}
             hideCategoryAboveTitle={categoryId !== "ambientales"}

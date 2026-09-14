@@ -10,3 +10,5 @@ En Dormir, Descubrir, Sonidos y las categorías dedicadas/dinámicas, el gap ent
 En Inicio, “Explora por contenido” es una excepción deliberada: sus cards usan exactamente la misma proporción vertical y separación que las cards editoriales de Descubrir (como “Para la ansiedad”), con título arriba y una descripción editorial de máximo dos líneas abajo a la izquierda sobre la imagen.
 
 **How to apply:** Usar este modo en las pantallas indicadas, sus categorías y “Explora por contenido” de Inicio. No extenderlo a otros carruseles de Inicio, Resonadores, chips, tabs, miniaturas del miniplayer ni carruseles funcionales de Geometrix o del mezclador.
+
+En grids internas, `SessionCarousel` ya aporta su padding horizontal: el contenedor padre no debe repetirlo. En landings, el ancho solicitado debe descontar ambos márgenes laterales y no habilitar ancho sobredimensionado, o las cards se cortan.

@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   chipSelected: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB" },
   chipTextSelected: { color: "#060A0F" },
-  sessionGrid: { paddingHorizontal: H_PAD, marginTop: -17, marginBottom: 6 },
+  sessionGrid: { marginTop: -17, marginBottom: 6 },
   emptyState: { marginHorizontal: H_PAD, marginTop: 28, minHeight: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.25)", borderRadius: 18, alignItems: "center", justifyContent: "center", gap: 10, paddingHorizontal: 28 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
   emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", color: "#c2c2c2" },

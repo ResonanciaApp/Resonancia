@@ -7,10 +7,10 @@ description: Flag independiente de isFeatured; dónde se renderiza y limitación
 
 Flag DB (`catalog_sessions.is_featured_category`) independiente de `isFeatured` (que alimenta "Para este momento" en Inicio). Se marca desde el panel admin (moderación → "Destacada en su categoría").
 
-**Dónde se muestra:** sección "Destacados de [categoría]" como primer bloque del tab "Todos" en musica-sonidos / meditaciones-guiadas / sonidos-ancestrales (carrusel horizontal de CategoryCard) y noches / mananas (lista de SessionRow).
+**Dónde se muestra:** sección “Contenido destacado” como primer bloque del tab principal en las pantallas de categoría; las landings compartidas derivan el carrusel directamente de `isFeaturedCategory`.
 
 **Decisión deliberada:** las sesiones destacadas TAMBIÉN siguen apareciendo en la grilla general (duplicado estilo Calm) — no excluirlas.
 
-**Limitación (Noches/Mañanas):** esas pantallas usan constantes de módulo (`NOCHES_SESSIONS`/`MANANAS_SESSIONS`) y NO se suscriben a `useCatalog().version` → sesiones DB-only (subidas por admin) nunca aparecen ahí, ni sus destacados. Preexistente; si se pide arreglarlo, suscribirlas a useCatalog.
+No calcular las sesiones de una categoría en constantes de módulo: el catálogo remoto hidrata después y las sesiones DB-only quedarían fuera. Filtrar al renderizar y suscribirse a la versión del catálogo.
 
 **Why:** el gate del carrusel es `activeTab === null` (chips) o `activeTab === "Todos"` (noches/mananas); en tabs de subcategoría no se muestra.
