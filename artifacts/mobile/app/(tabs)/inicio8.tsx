@@ -1300,17 +1300,10 @@ function Inicio2HeroStatic({
   const { username, photoUri } = useUserProfile();
   const { weekFlags, todayIndex } = useStreak();
   const { theme } = useSceneTheme();
-  const streakGradient = useMemo(
-    () =>
-      theme.gradient.map((color) =>
-        brightenStreakColor(color, 20),
-      ) as unknown as [string, string, ...string[]],
-    [theme.gradient],
-  );
   const streakBorderGradient = useMemo(
     () =>
       theme.gradient.map((color) =>
-        brightenStreakColor(color, 30),
+        brightenStreakColor(color, 35),
       ) as unknown as [string, string, ...string[]],
     [theme.gradient],
   );
@@ -1536,27 +1529,17 @@ function Inicio2HeroStatic({
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
               const active = weekFlags[i];
               const isToday = todayIndex === i;
-              const dayCircle = active ? (
-                <LinearGradient
-                  colors={streakGradient}
-                  locations={theme.gradientLocations}
-                  start={theme.gradientStart}
-                  end={theme.gradientEnd}
-                  style={[
-                    styles.inicio3StreakDay,
-                    !isToday && styles.inicio3StreakDayActive,
-                  ]}
-                >
+              const hasGradientRing = isToday || active;
+              const dayCircle = (
+                <View style={styles.inicio3StreakDay}>
+                  {active ? (
                   <Feather name="check" size={22} color="#F9F9F9" />
-                </LinearGradient>
-              ) : (
-                <View
-                  style={styles.inicio3StreakDay}
-                />
+                  ) : null}
+                </View>
               );
               return (
                 <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                  {isToday ? (
+                  {hasGradientRing ? (
                     <View style={styles.inicio3StreakDayRingHost}>
                       {dayCircle}
                       <MaskedView
@@ -3508,10 +3491,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  inicio3StreakDayActive: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.45)",
   },
   inicio3StreakDayRingHost: {
     width: 37,
