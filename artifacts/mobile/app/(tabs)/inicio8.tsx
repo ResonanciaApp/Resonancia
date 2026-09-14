@@ -3524,7 +3524,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroBackShadow: {
     position: "absolute",
-    top: -19,
+    top: -14,
     left: 5,
     right: 5,
     height: 42,
