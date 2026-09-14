@@ -1521,7 +1521,7 @@ function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 87 - INICIO3_VERTICAL_LIFT },
+              { top: topInset + 80 - INICIO3_VERTICAL_LIFT },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
