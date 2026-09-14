@@ -1322,19 +1322,6 @@ function Inicio2HeroStatic({
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroTop = topInset + 175 - INICIO3_VERTICAL_LIFT;
-  const heroExpandedScale = width / (width - 2 * (GRID_PAD - 4));
-  const heroExpansionStyle = useAnimatedStyle(() => {
-    const progress = reduceMotion
-      ? 0
-      : Math.min(1, Math.max(0, effectiveScrollY.value / 240));
-    return {
-      transform: [
-        {
-          scaleX: 1 + (heroExpandedScale - 1) * progress,
-        },
-      ],
-    };
-  }, [heroExpandedScale, reduceMotion]);
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1366,10 +1353,7 @@ function Inicio2HeroStatic({
             bottom: isInicio3 ? undefined : 18,
             height: isInicio3 ? inicio3HeroHeight : undefined,
           },
-          isInicio3 && [
-            styles.inicio3HeroStaticImageFrame,
-            heroExpansionStyle,
-          ],
+          isInicio3 && styles.inicio3HeroStaticImageFrame,
         ]}
       >
         {isInicio3 ? (
