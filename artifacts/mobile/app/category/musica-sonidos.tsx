@@ -8,7 +8,6 @@ import {
 } from "@/components/SessionCardMetadataOverlay";
 import { SessionCard } from "@/components/SessionCard";
 import {
-  CONTENT_CAROUSEL_GAP,
   CONTENT_CAROUSEL_HEIGHT_SCALE,
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
@@ -46,10 +45,13 @@ const CARD_GAP = 12;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
+const MUSIC_FEATURED_BASE_W = (W - H_PAD * 2 - 56) * 0.85;
 const MUSIC_FEATURED_CARD_W = Math.round(
-  (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.25,
+  MUSIC_FEATURED_BASE_W * 1.25 - 25,
 );
-const MUSIC_FEATURED_CARD_H = Math.round(MUSIC_FEATURED_CARD_W * 9 / 16);
+const MUSIC_FEATURED_CARD_H = Math.round(
+  (MUSIC_FEATURED_CARD_W / (16 / 9)) * 1.1,
+);
 const GOLD  = "#F9F9F9";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
