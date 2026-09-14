@@ -1332,6 +1332,17 @@ function Inicio2HeroStatic({
       ],
     };
   }, [isInicio3, reduceMotion]);
+  const streakParallaxStyle = useAnimatedStyle(() => {
+    if (!isInicio3 || reduceMotion) return {};
+    const y = Math.max(0, scrollY.value);
+    const progress = Math.min(1, y / 180);
+    return {
+      transform: [
+        { translateY: Math.min(142, y * 0.72) },
+        { scale: 1 - progress * 0.035 },
+      ],
+    };
+  }, [isInicio3, reduceMotion]);
 
   return (
     <View
@@ -1484,8 +1495,12 @@ function Inicio2HeroStatic({
 
       {isInicio3 && (
         <>
-          <View
-            style={[styles.inicio3StreakRow, { top: topInset + 87 - INICIO3_VERTICAL_LIFT }]}
+          <RAnimated.View
+            style={[
+              styles.inicio3StreakRow,
+              { top: topInset + 87 - INICIO3_VERTICAL_LIFT },
+              streakParallaxStyle,
+            ]}
             testID="inicio3-streak-row"
           >
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
@@ -1515,7 +1530,7 @@ function Inicio2HeroStatic({
                 </View>
               );
             })}
-          </View>
+          </RAnimated.View>
         </>
       )}
 
