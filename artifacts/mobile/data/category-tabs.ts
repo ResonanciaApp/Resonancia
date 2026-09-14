@@ -9,23 +9,8 @@ export function getCategorySessionTags(
   session: Session,
   categoryId: string,
 ): string[] {
-  const typeByCategory: Record<string, string> = {
-    "meditaciones-guiadas": "category_theme_meditaciones",
-    "sonidos-ancestrales": "category_theme_sonoterapia",
-    charlas: "category_theme_charlas",
-    historias: "category_theme_historias",
-    ambientales: "category_theme_ambientales",
-  };
   if (categoryId === "musica-sonidos") {
-    return [...new Set((session.themeTag ?? []).filter((tag) => !tag.startsWith("__category_theme_")))];
-  }
-  const categoryType = typeByCategory[categoryId];
-  const prefix = categoryType ? `__${categoryType}__:` : "";
-  const categoryThemes = prefix
-    ? [...new Set((session.themeTag ?? []).filter((tag) => tag.startsWith(prefix)).map((tag) => tag.slice(prefix.length)))]
-    : [];
-  if (categoryThemes.length > 0) {
-    return categoryThemes;
+    return session.soundTag ? [session.soundTag] : [];
   }
   if (categoryId === "meditaciones-guiadas") {
     return session.meditationTag ? [session.meditationTag] : [];
@@ -48,6 +33,31 @@ export function getCategorySessionTags(
         ];
 
   return [...new Set(tags.filter((tag): tag is string => Boolean(tag)))];
+}
+
+export function getCategoryEditorialTags(
+  session: Session,
+  categoryId: string,
+): string[] {
+  const typeByCategory: Record<string, string> = {
+    "meditaciones-guiadas": "category_theme_meditaciones",
+    "sonidos-ancestrales": "category_theme_sonoterapia",
+    charlas: "category_theme_charlas",
+    historias: "category_theme_historias",
+    ambientales: "category_theme_ambientales",
+  };
+  if (categoryId === "musica-sonidos") {
+    return [...new Set((session.themeTag ?? []).filter((tag) => !tag.startsWith("__category_theme_")))];
+  }
+  const categoryType = typeByCategory[categoryId];
+  const prefix = categoryType ? `__${categoryType}__:` : "";
+  const categoryThemes = prefix
+    ? [...new Set((session.themeTag ?? []).filter((tag) => tag.startsWith(prefix)).map((tag) => tag.slice(prefix.length)))]
+    : [];
+  if (categoryThemes.length > 0) {
+    return categoryThemes;
+  }
+  return [];
 }
 
 export function getCategoryTabs(

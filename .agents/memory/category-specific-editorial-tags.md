@@ -9,4 +9,4 @@ Las etiquetas editoriales de categorías distintas de Música se guardan dentro 
 
 **How to apply:** Cualquier alta, renombrado, borrado, filtro o consumidor móvil de estas etiquetas debe usar la misma codificación por categoría. Los prefijos nunca deben mostrarse en UI ni filtros globales.
 
-En Mobile, la fila de etiquetas de la pantalla principal funciona solo como navegación y no marca ninguna opción. La pantalla completa usa la etiqueta como título; sus filtros son Ver todo, 5 min, 10 min y 11+ min, y las cards muestran la píldora de categoría.
+En Mobile, las subcategorías históricas organizan tabs y carruseles de la pantalla principal. Al abrir una subcategoría, sus filtros son Ver todo, 5 min, 10 min, 11+ min y las etiquetas editoriales presentes en esas sesiones. Las etiquetas editoriales nunca crean tabs o carruseles principales.

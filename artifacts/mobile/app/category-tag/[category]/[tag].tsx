@@ -23,13 +23,17 @@ import { useCategoryOverlayOptional } from "@/context/CategoryOverlayContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getCategorySessionTags } from "@/data/category-tabs";
+import {
+  getCategoryEditorialTags,
+  getCategorySessionTags,
+} from "@/data/category-tabs";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 20;
 type DurationFilter = "all" | "duration-5" | "duration-10" | "duration-11";
+type FilterId = DurationFilter | `editorial:${string}`;
 
 function durationMinutes(label: string) {
   const match = label.match(/(\d+(?:[.,]\d+)?)\s*min/i);
@@ -52,17 +56,23 @@ function tagsForSession(session: Session, categoryId: string) {
 }
 
 function FilterTabs({
+  editorialTags,
   active,
   onSelect,
 }: {
-  active: DurationFilter;
-  onSelect: (filter: DurationFilter) => void;
+  editorialTags: string[];
+  active: FilterId;
+  onSelect: (filter: FilterId) => void;
 }) {
-  const tabs: { id: DurationFilter; label: string }[] = [
+  const tabs: { id: FilterId; label: string }[] = [
     { id: "all", label: "Ver todo" },
     { id: "duration-5", label: "5 min" },
     { id: "duration-10", label: "10 min" },
     { id: "duration-11", label: "11+ min" },
+    ...editorialTags.map((tag) => ({
+      id: `editorial:${tag}` as const,
+      label: tag,
+    })),
   ];
   return (
     <View style={styles.chipRowWrapper}>
@@ -110,7 +120,7 @@ export default function CategoryTagScreen({
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const [activeFilter, setActiveFilter] = useState<DurationFilter>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterId>("all");
   const [stickyActive, setStickyActive] = useState(false);
   const [tabsOffsetY, setTabsOffsetY] = useState(Number.POSITIVE_INFINITY);
   const stickyOpacity = useRef(new Animated.Value(0)).current;
@@ -120,8 +130,16 @@ export default function CategoryTagScreen({
     () => getSessionsByCategory(decodedCategory).filter((session) => tagsForSession(session, decodedCategory).includes(decodedTag)),
     [decodedCategory, decodedTag, version],
   );
+  const editorialTags = useMemo(
+    () => [...new Set(sessions.flatMap((session) => getCategoryEditorialTags(session, decodedCategory)))],
+    [decodedCategory, sessions],
+  );
   const filteredSessions = useMemo(() => sessions.filter((session) => {
     if (activeFilter === "all") return true;
+    if (activeFilter.startsWith("editorial:")) {
+      const editorialTag = activeFilter.slice("editorial:".length);
+      return getCategoryEditorialTags(session, decodedCategory).includes(editorialTag);
+    }
     const minutes = durationMinutes(session.durationLabel);
     if (activeFilter === "duration-5") return minutes <= 5;
     if (activeFilter === "duration-10") return minutes > 5 && minutes <= 10;
@@ -223,7 +241,7 @@ export default function CategoryTagScreen({
           <CategoryScreenHeader categoryId={decodedCategory} title={title} description={category?.subtitle} />
         </View>
         <View style={styles.tabsArea} onLayout={(event) => setTabsOffsetY(event.nativeEvent.layout.y)}>
-          <FilterTabs active={activeFilter} onSelect={setActiveFilter} />
+          <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
         </View>
         {list}
       </ScrollView>
@@ -237,7 +255,7 @@ export default function CategoryTagScreen({
           <Feather name="chevron-left" size={26} color="#FBFBFB" />
         </Pressable>
         <View style={styles.stickyTabs}>
-          <FilterTabs active={activeFilter} onSelect={setActiveFilter} />
+          <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
         </View>
       </Animated.View>
     </View>
