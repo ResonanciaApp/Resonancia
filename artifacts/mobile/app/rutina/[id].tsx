@@ -16,7 +16,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-  getRoutineDateFromKey,
   getRoutineDateKey,
   getRoutineOccurrenceKey,
   ROUTINE_DAY_LABELS,
@@ -120,7 +119,6 @@ export default function RutinaDetailScreen() {
     typeof routeDateKey === "string" && /^\d{4}-\d{2}-\d{2}$/.test(routeDateKey)
       ? routeDateKey
       : todayKey;
-  const selectedDate = getRoutineDateFromKey(dateKey);
   const occurrenceIndex =
     typeof routeOccurrence === "string" && /^\d+$/.test(routeOccurrence)
       ? Number(routeOccurrence)
@@ -277,23 +275,16 @@ export default function RutinaDetailScreen() {
         </View>
 
         <View style={styles.mainCopy}>
-          <Text style={[styles.eyebrow, { color: routineTheme.textMuted }]}>
+          <Text style={[styles.eyebrow, { color: "#7F7F7F" }]}>
             Nombre de la rutina
           </Text>
           <Text style={[styles.title, { color: routineTheme.text }]}>{activity.title}</Text>
-          <Text style={[styles.dateContext, { color: routineTheme.accent }]}>
-            {new Intl.DateTimeFormat("es", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            }).format(selectedDate)}
-          </Text>
 
           <Text
             style={[
               styles.eyebrow,
               styles.descriptionLabel,
-              { color: routineTheme.textMuted },
+              { color: "#7F7F7F" },
             ]}
           >
             Descripción
@@ -327,7 +318,7 @@ export default function RutinaDetailScreen() {
             </Pressable>
           )}
 
-          <Text style={[styles.sectionLabel, { color: "#F9F9F9" }]}>Detalles</Text>
+          <Text style={[styles.sectionLabel, { color: "#7F7F7F" }]}>Detalles</Text>
           <View
             style={[
               styles.detailsCard,
@@ -350,7 +341,6 @@ export default function RutinaDetailScreen() {
                 />
               </>
             ) : null}
-            <DetailRow icon="plus-square" label="Adjuntar una práctica (próximamente)" muted />
             <DetailRow icon="tag" label={activity.category} />
           </View>
         </View>
@@ -421,16 +411,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 25,
-    lineHeight: 33,
+    fontSize: 20,
+    lineHeight: 28,
     fontWeight: "700",
-  },
-  dateContext: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
-    marginTop: 10,
-    textTransform: "capitalize",
   },
   description: {
     fontFamily: "Manrope",
@@ -468,7 +451,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   actions: {
-    marginTop: 48,
+    marginTop: 198,
     gap: 10,
   },
   actionRow: {
