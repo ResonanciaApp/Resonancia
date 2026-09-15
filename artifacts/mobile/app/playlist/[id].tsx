@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Alert,
   FlatList,
+  Image as RNImage,
   Modal,
   PanResponder,
   Platform,
@@ -27,7 +28,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
+import {
+  DEFAULT_PLAYLIST_COVERS,
+  getDefaultPlaylistCover,
+} from "@/data/default-playlist-covers";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
@@ -43,10 +47,8 @@ import { useVideos } from "@/hooks/useVideos";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
-import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { SessionCategoryPill } from "@/components/SessionCardMetadataOverlay";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
@@ -339,9 +341,9 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             <Pressable
               onPress={() => setMenuVisible(true)}
               hitSlop={10}
-              style={[styles.iconBtn, { backgroundColor: PLAYLIST_CONTROL_BG, borderRadius: 20, position: "absolute", top: -5, right: 0 }]}
+              style={[styles.iconBtn, styles.moreMenuBtn, { position: "absolute", top: -5, right: 0 }]}
             >
-              <Feather name="more-horizontal" size={22} color="#0E0E17" />
+              <Feather name="more-horizontal" size={22} color="#FFFFFF" />
             </Pressable>
             <View style={{ marginTop: 3, paddingRight: 44 }}>
               <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
@@ -521,15 +523,10 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             setColorPickerVisible(true);
           }
         }}
-        onPickGeometry={(geoId) => {
-          setPendingCover({ type: "geometry", geoId });
-          setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
-          setColorPickerVisible(true);
-        }}
-        onPickCreation={(cid) => {
-          setPendingCover({ type: "creation", creationId: cid });
-          setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
-          setColorPickerVisible(true);
+        onPickPreset={(source) => {
+          const uri = RNImage.resolveAssetSource(source)?.uri;
+          if (!uri) return;
+          setPlaylistCover(playlist.id, uri);
         }}
       />
 
@@ -643,14 +640,9 @@ function PlaylistSessionRow({
       </Pressable>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
-        <View style={styles.rowCategory}>
-          <SessionCategoryPill
-            categoryId={session.categoryId}
-            inline
-            plain={false}
-            outlineColor={PLAYLIST_CARD_BG}
-          />
-        </View>
+        <Text style={styles.rowCategoryText} numberOfLines={1}>
+          {session.categoryLabel}
+        </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={[styles.rowName, isActive && { color: "#F9F9F9" }]} numberOfLines={2}>
             {session.title}
@@ -685,14 +677,9 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
         />
       </View>
       <View style={{ flex: 1 }}>
-        <View style={styles.rowCategory}>
-          <SessionCategoryPill
-            categoryId={session.categoryId}
-            inline
-            plain={false}
-            outlineColor={PLAYLIST_CARD_BG}
-          />
-        </View>
+        <Text style={styles.rowCategoryText} numberOfLines={1}>
+          {session.categoryLabel}
+        </Text>
         <Text style={styles.rowName} numberOfLines={2}>{session.title}</Text>
         <View style={styles.rowBottomMeta}>
           <Text style={styles.rowMeta} numberOfLines={1}>{author}</Text>
@@ -716,6 +703,12 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  moreMenuBtn: {
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
 
   // Hero
   hero: {
@@ -842,9 +835,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 9,
     borderRadius: 30,
-    backgroundColor: PLAYLIST_CARD_BG,
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.6)",
+    borderColor: "rgba(255,255,255,0.7)",
   },
   addBtnText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
 
@@ -874,7 +867,12 @@ const styles = StyleSheet.create({
   thumbDurationBadge: { position: "absolute", bottom: 6, left: 6 },
   thumbDurationText: { fontSize: 11 },
   rowName: { fontFamily: "Manrope", color: "#f9f9f9", fontSize: 13, fontWeight: "600", lineHeight: 18 },
-  rowCategory: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
+  rowCategoryText: {
+    fontFamily: "Manrope",
+    color: "#f4f4f4",
+    fontSize: 11,
+    marginBottom: 4,
+  },
   rowBottomMeta: {
     flexDirection: "row",
     alignItems: "center",
@@ -917,74 +915,22 @@ function CoverPickerModal({
   visible,
   onClose,
   onPickImage,
-  onPickGeometry,
-  onPickCreation,
+  onPickPreset,
 }: {
   visible: boolean;
   onClose: () => void;
   onPickImage: (closeFn: () => void) => void;
-  onPickGeometry: (geoId: string) => void;
-  onPickCreation: (creationId: string) => void;
+  onPickPreset: (source: number) => void;
 }) {
-  const [showGeometries, setShowGeometries] = useState(false);
-  const { creations } = useGeometrixCreations();
   const { theme: sceneTheme } = useSceneTheme();
-  const BG_GRADIENT = sceneTheme.gradient;
+  const sheetColor = sceneTheme.gradient[1] ?? sceneTheme.gradient[0];
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
-
-  const creationItems = useMemo(
-    () => creations.map((c) => ({ id: c.id, name: c.name, creation: c })),
-    [creations]
-  );
-
-  if (showGeometries) {
-    return (
-      <Modal visible={visible} animationType="slide" transparent onRequestClose={() => { setShowGeometries(false); onClose(); }}>
-        <Pressable style={modalStyles.backdrop} onPress={() => { setShowGeometries(false); onClose(); }} />
-        <View style={[modalStyles.sheet, { paddingBottom: bottomPad, height: "78%" }]}>
-          <LinearGradient colors={["#1A1030", "#06070F"]} style={StyleSheet.absoluteFill} />
-          <View style={modalStyles.handle} />
-          <View style={modalStyles.headerRow}>
-            <Pressable onPress={() => setShowGeometries(false)} hitSlop={12} style={modalStyles.headerClose}>
-              <Feather name="arrow-left" size={20} color={MUTED} />
-            </Pressable>
-            <Text style={modalStyles.headerTitle}>Mis Geometrix</Text>
-            <View style={modalStyles.headerSpacer} />
-          </View>
-          <FlatList
-            data={creationItems}
-            keyExtractor={(c) => c.id}
-            numColumns={2}
-            contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
-            ListEmptyComponent={
-              <View style={{ paddingVertical: 40, alignItems: "center" }}>
-                <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
-                <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
-              </View>
-            }
-            renderItem={({ item }) => (
-              <Pressable
-                style={({ pressed }) => [modalStyles.creationItem, { opacity: pressed ? 0.7 : 1 }]}
-                onPress={() => { onPickCreation(item.id); setShowGeometries(false); onClose(); }}
-              >
-                <View style={modalStyles.creationThumb}>
-                  <CreationCoverPreview creationId={item.id} size={170} />
-                </View>
-                <Text style={modalStyles.creationName} numberOfLines={1}>{item.name}</Text>
-              </Pressable>
-            )}
-          />
-        </View>
-      </Modal>
-    );
-  }
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
-      <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
+      <View style={[modalStyles.sheet, { paddingBottom: bottomPad, backgroundColor: sheetColor }]}>
         <View style={modalStyles.handle} />
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
@@ -994,13 +940,24 @@ function CoverPickerModal({
           <Feather name="image" size={22} color={GOLD} />
           <Text style={modalStyles.sheetRowText}>Foto de la galería</Text>
         </Pressable>
-        <Pressable
-          style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => setShowGeometries(true)}
-        >
-          <Feather name="hexagon" size={22} color={GOLD} />
-          <Text style={modalStyles.sheetRowText}>Mis Geometrix</Text>
-        </Pressable>
+        <Text style={modalStyles.presetTitle}>Elige una foto predeterminada</Text>
+        <View style={modalStyles.presetRow}>
+          {Object.values(DEFAULT_PLAYLIST_COVERS).map((source, index) => (
+            <Pressable
+              key={index}
+              onPress={() => {
+                onPickPreset(source);
+                onClose();
+              }}
+              style={({ pressed }) => [
+                modalStyles.presetPhoto,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+            >
+              <Image source={source} style={StyleSheet.absoluteFill} contentFit="cover" />
+            </Pressable>
+          ))}
+        </View>
       </View>
     </Modal>
   );
@@ -1045,6 +1002,27 @@ const modalStyles = StyleSheet.create({
     color: TEXT,
     fontSize: 15,
     fontWeight: "600",
+  },
+  presetTitle: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 13,
+    fontWeight: "600",
+    marginTop: 18,
+    marginBottom: 12,
+  },
+  presetRow: {
+    flexDirection: "row",
+    gap: 12,
+    paddingBottom: 20,
+  },
+  presetPhoto: {
+    flex: 1,
+    aspectRatio: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.16)",
   },
   headerRow: {
     flexDirection: "row",
