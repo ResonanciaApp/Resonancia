@@ -9,6 +9,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -219,6 +220,7 @@ function CalendarActivityRow({
 function RutinaCalendarioScreenContent() {
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
+  const { height: screenHeight } = useWindowDimensions();
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
@@ -323,10 +325,14 @@ function RutinaCalendarioScreenContent() {
             styles.stickyHeader,
             {
               paddingTop: topPad,
-              backgroundColor: routineTheme.background,
             },
           ]}
         >
+          <View pointerEvents="none" style={styles.stickyBackgroundClip}>
+            <View style={{ height: screenHeight }}>
+              <SacredBackground variant="gradient" />
+            </View>
+          </View>
           <View style={styles.header}>
             <Pressable
               onPress={() => router.back()}
@@ -347,7 +353,7 @@ function RutinaCalendarioScreenContent() {
               accessibilityRole="button"
               accessibilityState={{ selected: showAll }}
             >
-              <Text style={[styles.showAll, { color: routineTheme.completion }]}>
+              <Text style={[styles.showAll, { color: "#F0F0F0" }]}>
                 {showAll ? "Solo completadas" : "Mostrar todo"}
               </Text>
             </Pressable>
@@ -508,6 +514,10 @@ const styles = StyleSheet.create({
   stickyHeader: {
     marginHorizontal: -16,
     paddingHorizontal: 16,
+  },
+  stickyBackgroundClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
   },
   header: {
     minHeight: 44,

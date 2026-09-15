@@ -7,4 +7,4 @@ En el calendario expansivo de Mi rutina, el encabezado, la fila semanal y su lí
 
 **Why:** El usuario necesita conservar siempre visibles la fecha seleccionada y la navegación semanal mientras consulta actividades.
 
-**How to apply:** Mantener 16 px de margen lateral, igual que Inicio. Los círculos de días inactivos usan negro al 28% y el bloque sticky debe tener un fondo opaco del tema para cubrir el contenido que pasa por debajo.
+**How to apply:** Mantener 16 px de margen lateral, igual que Inicio. Los círculos de días inactivos usan negro al 28%. El sticky replica el fondo completo de la pantalla a escala de viewport y lo recorta, para cubrir el contenido sin verse como una franja sólida.
