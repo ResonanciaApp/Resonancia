@@ -29,9 +29,9 @@ En el Mezclador, ese borde no es permanente: hace fade in al desplazar el catál
 
 En las pantallas internas de Sonidos, el borde bajo los filtros sigue el mismo comportamiento de fade según el scroll de la grilla.
 
-En las pantallas internas de Dormir, el sticky duplica los tabs y comparte su filtro activo; título, tabs y borde hacen fade juntos al activarse con el scroll.
+En las pantallas internas de Dormir, título y tabs permanecen fijos desde el inicio como en Sonidos; el contenido pasa bajo ellos desde el primer desplazamiento y solo el borde hace fade.
 
-En esas pantallas, los tabs originales no muestran línea; solo la copia sticky la muestra al activarse. Los tabs sticky se desplazan 17 px hacia abajo.
+En esas pantallas, los tabs fijos se desplazan 17 px hacia abajo y el borde inferior permanece oculto hasta que comienza el scroll.
 
 Los títulos normales y sticky de pantallas internas de Categorías igualan las métricas tipográficas de las pantallas internas de Dormir.
 

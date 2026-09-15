@@ -47,18 +47,24 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const [stickyActive, setStickyActive] = React.useState(false);
-  const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
-  const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
+  const [stickyHeaderHeight, setStickyHeaderHeight] = React.useState(0);
+  const stickyBorderOpacity = React.useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = React.useRef(false);
   const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
 
-  React.useEffect(() => {
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 350,
+  const handleScroll = React.useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === stickyBorderActiveRef.current) return;
+    stickyBorderActiveRef.current = active;
+    stickyBorderOpacity.stopAnimation();
+    Animated.timing(stickyBorderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
       useNativeDriver: true,
     }).start();
-  }, [stickyActive, stickyHeaderOpacity]);
+  }, [stickyBorderOpacity]);
 
   const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
   const sessions = React.useMemo(
@@ -108,54 +114,14 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
+        contentContainerStyle={{
+          paddingTop: stickyHeaderHeight,
+          paddingBottom: 60 + bottomPad,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={(event) => {
-          const y = event.nativeEvent.contentOffset.y;
-          const active = y > headerBottomY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
-        }}
+        onScroll={handleScroll}
       >
-        {/* ── Header ── */}
-        <View
-          style={[styles.header, { paddingTop: topPad + 8 }]}
-          onLayout={(event) => {
-            const { y, height } = event.nativeEvent.layout;
-            setHeaderBottomY(y + height);
-          }}
-        >
-          <Pressable
-            onPress={goBack}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.backBtn,
-              {
-                backgroundColor: "rgba(0,0,0,0.28)",
-                opacity: pressed ? 0.7 : 1,
-                top: topPad + 3,
-              },
-            ]}
-          >
-            <Feather name="chevron-left" size={26} color={colors.foreground} />
-          </Pressable>
-          <Text
-            style={[styles.pageTitle, { color: colors.foreground }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.85}
-          >
-            {tag.label}
-          </Text>
-        </View>
-
-        <SupercategoryFilterTabs
-          editorialTags={editorialTags}
-          active={activeFilter}
-          onSelect={setActiveFilter}
-          showBottomBorder={false}
-        />
-
         {/* ── Sessions grid or empty ── */}
         {filteredSessions.length === 0 ? (
           <View style={[styles.emptySlot, { borderColor: colors.border, marginHorizontal: H_PAD }]}>
@@ -218,10 +184,9 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           {
             paddingTop: topPad + 8,
             backgroundColor: theme.gradient[0] as string,
-            opacity: stickyHeaderOpacity,
           },
         ]}
-        pointerEvents={stickyActive ? "auto" : "none"}
+        onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
@@ -238,7 +203,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           <View style={styles.stickyHeaderSpacer} />
         </View>
         <Pressable
-          onPress={() => router.back()}
+          onPress={goBack}
           hitSlop={10}
           style={({ pressed }) => [
             styles.backBtn,
@@ -256,6 +221,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             editorialTags={editorialTags}
             active={activeFilter}
             onSelect={setActiveFilter}
+            bottomBorderOpacity={stickyBorderOpacity}
           />
         </View>
       </Animated.View>
