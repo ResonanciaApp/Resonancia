@@ -13,4 +13,4 @@ Pattern used for the inline (non-modal) expandable search field:
 
 **Why:** the task explicitly forbade a `Modal`/new screen (unlike the existing `BibliotecaScreen.tsx` `SearchOverlay`, which *is* a full-screen `Modal` — don't reuse that pattern here, only its result-matching logic (filter `SESSIONS` by title/categoryLabel/subtitle) is transferable, not its UI.
 
-Inicio 3 activa el sticky cuando el scroll cubre 10 px de la PARTE SUPERIOR del hero (`scrollY=10`), no cerca de su borde inferior. Logo a la izquierda; a la derecha, loto y luego lupa con fondo.
+Inicio 3 activa el sticky cuando el scroll cubre 150 px de la PARTE SUPERIOR del hero (`scrollY=150`), no cerca de su borde inferior. Logo a la izquierda; a la derecha, loto y luego lupa con fondo.

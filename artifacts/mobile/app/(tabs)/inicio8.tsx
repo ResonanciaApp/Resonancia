@@ -337,7 +337,7 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
-const INICIO3_STICKY_THRESHOLD = 10;
+const INICIO3_STICKY_THRESHOLD = 150;
 
 function Inicio3StickyHeader({
   topPad,
