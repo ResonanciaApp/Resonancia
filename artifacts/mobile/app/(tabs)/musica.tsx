@@ -467,6 +467,22 @@ export default function MezcladorScreen() {
   const { lastSavedAt } = useSaveEvent();
   const { theme } = useSceneTheme();
   const mixerWasOpenRef = useRef(false);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
+
+  const handleCatalogScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === stickyBorderActiveRef.current) return;
+    stickyBorderActiveRef.current = active;
+    stickyBorderOpacity.stopAnimation();
+    Animated.timing(stickyBorderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyBorderOpacity]);
 
   const heartGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -844,6 +860,10 @@ export default function MezcladorScreen() {
             {/* ── Banner rotativo — oculto temporalmente ── */}
 
             {/* ── Sub-tabs eliminados ── */}
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.stickyTabsBorder, { opacity: stickyBorderOpacity }]}
+            />
         </View>
 
         {/* ── Scroll principal ── */}
@@ -853,6 +873,7 @@ export default function MezcladorScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          onScroll={handleCatalogScroll}
         >
           <ContentSlide dir={contentDir}>
             {/* ── Chips de filtros activos ── */}
@@ -1080,18 +1101,25 @@ const styles = StyleSheet.create({
   stickyTabsHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    position: "relative",
+  },
+  stickyTabsBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   pillRow:        { flexGrow: 0, marginTop: -12, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 12, paddingBottom: 6 },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 16,
-    height: 43,
-    borderRadius: 24,
+    gap: 9,
+    paddingHorizontal: 13,
+    height: 40,
+    borderRadius: 21,
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 2,
@@ -1100,8 +1128,8 @@ const styles = StyleSheet.create({
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabSel: { backgroundColor: "#F9F9F9" },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
-  pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 10, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
+  pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "550" as any },
   pillTabUnderline: {},
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },

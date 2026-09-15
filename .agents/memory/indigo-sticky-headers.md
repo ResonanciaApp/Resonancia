@@ -24,3 +24,5 @@ Todos esos sticky headers terminan con un borde inferior blanco de 1 px a opacid
 Comunidad y Perfil también terminan su sticky header con ese borde; la lupa y el engranaje quedan visualmente a 6 px de la línea inferior.
 
 Biblioteca y Mezclador de sonidos mantienen 6 px entre sus tabs y el borde inferior blanco de 1 px a opacidad 0,07.
+
+En el Mezclador, ese borde no es permanente: hace fade in al desplazar el catálogo y fade out al volver arriba.
