@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
   },
   stickyTitleRow: {
     minHeight: 54,
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   stickySearchButton: {
     position: "absolute",
