@@ -1283,6 +1283,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
+  onOpenSearch,
   isInicio3,
   scrollY,
 }: {
@@ -1291,6 +1292,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
+  onOpenSearch: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
@@ -1473,6 +1475,29 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         </View>
 
         <View style={styles.inicio3HeroRightActions}>
+          {isInicio3 ? (
+            <Pressable
+              onPress={onOpenSearch}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.inicio3HeroSearchButton,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Inicio"
+              testID="inicio3-search-button"
+            >
+              {Platform.OS === "ios" ? (
+                <SymbolView
+                  name="magnifyingglass"
+                  tintColor="#F9F9F9"
+                  size={20}
+                />
+              ) : (
+                <Feather name="search" size={20} color="#F9F9F9" />
+              )}
+            </Pressable>
+          ) : null}
           <Pressable
             onPress={onOpenProfile}
             onPressIn={() =>
@@ -2492,46 +2517,10 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
+              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
-            {variant === "inicio3" && (
-              <View style={styles.inicio3SearchWrap}>
-                <Pressable
-                  onPress={handleSearchBtnPress}
-                  style={[
-                    styles.inicio3SearchBox,
-                    activeSceneId === "tibet"
-                      ? styles.inicio3SearchBoxTibet
-                      : isIndigoThemeId(activeSceneId)
-                        ? styles.inicio3SearchBoxIndigo
-                        : activeSceneId === "indigo2"
-                          ? styles.inicio3SearchBoxIndigo2
-                          : null,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Buscar en Inicio"
-                  testID="inicio3-search-button"
-                >
-                  {Platform.OS === "ios" ? (
-                    <SymbolView
-                      name="magnifyingglass"
-                      tintColor="rgba(249,249,249,0.72)"
-                      size={20}
-                    />
-                  ) : (
-                    <Feather
-                      name="search"
-                      size={20}
-                      color="rgba(249,249,249,0.72)"
-                    />
-                  )}
-                  <Text style={styles.inicio3SearchPlaceholder}>
-                    Busca por título, categoría o autor
-                  </Text>
-                </Pressable>
-              </View>
-            )}
           </>
         ) : showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
@@ -3389,37 +3378,15 @@ const styles = StyleSheet.create({
     gap: 8,
     transform: [{ translateX: -23 }, { translateY: -2 }],
   },
-  inicio3SearchWrap: {
-    paddingHorizontal: GRID_PAD,
-    marginTop: -4,
-    marginBottom: 24,
-  },
-  inicio3SearchBox: {
-    height: 50,
-    borderRadius: 999,
+  inicio3HeroSearchButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     borderWidth: 1,
-    borderColor: "#F9F9F9",
-    paddingHorizontal: 18,
-    flexDirection: "row",
+    borderColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
-    gap: 10,
+    justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
-  },
-  inicio3SearchBoxTibet: {
-    backgroundColor: "rgba(0,0,0,0.15)",
-  },
-  inicio3SearchBoxIndigo: {
-    backgroundColor: "rgba(181,211,255,0.057)",
-  },
-  inicio3SearchBoxIndigo2: {
-    backgroundColor: "rgba(191,207,255,0.096)",
-  },
-  inicio3SearchPlaceholder: {
-    flex: 1,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "400",
-    color: "#F4F4F4",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,

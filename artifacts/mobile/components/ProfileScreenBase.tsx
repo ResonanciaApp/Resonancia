@@ -1233,7 +1233,7 @@ export function ProfileScreenBase({
               <ProgressMirrorSections showSectionBorders={false} />
             </View>
 
-            <View style={{ marginTop: 53 }}>
+            <View style={{ marginTop: 38 }}>
               <ProfileMixCarousel marginBottom={0} />
             </View>
 
