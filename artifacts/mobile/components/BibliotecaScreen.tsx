@@ -117,20 +117,24 @@ function MixRow({
   onPress,
   onPressThumb,
   onPressEdit,
+  onLongPress,
 }: {
   mix: MixPreset;
   isPlayingThis: boolean;
   onPress: () => void;
   onPressThumb: () => void;
   onPressEdit: () => void;
+  onLongPress: () => void;
 }) {
   return (
     <View style={styles.row}>
-      <Pressable onPress={onPressThumb} style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}>
+      <Pressable onPress={onPressThumb} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}>
         <MixCover mix={mix} size={MIX_THUMB} radius={6} />
       </Pressable>
       <Pressable
         onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={600}
         style={({ pressed }) => [styles.rowInfo, { opacity: pressed ? 0.8 : 1 }]}
       >
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
@@ -1163,12 +1167,13 @@ export function BibliotecaScreen({
 
   const {
     presets, loadedPresetId, isPlaying: mixerPlaying, openSheet,
-    mixFolders,
+    mixFolders, duplicatePreset, deletePreset,
   } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
   const loadMix = useLoadMix();
   const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
+  const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
 
   const { history, favorites } = usePlayer();
   const { isPremium } = usePremium();
@@ -1320,6 +1325,8 @@ export function BibliotecaScreen({
                       <Pressable
                         style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
                         onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                        onLongPress={() => setMixMenuPreset(mix)}
+                        delayLongPress={600}
                       >
                         <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                           <MixCover mix={mix} size={cellW} radius={8} />
@@ -1330,7 +1337,11 @@ export function BibliotecaScreen({
                           )}
                         </View>
                       </Pressable>
-                      <Pressable onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}>
+                      <Pressable
+                        onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                        onLongPress={() => setMixMenuPreset(mix)}
+                        delayLongPress={600}
+                      >
                         <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                       </Pressable>
                     </View>
@@ -1389,6 +1400,7 @@ export function BibliotecaScreen({
                     onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                     onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                     onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+                    onLongPress={() => setMixMenuPreset(mix)}
                   />
                 );
               })}
@@ -1547,6 +1559,8 @@ export function BibliotecaScreen({
                     <Pressable
                       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
                       onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                       onLongPress={() => setMixMenuPreset(mix)}
+                       delayLongPress={600}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                         <MixCover mix={mix} size={cellW} radius={8} />
@@ -1557,7 +1571,11 @@ export function BibliotecaScreen({
                         )}
                       </View>
                     </Pressable>
-                    <Pressable onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}>
+                    <Pressable
+                      onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                      onLongPress={() => setMixMenuPreset(mix)}
+                      delayLongPress={600}
+                    >
                       <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                     </Pressable>
                     <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
@@ -1586,6 +1604,7 @@ export function BibliotecaScreen({
                   onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                   onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                   onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+                   onLongPress={() => setMixMenuPreset(mix)}
                 />
               ))}
           </View>
@@ -2008,12 +2027,13 @@ export function BibliotecaScreen({
         onClose={() => { setFavActionsItemId(null); setFavActionsItemKind(null); }}
       />
       <MixActionsSheet
-        mix={null}
+        mix={mixMenuPreset}
         folder={mixMenuFolder}
-        visible={mixMenuFolder !== null}
-        onClose={() => setMixMenuFolder(null)}
-        onDuplicate={() => {}}
-        onDelete={() => {}}
+        visible={mixMenuPreset !== null || mixMenuFolder !== null}
+        onClose={() => { setMixMenuPreset(null); setMixMenuFolder(null); }}
+        onEdit={(mix) => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+        onDuplicate={(mix) => duplicatePreset(mix.id)}
+        onDelete={(mix) => deletePreset(mix.id)}
       />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
 
