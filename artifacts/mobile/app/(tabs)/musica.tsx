@@ -942,7 +942,7 @@ export default function MezcladorScreen() {
                         idx={i}
                         active={isActive(s.id)}
                         locked={!!s.isPremium && !isPremium}
-                        available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
+                        available={!!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                         image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
                         borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[sec.tab.id][0], TAB_HEADER_GRADIENT[sec.tab.id][1], TAB_HEADER_GRADIENT[sec.tab.id][2]]}
                         textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
@@ -976,7 +976,7 @@ export default function MezcladorScreen() {
                     idx={i}
                     active={isActive(s.id)}
                     locked={!!s.isPremium && !isPremium}
-                    available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
+                    available={!!s.audioUrl || hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                         image={s.imageUrl ?? REMOTE_SOUND_IMAGE_MAP[s.id] ?? getSoundImage(s.id)}
                     borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}

@@ -55,9 +55,8 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
       const apiBase = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
       const res = await fetch(`${apiBase}/api/sounds`);
       if (!res.ok) {
-        applyRemoteSounds([]);
-        replaceSoundCatalog([]);
-        setSounds([]);
+        // Un fallo transitorio no debe vaciar una grilla que ya estaba cargada.
+        // Las bajas reales se aplican cuando llega una respuesta válida de la API.
         return;
       }
       const body = (await res.json()) as { sounds?: ApiSound[] };
@@ -91,10 +90,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
       replaceSoundCatalog(catalog);
       setSounds(catalog);
     } catch {
-      // No local fallback: an error must not resurrect an obsolete catalog.
-      applyRemoteSounds([]);
-      replaceSoundCatalog([]);
-      setSounds([]);
+      // Conserva el último catálogo válido; la próxima apertura vuelve a intentar.
     } finally {
       setLoaded(true);
     }
