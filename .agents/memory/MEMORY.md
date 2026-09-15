@@ -147,3 +147,4 @@
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica
 - [Filtros editoriales de supercategorías](supercategory-editorial-tags.md) — Dormir/Sonidos conservan colecciones como navegación; una segunda taxonomía prefijada filtra dentro de cada colección
 - [Header del calendario de rutina](routine-calendar-sticky-header.md) — fecha, semana y divisor forman un solo sticky header; margen lateral canónico de Inicio
+- [Ubicación de carpetas en Biblioteca](library-folder-placement.md) — las carpetas viven solo en la portada general y el tab Carpetas; no duplicarlas en Mis playlist ni Mis mezclas

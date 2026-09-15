@@ -70,13 +70,14 @@ export function getLibraryTabSurface(_sceneId: SceneId): string {
   return "rgba(0,0,0,0.28)";
 }
 
-type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "carpetas" | "geometrix" | "historial" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
   { id: "playlists", label: "Mis playlist", icon: "list" },
   { id: "mezclas", label: "Mis mezclas", icon: "sliders" },
+  { id: "carpetas", label: "Carpetas", icon: "folder" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -1230,6 +1231,7 @@ export function BibliotecaScreen({
       const generalItems = [
         ...favFolders.map((item) => ({ kind: "favFolder" as const, item })),
         ...userFolders.map((item) => ({ kind: "folder" as const, item })),
+        ...mixFolders.map((item) => ({ kind: "mixFolder" as const, item })),
         ...userPlaylists
           .filter((item) => !plIdsInFoldersGeneral.has(item.id))
           .map((item) => ({ kind: "playlist" as const, item })),
@@ -1243,20 +1245,25 @@ export function BibliotecaScreen({
           {viewMode === "grid" ? (
             <View style={styles.gridWrap}>
               {generalItems.map((entry) => {
-                if (entry.kind === "folder" || entry.kind === "favFolder") {
+                if (entry.kind === "folder" || entry.kind === "favFolder" || entry.kind === "mixFolder") {
                   const folder = entry.item;
                   const isFavoriteFolder = entry.kind === "favFolder";
+                  const isMixFolder = entry.kind === "mixFolder";
                   return (
                     <Pressable
                       key={`${entry.kind}-${folder.id}`}
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => openLibraryRoute(
-                        isFavoriteFolder
+                        isMixFolder
+                          ? `/carpeta-mezcla/${folder.id}`
+                          : isFavoriteFolder
                           ? `/carpeta-favorito/${folder.id}`
                           : `/carpeta/${folder.id}`,
                       )}
                       onLongPress={() => {
-                        if (isFavoriteFolder) {
+                        if (entry.kind === "mixFolder") {
+                          setMixMenuFolder(entry.item);
+                        } else if (isFavoriteFolder) {
                           setFavActionsItemId(folder.id);
                           setFavActionsItemKind("folder");
                         } else {
@@ -1339,6 +1346,16 @@ export function BibliotecaScreen({
                       folder={entry.item}
                       onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
                       onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
+                    />
+                  );
+                }
+                if (entry.kind === "mixFolder") {
+                  return (
+                    <MixFolderRow
+                      key={`mixFolder-${entry.item.id}`}
+                      folder={entry.item}
+                      onPress={() => openLibraryRoute(`/carpeta-mezcla/${entry.item.id}`)}
+                      onLongPress={() => setMixMenuFolder(entry.item)}
                     />
                   );
                 }
@@ -1425,9 +1442,7 @@ export function BibliotecaScreen({
     }
 
     if (activeTab === "playlists") {
-      const plIdsInFolders = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
-      const sortedUserPl = userPlaylists
-        .filter((pl) => !plIdsInFolders.has(pl.id))
+      const sortedUserPl = [...userPlaylists]
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       // Aplicar ordenamiento según sort mode
       const applySort = (arr: typeof sortedUserPl) => {
@@ -1436,15 +1451,8 @@ export function BibliotecaScreen({
         return arr; // "recientes" ya está ordenado
       };
       const displayPl = applySort(sortedUserPl);
-      const playlistItems = [
-        ...userFolders.map((item) => ({ kind: "folder" as const, item })),
-        ...displayPl.map((item) => ({ kind: "playlist" as const, item })),
-      ].sort((a, b) => {
-        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
-        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
-      });
 
-       if (playlistItems.length === 0) {
+       if (displayPl.length === 0) {
         return (
           <View style={styles.emptyState}>
             <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
@@ -1462,24 +1470,7 @@ export function BibliotecaScreen({
         return (
            <View style={{ gap: 18, marginTop: 30 }}>
              <View style={styles.gridWrap}>
-             {playlistItems.map((entry) => {
-               if (entry.kind === "folder") {
-                 return (
-                   <Pressable
-                     key={`folder-${entry.item.id}`}
-                     style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                     onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
-                     onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
-                   >
-                     <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
-                       <Feather name="folder" size={cellW * 0.32} color={GOLD} />
-                     </View>
-                     <Text style={styles.gridTitle} numberOfLines={2}>{entry.item.name}</Text>
-                   </Pressable>
-                 );
-               }
-               const pl = entry.item;
-               return (
+             {displayPl.map((pl) => (
                  <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                    onPress={() => openPlaylistPanel(pl.id)}>
                    <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
@@ -1495,27 +1486,19 @@ export function BibliotecaScreen({
                    </View>
                    <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
                  </Pressable>
-               );
-             })}
+             ))}
              </View>
           </View>
         );
       }
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
-          {playlistItems.map((entry) => entry.kind === "folder" ? (
-              <FolderRow
-                key={`folder-${entry.item.id}`}
-                folder={entry.item}
-                onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
-                onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
-              />
-            ) : (
+          {displayPl.map((pl) => (
               <UserPlaylistRow
-                key={`playlist-${entry.item.id}`}
-                pl={entry.item}
-                onPress={() => openPlaylistPanel(entry.item.id)}
-                onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("playlist"); }}
+                key={`playlist-${pl.id}`}
+                pl={pl}
+                onPress={() => openPlaylistPanel(pl.id)}
+                onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
               />
             ))}
         </View>
@@ -1523,36 +1506,15 @@ export function BibliotecaScreen({
     }
 
     if (activeTab === "mezclas") {
-      const sortedMixFolders = [...mixFolders].sort((a, b) => {
-        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-
-      const openMixFolderMenu = (folder: MixFolder) => setMixMenuFolder(folder);
-
-      // Carpetas unificadas del usuario que contienen al menos una mezcla
-      const userFoldersWithMixes = [...userFolders]
-        .filter((f) => (f.presetIds ?? []).length > 0)
-        .sort((a, b) => {
-          if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        });
-
-      const createButtons = (
-        <>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaVisible(true)}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="folder" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
-          </Pressable>
-        </>
-      );
-
-      if (presets.length === 0 && sortedMixFolders.length === 0) {
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      const sortedPresets =
+        sort === "alfabetico"
+          ? [...presets].sort((a, b) => a.name.localeCompare(b.name, "es"))
+          : sort === "agregado"
+            ? [...presets].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            : presets;
+      if (sortedPresets.length === 0) {
         return (
           <View style={styles.emptyState}>
             <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
@@ -1561,66 +1523,13 @@ export function BibliotecaScreen({
           </View>
         );
       }
-      const GRID_GAP = 10;
-      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      const mixIdsInFolders = new Set([
-        ...mixFolders.flatMap((f) => f.presetIds),
-        ...userFolders.flatMap((f) => f.presetIds ?? []),
-      ]);
-      const unfiledPresetsRaw = presets.filter((p) => !mixIdsInFolders.has(p.id));
-      const unfiledPresets =
-        sort === "alfabetico"
-          ? [...unfiledPresetsRaw].sort((a, b) => a.name.localeCompare(b.name, "es"))
-          : sort === "agregado"
-            ? [...unfiledPresetsRaw].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            : unfiledPresetsRaw;
-      const visibleMixes = unfiledPresets.slice(0, mixesLimit);
-      const hasMixesMore = unfiledPresets.length > mixesLimit;
-      const visibleMixIds = new Set(visibleMixes.map((mix) => mix.id));
-      const mixItems = [
-        ...userFoldersWithMixes.map((item) => ({ kind: "folder" as const, item })),
-        ...sortedMixFolders.map((item) => ({ kind: "mixFolder" as const, item })),
-        ...unfiledPresets
-          .filter((item) => visibleMixIds.has(item.id))
-          .map((item) => ({ kind: "mix" as const, item })),
-      ].sort((a, b) => {
-        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
-        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
-      });
+      const visibleMixes = sortedPresets.slice(0, mixesLimit);
+      const hasMixesMore = sortedPresets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
           <View style={{ gap: 15, marginTop: 30 }}>
             <View style={styles.gridWrap}>
-              {mixItems.map((entry) => {
-                if (entry.kind === "folder" || entry.kind === "mixFolder") {
-                  const folder = entry.item;
-                  const isMixFolder = entry.kind === "mixFolder";
-                  return (
-                    <Pressable
-                      key={`${entry.kind}-${folder.id}`}
-                      style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                      onPress={() => openLibraryRoute(
-                        isMixFolder
-                          ? `/carpeta-mezcla/${folder.id}`
-                          : `/carpeta/${folder.id}`,
-                      )}
-                      onLongPress={() => {
-                        if (entry.kind === "mixFolder") {
-                          setMixMenuFolder(entry.item);
-                        } else {
-                          setActionsItemId(folder.id);
-                          setActionsItemKind("folder");
-                        }
-                      }}
-                    >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
-                        <Feather name="folder" size={cellW * 0.32} color={GOLD} />
-                      </View>
-                      <Text style={styles.gridTitle} numberOfLines={2}>{folder.name}</Text>
-                    </Pressable>
-                  );
-                }
-                const mix = entry.item;
+              {visibleMixes.map((mix) => {
                 const isPlaying = loadedPresetId === mix.id && mixerPlaying;
                 return (
                   <View key={mix.id} style={{ width: cellW }}>
@@ -1652,36 +1561,13 @@ export function BibliotecaScreen({
                 <Text style={styles.loadMoreText}>Cargar más</Text>
               </Pressable>
             )}
-            {createButtons}
           </View>
         );
       }
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
           <View style={{ gap: 14 }}>
-            {mixItems.map((entry) => {
-              if (entry.kind === "folder") {
-                return (
-                  <FolderRow
-                    key={`folder-${entry.item.id}`}
-                    folder={entry.item}
-                    onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
-                    onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
-                  />
-                );
-              }
-              if (entry.kind === "mixFolder") {
-                return (
-                  <MixFolderRow
-                    key={`mixFolder-${entry.item.id}`}
-                    folder={entry.item}
-                    onPress={() => openLibraryRoute(`/carpeta-mezcla/${entry.item.id}`)}
-                    onLongPress={() => openMixFolderMenu(entry.item)}
-                  />
-                );
-              }
-              const mix = entry.item;
-              return (
+            {visibleMixes.map((mix) => (
                 <MixRow
                   key={mix.id}
                   mix={mix}
@@ -1690,15 +1576,112 @@ export function BibliotecaScreen({
                   onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                   onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
                 />
-              );
-            })}
+              ))}
           </View>
           {hasMixesMore && (
             <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
               <Text style={styles.loadMoreText}>Cargar más</Text>
             </Pressable>
           )}
-          {createButtons}
+        </View>
+      );
+    }
+
+    if (activeTab === "carpetas") {
+      const GRID_GAP = 10;
+      const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+      const folderItems = [
+        ...userFolders.map((item) => ({ kind: "folder" as const, item })),
+        ...mixFolders.map((item) => ({ kind: "mixFolder" as const, item })),
+      ].sort((a, b) => {
+        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
+        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
+      });
+      const createFolderButtons = (
+        <View style={{ gap: 15 }}>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaVisible(true)}
+          >
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
+              <Feather name="folder-plus" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaMezclaVisible(true)}
+          >
+            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
+              <Feather name="sliders" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear carpeta de mezclas</Text>
+          </Pressable>
+        </View>
+      );
+
+      if (folderItems.length === 0) {
+        return (
+          <View style={styles.emptyState}>
+            <Feather name="folder" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus carpetas aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Crea carpetas para organizar tus playlists y mezclas.</Text>
+            <View style={{ width: "100%", marginTop: 24 }}>{createFolderButtons}</View>
+          </View>
+        );
+      }
+
+      return (
+        <View style={{ gap: 24, marginTop: 30 }}>
+          {viewMode === "grid" ? (
+            <View style={styles.gridWrap}>
+              {folderItems.map((entry) => (
+                <Pressable
+                  key={`${entry.kind}-${entry.item.id}`}
+                  style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                  onPress={() => openLibraryRoute(
+                    entry.kind === "mixFolder"
+                      ? `/carpeta-mezcla/${entry.item.id}`
+                      : `/carpeta/${entry.item.id}`,
+                  )}
+                  onLongPress={() => {
+                    if (entry.kind === "mixFolder") setMixMenuFolder(entry.item);
+                    else {
+                      setActionsItemId(entry.item.id);
+                      setActionsItemKind("folder");
+                    }
+                  }}
+                >
+                  <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
+                    <Feather name="folder" size={cellW * 0.32} color={GOLD} />
+                  </View>
+                  <Text style={styles.gridTitle} numberOfLines={2}>{entry.item.name}</Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : (
+            <View style={{ gap: 14 }}>
+              {folderItems.map((entry) => entry.kind === "mixFolder" ? (
+                <MixFolderRow
+                  key={`mixFolder-${entry.item.id}`}
+                  folder={entry.item}
+                  onPress={() => openLibraryRoute(`/carpeta-mezcla/${entry.item.id}`)}
+                  onLongPress={() => setMixMenuFolder(entry.item)}
+                />
+              ) : (
+                <FolderRow
+                  key={`folder-${entry.item.id}`}
+                  folder={entry.item}
+                  onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
+                  onLongPress={() => {
+                    setActionsItemId(entry.item.id);
+                    setActionsItemKind("folder");
+                  }}
+                />
+              ))}
+            </View>
+          )}
+          {createFolderButtons}
         </View>
       );
     }
@@ -1980,9 +1963,10 @@ export function BibliotecaScreen({
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: embedded ? 0 : 23 }}
         showsVerticalScrollIndicator={false}
       >
-        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") &&
-          !(activeTab === "playlists" && userPlaylists.length === 0 && userFolders.length === 0) &&
-          !(activeTab === "mezclas" && presets.length === 0 && mixFolders.length === 0) &&
+        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "carpetas" || activeTab === "favoritos") &&
+          !(activeTab === "playlists" && userPlaylists.length === 0) &&
+          !(activeTab === "mezclas" && presets.length === 0) &&
+          !(activeTab === "carpetas" && userFolders.length === 0 && mixFolders.length === 0) &&
           !(activeTab === null && userPlaylists.length === 0 && userFolders.length === 0 && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
