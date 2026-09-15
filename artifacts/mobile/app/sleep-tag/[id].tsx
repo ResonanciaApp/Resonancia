@@ -155,13 +155,12 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           </Text>
         </View>
 
-        <View style={styles.stickyTabs}>
-          <SupercategoryFilterTabs
-            editorialTags={editorialTags}
-            active={activeFilter}
-            onSelect={setActiveFilter}
-          />
-        </View>
+        <SupercategoryFilterTabs
+          editorialTags={editorialTags}
+          active={activeFilter}
+          onSelect={setActiveFilter}
+          showBottomBorder={false}
+        />
 
         {/* ── Sessions grid or empty ── */}
         {filteredSessions.length === 0 ? (
@@ -321,6 +320,7 @@ const styles = StyleSheet.create({
   },
   stickyTabs: {
     width: "100%",
+    marginTop: 12,
   },
   stickyTitleCol: {
     flex: 1,

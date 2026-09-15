@@ -14,6 +14,7 @@ export function SupercategoryFilterTabs({
   includeDurationFilters = true,
   hideWithoutEditorialTags = false,
   bottomBorderOpacity,
+  showBottomBorder = true,
 }: {
   editorialTags: string[];
   active: SupercategoryFilter;
@@ -21,6 +22,7 @@ export function SupercategoryFilterTabs({
   includeDurationFilters?: boolean;
   hideWithoutEditorialTags?: boolean;
   bottomBorderOpacity?: Animated.Value;
+  showBottomBorder?: boolean;
 }) {
   if (!shouldShowSupercategoryFilterTabs(editorialTags, hideWithoutEditorialTags)) return null;
 
@@ -52,13 +54,15 @@ export function SupercategoryFilterTabs({
           );
         })}
       </ScrollView>
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          styles.bottomBorder,
-          bottomBorderOpacity ? { opacity: bottomBorderOpacity } : null,
-        ]}
-      />
+      {showBottomBorder && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.bottomBorder,
+            bottomBorderOpacity ? { opacity: bottomBorderOpacity } : null,
+          ]}
+        />
+      )}
     </View>
   );
 }
