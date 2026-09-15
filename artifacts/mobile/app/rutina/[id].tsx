@@ -298,7 +298,7 @@ export default function RutinaDetailScreen() {
               onChangeText={setDescriptionDraft}
               onBlur={saveDescription}
               placeholder="Añadir una descripción (opcional)"
-              placeholderTextColor={routineTheme.textMuted}
+              placeholderTextColor="#7F7F7F"
               style={[styles.description, styles.descriptionInput, { color: "#F9F9F9" }]}
               accessibilityLabel="Descripción de la actividad"
             />
@@ -312,7 +312,7 @@ export default function RutinaDetailScreen() {
               accessibilityRole="button"
               accessibilityLabel="Añadir una descripción opcional"
             >
-              <Text style={[styles.description, { color: routineTheme.textMuted }]}>
+              <Text style={[styles.description, { color: "#7F7F7F" }]}>
                 Añadir una descripción (opcional)
               </Text>
             </Pressable>
@@ -341,7 +341,9 @@ export default function RutinaDetailScreen() {
                 />
               </>
             ) : null}
-            <DetailRow icon="tag" label={activity.category} />
+            <View style={styles.categoryDetailShift}>
+              <DetailRow icon="tag" label={activity.category} />
+            </View>
           </View>
         </View>
 
@@ -424,7 +426,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   descriptionInput: {
-    minHeight: 46,
+    minHeight: 23,
     padding: 0,
     textAlignVertical: "top",
   },
@@ -449,6 +451,9 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
+  },
+  categoryDetailShift: {
+    marginTop: 5,
   },
   actions: {
     marginTop: 198,
