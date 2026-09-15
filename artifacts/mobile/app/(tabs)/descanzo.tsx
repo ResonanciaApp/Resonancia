@@ -239,28 +239,50 @@ export default function DescansoScreen() {
     }, []),
   );
 
-  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const stickyHeaderActiveRef = useRef(false);
-  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
-  const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
+  const stickyTitleOpacity = useRef(new Animated.Value(0)).current;
+  const stickyTitleActiveRef = useRef(false);
+  const stickyDividerOpacity = useRef(new Animated.Value(0)).current;
+  const stickyDividerActiveRef = useRef(false);
+  const stickyTitleTranslateY = stickyTitleOpacity.interpolate({
     inputRange: [0, 1],
     outputRange: [20, 0],
+  });
+  const heroTitleOpacity = stickyTitleOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+  const heroTitleTranslateY = stickyTitleOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, -8],
   });
 
   const handleScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
   }) => {
-    const active = event.nativeEvent.contentOffset.y > 8;
-    if (active === stickyHeaderActiveRef.current) return;
-    stickyHeaderActiveRef.current = active;
-    setStickyHeaderActive(active);
-    stickyHeaderOpacity.stopAnimation();
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: active ? 1 : 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start();
-  }, [stickyHeaderOpacity]);
+    const y = event.nativeEvent.contentOffset.y;
+    const titleActive = y > 8;
+    if (titleActive !== stickyTitleActiveRef.current) {
+      stickyTitleActiveRef.current = titleActive;
+      stickyTitleOpacity.stopAnimation();
+      Animated.timing(stickyTitleOpacity, {
+        toValue: titleActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    const dividerActive = y > 2;
+    if (dividerActive !== stickyDividerActiveRef.current) {
+      stickyDividerActiveRef.current = dividerActive;
+      stickyDividerOpacity.stopAnimation();
+      Animated.timing(stickyDividerOpacity, {
+        toValue: dividerActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [stickyDividerOpacity, stickyTitleOpacity]);
 
   const {
     currentSession,
@@ -414,22 +436,36 @@ export default function DescansoScreen() {
 
       <View style={styles.contentShift}>
         <Animated.View
-          pointerEvents={stickyHeaderActive ? "auto" : "none"}
+          onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
           style={[
             styles.stickyHeader,
             {
               paddingTop: topPad + 2,
               backgroundColor: sceneTheme.gradient[0] as string,
-              opacity: stickyHeaderOpacity,
             },
           ]}
         >
           <View style={[styles.titleRow, styles.stickyTitleRow]}>
             <Animated.Text
+              pointerEvents="none"
+              style={[
+                styles.heroTitle,
+                {
+                  color: colors.foreground,
+                  opacity: heroTitleOpacity,
+                  transform: [{ translateY: heroTitleTranslateY }],
+                },
+              ]}
+            >
+              Dormir
+            </Animated.Text>
+            <Animated.Text
+              pointerEvents="none"
               style={[
                 styles.stickyTitle,
                 {
                   color: colors.foreground,
+                  opacity: stickyTitleOpacity,
                   transform: [{ translateY: stickyTitleTranslateY }],
                 },
               ]}
@@ -462,46 +498,22 @@ export default function DescansoScreen() {
               ))}
             </ScrollView>
           </View>
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.stickyDivider, { opacity: stickyDividerOpacity }]}
+          />
         </Animated.View>
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          contentContainerStyle={{
+            paddingTop: stickyHeaderHeight,
+            paddingBottom: 140 + bottomPad,
+          }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
         >
-          <View style={{ paddingTop: topPad + 2 }}>
-            <View style={styles.titleRow}>
-              <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-                Dormir
-              </Text>
-              <SleepHeaderActions
-                reminder={nightReminder}
-                foreground={colors.foreground}
-                onOpenReminder={() => setReminderVisible(true)}
-                onOpenSearch={() => setSearchVisible(true)}
-              />
-            </View>
-            <View style={styles.sleepTabsHeader}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={[styles.tabGrid, { marginBottom: 0 }]}
-                contentContainerStyle={styles.tabGridContent}
-              >
-                {sleepCollections.map((tab) => (
-                  <SleepPill
-                    key={tab.id}
-                    sel={false}
-                    label={tab.label}
-                    icon={tab.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-                    onPress={() => openCategory(`/sleep-tag/${tab.id}`)}
-                  />
-                ))}
-              </ScrollView>
-            </View>
-          </View>
           <View style={{ marginTop: -3 }}>
             {orderedSleepCarousels.map((item, index) => (
               <React.Fragment key={item.key}>
@@ -692,6 +704,14 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
   },
+  stickyDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
   scroll: { flex: 1 },
 
   /* Session grid (Historias / ASMR) */
@@ -881,6 +901,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   stickyTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
@@ -890,7 +914,7 @@ const styles = StyleSheet.create({
   },
   stickyTitleRow: {
     minHeight: 54,
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
   stickyHeaderActions: {
     position: "absolute",
@@ -903,8 +927,6 @@ const styles = StyleSheet.create({
   },
   stickySleepTabsHeader: {
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
   },
 
   /* Hero */

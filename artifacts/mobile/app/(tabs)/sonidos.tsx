@@ -157,27 +157,49 @@ export default function SonidosScreen() {
   const inactiveTabBorder = "rgba(255,255,255,0.2)";
   const slideX = useRef(new Animated.Value(W)).current;
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const stickyHeaderActiveRef = useRef(false);
-  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyTitleActiveRef = useRef(false);
+  const stickyBorderActiveRef = useRef(false);
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
     inputRange: [0, 1],
     outputRange: [20, 0],
+  });
+  const heroTitleOpacity = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+  const heroTitleTranslateY = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, -8],
   });
 
   const handleMainScroll = useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
   }) => {
-    const active = event.nativeEvent.contentOffset.y > 8;
-    if (active === stickyHeaderActiveRef.current) return;
-    stickyHeaderActiveRef.current = active;
-    setStickyHeaderActive(active);
-    stickyHeaderOpacity.stopAnimation();
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: active ? 1 : 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start();
-  }, [stickyHeaderOpacity]);
+    const y = event.nativeEvent.contentOffset.y;
+    const titleActive = y > 8;
+    if (titleActive !== stickyTitleActiveRef.current) {
+      stickyTitleActiveRef.current = titleActive;
+      stickyHeaderOpacity.stopAnimation();
+      Animated.timing(stickyHeaderOpacity, {
+        toValue: titleActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    const borderActive = y > 2;
+    if (borderActive !== stickyBorderActiveRef.current) {
+      stickyBorderActiveRef.current = borderActive;
+      stickyBorderOpacity.stopAnimation();
+      Animated.timing(stickyBorderOpacity, {
+        toValue: borderActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [stickyBorderOpacity, stickyHeaderOpacity]);
 
   const collections = useMemo(
     () =>
@@ -277,25 +299,39 @@ export default function SonidosScreen() {
       <GeoUniverseBackground />
       <View style={styles.contentShift}>
         <Animated.View
-          pointerEvents={stickyHeaderActive ? "auto" : "none"}
+          pointerEvents="auto"
+          onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
           style={[
             styles.stickyHeader,
             {
               paddingTop: topPad + 2,
               backgroundColor: theme.gradient[0] as string,
-              opacity: stickyHeaderOpacity,
             },
           ]}
         >
           <View style={[styles.titleRow, styles.stickyTitleRow]}>
             <Animated.Text
               style={[
+                styles.heroTitle,
+                {
+                  color: colors.foreground,
+                  opacity: heroTitleOpacity,
+                  transform: [{ translateY: heroTitleTranslateY }],
+                },
+              ]}
+            >
+              Sonidos
+            </Animated.Text>
+            <Animated.Text
+              style={[
                 styles.stickyTitle,
                 {
                   color: colors.foreground,
+                  opacity: stickyHeaderOpacity,
                   transform: [{ translateY: stickyTitleTranslateY }],
                 },
               ]}
+              pointerEvents="none"
             >
               Sonidos
             </Animated.Text>
@@ -335,54 +371,21 @@ export default function SonidosScreen() {
               ))}
             </ScrollView>
           </View>
+          <Animated.View
+            style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]}
+          />
         </Animated.View>
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+          contentContainerStyle={{
+            paddingTop: stickyHeaderHeight,
+            paddingBottom: 140 + bottomPad,
+          }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleMainScroll}
         >
-          <View style={{ paddingTop: topPad + 2 }}>
-          <View style={styles.titleRow}>
-            <Text style={[styles.heroTitle, { color: colors.foreground }]}>
-              Sonidos
-            </Text>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              hitSlop={10}
-              style={styles.headerSearchButton}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Sonidos"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
-              ) : (
-                <Feather name="search" size={24} color={colors.foreground} />
-              )}
-            </Pressable>
-          </View>
-          <View style={styles.sonidosTabsHeader}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={[styles.tabGrid, { marginBottom: 0 }]}
-              contentContainerStyle={styles.tabGridContent}
-            >
-              {collections.map((collection) => (
-                <CollectionPill
-                  key={collection.id}
-                  label={collection.label}
-                  icon={collection.icon}
-                  onPress={() => openCategory(`/sound-tag/${collection.id}`)}
-                  backgroundColor={inactiveTabSurface}
-                  borderColor={inactiveTabBorder}
-                />
-              ))}
-            </ScrollView>
-          </View>
-          </View>
         <View style={[styles.contentStart, { marginTop: -3 }]}>
         {allSessions.length === 0 ? (
           <View style={styles.empty}>
@@ -559,6 +562,10 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 1 }],
   },
   stickyTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
@@ -592,8 +599,14 @@ const styles = StyleSheet.create({
   },
   stickySonidosTabsHeader: {
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  stickyBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   tabGrid: {
     marginBottom: 43,

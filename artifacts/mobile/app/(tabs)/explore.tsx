@@ -263,28 +263,50 @@ export function ExploreScreen({
   const insets   = useSafeAreaInsets();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const stickyHeaderActiveRef = useRef(false);
-  const [stickyHeaderActive, setStickyHeaderActive] = useState(false);
+  const stickyTitleActiveRef = useRef(false);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
   const stickyTitleTranslateY = stickyHeaderOpacity.interpolate({
     inputRange: [0, 1],
     outputRange: [20, 0],
+  });
+  const largeTitleOpacity = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+  const largeTitleTranslateY = stickyHeaderOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, -8],
   });
 
   const handleMainScroll = React.useCallback((event: {
     nativeEvent: { contentOffset: { y: number } };
   }) => {
-    const active = event.nativeEvent.contentOffset.y > 8;
-    if (active === stickyHeaderActiveRef.current) return;
-    stickyHeaderActiveRef.current = active;
-    setStickyHeaderActive(active);
-    stickyHeaderOpacity.stopAnimation();
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: active ? 1 : 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start();
-  }, [stickyHeaderOpacity]);
+    const y = event.nativeEvent.contentOffset.y;
+    const titleActive = y > 8;
+    if (titleActive !== stickyTitleActiveRef.current) {
+      stickyTitleActiveRef.current = titleActive;
+      stickyHeaderOpacity.stopAnimation();
+      Animated.timing(stickyHeaderOpacity, {
+        toValue: titleActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    const borderActive = y > 2;
+    if (borderActive !== stickyBorderActiveRef.current) {
+      stickyBorderActiveRef.current = borderActive;
+      stickyBorderOpacity.stopAnimation();
+      Animated.timing(stickyBorderOpacity, {
+        toValue: borderActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [stickyBorderOpacity, stickyHeaderOpacity]);
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayerBrowse();
@@ -511,22 +533,36 @@ export function ExploreScreen({
       <StatusBar hidden />
 
       <Animated.View
-        pointerEvents={stickyHeaderActive ? "auto" : "none"}
         style={[
           styles.stickyHeader,
           {
             paddingTop: topPad + 2,
             backgroundColor: activeTheme.gradient[0] as string,
-            opacity: stickyHeaderOpacity,
           },
         ]}
+        onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
         <View style={[styles.titleRow, styles.stickyTitleRow]}>
           <Animated.Text
             style={[
-              styles.stickyTitle,
-              { transform: [{ translateY: stickyTitleTranslateY }] },
+              styles.pageTitle,
+              {
+                opacity: largeTitleOpacity,
+                transform: [{ translateY: largeTitleTranslateY }],
+              },
             ]}
+          >
+            {screenTitle}
+          </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.stickyTitle,
+              {
+                opacity: stickyHeaderOpacity,
+                transform: [{ translateY: stickyTitleTranslateY }],
+              },
+            ]}
+            pointerEvents="none"
           >
             {screenTitle}
           </Animated.Text>
@@ -568,55 +604,23 @@ export function ExploreScreen({
             </Text>
           </Pressable>
         </View>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.stickyDivider, { opacity: stickyBorderOpacity }]}
+        />
       </Animated.View>
 
       <Animated.ScrollView
         style={styles.contentShift}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+        contentContainerStyle={{
+          paddingTop: stickyHeaderHeight,
+          paddingBottom: 160 + bottomPad,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         scrollEventThrottle={16}
         onScroll={handleMainScroll}
       >
-        <View style={[styles.pageHeader, { paddingTop: topPad + 2 }]}>
-          <View style={styles.titleRow}>
-            <Text style={styles.pageTitle}>{screenTitle}</Text>
-          </View>
-          <View style={styles.searchWrap}>
-            <Pressable
-              onPress={() => setSearchVisible(true)}
-              style={[
-                styles.searchBox,
-                activeSceneId === "tibet"
-                  ? styles.searchBoxTibet
-                  : isIndigoThemeId(activeSceneId)
-                    ? styles.searchBoxIndigo
-                    : activeSceneId === "indigo2"
-                      ? styles.searchBoxIndigo2
-                      : null,
-                styles.searchBoxWhiteBorder,
-                { backgroundColor: searchTabBarSurface },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={`Buscar en ${screenTitle}`}
-              testID="discover-search-button"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView
-                  name="magnifyingglass"
-                  tintColor="rgba(249,249,249,0.72)"
-                  size={20}
-                />
-              ) : (
-                <Feather name="search" size={20} color="rgba(249,249,249,0.72)" />
-              )}
-              <Text style={styles.searchPlaceholder}>
-                Busca por título, categoría o autor
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-
         <View style={styles.scrollContent}>
           <View style={styles.monthlySoundTherapySection}>
             <View style={styles.monthlySoundTherapyHeader}>
@@ -1000,6 +1004,10 @@ const styles = StyleSheet.create({
   },
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   stickyTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
@@ -1036,8 +1044,14 @@ const styles = StyleSheet.create({
   stickySearchWrap: {
     paddingTop: 0,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  stickyDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
