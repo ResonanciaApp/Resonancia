@@ -337,6 +337,110 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
+function Inicio3StickyHeader({
+  topPad,
+  inicio3ScrollY,
+  onOpenSearch,
+  onOpenProfile,
+  giftScaleAnim,
+  activeTheme,
+}: {
+  topPad: number;
+  inicio3ScrollY: SharedValue<number>;
+  onOpenSearch: () => void;
+  onOpenProfile: () => void;
+  giftScaleAnim: Animated.Value;
+  activeTheme: any;
+}) {
+  const animatedStyle = useAnimatedStyle(() => {
+    const opacity = Math.min(1, Math.max(0, (inicio3ScrollY.value - 60) / 30));
+    return {
+      opacity,
+      transform: [{ translateY: (1 - opacity) * -10 }],
+      display: opacity > 0.05 ? "flex" : "none",
+    };
+  });
+
+  return (
+    <RAnimated.View
+      style={[
+        {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          height: topPad + 48,
+          paddingTop: topPad - 2,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+          overflow: "hidden",
+        },
+        animatedStyle,
+      ]}
+      pointerEvents="box-none"
+    >
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <LinearGradient
+          colors={activeTheme.gradient as [string, string, ...string[]]}
+          locations={activeTheme.gradientLocations}
+          style={{ width: "100%", height: Dimensions.get("window").height }}
+        />
+      </View>
+
+      <Pressable
+        onPress={onOpenSearch}
+        hitSlop={10}
+        style={{ width: 44, height: 44, alignItems: "flex-start", justifyContent: "center" }}
+        accessibilityRole="button"
+        accessibilityLabel="Buscar en Inicio"
+        testID="inicio3-sticky-search-button"
+      >
+        {Platform.OS === "ios" ? (
+          <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={22} />
+        ) : (
+          <Feather name="search" size={22} color="#FFFFFF" />
+        )}
+      </Pressable>
+
+      <View pointerEvents="none" style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Image
+          source={require("@/assets/images/logo-resonancia.png")}
+          style={{ width: 140, height: 22, resizeMode: "contain" }}
+        />
+      </View>
+
+      <Pressable
+        onPress={onOpenProfile}
+        onPressIn={() =>
+          Animated.spring(giftScaleAnim, {
+            toValue: 0.84,
+            speed: 30,
+            bounciness: 0,
+            useNativeDriver: true,
+          }).start()
+        }
+        onPressOut={() =>
+          Animated.spring(giftScaleAnim, {
+            toValue: 1,
+            speed: 8,
+            bounciness: 16,
+            useNativeDriver: true,
+          }).start()
+        }
+        hitSlop={12}
+        style={{ width: 44, height: 44, alignItems: "flex-end", justifyContent: "center" }}
+      >
+        <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+          <Inicio2LotusStreak lightBackground />
+        </Animated.View>
+      </Pressable>
+    </RAnimated.View>
+  );
+}
+
 function Inicio2LotusStreak({ lightBackground = false }: { lightBackground?: boolean } = {}) {
   const { currentStreak } = useStreak();
 
@@ -1323,6 +1427,12 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
+  const heroControlsOpacity = useAnimatedStyle(() => {
+    if (!isInicio3) return { opacity: 1 };
+    const opacity = Math.max(0, 1 - (effectiveScrollY.value - 20) / 30);
+    return { opacity };
+  }, [isInicio3]);
+
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1469,7 +1579,7 @@ function Inicio2HeroStatic({
           </Pressable>
         </View>
 
-        <View style={styles.inicio3HeroRightActions}>
+        <RAnimated.View style={[styles.inicio3HeroRightActions, heroControlsOpacity]}>
           <Pressable
             onPress={onOpenProfile}
             onPressIn={() =>
@@ -1514,7 +1624,7 @@ function Inicio2HeroStatic({
               )}
             </Pressable>
           )}
-        </View>
+        </RAnimated.View>
       </RAnimated.View>
 
       {isInicio3 && (
@@ -2397,6 +2507,17 @@ export default function HomeScreen2({
       )}
 
       <StatusBar hidden />
+
+      {variant === "inicio3" && (
+        <Inicio3StickyHeader
+          topPad={topPad}
+          inicio3ScrollY={inicio3ScrollY}
+          onOpenSearch={handleSearchBtnPress}
+          onOpenProfile={() => router.push("/progreso" as never)}
+          giftScaleAnim={giftScaleAnim}
+          activeTheme={activeTheme}
+        />
+      )}
 
       {/* ── Header fijo: Menú + Racha (solo Inicio original) ── */}
       {!isInicio2 && (
