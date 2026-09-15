@@ -75,9 +75,10 @@ function formatTime(seconds: number): string {
 }
 
 export default function PlayerScreen() {
-  const { anim, playlistSlug } = useLocalSearchParams<{
+  const { anim, playlistSlug, privatePlaylistId } = useLocalSearchParams<{
     anim?: string;
     playlistSlug?: string;
+    privatePlaylistId?: string;
   }>();
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -142,7 +143,7 @@ export default function PlayerScreen() {
   stopRef.current = stop;
 
   const closePlayer = useCallback(async () => {
-    if (!playlistSlug) {
+    if (!playlistSlug && !privatePlaylistId) {
       await closePlayerForOrigin(undefined, {
         stop: stopRef.current,
         canGoBack: () => router.canGoBack(),
@@ -158,8 +159,8 @@ export default function PlayerScreen() {
       canGoBack: () => router.canGoBack(),
       back: () => router.back(),
       replace: (path) => router.replace(path as never),
-    });
-  }, [playlistSlug]);
+    }, privatePlaylistId);
+  }, [playlistSlug, privatePlaylistId]);
 
   useEffect(() => {
     return () => {
@@ -167,12 +168,13 @@ export default function PlayerScreen() {
         playlistSlug,
         playlistCloseHandledRef.current,
         stopRef.current,
+        privatePlaylistId,
       );
       if (stopped) {
         playlistCloseHandledRef.current = true;
       }
     };
-  }, [playlistSlug]);
+  }, [playlistSlug, privatePlaylistId]);
 
   const toggleUI = useCallback(() => {
     const next = !uiShown;

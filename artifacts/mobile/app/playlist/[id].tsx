@@ -260,7 +260,10 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     const first = playableSessions[0];
     if (!first) return;
     playSessionInPlaylist(first, playableSessionIds, playlistOwner ?? undefined);
-    router.push("/player" as never);
+    router.push({
+      pathname: "/player",
+      params: { privatePlaylistId: playlist.id },
+    } as never);
   };
 
   const handleShuffle = () => {
@@ -268,7 +271,10 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     const random = playableSessions[Math.floor(Math.random() * playableSessions.length)];
     // Usar playSessionInPlaylist con shuffle activado (se barajará en el contexto)
     playSessionInPlaylist(random, playableSessionIds, playlistOwner ?? undefined, true);
-    router.push("/player" as never);
+    router.push({
+      pathname: "/player",
+      params: { privatePlaylistId: playlist.id },
+    } as never);
   };
 
   const handleShare = async () => {
@@ -418,7 +424,10 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
                 return;
               }
               playSessionInPlaylist(session, playableSessionIds, playlistOwner ?? undefined);
-              router.push("/player" as never);
+              router.push({
+                pathname: "/player",
+                params: { privatePlaylistId: playlist.id },
+              } as never);
             }}
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}

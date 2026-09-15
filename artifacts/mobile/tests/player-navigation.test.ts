@@ -67,3 +67,35 @@ test("plain player close keeps global playback behavior and only navigates back"
   );
   assert.deepEqual(harness.calls, ["back"]);
 });
+
+test("private playlist close stops playback before returning", async () => {
+  const harness = createCloseHarness(true);
+
+  await closePlayerForOrigin(undefined, harness.dependencies, "playlist-1");
+
+  assert.deepEqual(harness.calls, ["stop", "back"]);
+});
+
+test("private playlist close falls back to its detail without back history", async () => {
+  const harness = createCloseHarness(false);
+
+  await closePlayerForOrigin(undefined, harness.dependencies, "playlist-1");
+
+  assert.deepEqual(harness.calls, [
+    "stop",
+    "replace:/playlist/playlist-1",
+  ]);
+});
+
+test("native dismissal stops private playlist audio", () => {
+  let stopCalls = 0;
+  const stop = () => {
+    stopCalls += 1;
+  };
+
+  assert.equal(
+    stopPlaylistPlaybackOnUnmount(undefined, false, stop, "playlist-1"),
+    true,
+  );
+  assert.equal(stopCalls, 1);
+});

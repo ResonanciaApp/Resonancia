@@ -8,8 +8,9 @@ export type PlayerCloseDependencies = {
 export async function closePlayerForOrigin(
   playlistSlug: string | undefined,
   dependencies: PlayerCloseDependencies,
+  privatePlaylistId?: string,
 ): Promise<void> {
-  if (!playlistSlug) {
+  if (!playlistSlug && !privatePlaylistId) {
     dependencies.back();
     return;
   }
@@ -17,6 +18,8 @@ export async function closePlayerForOrigin(
   await dependencies.stop();
   if (dependencies.canGoBack()) {
     dependencies.back();
+  } else if (privatePlaylistId) {
+    dependencies.replace(`/playlist/${privatePlaylistId}`);
   } else {
     dependencies.replace(`/editorial-playlist/${playlistSlug}`);
   }
@@ -26,8 +29,9 @@ export function stopPlaylistPlaybackOnUnmount(
   playlistSlug: string | undefined,
   closeAlreadyHandled: boolean,
   stop: () => void | Promise<void>,
+  privatePlaylistId?: string,
 ): boolean {
-  if (!playlistSlug || closeAlreadyHandled) return false;
+  if ((!playlistSlug && !privatePlaylistId) || closeAlreadyHandled) return false;
   void stop();
   return true;
 }
