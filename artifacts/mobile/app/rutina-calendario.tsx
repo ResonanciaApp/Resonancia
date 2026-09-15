@@ -3,6 +3,7 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -227,7 +228,10 @@ function RutinaCalendarioScreenContent() {
   const { announceActivityAdded, announceCompletion } = useRoutineCompletionBanner();
   const todayKey = useDayRollover();
   const today = useMemo(() => new Date(), [todayKey]);
+  const currentWeekStart = useMemo(() => startOfWeek(today), [today]);
   const [selectedDate, setSelectedDate] = useState(today);
+  const [visibleWeekStart, setVisibleWeekStart] = useState(currentWeekStart);
+  const previousTodayKeyRef = useRef(todayKey);
   const [completionTokens, setCompletionTokens] = useState<Record<string, number>>({});
   const {
     activities,
@@ -240,10 +244,76 @@ function RutinaCalendarioScreenContent() {
   const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
-  const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
-    () => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)),
-    [weekStart],
+    () => Array.from({ length: 7 }, (_, index) => addDays(visibleWeekStart, index)),
+    [visibleWeekStart],
+  );
+  useEffect(() => {
+    if (getRoutineDateKey(visibleWeekStart) <= getRoutineDateKey(currentWeekStart)) return;
+    setVisibleWeekStart(currentWeekStart);
+    setSelectedDate(today);
+  }, [currentWeekStart, today, visibleWeekStart]);
+  useEffect(() => {
+    const previousTodayKey = previousTodayKeyRef.current;
+    if (previousTodayKey === todayKey) return;
+
+    const wasFollowingToday = getRoutineDateKey(selectedDate) === previousTodayKey;
+
+    previousTodayKeyRef.current = todayKey;
+    if (wasFollowingToday) {
+      setVisibleWeekStart(currentWeekStart);
+      setSelectedDate(today);
+    }
+  }, [
+    currentWeekStart,
+    selectedDate,
+    today,
+    todayKey,
+    visibleWeekStart,
+  ]);
+
+  const changeVisibleWeek = useCallback(
+    (direction: -1 | 1) => {
+      const currentWeekKey = getRoutineDateKey(currentWeekStart);
+      const visibleWeekKey = getRoutineDateKey(visibleWeekStart);
+      if (direction === 1 && visibleWeekKey >= currentWeekKey) return;
+
+      const selectedDayOffset = Math.max(
+        0,
+        Math.min(
+          6,
+          Math.round(
+            (selectedDate.getTime() - visibleWeekStart.getTime()) /
+              (24 * 60 * 60 * 1000),
+          ),
+        ),
+      );
+      const requestedWeek = addDays(visibleWeekStart, direction * 7);
+      const nextWeek =
+        getRoutineDateKey(requestedWeek) > currentWeekKey
+          ? currentWeekStart
+          : requestedWeek;
+      setVisibleWeekStart(nextWeek);
+      setSelectedDate(addDays(nextWeek, selectedDayOffset));
+    },
+    [currentWeekStart, selectedDate, visibleWeekStart],
+  );
+  const weekSwipeResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gesture) =>
+          Math.abs(gesture.dx) > 12 &&
+          Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
+        onPanResponderRelease: (_, gesture) => {
+          if (gesture.dx <= -45) {
+            changeVisibleWeek(-1);
+          } else if (gesture.dx >= 45) {
+            changeVisibleWeek(1);
+          }
+        },
+        onPanResponderTerminationRequest: () => true,
+      }),
+    [changeVisibleWeek],
   );
 
   const scheduledForDate = useMemo(
@@ -398,7 +468,7 @@ function RutinaCalendarioScreenContent() {
               </Pressable>
             </View>
 
-            <View style={styles.daysRow}>
+            <View style={styles.daysRow} {...weekSwipeResponder.panHandlers}>
               {weekDays.map((date, index) => {
                 const dateKey = getRoutineDateKey(date);
                 const selected = dateKey === selectedKey;
