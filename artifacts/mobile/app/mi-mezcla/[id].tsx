@@ -7,7 +7,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Modal,
@@ -16,6 +16,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,7 +28,7 @@ import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mi
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useSounds } from "@/context/SoundsContext";
-import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
+import { MIX_CATEGORIES, MIX_CATEGORY_ACTION_LABELS, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
@@ -37,15 +38,6 @@ import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
-
-const MIX_CATEGORY_LABELS: Record<MixCategory, string> = {
-  motivarme: "Meditar",
-  concentracion: "Enfocarme",
-  dormir: "Descansar",
-  trabajar: "Energizarme",
-  paz_interior: "Paz interior",
-  magico: "Soltar la pena",
-};
 
 // ── Portada de mezcla (exportada para usar en biblioteca) ─────────────────────
 export function MixCover({
@@ -250,7 +242,14 @@ export default function MiMezclaScreen() {
   const mix = useMemo(() => presets.find((p) => p.id === id), [presets, id]);
 
   const [category, setCategory] = useState<MixCategory>(mix?.category ?? "dormir");
+  const [name, setName] = useState(mix?.name ?? "");
   const [pickerVisible, setPickerVisible] = useState(false);
+  useEffect(() => {
+    if (mix?.name) setName(mix.name);
+  }, [mix?.name]);
+  useEffect(() => {
+    if (mix?.category) setCategory(mix.category);
+  }, [mix?.category]);
   const profileBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -280,6 +279,17 @@ export default function MiMezclaScreen() {
     }
   }, [mix, isThisLoaded, togglePlay, loadMix]);
 
+  const saveName = useCallback(() => {
+    if (!mix) return;
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setName(mix.name);
+      return;
+    }
+    if (trimmed !== mix.name) save({ name: trimmed });
+    setName(trimmed);
+  }, [mix, name, save]);
+
   const handleDelete = useCallback(() => {
     Alert.alert("Eliminar mezcla", `¿Eliminar "${mix?.name}"?`, [
       { text: "Cancelar", style: "cancel" },
@@ -306,7 +316,7 @@ export default function MiMezclaScreen() {
     <LinearGradient colors={bgGradient} style={{ flex: 1 }}>
       {/* Header */}
       <View style={[s.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={goBack} hitSlop={12} style={s.iconBtn}>
+        <Pressable onPress={() => { saveName(); goBack(); }} hitSlop={12} style={s.iconBtn}>
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
         <Text style={s.headerTitle} numberOfLines={1}>{mix.name}</Text>
@@ -337,8 +347,23 @@ export default function MiMezclaScreen() {
           </Pressable>
         </View>
 
+        {/* Nombre */}
+        <Text style={s.sectionTitle}>Nombre de la mezcla</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          onBlur={saveName}
+          onSubmitEditing={saveName}
+          returnKeyType="done"
+          maxLength={60}
+          selectTextOnFocus
+          style={s.nameInput}
+          placeholder="Nombre de la mezcla"
+          placeholderTextColor={MUTED}
+        />
+
         {/* Categoría */}
-        <Text style={s.sectionTitle}>Usa tu mezcla para</Text>
+        <Text style={[s.sectionTitle, s.categorySectionTitle]}>Usa tu mezcla para</Text>
         <View style={s.catGrid}>
           {MIX_CATEGORIES.map((cat) => {
             const selected = category === cat.id;
@@ -347,7 +372,6 @@ export default function MiMezclaScreen() {
                 key={cat.id}
                 style={({ pressed }) => [
                   s.catCell,
-                  { backgroundColor: profileBlockBackground },
                   selected && s.catCellSelected,
                   { opacity: pressed ? 0.82 : 1 },
                 ]}
@@ -359,7 +383,7 @@ export default function MiMezclaScreen() {
                 {selected && <View style={s.catCellOverlay} />}
                 <View style={s.catCellLabelRow}>
                   <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
-                    {MIX_CATEGORY_LABELS[cat.id]}
+                    {MIX_CATEGORY_ACTION_LABELS[cat.id]}
                   </Text>
                 </View>
               </Pressable>
@@ -480,6 +504,19 @@ const s = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
+  nameInput: {
+    height: 48,
+    borderRadius: 100,
+    paddingHorizontal: 18,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    color: TEXT,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    marginBottom: 0,
+  },
   floatingBar: {
     position: "absolute",
     bottom: 0,
@@ -511,17 +548,18 @@ const s = StyleSheet.create({
   catCell: {
     width: "31%",
     flexGrow: 1,
-    borderRadius: 12,
+    borderRadius: 27,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "transparent",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
     minHeight: 50,
   },
   catCellSelected: {
-    borderColor: "rgba(249,249,249,0.7)",
+    borderColor: "rgba(255,255,255,0.10)",
   },
   catCellOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -550,6 +588,9 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     marginBottom: 17,
+  },
+  categorySectionTitle: {
+    marginTop: 40,
   },
   soundList: {
     maxHeight: 300,

@@ -13,6 +13,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { MIX_CATEGORY_ACTION_LABELS } from "@/data/mix-categories";
 
 const GRID_PAD = 14;
 const CARD_GAP = 14;
@@ -162,6 +163,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
               </Text>
               <Text style={[styles.soundCount, { color: accent }]} numberOfLines={1}>
                 {mix.sounds.length} sonido{mix.sounds.length === 1 ? "" : "s"}
+                {mix.categoryChosen ? ` · ${MIX_CATEGORY_ACTION_LABELS[mix.category]}` : ""}
               </Text>
             </PressScale>
           );

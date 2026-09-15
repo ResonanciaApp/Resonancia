@@ -83,6 +83,15 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
   },
 ];
 
+export const MIX_CATEGORY_ACTION_LABELS: Record<MixCategory, string> = {
+  motivarme: "Meditar",
+  concentracion: "Enfocarme",
+  dormir: "Descansar",
+  trabajar: "Energizarme",
+  paz_interior: "Paz interior",
+  magico: "Soltar la pena",
+};
+
 export function getCategoryMeta(id: MixCategory): MixCategoryMeta | undefined {
   return MIX_CATEGORIES.find((c) => c.id === id);
 }
