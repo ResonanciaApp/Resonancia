@@ -343,15 +343,11 @@ function Inicio3StickyHeader({
   topPad,
   inicio3ScrollY,
   onOpenSearch,
-  onOpenProfile,
-  giftScaleAnim,
   activeTheme,
 }: {
   topPad: number;
   inicio3ScrollY: SharedValue<number>;
   onOpenSearch: () => void;
-  onOpenProfile: () => void;
-  giftScaleAnim: Animated.Value;
   activeTheme: any;
 }) {
   const animatedStyle = useAnimatedStyle(() => {
@@ -375,10 +371,10 @@ function Inicio3StickyHeader({
           left: 0,
           right: 0,
           zIndex: 50,
-          height: topPad + 48,
-          paddingTop: topPad - 2,
+          height: topPad + 50,
+          paddingTop: topPad,
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           paddingHorizontal: 16,
           overflow: "hidden",
@@ -395,55 +391,42 @@ function Inicio3StickyHeader({
         />
       </View>
 
-      <View pointerEvents="none" style={{ alignItems: "flex-start", justifyContent: "center" }}>
+      <View
+        pointerEvents="none"
+        style={{ height: 43, alignItems: "flex-start", justifyContent: "center" }}
+      >
         <Image
-          source={require("@/assets/images/logo-resonancia.png")}
+          source={require("@/assets/images/logo-resonancia-text.png")}
           style={{ width: 140, height: 22, resizeMode: "contain" }}
         />
       </View>
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <Pressable
-          onPress={onOpenProfile}
-          onPressIn={() =>
-            Animated.spring(giftScaleAnim, {
-              toValue: 0.84,
-              speed: 30,
-              bounciness: 0,
-              useNativeDriver: true,
-            }).start()
-          }
-          onPressOut={() =>
-            Animated.spring(giftScaleAnim, {
-              toValue: 1,
-              speed: 8,
-              bounciness: 16,
-              useNativeDriver: true,
-            }).start()
-          }
-          hitSlop={12}
-          style={styles.inicio2HeroLotusButton}
-        >
-          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <Inicio2LotusStreak lightBackground />
-          </Animated.View>
-        </Pressable>
+      <Pressable
+        onPress={onOpenSearch}
+        hitSlop={10}
+        style={styles.inicio3HeroSearchButton}
+        accessibilityRole="button"
+        accessibilityLabel="Buscar en Inicio"
+        testID="inicio3-sticky-search-button"
+      >
+        {Platform.OS === "ios" ? (
+          <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
+        ) : (
+          <Feather name="search" size={24} color="#FFFFFF" />
+        )}
+      </Pressable>
 
-        <Pressable
-          onPress={onOpenSearch}
-          hitSlop={10}
-          style={styles.inicio3HeroSearchButton}
-          accessibilityRole="button"
-          accessibilityLabel="Buscar en Inicio"
-          testID="inicio3-sticky-search-button"
-        >
-          {Platform.OS === "ios" ? (
-            <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
-          ) : (
-            <Feather name="search" size={24} color="#FFFFFF" />
-          )}
-        </Pressable>
-      </View>
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 1,
+          backgroundColor: "rgba(255,255,255,0.07)",
+        }}
+      />
     </RAnimated.View>
   );
 }
@@ -2523,8 +2506,6 @@ export default function HomeScreen2({
           topPad={topPad}
           inicio3ScrollY={inicio3ScrollY}
           onOpenSearch={handleSearchBtnPress}
-          onOpenProfile={() => router.push("/progreso" as never)}
-          giftScaleAnim={giftScaleAnim}
           activeTheme={activeTheme}
         />
       )}
