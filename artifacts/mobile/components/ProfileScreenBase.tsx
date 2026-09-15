@@ -1237,8 +1237,11 @@ export function ProfileScreenBase({
             <View style={{ marginTop: 38 }}>
               <ProfileMixCarousel marginBottom={0} />
             </View>
-            <View style={{ marginTop: 53 }}>
-              <ProfilePlaylistCarousel marginBottom={0} />
+            <View style={{ marginTop: 26 }}>
+              <View style={styles.profilePlaylistDivider} />
+              <View style={{ marginTop: 26 }}>
+                <ProfilePlaylistCarousel marginBottom={0} />
+              </View>
             </View>
 
           </>
@@ -1641,6 +1644,10 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
 // ── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
+  profilePlaylistDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(249,249,249,0.16)",
+  },
   root: { flex: 1 },
   contentShift: {
     flex: 1,
