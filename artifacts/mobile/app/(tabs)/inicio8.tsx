@@ -1277,7 +1277,7 @@ function Inicio2HeroSliderRebuilt({
   );
 }
 
-function Inicio2HeroStatic({
+const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   topInset,
   isPremium,
   giftScale,
@@ -1315,7 +1315,12 @@ function Inicio2HeroStatic({
     || "Explorador";
   const displayPhoto = photoUri || clerkUser?.imageUrl || null;
   const initial = displayName.charAt(0).toUpperCase();
-  const greeting = getGreeting();
+  const [greeting, setGreeting] = useState(getGreeting);
+  useFocusEffect(
+    useCallback(() => {
+      setGreeting(getGreeting());
+    }, []),
+  );
   const reduceMotion = useReducedMotion();
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
@@ -1617,7 +1622,7 @@ function Inicio2HeroStatic({
       </View>
     </View>
   );
-}
+});
 
 function InicioEmotionWidget({
   bottom,
@@ -1718,6 +1723,9 @@ export default function HomeScreen2({
   const handleOpenDrawer = useCallback(() => {
     openDrawer();
   }, [openDrawer]);
+  const handleOpenProgress = useCallback(() => {
+    router.push("/progreso" as never);
+  }, []);
   const handledMoodPickerRequest = useRef(moodPickerRequest);
   useEffect(() => {
     if (variant !== "inicio3" || moodPickerRequest === handledMoodPickerRequest.current) return;
@@ -2495,7 +2503,7 @@ export default function HomeScreen2({
               isPremium={isPremium}
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
-              onOpenProfile={() => router.push("/progreso" as never)}
+              onOpenProfile={handleOpenProgress}
               onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
