@@ -69,6 +69,7 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import {
   gradientColors,
   type GeoSettings,
@@ -1247,13 +1248,16 @@ export function ProfileScreenBase({
               <Pressable
                 onPress={() => router.push("/notificaciones-practica" as never)}
                 style={({ pressed }) => [
-                  styles.outlinedProfileSection,
+                  styles.profileUtilitySection,
                   styles.practiceReminderSection,
                   { opacity: pressed ? 0.72 : 1 },
                 ]}
                 accessibilityRole="button"
                 accessibilityLabel="Administrar recordatorio de prácticas"
               >
+                <View style={styles.profileUtilityIcon}>
+                  <Feather name="bell" size={21} color={colors.foreground} />
+                </View>
                 <View style={styles.practiceReminderCopy}>
                   <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
                     Recordatorio de prácticas
@@ -1264,14 +1268,26 @@ export function ProfileScreenBase({
                 </View>
                 <Feather name="chevron-right" size={22} color={colors.foreground} />
               </Pressable>
-              <View style={styles.outlinedProfileSection}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Descargas</Text>
-                  <Pressable onPress={() => router.push("/descargas" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
+              <View style={styles.profileUtilitySection}>
+                <View style={styles.profileUtilityHeader}>
+                  <View style={styles.profileUtilityIcon}>
+                    <Feather name="download" size={21} color={colors.foreground} />
+                  </View>
+                  <View style={styles.profileUtilityCopy}>
+                    <Text style={[styles.profileUtilityTitle, { color: colors.foreground }]}>
+                      Descargas
+                    </Text>
+                    <Text style={[styles.profileUtilitySubtitle, { color: profileDescriptionColor }]}>
+                      Tus sesiones disponibles sin conexión
+                    </Text>
+                  </View>
+                  <Pressable onPress={() => router.push("/descargas" as never)}>
+                    <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
+                  </Pressable>
                 </View>
-                {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={{ flexDirection: "row", gap: 9 }}>
+                {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={styles.profileUtilityContent}>
                   {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
-                </View> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Guarda una sesión para escuchar sin conexión.</Text>}
+                </View> : null}
               </View>
               <View style={styles.outlinedProfileSection}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
@@ -1318,6 +1334,7 @@ export function ProfileScreenBase({
                   );
                 })()}
               </View>
+              <ProfileMixCarousel marginBottom={0} />
             </View>
 
           </>
@@ -2279,6 +2296,45 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
+  },
+  profileUtilitySection: {
+    paddingHorizontal: 0,
+    paddingVertical: 10,
+    backgroundColor: "transparent",
+  },
+  profileUtilityHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profileUtilityIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  profileUtilityCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: 5,
+  },
+  profileUtilityTitle: {
+    fontFamily: "Manrope",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  profileUtilitySubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  profileUtilityContent: {
+    flexDirection: "row",
+    gap: 9,
+    marginTop: 14,
+    marginLeft: 56,
   },
   practiceReminderSection: {
     flexDirection: "row",
