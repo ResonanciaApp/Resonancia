@@ -337,7 +337,7 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
-const INICIO3_STICKY_THRESHOLD = 150;
+const INICIO3_STICKY_THRESHOLD = 185;
 
 function Inicio3StickyHeader({
   topPad,
@@ -422,7 +422,7 @@ function Inicio3StickyHeader({
             }).start()
           }
           hitSlop={12}
-          style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
+          style={styles.inicio2HeroLotusButton}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <Inicio2LotusStreak lightBackground />
