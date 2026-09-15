@@ -155,11 +155,13 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           </Text>
         </View>
 
-        <SupercategoryFilterTabs
-          editorialTags={editorialTags}
-          active={activeFilter}
-          onSelect={setActiveFilter}
-        />
+        <View style={styles.stickyTabs}>
+          <SupercategoryFilterTabs
+            editorialTags={editorialTags}
+            active={activeFilter}
+            onSelect={setActiveFilter}
+          />
+        </View>
 
         {/* ── Sessions grid or empty ── */}
         {filteredSessions.length === 0 ? (
@@ -256,6 +258,13 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
         >
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
+        <View style={styles.stickyTabs}>
+          <SupercategoryFilterTabs
+            editorialTags={editorialTags}
+            active={activeFilter}
+            onSelect={setActiveFilter}
+          />
+        </View>
       </Animated.View>
     </View>
   );
@@ -296,21 +305,22 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 20,
     minHeight: 48,
-    paddingHorizontal: H_PAD,
-    paddingBottom: 6,
+    paddingBottom: 0,
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   stickyHeaderRow: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
   },
   stickyHeaderSpacer: {
     width: 40,
+  },
+  stickyTabs: {
+    width: "100%",
   },
   stickyTitleCol: {
     flex: 1,

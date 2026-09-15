@@ -28,3 +28,5 @@ Biblioteca y Mezclador de sonidos mantienen 6 px entre sus tabs y el borde infer
 En el Mezclador, ese borde no es permanente: hace fade in al desplazar el catálogo y fade out al volver arriba.
 
 En las pantallas internas de Sonidos, el borde bajo los filtros sigue el mismo comportamiento de fade según el scroll de la grilla.
+
+En las pantallas internas de Dormir, el sticky duplica los tabs y comparte su filtro activo; título, tabs y borde hacen fade juntos al activarse con el scroll.
