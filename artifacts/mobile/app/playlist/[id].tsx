@@ -199,6 +199,14 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         .filter(Boolean) as Session[],
     [playlist?.sessionIds]
   );
+  const playableSessions = useMemo(
+    () => sessions.filter((session) => !session.isPremium || isPremium),
+    [isPremium, sessions],
+  );
+  const playableSessionIds = useMemo(
+    () => playableSessions.map((session) => session.id),
+    [playableSessions],
+  );
 
   const playlistVideos = useMemo(
     () =>
@@ -249,17 +257,18 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   };
 
   const handlePlayAll = () => {
-    const first = sessions.find((s) => !s.isPremium || isPremium);
+    const first = playableSessions[0];
     if (!first) return;
-    playSessionInPlaylist(first, sessions.map((s) => s.id), playlistOwner ?? undefined);
+    playSessionInPlaylist(first, playableSessionIds, playlistOwner ?? undefined);
+    router.push("/player" as never);
   };
 
   const handleShuffle = () => {
-    const available = sessions.filter((s) => !s.isPremium || isPremium);
-    if (!available.length) return;
-    const random = available[Math.floor(Math.random() * available.length)];
+    if (!playableSessions.length) return;
+    const random = playableSessions[Math.floor(Math.random() * playableSessions.length)];
     // Usar playSessionInPlaylist con shuffle activado (se barajará en el contexto)
-    playSessionInPlaylist(random, sessions.map((s) => s.id), playlistOwner ?? undefined, true);
+    playSessionInPlaylist(random, playableSessionIds, playlistOwner ?? undefined, true);
+    router.push("/player" as never);
   };
 
   const handleShare = async () => {
@@ -403,9 +412,14 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             isPremium={isPremium}
             isActive={ownsActiveQueue && currentSession?.id === session.id}
             isPlaying={ownsActiveQueue && displayIsPlaying}
-            onPlay={() =>
-              playSessionInPlaylist(session, sessions.map((s) => s.id), playlistOwner ?? undefined)
-            }
+            onPlay={() => {
+              if (session.isPremium && !isPremium) {
+                router.push("/membresia" as never);
+                return;
+              }
+              playSessionInPlaylist(session, playableSessionIds, playlistOwner ?? undefined);
+              router.push("/player" as never);
+            }}
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
           />
