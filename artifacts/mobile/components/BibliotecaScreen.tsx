@@ -211,6 +211,7 @@ function AnimatedChipRow({
 }) {
   const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
+  const scrollXRef = useRef(0);
   const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
   const [colorTab, setColorTab] = useState<LibTab | null>(activeTab);
   const [targetTranslate, setTargetTranslate] = useState(0);
@@ -229,7 +230,7 @@ function AnimatedChipRow({
 
   const handleSelect = (id: LibTab) => {
     const visualLeft = offsetsRef.current[id] ?? 0;
-    setTargetTranslate(CLOSE_SLOT - visualLeft);
+    setTargetTranslate(CLOSE_SLOT + scrollXRef.current - visualLeft);
     setDisplayTab(id);
     setColorTab(id);
     onSelect(id);
@@ -270,7 +271,17 @@ function AnimatedChipRow({
         </View>
       )}
 
-      <View style={[styles.chipRow, (onSearch || onAdd) && styles.chipRowWithActions]}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={!filtered}
+        scrollEventThrottle={16}
+        onScroll={(event) => {
+          scrollXRef.current = event.nativeEvent.contentOffset.x;
+        }}
+        style={styles.chipRowScroller}
+        contentContainerStyle={[styles.chipRow, (onSearch || onAdd) && styles.chipRowWithActions]}
+      >
         {tabs.map((tab) => (
           <Animated.View
             key={tab.id}
@@ -306,7 +317,7 @@ function AnimatedChipRow({
             />
           </Animated.View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -2133,9 +2144,10 @@ const styles = StyleSheet.create({
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
-  chipRow: { flex: 1, flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chipRowScroller: { flex: 1 },
+  chipRow: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipRowWithActions: { paddingRight: 104 },
-  libraryTabColumn: { flex: 1, flexBasis: 0, height: 51 },
+  libraryTabColumn: { width: 136, height: 51 },
   libraryTabPress: { width: "100%", height: 51 },
   chipRowFiltered: {
     flexDirection: "row",
