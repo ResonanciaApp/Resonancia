@@ -549,7 +549,9 @@ const styles = StyleSheet.create({
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
-    paddingBottom: 5,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   tabRowContent: {
     paddingHorizontal: H_PAD,

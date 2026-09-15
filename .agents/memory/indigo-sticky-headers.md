@@ -18,3 +18,5 @@ Desde el final de las píldoras del sticky header hasta su borde inferior se res
 Dormir y Sonidos usan esos mismos 6 px bajo sus píldoras sticky; Descubrir los aplica bajo la barra de búsqueda, que es su último control sticky. Categorías y pantallas internas siguen la misma medida.
 
 Todos esos sticky headers terminan con un borde inferior blanco de 1 px a opacidad 0,07.
+
+“Mis favoritos” aplica la misma terminación bajo sus tabs embebidos: 6 px y borde blanco de 1 px a opacidad 0,07.
