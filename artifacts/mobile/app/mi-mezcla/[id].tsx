@@ -30,7 +30,6 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useSounds } from "@/context/SoundsContext";
 import { MIX_CATEGORIES, MIX_CATEGORY_ACTION_LABELS, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
-import { useLoadMix } from "@/hooks/useLoadMix";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -235,9 +234,8 @@ export default function MiMezclaScreen() {
   const { theme, activeSceneId } = useSceneTheme();
   const bgGradient = theme.gradient;
 
-  const { presets, updatePresetMeta, loadedPresetId, isPlaying, togglePlay, deletePreset } = useMixer();
+  const { presets, updatePresetMeta, deletePreset } = useMixer();
   const { sounds: catalogSounds } = useSounds();
-  const loadMix = useLoadMix();
 
   const mix = useMemo(() => presets.find((p) => p.id === id), [presets, id]);
 
@@ -255,13 +253,6 @@ export default function MiMezclaScreen() {
     : isIndigoThemeId(activeSceneId)
       ? "rgba(181,211,255,0.057)"
       : "rgba(181,211,255,0.057)";
-  const listenNowBtnColors: [string, string, ...string[]] = isIndigoThemeId(activeSceneId)
-    ? ["#784576", "#50326E"]
-    : ["#F9F9F9", "#F9F9F9"];
-
-  const isThisLoaded = loadedPresetId === id;
-  const isPlayingThis = isThisLoaded && isPlaying;
-
   const save = useCallback(
     (patch: Parameters<typeof updatePresetMeta>[1]) => {
       if (!id) return;
@@ -269,15 +260,6 @@ export default function MiMezclaScreen() {
     },
     [id, updatePresetMeta],
   );
-
-  const handlePlay = useCallback(() => {
-    if (!mix) return;
-    if (isThisLoaded) {
-      togglePlay();
-    } else {
-      loadMix(mix);
-    }
-  }, [mix, isThisLoaded, togglePlay, loadMix]);
 
   const saveName = useCallback(() => {
     if (!mix) return;
@@ -289,6 +271,11 @@ export default function MiMezclaScreen() {
     if (trimmed !== mix.name) save({ name: trimmed });
     setName(trimmed);
   }, [mix, name, save]);
+
+  const handleSave = useCallback(() => {
+    saveName();
+    goBack();
+  }, [saveName, goBack]);
 
   const handleDelete = useCallback(() => {
     Alert.alert("Eliminar mezcla", `¿Eliminar "${mix?.name}"?`, [
@@ -436,16 +423,16 @@ export default function MiMezclaScreen() {
       <View style={[s.floatingBar, { paddingBottom: insets.bottom + 12 }]}>
         <Pressable
           style={({ pressed }) => [s.playBtn, { opacity: pressed ? 0.85 : 1, overflow: "hidden" }]}
-          onPress={handlePlay}
+          onPress={handleSave}
         >
           <LinearGradient
-            colors={listenNowBtnColors}
+            colors={["#F9F9F9", "#F9F9F9"]}
             start={{ x: 0, y: 0 }}
-            end={{ x: isIndigoThemeId(activeSceneId) ? 1 : 0, y: isIndigoThemeId(activeSceneId) ? 0 : 1 }}
+            end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
-          <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#F9F9F9" />
-          <Text style={s.playBtnText}>{isPlayingThis ? "Pausar" : "Reproducir mezcla"}</Text>
+          <Feather name="check" size={18} color="#060A0F" />
+          <Text style={s.playBtnText}>Guardar</Text>
         </Pressable>
       </View>
 
@@ -535,7 +522,7 @@ const s = StyleSheet.create({
   },
   playBtnText: {
     fontFamily: "Manrope",
-    color: "#F9F9F9",
+    color: "#060A0F",
     fontSize: 16,
     fontWeight: "700",
   },
@@ -560,10 +547,11 @@ const s = StyleSheet.create({
   },
   catCellSelected: {
     borderColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "#F9F9F9",
   },
   catCellOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(249,249,249,0.08)",
+    backgroundColor: "transparent",
   },
   catCellLabelRow: {
     flexDirection: "row",
@@ -574,13 +562,13 @@ const s = StyleSheet.create({
   },
   catCellLabel: {
     fontFamily: "Manrope",
-    color: MUTED,
+    color: "#F9F9F9",
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
   },
   catCellLabelSelected: {
-    color: GOLD,
+    color: "#060A0F",
   },
   sectionTitle: {
     fontFamily: "Manrope",
