@@ -144,3 +144,4 @@
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica
 - [Filtros editoriales de supercategorías](supercategory-editorial-tags.md) — Dormir/Sonidos conservan colecciones como navegación; una segunda taxonomía prefijada filtra dentro de cada colección
+- [Header del calendario de rutina](routine-calendar-sticky-header.md) — fecha, semana y divisor forman un solo sticky header; margen lateral canónico de Inicio

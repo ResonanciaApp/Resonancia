@@ -311,104 +311,115 @@ function RutinaCalendarioScreenContent() {
       <StatusBar hidden />
       <SacredBackground variant="gradient" />
       <ScrollView
+        stickyHeaderIndices={[0]}
         contentContainerStyle={[
           styles.content,
-          { paddingTop: topPad, paddingBottom: bottomPad + 100 },
+          { paddingBottom: bottomPad + 100 },
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Pressable
-            onPress={() => router.back()}
-            accessibilityRole="button"
-            accessibilityLabel="Volver"
-            hitSlop={12}
-          >
-            <Feather name="arrow-left" size={23} color={routineTheme.text} />
-          </Pressable>
-          <Text
-            pointerEvents="none"
-            style={[styles.headerDate, { color: routineTheme.text }]}
-          >
-            {selectedDateLabel(selectedDate, todayKey)}
-          </Text>
-          <Pressable
-            onPress={() => setShowAll((current) => !current)}
-            accessibilityRole="button"
-            accessibilityState={{ selected: showAll }}
-          >
-            <Text style={[styles.showAll, { color: routineTheme.completion }]}>
-              {showAll ? "Solo completadas" : "Mostrar todo"}
+        <View
+          style={[
+            styles.stickyHeader,
+            {
+              paddingTop: topPad,
+              backgroundColor: routineTheme.background,
+            },
+          ]}
+        >
+          <View style={styles.header}>
+            <Pressable
+              onPress={() => router.back()}
+              accessibilityRole="button"
+              accessibilityLabel="Volver"
+              hitSlop={12}
+            >
+              <Feather name="arrow-left" size={23} color={routineTheme.text} />
+            </Pressable>
+            <Text
+              pointerEvents="none"
+              style={[styles.headerDate, { color: routineTheme.text }]}
+            >
+              {selectedDateLabel(selectedDate, todayKey)}
             </Text>
-          </Pressable>
-        </View>
+            <Pressable
+              onPress={() => setShowAll((current) => !current)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: showAll }}
+            >
+              <Text style={[styles.showAll, { color: routineTheme.completion }]}>
+                {showAll ? "Solo completadas" : "Mostrar todo"}
+              </Text>
+            </Pressable>
+          </View>
 
-        <View style={styles.daysRow}>
-          {weekDays.map((date, index) => {
-            const dateKey = getRoutineDateKey(date);
-            const selected = dateKey === selectedKey;
-            const isToday = dateKey === todayKey;
-            const hasCompletion = activities.some((activity) =>
-              hasRoutineDateEntry(activity.completedDates, dateKey),
-            );
-            return (
-              <Pressable
-                key={dateKey}
-                onPress={() => setSelectedDate(date)}
-                accessibilityRole="button"
-                accessibilityState={{ selected }}
-                accessibilityLabel={`${DAY_LABELS[index]} ${date.getDate()} de ${shortMonth(date)}${
-                  hasCompletion ? ", con tareas completadas" : ""
-                }`}
-                style={styles.dayColumn}
-              >
-                <Text
-                  style={[
-                    styles.dayLabel,
-                    {
-                      color: "#B5B5B5",
-                      opacity: 1,
-                    },
-                  ]}
-                >
-                  {DAY_LABELS[index]}
-                </Text>
-                <View
-                  style={[
-                    styles.dayCircle,
-                    {
-                      backgroundColor: selected
-                        ? "#F9F9F9"
-                        : "rgba(255,255,255,0.1)",
-                      borderColor:
-                        isToday && !selected
-                          ? "#FFFFFF"
-                          : selected
-                            ? "#F9F9F9"
-                            : routineTheme.divider,
-                      borderWidth: isToday && !selected ? 1 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
+          <View style={styles.daysRow}>
+            {weekDays.map((date, index) => {
+              const dateKey = getRoutineDateKey(date);
+              const selected = dateKey === selectedKey;
+              const isToday = dateKey === todayKey;
+              const hasCompletion = activities.some((activity) =>
+                hasRoutineDateEntry(activity.completedDates, dateKey),
+              );
+              return (
+                <Pressable
+                  key={dateKey}
+                  onPress={() => setSelectedDate(date)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  accessibilityLabel={`${DAY_LABELS[index]} ${date.getDate()} de ${shortMonth(date)}${
+                    hasCompletion ? ", con tareas completadas" : ""
+                  }`}
+                  style={styles.dayColumn}
                 >
                   <Text
                     style={[
-                      styles.dayNumber,
+                      styles.dayLabel,
                       {
-                        color: selected
-                          ? "#060A0F"
-                          : routineTheme.text,
+                        color: "#B5B5B5",
+                        opacity: 1,
                       },
                     ]}
                   >
-                    {date.getDate()}
+                    {DAY_LABELS[index]}
                   </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
+                  <View
+                    style={[
+                      styles.dayCircle,
+                      {
+                        backgroundColor: selected
+                          ? "#F9F9F9"
+                          : "rgba(0,0,0,0.28)",
+                        borderColor:
+                          isToday && !selected
+                            ? "#FFFFFF"
+                            : selected
+                              ? "#F9F9F9"
+                              : routineTheme.divider,
+                        borderWidth: isToday && !selected ? 1 : StyleSheet.hairlineWidth,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.dayNumber,
+                        {
+                          color: selected
+                            ? "#060A0F"
+                            : routineTheme.text,
+                        },
+                      ]}
+                    >
+                      {date.getDate()}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
 
-        <View style={[styles.divider, { backgroundColor: routineTheme.divider }]} />
+          <View style={[styles.divider, { backgroundColor: routineTheme.divider }]} />
+        </View>
 
         {!isFutureDate && (
           <Text style={[styles.progressTitle, { color: routineTheme.text }]}>
@@ -492,7 +503,11 @@ export default function RutinaCalendarioScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+  },
+  stickyHeader: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
   },
   header: {
     minHeight: 44,
@@ -545,7 +560,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: StyleSheet.hairlineWidth,
-    marginHorizontal: -20,
+    marginHorizontal: -16,
     marginTop: 22,
   },
   progressTitle: {
