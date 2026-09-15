@@ -362,6 +362,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
           if (completingIds.has(itemId)) return true;
           const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
           return (
+            !item.deletedDates.includes(occurrenceKey) &&
             !item.completedDates.includes(occurrenceKey) &&
             !item.skippedDates.includes(occurrenceKey)
           );

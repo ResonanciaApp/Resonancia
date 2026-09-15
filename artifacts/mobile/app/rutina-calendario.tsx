@@ -269,7 +269,11 @@ function RutinaCalendarioScreenContent() {
           activity,
           occurrenceIndex,
           itemId: `${activity.id}::${occurrenceIndex}`,
-        }));
+        })).filter(({ occurrenceIndex }) =>
+          !activity.deletedDates.includes(
+            getRoutineOccurrenceKey(selectedKey, occurrenceIndex),
+          ),
+        );
       }),
     [activities, selectedDate, selectedKey],
   );

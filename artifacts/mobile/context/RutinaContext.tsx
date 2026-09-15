@@ -53,6 +53,7 @@ export interface RoutineActivity {
   timesPerDay: number;
   completedDates: string[];
   skippedDates: string[];
+  deletedDates: string[];
   archivedAt: string | null;
   createdAt: string;
 }
@@ -223,6 +224,7 @@ function normalizeActivity(value: unknown): RoutineActivity | null {
     timesPerDay: normalizeTimesPerDay(item.timesPerDay),
     completedDates: normalizeDateList(item.completedDates),
     skippedDates: normalizeDateList(item.skippedDates),
+    deletedDates: normalizeDateList(item.deletedDates),
     archivedAt: typeof item.archivedAt === "string" ? item.archivedAt : null,
     createdAt: typeof item.createdAt === "string" ? item.createdAt : new Date().toISOString(),
   };
@@ -250,18 +252,23 @@ export function deduplicateRoutineActivities(
       byIdentity.set(identity, activity);
       continue;
     }
+    const deletedDates = normalizeDateList([
+      ...existing.deletedDates,
+      ...activity.deletedDates,
+    ]);
     const completedDates = normalizeDateList([
       ...existing.completedDates,
       ...activity.completedDates,
-    ]);
+    ]).filter((date) => !deletedDates.includes(date));
     const skippedDates = normalizeDateList([
       ...existing.skippedDates,
       ...activity.skippedDates,
-    ]).filter((date) => !completedDates.includes(date));
+    ]).filter((date) => !completedDates.includes(date) && !deletedDates.includes(date));
     byIdentity.set(identity, {
       ...existing,
       completedDates,
       skippedDates,
+      deletedDates,
       createdAt:
         existing.createdAt <= activity.createdAt
           ? existing.createdAt
@@ -372,6 +379,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       timesPerDay: normalizeTimesPerDay(input.timesPerDay),
       completedDates: [],
       skippedDates: [],
+      deletedDates: [],
       archivedAt: null,
       createdAt: new Date().toISOString(),
     };
@@ -399,7 +407,13 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
           if (occurrenceIndex < 0 || occurrenceIndex >= activity.timesPerDay) return activity;
           if (!canMutateRoutineDate(activity, dateKey)) return activity;
           const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
-          return completeRoutineDate(activity, occurrenceKey);
+          const completed = completeRoutineDate(activity, occurrenceKey);
+          return activity.deletedDates.includes(occurrenceKey)
+            ? {
+                ...completed,
+                deletedDates: activity.deletedDates.filter((date) => date !== occurrenceKey),
+              }
+            : completed;
         }),
       );
     },
@@ -409,12 +423,18 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   const clearCompletedActivitiesForDate = useCallback((dateKey = getRoutineDateKey()) => {
     setActivities((current) =>
       current.map((activity) => {
+        const deletedDates = normalizeDateList([
+          ...activity.deletedDates,
+          ...activity.completedDates.filter(
+            (entry) => entry === dateKey || entry.startsWith(`${dateKey}#`),
+          ),
+        ]);
         const completedDates = activity.completedDates.filter(
           (entry) => entry !== dateKey && !entry.startsWith(`${dateKey}#`),
         );
         return completedDates.length === activity.completedDates.length
           ? activity
-          : { ...activity, completedDates };
+          : { ...activity, completedDates, deletedDates };
       }),
     );
   }, []);
@@ -427,7 +447,13 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
           if (occurrenceIndex < 0 || occurrenceIndex >= activity.timesPerDay) return activity;
           if (!canMutateRoutineDate(activity, dateKey)) return activity;
           const occurrenceKey = getRoutineOccurrenceKey(dateKey, occurrenceIndex);
-          return skipRoutineDate(activity, occurrenceKey);
+          const skipped = skipRoutineDate(activity, occurrenceKey);
+          return activity.deletedDates.includes(occurrenceKey)
+            ? {
+                ...skipped,
+                deletedDates: activity.deletedDates.filter((date) => date !== occurrenceKey),
+              }
+            : skipped;
         }),
       );
     },
@@ -454,6 +480,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
         const completed = activity.completedDates.includes(occurrenceKey);
         return {
           ...activity,
+          deletedDates: activity.deletedDates.filter((date) => date !== occurrenceKey),
           completedDates: completed
             ? activity.completedDates.filter((date) => date !== occurrenceKey)
             : [...activity.completedDates, occurrenceKey],
