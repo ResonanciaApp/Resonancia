@@ -1128,7 +1128,7 @@ const styles = StyleSheet.create({
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabSel: { backgroundColor: "#F9F9F9" },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 10, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 10, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "550" as any },
   pillTabUnderline: {},
 
