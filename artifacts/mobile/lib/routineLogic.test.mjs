@@ -8,6 +8,8 @@ import {
   getRoutineOccurrenceKey,
   hasRoutineDateEntry,
   isRoutineActivityScheduledForDate,
+  mergeRoutineRetirementDate,
+  retireRoutineFromDate,
   skipRoutineDate,
 } from "./routineLogic.ts";
 
@@ -16,6 +18,7 @@ const base = {
   completedDates: [],
   skippedDates: [],
   archivedAt: null,
+  retiredFromDate: null,
   createdAt: "2026-09-01T12:00:00.000Z",
 };
 
@@ -76,6 +79,33 @@ test("archiving stops future scheduling without erasing past dates", () => {
   assert.equal(
     isRoutineActivityScheduledForDate(archived, getRoutineDateFromKey("2026-09-04")),
     false,
+  );
+});
+
+test("deleting a completed routine retires it from that date forward", () => {
+  const retired = retireRoutineFromDate(base, "2026-09-02");
+  assert.equal(
+    isRoutineActivityScheduledForDate(retired, getRoutineDateFromKey("2026-09-01")),
+    true,
+  );
+  assert.equal(
+    isRoutineActivityScheduledForDate(retired, getRoutineDateFromKey("2026-09-02")),
+    false,
+  );
+  assert.equal(
+    isRoutineActivityScheduledForDate(retired, getRoutineDateFromKey("2026-09-03")),
+    false,
+  );
+});
+
+test("the earliest retirement date wins when duplicate records merge", () => {
+  assert.equal(
+    mergeRoutineRetirementDate("2026-09-10", "2026-09-02"),
+    "2026-09-02",
+  );
+  assert.equal(
+    mergeRoutineRetirementDate(null, "2026-09-02"),
+    "2026-09-02",
   );
 });
 

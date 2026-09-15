@@ -15,6 +15,8 @@ import {
   completeRoutineDate,
   getRoutineDateKey,
   getRoutineOccurrenceKey,
+  mergeRoutineRetirementDate,
+  retireRoutineFromDate,
   skipRoutineDate,
 } from "@/lib/routineLogic";
 export {
@@ -55,6 +57,7 @@ export interface RoutineActivity {
   skippedDates: string[];
   deletedDates: string[];
   archivedAt: string | null;
+  retiredFromDate: string | null;
   createdAt: string;
 }
 
@@ -226,6 +229,11 @@ function normalizeActivity(value: unknown): RoutineActivity | null {
     skippedDates: normalizeDateList(item.skippedDates),
     deletedDates: normalizeDateList(item.deletedDates),
     archivedAt: typeof item.archivedAt === "string" ? item.archivedAt : null,
+    retiredFromDate:
+      typeof item.retiredFromDate === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(item.retiredFromDate)
+        ? item.retiredFromDate
+        : null,
     createdAt: typeof item.createdAt === "string" ? item.createdAt : new Date().toISOString(),
   };
 }
@@ -269,16 +277,20 @@ export function deduplicateRoutineActivities(
       completedDates,
       skippedDates,
       deletedDates,
+      retiredFromDate: mergeRoutineRetirementDate(
+        existing.retiredFromDate,
+        activity.retiredFromDate,
+      ),
       createdAt:
         existing.createdAt <= activity.createdAt
           ? existing.createdAt
           : activity.createdAt,
       archivedAt:
         existing.archivedAt && activity.archivedAt
-          ? existing.archivedAt >= activity.archivedAt
+          ? existing.archivedAt <= activity.archivedAt
             ? existing.archivedAt
             : activity.archivedAt
-          : null,
+          : existing.archivedAt ?? activity.archivedAt,
     });
   }
   return Array.from(byIdentity.values());
@@ -381,6 +393,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       skippedDates: [],
       deletedDates: [],
       archivedAt: null,
+      retiredFromDate: null,
       createdAt: new Date().toISOString(),
     };
     setActivities((current) => [...current, activity]);
@@ -423,6 +436,10 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
   const clearCompletedActivitiesForDate = useCallback((dateKey = getRoutineDateKey()) => {
     setActivities((current) =>
       current.map((activity) => {
+        const completedOnDate = activity.completedDates.some(
+          (entry) => entry === dateKey || entry.startsWith(`${dateKey}#`),
+        );
+        if (!completedOnDate) return activity;
         const deletedDates = normalizeDateList([
           ...activity.deletedDates,
           ...activity.completedDates.filter(
@@ -432,9 +449,10 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
         const completedDates = activity.completedDates.filter(
           (entry) => entry !== dateKey && !entry.startsWith(`${dateKey}#`),
         );
-        return completedDates.length === activity.completedDates.length
-          ? activity
-          : { ...activity, completedDates, deletedDates };
+        return retireRoutineFromDate(
+          { ...activity, completedDates, deletedDates },
+          dateKey,
+        );
       }),
     );
   }, []);

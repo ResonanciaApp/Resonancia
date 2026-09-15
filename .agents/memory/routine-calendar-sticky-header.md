@@ -9,4 +9,4 @@ En el calendario expansivo de Mi rutina, el encabezado, la fila semanal y su lí
 
 **How to apply:** Mantener 16 px de margen lateral, igual que Inicio. Los círculos de días inactivos usan negro al 28%. El sticky replica el fondo a escala de viewport y cubre también el safe area superior; no incluye filtro “Mostrar todo/Solo completadas”.
 
-El botón “Borrar todo” elimina visual y persistentemente solo las ocurrencias completadas de la fecha seleccionada, mediante tombstones por ocurrencia; nunca deben reaparecer como pendientes. Pendientes, omitidas y otros días no cambian.
+El botón “Borrar todo” elimina visual y persistentemente las ocurrencias completadas de la fecha seleccionada. Además, retira esas actividades recurrentes desde esa fecha para que no vuelvan en días futuros; las rutinas no borradas continúan normalmente.

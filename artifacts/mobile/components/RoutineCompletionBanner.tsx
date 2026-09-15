@@ -8,6 +8,7 @@ const ENTRY_DURATION = 380;
 const COUNT_DURATION = 350;
 const HOLD_DURATION = 1800;
 const EXIT_DURATION = 320;
+const INTERRUPT_EXIT_DURATION = 160;
 const COUNTER_SURFACE = "#276FC2";
 
 type Props = {
@@ -27,13 +28,15 @@ export function RoutineCompletionBanner({
   enteredOffset = 0,
   onAddedPress,
 }: Props) {
-  const { activeEvent, dismissActiveEvent } = useRoutineCompletionBanner();
+  const { activeEvent, hasPendingCompletion, dismissActiveEvent } =
+    useRoutineCompletionBanner();
   const translateY = useRef(new Animated.Value(entryDistance)).current;
   const opacity = useRef(new Animated.Value(1)).current;
   const countProgress = useRef(new Animated.Value(0)).current;
   const waveProgress = useRef(new Animated.Value(0)).current;
   const startedEventIdRef = useRef<number | null>(null);
   const committedEventIdRef = useRef<number | null>(null);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [subtitleCount, setSubtitleCount] = useState(0);
 
   useEffect(() => {
@@ -53,7 +56,10 @@ export function RoutineCompletionBanner({
   useEffect(() => {
     if (!activeEvent || !visible) return;
 
-    let holdTimer: ReturnType<typeof setTimeout> | null = null;
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
     startedEventIdRef.current = activeEvent.id;
     committedEventIdRef.current = null;
     translateY.stopAnimation();
@@ -75,7 +81,8 @@ export function RoutineCompletionBanner({
       if (!entered) return;
       if (activeEvent.kind === "added") {
         committedEventIdRef.current = activeEvent.id;
-        holdTimer = setTimeout(() => {
+        holdTimerRef.current = setTimeout(() => {
+          holdTimerRef.current = null;
           Animated.parallel([
             Animated.timing(translateY, {
               toValue: entryDistance,
@@ -114,7 +121,8 @@ export function RoutineCompletionBanner({
           easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }).start();
-        holdTimer = setTimeout(() => {
+        holdTimerRef.current = setTimeout(() => {
+          holdTimerRef.current = null;
           Animated.parallel([
             Animated.timing(translateY, {
               toValue: entryDistance,
@@ -140,7 +148,10 @@ export function RoutineCompletionBanner({
     });
 
     return () => {
-      if (holdTimer) clearTimeout(holdTimer);
+      if (holdTimerRef.current) {
+        clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
       translateY.stopAnimation();
       opacity.stopAnimation();
       countProgress.stopAnimation();
@@ -155,6 +166,44 @@ export function RoutineCompletionBanner({
     opacity,
     translateY,
     visible,
+    waveProgress,
+  ]);
+
+  useEffect(() => {
+    if (
+      !hasPendingCompletion ||
+      !activeEvent ||
+      activeEvent.kind !== "completed" ||
+      startedEventIdRef.current !== activeEvent.id
+    ) {
+      return;
+    }
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    translateY.stopAnimation();
+    opacity.stopAnimation();
+    countProgress.stopAnimation();
+    waveProgress.stopAnimation();
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: INTERRUPT_EXIT_DURATION,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (!finished || startedEventIdRef.current !== activeEvent.id) return;
+      startedEventIdRef.current = null;
+      committedEventIdRef.current = null;
+      dismissActiveEvent();
+    });
+  }, [
+    activeEvent,
+    countProgress,
+    dismissActiveEvent,
+    hasPendingCompletion,
+    opacity,
+    translateY,
     waveProgress,
   ]);
 

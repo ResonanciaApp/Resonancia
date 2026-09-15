@@ -35,6 +35,7 @@ import {
   consumeRoutineAdditionTransition,
   consumeRoutineCompletionTransition,
 } from "@/lib/routineCompletionTransition";
+import { claimRoutineCompletion } from "@/lib/routineCompletionQueue";
 import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
@@ -292,12 +293,18 @@ function RutinaCalendarioScreenContent() {
     activity.completedDates.includes(getRoutineOccurrenceKey(selectedKey, occurrenceIndex)),
   ).length;
   const completedCountRef = useRef(completedCount);
+  const handledCompletionKeysRef = useRef(new Set<string>());
   useEffect(() => {
     completedCountRef.current = completedCount;
   }, [completedCount, selectedKey]);
+  useEffect(() => {
+    handledCompletionKeysRef.current.clear();
+  }, [activities, selectedKey]);
   const handleComplete = useCallback(
     (activityId: string, occurrenceIndex: number, itemId: string) => {
       if (isFutureDate) return;
+      const completionKey = `${selectedKey}:${itemId}`;
+      if (!claimRoutineCompletion(handledCompletionKeysRef.current, completionKey)) return;
       const previousCount = completedCountRef.current;
       const nextCount = previousCount + 1;
       completedCountRef.current = nextCount;

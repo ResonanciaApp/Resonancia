@@ -4,6 +4,7 @@ export type RoutineScheduleRecord = {
   completedDates: string[];
   skippedDates: string[];
   archivedAt: string | null;
+  retiredFromDate?: string | null;
   createdAt: string;
 };
 
@@ -40,6 +41,7 @@ export function isRoutineActivityScheduledForDate(
   const dateKey = getRoutineDateKey(date);
   const createdKey = getRoutineDateKey(new Date(activity.createdAt));
   if (dateKey < createdKey) return false;
+  if (activity.retiredFromDate && dateKey >= activity.retiredFromDate) return false;
   if (activity.archivedAt) {
     const archivedKey = getRoutineDateKey(new Date(activity.archivedAt));
     if (dateKey >= archivedKey) return false;
@@ -53,6 +55,26 @@ export function canMutateRoutineDate(
   dateKey: string,
 ): boolean {
   return isRoutineActivityScheduledForDate(activity, getRoutineDateFromKey(dateKey));
+}
+
+export function retireRoutineFromDate<T extends RoutineScheduleRecord>(
+  activity: T,
+  dateKey: string,
+): T {
+  if (activity.retiredFromDate && activity.retiredFromDate <= dateKey) return activity;
+  return {
+    ...activity,
+    retiredFromDate: dateKey,
+  };
+}
+
+export function mergeRoutineRetirementDate(
+  first?: string | null,
+  second?: string | null,
+): string | null {
+  if (!first) return second ?? null;
+  if (!second) return first;
+  return first <= second ? first : second;
 }
 
 export function completeRoutineDate<T extends RoutineScheduleRecord>(

@@ -8,3 +8,5 @@ Un evento visual en cola debe distinguir entre “iniciado” y “confirmado”
 **Why:** Tratar todo evento iniciado como consumido pierde incrementos cuando la navegación interrumpe la entrada; conservar siempre el evento reproduce incrementos que el usuario ya vio.
 
 **How to apply:** Usar esta separación en banners, toasts o contadores animados que viven junto a navegación, overlays o paneles capaces de ocultarlos durante una secuencia.
+
+En el contador de Mi Rutina, una nueva finalización interrumpe el aviso completado visible con un fade corto. Las finalizaciones pendientes se consolidan al total acumulado más reciente en vez de reproducir una secuencia completa por cada tap.
