@@ -226,7 +226,12 @@ function RutinaCalendarioScreenContent() {
   const today = useMemo(() => new Date(), [todayKey]);
   const [selectedDate, setSelectedDate] = useState(today);
   const [completionTokens, setCompletionTokens] = useState<Record<string, number>>({});
-  const { activities, completeActivity, isHydrated } = useRutina();
+  const {
+    activities,
+    clearCompletedActivitiesForDate,
+    completeActivity,
+    isHydrated,
+  } = useRutina();
   const selectedKey = getRoutineDateKey(selectedDate);
   const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -302,6 +307,23 @@ function RutinaCalendarioScreenContent() {
     [announceCompletion, completeActivity, isFutureDate, selectedKey],
   );
   const visibleActivities = scheduledForDate;
+  const handleClearCompleted = useCallback(() => {
+    Alert.alert(
+      "¿Estás seguro de borrar todas las tareas completadas?",
+      undefined,
+      [
+        {
+          text: "No borrar",
+          style: "cancel",
+        },
+        {
+          text: "Sí, borrar",
+          style: "destructive",
+          onPress: () => clearCompletedActivitiesForDate(selectedKey),
+        },
+      ],
+    );
+  }, [clearCompletedActivitiesForDate, selectedKey]);
 
   return (
     <View style={[styles.root, { backgroundColor: routineTheme.background }]}>
@@ -339,6 +361,14 @@ function RutinaCalendarioScreenContent() {
               >
                 {selectedDateLabel(selectedDate, todayKey)}
               </Text>
+              <Pressable
+                onPress={handleClearCompleted}
+                accessibilityRole="button"
+                accessibilityLabel="Borrar todas las tareas completadas"
+                hitSlop={10}
+              >
+                <Text style={styles.clearCompleted}>Borrar todo</Text>
+              </Pressable>
             </View>
 
             <View style={styles.daysRow}>
@@ -513,6 +543,12 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
+  },
+  clearCompleted: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#F0F0F0",
   },
   daysRow: {
     flexDirection: "row",

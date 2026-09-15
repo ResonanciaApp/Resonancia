@@ -73,6 +73,7 @@ interface RutinaContextValue {
   addActivity: (input: RoutineActivityInput) => RoutineActivity;
   updateActivityDescription: (activityId: string, description: string) => void;
   completeActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
+  clearCompletedActivitiesForDate: (dateKey?: string) => void;
   skipActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
   archiveActivity: (activityId: string) => void;
   toggleActivity: (activityId: string, dateKey?: string, occurrenceIndex?: number) => void;
@@ -405,6 +406,19 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const clearCompletedActivitiesForDate = useCallback((dateKey = getRoutineDateKey()) => {
+    setActivities((current) =>
+      current.map((activity) => {
+        const completedDates = activity.completedDates.filter(
+          (entry) => entry !== dateKey && !entry.startsWith(`${dateKey}#`),
+        );
+        return completedDates.length === activity.completedDates.length
+          ? activity
+          : { ...activity, completedDates };
+      }),
+    );
+  }, []);
+
   const skipActivity = useCallback(
     (activityId: string, dateKey = getRoutineDateKey(), occurrenceIndex = 0) => {
       setActivities((current) =>
@@ -494,6 +508,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       addActivity,
       updateActivityDescription,
       completeActivity,
+      clearCompletedActivitiesForDate,
       skipActivity,
       archiveActivity,
       toggleActivity,
@@ -509,6 +524,7 @@ export function RutinaProvider({ children }: { children: ReactNode }) {
       addActivity,
       updateActivityDescription,
       completeActivity,
+      clearCompletedActivitiesForDate,
       skipActivity,
       archiveActivity,
       toggleActivity,
