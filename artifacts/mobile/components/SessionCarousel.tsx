@@ -17,6 +17,7 @@ import {
   ScrollView,
   StyleSheet,
   type ImageStyle,
+  type FlatListProps,
   type StyleProp,
   type TextStyle,
   Text,
@@ -268,6 +269,7 @@ type SessionCarouselProps = {
   fillGridWidth?: boolean;
   gridBottomPadding?: number;
   gridScrollEnabled?: boolean;
+  onGridScroll?: FlatListProps<Session>["onScroll"];
   /** Shared tall presentation used by Dormir and editorial discovery carousels. */
   presentation?: "sleep-category" | "tall-overlay" | "editorial";
   /** Places title and author over the image without a category pill. */
@@ -372,6 +374,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   fillGridWidth = false,
   gridBottomPadding = 0,
   gridScrollEnabled = true,
+  onGridScroll,
   presentation,
   overlayMetadataInside = false,
   overlayDurationTopLeft = false,
@@ -574,6 +577,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         removeClippedSubviews={false}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        onScroll={gridLayout ? onGridScroll : undefined}
+        scrollEventThrottle={onGridScroll ? 16 : undefined}
         columnWrapperStyle={
           gridLayout
             ? { justifyContent: "center", gap: CONTENT_CAROUSEL_GAP }

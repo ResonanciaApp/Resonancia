@@ -26,3 +26,5 @@ Comunidad y Perfil también terminan su sticky header con ese borde; la lupa y e
 Biblioteca y Mezclador de sonidos mantienen 6 px entre sus tabs y el borde inferior blanco de 1 px a opacidad 0,07.
 
 En el Mezclador, ese borde no es permanente: hace fade in al desplazar el catálogo y fade out al volver arriba.
+
+En las pantallas internas de Sonidos, el borde bajo los filtros sigue el mismo comportamiento de fade según el scroll de la grilla.

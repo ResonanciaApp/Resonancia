@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import {
   getSupercategoryFilterTabs,
@@ -13,12 +13,14 @@ export function SupercategoryFilterTabs({
   onSelect,
   includeDurationFilters = true,
   hideWithoutEditorialTags = false,
+  bottomBorderOpacity,
 }: {
   editorialTags: string[];
   active: SupercategoryFilter;
   onSelect: (filter: SupercategoryFilter) => void;
   includeDurationFilters?: boolean;
   hideWithoutEditorialTags?: boolean;
+  bottomBorderOpacity?: Animated.Value;
 }) {
   if (!shouldShowSupercategoryFilterTabs(editorialTags, hideWithoutEditorialTags)) return null;
 
@@ -50,6 +52,13 @@ export function SupercategoryFilterTabs({
           );
         })}
       </ScrollView>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.bottomBorder,
+          bottomBorderOpacity ? { opacity: bottomBorderOpacity } : null,
+        ]}
+      />
     </View>
   );
 }
@@ -58,8 +67,15 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingTop: 9,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+    position: "relative",
+  },
+  bottomBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   content: {
     paddingHorizontal: 16,

@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import {
+  Animated,
   Platform,
   Pressable,
   StatusBar,
@@ -51,6 +52,21 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const overlay = useCategoryOverlayOptional();
   const soundPreview = useSoundPreview();
   const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
+  const filterBorderOpacity = React.useRef(new Animated.Value(0)).current;
+  const filterBorderActiveRef = React.useRef(false);
+  const handleGridScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === filterBorderActiveRef.current) return;
+    filterBorderActiveRef.current = active;
+    filterBorderOpacity.stopAnimation();
+    Animated.timing(filterBorderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [filterBorderOpacity]);
   useFocusEffect(
     useCallback(() => () => soundPreview.stop(), [soundPreview.stop]),
   );
@@ -151,6 +167,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         onSelect={setActiveFilter}
         includeDurationFilters={false}
         hideWithoutEditorialTags
+        bottomBorderOpacity={filterBorderOpacity}
       />
       {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
@@ -172,6 +189,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           gridLayout
           fillGridWidth
           gridBottomPadding={60 + bottomPad}
+          onGridScroll={handleGridScroll}
           presentation="editorial"
           cardVariant="ambiental"
           ambientalTitleOnly
