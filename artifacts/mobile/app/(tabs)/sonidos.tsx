@@ -563,15 +563,15 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: H_PAD,
+    right: 64,
     top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
     lineHeight: 22,
     fontWeight: "800",
     letterSpacing: 0.2,
-    textAlign: "center",
+    textAlign: "left",
   },
   stickyTitleRow: {
     minHeight: 54,

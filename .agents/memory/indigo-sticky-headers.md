@@ -35,6 +35,8 @@ Las categorías principales y sus pantallas internas usan el mismo modelo: heade
 
 Sonidos, Descubrir y Dormir también fijan controles desde el inicio y animan solo el borde a partir de 2 px; conservan aparte el cambio de título grande a compacto a partir de 8 px.
 
+En Sonidos, Descubrir y Dormir, tanto el título grande como el compacto quedan alineados al margen izquierdo de 16 px; la transición no debe recentrarlos.
+
 En esas pantallas, los tabs fijos se desplazan 17 px hacia abajo y el borde inferior permanece oculto hasta que comienza el scroll.
 
 Los títulos normales y sticky de pantallas internas de Categorías igualan las métricas tipográficas de las pantallas internas de Dormir.
