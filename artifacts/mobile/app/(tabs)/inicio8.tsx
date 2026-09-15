@@ -1323,11 +1323,6 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
-  const slowHeaderStyle = useAnimatedStyle(() => {
-    if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
-    const y = Math.max(0, effectiveScrollY.value);
-    return { transform: [{ translateY: y * 0.42 }] };
-  }, [isInicio3, reduceMotion]);
   const heroShadowStyle = useAnimatedStyle(() => {
     if (!isInicio3) return { opacity: 0 };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1404,7 +1399,6 @@ function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
-          isInicio3 && slowHeaderStyle,
         ]}
       >
         <View style={styles.inicio2HeroProfileButton}>
@@ -1523,7 +1517,6 @@ function Inicio2HeroStatic({
             style={[
               styles.inicio3StreakRow,
               { top: topInset + 80 - INICIO3_VERTICAL_LIFT },
-              slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
           >
