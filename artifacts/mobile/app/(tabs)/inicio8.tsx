@@ -1475,29 +1475,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         </View>
 
         <View style={styles.inicio3HeroRightActions}>
-          {isInicio3 ? (
-            <Pressable
-              onPress={onOpenSearch}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.inicio3HeroSearchButton,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Inicio"
-              testID="inicio3-search-button"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView
-                  name="magnifyingglass"
-                  tintColor="#F9F9F9"
-                  size={20}
-                />
-              ) : (
-                <Feather name="search" size={20} color="#F9F9F9" />
-              )}
-            </Pressable>
-          ) : null}
           <Pressable
             onPress={onOpenProfile}
             onPressIn={() =>
@@ -1526,6 +1503,29 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               <Inicio2LotusStreak lightBackground={isInicio3} />
             </Animated.View>
           </Pressable>
+          {isInicio3 ? (
+            <Pressable
+              onPress={onOpenSearch}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.inicio3HeroSearchButton,
+                { opacity: pressed ? 0.72 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Buscar en Inicio"
+              testID="inicio3-search-button"
+            >
+              {Platform.OS === "ios" ? (
+                <SymbolView
+                  name="magnifyingglass"
+                  tintColor="#F9F9F9"
+                  size={20}
+                />
+              ) : (
+                <Feather name="search" size={20} color="#F9F9F9" />
+              )}
+            </Pressable>
+          ) : null}
         </View>
       </RAnimated.View>
 
