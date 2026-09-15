@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 24,
-    lineHeight: 30,
-    fontWeight: "800",
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "700",
     color: "#FBFBFB",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     textAlign: "center",
   },
 });

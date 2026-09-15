@@ -26,7 +26,6 @@ import {
   type SupercategoryFilter,
 } from "@/data/supercategory-editorial-tags";
 import { useCatalog } from "@/context/CatalogContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -41,18 +40,13 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
   const colors = useColors();
   const { playSession } = usePlayer();
   const { isPremium } = usePremium();
-  const { activeSceneId, theme } = useSceneTheme();
+  const { theme } = useSceneTheme();
   const overlayBack = useBackOverride();
   const overlay = useCategoryOverlayOptional();
   const { version } = useCatalog();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const profileSectionBackground = activeSceneId === "tibet"
-    ? "rgba(0,0,0,0.15)"
-    : isIndigoThemeId(activeSceneId)
-      ? "rgba(181,211,255,0.057)"
-      : "rgba(181,211,255,0.057)";
   const [stickyActive, setStickyActive] = React.useState(false);
   const [headerBottomY, setHeaderBottomY] = React.useState(Number.POSITIVE_INFINITY);
   const stickyHeaderOpacity = React.useRef(new Animated.Value(0)).current;
@@ -137,7 +131,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
             style={({ pressed }) => [
               styles.backBtn,
               {
-                backgroundColor: profileSectionBackground,
+                backgroundColor: "rgba(0,0,0,0.28)",
                 opacity: pressed ? 0.7 : 1,
                 top: topPad + 3,
               },
@@ -249,9 +243,9 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: profileSectionBackground,
+              backgroundColor: "rgba(0,0,0,0.28)",
               opacity: pressed ? 0.7 : 1,
-              top: topPad + 2,
+              top: topPad,
             },
           ]}
         >

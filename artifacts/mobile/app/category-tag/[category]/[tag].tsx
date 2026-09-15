@@ -251,7 +251,7 @@ export default function CategoryTagScreen({
           <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
           <View style={styles.stickySpacer} />
         </View>
-        <Pressable onPress={goBack} hitSlop={10} style={[styles.backButton, { top: topPad + 2 }]}>
+        <Pressable onPress={goBack} hitSlop={10} style={[styles.backButton, { top: topPad }]}>
           <Feather name="chevron-left" size={26} color="#FBFBFB" />
         </Pressable>
         <View style={styles.stickyTabs}>
@@ -280,6 +280,6 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickySpacer: { width: 44 },
-  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: "#FBFBFB" },
+  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 16, lineHeight: 19, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
   stickyTabs: { marginTop: 19 },
 });

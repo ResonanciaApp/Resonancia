@@ -154,7 +154,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         pointerEvents="none"
       />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-         <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
+         <Pressable onPress={goBack} hitSlop={10} style={[styles.back, { top: topPad }]}>
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
@@ -217,11 +217,10 @@ const styles = StyleSheet.create({
   back: {
     position: "absolute",
     left: H_PAD,
-    bottom: 10,
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
