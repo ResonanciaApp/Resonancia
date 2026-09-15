@@ -56,8 +56,6 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { useCatalog } from "@/context/CatalogContext";
-import type { EditorialPlaylist } from "@/data/playlists";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -1130,24 +1128,7 @@ export function BibliotecaScreen({
     folders: userFolders,
     favFolders,
     pinnedFavoriteIds,
-    savedEditorialPlaylistIds,
   } = useFoldersPlaylists();
-  const { editorialPlaylists, version: catalogVersion } = useCatalog();
-  const editorialOverlay = useCategoryOverlayOptional();
-  const openEditorialPlaylist = useCallback((slug: string) => {
-    const route = `/editorial-playlist/${encodeURIComponent(slug)}`;
-    if (editorialOverlay) {
-      editorialOverlay.openCategory(route);
-    } else {
-      openLibraryRoute(route);
-    }
-  }, [editorialOverlay, openLibraryRoute]);
-  const savedEditorialPlaylists = useMemo(
-    () => savedEditorialPlaylistIds
-      .map((slug) => editorialPlaylists.find((playlist) => playlist.id === slug))
-      .filter((playlist): playlist is EditorialPlaylist => !!playlist),
-    [catalogVersion, savedEditorialPlaylistIds, editorialPlaylists],
-  );
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
@@ -1234,96 +1215,73 @@ export function BibliotecaScreen({
         return arr; // "recientes" = orden natural
       };
 
-      // Comparador según el modo de orden elegido (Recientes / Agregado / Alfabético),
-      // manteniendo los fijados (pinned) siempre primero.
-      const cmpGeneral = (a: { pinned?: boolean; name?: string; createdAt: string }, b: { pinned?: boolean; name?: string; createdAt: string }) => {
-        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+      // En la vista general todos los tipos comparten un único orden. Las
+      // carpetas no tienen prioridad sobre playlists o mezclas.
+      const cmpGeneral = (a: { name?: string; createdAt: string }, b: { name?: string; createdAt: string }) => {
         if (sort === "alfabetico") return (a.name ?? "").localeCompare(b.name ?? "", "es");
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       };
 
-      const sortedFoldersGeneral = [...userFolders].sort(cmpGeneral);
-      const sortedFavFoldersGeneral = [...favFolders].sort(cmpGeneral);
       const plIdsInFoldersGeneral = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
-      const sortedPlaylists = userPlaylists
-        .filter((pl) => !plIdsInFoldersGeneral.has(pl.id))
-        .sort(cmpGeneral);
-       const hasUserContent =
-         sortedFoldersGeneral.length > 0 ||
-         sortedPlaylists.length > 0 ||
-         sortedFavFoldersGeneral.length > 0 ||
-         savedEditorialPlaylists.length > 0;
       const mixIdsInFoldersGeneral = new Set([
         ...mixFolders.flatMap((f) => f.presetIds),
         ...userFolders.flatMap((f) => f.presetIds ?? []),
       ]);
-      const sortedMixesGeneral = presets
-        .filter((p) => !mixIdsInFoldersGeneral.has(p.id))
-        .sort(cmpGeneral);
+      const generalItems = [
+        ...favFolders.map((item) => ({ kind: "favFolder" as const, item })),
+        ...userFolders.map((item) => ({ kind: "folder" as const, item })),
+        ...userPlaylists
+          .filter((item) => !plIdsInFoldersGeneral.has(item.id))
+          .map((item) => ({ kind: "playlist" as const, item })),
+        ...presets
+          .filter((item) => !mixIdsInFoldersGeneral.has(item.id))
+          .map((item) => ({ kind: "mix" as const, item })),
+      ].sort((a, b) => cmpGeneral(a.item, b.item));
 
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
-           {savedEditorialPlaylists.length > 0 && (
-             <View style={{ gap: 12 }}>
-               <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
-               {viewMode === "grid" ? (
-                 <View style={styles.gridWrap}>
-                   {savedEditorialPlaylists.map((playlist) => (
-                     <Pressable
-                       key={`editorial-${playlist.id}`}
-                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                       onPress={() => openEditorialPlaylist(playlist.id)}
-                     >
-                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                         <Image
-                           source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
-                           style={StyleSheet.absoluteFill}
-                           contentFit="cover"
-                         />
-                       </View>
-                       <Text style={styles.gridTitle} numberOfLines={2}>{playlist.title}</Text>
-                     </Pressable>
-                   ))}
-                 </View>
-               ) : (
-                 savedEditorialPlaylists.map((playlist) => (
-                   <Pressable
-                     key={`editorial-${playlist.id}`}
-                     onPress={() => openEditorialPlaylist(playlist.id)}
-                     style={({ pressed }) => [styles.editorialLibraryRow, { opacity: pressed ? 0.78 : 1 }]}
-                   >
-                     <Image
-                       source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
-                       style={styles.editorialLibraryThumb}
-                       contentFit="cover"
-                     />
-                     <View style={styles.rowInfo}>
-                       <Text style={styles.rowTitle} numberOfLines={1}>{playlist.title}</Text>
-                       <Text style={styles.rowSub} numberOfLines={1}>
-                         Selección especial de Resonancia
-                       </Text>
-                     </View>
-                     <Feather name="chevron-right" size={18} color={MUTED} />
-                   </Pressable>
-                 ))
-               )}
-             </View>
-           )}
-          {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
-          {hasUserContent && (
-            <>
-              {viewMode === "grid" ? (
-                <View style={styles.gridWrap}>
-                  {sortedPlaylists.map((pl) => (
+          {viewMode === "grid" ? (
+            <View style={styles.gridWrap}>
+              {generalItems.map((entry) => {
+                if (entry.kind === "folder" || entry.kind === "favFolder") {
+                  const folder = entry.item;
+                  const isFavoriteFolder = entry.kind === "favFolder";
+                  return (
+                    <Pressable
+                      key={`${entry.kind}-${folder.id}`}
+                      style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                      onPress={() => openLibraryRoute(
+                        isFavoriteFolder
+                          ? `/carpeta-favorito/${folder.id}`
+                          : `/carpeta/${folder.id}`,
+                      )}
+                      onLongPress={() => {
+                        if (isFavoriteFolder) {
+                          setFavActionsItemId(folder.id);
+                          setFavActionsItemKind("folder");
+                        } else {
+                          setActionsItemId(folder.id);
+                          setActionsItemKind("folder");
+                        }
+                      }}
+                    >
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
+                        <Feather name="folder" size={cellW * 0.32} color={GOLD} />
+                      </View>
+                      <Text style={styles.gridTitle} numberOfLines={2}>{folder.name}</Text>
+                    </Pressable>
+                  );
+                }
+                if (entry.kind === "playlist") {
+                  const pl = entry.item;
+                  return (
                     <Pressable
                       key={pl.id}
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => openPlaylistPanel(pl.id)}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
-                        {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
-                          <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
-                        ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                        {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
                           <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
@@ -1335,44 +1293,9 @@ export function BibliotecaScreen({
                       </View>
                       <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
                     </Pressable>
-                  ))}
-                </View>
-              ) : (
-                <View style={{ gap: 15 }}>
-                  {sortedFavFoldersGeneral.map((folder) => (
-                    <FavFolderRow
-                      key={folder.id}
-                      folder={folder}
-                      onPress={() => openLibraryRoute(`/carpeta-favorito/${folder.id}`)}
-                      onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
-                    />
-                  ))}
-                  {sortedFoldersGeneral.map((folder) => (
-                    <FolderRow
-                      key={folder.id}
-                      folder={folder}
-                      onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
-                      onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
-                    />
-                  ))}
-                  {sortedPlaylists.map((pl) => (
-                    <UserPlaylistRow
-                      key={pl.id}
-                      pl={pl}
-                      onPress={() => openPlaylistPanel(pl.id)}
-                      onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
-                    />
-                  ))}
-                </View>
-              )}
-            </>
-          )}
-
-          {/* ── Mezclas del usuario (vista general) ── */}
-          {sortedMixesGeneral.length > 0 && (
-            viewMode === "grid" ? (
-              <View style={styles.gridWrap}>
-                {sortedMixesGeneral.map((mix) => {
+                  );
+                }
+                const mix = entry.item;
                   const isPlayingMix = loadedPresetId === mix.id && mixerPlaying;
                   return (
                     <View key={mix.id} style={{ width: cellW }}>
@@ -1394,11 +1317,43 @@ export function BibliotecaScreen({
                       </Pressable>
                     </View>
                   );
-                })}
-              </View>
-            ) : (
-              <View style={{ gap: 14 }}>
-                {sortedMixesGeneral.map((mix) => (
+              })}
+            </View>
+          ) : (
+            <View style={{ gap: 14 }}>
+              {generalItems.map((entry) => {
+                if (entry.kind === "favFolder") {
+                  return (
+                    <FavFolderRow
+                      key={`favFolder-${entry.item.id}`}
+                      folder={entry.item}
+                      onPress={() => openLibraryRoute(`/carpeta-favorito/${entry.item.id}`)}
+                      onLongPress={() => { setFavActionsItemId(entry.item.id); setFavActionsItemKind("folder"); }}
+                    />
+                  );
+                }
+                if (entry.kind === "folder") {
+                  return (
+                    <FolderRow
+                      key={`folder-${entry.item.id}`}
+                      folder={entry.item}
+                      onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
+                      onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
+                    />
+                  );
+                }
+                if (entry.kind === "playlist") {
+                  return (
+                    <UserPlaylistRow
+                      key={`playlist-${entry.item.id}`}
+                      pl={entry.item}
+                      onPress={() => openPlaylistPanel(entry.item.id)}
+                      onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("playlist"); }}
+                    />
+                  );
+                }
+                const mix = entry.item;
+                return (
                   <MixRow
                     key={mix.id}
                     mix={mix}
@@ -1407,9 +1362,9 @@ export function BibliotecaScreen({
                     onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                     onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
                   />
-                ))}
-              </View>
-            )
+                );
+              })}
+            </View>
           )}
 
           {/* ── Resonadores seguidos ── */}
@@ -1449,15 +1404,6 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => openGeometrix()}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="hexagon" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una geometría</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
@@ -1490,8 +1436,15 @@ export function BibliotecaScreen({
         return arr; // "recientes" ya está ordenado
       };
       const displayPl = applySort(sortedUserPl);
+      const playlistItems = [
+        ...userFolders.map((item) => ({ kind: "folder" as const, item })),
+        ...displayPl.map((item) => ({ kind: "playlist" as const, item })),
+      ].sort((a, b) => {
+        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
+        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
+      });
 
-       if (displayPl.length === 0 && userFolders.length === 0 && savedEditorialPlaylists.length === 0) {
+       if (playlistItems.length === 0) {
         return (
           <View style={styles.emptyState}>
             <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
@@ -1508,101 +1461,63 @@ export function BibliotecaScreen({
       if (viewMode === "grid") {
         return (
            <View style={{ gap: 18, marginTop: 30 }}>
-             {savedEditorialPlaylists.length > 0 && (
-               <View style={{ gap: 12 }}>
-                 <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
-                 <View style={styles.gridWrap}>
-                   {savedEditorialPlaylists.map((playlist) => (
-                     <Pressable
-                       key={`editorial-${playlist.id}`}
-                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                       onPress={() => openEditorialPlaylist(playlist.id)}
-                     >
-                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                         <Image
-                           source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
-                           style={StyleSheet.absoluteFill}
-                           contentFit="cover"
-                         />
-                       </View>
-                       <Text style={styles.gridTitle} numberOfLines={2}>{playlist.title}</Text>
-                     </Pressable>
-                   ))}
-                 </View>
-               </View>
-             )}
              <View style={styles.gridWrap}>
-            {displayPl.map((pl) => (
-              <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
-                onPress={() => openPlaylistPanel(pl.id)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
-                  {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
-                    <Image source={getDefaultPlaylistCover(pl.id)} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
-                  ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
-                    <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
-                  ) : pl.coverType === "creation" && pl.coverCreationId ? (
-                    <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
-                  ) : pl.coverUri ? (
-                    <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
-                  ) : (
-                    <Feather name="music" size={28} color={MUTED} />
-                  )}
-                </View>
-                <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
-              </Pressable>
-            ))}
+             {playlistItems.map((entry) => {
+               if (entry.kind === "folder") {
+                 return (
+                   <Pressable
+                     key={`folder-${entry.item.id}`}
+                     style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                     onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
+                     onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
+                   >
+                     <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
+                       <Feather name="folder" size={cellW * 0.32} color={GOLD} />
+                     </View>
+                     <Text style={styles.gridTitle} numberOfLines={2}>{entry.item.name}</Text>
+                   </Pressable>
+                 );
+               }
+               const pl = entry.item;
+               return (
+                 <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                   onPress={() => openPlaylistPanel(pl.id)}>
+                   <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                     {pl.coverType === "geometrix" && pl.coverGeometryId ? (
+                       <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
+                     ) : pl.coverType === "creation" && pl.coverCreationId ? (
+                       <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
+                     ) : pl.coverUri ? (
+                       <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                     ) : (
+                       <Feather name="music" size={28} color={MUTED} />
+                     )}
+                   </View>
+                   <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+                 </Pressable>
+               );
+             })}
              </View>
           </View>
         );
       }
-      const sortedFolders = [...userFolders].sort((a, b) => {
-        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-      const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
-           {savedEditorialPlaylists.length > 0 && (
-             <View style={{ gap: 12 }}>
-               <Text style={styles.librarySectionTitle}>Selecciones guardadas</Text>
-               {savedEditorialPlaylists.map((playlist) => (
-                 <Pressable
-                   key={`editorial-${playlist.id}`}
-                   onPress={() => openEditorialPlaylist(playlist.id)}
-                   style={({ pressed }) => [styles.editorialLibraryRow, { opacity: pressed ? 0.78 : 1 }]}
-                 >
-                   <Image
-                     source={playlist.coverUrl ? { uri: playlist.coverUrl } : playlist.cover as number}
-                     style={styles.editorialLibraryThumb}
-                     contentFit="cover"
-                   />
-                   <View style={styles.rowInfo}>
-                     <Text style={styles.rowTitle} numberOfLines={1}>{playlist.title}</Text>
-                     <Text style={styles.rowSub} numberOfLines={1}>
-                       Selección especial de Resonancia
-                     </Text>
-                   </View>
-                   <Feather name="chevron-right" size={18} color={MUTED} />
-                 </Pressable>
-               ))}
-             </View>
-           )}
-          {sortedFolders.map((folder) => (
-            <FolderRow
-              key={folder.id}
-              folder={folder}
-              onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
-              onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
-            />
-          ))}
-          {pinnedFirstPl.map((pl) => (
-            <UserPlaylistRow
-              key={pl.id}
-              pl={pl}
-              onPress={() => openPlaylistPanel(pl.id)}
-              onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
-            />
-          ))}
+          {playlistItems.map((entry) => entry.kind === "folder" ? (
+              <FolderRow
+                key={`folder-${entry.item.id}`}
+                folder={entry.item}
+                onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
+                onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
+              />
+            ) : (
+              <UserPlaylistRow
+                key={`playlist-${entry.item.id}`}
+                pl={entry.item}
+                onPress={() => openPlaylistPanel(entry.item.id)}
+                onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("playlist"); }}
+              />
+            ))}
         </View>
       );
     }
@@ -1661,11 +1576,51 @@ export function BibliotecaScreen({
             : unfiledPresetsRaw;
       const visibleMixes = unfiledPresets.slice(0, mixesLimit);
       const hasMixesMore = unfiledPresets.length > mixesLimit;
+      const visibleMixIds = new Set(visibleMixes.map((mix) => mix.id));
+      const mixItems = [
+        ...userFoldersWithMixes.map((item) => ({ kind: "folder" as const, item })),
+        ...sortedMixFolders.map((item) => ({ kind: "mixFolder" as const, item })),
+        ...unfiledPresets
+          .filter((item) => visibleMixIds.has(item.id))
+          .map((item) => ({ kind: "mix" as const, item })),
+      ].sort((a, b) => {
+        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
+        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
+      });
       if (viewMode === "grid") {
         return (
           <View style={{ gap: 15, marginTop: 30 }}>
             <View style={styles.gridWrap}>
-              {visibleMixes.map((mix) => {
+              {mixItems.map((entry) => {
+                if (entry.kind === "folder" || entry.kind === "mixFolder") {
+                  const folder = entry.item;
+                  const isMixFolder = entry.kind === "mixFolder";
+                  return (
+                    <Pressable
+                      key={`${entry.kind}-${folder.id}`}
+                      style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                      onPress={() => openLibraryRoute(
+                        isMixFolder
+                          ? `/carpeta-mezcla/${folder.id}`
+                          : `/carpeta/${folder.id}`,
+                      )}
+                      onLongPress={() => {
+                        if (entry.kind === "mixFolder") {
+                          setMixMenuFolder(entry.item);
+                        } else {
+                          setActionsItemId(folder.id);
+                          setActionsItemKind("folder");
+                        }
+                      }}
+                    >
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: libraryTabSurface, alignItems: "center", justifyContent: "center" }]}>
+                        <Feather name="folder" size={cellW * 0.32} color={GOLD} />
+                      </View>
+                      <Text style={styles.gridTitle} numberOfLines={2}>{folder.name}</Text>
+                    </Pressable>
+                  );
+                }
+                const mix = entry.item;
                 const isPlaying = loadedPresetId === mix.id && mixerPlaying;
                 return (
                   <View key={mix.id} style={{ width: cellW }}>
@@ -1704,32 +1659,39 @@ export function BibliotecaScreen({
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
           <View style={{ gap: 14 }}>
-            {userFoldersWithMixes.map((folder) => (
-              <FolderRow
-                key={folder.id}
-                folder={folder}
-                onPress={() => openLibraryRoute(`/carpeta/${folder.id}`)}
-                onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
-              />
-            ))}
-            {sortedMixFolders.map((folder) => (
-              <MixFolderRow
-                key={folder.id}
-                folder={folder}
-                onPress={() => openLibraryRoute(`/carpeta-mezcla/${folder.id}`)}
-                onLongPress={() => openMixFolderMenu(folder)}
-              />
-            ))}
-            {visibleMixes.map((mix) => (
-              <MixRow
-                key={mix.id}
-                mix={mix}
-                isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
-              />
-            ))}
+            {mixItems.map((entry) => {
+              if (entry.kind === "folder") {
+                return (
+                  <FolderRow
+                    key={`folder-${entry.item.id}`}
+                    folder={entry.item}
+                    onPress={() => openLibraryRoute(`/carpeta/${entry.item.id}`)}
+                    onLongPress={() => { setActionsItemId(entry.item.id); setActionsItemKind("folder"); }}
+                  />
+                );
+              }
+              if (entry.kind === "mixFolder") {
+                return (
+                  <MixFolderRow
+                    key={`mixFolder-${entry.item.id}`}
+                    folder={entry.item}
+                    onPress={() => openLibraryRoute(`/carpeta-mezcla/${entry.item.id}`)}
+                    onLongPress={() => openMixFolderMenu(entry.item)}
+                  />
+                );
+              }
+              const mix = entry.item;
+              return (
+                <MixRow
+                  key={mix.id}
+                  mix={mix}
+                  isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
+                  onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                  onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                  onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
+                />
+              );
+            })}
           </View>
           {hasMixesMore && (
             <Pressable style={styles.loadMoreBtn} onPress={() => setMixesLimit((n) => n + 12)}>
@@ -2306,26 +2268,6 @@ const styles = StyleSheet.create({
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT },
   rowSub:   { fontFamily: "Manrope", fontSize: 12, color: MUTED },
-  editorialLibraryRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    minHeight: 70,
-    paddingHorizontal: H_PAD,
-  },
-  editorialLibraryThumb: {
-    width: 62,
-    height: 62,
-    borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.08)",
-  },
-  librarySectionTitle: {
-    paddingHorizontal: H_PAD,
-    color: TEXT,
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-  },
   mixMenuBtn: {
     width: 32,
     height: 32,

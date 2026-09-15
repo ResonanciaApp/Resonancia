@@ -123,33 +123,11 @@ interface FoldersPlaylistsCtx {
 
 const FOLDERS_KEY = "@resonance_folders";
 const PLAYLISTS_KEY = "@resonance_playlists";
-const DEFAULT_PLAYLISTS_SEEDED_KEY = "@resonance_default_playlists_seeded_v2";
-
-// ─── Playlists por defecto (usuarios nuevos) ─────────────────────────────────
-// Se crean una sola vez en la primera apertura; si el usuario las borra, no vuelven.
-const DEFAULT_PLAYLISTS: Playlist[] = [
-  {
-    id: "default_para_empezar",
-    name: "Para Empezar",
-    description: "Una selección para tus primeros pasos en Resonancia.",
-    sessionIds: ["1", "25", "26"],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "default_calma_profunda",
-    name: "Calma Profunda",
-    description: "Sonidos y sesiones para soltar el día y relajarte.",
-    sessionIds: ["41", "44", "27"],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "default_sueno_reparador",
-    name: "Sueño Reparador",
-    description: "Acompañamiento para una noche de descanso profundo.",
-    sessionIds: ["8", "47", "50", "24"],
-    createdAt: new Date().toISOString(),
-  },
-];
+const REMOVED_DEFAULT_PLAYLIST_IDS = new Set([
+  "default_para_empezar",
+  "default_calma_profunda",
+  "default_sueno_reparador",
+]);
 const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 const EDITORIAL_PLAYLISTS_KEY = "@resonance_saved_editorial_playlist_ids";
@@ -185,6 +163,10 @@ function mergeById<T extends { id: string }>(local: T[], server: T[]): T[] {
 
 function mergeStringArrays(local: string[], server: string[]): string[] {
   return Array.from(new Set([...local, ...server]));
+}
+
+function withoutRemovedDefaultPlaylists(items: Playlist[]): Playlist[] {
+  return items.filter((playlist) => !REMOVED_DEFAULT_PLAYLIST_IDS.has(playlist.id));
 }
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
@@ -226,7 +208,6 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       PINNED_FAVORITES_KEY,
       EDITORIAL_PLAYLISTS_KEY,
       activeMeditationStorageKey,
-      DEFAULT_PLAYLISTS_SEEDED_KEY,
       LIBRARY_FIRST_SYNC_KEY,
     ]).then(async ([
       fEntry,
@@ -235,32 +216,18 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       pfEntry,
       editorialEntry,
       activeMeditationEntry,
-      seededEntry,
       firstSyncEntry,
     ]) => {
       if (cancelled) return;
       // ── Folders ──
       const localFolders: Folder[] = fEntry[1] ? JSON.parse(fEntry[1]) : [];
 
-      // ── Playlists (con migración de coverType geometrix) ──
-      let localPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
-      let migrated = false;
-      localPlaylists = localPlaylists.map((p) => {
-        if (p.id.startsWith("default_") && p.coverType === "geometrix" && !p.coverUri) {
-          migrated = true;
-          const { coverType, coverGeometryId, ...rest } = p;
-          return rest;
-        }
-        return p;
-      });
-      if (migrated) AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(localPlaylists));
-
-      // Usuarios nuevos: sembrar playlists por defecto una sola vez
-      if (localPlaylists.length === 0 && !seededEntry[1]) {
-        localPlaylists = DEFAULT_PLAYLISTS;
-        AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(DEFAULT_PLAYLISTS));
+      // ── Playlists ──
+      const storedPlaylists: Playlist[] = pEntry[1] ? JSON.parse(pEntry[1]) : [];
+      const localPlaylists = withoutRemovedDefaultPlaylists(storedPlaylists);
+      if (storedPlaylists.length !== localPlaylists.length) {
+        AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(localPlaylists));
       }
-      if (!seededEntry[1]) AsyncStorage.setItem(DEFAULT_PLAYLISTS_SEEDED_KEY, "1");
 
       // ── Fav folders & pinned ──
       const localFavFolders: FavFolder[] = ffEntry[1] ? JSON.parse(ffEntry[1]) : [];
@@ -276,7 +243,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
           const snap = await getMyLibrary();
            if (cancelled) return;
           const serverFolders = (snap.folders ?? []) as Folder[];
-          const serverPlaylists = (snap.playlists ?? []) as Playlist[];
+           const serverPlaylists = withoutRemovedDefaultPlaylists(
+             (snap.playlists ?? []) as Playlist[],
+           );
           const serverFavFolders = (snap.favFolders ?? []) as FavFolder[];
           const serverPinned = (snap.pinnedFavoriteIds ?? []) as string[];
            const serverEditorial = (
