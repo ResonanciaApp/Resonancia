@@ -235,6 +235,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   stickyHeaderRow: {
     minHeight: 54,
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: H_PAD,
     paddingTop: 7,
-    paddingBottom: 10,
+    paddingBottom: 6,
   },
   stickyHeaderTitle: {
     fontFamily: "Manrope",
@@ -265,7 +267,7 @@ const styles = StyleSheet.create({
   },
   stickySearchButton: {
     position: "absolute",
-    top: 0,
+    top: 3,
     right: 16,
   },
   feedSection: {

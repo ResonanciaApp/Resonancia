@@ -2168,7 +2168,9 @@ const styles = StyleSheet.create({
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
-    paddingBottom: 5,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {

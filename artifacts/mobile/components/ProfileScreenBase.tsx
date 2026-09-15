@@ -1756,6 +1756,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   profileStickyHeaderRow: {
     position: "relative",
@@ -1764,7 +1766,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingTop: 7,
-    paddingBottom: 10,
+    paddingBottom: 6,
   },
   profileStickyHeaderTitle: {
     fontFamily: "Manrope",
@@ -1776,7 +1778,7 @@ const styles = StyleSheet.create({
   profileStickySettingsButton: {
     position: "absolute",
     right: 16,
-    top: 7,
+    top: 8,
   },
   stickyHeaderBorder: {
     position: "absolute",

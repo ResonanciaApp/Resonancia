@@ -20,3 +20,7 @@ Dormir y Sonidos usan esos mismos 6 px bajo sus píldoras sticky; Descubrir los 
 Todos esos sticky headers terminan con un borde inferior blanco de 1 px a opacidad 0,07.
 
 “Mis favoritos” aplica la misma terminación bajo sus tabs embebidos: 6 px y borde blanco de 1 px a opacidad 0,07.
+
+Comunidad y Perfil también terminan su sticky header con ese borde; la lupa y el engranaje quedan visualmente a 6 px de la línea inferior.
+
+Biblioteca y Mezclador de sonidos mantienen 6 px entre sus tabs y el borde inferior blanco de 1 px a opacidad 0,07.

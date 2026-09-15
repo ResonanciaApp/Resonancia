@@ -771,7 +771,7 @@ export default function MezcladorScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior (layout imitando la página de Música) ── */}
-        <View style={{ zIndex: 10, backgroundColor: "transparent" }}>
+        <View style={styles.stickyTabsHeader}>
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
               <View style={{ position: "absolute", left: 20, top: topPad + 3, zIndex: 10 }}>
@@ -844,8 +844,6 @@ export default function MezcladorScreen() {
             {/* ── Banner rotativo — oculto temporalmente ── */}
 
             {/* ── Sub-tabs eliminados ── */}
-            <View style={{ height: 8 }} />
-
         </View>
 
         {/* ── Scroll principal ── */}
@@ -1079,8 +1077,14 @@ const styles = StyleSheet.create({
     width: 38, height: 38, alignItems: "center", justifyContent: "center",
   },
 
-  pillRow:        { flexGrow: 0, marginTop: -12, marginBottom: -8, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 12, paddingBottom: 20 },
+  stickyTabsHeader: {
+    zIndex: 10,
+    backgroundColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  pillRow:        { flexGrow: 0, marginTop: -12, backgroundColor: "transparent" },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 12, paddingBottom: 6 },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
