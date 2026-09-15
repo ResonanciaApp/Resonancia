@@ -1005,8 +1005,8 @@ const styles = StyleSheet.create({
   titleRow:     { position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10, paddingTop: 7 },
   stickyTitle: {
     position: "absolute",
-    left: H_PAD,
-    right: 64,
+    left: 0,
+    right: 0,
     top: 16,
     fontFamily: "Manrope",
     fontSize: 18,
@@ -1014,7 +1014,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: 0.2,
     color: "#F4F4F4",
-    textAlign: "left",
+    textAlign: "center",
   },
   stickyTitleRow: {
     minHeight: 54,
