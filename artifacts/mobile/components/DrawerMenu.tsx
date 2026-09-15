@@ -41,6 +41,7 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
     title: "Mi espacio",
     items: [
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
+      { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
       { id: "notes", label: "Mis notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },

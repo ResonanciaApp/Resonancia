@@ -51,7 +51,6 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
@@ -329,7 +328,6 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { favorites, history } = usePlayer();
   const { downloads } = useDownloads();
   const {
     username,
@@ -749,12 +747,6 @@ export function ProfileScreenBase({
       }
     }
   };
-
-
-  // ── Favorite sessions ─────────────────────────────────────────────────────
-  const favSessions = favorites
-    .map((id) => getSessionById(id))
-    .filter(Boolean);
 
 
   // ── Fondo activo (degradado de perfil) ────────────────────────────────────
@@ -1244,97 +1236,59 @@ export function ProfileScreenBase({
               <ProgressMirrorSections showSectionBorders={false} />
             </View>
 
-            <View style={{ marginTop: 12, gap: 12 }}>
-              <Pressable
-                onPress={() => router.push("/notificaciones-practica" as never)}
-                style={({ pressed }) => [
-                  styles.profileUtilitySection,
-                  styles.practiceReminderSection,
-                  { opacity: pressed ? 0.72 : 1 },
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel="Administrar recordatorio de prácticas"
-              >
-                <View style={styles.profileUtilityIcon}>
-                  <Feather name="bell" size={21} color={colors.foreground} />
-                </View>
-                <View style={styles.practiceReminderCopy}>
-                  <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                    Recordatorio de prácticas
-                  </Text>
-                  <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
-                    Mañana, tarde y noche
-                  </Text>
-                </View>
-                <Feather name="chevron-right" size={22} color={colors.foreground} />
-              </Pressable>
-              <View style={styles.profileUtilitySection}>
-                <View style={styles.profileUtilityHeader}>
+            <View style={{ marginTop: 53 }}>
+              <View>
+                <Pressable
+                  onPress={() => router.push("/notificaciones-practica" as never)}
+                  style={({ pressed }) => [
+                    styles.profileUtilitySection,
+                    styles.practiceReminderSection,
+                    { opacity: pressed ? 0.72 : 1 },
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Administrar recordatorio de prácticas"
+                >
                   <View style={styles.profileUtilityIcon}>
-                    <Feather name="download" size={21} color={colors.foreground} />
+                    <Feather name="bell" size={21} color={colors.foreground} />
                   </View>
-                  <View style={styles.profileUtilityCopy}>
-                    <Text style={[styles.profileUtilityTitle, { color: colors.foreground }]}>
-                      Descargas
+                  <View style={styles.practiceReminderCopy}>
+                    <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
+                      Recordatorio de prácticas
                     </Text>
-                    <Text style={[styles.profileUtilitySubtitle, { color: profileDescriptionColor }]}>
-                      Tus sesiones disponibles sin conexión
+                    <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
+                      Mañana, tarde y noche
                     </Text>
                   </View>
-                  <Pressable onPress={() => router.push("/descargas" as never)}>
-                    <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
-                  </Pressable>
-                </View>
-                {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={styles.profileUtilityContent}>
-                  {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
-                </View> : null}
-              </View>
-              <View style={styles.outlinedProfileSection}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Historial de contenido</Text>
-                  <Pressable onPress={() => router.push("/historial" as never)}><Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text></Pressable>
-                </View>
-                {(() => { const entry = history.slice().sort((a,b) => +new Date(b.playedAt) - +new Date(a.playedAt))[0]; const session = entry && getSessionById(entry.sessionId); return session ? <Pressable onPress={() => router.push(`/session/${session.id}` as never)} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}><View><Image source={session.image as never} style={{ width: 68, height: 68, borderRadius: 10 }} contentFit="cover"/><Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>{session.durationLabel}</Text></View><Text style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }} numberOfLines={2}>{session.title}</Text></Pressable> : <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>Aquí aparecerá lo que escuches.</Text>; })()}
-              </View>
-              <View style={styles.outlinedProfileSection}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "800" }}>Favoritos</Text>
-                  <Pressable onPress={() => router.push("/favoritos-todos" as never)}>
-                    <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
-                  </Pressable>
-                </View>
-                {(() => {
-                  const session = favSessions[0];
-                  return session ? (
-                    <Pressable
-                      onPress={() => router.push(`/session/${session.id}` as never)}
-                      style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
-                    >
-                      <View>
-                        <Image
-                          source={session.image as never}
-                          style={{ width: 68, height: 68, borderRadius: 10 }}
-                          contentFit="cover"
-                        />
-                        <Text style={{ position: "absolute", bottom: 4, right: 4, color: "#fff", fontSize: 10, backgroundColor: "rgba(0,0,0,0.62)", paddingHorizontal: 4, borderRadius: 4 }}>
-                          {session.durationLabel}
-                        </Text>
-                      </View>
-                      <Text
-                        style={{ flex: 1, color: colors.foreground, fontSize: 14, fontWeight: "700" }}
-                        numberOfLines={2}
-                      >
-                        {session.title}
+                  <Feather name="chevron-right" size={22} color={colors.foreground} />
+                </Pressable>
+
+                <View style={styles.profileUtilityDivider} />
+
+                <View style={styles.profileUtilitySection}>
+                  <View style={styles.profileUtilityHeader}>
+                    <View style={styles.profileUtilityIcon}>
+                      <Feather name="download" size={21} color={colors.foreground} />
+                    </View>
+                    <View style={styles.profileUtilityCopy}>
+                      <Text style={[styles.profileUtilityTitle, { color: colors.foreground }]}>
+                        Descargas
                       </Text>
+                      <Text style={[styles.profileUtilitySubtitle, { color: profileDescriptionColor }]}>
+                        Tus sesiones disponibles sin conexión
+                      </Text>
+                    </View>
+                    <Pressable onPress={() => router.push("/descargas" as never)}>
+                      <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
                     </Pressable>
-                  ) : (
-                    <Text style={{ color: profileDescriptionColor, fontSize: 13 }}>
-                      Aquí aparecerán tus sesiones favoritas.
-                    </Text>
-                  );
-                })()}
+                  </View>
+                  {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={styles.profileUtilityContent}>
+                    {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
+                  </View> : null}
+                </View>
               </View>
-              <ProfileMixCarousel marginBottom={0} />
+              <View style={{ marginTop: 53 }}>
+                <ProfileMixCarousel marginBottom={0} />
+              </View>
             </View>
 
           </>
@@ -2159,12 +2113,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 18,
+    transform: [{ translateY: -5 }],
   },
   membershipCardCopy: {
     minWidth: 0,
     flex: 1,
     paddingRight: 3,
-    transform: [{ translateX: -8 }],
+    transform: [{ translateX: -8 }, { translateY: -5 }],
   },
   membershipPlanName: {
     fontFamily: "Manrope",
@@ -2299,8 +2254,13 @@ const styles = StyleSheet.create({
   },
   profileUtilitySection: {
     paddingHorizontal: 0,
-    paddingVertical: 10,
     backgroundColor: "transparent",
+  },
+  profileUtilityDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginTop: 26,
+    marginBottom: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   profileUtilityHeader: {
     flexDirection: "row",
