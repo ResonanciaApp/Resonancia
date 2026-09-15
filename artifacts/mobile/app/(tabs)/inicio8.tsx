@@ -337,14 +337,7 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
-function getInicio3StickyThreshold(topPad: number) {
-  const heroHeight =
-    INICIO2_HERO_HEIGHT + 184 - (topPad + 286) - 52 + 60;
-  const heroLayoutTop = topPad + 165 - INICIO3_VERTICAL_LIFT;
-  const heroBottom = heroLayoutTop + heroHeight + 28;
-  const stickyHeight = topPad + 48;
-  return heroBottom - stickyHeight + 10;
-}
+const INICIO3_STICKY_THRESHOLD = 10;
 
 function Inicio3StickyHeader({
   topPad,
@@ -361,11 +354,10 @@ function Inicio3StickyHeader({
   giftScaleAnim: Animated.Value;
   activeTheme: any;
 }) {
-  const activationThreshold = getInicio3StickyThreshold(topPad);
   const animatedStyle = useAnimatedStyle(() => {
     const opacity = Math.min(
       1,
-      Math.max(0, (inicio3ScrollY.value - activationThreshold) / 30),
+      Math.max(0, (inicio3ScrollY.value - INICIO3_STICKY_THRESHOLD) / 30),
     );
     return {
       opacity,
@@ -1442,15 +1434,14 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
-  const inicio3StickyThreshold = getInicio3StickyThreshold(topInset);
   const heroControlsOpacity = useAnimatedStyle(() => {
     if (!isInicio3) return { opacity: 1 };
     const opacity = Math.max(
       0,
-      1 - (effectiveScrollY.value - inicio3StickyThreshold) / 30,
+      1 - (effectiveScrollY.value - INICIO3_STICKY_THRESHOLD) / 30,
     );
     return { opacity };
-  }, [inicio3StickyThreshold, isInicio3]);
+  }, [isInicio3]);
 
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
