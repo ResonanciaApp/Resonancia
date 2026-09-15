@@ -8,7 +8,7 @@
  *  4. Duplicar
  *  5. Eliminar
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -342,7 +342,13 @@ export function MixActionsSheet({
             {/* Cabecera */}
             <View style={styles.header}>
               {itemKind === "mix" && mix ? (
-                <MiniStack sounds={mix.sounds} />
+                libraryActionsOnly ? (
+                  <View style={styles.folderHeaderIcon}>
+                    <MaterialCommunityIcons name="tune-variant" size={22} color={colors.primary} />
+                  </View>
+                ) : (
+                  <MiniStack sounds={mix.sounds} />
+                )
               ) : (
                 <View style={styles.folderHeaderIcon}>
                   <Feather name="folder" size={22} color={colors.primary} />
