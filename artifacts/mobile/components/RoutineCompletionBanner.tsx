@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Feather } from "@expo/vector-icons";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
@@ -262,15 +263,22 @@ export function RoutineCompletionBanner({
         },
       ]}
     >
-      <View style={styles.copy}>
-        <Text style={styles.title}>
-          {activeEvent.kind === "completed" ? "Actividad finalizada" : "Actividad añadida"}
-        </Text>
-        {activeEvent.kind === "completed" ? (
-          <Text style={styles.subtitle}>
-            {subtitleCount} {subtitleCount === 1 ? "tarea" : "tareas"} hoy
-          </Text>
-        ) : null}
+      <View style={[styles.copy, activeEvent.kind === "added" && styles.addedCopy]}>
+        {activeEvent.kind === "added" ? (
+          <View style={styles.addedTitleRow}>
+            <View style={styles.addedCheckSurface}>
+              <Feather name="check" size={17} color="#F9F9F9" />
+            </View>
+            <Text style={styles.title}>Actividad añadida</Text>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.title}>Actividad finalizada</Text>
+            <Text style={styles.subtitle}>
+              {subtitleCount} {subtitleCount === 1 ? "tarea" : "tareas"} hoy
+            </Text>
+          </>
+        )}
       </View>
       <View style={styles.counterWrap}>
         {activeEvent.kind === "completed" ? (
@@ -327,6 +335,22 @@ const styles = StyleSheet.create({
   copy: {
     flex: 1,
     minWidth: 0,
+  },
+  addedCopy: {
+    justifyContent: "center",
+  },
+  addedTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  addedCheckSurface: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     color: "#F9F9F9",

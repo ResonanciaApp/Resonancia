@@ -128,7 +128,7 @@ export default function CrearRutinaScreen() {
   const save = () => {
     if (!canSave) return;
     Keyboard.dismiss();
-    addActivity({
+    const activity = addActivity({
       title,
       description,
       category: category === "Sugerido" && suggestedCategory ? suggestedCategory : category,
@@ -136,7 +136,7 @@ export default function CrearRutinaScreen() {
       repeatEnabled,
       timesPerDay,
     });
-    if (from === "calendar") markRoutineAdditionTransition();
+    if (from === "calendar") markRoutineAdditionTransition(activity.id);
     router.back();
   };
 

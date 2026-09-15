@@ -143,6 +143,7 @@
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
 - [Progreso espejo Perfil](progress-profile-mirror.md) — racha semanal, estadísticas personales y calendario son un solo bloque compartido; Perfil y Tu progreso nunca deben divergir
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
+- [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica
 - [Filtros editoriales de supercategorías](supercategory-editorial-tags.md) — Dormir/Sonidos conservan colecciones como navegación; una segunda taxonomía prefijada filtra dentro de cada colección
 - [Header del calendario de rutina](routine-calendar-sticky-header.md) — fecha, semana y divisor forman un solo sticky header; margen lateral canónico de Inicio

@@ -6,7 +6,7 @@ type RoutineCompletionTransition = {
 };
 
 let pendingTransition: RoutineCompletionTransition | null = null;
-let pendingAddition = false;
+let pendingAdditionActivityId: string | null = null;
 let nextToken = 1;
 
 export function markRoutineCompletionTransition(
@@ -28,12 +28,12 @@ export function consumeRoutineCompletionTransition() {
   return transition;
 }
 
-export function markRoutineAdditionTransition() {
-  pendingAddition = true;
+export function markRoutineAdditionTransition(activityId: string) {
+  pendingAdditionActivityId = activityId;
 }
 
 export function consumeRoutineAdditionTransition() {
-  const shouldAnnounce = pendingAddition;
-  pendingAddition = false;
-  return shouldAnnounce;
+  const activityId = pendingAdditionActivityId;
+  pendingAdditionActivityId = null;
+  return activityId;
 }

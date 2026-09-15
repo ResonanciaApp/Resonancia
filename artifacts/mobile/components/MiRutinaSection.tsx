@@ -318,6 +318,7 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
   const todayKey = useDayRollover();
   const {
     activities,
+    acknowledgeLastAdded,
     isHydrated,
     lastAddedId,
     completeActivity,
@@ -416,7 +417,8 @@ export function MiRutinaSection({ style, cardBackgroundColor }: Props) {
       if (!lastAddedId || lastSeenAddedId.current === lastAddedId) return;
       lastSeenAddedId.current = lastAddedId;
       announceActivityAdded();
-    }, [announceActivityAdded, lastAddedId]),
+      acknowledgeLastAdded(lastAddedId);
+    }, [acknowledgeLastAdded, announceActivityAdded, lastAddedId]),
   );
 
   useFocusEffect(

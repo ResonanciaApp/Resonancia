@@ -229,6 +229,7 @@ function RutinaCalendarioScreenContent() {
   const [completionTokens, setCompletionTokens] = useState<Record<string, number>>({});
   const {
     activities,
+    acknowledgeLastAdded,
     clearCompletedActivitiesForDate,
     completeActivity,
     isHydrated,
@@ -239,8 +240,10 @@ function RutinaCalendarioScreenContent() {
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
   useFocusEffect(
     useCallback(() => {
-      if (consumeRoutineAdditionTransition()) {
+      const addedActivityId = consumeRoutineAdditionTransition();
+      if (addedActivityId) {
         announceActivityAdded();
+        acknowledgeLastAdded(addedActivityId);
       }
       const transition = consumeRoutineCompletionTransition();
       if (!transition || transition.dateKey !== selectedKey) return;
@@ -249,7 +252,11 @@ function RutinaCalendarioScreenContent() {
         ...current,
         [itemId]: transition.token,
       }));
-    }, [announceActivityAdded, selectedKey]),
+    }, [
+      acknowledgeLastAdded,
+      announceActivityAdded,
+      selectedKey,
+    ]),
   );
   const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
@@ -363,8 +370,9 @@ function RutinaCalendarioScreenContent() {
                 accessibilityRole="button"
                 accessibilityLabel="Volver"
                 hitSlop={12}
+                style={styles.backButton}
               >
-                <Feather name="arrow-left" size={23} color={routineTheme.text} />
+                <Feather name="chevron-left" size={26} color="#F9F9F9" />
               </Pressable>
               <Text
                 pointerEvents="none"
@@ -554,6 +562,15 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
   },
   clearCompleted: {
     fontFamily: "Manrope",
