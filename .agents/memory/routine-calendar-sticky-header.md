@@ -11,4 +11,4 @@ En el calendario expansivo de Mi rutina, el encabezado, la fila semanal y su lí
 
 El botón “Borrar todo” elimina visual y persistentemente las ocurrencias completadas de la fecha seleccionada. Además, retira esas actividades recurrentes desde esa fecha para que no vuelvan en días futuros; las rutinas no borradas continúan normalmente.
 
-La fila semanal navega con gesto horizontal: deslizar a la izquierda muestra la semana anterior y deslizar a la derecha avanza hacia la actual, sin permitir semanas posteriores a la actual. Conserva el día relativo; al cambiar el día real, solo avanza automáticamente si el usuario estaba siguiendo “hoy”.
+La fila semanal navega con gesto horizontal: deslizar a la derecha muestra la semana anterior y deslizar a la izquierda avanza hacia la actual, sin permitir semanas posteriores a la actual. Conserva el día relativo; al cambiar el día real, solo avanza automáticamente si el usuario estaba siguiendo “hoy”.

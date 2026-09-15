@@ -306,9 +306,9 @@ function RutinaCalendarioScreenContent() {
           Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
         onPanResponderRelease: (_, gesture) => {
           if (gesture.dx <= -45) {
-            changeVisibleWeek(-1);
-          } else if (gesture.dx >= 45) {
             changeVisibleWeek(1);
+          } else if (gesture.dx >= 45) {
+            changeVisibleWeek(-1);
           }
         },
         onPanResponderTerminationRequest: () => true,

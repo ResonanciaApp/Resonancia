@@ -1140,22 +1140,6 @@ export function ProfileScreenBase({
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
-            <Pressable
-              onPress={() =>
-                router.canGoBack()
-                  ? router.back()
-                  : router.navigate("/(tabs)/inicio3" as never)
-              }
-              hitSlop={8}
-              style={({ pressed }) => [
-                styles.dedicatedBackButton,
-                { opacity: pressed ? 0.7 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Volver"
-            >
-              <Feather name="chevron-left" size={27} color="#FBFBFB" />
-            </Pressable>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
           <Pressable
@@ -1762,7 +1746,7 @@ const styles = StyleSheet.create({
   profileStickyHeaderRow: {
     position: "relative",
     minHeight: 54,
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingTop: 7,
@@ -1773,7 +1757,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.2,
-    textAlign: "center",
+    textAlign: "left",
   },
   profileStickySettingsButton: {
     position: "absolute",
@@ -1825,15 +1809,6 @@ const styles = StyleSheet.create({
   dedicatedTitleLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  dedicatedBackButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
   },
   dedicatedHeroTitle: {
     fontFamily: "Manrope",
