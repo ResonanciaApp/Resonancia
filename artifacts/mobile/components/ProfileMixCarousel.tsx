@@ -67,7 +67,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
         showsHorizontalScrollIndicator={false}
         style={styles.scroll}
         contentContainerStyle={styles.content}
-        ListHeaderComponent={
+        ListHeaderComponent={newestPresets.length === 0 ? (
           <PressScale
             onPress={() => {
               stopAll();
@@ -91,7 +91,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
               </Text>
             </View>
           </PressScale>
-        }
+        ) : null}
         ListEmptyComponent={() => (
           <View style={styles.emptyCards}>
             {["empty-left", "empty-right"].map((placeholderId) => (

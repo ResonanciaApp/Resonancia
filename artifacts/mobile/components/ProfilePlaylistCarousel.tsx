@@ -76,7 +76,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
           showsHorizontalScrollIndicator={false}
           style={styles.scroll}
           contentContainerStyle={styles.content}
-          ListHeaderComponent={
+          ListHeaderComponent={userPlaylists.length === 0 ? (
             <PressScale
               onPress={() => openLib("playlists")}
               style={{ width: cardWidth }}
@@ -95,7 +95,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                 <Text style={styles.addLabel}>Crear una playlist</Text>
               </View>
             </PressScale>
-          }
+          ) : null}
           ListEmptyComponent={() => (
             <View style={styles.emptyCards}>
               {["empty-left", "empty-right"].map((placeholderId) => (
