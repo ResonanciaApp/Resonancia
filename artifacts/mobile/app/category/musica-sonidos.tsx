@@ -21,7 +21,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
-import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -107,7 +106,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
   return <Animated.View style={{ opacity }}>{children}</Animated.View>;
 }
 
-function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; sel: boolean; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onPress: ()=>void }) {
+function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: ()=>void }) {
   return (
     <Pressable onPress={onPress} style={({pressed})=>({opacity:pressed?0.7:1})}>
       <Animated.View style={[styles.chip, sel && styles.chipSel]}>
@@ -117,13 +116,13 @@ function Chip({ label, sel, indigo2BackgroundColor, onPress }: { label: string; 
   );
 }
 
-function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null|undefined; indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>; onSelect:(id:CatTab|null)=>void }) {
+function ChipRow({ tabs, activeTab, onSelect }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null|undefined; onSelect:(id:CatTab|null)=>void }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
         {tabs.map((t) => (
-          <Chip key={t.id} label={t.label} sel={false} indigo2BackgroundColor={indigo2BackgroundColor}
+          <Chip key={t.id} label={t.label} sel={false}
             onPress={() => onSelect(t.id)} />
         ))}
       </ScrollView>
@@ -310,27 +309,9 @@ export default function MusicaSonidosScreen() {
   }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scrollRef  = useRef<ScrollView>(null);
-  const HERO_AREA_H = 238;
-  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
-  const [stickyActive,  setStickyActive]  = useState(false);
-  const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
-  useEffect(() => {
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(indigo2TabsSurfaceAnim, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
-  });
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
   const PAGE_SIZE = 20;
@@ -483,60 +464,27 @@ export default function MusicaSonidosScreen() {
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        contentContainerStyle={{ paddingTop: stickyHeaderHeight, paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
-          const active = y > chipsOffsetY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
+          const borderActive = y > 2;
+          if (borderActive !== stickyBorderActiveRef.current) {
+            stickyBorderActiveRef.current = borderActive;
+            stickyBorderOpacity.stopAnimation();
+            Animated.timing(stickyBorderOpacity, {
+              toValue: borderActive ? 1 : 0,
+              duration: 220,
+              useNativeDriver: true,
+            }).start();
+          }
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => c + PAGE_SIZE);
           }
         }}
       >
-
-        {/* ── Header ── */}
-        <View style={[styles.header, { paddingTop: topPad + 9 }]}>
-          <Pressable
-            onPress={backOverride ?? (() => router.back())}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.backBtn,
-              {
-                backgroundColor: profileSectionBackground,
-                opacity: pressed ? 0.7 : 1,
-                top: topPad + 3,
-              },
-            ]}
-          >
-            <Feather name="chevron-left" size={26} color={TEXT} />
-          </Pressable>
-           <CategoryScreenHeader categoryId="musica-sonidos" />
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[
-              styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(0,0,0,0.28)" },
-              { position: "absolute", right: H_PAD, top: topPad + 3 },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Música"
-            testID="music-search-button"
-          >
-            <Feather name="search" size={24} color={TEXT} />
-          </Pressable>
-        </View>
-
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={undefined} indigo2BackgroundColor={indigo2TabsBackgroundColor}
-            onSelect={(id) => id && openMusicCollection(id)}
-          />
-        </View>
-
 
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey="music-carousels">
@@ -566,8 +514,11 @@ export default function MusicaSonidosScreen() {
         </Animated.View>
       </Modal>
 
-      {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      {/* ── Sticky header ── */}
+      <Animated.View
+        onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
+        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8 }]}
+      >
         <View
           pointerEvents="none"
           style={[
@@ -616,10 +567,10 @@ export default function MusicaSonidosScreen() {
           <ChipRow
             tabs={TABS}
             activeTab={null}
-            indigo2BackgroundColor={indigo2TabsBackgroundColor}
             onSelect={(id) => id && openMusicCollection(id)}
           />
         </View>
+         <Animated.View style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]} />
       </Animated.View>
 
     </View>
@@ -632,8 +583,9 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 10, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.07)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center" },
   stickyHeaderFadeOverflow: { overflow: "visible" },
+  stickyBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },

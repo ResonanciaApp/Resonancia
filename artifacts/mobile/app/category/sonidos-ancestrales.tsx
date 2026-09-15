@@ -23,7 +23,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
-import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { TimerSheet } from "@/components/TimerSheet";
@@ -137,12 +136,10 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({
   label,
   sel,
-  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   sel: boolean;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   return (
@@ -152,10 +149,9 @@ function Chip({
   );
 }
 
-function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: {
+function ChipRow({ tabs, activeTab, onSelect }: {
   tabs: {id: string; label: string}[];
   activeTab: CatTab|null|undefined;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (id: CatTab|null)=>void;
 }) {
   return (
@@ -163,11 +159,9 @@ function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
         <Chip label="Ver todo" sel={activeTab === null}
-          indigo2BackgroundColor={indigo2BackgroundColor}
           onPress={() => onSelect(null)} />
         {tabs.map((t) => (
           <Chip key={t.id} label={t.label} sel={activeTab === t.id}
-            indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => onSelect(t.id)} />
         ))}
       </ScrollView>
@@ -425,28 +419,9 @@ export default function SonidosAncestalesScreen() {
   }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scrollRef  = useRef<ScrollView>(null);
-  const HERO_AREA_H = HERO_H;
-  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const indigo2ChipsSurfaceAnim = useRef(new Animated.Value(0)).current;
-  const [stickyActive,  setStickyActive]  = useState(false);
-  const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
-  const isIndigoTheme = isIndigoThemeId(theme.id) || theme.id === "indigo2";
-  const indigo2ChipBackgroundColor = indigo2ChipsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
-  });
-  useEffect(() => {
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(indigo2ChipsSurfaceAnim, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [indigo2ChipsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
 
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
@@ -626,63 +601,28 @@ export default function SonidosAncestalesScreen() {
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        contentContainerStyle={{ paddingTop: stickyHeaderHeight, paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
 
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
-          const active = y > chipsOffsetY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
+          const borderActive = y > 2;
+          if (borderActive !== stickyBorderActiveRef.current) {
+            stickyBorderActiveRef.current = borderActive;
+            stickyBorderOpacity.stopAnimation();
+            Animated.timing(stickyBorderOpacity, {
+              toValue: borderActive ? 1 : 0,
+              duration: 220,
+              useNativeDriver: true,
+            }).start();
+          }
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
           }
         }}
       >
-
-        {/* ── Header ── */}
-        <View style={[styles.header, { paddingTop: topPad + 9 }]}>
-          <Pressable
-            onPress={backOverride ?? (() => router.back())}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.backBtn,
-              {
-                backgroundColor: profileSectionBackground,
-                opacity: pressed ? 0.7 : 1,
-                top: topPad + 3,
-              },
-            ]}
-          >
-            <Feather name="chevron-left" size={26} color={TEXT} />
-          </Pressable>
-           <CategoryScreenHeader categoryId="sonidos-ancestrales" />
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[
-              styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(0,0,0,0.28)" },
-              { position: "absolute", right: H_PAD, top: topPad + 3 },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Buscar en Sonoterapia"
-            testID="sound-therapy-search-button"
-          >
-            <Feather name="search" size={24} color={TEXT} />
-          </Pressable>
-        </View>
-
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={undefined}
-            indigo2BackgroundColor={indigo2ChipBackgroundColor}
-            onSelect={(id) => id && openCategory(
-              `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
-            )}
-          />
-        </View>
 
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
@@ -692,7 +632,10 @@ export default function SonidosAncestalesScreen() {
       </ScrollView>
 
       {/* ── Sticky header ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View
+        onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
+        style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}
+      >
         <View
           pointerEvents="none"
           style={[
@@ -737,16 +680,16 @@ export default function SonidosAncestalesScreen() {
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={{ marginTop: 2 }}>
-          <ChipRow
+         <View style={{ marginTop: 2 }}>
+           <ChipRow
             tabs={TABS}
             activeTab={undefined}
-            indigo2BackgroundColor={indigo2ChipBackgroundColor}
-             onSelect={(id) => id && openCategory(
-               `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
-             )}
+            onSelect={(id) => id && openCategory(
+              `/category-tag/${encodeURIComponent("sonidos-ancestrales")}/${encodeURIComponent(id)}`,
+            )}
           />
         </View>
+         <Animated.View style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]} />
       </Animated.View>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sonoterapia..." />
@@ -783,7 +726,8 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 10, minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center" },
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center", overflow: "visible", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.07)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center", overflow: "visible" },
+  stickyBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyHeaderSpacer: { width: 40 },
   stickyTitleCol: { flex: 1, alignItems: "center" },

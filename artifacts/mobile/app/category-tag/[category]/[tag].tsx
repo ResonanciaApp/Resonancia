@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
@@ -27,7 +26,6 @@ import {
   getCategoryEditorialTags,
   getCategorySessionTags,
 } from "@/data/category-tabs";
-import { CATEGORIES } from "@/data/categories";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
@@ -121,11 +119,23 @@ export default function CategoryTagScreen({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [activeFilter, setActiveFilter] = useState<FilterId>("all");
-  const [stickyActive, setStickyActive] = useState(false);
-  const [tabsOffsetY, setTabsOffsetY] = useState(Number.POSITIVE_INFINITY);
-  const stickyOpacity = useRef(new Animated.Value(0)).current;
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
+  const handleScroll = React.useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === stickyBorderActiveRef.current) return;
+    stickyBorderActiveRef.current = active;
+    stickyBorderOpacity.stopAnimation();
+    Animated.timing(stickyBorderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyBorderOpacity]);
 
-  const category = CATEGORIES.find((candidate) => candidate.id === decodedCategory);
   const sessions = useMemo(
     () => getSessionsByCategory(decodedCategory).filter((session) => tagsForSession(session, decodedCategory).includes(decodedTag)),
     [decodedCategory, decodedTag, version],
@@ -149,13 +159,6 @@ export default function CategoryTagScreen({
   useEffect(() => {
     setActiveFilter("all");
   }, [decodedCategory, decodedTag]);
-  useEffect(() => {
-    Animated.timing(stickyOpacity, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [stickyActive, stickyOpacity]);
   useEffect(() => () => soundPreview.stop(), [soundPreview.stop]);
 
   if (!decodedCategory || !decodedTag) return null;
@@ -227,25 +230,19 @@ export default function CategoryTagScreen({
       <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 80 + bottomPad }}
-        scrollEventThrottle={16}
-        onScroll={(event) => {
-          const active = event.nativeEvent.contentOffset.y > tabsOffsetY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
+        contentContainerStyle={{
+          paddingTop: stickyHeaderHeight,
+          paddingBottom: 80 + bottomPad,
         }}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
       >
-        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-          <Pressable onPress={goBack} hitSlop={10} style={[styles.backButton, { top: topPad + 3 }]}>
-            <Feather name="chevron-left" size={26} color="#FBFBFB" />
-          </Pressable>
-          <CategoryScreenHeader categoryId={decodedCategory} title={title} description={category?.subtitle} />
-        </View>
-        <View style={styles.tabsArea} onLayout={(event) => setTabsOffsetY(event.nativeEvent.layout.y)}>
-          <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
-        </View>
         {list}
       </ScrollView>
-      <Animated.View pointerEvents={stickyActive ? "auto" : "none"} style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] as string }]}>
+      <View
+        style={[styles.stickyHeader, { paddingTop: topPad + 8, backgroundColor: theme.gradient[0] as string }]}
+        onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
+      >
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickySpacer} />
           <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
@@ -257,7 +254,11 @@ export default function CategoryTagScreen({
         <View style={styles.stickyTabs}>
           <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
         </View>
-      </Animated.View>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.stickyBottomBorder, { opacity: stickyBorderOpacity }]}
+        />
+      </View>
     </View>
   );
 }
@@ -277,7 +278,8 @@ const styles = StyleSheet.create({
   emptyState: { marginHorizontal: H_PAD, marginTop: 28, minHeight: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.25)", borderRadius: 18, alignItems: "center", justifyContent: "center", gap: 10, paddingHorizontal: 28 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
   emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", color: "#c2c2c2" },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.07)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6 },
+  stickyBottomBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickySpacer: { width: 44 },
   stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 16, lineHeight: 19, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },

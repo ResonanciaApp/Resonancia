@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Platform,
@@ -15,7 +15,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ContextSearchModal } from "@/components/ContextSearchModal";
-import { CategoryScreenHeader } from "@/components/CategoryScreenHeader";
 import { CategoryLandingSections } from "@/components/CategoryLandingSections";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -38,12 +37,10 @@ const MUTED = "#c2c2c2";
 function Chip({
   label,
   selected,
-  indigo2BackgroundColor,
   onPress,
 }: {
   label: string;
   selected: boolean;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onPress: () => void;
 }) {
   return (
@@ -68,12 +65,10 @@ function Chip({
 function ChipRow({
   tabs,
   activeTab,
-  indigo2BackgroundColor,
   onSelect,
 }: {
   tabs: string[];
   activeTab: string | null | undefined;
-  indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (tab: string | null) => void;
 }) {
   return (
@@ -87,7 +82,6 @@ function ChipRow({
         <Chip
           label="Ver todo"
           selected={activeTab === null}
-          indigo2BackgroundColor={indigo2BackgroundColor}
           onPress={() => onSelect(null)}
         />
         {tabs.map((tab) => (
@@ -95,7 +89,6 @@ function ChipRow({
             key={tab}
             label={tab}
             selected={activeTab === tab}
-            indigo2BackgroundColor={indigo2BackgroundColor}
             onPress={() => onSelect(tab)}
           />
         ))}
@@ -147,27 +140,22 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
     [allSessions, id],
   );
 
-  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
-  const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
-  const [stickyActive, setStickyActive] = useState(false);
-  const [chipsOffsetY, setChipsOffsetY] = useState(Number.POSITIVE_INFINITY);
-
-  useEffect(() => {
-    Animated.timing(stickyHeaderOpacity, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
+  const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
+  const stickyBorderActiveRef = useRef(false);
+  const handleScroll = useCallback((event: {
+    nativeEvent: { contentOffset: { y: number } };
+  }) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === stickyBorderActiveRef.current) return;
+    stickyBorderActiveRef.current = active;
+    stickyBorderOpacity.stopAnimation();
+    Animated.timing(stickyBorderOpacity, {
+      toValue: active ? 1 : 0,
+      duration: 220,
       useNativeDriver: true,
     }).start();
-    Animated.timing(indigo2TabsSurfaceAnim, {
-      toValue: stickyActive ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [indigo2TabsSurfaceAnim, stickyActive, stickyHeaderOpacity]);
-  const indigo2TabsBackgroundColor = indigo2TabsSurfaceAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0,0,0,0.28)", "rgba(0,0,0,0.28)"],
-  });
+  }, [stickyBorderOpacity]);
   const useDiscoverStickyStyle = isIndigoThemeId(theme.id) || theme.id === "indigo2";
 
   const profileSectionBackground = "rgba(0,0,0,0.28)";
@@ -246,81 +234,30 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        contentContainerStyle={{
+          paddingTop: stickyHeaderHeight,
+          paddingBottom: 140 + bottomPad,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={(event) => {
-          const y = event.nativeEvent.contentOffset.y;
-          const active = y > chipsOffsetY - topPad - 8;
-          if (active !== stickyActive) setStickyActive(active);
-        }}
+        onScroll={handleScroll}
       >
-        <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-          <Pressable
-            onPress={goBack}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.backBtn,
-              {
-                backgroundColor: profileSectionBackground,
-                opacity: pressed ? 0.7 : 1,
-                top: topPad + 3,
-              },
-            ]}
-          >
-            <Feather name="chevron-left" size={26} color={TEXT} />
-          </Pressable>
-           <CategoryScreenHeader categoryId={id} title={title} description={category?.subtitle} />
-          <Pressable
-            onPress={() => setSearchVisible(true)}
-            hitSlop={10}
-            style={[
-              styles.headerSearchButton,
-              isIndigoThemeId(theme.id) && { backgroundColor: "rgba(0,0,0,0.28)" },
-              { position: "absolute", right: H_PAD, top: topPad + 3 },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel={`Buscar en ${title}`}
-          >
-            <Feather name="search" size={24} color={TEXT} />
-          </Pressable>
-        </View>
-
-        <View
-          style={styles.chipsArea}
-          onLayout={(event) => setChipsOffsetY(event.nativeEvent.layout.y)}
-        >
-          <ChipRow
-            tabs={tabs}
-            activeTab={undefined}
-            indigo2BackgroundColor={indigo2TabsBackgroundColor}
-             onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
-          />
-        </View>
-
         <Animated.View key={activeTab ?? "all"} style={styles.content}>
           {renderSessions()}
         </Animated.View>
       </ScrollView>
 
-      <Animated.View
+      <View
         style={[
           styles.stickyHeader,
           useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow,
           {
             paddingTop: topPad + 8,
-            opacity: stickyHeaderOpacity,
+            backgroundColor: theme.gradient[0] as string,
           },
         ]}
-        pointerEvents={stickyActive ? "auto" : "none"}
+        onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
-        <View
-          pointerEvents="none"
-          style={[
-            StyleSheet.absoluteFill,
-            { backgroundColor: theme.gradient[0] as string },
-          ]}
-        />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -361,11 +298,14 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           <ChipRow
             tabs={tabs}
             activeTab={undefined}
-            indigo2BackgroundColor={indigo2TabsBackgroundColor}
-             onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
+            onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
         </View>
-      </Animated.View>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.stickyBottomBorder, { opacity: stickyBorderOpacity }]}
+        />
+      </View>
 
       <ContextSearchModal
         visible={searchVisible}
@@ -508,10 +448,16 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
   },
   stickyHeaderFadeOverflow: { overflow: "visible" },
+  stickyBottomBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
   stickyHeaderRow: {
     width: "100%",
     flexDirection: "row",

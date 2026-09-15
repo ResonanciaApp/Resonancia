@@ -31,6 +31,8 @@ En las pantallas internas de Sonidos, el borde bajo los filtros sigue el mismo c
 
 En las pantallas internas de Dormir, título y tabs permanecen fijos desde el inicio como en Sonidos; el contenido pasa bajo ellos desde el primer desplazamiento y solo el borde hace fade.
 
+Las categorías principales y sus pantallas internas usan el mismo modelo: header y tabs fijos desde el inicio, contenido debajo y solo el borde inferior hace fade con el scroll.
+
 En esas pantallas, los tabs fijos se desplazan 17 px hacia abajo y el borde inferior permanece oculto hasta que comienza el scroll.
 
 Los títulos normales y sticky de pantallas internas de Categorías igualan las métricas tipográficas de las pantallas internas de Dormir.
