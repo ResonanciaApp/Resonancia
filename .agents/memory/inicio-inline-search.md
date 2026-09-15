@@ -12,5 +12,3 @@ Pattern used for the inline (non-modal) expandable search field:
 - Outside-tap-to-close uses a full-screen absolutely-positioned `Pressable` sibling placed *after* the header in the tree but with a lower `zIndex` than the sticky header, so header taps (including the results dropdown) still work while taps elsewhere close the search.
 
 **Why:** the task explicitly forbade a `Modal`/new screen (unlike the existing `BibliotecaScreen.tsx` `SearchOverlay`, which *is* a full-screen `Modal` — don't reuse that pattern here, only its result-matching logic (filter `SESSIONS` by title/categoryLabel/subtitle) is transferable, not its UI.
-
-Inicio 3 activa el sticky cuando el scroll cubre 185 px de la PARTE SUPERIOR del hero (`scrollY=185`). Sticky: wordmark blanco con texto a la izquierda; solo lupa a la derecha, 7 px sobre el borde inferior; divisor blanco 1 px al 7%.
