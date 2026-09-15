@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
+  MIX_ONLY_FOLDER_MESSAGE,
   useFoldersPlaylists,
 } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -246,6 +247,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                 </Text>
               ) : (
                 eligibleFolders.map((f) => {
+                  const incompatible = itemKind === "playlist" && (f.presetIds ?? []).length > 0;
                   const inIt =
                     itemKind === "playlist"
                       ? isPlaylistInFolder(f.id, itemId)
@@ -254,8 +256,15 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                     <Pressable
                       key={f.id}
                       onPress={() => {
-                        if (itemKind === "playlist") addPlaylistToFolder(f.id, itemId);
-                        else addFolderToFolder(f.id, itemId);
+                        if (itemKind === "playlist") {
+                          if ((f.presetIds ?? []).length > 0) {
+                            Alert.alert("Carpeta de mezclas", MIX_ONLY_FOLDER_MESSAGE);
+                            return;
+                          }
+                          addPlaylistToFolder(f.id, itemId);
+                        } else {
+                          addFolderToFolder(f.id, itemId);
+                        }
                         onClose();
                       }}
                       style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
@@ -264,12 +273,14 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                         <Feather name="folder" size={18} color={GOLD} />
                       </View>
                       <Text
-                        style={[styles.folderLabel, { color: colors.foreground }]}
+                        style={[styles.folderLabel, { color: colors.foreground, opacity: incompatible ? 0.55 : 1 }]}
                         numberOfLines={1}
                       >
                         {f.name}
                       </Text>
-                      {inIt && <Feather name="check" size={16} color={GOLD} />}
+                      {incompatible
+                        ? <Feather name="lock" size={15} color={colors.mutedForeground} />
+                        : inIt && <Feather name="check" size={16} color={GOLD} />}
                     </Pressable>
                   );
                 })

@@ -1,5 +1,6 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { notifyMixPresetDeleted } from "@/lib/mix-preset-events";
 import { AppState, type AppStateStatus, Image, Platform } from "react-native";
 import React, {
   createContext,
@@ -2096,6 +2097,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const deletePreset = useCallback(
     (id: string) => {
       persistPresets(presetsRef.current.filter((p) => p.id !== id));
+      notifyMixPresetDeleted(id);
       // Si se borra el preset que está sonando, la mezcla activa ya no proviene
       // de uno guardado → reaparece el botón Guardar.
       if (loadedPresetIdRef.current === id) setLoadedPresetId(null);

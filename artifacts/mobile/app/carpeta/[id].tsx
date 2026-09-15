@@ -19,7 +19,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import {
+  MIX_ONLY_FOLDER_MESSAGE,
+  useFoldersPlaylists,
+} from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixCover } from "@/app/mi-mezcla/[id]";
@@ -117,6 +120,10 @@ export default function CarpetaDetailScreen() {
   };
 
   const handleCreatePlaylist = (name: string) => {
+    if ((folder.presetIds ?? []).length > 0) {
+      Alert.alert("Carpeta de mezclas", MIX_ONLY_FOLDER_MESSAGE);
+      return;
+    }
     const pl = createPlaylist(name);
     addPlaylistToFolder(folder.id, pl.id);
     setNombrePlaylistVisible(false);
@@ -285,7 +292,14 @@ export default function CarpetaDetailScreen() {
       <AddSheet
         visible={addSheetVisible}
         onClose={() => setAddSheetVisible(false)}
-        onPlaylist={() => { setAddSheetVisible(false); setTimeout(() => setNombrePlaylistVisible(true), 250); }}
+        onPlaylist={() => {
+          if ((folder.presetIds ?? []).length > 0) {
+            Alert.alert("Carpeta de mezclas", MIX_ONLY_FOLDER_MESSAGE);
+            return;
+          }
+          setAddSheetVisible(false);
+          setTimeout(() => setNombrePlaylistVisible(true), 250);
+        }}
         onCarpeta={() => { setAddSheetVisible(false); setTimeout(() => setNombreCarpetaVisible(true), 250); }}
         bgColor={sceneTheme.gradient[0]}
       />

@@ -35,7 +35,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixFolder, type MixPreset, useMixer } from "@/context/MixerContext";
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import {
+  PLAYLIST_ONLY_FOLDER_MESSAGE,
+  useFoldersPlaylists,
+} from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
@@ -455,23 +458,33 @@ export function MixActionsSheet({
               ) : (
                 <>
                 {itemKind === "mix" && mix && userFolders.map((f) => {
+                  const incompatible = (f.playlistIds ?? []).length > 0;
                   const inIt = isMixInUserFolder(f.id, mix.id);
                   return (
                     <Pressable
                       key={f.id}
-                      onPress={() => { addMixToUserFolder(f.id, mix.id); onClose(); }}
+                      onPress={() => {
+                        if ((f.playlistIds ?? []).length > 0) {
+                          Alert.alert("Carpeta de playlists", PLAYLIST_ONLY_FOLDER_MESSAGE);
+                          return;
+                        }
+                        addMixToUserFolder(f.id, mix.id);
+                        onClose();
+                      }}
                       style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
                     >
                       <View style={styles.folderIconBox}>
                         <Feather name="folder" size={18} color={colors.primary} />
                       </View>
                       <Text
-                        style={[styles.folderLabel, { color: colors.foreground }]}
+                        style={[styles.folderLabel, { color: colors.foreground, opacity: incompatible ? 0.55 : 1 }]}
                         numberOfLines={1}
                       >
                         {f.name}
                       </Text>
-                      {inIt && <Feather name="check" size={16} color={colors.primary} />}
+                      {incompatible
+                        ? <Feather name="lock" size={15} color={colors.mutedForeground} />
+                        : inIt && <Feather name="check" size={16} color={colors.primary} />}
                     </Pressable>
                   );
                 })}

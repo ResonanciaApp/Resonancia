@@ -14,6 +14,19 @@ import {
   type ActiveMeditationPlaylist,
 } from "@/lib/editorial-playlist-helpers";
 import { useAuth } from "@/context/AuthContext";
+import { subscribeToMixPresetDeleted } from "@/lib/mix-preset-events";
+import {
+  canAddMixToFolder,
+  canAddPlaylistToFolder,
+  sanitizeExclusiveFolderContents,
+  type DatedLibraryItem,
+} from "@/lib/folder-content-rules";
+export {
+  getFolderContentType,
+  MIX_ONLY_FOLDER_MESSAGE,
+  PLAYLIST_ONLY_FOLDER_MESSAGE,
+  type FolderContentType,
+} from "@/lib/folder-content-rules";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -132,6 +145,7 @@ const FAV_FOLDERS_KEY = "@resonance_fav_folders";
 const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 const EDITORIAL_PLAYLISTS_KEY = "@resonance_saved_editorial_playlist_ids";
 const ACTIVE_MEDITATION_PLAYLIST_KEY = "@resonance_active_meditation_playlist";
+const MIXER_PRESETS_KEY = "@resonance_mixer_presets";
 
 /**
  * Marca de primera sincronización de biblioteca con la nube.
@@ -182,12 +196,25 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   // True mientras se carga desde storage (no empujar al server aún)
   const hydrating = useRef(true);
+  const pendingDeletedMixIds = useRef(new Set<string>());
   // Debounce timer para no saturar el server con un push por cada keystroke
   const pushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { clerkUserId, isSignedIn } = useAuth();
   const activeMeditationStorageKey =
     `${ACTIVE_MEDITATION_PLAYLIST_KEY}:${clerkUserId ?? "anonymous"}`;
+
+  const applyPendingMixDeletions = useCallback((items: Folder[]): Folder[] => {
+    if (pendingDeletedMixIds.current.size === 0) return items;
+    const deletedIds = pendingDeletedMixIds.current;
+    const next = items.map((folder) => {
+      const presetIds = folder.presetIds ?? [];
+      const filtered = presetIds.filter((id) => !deletedIds.has(id));
+      return filtered.length === presetIds.length ? folder : { ...folder, presetIds: filtered };
+    });
+    pendingDeletedMixIds.current.clear();
+    return next;
+  }, []);
 
   // ── Carga inicial desde AsyncStorage + merge con server ─────────────────────
 
@@ -209,6 +236,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       EDITORIAL_PLAYLISTS_KEY,
       activeMeditationStorageKey,
       LIBRARY_FIRST_SYNC_KEY,
+      MIXER_PRESETS_KEY,
     ]).then(async ([
       fEntry,
       pEntry,
@@ -217,6 +245,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       editorialEntry,
       activeMeditationEntry,
       firstSyncEntry,
+      mixerPresetsEntry,
     ]) => {
       if (cancelled) return;
       // ── Folders ──
@@ -236,6 +265,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       const localActiveMeditation = parseActiveMeditationPlaylist(
         activeMeditationEntry[1] ? JSON.parse(activeMeditationEntry[1]) : null,
       );
+      const localMixes: DatedLibraryItem[] = mixerPresetsEntry[1]
+        ? JSON.parse(mixerPresetsEntry[1])
+        : [];
 
       // ── Sync con server ──────────────────────────────────────────────────────
       if (isSignedIn) {
@@ -247,6 +279,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
              (snap.playlists ?? []) as Playlist[],
            );
           const serverFavFolders = (snap.favFolders ?? []) as FavFolder[];
+          const serverMixes = (snap.mixerPresets ?? []) as DatedLibraryItem[];
           const serverPinned = (snap.pinnedFavoriteIds ?? []) as string[];
            const serverEditorial = (
              (snap as typeof snap & { savedEditorialPlaylistIds?: unknown }).savedEditorialPlaylistIds ?? []
@@ -295,6 +328,15 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
               );
           }
 
+          const mergedMixes = firstSync ? mergeById(localMixes, serverMixes) : localMixes;
+          const sanitizedFolders = applyPendingMixDeletions(
+            sanitizeExclusiveFolderContents(finalFolders, finalPlaylists, mergedMixes),
+          );
+          if (sanitizedFolders.some((folder, index) => folder !== finalFolders[index])) {
+            finalFolders = sanitizedFolders;
+            AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(finalFolders));
+          }
+
             if (finalActiveMeditation) {
               AsyncStorage.setItem(
                 activeMeditationStorageKey,
@@ -317,7 +359,13 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
             setActiveMeditationPlaylist(finalActiveMeditation);
         } catch {
           // Sin red: usar datos locales
-          setFolders(localFolders);
+          const sanitizedFolders = applyPendingMixDeletions(
+            sanitizeExclusiveFolderContents(localFolders, localPlaylists, localMixes),
+          );
+          if (sanitizedFolders.some((folder, index) => folder !== localFolders[index])) {
+            AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(sanitizedFolders));
+          }
+          setFolders(sanitizedFolders);
           setPlaylists(localPlaylists);
           setFavFolders(localFavFolders);
           setPinnedFavoriteIds(localPinned);
@@ -325,7 +373,13 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
             setActiveMeditationPlaylist(localActiveMeditation);
         }
       } else {
-        setFolders(localFolders);
+        const sanitizedFolders = applyPendingMixDeletions(
+          sanitizeExclusiveFolderContents(localFolders, localPlaylists, localMixes),
+        );
+        if (sanitizedFolders.some((folder, index) => folder !== localFolders[index])) {
+          AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(sanitizedFolders));
+        }
+        setFolders(sanitizedFolders);
         setPlaylists(localPlaylists);
         setFavFolders(localFavFolders);
         setPinnedFavoriteIds(localPinned);
@@ -338,7 +392,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     return () => {
       cancelled = true;
     };
-  }, [activeMeditationStorageKey, clerkUserId, isSignedIn]);
+  }, [activeMeditationStorageKey, applyPendingMixDeletions, clerkUserId, isSignedIn]);
 
   // ── Push debounced al server cuando cambian los datos ─────────────────────
 
@@ -410,6 +464,25 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     });
   }, []);
 
+  useEffect(
+    () => subscribeToMixPresetDeleted((presetId) => {
+      if (hydrating.current) {
+        pendingDeletedMixIds.current.add(presetId);
+        return;
+      }
+      updateFolders((prev) =>
+        prev.some((folder) => (folder.presetIds ?? []).includes(presetId))
+          ? prev.map((folder) =>
+              (folder.presetIds ?? []).includes(presetId)
+                ? { ...folder, presetIds: (folder.presetIds ?? []).filter((id) => id !== presetId) }
+                : folder,
+            )
+          : prev,
+      );
+    }),
+    [updateFolders],
+  );
+
   // ── Folders ──────────────────────────────────────────────────────────────
 
   const createFolder = useCallback((name: string, initialSessionId?: string): Folder => {
@@ -460,7 +533,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const addPlaylistToFolder = useCallback((folderId: string, playlistId: string) => {
     updateFolders((prev) =>
       prev.map((f) =>
-        f.id === folderId && !(f.playlistIds ?? []).includes(playlistId)
+        f.id === folderId &&
+        canAddPlaylistToFolder(f) &&
+        !(f.playlistIds ?? []).includes(playlistId)
           ? { ...f, playlistIds: [...(f.playlistIds ?? []), playlistId] }
           : f
       )
@@ -486,7 +561,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   const addMixToFolder = useCallback((folderId: string, presetId: string) => {
     updateFolders((prev) =>
       prev.map((f) =>
-        f.id === folderId && !(f.presetIds ?? []).includes(presetId)
+        f.id === folderId &&
+        canAddMixToFolder(f) &&
+        !(f.presetIds ?? []).includes(presetId)
           ? { ...f, presetIds: [...(f.presetIds ?? []), presetId] }
           : f
       )
@@ -616,7 +693,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   const deletePlaylist = useCallback((playlistId: string) => {
     updatePlaylists((prev) => prev.filter((p) => p.id !== playlistId));
-  }, [updatePlaylists]);
+    updateFolders((prev) =>
+      prev.map((folder) =>
+        (folder.playlistIds ?? []).includes(playlistId)
+          ? { ...folder, playlistIds: (folder.playlistIds ?? []).filter((id) => id !== playlistId) }
+          : folder,
+      ),
+    );
+  }, [updateFolders, updatePlaylists]);
 
   const isInPlaylist = useCallback(
     (playlistId: string, sessionId: string) =>
