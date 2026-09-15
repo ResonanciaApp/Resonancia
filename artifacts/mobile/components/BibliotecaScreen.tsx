@@ -2034,6 +2034,7 @@ export function BibliotecaScreen({
         onEdit={(mix) => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
         onDuplicate={(mix) => duplicatePreset(mix.id)}
         onDelete={(mix) => deletePreset(mix.id)}
+        libraryActionsOnly
       />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
 

@@ -52,6 +52,7 @@ type Props = {
   onDelete: (mix: MixPreset) => void;
   onDeleteFolder?: (folder: MixFolder) => void;
   onEdit?: (mix: MixPreset) => void;
+  libraryActionsOnly?: boolean;
 };
 
 const THUMB = 40;
@@ -121,6 +122,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
 
 export function MixActionsSheet({
   mix, folder = null, visible, onClose, onDuplicate, onDelete, onDeleteFolder, onEdit,
+  libraryActionsOnly = false,
 }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -371,19 +373,23 @@ export function MixActionsSheet({
                     colors={colors}
                   />
                 )}
-                <ActionRow
-                  icon="users"
-                  label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
-                  onPress={handleShareToCommunity}
-                  colors={colors}
-                />
-                <ActionRow
-                  icon="heart"
-                  label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
-                  iconColor={favorited ? "#E05C5C" : undefined}
-                  onPress={handleFavorite}
-                  colors={colors}
-                />
+                {!libraryActionsOnly && (
+                  <>
+                    <ActionRow
+                      icon="users"
+                      label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
+                      onPress={handleShareToCommunity}
+                      colors={colors}
+                    />
+                    <ActionRow
+                      icon="heart"
+                      label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
+                      iconColor={favorited ? "#E05C5C" : undefined}
+                      onPress={handleFavorite}
+                      colors={colors}
+                    />
+                  </>
+                )}
                 <ActionRow
                   icon="folder"
                   label="Mover a una carpeta"
@@ -398,8 +404,8 @@ export function MixActionsSheet({
                 />
                 <ActionRow
                   icon="trash-2"
-                  label="Eliminar"
-                  iconColor="#E05C5C"
+                  label={libraryActionsOnly ? "Eliminar playlist" : "Eliminar"}
+                  iconColor={libraryActionsOnly ? undefined : "#E05C5C"}
                   onPress={handleDelete}
                   colors={colors}
                   last
