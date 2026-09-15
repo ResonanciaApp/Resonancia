@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: "#F9F9F9",
     fontFamily: "Manrope",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "700",
   },
   sectionHeader: {
