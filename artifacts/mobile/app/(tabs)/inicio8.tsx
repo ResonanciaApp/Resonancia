@@ -337,6 +337,15 @@ function BlinkingCursor({ color }: { color: string }) {
 
 const Inicio2AnimatedCircle = RAnimated.createAnimatedComponent(SvgCircle);
 
+function getInicio3StickyThreshold(topPad: number) {
+  const heroHeight =
+    INICIO2_HERO_HEIGHT + 184 - (topPad + 286) - 52 + 60;
+  const heroLayoutTop = topPad + 165 - INICIO3_VERTICAL_LIFT;
+  const heroBottom = heroLayoutTop + heroHeight + 28;
+  const stickyHeight = topPad + 48;
+  return heroBottom - stickyHeight + 10;
+}
+
 function Inicio3StickyHeader({
   topPad,
   inicio3ScrollY,
@@ -352,8 +361,12 @@ function Inicio3StickyHeader({
   giftScaleAnim: Animated.Value;
   activeTheme: any;
 }) {
+  const activationThreshold = getInicio3StickyThreshold(topPad);
   const animatedStyle = useAnimatedStyle(() => {
-    const opacity = Math.min(1, Math.max(0, (inicio3ScrollY.value - 60) / 30));
+    const opacity = Math.min(
+      1,
+      Math.max(0, (inicio3ScrollY.value - activationThreshold) / 30),
+    );
     return {
       opacity,
       transform: [{ translateY: (1 - opacity) * -10 }],
@@ -390,53 +403,55 @@ function Inicio3StickyHeader({
         />
       </View>
 
-      <Pressable
-        onPress={onOpenSearch}
-        hitSlop={10}
-        style={{ width: 44, height: 44, alignItems: "flex-start", justifyContent: "center" }}
-        accessibilityRole="button"
-        accessibilityLabel="Buscar en Inicio"
-        testID="inicio3-sticky-search-button"
-      >
-        {Platform.OS === "ios" ? (
-          <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={22} />
-        ) : (
-          <Feather name="search" size={22} color="#FFFFFF" />
-        )}
-      </Pressable>
-
-      <View pointerEvents="none" style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View pointerEvents="none" style={{ alignItems: "flex-start", justifyContent: "center" }}>
         <Image
           source={require("@/assets/images/logo-resonancia.png")}
           style={{ width: 140, height: 22, resizeMode: "contain" }}
         />
       </View>
 
-      <Pressable
-        onPress={onOpenProfile}
-        onPressIn={() =>
-          Animated.spring(giftScaleAnim, {
-            toValue: 0.84,
-            speed: 30,
-            bounciness: 0,
-            useNativeDriver: true,
-          }).start()
-        }
-        onPressOut={() =>
-          Animated.spring(giftScaleAnim, {
-            toValue: 1,
-            speed: 8,
-            bounciness: 16,
-            useNativeDriver: true,
-          }).start()
-        }
-        hitSlop={12}
-        style={{ width: 44, height: 44, alignItems: "flex-end", justifyContent: "center" }}
-      >
-        <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-          <Inicio2LotusStreak lightBackground />
-        </Animated.View>
-      </Pressable>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <Pressable
+          onPress={onOpenProfile}
+          onPressIn={() =>
+            Animated.spring(giftScaleAnim, {
+              toValue: 0.84,
+              speed: 30,
+              bounciness: 0,
+              useNativeDriver: true,
+            }).start()
+          }
+          onPressOut={() =>
+            Animated.spring(giftScaleAnim, {
+              toValue: 1,
+              speed: 8,
+              bounciness: 16,
+              useNativeDriver: true,
+            }).start()
+          }
+          hitSlop={12}
+          style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
+        >
+          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <Inicio2LotusStreak lightBackground />
+          </Animated.View>
+        </Pressable>
+
+        <Pressable
+          onPress={onOpenSearch}
+          hitSlop={10}
+          style={styles.inicio3HeroSearchButton}
+          accessibilityRole="button"
+          accessibilityLabel="Buscar en Inicio"
+          testID="inicio3-sticky-search-button"
+        >
+          {Platform.OS === "ios" ? (
+            <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
+          ) : (
+            <Feather name="search" size={24} color="#FFFFFF" />
+          )}
+        </Pressable>
+      </View>
     </RAnimated.View>
   );
 }
@@ -1427,11 +1442,15 @@ function Inicio2HeroStatic({
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
+  const inicio3StickyThreshold = getInicio3StickyThreshold(topInset);
   const heroControlsOpacity = useAnimatedStyle(() => {
     if (!isInicio3) return { opacity: 1 };
-    const opacity = Math.max(0, 1 - (effectiveScrollY.value - 20) / 30);
+    const opacity = Math.max(
+      0,
+      1 - (effectiveScrollY.value - inicio3StickyThreshold) / 30,
+    );
     return { opacity };
-  }, [isInicio3]);
+  }, [inicio3StickyThreshold, isInicio3]);
 
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };

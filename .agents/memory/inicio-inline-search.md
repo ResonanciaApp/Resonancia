@@ -13,4 +13,4 @@ Pattern used for the inline (non-modal) expandable search field:
 
 **Why:** the task explicitly forbade a `Modal`/new screen (unlike the existing `BibliotecaScreen.tsx` `SearchOverlay`, which *is* a full-screen `Modal` — don't reuse that pattern here, only its result-matching logic (filter `SESSIONS` by title/categoryLabel/subtitle) is transferable, not its UI.
 
-Inicio 3 muestra al hacer scroll un sticky con lupa, logo RESONANCIA centrado y loto/progreso. Reutiliza las acciones existentes y hace crossfade con los controles del hero para no duplicarlos.
+Inicio 3 activa el sticky solo cuando el borde del hero queda cubierto 10 px. Logo RESONANCIA a la izquierda; a la derecha, loto/progreso y luego lupa con fondo. Reutiliza acciones y hace crossfade sin duplicados.
