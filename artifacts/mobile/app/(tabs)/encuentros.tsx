@@ -152,7 +152,7 @@ export default function ComunidadScreen() {
                 transform: [{
                   translateY: stickyHeaderOpacity.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [20, 0],
+                    outputRange: [15, -5],
                   }),
                 }],
               },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    transform: [{ translateY: 2 }],
+    transform: [{ translateY: 0 }],
   },
   stickySearchButton: {
     position: "absolute",
