@@ -1,10 +1,11 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { FlatList, Platform, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { getTwoCardCarouselCardWidth } from "@/constants/carousel";
+import { useDrawer } from "@/context/DrawerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -24,6 +25,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const { width } = useWindowDimensions();
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const { openLib } = useDrawer();
   const { presets, stopAll } = useMixer();
   const { openMixer } = useMixerPanel();
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
@@ -55,7 +57,12 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
 
   return (
     <View style={[styles.section, { marginBottom }]}>
-      <Text style={styles.sectionTitle}>Mis mezclas</Text>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Mis mezclas recientes</Text>
+        <Pressable onPress={() => openLib("mezclas")} hitSlop={8}>
+          <Text style={[styles.viewAllText, { color: accent }]}>Ver todos</Text>
+        </Pressable>
+      </View>
       <FlatList
         horizontal
         data={newestPresets}
@@ -173,7 +180,17 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 19,
     fontWeight: "700",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 17,
+  },
+  viewAllText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
   },
   scroll: {
     marginHorizontal: 0,

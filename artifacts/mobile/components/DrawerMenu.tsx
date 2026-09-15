@@ -295,7 +295,10 @@ export function DrawerMenu() {
           >
             <View style={styles.inicio3Sections}>
               {INICIO3_SECTIONS.map((section, sectionIndex) => (
-                <View key={section.title}>
+                <View
+                  key={section.title}
+                  style={sectionIndex > 0 ? styles.inicio3SectionShift : undefined}
+                >
                   {sectionIndex > 0 && <View style={styles.inicio3SectionDivider} />}
                   <Text style={styles.inicio3SectionTitle}>{section.title}</Text>
                   <View style={styles.itemGroup}>
@@ -472,6 +475,9 @@ const styles = StyleSheet.create({
   divider: { height: 1, marginBottom: 8 },
   inicio3Sections: {
     marginTop: 8,
+  },
+  inicio3SectionShift: {
+    marginTop: 15,
   },
   inicio3SectionDivider: {
     height: StyleSheet.hairlineWidth,

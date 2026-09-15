@@ -5,6 +5,7 @@ import React, { useMemo } from "react";
 import {
   FlatList,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -64,7 +65,12 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
 
   return (
     <View style={[styles.section, { marginBottom }]}>
-        <Text style={styles.sectionTitle}>Mis playlist</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Mis playlist recientes</Text>
+          <Pressable onPress={() => openLib("playlists")} hitSlop={8}>
+            <Text style={[styles.viewAllText, { color: accent }]}>Ver todos</Text>
+          </Pressable>
+        </View>
         <FlatList
           horizontal
           data={userPlaylists}
@@ -179,7 +185,17 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 19,
     fontWeight: "700",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 17,
+  },
+  viewAllText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
   },
   scroll: {
     marginHorizontal: 0,
