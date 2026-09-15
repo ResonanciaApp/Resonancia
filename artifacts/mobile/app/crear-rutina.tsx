@@ -225,19 +225,10 @@ export default function CrearRutinaScreen() {
             ]}
           >
             <Feather name="repeat" size={19} color={WIDGET_GREEN_SOLID} />
-            <Text style={[styles.actionText, { color: WIDGET_GREEN_SOLID }]}>
+            <Text style={[styles.actionText, styles.repeatActionText, { color: WIDGET_GREEN_SOLID }]}>
               {repeatLabel(repeatEnabled, timesPerDay)}
             </Text>
           </Pressable>
-          <View
-            style={styles.simpleAction}
-            accessibilityState={{ disabled: true }}
-          >
-            <Feather name="plus-square" size={18} color={WIDGET_GREEN_SOLID} />
-            <Text style={[styles.actionText, { color: WIDGET_GREEN_SOLID }]}>
-              Adjuntar una práctica <Text style={styles.optionalText}>(opcional)</Text>
-            </Text>
-          </View>
         </View>
 
         <View
@@ -551,10 +542,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
-  optionalText: {
-    fontSize: 11,
-    fontWeight: "400",
-    color: "#F0F0F0",
+  repeatActionText: {
+    fontSize: 12,
   },
   validationText: {
     fontFamily: "Manrope",
