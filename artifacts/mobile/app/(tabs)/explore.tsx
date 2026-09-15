@@ -44,6 +44,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { ContentCategoryGrid } from "@/components/ContentCategoryGrid";
+import { ResonadoresSection } from "@/components/ResonadoresSection";
 import {
   useGetPopularSessions,
   getGetPopularSessionsQueryKey,
@@ -847,28 +848,7 @@ export function ExploreScreen({
 
           <View style={styles.sectionDivider} />
 
-          <Pressable
-            onPress={() => router.push("/equipo" as never)}
-            accessibilityRole="button"
-            accessibilityLabel="Conoce a los Resonadores"
-            style={({ pressed }) => [
-              styles.sleepMixerBanner,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <View style={styles.sleepMixerBannerIcon}>
-              <Feather name="users" color="#F9F9F9" size={30} />
-            </View>
-            <View style={styles.sleepMixerBannerCopy}>
-              <Text style={styles.sleepMixerBannerTitle}>
-                Conoce a los Resonadores
-              </Text>
-              <Text style={styles.sleepMixerBannerSubtitle}>
-                La esencia que le da vida a este espacio, las personas detrás de Resonancia.
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-          </Pressable>
+          <ResonadoresSection marginTop={36} marginBottom={32} />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
@@ -1088,46 +1068,6 @@ const styles = StyleSheet.create({
     marginTop: -27,
     marginBottom: 26,
     backgroundColor: "rgba(249,249,249,0.18)",
-  },
-  sleepMixerBanner: {
-    minHeight: 110,
-    marginTop: 0,
-    marginBottom: 53,
-    marginHorizontal: H_PAD,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.27)",
-    backgroundColor: "rgba(0,0,0,0.34)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  sleepMixerBannerIcon: {
-    width: 51,
-    height: 51,
-    borderRadius: 13,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: 2 }],
-  },
-  sleepMixerBannerCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  sleepMixerBannerTitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 5,
-  },
-  sleepMixerBannerSubtitle: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 12,
   },
   popularSection: {
     marginTop: 0,
