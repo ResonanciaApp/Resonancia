@@ -82,12 +82,14 @@ function CalendarActivityRow({
   dateKey,
   occurrenceIndex,
   completionToken,
+  completedCount,
   onComplete,
 }: {
   activity: RoutineActivity;
   dateKey: string;
   occurrenceIndex: number;
   completionToken: number;
+  completedCount: number;
   onComplete: () => void;
 }) {
   const routineTheme = useRoutineTheme();
@@ -125,7 +127,7 @@ function CalendarActivityRow({
       onPress={
         completed
           ? undefined
-          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}&occurrence=${occurrenceIndex}&from=calendar` as never)
+          : () => router.push(`/rutina/${activity.id}?dateKey=${dateKey}&occurrence=${occurrenceIndex}&from=calendar&previousCount=${completedCount}` as never)
       }
       accessibilityRole="button"
       accessibilityLabel={`${activity.title}, ${
@@ -238,26 +240,6 @@ function RutinaCalendarioScreenContent() {
   const isFutureDate = selectedKey > todayKey;
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
-  useFocusEffect(
-    useCallback(() => {
-      const addedActivityId = consumeRoutineAdditionTransition();
-      if (addedActivityId) {
-        announceActivityAdded();
-        acknowledgeLastAdded(addedActivityId);
-      }
-      const transition = consumeRoutineCompletionTransition();
-      if (!transition || transition.dateKey !== selectedKey) return;
-      const itemId = `${transition.activityId}::${transition.occurrenceIndex}`;
-      setCompletionTokens((current) => ({
-        ...current,
-        [itemId]: transition.token,
-      }));
-    }, [
-      acknowledgeLastAdded,
-      announceActivityAdded,
-      selectedKey,
-    ]),
-  );
   const weekStart = useMemo(() => startOfWeek(today), [today]);
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)),
@@ -307,6 +289,32 @@ function RutinaCalendarioScreenContent() {
   useEffect(() => {
     handledCompletionKeysRef.current.clear();
   }, [activities, selectedKey]);
+  useFocusEffect(
+    useCallback(() => {
+      const addedActivityId = consumeRoutineAdditionTransition();
+      if (addedActivityId) {
+        announceActivityAdded();
+        acknowledgeLastAdded(addedActivityId);
+      }
+      const transition = consumeRoutineCompletionTransition();
+      if (!transition || transition.dateKey !== selectedKey) return;
+      completedCountRef.current = Math.max(
+        completedCountRef.current,
+        transition.nextCount,
+      );
+      announceCompletion(transition.previousCount, transition.nextCount);
+      const itemId = `${transition.activityId}::${transition.occurrenceIndex}`;
+      setCompletionTokens((current) => ({
+        ...current,
+        [itemId]: transition.token,
+      }));
+    }, [
+      acknowledgeLastAdded,
+      announceActivityAdded,
+      announceCompletion,
+      selectedKey,
+    ]),
+  );
   const handleComplete = useCallback(
     (activityId: string, occurrenceIndex: number, itemId: string) => {
       if (isFutureDate) return;
@@ -474,6 +482,7 @@ function RutinaCalendarioScreenContent() {
                 dateKey={selectedKey}
                 occurrenceIndex={occurrenceIndex}
                 completionToken={completionTokens[itemId] ?? 0}
+                completedCount={completedCount}
                 onComplete={() => handleComplete(activity.id, occurrenceIndex, itemId)}
               />
             ))}

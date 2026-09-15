@@ -354,7 +354,6 @@ function TabLayoutInner() {
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
   const tabBarHeight       = PILL_H + bottomPb;
-  const { hidden }         = useTabBarVisibility();
   const { libOpen }        = useDrawer();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
@@ -390,7 +389,6 @@ function TabLayoutInner() {
     pathname.startsWith("/session/") ||
     sessionOverlayOpen;
   const completionBannerVisible =
-    !hidden &&
     !libOpen &&
     barProps?.state?.routes?.[barProps.state.index]?.name !== "biblioteca" &&
     !routeForcesTabBarHidden &&

@@ -2,6 +2,8 @@ type RoutineCompletionTransition = {
   activityId: string;
   dateKey: string;
   occurrenceIndex: number;
+  previousCount: number;
+  nextCount: number;
   token: number;
 };
 
@@ -13,11 +15,15 @@ export function markRoutineCompletionTransition(
   activityId: string,
   dateKey: string,
   occurrenceIndex: number,
+  previousCount: number,
+  nextCount: number,
 ) {
   pendingTransition = {
     activityId,
     dateKey,
     occurrenceIndex,
+    previousCount,
+    nextCount,
     token: nextToken++,
   };
 }

@@ -10,3 +10,5 @@ Un evento visual en cola debe distinguir entre “iniciado” y “confirmado”
 **How to apply:** Usar esta separación en banners, toasts o contadores animados que viven junto a navegación, overlays o paneles capaces de ocultarlos durante una secuencia.
 
 En el contador de Mi Rutina, una nueva finalización interrumpe el aviso completado visible con un fade corto. Las finalizaciones pendientes se consolidan al total acumulado más reciente en vez de reproducir una secuencia completa por cada tap.
+
+Cuando la finalización ocurre en una pantalla raíz y el banner vive en la superficie anterior, la transición de regreso debe transportar `previousCount` y `nextCount`. La superficie receptora adelanta su referencia local a `nextCount` antes de aceptar otro tap; recalcular después del foco puede duplicar el mismo rango por el orden asíncrono de navegación y contexto.

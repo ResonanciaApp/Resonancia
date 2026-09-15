@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
+  canMutateRoutineDate,
   getRoutineDateKey,
   getRoutineOccurrenceKey,
   ROUTINE_DAY_LABELS,
@@ -93,11 +94,18 @@ function ActionRow({
 }
 
 export default function RutinaDetailScreen() {
-  const { id, dateKey: routeDateKey, occurrence: routeOccurrence, from } = useLocalSearchParams<{
+  const {
+    id,
+    dateKey: routeDateKey,
+    occurrence: routeOccurrence,
+    from,
+    previousCount: routePreviousCount,
+  } = useLocalSearchParams<{
     id: string;
     dateKey?: string;
     occurrence?: string;
     from?: string;
+    previousCount?: string;
   }>();
   const insets = useSafeAreaInsets();
   const routineTheme = useRoutineTheme();
@@ -115,6 +123,8 @@ export default function RutinaDetailScreen() {
   const activity = id ? getActivityById(id) : undefined;
   const [editingDescription, setEditingDescription] = useState(false);
   const [descriptionDraft, setDescriptionDraft] = useState("");
+  const [descriptionDraftActivityId, setDescriptionDraftActivityId] =
+    useState<string | null>(null);
   const dateKey =
     typeof routeDateKey === "string" && /^\d{4}-\d{2}-\d{2}$/.test(routeDateKey)
       ? routeDateKey
@@ -127,17 +137,42 @@ export default function RutinaDetailScreen() {
   const isToday = dateKey === todayKey;
   const completed = activity?.completedDates.includes(occurrenceKey) ?? false;
   const skipped = activity?.skippedDates.includes(occurrenceKey) ?? false;
+  const canComplete =
+    !!activity &&
+    !completed &&
+    isToday &&
+    occurrenceIndex >= 0 &&
+    occurrenceIndex < activity.timesPerDay &&
+    canMutateRoutineDate(activity, dateKey);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : Math.max(insets.bottom, 18);
 
   const markComplete = useCallback(() => {
-    if (!activity || completed || !isToday || activity.archivedAt) return;
+    if (!activity || !canComplete) return;
     if (from === "calendar") {
-      markRoutineCompletionTransition(activity.id, dateKey, occurrenceIndex);
+      const previousCount =
+        typeof routePreviousCount === "string" && /^\d+$/.test(routePreviousCount)
+          ? Number(routePreviousCount)
+          : 0;
+      markRoutineCompletionTransition(
+        activity.id,
+        dateKey,
+        occurrenceIndex,
+        previousCount,
+        previousCount + 1,
+      );
     }
     completeActivity(activity.id, dateKey, occurrenceIndex);
     router.back();
-  }, [activity, completeActivity, completed, dateKey, from, isToday, occurrenceIndex]);
+  }, [
+    activity,
+    canComplete,
+    completeActivity,
+    dateKey,
+    from,
+    occurrenceIndex,
+    routePreviousCount,
+  ]);
 
   const skipToday = useCallback(() => {
     if (!activity || skipped || !isToday || activity.archivedAt) return;
@@ -166,12 +201,21 @@ export default function RutinaDetailScreen() {
   const beginDescriptionEdit = useCallback(() => {
     if (!activity) return;
     setDescriptionDraft(activity.description);
+    setDescriptionDraftActivityId(activity.id);
     setEditingDescription(true);
   }, [activity]);
 
+  const hasUnsavedChanges =
+    !!activity &&
+    descriptionDraftActivityId === activity.id &&
+    descriptionDraft.trim() !== activity.description.trim();
+
   const saveDescription = useCallback(() => {
     if (!activity) return;
-    updateActivityDescription(activity.id, descriptionDraft);
+    const normalizedDescription = descriptionDraft.trim();
+    if (normalizedDescription === activity.description.trim()) return;
+    updateActivityDescription(activity.id, normalizedDescription);
+    setDescriptionDraftActivityId(null);
     setEditingDescription(false);
   }, [activity, descriptionDraft, updateActivityDescription]);
 
@@ -250,28 +294,29 @@ export default function RutinaDetailScreen() {
           >
             <Feather name="x" size={25} color={routineTheme.text} />
           </Pressable>
-          <View
+          <Pressable
+            onPress={saveDescription}
+            disabled={!hasUnsavedChanges}
+            accessibilityRole="button"
+            accessibilityLabel="Guardar cambios de la rutina"
+            accessibilityState={{ disabled: !hasUnsavedChanges }}
             style={[
               styles.statusPill,
               {
-                backgroundColor: completed
-                  ? routineTheme.completionSoft
-                  : skipped
-                    ? routineTheme.surfaceElevated
-                    : routineTheme.surface,
-                borderColor: completed ? routineTheme.completion : routineTheme.divider,
+                backgroundColor: routineTheme.surface,
+                borderColor: routineTheme.divider,
               },
             ]}
           >
             <Text
               style={[
                 styles.statusText,
-                { color: completed ? routineTheme.completion : routineTheme.textMuted },
+                { color: hasUnsavedChanges ? "#F9F9F9" : "#7F7F7F" },
               ]}
             >
-              {completed ? "Completada" : skipped ? "Saltada hoy" : "Pendiente"}
+              Guardar
             </Text>
-          </View>
+          </Pressable>
         </View>
 
         <View style={styles.mainCopy}>
@@ -296,24 +341,32 @@ export default function RutinaDetailScreen() {
               maxLength={180}
               value={descriptionDraft}
               onChangeText={setDescriptionDraft}
-              onBlur={saveDescription}
               placeholder="Añadir una descripción (opcional)"
               placeholderTextColor="#7F7F7F"
               style={[styles.description, styles.descriptionInput, { color: "#F9F9F9" }]}
               accessibilityLabel="Descripción de la actividad"
             />
-          ) : activity.description ? (
-            <Text style={[styles.description, { color: routineTheme.textMuted }]}>
-              {activity.description}
-            </Text>
           ) : (
             <Pressable
               onPress={beginDescriptionEdit}
               accessibilityRole="button"
-              accessibilityLabel="Añadir una descripción opcional"
+              accessibilityLabel={
+                activity.description
+                  ? "Editar descripción de la actividad"
+                  : "Añadir una descripción opcional"
+              }
             >
-              <Text style={[styles.description, { color: "#7F7F7F" }]}>
-                Añadir una descripción (opcional)
+              <Text
+                style={[
+                  styles.description,
+                  {
+                    color: activity.description
+                      ? routineTheme.textMuted
+                      : "#7F7F7F",
+                  },
+                ]}
+              >
+                {activity.description || "Añadir una descripción (opcional)"}
               </Text>
             </Pressable>
           )}
@@ -359,7 +412,7 @@ export default function RutinaDetailScreen() {
             }
             onPress={markComplete}
             backgroundColor={actionBackground}
-            disabled={completed || !isToday || !!activity.archivedAt}
+            disabled={!canComplete}
           />
           <ActionRow
             icon="clock"
