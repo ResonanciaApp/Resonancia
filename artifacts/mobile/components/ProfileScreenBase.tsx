@@ -52,7 +52,6 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useAuth } from "@/context/AuthContext";
 import type { LibraryTab } from "@/context/DrawerContext";
 import { useColors } from "@/hooks/useColors";
-import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -77,7 +76,6 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
-import { useDownloads } from "@/context/DownloadContext";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -328,7 +326,6 @@ export function ProfileScreenBase({
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { email, logout } = useAuth();
-  const { downloads } = useDownloads();
   const {
     username,
     lastName,
@@ -1237,58 +1234,7 @@ export function ProfileScreenBase({
             </View>
 
             <View style={{ marginTop: 53 }}>
-              <View>
-                <Pressable
-                  onPress={() => router.push("/notificaciones-practica" as never)}
-                  style={({ pressed }) => [
-                    styles.profileUtilitySection,
-                    styles.practiceReminderSection,
-                    { opacity: pressed ? 0.72 : 1 },
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Administrar recordatorio de prácticas"
-                >
-                  <View style={styles.profileUtilityIcon}>
-                    <Feather name="bell" size={21} color={colors.foreground} />
-                  </View>
-                  <View style={styles.practiceReminderCopy}>
-                    <Text style={[styles.practiceReminderTitle, { color: colors.foreground }]}>
-                      Recordatorio de prácticas
-                    </Text>
-                    <Text style={[styles.practiceReminderSubtitle, { color: profileDescriptionColor }]}>
-                      Mañana, tarde y noche
-                    </Text>
-                  </View>
-                  <Feather name="chevron-right" size={22} color={colors.foreground} />
-                </Pressable>
-
-                <View style={styles.profileUtilityDivider} />
-
-                <View style={styles.profileUtilitySection}>
-                  <View style={styles.profileUtilityHeader}>
-                    <View style={styles.profileUtilityIcon}>
-                      <Feather name="download" size={21} color={colors.foreground} />
-                    </View>
-                    <View style={styles.profileUtilityCopy}>
-                      <Text style={[styles.profileUtilityTitle, { color: colors.foreground }]}>
-                        Descargas
-                      </Text>
-                      <Text style={[styles.profileUtilitySubtitle, { color: profileDescriptionColor }]}>
-                        Tus sesiones disponibles sin conexión
-                      </Text>
-                    </View>
-                    <Pressable onPress={() => router.push("/descargas" as never)}>
-                      <Text style={{ color: secondaryAccent, fontSize: 13, fontWeight: "700" }}>Ver todo</Text>
-                    </Pressable>
-                  </View>
-                  {downloads.filter((item) => item.status === "complete").slice(0, 3).length ? <View style={styles.profileUtilityContent}>
-                    {downloads.filter((item) => item.status === "complete").slice(0, 3).map((item) => { const session = getSessionById(item.sessionId); return session ? <Pressable key={item.sessionId} onPress={() => router.push("/descargas" as never)} style={{ flex: 1 }}><Image source={session.image as never} style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }} contentFit="cover" /></Pressable> : null; })}
-                  </View> : null}
-                </View>
-              </View>
-              <View style={{ marginTop: 53 }}>
-                <ProfileMixCarousel marginBottom={0} />
-              </View>
+              <ProfileMixCarousel marginBottom={0} />
             </View>
 
           </>
@@ -2251,69 +2197,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "rgba(0,0,0,0.28)",
     padding: 16,
-  },
-  profileUtilitySection: {
-    paddingHorizontal: 0,
-    backgroundColor: "transparent",
-  },
-  profileUtilityDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginTop: 26,
-    marginBottom: 26,
-    backgroundColor: "rgba(255,255,255,0.12)",
-  },
-  profileUtilityHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  profileUtilityIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    marginRight: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
-  profileUtilityCopy: {
-    flex: 1,
-    minWidth: 0,
-    gap: 5,
-  },
-  profileUtilityTitle: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  profileUtilitySubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  profileUtilityContent: {
-    flexDirection: "row",
-    gap: 9,
-    marginTop: 14,
-    marginLeft: 56,
-  },
-  practiceReminderSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  practiceReminderCopy: {
-    flex: 1,
-    gap: 5,
-  },
-  practiceReminderTitle: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  practiceReminderSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
   },
   profileProgressHeader: {
     flexDirection: "row",
