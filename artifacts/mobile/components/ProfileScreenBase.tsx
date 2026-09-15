@@ -68,6 +68,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
+import { ProfilePlaylistCarousel } from "@/components/ProfilePlaylistCarousel";
 import {
   gradientColors,
   type GeoSettings,
@@ -1235,6 +1236,9 @@ export function ProfileScreenBase({
 
             <View style={{ marginTop: 38 }}>
               <ProfileMixCarousel marginBottom={0} />
+            </View>
+            <View style={{ marginTop: 53 }}>
+              <ProfilePlaylistCarousel marginBottom={0} />
             </View>
 
           </>
