@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   },
   stickyTabs: {
     width: "100%",
-    marginTop: 12,
+    marginTop: 17,
   },
   stickyTitleCol: {
     flex: 1,

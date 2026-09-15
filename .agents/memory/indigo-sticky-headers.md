@@ -31,4 +31,4 @@ En las pantallas internas de Sonidos, el borde bajo los filtros sigue el mismo c
 
 En las pantallas internas de Dormir, el sticky duplica los tabs y comparte su filtro activo; título, tabs y borde hacen fade juntos al activarse con el scroll.
 
-En esas pantallas, los tabs originales no muestran línea; solo la copia sticky la muestra al activarse. Los tabs sticky se desplazan 12 px hacia abajo.
+En esas pantallas, los tabs originales no muestran línea; solo la copia sticky la muestra al activarse. Los tabs sticky se desplazan 17 px hacia abajo.
