@@ -459,7 +459,7 @@ function RutinaCalendarioScreenContent() {
           </View>
         </View>
 
-        {!isFutureDate && (
+        {scheduledForDate.length > 0 && (
           <Text style={[styles.progressTitle, { color: routineTheme.text }]}>
             {completedCount} / {scheduledForDate.length} completadas
           </Text>
@@ -670,6 +670,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   emptyState: {
+    marginTop: 30,
     minHeight: 150,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
