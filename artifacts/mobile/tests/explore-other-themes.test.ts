@@ -80,6 +80,28 @@ test("deduplica slugs y excluye categorías reservadas", () => {
   assert.deepEqual(cards.map((card) => card.id), ["repetida"]);
 });
 
+test("las etiquetas editoriales internas nunca crean cards visibles", () => {
+  const cards = buildOtherThemeCards({
+    sections: [
+      section(
+        "category-theme-sonoterapia-vibracion",
+        "__category_theme_sonoterapia__:Vibración",
+      ),
+      section(
+        "supercategory-theme-sonidos-naturaleza",
+        "__supercategory_theme_sonidos__:Naturaleza",
+      ),
+      section("rituales-de-luna", "Rituales de luna"),
+    ],
+    localCards: [],
+    sessions: [],
+    isExcludedLabel: () => false,
+    slugifyLabel: slugify,
+  });
+
+  assert.deepEqual(cards.map((card) => card.id), ["rituales-de-luna"]);
+});
+
 test("conserva la última configuración cacheada ante una falla temporal", () => {
   const cached = [section("ansiedad", "Ansiedad")];
   const restored = parseExploreSectionsCache(JSON.stringify(cached));

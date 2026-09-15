@@ -1999,6 +1999,17 @@ function labelToSlug(label: string): string {
     .replace(/^-|-$/g, "");
 }
 
+function isInternalEditorialTag(tag: string): boolean {
+  return tag.trim().startsWith("__");
+}
+
+function isInternalExploreSection(section: ExploreSection): boolean {
+  return (
+    isInternalEditorialTag(section.label) ||
+    /^(?:super)?category-theme-/.test(section.slug)
+  );
+}
+
 /**
  * Asegura que existan en explore_sections:
  * 1. Los 9 tags fijos por defecto.
@@ -2024,6 +2035,7 @@ async function ensureDefaultSections() {
   const customLabels = new Set<string>();
   for (const row of sessionRows) {
     for (const tag of row.themeTag ?? []) {
+      if (isInternalEditorialTag(tag)) continue;
       const slug = labelToSlug(tag);
       if (!existingSlugs.has(slug) && !DEFAULT_EXPLORE_SLUGS.includes(slug)) {
         customLabels.add(slug);
@@ -2035,6 +2047,7 @@ async function ensureDefaultSections() {
   const customLabelMap = new Map<string, string>();
   for (const row of sessionRows) {
     for (const tag of row.themeTag ?? []) {
+      if (isInternalEditorialTag(tag)) continue;
       const slug = labelToSlug(tag);
       if (customLabels.has(slug)) customLabelMap.set(slug, tag);
     }
@@ -2073,7 +2086,9 @@ router.get("/admin/explore-sections", requireAuth, requireRole("admin"), async (
       .select()
       .from(exploreSectionsTable)
       .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
-    res.json({ sections: rows.map(serializeExploreSection) });
+    res.json({
+      sections: rows.filter((row) => !isInternalExploreSection(row)).map(serializeExploreSection),
+    });
   } catch (err) {
     req.log.error({ err }, "error fetching explore sections");
     res.status(500).json({ error: "Error al obtener secciones" });
@@ -2088,7 +2103,9 @@ router.get("/explore-sections", async (req, res) => {
       .select()
       .from(exploreSectionsTable)
       .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
-    res.json({ sections: rows.map(serializeExploreSection) });
+    res.json({
+      sections: rows.filter((row) => !isInternalExploreSection(row)).map(serializeExploreSection),
+    });
   } catch (err) {
     req.log.error({ err }, "error fetching explore sections (public)");
     res.status(500).json({ error: "Error al obtener secciones" });

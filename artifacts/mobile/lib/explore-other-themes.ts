@@ -24,6 +24,14 @@ export interface OtherThemeCard<TImage> {
   image: TImage | undefined;
 }
 
+function isInternalEditorialSection(section: ExploreSection): boolean {
+  const label = section.label.trim();
+  return (
+    label.startsWith("__") ||
+    /^(?:super)?category-theme-/.test(section.slug)
+  );
+}
+
 export function parseExploreSectionsCache(raw: string | null): ExploreSection[] | null {
   if (!raw) return null;
 
@@ -59,7 +67,12 @@ export function buildOtherThemeCards<TImage>({
   const seen = new Set<string>();
   return sections
     .filter((section) => {
-      if (!section.visible || isExcludedLabel(section.label) || seen.has(section.slug)) {
+      if (
+        !section.visible ||
+        isInternalEditorialSection(section) ||
+        isExcludedLabel(section.label) ||
+        seen.has(section.slug)
+      ) {
         return false;
       }
       seen.add(section.slug);
