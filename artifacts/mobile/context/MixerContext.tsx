@@ -69,6 +69,7 @@ function assetToUri(mod: unknown): string | undefined {
 const DEFAULT_MIX_ARTWORK_URL = assetToUri(
   require("@/assets/images/logo-cdc-square.png"),
 );
+const MIX_ENGINE_ANCHOR_SOURCE = require("@/assets/audio/prueba_voz_generada.mp3");
 
 /** Resuelve la imagen elegida al guardar la mezcla (key de la galería) a un
  *  URL usable como carátula. Cae al logo de la app si no hay imagen. */
@@ -326,6 +327,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   /** IDs de binaurales sonando por el motor (AudioContext). Usado para incluir
    *  ctx.suspend()/resume() en applyPlaying aunque no haya sonidos BPM activos. */
   const binauralEngineActiveRef = useRef<Set<string>>(new Set());
+  /** Invalida continuaciones async de loadPreset tras stop/cambio de mezcla. */
+  const presetLoadGenerationRef = useRef(0);
+  /** Ancla expo-audio muda para timer/lock screen en mezclas solo BPM/binaural. */
+  const engineAnchorRef = useRef<AudioPlayer | null>(null);
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
   activeSoundsRef.current = activeSounds;
@@ -394,6 +399,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     });
+    const engineAnchor = engineAnchorRef.current;
+    if (engineAnchor) {
+      try {
+        if (next) engineAnchor.play();
+        else engineAnchor.pause();
+      } catch {
+        // ignore
+      }
+    }
 
     // ── Motor BPM + binaurales (react-native-audio-api): pausar/reanudar ───
     // El contexto nativo congela/restaura la fase exacta con suspend()/resume():
@@ -441,6 +455,31 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const releaseEngineAnchor = useCallback(() => {
+    const anchor = engineAnchorRef.current;
+    if (!anchor) return;
+    engineAnchorRef.current = null;
+    if (lockOwnerRef.current === anchor) clearLockScreen();
+    try { anchor.pause(); } catch { /* ignore */ }
+    try { anchor.remove(); } catch { /* ignore */ }
+  }, [clearLockScreen]);
+
+  const ensureEngineAnchor = useCallback(() => {
+    if (engineAnchorRef.current) return engineAnchorRef.current;
+    try {
+      const anchor = createAudioPlayer(MIX_ENGINE_ANCHOR_SOURCE, {
+        updateInterval: 200,
+      });
+      anchor.loop = true;
+      anchor.volume = 0;
+      engineAnchorRef.current = anchor;
+      anchor.play();
+      return anchor;
+    } catch {
+      return null;
+    }
+  }, []);
+
   /**
    * (Re)apunta los controles de pantalla bloqueada al primer player activo.
    * La mezcla son varios loops sin una pista "principal", así que designamos
@@ -450,7 +489,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const syncLockScreen = useCallback(() => {
     // El ancla del Now Playing es la capa `a` del primer sonido (siempre suena).
     const firstPair = playersRef.current.values().next().value as SoundPlayers | undefined;
-    const first = firstPair?.a;
+    const first = firstPair?.a ?? engineAnchorRef.current ?? undefined;
     if (!first) {
       clearLockScreen();
       return;
@@ -1711,6 +1750,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, [applyPlaying]);
 
   const stopAll = useCallback(() => {
+    presetLoadGenerationRef.current += 1;
     // Liberar el BPM activo y detener el motor nativo.
     bpmValueRef.current = null;
     setActiveBpm(null);
@@ -1763,6 +1803,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     // apaga aparte, abajo, con su propio fade-out. activeSoundsRef se resetea de
     // forma síncrona para que un toggleSound() encadenado lea el estado vacío.
     clearLockScreen();
+    releaseEngineAnchor();
     setActiveSounds([]);
     activeSoundsRef.current = [];
     setIsPlaying(false);
@@ -1809,7 +1850,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     };
     fadeRafRef.current = requestAnimationFrame(step);
-  }, [clearSleepTimer, clearLockScreen]);
+  }, [clearSleepTimer, clearLockScreen, releaseEngineAnchor]);
   stopAllRef.current = stopAll;
 
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
@@ -1962,11 +2003,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
 
   const loadPreset = useCallback(
     (preset: MixPreset) => {
+      const loadGeneration = ++presetLoadGenerationRef.current;
       // Mezcla, sesión y audio de chat son mutuamente excluyentes (comparten Now Playing).
       stopSessionPlayback();
       stopChatPlayback();
       // Soltar el lock screen del owner viejo antes de desmontarlo.
       clearLockScreen();
+      releaseEngineAnchor();
       // Desmontar la mezcla actual
       loopSubsRef.current.forEach((subs) => {
         subs.forEach((s) => {
@@ -2029,7 +2072,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           // Fire-and-forget: init() es idempotente y dedup-safe.
           void (async () => {
             if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
-            if (!bpmAudioEngine.isReady()) return;
+            if (
+              !bpmAudioEngine.isReady() ||
+              presetLoadGenerationRef.current !== loadGeneration
+            ) return;
             const bpm = resolveSoundBpm(def, bpmValueRef.current) ??
               (Array.isArray(def.bpm) ? def.bpm[0] : def.bpm);
             if (SOUND_MAP[s.id]) {
@@ -2051,7 +2097,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           const remoteUrl = def.audioUrl ?? REMOTE_SOUND_MAP[s.id] ?? null;
           void (async () => {
             if (!bpmAudioEngine.isReady()) await bpmAudioEngine.init();
-            if (!bpmAudioEngine.isReady()) return;
+            if (
+              !bpmAudioEngine.isReady() ||
+              presetLoadGenerationRef.current !== loadGeneration
+            ) return;
             if (SOUND_MAP[s.id]) {
               void bpmAudioEngine.playLoop(s.id, s.volume);
             } else if (remoteUrl) {
@@ -2083,6 +2132,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       setLoadedPresetId(nextLoadedId);
       loadedPresetIdRef.current = nextLoadedId;
       clearSleepTimer();
+      if (created.length > 0 && playersRef.current.size === 0) {
+        ensureEngineAnchor();
+      }
       if (created.length > 0) syncLockScreen();
     },
     [
@@ -2090,6 +2142,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       ensureAudioMode,
       clearSleepTimer,
       clearLockScreen,
+      ensureEngineAnchor,
+      releaseEngineAnchor,
       syncLockScreen,
     ],
   );
@@ -2206,6 +2260,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return () => {
       clearLockScreen();
+      releaseEngineAnchor();
       loopSubsRef.current.forEach((subs) => {
         subs.forEach((s) => {
           try {
@@ -2241,7 +2296,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       if (sleepIntervalRef.current) clearInterval(sleepIntervalRef.current);
       void bpmAudioEngine.dispose();
     };
-  }, [clearLockScreen, isPlayableCatalogSound]);
+  }, [clearLockScreen, isPlayableCatalogSound, releaseEngineAnchor]);
 
   const isActive = useCallback(
     (id: string) => activeSounds.some((s) => s.id === id),

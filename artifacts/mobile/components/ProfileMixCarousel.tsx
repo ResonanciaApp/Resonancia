@@ -1,5 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { FlatList, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
@@ -14,6 +13,7 @@ import { useColors } from "@/hooks/useColors";
 import { PressScale } from "@/components/PressScale";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { MIX_CATEGORY_ACTION_LABELS } from "@/data/mix-categories";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 
 const GRID_PAD = 14;
 const CARD_GAP = 14;
@@ -28,6 +28,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   const { theme } = useSceneTheme();
   const { openLib } = useDrawer();
   const { presets, stopAll } = useMixer();
+  const { openForMix } = useAmbientalDuration();
   const { openMixer } = useMixerPanel();
   const cardWidth = getTwoCardCarouselCardWidth(width, GRID_PAD);
   const accent = theme.accent ?? colors.accent;
@@ -134,7 +135,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
           return (
             <PressScale
               key={mix.id}
-              onPress={() => router.push(`/mi-mezcla/${encodeURIComponent(mix.id)}` as never)}
+              onPress={() => openForMix(mix)}
               style={{ width: cardWidth }}
             >
               {hasCover ? (

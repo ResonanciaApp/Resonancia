@@ -17,6 +17,7 @@ import {
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
+  InteractionManager,
   Modal,
   Platform,
   Pressable,
@@ -40,7 +41,7 @@ import { useMixer, type MixPreset, type MixFolder } from "@/context/MixerContext
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useGeometrixPanel } from "@/context/GeometrixPanelContext";
 import { EqualizerBars } from "@/components/EqualizerBars";
-import { useLoadMix } from "@/hooks/useLoadMix";
+import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -446,13 +447,20 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
   const [kbHeight, setKbHeight] = useState(0);
   const [kbReady,  setKbReady]  = useState(false);
   const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const pendingMixRef = useRef<MixPreset | null>(null);
   const insets    = useSafeAreaInsets();
 
   const { favorites, playSession } = usePlayer();
   const { isPremium: libIsPremium } = usePremium();
-  const { presets, loadedPresetId, openSheet } = useMixer();
-  const loadMix = useLoadMix();
+  const { presets } = useMixer();
+  const { openForMix } = useAmbientalDuration();
   const { playlists: userPlaylists } = useFoldersPlaylists();
+
+  const consumePendingMix = useCallback(() => {
+    const pendingMix = pendingMixRef.current;
+    pendingMixRef.current = null;
+    if (pendingMix) requestAnimationFrame(() => openForMix(pendingMix));
+  }, [openForMix]);
 
   useEffect(() => {
     if (!visible) { setQ(""); setKbReady(false); setKbHeight(0); fadeAnim.setValue(0); return; }
@@ -469,6 +477,14 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
     const hide = Keyboard.addListener("keyboardWillHide", () => { setKbReady(false); fadeAnim.setValue(0); });
     return () => { show.remove(); showFallback.remove(); hide.remove(); };
   }, [visible, fadeAnim]);
+
+  useEffect(() => {
+    if (visible || Platform.OS === "ios" || !pendingMixRef.current) return;
+    const interaction = InteractionManager.runAfterInteractions(
+      consumePendingMix,
+    );
+    return () => interaction.cancel();
+  }, [consumePendingMix, visible]);
 
   const results: LibResult[] = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -492,20 +508,29 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
   }, [q, favorites, userPlaylists, presets]);
 
   const handleSelect = (result: LibResult) => {
+    if (result.kind === "mix") {
+      pendingMixRef.current = result.data;
+      onClose();
+      return;
+    }
     onClose();
     if (result.kind === "session") {
       if (result.data.skipMiniPlayer && !(result.data.isPremium && !libIsPremium)) { playSession(result.data); return; }
       if (result.data.skipDetail) { playSession(result.data); router.push("/player" as never); return; }
       if (overlay) overlay.openCategory(`/session/${result.data.id}`); else router.push(`/session/${result.data.id}` as never);
     }
-    else if (result.kind === "playlist") openPlaylistPanel(result.data.id);
-    else {
-      if (loadedPresetId !== result.data.id) loadMix(result.data);
-    }
+    else openPlaylistPanel(result.data.id);
   };
 
   return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+      onDismiss={consumePendingMix}
+      onShow={() => inputRef.current?.focus()}
+    >
       <LinearGradient colors={gradient as [string, string, ...string[]]} style={[blStyles.root, { paddingBottom: kbHeight }]}>
         {/* Barra */}
         <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
@@ -1171,7 +1196,7 @@ export function BibliotecaScreen({
   } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openGeometrix } = useGeometrixPanel();
-  const loadMix = useLoadMix();
+  const { openForMix } = useAmbientalDuration();
   const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
 
@@ -1324,7 +1349,7 @@ export function BibliotecaScreen({
                     <View key={mix.id} style={{ width: cellW }}>
                       <Pressable
                         style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
-                        onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                        onPress={() => openForMix(mix)}
                         onLongPress={() => setMixMenuPreset(mix)}
                         delayLongPress={600}
                       >
@@ -1338,7 +1363,7 @@ export function BibliotecaScreen({
                         </View>
                       </Pressable>
                       <Pressable
-                        onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                        onPress={() => openForMix(mix)}
                         onLongPress={() => setMixMenuPreset(mix)}
                         delayLongPress={600}
                       >
@@ -1397,8 +1422,8 @@ export function BibliotecaScreen({
                     key={mix.id}
                     mix={mix}
                     isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                    onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                    onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                    onPress={() => openForMix(mix)}
+                    onPressThumb={() => openForMix(mix)}
                     onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
                     onLongPress={() => setMixMenuPreset(mix)}
                   />
@@ -1558,7 +1583,7 @@ export function BibliotecaScreen({
                   <View key={mix.id} style={{ width: cellW }}>
                     <Pressable
                       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
-                      onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                       onPress={() => openForMix(mix)}
                        onLongPress={() => setMixMenuPreset(mix)}
                        delayLongPress={600}
                     >
@@ -1572,7 +1597,7 @@ export function BibliotecaScreen({
                       </View>
                     </Pressable>
                     <Pressable
-                      onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                      onPress={() => openForMix(mix)}
                       onLongPress={() => setMixMenuPreset(mix)}
                       delayLongPress={600}
                     >
@@ -1601,8 +1626,8 @@ export function BibliotecaScreen({
                   key={mix.id}
                   mix={mix}
                   isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                  onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
-                  onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                  onPress={() => openForMix(mix)}
+                  onPressThumb={() => openForMix(mix)}
                   onPressEdit={() => openLibraryRoute(`/mi-mezcla/${mix.id}`)}
                    onLongPress={() => setMixMenuPreset(mix)}
                 />

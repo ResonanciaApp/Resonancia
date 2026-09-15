@@ -11,6 +11,7 @@ import {
   Animated,
   BackHandler,
   Image,
+  type ImageSourcePropType,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -22,8 +23,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { useNotifications } from "@/context/NotificationsContext";
+import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getMixImage } from "@/config/mix-images";
 import type { Session } from "@/data/sessions";
 
 const FADE_DURATION = 450;
@@ -34,6 +37,7 @@ const SLIDE_OFFSET = 900;
 type Props = {
   visible: boolean;
   session: Session | null;
+  mix?: MixPreset | null;
   initialMinutes: number;
   onClose: () => void;
 };
@@ -48,6 +52,7 @@ function formatCountdown(seconds: number) {
 export function AmbientalPlayer({
   visible,
   session,
+  mix = null,
   initialMinutes,
   onClose,
 }: Props) {
@@ -62,6 +67,21 @@ export function AmbientalPlayer({
     sleepTimerRemaining,
     stop,
   } = usePlayer();
+  const {
+    loadedPresetId,
+    isPlaying: isMixPlaying,
+    sleepTimerRemaining: mixTimerRemaining,
+    togglePlay: toggleMixPlay,
+    stopAll: stopMix,
+  } = useMixer();
+  const isMixMode = mix !== null;
+  const playbackId = isMixMode ? loadedPresetId : currentSession?.id ?? null;
+  const targetId = isMixMode ? mix.id : session?.id ?? null;
+  const playbackIsPlaying = isMixMode ? isMixPlaying : isPlaying;
+  const playbackIsLoading = isMixMode ? false : isLoading;
+  const playbackTimerRemaining = isMixMode
+    ? mixTimerRemaining
+    : sleepTimerRemaining;
 
   // ── Slide-in/out animation ────────────────────────────────────────────────
   const [rendered, setRendered] = useState(false);
@@ -147,8 +167,8 @@ export function AmbientalPlayer({
   // ── Session ownership tracking ────────────────────────────────────────────
   const matchedSessionRef = useRef(false);
   const ownsPlaybackRef = useRef(false);
-  const currentSessionIdRef = useRef<string | null>(null);
-  currentSessionIdRef.current = currentSession?.id ?? null;
+  const playbackIdRef = useRef<string | null>(null);
+  playbackIdRef.current = playbackId;
 
   useEffect(() => {
     if (!visible) {
@@ -156,20 +176,21 @@ export function AmbientalPlayer({
       ownsPlaybackRef.current = false;
       return;
     }
-    if (session && currentSession?.id === session.id) {
+    if (targetId !== null && playbackId === targetId) {
       matchedSessionRef.current = true;
       ownsPlaybackRef.current = true;
     } else if (matchedSessionRef.current) {
       ownsPlaybackRef.current = false;
     }
-  }, [currentSession?.id, session, visible]);
+  }, [playbackId, targetId, visible]);
 
   useEffect(() => {
     if (!visible || !matchedSessionRef.current) return;
-    const sessionChanged =
-      currentSession === null || currentSession.id !== session?.id;
+    const sessionChanged = playbackId === null || playbackId !== targetId;
     const timerFinished =
-      sleepTimerRemaining === null && !isPlaying && !isLoading;
+      playbackTimerRemaining === null &&
+      !playbackIsPlaying &&
+      !playbackIsLoading;
     if (sessionChanged) {
       ownsPlaybackRef.current = false;
       onClose();
@@ -177,17 +198,20 @@ export function AmbientalPlayer({
     }
     if (timerFinished) {
       ownsPlaybackRef.current = false;
-      void stop();
+      if (isMixMode) stopMix();
+      else void stop();
       onClose();
     }
   }, [
-    currentSession,
-    isLoading,
-    isPlaying,
+    isMixMode,
     onClose,
-    session?.id,
-    sleepTimerRemaining,
+    playbackId,
+    playbackIsLoading,
+    playbackIsPlaying,
+    playbackTimerRemaining,
     stop,
+    stopMix,
+    targetId,
     visible,
   ]);
 
@@ -196,7 +220,7 @@ export function AmbientalPlayer({
 
   const confirmExit = useCallback(() => {
     clearHideTimer();
-    const ownerSessionId = session?.id ?? null;
+    const ownerPlaybackId = targetId;
     Alert.alert(
       "¿Estás seguro/a de que quieres salir?",
       "Si sales, no podrás continuar desde donde lo dejaste.",
@@ -207,17 +231,28 @@ export function AmbientalPlayer({
           onPress: () => {
             const stillOwnsPlayback =
               ownsPlaybackRef.current &&
-              ownerSessionId !== null &&
-              currentSessionIdRef.current === ownerSessionId;
+              ownerPlaybackId !== null &&
+              playbackIdRef.current === ownerPlaybackId;
             ownsPlaybackRef.current = false;
-            if (stillOwnsPlayback) void stop();
+            if (stillOwnsPlayback) {
+              if (isMixMode) stopMix();
+              else void stop();
+            }
             onClose();
           },
         },
         { text: "No", style: "cancel", onPress: scheduleHide },
       ],
     );
-  }, [clearHideTimer, onClose, scheduleHide, session?.id, stop]);
+  }, [
+    clearHideTimer,
+    isMixMode,
+    onClose,
+    scheduleHide,
+    stop,
+    stopMix,
+    targetId,
+  ]);
 
   confirmExitRef.current = confirmExit;
 
@@ -232,16 +267,33 @@ export function AmbientalPlayer({
 
   // ── Render ────────────────────────────────────────────────────────────────
   const handlePlayPause = useCallback(() => {
-    if (!currentSession || isLoading) return;
-    void pauseResume();
-  }, [currentSession, isLoading, pauseResume]);
+    if (playbackId !== targetId || playbackIsLoading) return;
+    if (isMixMode) toggleMixPlay();
+    else void pauseResume();
+  }, [
+    isMixMode,
+    pauseResume,
+    playbackId,
+    playbackIsLoading,
+    targetId,
+    toggleMixPlay,
+  ]);
 
-  // Keep last non-null session so the image persists during the exit animation
-  const lastSessionRef = useRef<Session | null>(null);
-  if (session !== null) lastSessionRef.current = session;
-  const displaySession = session ?? lastSessionRef.current;
+  // Keep the current source during the exit animation, but reset it when a new
+  // target opens so a mix can never inherit an earlier session image.
+  const activeImage: ImageSourcePropType | null = isMixMode
+    ? mix.coverUri
+      ? { uri: mix.coverUri }
+      : mix.image
+        ? (getMixImage(mix.image) ?? null)
+        : null
+    : session?.image ?? null;
+  const lastImageRef = useRef<ImageSourcePropType | null>(null);
+  if (visible) lastImageRef.current = activeImage;
+  const displayImage = visible ? activeImage : lastImageRef.current;
 
-  const countdown = sleepTimerRemaining ?? Math.max(0, initialMinutes * 60);
+  const countdown =
+    playbackTimerRemaining ?? Math.max(0, initialMinutes * 60);
 
   if (!rendered) return null;
 
@@ -257,11 +309,14 @@ export function AmbientalPlayer({
           style={StyleSheet.absoluteFill}
         />
 
-        {displaySession?.image && (
+        {displayImage && (
           <>
             <Image
-              source={displaySession.image}
-              style={StyleSheet.absoluteFill}
+              source={displayImage}
+              style={[
+                styles.fullscreenImage,
+                isMixMode && styles.mixFullscreenImage,
+              ]}
               resizeMode="cover"
               accessibilityIgnoresInvertColors
             />
@@ -329,17 +384,20 @@ export function AmbientalPlayer({
           >
             <Pressable
               onPress={handlePlayPause}
-              disabled={isLoading || !currentSession}
+              disabled={playbackIsLoading || playbackId !== targetId}
               style={({ pressed }) => [
                 styles.ghostPillLarge,
                 pressed && styles.buttonPressed,
-                (isLoading || !currentSession) && styles.buttonDisabled,
+                (playbackIsLoading || playbackId !== targetId) &&
+                  styles.buttonDisabled,
               ]}
               accessibilityRole="button"
-              accessibilityLabel={isPlaying ? "Pausar" : "Reproducir"}
+              accessibilityLabel={
+                playbackIsPlaying ? "Pausar" : "Reproducir"
+              }
               testID="ambiental-player-play-pause"
             >
-              {isPlaying ? (
+              {playbackIsPlaying ? (
                 <Svg width={33} height={33} viewBox="0 0 46 46">
                   <Rect x="8"  y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
                   <Rect x="27" y="6" width="11" height="34" rx="4" fill="#FFFFFF" />
@@ -361,7 +419,9 @@ export function AmbientalPlayer({
                 pressed && styles.buttonPressed,
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Detener sesión"
+              accessibilityLabel={
+                isMixMode ? "Detener mezcla" : "Detener sesión"
+              }
               testID="ambiental-player-stop"
             >
               <Svg width={31} height={31} viewBox="0 0 24 24">
@@ -386,6 +446,14 @@ const styles = StyleSheet.create({
   },
   root: {
     flex: 1,
+  },
+  fullscreenImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+  },
+  mixFullscreenImage: {
+    transform: [{ scale: 1.12 }],
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,

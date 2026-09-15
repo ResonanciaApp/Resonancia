@@ -20,6 +20,10 @@ Tres capas de enforcement:
 **MixerContext** (mixer ambiental):
 - Guardián llama `applyPlayingRef.current(false)` directamente.
 - AppState también llama `applyPlayingRef.current(false)`.
+- Una mezcla formada solo por capas BPM/binaurales no tiene `AudioPlayer` de
+  expo-audio. Debe mantener un ancla expo-audio muda en loop mientras suena para
+  que el listener nativo siga ejecutándose con la pantalla bloqueada. El ancla
+  participa en pausa/reanudación y se libera al detener, reemplazar o desmontar.
 
 **PlayerContext** (reproductor de sesiones):
 - Guardián pone `setSleepTimerRemaining(0)` → dispara el `useEffect` de expiración existente (que hace flush de stats + teardownPlayback). Esto evita llamar funciones de teardown con posible closure stale desde el handler.
@@ -30,9 +34,16 @@ Sigue existiendo pero solo actualiza el display (segundos en pantalla). Calcula 
 
 **Why:** El setInterval nunca fue el enforcement real; en background no es fiable. El enforcement real son el listener nativo y el AppState recovery.
 
+Para cargas async del motor BPM, Stop o el cambio de mezcla deben invalidar la
+generación pendiente antes de cualquier `await`; de lo contrario una continuación
+tardía puede volver a iniciar audio después del cierre.
+
 ## How to apply
 - Cualquier nuevo timer de duración en audio: usar `endTimeRef` timestamp + chequear en el listener nativo + AppState recovery.
 - NO confiar en que `setInterval` dispare la acción crítica; usarlo solo para el display.
+- Si la ruta de audio no emite callbacks nativos propios en background, conservar
+  un ancla nativa muda; no asumir que `UIBackgroundModes` mantiene timers JS.
+- Toda carga async debe revalidar ownership/generación después de cada `await`.
 
 ## Deadline vs interval (ago 18)
 - clearSleepInterval SOLO debe parar el interval de UI; NUNCA borrar sleepEndTimeRef ahí (el effect del countdown lo llama en cada arranque → el timer nunca expiraba). El deadline se borra explícito en: expiración, stop(), y setSleepTimer(null). Los paths de "timer por defecto" también deben setear sleepEndTimeRef, no solo el remaining.

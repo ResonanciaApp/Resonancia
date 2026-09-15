@@ -9,13 +9,20 @@ import React, {
 
 import { AmbientalDurationSheet } from "@/components/AmbientalDurationSheet";
 import { AmbientalPlayer } from "@/components/AmbientalPlayer";
+import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import type { Session } from "@/data/sessions";
+import { useLoadMix } from "@/hooks/useLoadMix";
 
 type AmbientalDurationContextValue = {
   openForSession: (session: Session) => boolean;
+  openForMix: (mix: MixPreset) => void;
 };
+
+type DurationTarget =
+  | { kind: "session"; session: Session }
+  | { kind: "mix"; mix: MixPreset };
 
 const AmbientalDurationContext =
   createContext<AmbientalDurationContextValue | null>(null);
@@ -25,71 +32,91 @@ export function AmbientalDurationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [activeSession, setActiveSession] = useState<Session | null>(null);
+  const [target, setTarget] = useState<DurationTarget | null>(null);
+  const [activeTarget, setActiveTarget] = useState<DurationTarget | null>(null);
   const [activeMinutes, setActiveMinutes] = useState(0);
   const pendingPlaybackRef = useRef<{
-    session: Session;
+    target: DurationTarget;
     minutes: number;
   } | null>(null);
   const { isPremium } = usePremium();
   const { playSessionWithDuration } = usePlayer();
+  const { setSleepTimer } = useMixer();
+  const loadMix = useLoadMix();
 
   const openForSession = useCallback((candidate: Session) => {
     if (candidate.categoryId !== "ambientales") return false;
-    setSession(candidate);
+    pendingPlaybackRef.current = null;
+    setTarget({ kind: "session", session: candidate });
     return true;
   }, []);
 
+  const openForMix = useCallback((mix: MixPreset) => {
+    pendingPlaybackRef.current = null;
+    setTarget({ kind: "mix", mix });
+  }, []);
+
   const close = useCallback(() => {
-    setSession(null);
+    pendingPlaybackRef.current = null;
+    setTarget(null);
   }, []);
 
   const start = useCallback(
     (minutes: number) => {
-      const selectedSession = session;
-      setSession(null);
-      if (selectedSession) {
-        pendingPlaybackRef.current = {
-          session: selectedSession,
-          minutes,
-        };
-        void playSessionWithDuration(selectedSession, minutes);
+      const selectedTarget = target;
+      if (!selectedTarget) return;
+
+      if (selectedTarget.kind === "session") {
+        pendingPlaybackRef.current = { target: selectedTarget, minutes };
+        setTarget(null);
+        void playSessionWithDuration(selectedTarget.session, minutes);
+        return;
       }
+
+      if (!loadMix(selectedTarget.mix)) return;
+      setSleepTimer(minutes);
+      pendingPlaybackRef.current = { target: selectedTarget, minutes };
+      setTarget(null);
     },
-    [playSessionWithDuration, session],
+    [loadMix, playSessionWithDuration, setSleepTimer, target],
   );
 
   const handleSheetDismissed = useCallback(() => {
     const pending = pendingPlaybackRef.current;
     if (!pending) return;
     pendingPlaybackRef.current = null;
-    setActiveSession(pending.session);
+    setActiveTarget(pending.target);
     setActiveMinutes(pending.minutes);
   }, []);
 
   const closePlayer = useCallback(() => {
     pendingPlaybackRef.current = null;
-    setActiveSession(null);
+    setActiveTarget(null);
     setActiveMinutes(0);
   }, []);
 
-  const value = useMemo(() => ({ openForSession }), [openForSession]);
+  const value = useMemo(
+    () => ({ openForSession, openForMix }),
+    [openForMix, openForSession],
+  );
 
   return (
     <AmbientalDurationContext.Provider value={value}>
       {children}
       <AmbientalDurationSheet
-        visible={session !== null}
-        sessionTitle={session?.title}
+        visible={target !== null}
+        sessionTitle={
+          target?.kind === "session" ? target.session.title : target?.mix.name
+        }
         isPremium={isPremium}
         onClose={close}
         onDismissed={handleSheetDismissed}
         onStart={start}
       />
       <AmbientalPlayer
-        visible={activeSession !== null}
-        session={activeSession}
+        visible={activeTarget !== null}
+        session={activeTarget?.kind === "session" ? activeTarget.session : null}
+        mix={activeTarget?.kind === "mix" ? activeTarget.mix : null}
         initialMinutes={activeMinutes}
         onClose={closePlayer}
       />
