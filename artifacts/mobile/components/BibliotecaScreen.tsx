@@ -180,7 +180,7 @@ function LibChip({
             { opacity: pressed ? 0.7 : 1 },
           ]}
         >
-          <Feather name={icon} size={22} color={sel ? "#0E0E17" : "#F4F4F4"} />
+          <Feather name={icon} size={15} color={sel ? "#0E0E17" : "#F4F4F4"} />
           <Text style={[styles.chipText, sel && styles.chipTextSel, sel && isIndigoThemeId(theme.id) && styles.chipTextIndigoSel]} numberOfLines={1}>
             {label}
           </Text>
@@ -1597,36 +1597,12 @@ export function BibliotecaScreen({
         if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
         return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
       });
-      const createFolderButtons = (
-        <View style={{ gap: 15 }}>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaVisible(true)}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="folder-plus" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaMezclaVisible(true)}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="sliders" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear carpeta de mezclas</Text>
-          </Pressable>
-        </View>
-      );
-
       if (folderItems.length === 0) {
         return (
           <View style={styles.emptyState}>
             <Feather name="folder" size={52} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus carpetas aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea carpetas para organizar tus playlists y mezclas.</Text>
-            <View style={{ width: "100%", marginTop: 24 }}>{createFolderButtons}</View>
           </View>
         );
       }
@@ -1681,7 +1657,6 @@ export function BibliotecaScreen({
               ))}
             </View>
           )}
-          {createFolderButtons}
         </View>
       );
     }
