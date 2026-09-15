@@ -669,31 +669,6 @@ export function ExploreScreen({
 
           <View style={styles.sectionDivider} />
 
-          <Pressable
-            onPress={() => router.push("/equipo" as never)}
-            accessibilityRole="button"
-            accessibilityLabel="Conoce a los Resonadores"
-            style={({ pressed }) => [
-              styles.sleepMixerBanner,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
-          >
-            <View style={styles.sleepMixerBannerIcon}>
-              <Feather name="users" color="#F9F9F9" size={30} />
-            </View>
-            <View style={styles.sleepMixerBannerCopy}>
-              <Text style={styles.sleepMixerBannerTitle}>
-                Conoce a los Resonadores
-              </Text>
-              <Text style={styles.sleepMixerBannerSubtitle}>
-                La esencia que le da vida a este espacio, las personas detrás de Resonancia.
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
-          </Pressable>
-
-          <View style={styles.sectionDivider} />
-
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={0}
@@ -869,6 +844,31 @@ export function ExploreScreen({
               })}
             </View>
           </View>
+
+          <View style={styles.sectionDivider} />
+
+          <Pressable
+            onPress={() => router.push("/equipo" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Conoce a los Resonadores"
+            style={({ pressed }) => [
+              styles.sleepMixerBanner,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <View style={styles.sleepMixerBannerIcon}>
+              <Feather name="users" color="#F9F9F9" size={30} />
+            </View>
+            <View style={styles.sleepMixerBannerCopy}>
+              <Text style={styles.sleepMixerBannerTitle}>
+                Conoce a los Resonadores
+              </Text>
+              <Text style={styles.sleepMixerBannerSubtitle}>
+                La esencia que le da vida a este espacio, las personas detrás de Resonancia.
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+          </Pressable>
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (

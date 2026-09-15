@@ -1283,7 +1283,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
-  onOpenSearch,
   isInicio3,
   scrollY,
 }: {
@@ -1292,7 +1291,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
-  onOpenSearch: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
@@ -1503,22 +1501,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               <Inicio2LotusStreak lightBackground={isInicio3} />
             </Animated.View>
           </Pressable>
-          {isInicio3 && (
-            <Pressable
-              onPress={onOpenSearch}
-              hitSlop={10}
-              style={styles.inicio3HeroSearchButton}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Inicio"
-              testID="inicio3-search-button"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView name="magnifyingglass" tintColor="#FFFFFF" size={24} />
-              ) : (
-                <Feather name="search" size={24} color="#FFFFFF" />
-              )}
-            </Pressable>
-          )}
         </View>
       </RAnimated.View>
 
@@ -2301,19 +2283,25 @@ export default function HomeScreen2({
   }, [searchTerm]);
   const homeSearchItems = useMemo(
     () =>
-      SESSIONS.map((session) => ({
-        id: session.id,
-        title: session.title,
-        meta: session.categoryLabel,
-        subtitle: session.subtitle ?? undefined,
-        searchText: [
-          session.title,
-          session.categoryLabel,
-          session.subtitle ?? "",
-        ].join(" "),
-        image: session.image,
-        duration: session.duration,
-      })),
+      SESSIONS.map((session) => {
+        const author = session.guideId
+          ? getGuide(session.guideId).name
+          : getArtist(session.artistId).name;
+        return {
+          id: session.id,
+          title: session.title,
+          meta: session.categoryLabel,
+          subtitle: author,
+          searchText: [
+            session.title,
+            session.categoryLabel,
+            session.subtitle ?? "",
+            author,
+          ].join(" "),
+          image: session.image,
+          duration: session.duration,
+        };
+      }),
     [catalogVersion],
   );
 
@@ -2504,10 +2492,46 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
-              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
+            {variant === "inicio3" && (
+              <View style={styles.inicio3SearchWrap}>
+                <Pressable
+                  onPress={handleSearchBtnPress}
+                  style={[
+                    styles.inicio3SearchBox,
+                    activeSceneId === "tibet"
+                      ? styles.inicio3SearchBoxTibet
+                      : isIndigoThemeId(activeSceneId)
+                        ? styles.inicio3SearchBoxIndigo
+                        : activeSceneId === "indigo2"
+                          ? styles.inicio3SearchBoxIndigo2
+                          : null,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Buscar en Inicio"
+                  testID="inicio3-search-button"
+                >
+                  {Platform.OS === "ios" ? (
+                    <SymbolView
+                      name="magnifyingglass"
+                      tintColor="rgba(249,249,249,0.72)"
+                      size={20}
+                    />
+                  ) : (
+                    <Feather
+                      name="search"
+                      size={20}
+                      color="rgba(249,249,249,0.72)"
+                    />
+                  )}
+                  <Text style={styles.inicio3SearchPlaceholder}>
+                    Busca por título, categoría o autor
+                  </Text>
+                </Pressable>
+              </View>
+            )}
           </>
         ) : showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
@@ -3150,6 +3174,7 @@ export default function HomeScreen2({
         placeholder="Buscar en Inicio..."
         emptyTitle="Encuentra lo que necesitas"
         emptySubtitle="Busca sesiones, sonidos y prácticas"
+        scope="discover"
         onSelect={(item) => {
           const session = SESSIONS.find((candidate) => candidate.id === item.id);
           if (!session) return false;
@@ -3364,16 +3389,37 @@ const styles = StyleSheet.create({
     gap: 8,
     transform: [{ translateX: -23 }, { translateY: -2 }],
   },
-  inicio3HeroSearchButton: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
+  inicio3SearchWrap: {
+    paddingHorizontal: GRID_PAD,
+    marginTop: -4,
+    marginBottom: 24,
+  },
+  inicio3SearchBox: {
+    height: 50,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "#F9F9F9",
+    paddingHorizontal: 18,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: 10,
     backgroundColor: "rgba(0,0,0,0.28)",
-    transform: [{ translateY: -1 }],
+  },
+  inicio3SearchBoxTibet: {
+    backgroundColor: "rgba(0,0,0,0.15)",
+  },
+  inicio3SearchBoxIndigo: {
+    backgroundColor: "rgba(181,211,255,0.057)",
+  },
+  inicio3SearchBoxIndigo2: {
+    backgroundColor: "rgba(191,207,255,0.096)",
+  },
+  inicio3SearchPlaceholder: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "400",
+    color: "#F4F4F4",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,

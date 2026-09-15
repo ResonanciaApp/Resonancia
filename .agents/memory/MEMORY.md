@@ -85,7 +85,7 @@
 - [Tab route lazy import crash](tab-route-lazy-import-crash.md) — React.lazy de ruta (tabs) duplica SceneThemeContext → crash "must be inside Provider"; solo rutas root son lazy-safe
 - [Category overlay stack](category-overlay-stack.md) — pantallas con tab bar visible abren vía openCategory (pila de overlays bajo la barra), nunca router.push; useCategoryOverlayOptional en componentes compartidos
 - [Dormir multi-tag](descanso-4tabs-restructure.md) — supercategoría dinámica con 8 tags canónicos; sesiones multi-tag salen en varios carruseles pero se deduplican en la cola
-- [Inicio inline search](inicio-inline-search.md) — buscador de Inicio expande sin Modal (dos capas absolutas + un shared value); lupa/loto/X son un solo botón tri-estado; no confundir con SearchOverlay de Biblioteca (ese sí es Modal)
+- [Buscador de Inicio como Descubrir](inicio-inline-search.md) — Inicio 3 usa barra completa y el mismo ContextSearchModal de Descubrir, con recientes, populares y filtros de duración
 - [Scene visual theme](scene-visual-theme.md) — SceneThemeContext persists independently from audio scene; screens with their own decorative identity (Mezclador, Resonadores) are deliberately excluded
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
