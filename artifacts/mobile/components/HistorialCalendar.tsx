@@ -420,11 +420,11 @@ export function HistorialCalendar({
                     />
                   </View>
                   <View style={styles.embeddedEntryCopy}>
-                    <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
-                      {entry.categoryLabel || session.categoryLabel || "Contenido"}
-                    </Text>
                     <Text style={[styles.embeddedEntryTitle, { color: calendarAccent }]} numberOfLines={2}>
                       {session.title}
+                    </Text>
+                    <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
+                      {entry.categoryLabel || session.categoryLabel || "Contenido"}
                     </Text>
                   </View>
                   <FavoriteHeartButton favorited={fav} onToggle={() => toggleFavorite(session.id)} />
@@ -590,8 +590,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   embeddedEntryImageWrap: {
-    width: 76,
-    height: 64,
+    width: 80,
+    height: 80,
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.08)",
@@ -612,13 +612,14 @@ const styles = StyleSheet.create({
   },
   embeddedEntryCategory: {
     fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "550" as any,
   },
   embeddedEntryTitle: {
     fontFamily: "Manrope",
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: "700",
   },
   entryRow: {
     flexDirection: "row",

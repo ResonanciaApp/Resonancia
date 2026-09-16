@@ -238,6 +238,14 @@ export function DrawerMenu() {
               <View style={styles.profileInfo}>
                 {loggedIn ? (
                   <>
+                    <View style={styles.profilePremiumRow}>
+                      <Text style={styles.profilePremiumText}>Premium</Text>
+                      <Image
+                        source={require("../assets/images/estrella-premium.png")}
+                        style={styles.profilePremiumStar}
+                        contentFit="contain"
+                      />
+                    </View>
                     <Pressable
                       onPress={() => navigate("/(tabs)/profile")}
                       style={styles.profileNameRow}
@@ -248,14 +256,6 @@ export function DrawerMenu() {
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>
-                    <View style={styles.profilePremiumRow}>
-                      <Text style={styles.profilePremiumText}>Premium</Text>
-                      <Image
-                        source={require("../assets/images/estrella-premium.png")}
-                        style={styles.profilePremiumStar}
-                        contentFit="contain"
-                      />
-                    </View>
                     <Pressable
                       onPress={() => navigate("/(tabs)/profile")}
                       style={styles.verPerfilBtn}
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
   },
   profilePremiumText: {
     fontFamily: "Manrope",
-    color: "#BE9650",
+    color: "#E7B95C",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
