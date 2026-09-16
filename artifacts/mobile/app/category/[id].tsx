@@ -284,7 +284,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(0,0,0,0.28)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${title}`}
@@ -365,14 +364,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   headerSearchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.34)",
   },
   chipsArea: {
     paddingTop: 10,

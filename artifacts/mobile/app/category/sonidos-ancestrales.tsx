@@ -625,7 +625,6 @@ export default function SonidosAncestalesScreen() {
               hitSlop={10}
               style={[
                 styles.headerSearchButton,
-                isIndigoThemeId(theme.id) && { backgroundColor: "rgba(0,0,0,0.28)" },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Buscar en Sonoterapia"
@@ -721,7 +720,7 @@ const styles = StyleSheet.create({
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
-  headerSearchButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  headerSearchButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.34)" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center", includeFontPadding: false, textAlignVertical: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
