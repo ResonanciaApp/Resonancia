@@ -1045,7 +1045,7 @@ const styles = StyleSheet.create({
   pageTitle:    { fontFamily: "Manrope", fontSize: 30, fontWeight: "800", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 0 },
   stickySearchWrap: {
-    paddingTop: 0,
+    paddingTop: 7,
     paddingBottom: 6,
   },
   stickyDivider: {
