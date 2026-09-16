@@ -1053,6 +1053,7 @@ export function ProfileScreenBase({
             styles.stickyHeaderRow,
             !asTab && { paddingTop: 25 },
             asTab && styles.libraryTabHeaderRow,
+            asTab && styles.libraryMainHeaderShift,
           ]}>
             {asTab && (
               <Pressable
@@ -1752,6 +1753,9 @@ const styles = StyleSheet.create({
   libraryTabHeaderRow: {
     minHeight: 48,
     paddingBottom: 6,
+  },
+  libraryMainHeaderShift: {
+    transform: [{ translateY: 8 }],
   },
   libraryTabBackBtn: {
     width: 40,
