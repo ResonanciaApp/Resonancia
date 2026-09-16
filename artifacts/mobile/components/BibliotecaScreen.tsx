@@ -2087,7 +2087,7 @@ export function BibliotecaScreen({
             style={styles.addResModalSheet}
           >
             <View style={styles.addResModalHeader}>
-              <Text style={styles.addResModalTitle}>Buscar Resonador</Text>
+              <Text style={styles.addResModalTitle}>Agrega Resonador</Text>
               <Pressable hitSlop={10} onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}>
                 <Feather name="x" size={22} color={TEXT} />
               </Pressable>
@@ -2100,7 +2100,6 @@ export function BibliotecaScreen({
                 placeholderTextColor={MUTED}
                 value={addResonadorQ}
                 onChangeText={setAddResonadorQ}
-                autoFocus
               />
             </View>
             <ScrollView
@@ -2596,7 +2595,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    height: 40,
+    height: 46,
     borderRadius: 999,
     marginHorizontal: H_PAD,
     marginTop: 25,
@@ -2608,7 +2607,7 @@ const styles = StyleSheet.create({
   addResSearchInput: {
     fontFamily: "Manrope",
     flex: 1,
-    fontSize: 11,
+    fontSize: 12,
     color: TEXT,
     padding: 0,
   },
