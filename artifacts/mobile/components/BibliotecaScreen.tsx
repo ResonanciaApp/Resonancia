@@ -1133,6 +1133,12 @@ export function BibliotecaScreen({
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
   const iconPlaceholderColor = "#fefefe";
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
+  const addResSearchSurface =
+    activeSceneId === "indigo2"
+      ? "rgba(21,13,46,0.7)"
+      : activeSceneId === "resonancia"
+        ? "rgba(9,11,23,0.7)"
+        : "rgba(14,14,23,0.7)";
 
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -2086,8 +2092,8 @@ export function BibliotecaScreen({
                 <Feather name="x" size={22} color={TEXT} />
               </Pressable>
             </View>
-            <View style={styles.addResSearchRow}>
-              <Feather name="search" size={16} color={MUTED} />
+            <View style={[styles.addResSearchRow, { backgroundColor: addResSearchSurface }]}>
+              <Feather name="search" size={17} color={TEXT} />
               <TextInput
                 style={styles.addResSearchInput}
                 placeholder="Artistas, guiadores..."
@@ -2097,7 +2103,10 @@ export function BibliotecaScreen({
                 autoFocus
               />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 48 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingTop: 15, paddingBottom: 48, gap: 5 }}
+            >
               {allResonadores
                 .filter((r) => addResonadorQ.length === 0 || r.name.toLowerCase().includes(addResonadorQ.toLowerCase()))
                 .map((r) => {
@@ -2120,9 +2129,13 @@ export function BibliotecaScreen({
                       <Pressable
                         hitSlop={12}
                         onPress={() => isFollowed ? saveFollowed(followedIds.filter((x) => x !== r.id)) : followResonador(r.id)}
-                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(255,255,255,0.025)" }]}
+                        style={[
+                          styles.addResonadorIcon,
+                          styles.addResFollowButton,
+                          { backgroundColor: isFollowed ? "#F9F9F9" : "rgba(0,0,0,0.28)" },
+                        ]}
                       >
-                        <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? GOLD : TEXT} />
+                        <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? "#060A0F" : TEXT} />
                       </Pressable>
                     </Pressable>
                   );
@@ -2577,24 +2590,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: TEXT,
+    transform: [{ translateY: 15 }],
   },
   addResSearchRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(255,255,255,0.025)",
-    borderRadius: 12,
+    height: 55,
+    borderRadius: 999,
     marginHorizontal: H_PAD,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    marginTop: 5,
+    paddingHorizontal: 18,
     marginBottom: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.20)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.7)",
   },
   addResSearchInput: {
     fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
     color: TEXT,
+    padding: 0,
+  },
+  addResFollowButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
 });
