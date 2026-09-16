@@ -2595,7 +2595,7 @@ export default function HomeScreen2({
             sessions={dailyRecommendations}
             dayKey={todayKey}
             onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
-            style={{ paddingHorizontal: GRID_PAD, marginTop: -5 }}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -17 }}
             inicio3Compact={variant === "inicio3"}
           />
         )}
@@ -3461,8 +3461,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 21,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    borderBottomWidth: 2,
-    borderBottomColor: "rgba(255,255,255,0.2)",
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
