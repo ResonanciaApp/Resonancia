@@ -322,7 +322,7 @@ export function HistorialCalendar({
       {/* ── Mi calendario ── */}
       {!embedded && (
         <View style={[styles.sectionHeader, p ? { paddingHorizontal: p } : undefined]}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
+          <Text style={[styles.sectionTitle, styles.calendarSectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
         </View>
       )}
 
@@ -501,6 +501,7 @@ const styles = StyleSheet.create({
   embeddedCalendar: { marginTop: 0 },
   sectionHeader: { marginBottom: 14 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  calendarSectionTitle: { fontSize: 17 },
   calendarCard: {
     borderRadius: 18,
     paddingVertical: 16,

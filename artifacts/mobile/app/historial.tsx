@@ -41,7 +41,7 @@ export default function HistorialScreen() {
       <StatusBar hidden />
 
       <View style={styles.contentShift}>
-        <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}>
           <View style={[styles.stickyHeaderRow, styles.libraryTabHeaderRow]}>
             <Pressable
               onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -57,7 +57,7 @@ export default function HistorialScreen() {
                     { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
                   ]}
                 >
-                  <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                  <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
                 </View>
               )}
             </Pressable>
@@ -74,7 +74,7 @@ export default function HistorialScreen() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <HistorialCalendar backgroundColor="rgba(181,211,255,0.1)" />
+          <HistorialCalendar backgroundColor="rgba(0,0,0,0.28)" />
         </ScrollView>
       </View>
     </LinearGradient>
@@ -97,24 +97,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 19,
-    paddingBottom: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 6,
   },
   libraryTabHeaderRow: {
     minHeight: 48,
-    paddingBottom: 12,
+    paddingBottom: 6,
+    transform: [{ translateY: 8 }],
   },
   libraryTabBackBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   libraryTabBackHitArea: {
     position: "absolute",
-    left: 13,
-    top: -6,
+    left: 16,
+    top: -4,
     width: 48,
     height: 48,
     alignItems: "center",
@@ -124,8 +127,8 @@ const styles = StyleSheet.create({
   },
   stickyTitleLibraryTab: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
     color: "#FBFBFB",
     letterSpacing: 0.2,
