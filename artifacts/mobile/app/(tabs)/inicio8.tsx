@@ -3457,8 +3457,8 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderTopLeftRadius: 21,
-    borderTopRightRadius: 21,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: "hidden",
