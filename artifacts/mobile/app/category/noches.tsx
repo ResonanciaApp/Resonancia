@@ -11,6 +11,7 @@ import {
   getContentCarouselCardWidth,
 } from "@/constants/carousel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
+import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -233,6 +234,7 @@ export default function NochesScreen() {
 
   const [activeTab,       setActiveTab]       = useState<CatTab | null>(null);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [searchVisible, setSearchVisible] = useState(false);
   const [allVisible,      setAllVisible]      = useState(false);
   const slideX = useRef(new Animated.Value(W)).current;
 
@@ -272,6 +274,14 @@ export default function NochesScreen() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const allTabSessions = useMemo(() => getSessionsForTab(activeTab), [activeTab, version]); // eslint-disable-line react-hooks/exhaustive-deps
+  const searchItems = useMemo<ContextSearchItem[]>(
+    () => getSessionsForTab(null).map((s) => ({
+      id: s.id, title: s.title, meta: s.categoryLabel, subtitle: s.durationLabel,
+      searchText: `${s.title} ${SUBCATEGORIES.filter((sub) => matchTag(s, sub.tag)).map((sub) => sub.tag).join(" ")}`,
+      image: s.image, duration: s.duration,
+    })),
+    [version],
+  );
 
   const recentInCategory = useMemo(() => {
     const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
@@ -509,8 +519,29 @@ export default function NochesScreen() {
           <Text style={styles.headerTitle}>Noches</Text>
           {activeTab && <Text style={styles.headerSubtitle}>{activeTab}</Text>}
         </View>
-        <View style={styles.lotoBtn} />
+        <Pressable onPress={() => setSearchVisible(true)} style={styles.headerSearchButton} accessibilityRole="button" accessibilityLabel="Buscar en Noches">
+          <Feather name="search" size={22} color={TEXT} />
+        </Pressable>
       </Animated.View>
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        scope="sleep"
+        contextKey="noches"
+        popularTerms={TABS.slice(0, 3).map((tab) => tab.tag)}
+        placeholder="Buscar en Noches..."
+        emptyTitle="Busca en Noches"
+        emptySubtitle="Meditaciones, música y sonidos para descansar."
+        onSelect={(item) => {
+          const session = getSessionById(item.id);
+          if (!session) return false;
+          if (session.skipMiniPlayer) { playSession(session); return true; }
+          playSession(session);
+          router.push("/player" as never);
+          return true;
+        }}
+      />
     </View>
   );
 }
@@ -529,6 +560,7 @@ const styles = StyleSheet.create({
   heroIconFloat: { alignItems: "center", paddingBottom: 13, zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: ICON_COLOR + "1A", borderWidth: 2, alignItems: "center", justifyContent: "center", overflow: "hidden" },
   lotoBtn: { width: 45, height: 45, borderRadius: 22.5, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)" },
+  headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 4, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },

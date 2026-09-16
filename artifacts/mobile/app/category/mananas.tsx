@@ -19,12 +19,12 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
+import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
@@ -183,7 +183,7 @@ export default function MananasScreen() {
   }, [history]);
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
@@ -256,6 +256,14 @@ export default function MananasScreen() {
     if (!selectedTag) return MANANAS_SESSIONS;
     return MANANAS_SESSIONS.filter((s) => matchTag(s, selectedTag));
   }, [selectedTag]);
+  const searchItems = useMemo<ContextSearchItem[]>(
+    () => MANANAS_SESSIONS.map((s) => ({
+      id: s.id, title: s.title, meta: s.categoryLabel, subtitle: s.durationLabel,
+      searchText: `${s.title} ${(s as Session & { meditationTag?: string }).meditationTag ?? ""} ${(s as Session & { themeTag?: string[] }).themeTag?.join(" ") ?? ""}`,
+      image: s.image, duration: s.duration,
+    })),
+    [],
+  );
 
   const countByTag = useMemo(() => {
     const map: Record<string, number> = {};
@@ -314,32 +322,13 @@ export default function MananasScreen() {
                 />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
-              <View style={styles.searchBar}>
-                <Feather name="search" size={17} color={colors.mutedForeground} />
-                <TextInput
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  placeholder="Buscar en Mañanas…"
-                  placeholderTextColor={colors.mutedForeground}
-                  value={query}
-                  onChangeText={setQuery}
-                  returnKeyType="search"
-                />
-              </View>
+              <Pressable onPress={() => setSearchVisible(true)} style={styles.headerSearchButton} accessibilityRole="button" accessibilityLabel="Buscar en Mañanas">
+                <Feather name="search" size={22} color={colors.foreground} />
+              </Pressable>
             </View>
 
             <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-              {SUBCATEGORIES.filter((c) => {
-                const q = query.trim().toLowerCase();
-                return !q || c.tag.toLowerCase().includes(q);
-              }).length === 0 && (
-                <Text style={[styles.noResults, { color: colors.mutedForeground }]}>
-                  Sin resultados para “{query.trim()}”
-                </Text>
-              )}
-              {SUBCATEGORIES.filter((c) => {
-                const q = query.trim().toLowerCase();
-                return !q || c.tag.toLowerCase().includes(q);
-              }).map((sub, idx, arr) => {
+              {SUBCATEGORIES.map((sub, idx, arr) => {
                 const isLast = idx === arr.length - 1;
                 return (
                   <Pressable
@@ -589,6 +578,25 @@ export default function MananasScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        scope="sleep"
+        contextKey="mananas"
+        popularTerms={SUBCATEGORIES.filter((sub) => MANANAS_SESSIONS.some((s) => matchTag(s, sub.tag))).slice(0, 3).map((sub) => sub.tag)}
+        placeholder="Buscar en Mañanas..."
+        emptyTitle="Busca en Mañanas"
+        emptySubtitle="Meditación, respiración y afirmaciones para empezar."
+        onSelect={(item) => {
+          const session = MANANAS_SESSIONS.find((candidate) => candidate.id === item.id);
+          if (!session) return false;
+          if (session.skipMiniPlayer) { playSession(session); return true; }
+          playSession(session);
+          router.push("/player" as never);
+          return true;
+        }}
+      />
     </View>
   );
 }
@@ -614,16 +622,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  searchBar: {
-    flexDirection: "row", alignItems: "center", gap: 10,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 8,
-    marginTop: 18,
-  },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14, padding: 0 },
+  headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
   pageTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },

@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -26,6 +27,7 @@ import {
   getCategoryEditorialTags,
   getCategorySessionTags,
 } from "@/data/category-tabs";
+import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
@@ -119,6 +121,7 @@ export default function CategoryTagScreen({
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [activeFilter, setActiveFilter] = useState<FilterId>("all");
+  const [searchVisible, setSearchVisible] = useState(false);
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
   const stickyBorderOpacity = useRef(new Animated.Value(0)).current;
   const stickyBorderActiveRef = useRef(false);
@@ -143,6 +146,33 @@ export default function CategoryTagScreen({
   const editorialTags = useMemo(
     () => [...new Set(sessions.flatMap((session) => getCategoryEditorialTags(session, decodedCategory)))],
     [decodedCategory, sessions],
+  );
+  const searchItems = useMemo(
+    () =>
+      sessions.map((session) => ({
+        id: session.id,
+        title: session.title,
+        meta: session.categoryLabel,
+        subtitle: session.subtitle,
+        searchText: [
+          session.title,
+          session.subtitle,
+          session.categoryLabel,
+          ...getCategorySessionTags(session, decodedCategory),
+          ...getCategoryEditorialTags(session, decodedCategory),
+        ].join(" "),
+        image: session.image,
+      })),
+    [decodedCategory, sessions],
+  );
+  const popularSearchTerms = useMemo(
+    () =>
+      getCategoryPopularSearchTerms(
+        sessions,
+        decodedCategory,
+        editorialTags,
+      ),
+    [decodedCategory, editorialTags, sessions],
   );
   const filteredSessions = useMemo(() => sessions.filter((session) => {
     if (activeFilter === "all") return true;
@@ -244,7 +274,17 @@ export default function CategoryTagScreen({
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
         <View style={styles.stickyHeaderRow}>
-          <View style={styles.stickySpacer} />
+          <View style={styles.stickySpacer}>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={styles.headerSearchButton}
+              accessibilityRole="button"
+              accessibilityLabel={`Buscar en ${title}`}
+            >
+              <Feather name="search" size={24} color="#FBFBFB" />
+            </Pressable>
+          </View>
           <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
           <View style={styles.stickySpacer} />
         </View>
@@ -259,6 +299,20 @@ export default function CategoryTagScreen({
           style={[styles.stickyBottomBorder, { opacity: stickyBorderOpacity }]}
         />
       </View>
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        placeholder={`Buscar en ${title}...`}
+        emptyTitle={`Busca en ${title}`}
+        emptySubtitle="Encuentra una sesión para ti"
+        contextKey={`category:${decodedCategory}:${decodedTag}`}
+        popularTerms={popularSearchTerms}
+        onSelect={(item) => {
+          const session = sessions.find((candidate) => candidate.id === item.id);
+          if (session) openSession(session);
+        }}
+      />
     </View>
   );
 }
@@ -281,7 +335,15 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6 },
   stickyBottomBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
-  stickySpacer: { width: 44 },
-  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 16, lineHeight: 19, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
+  stickySpacer: { width: 44, alignItems: "center", justifyContent: "center" },
+  headerSearchButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
   stickyTabs: { marginTop: 19 },
 });

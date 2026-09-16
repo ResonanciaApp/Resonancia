@@ -51,6 +51,7 @@ type ContextSearchModalProps = {
   emptySubtitle: string;
   onSelect: (item: ContextSearchItem) => boolean | void;
   scope?: ContextSearchScope;
+  contextKey?: string;
   popularTerms?: string[];
   onSearchSelection?: (term: string, item: ContextSearchItem) => void;
   showDurationFilters?: boolean;
@@ -72,6 +73,7 @@ export function ContextSearchModal({
   emptySubtitle,
   onSelect,
   scope,
+  contextKey,
   popularTerms,
   onSearchSelection,
   showDurationFilters = true,
@@ -83,13 +85,16 @@ export function ContextSearchModal({
   const [query, setQuery] = useState("");
   const [durationRangeId, setDurationRangeId] = useState<SearchDurationRangeId | null>(null);
   const [recentId, setRecentId] = useState<string | null>(null);
-  const recentStorageKey = scope ? `resonance_search_recent_${scope}_v1` : null;
+  const recentContext = contextKey ?? scope;
+  const recentStorageKey = recentContext
+    ? `resonance_search_recent_${recentContext}_v1`
+    : null;
   const { data: trendData } = useGetSearchTrends(
     { context: scope ?? "discover" },
     {
       query: {
         queryKey: getGetSearchTrendsQueryKey({ context: scope ?? "discover" }),
-        enabled: Boolean(scope) && visible,
+        enabled: Boolean(scope) && !popularTerms?.length && visible,
         staleTime: 5 * 60_000,
         retry: 1,
       },
@@ -112,6 +117,7 @@ export function ContextSearchModal({
         ? serverPopularTerms
         : fallbackPopularTerms
   ).slice(0, 3);
+  const showSearchMenu = Boolean(scope || popularTerms?.length);
 
   useEffect(() => {
     if (!visible) {
@@ -257,7 +263,7 @@ export function ContextSearchModal({
           </Pressable>
         </View>
 
-        {scope && query.trim().length === 0 && durationRangeId === null ? (
+        {showSearchMenu && query.trim().length === 0 && durationRangeId === null ? (
           <ScrollView
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}

@@ -18,8 +18,8 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
-  Pressable, ScrollView, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, Animated, Dimensions, Easing, Modal, Platform,
+  Pressable, ScrollView, StyleSheet, Text, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
@@ -38,6 +38,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
+import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 14;
@@ -166,45 +167,6 @@ function ChipRow({ tabs, activeTab, onSelect }: {
         ))}
       </ScrollView>
     </View>
-  );
-}
-
-function SearchOverlay({ visible, onClose, categoryId, placeholderTxt }: { visible: boolean; onClose: ()=>void; categoryId: string; placeholderTxt: string }) {
-  const [q, setQ]   = useState("");
-  const inputRef    = useRef<TextInput>(null);
-  const [kbH,setKbH]   = useState(0);
-  const [kbOk,setKbOk] = useState(false);
-  const fade = useRef(new Animated.Value(0)).current;
-  const results = useMemo(() => q.trim().length>=1 ? SESSIONS.filter((s) => s.categoryId===categoryId && s.title.toLowerCase().includes(q.toLowerCase())) : [], [q, categoryId]);
-  useEffect(() => {
-    if (!visible) { setQ(""); setKbOk(false); setKbH(0); fade.setValue(0); return; }
-    const show = Keyboard.addListener("keyboardDidShow", (e) => { setKbH(e.endCoordinates.height); setKbOk(true); Animated.timing(fade,{toValue:1,duration:180,useNativeDriver:true}).start(); });
-    const hide = Keyboard.addListener("keyboardDidHide", () => { setKbOk(false); fade.setValue(0); });
-    return () => { show.remove(); hide.remove(); };
-  }, [visible, fade]);
-  return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <View style={[styles.searchModalRoot, { paddingBottom: kbH }]}>
-        <View style={styles.searchOverlay}>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={16} color={MUTED} />
-            <TextInput ref={inputRef} style={styles.searchInput} placeholder={placeholderTxt} placeholderTextColor={MUTED} value={q} onChangeText={setQ} returnKeyType="search" />
-          </View>
-          <Pressable onPress={onClose} style={styles.cancelBtn}><Text style={styles.cancelText}>Cancelar</Text></Pressable>
-        </View>
-        {q.length===0 && kbOk && (
-          <Animated.View style={[styles.searchEmpty, { opacity: fade }]}>
-            <Feather name="music" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-            <Text style={styles.searchEmptyTitle}>{placeholderTxt}</Text>
-          </Animated.View>
-        )}
-        {results.length>0 && (
-          <ScrollView style={{ flex:1, backgroundColor:"#210911" }} contentContainerStyle={{ padding: H_PAD, gap: 9 }} keyboardShouldPersistTaps="handled">
-            {results.map((s) => <CategoryCard key={s.id} session={s} horizontal />)}
-          </ScrollView>
-        )}
-      </View>
-    </Modal>
   );
 }
 
@@ -400,6 +362,14 @@ export default function SonidosAncestalesScreen() {
     ))];
     return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);
+  const searchItems = useMemo<ContextSearchItem[]>(
+    () => getSessionsForTab(null).map((s) => ({
+      id: s.id, title: s.title, meta: s.categoryLabel, subtitle: s.durationLabel,
+      searchText: `${s.title} ${getCategorySessionTags(s, "sonidos-ancestrales").join(" ")}`,
+      image: s.image, duration: s.duration,
+    })),
+    [version],
+  );
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -692,7 +662,25 @@ export default function SonidosAncestalesScreen() {
          <Animated.View style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]} />
       </Animated.View>
 
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sonoterapia..." />
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        scope="sounds"
+        contextKey="sonidos-ancestrales"
+        popularTerms={TABS.slice(0, 3).map((tab) => tab.label)}
+        placeholder="Buscar en Sonoterapia..."
+        emptyTitle="Busca en Sonoterapia"
+        emptySubtitle="Cuencos, cantos y paisajes ancestrales."
+        onSelect={(item) => {
+          const session = getSessionById(item.id);
+          if (!session) return false;
+          if (session.skipMiniPlayer) { playSession(session); return true; }
+          playSession(session);
+          router.push("/player" as never);
+          return true;
+        }}
+      />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
@@ -814,15 +802,6 @@ const styles = StyleSheet.create({
   qsRight: { fontFamily: "Manrope", fontSize: 13, color: MUTED, marginRight: 4 },
 
   /* ── Search overlay ── */
-  searchModalRoot: { flex: 1, backgroundColor: "#2E0510" },
-  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#2E0510", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
-  searchBar: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FFFFFF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12 },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#111" },
-  cancelBtn: { paddingVertical: 6 },
-  cancelText: { fontFamily: "Manrope", color: GOLD, fontSize: 14, fontWeight: "600" },
-  searchEmpty: { flex: 1, backgroundColor: "#210911", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
-  searchEmptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
-  searchEmptySub: { fontFamily: "Manrope", fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
 
   /* ── Compat ── */
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },

@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { SupercategoryFilterTabs } from "@/components/SupercategoryFilterTabs";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -25,6 +26,8 @@ import {
   type Session,
 } from "@/data/sessions";
 import { SONIDOS_TAG_CARDS } from "@/data/tags";
+import { getCategoryPopularSearchTerms } from "@/data/category-search";
+import { getCategorySessionTags } from "@/data/category-tabs";
 import {
   collectSupercategoryEditorialTags,
   matchesSupercategoryFilter,
@@ -52,6 +55,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const overlay = useCategoryOverlayOptional();
   const soundPreview = useSoundPreview();
   const [activeFilter, setActiveFilter] = React.useState<SupercategoryFilter>("all");
+  const [searchVisible, setSearchVisible] = React.useState(false);
   const filterBorderOpacity = React.useRef(new Animated.Value(0)).current;
   const filterBorderActiveRef = React.useRef(false);
   const handleGridScroll = useCallback((event: {
@@ -80,6 +84,32 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   const editorialTags = useMemo(
     () => collectSupercategoryEditorialTags(sessions, "sonidos"),
     [sessions],
+  );
+  const searchItems = useMemo(
+    () =>
+      sessions.map((session) => ({
+        id: session.id,
+        title: session.title,
+        meta: session.categoryLabel,
+        subtitle: session.subtitle,
+        searchText: [
+          session.title,
+          session.subtitle,
+          session.categoryLabel,
+          ...getCategorySessionTags(session, "ambientales"),
+        ].join(" "),
+        image: session.image,
+      })),
+    [sessions],
+  );
+  const popularSearchTerms = useMemo(
+    () =>
+      getCategoryPopularSearchTerms(
+        sessions,
+        "ambientales",
+        editorialTags,
+      ),
+    [editorialTags, sessions],
   );
   const filteredSessions = useMemo(
     () => sessions.filter((session) =>
@@ -160,6 +190,15 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
           {tag.label}
         </Text>
+        <Pressable
+          onPress={() => setSearchVisible(true)}
+          hitSlop={10}
+          style={[styles.searchButton, { top: topPad }]}
+          accessibilityRole="button"
+          accessibilityLabel={`Buscar en ${tag.label}`}
+        >
+          <Feather name="search" size={24} color={colors.foreground} />
+        </Pressable>
       </View>
       <SupercategoryFilterTabs
         editorialTags={editorialTags}
@@ -201,6 +240,21 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           }}
         />
       )}
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        placeholder={`Buscar en ${tag.label}...`}
+        emptyTitle={`Busca en ${tag.label}`}
+        emptySubtitle="Encuentra un sonido para ti"
+        contextKey={`sound-tag:${id}`}
+        popularTerms={popularSearchTerms}
+        showDurationFilters={false}
+        onSelect={(item) => {
+          const session = sessions.find((candidate) => candidate.id === item.id);
+          if (session) openSession(session);
+        }}
+      />
     </View>
   );
 }
@@ -224,11 +278,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  searchButton: {
+    position: "absolute",
+    right: H_PAD,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     paddingHorizontal: 48,
     fontFamily: "Manrope",
-    fontSize: 16,
-    lineHeight: 22,
+    fontSize: 20,
+    lineHeight: 23,
     fontWeight: "700",
   },
   scroll: { flex: 1 },

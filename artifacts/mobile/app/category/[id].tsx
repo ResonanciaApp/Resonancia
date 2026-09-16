@@ -24,6 +24,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { CATEGORIES } from "@/data/categories";
+import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -138,6 +139,10 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
       image: session.image,
     })),
     [allSessions, id],
+  );
+  const popularSearchTerms = useMemo(
+    () => getCategoryPopularSearchTerms(allSessions, id, tabs),
+    [allSessions, id, tabs],
   );
 
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
@@ -314,6 +319,8 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         placeholder={`Buscar en ${title}...`}
         emptyTitle={`Busca en ${title}`}
         emptySubtitle={category?.subtitle ?? "Encuentra una sesión para ti"}
+        contextKey={`category:${id}`}
+        popularTerms={popularSearchTerms}
         onSelect={(item) => {
           const session = allSessions.find((candidate) => candidate.id === item.id);
           if (session) handleSessionPress(session);

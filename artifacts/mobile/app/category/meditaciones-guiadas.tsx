@@ -16,8 +16,8 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
-  Pressable, ScrollView, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, Animated, Dimensions, Easing, Modal, Platform,
+  Pressable, ScrollView, StyleSheet, Text, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
@@ -34,6 +34,7 @@ import { hexToRgba } from "@/utils/color";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
+import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 
 const H_PAD = 14;
 const CARD_GAP = 12;
@@ -112,46 +113,6 @@ function ChipRow({ tabs, activeTab, onSelect }: { tabs: { id: string; label: str
         ))}
       </ScrollView>
     </View>
-  );
-}
-
-function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:()=>void }) {
-  const [q,setQ] = useState("");
-  const inputRef = useRef<TextInput>(null);
-  const [kbH,setKbH]   = useState(0);
-  const [kbOk,setKbOk] = useState(false);
-  const fade = useRef(new Animated.Value(0)).current;
-  const results = useMemo(()=>q.trim().length>=1?SESSIONS.filter((s)=>s.categoryId==="meditaciones-guiadas"&&s.title.toLowerCase().includes(q.toLowerCase())):[],[q]);
-  useEffect(()=>{
-    if (!visible) { setQ(""); setKbOk(false); setKbH(0); fade.setValue(0); return; }
-    const show = Keyboard.addListener("keyboardDidShow",(e)=>{ setKbH(e.endCoordinates.height); setKbOk(true); Animated.timing(fade,{toValue:1,duration:180,useNativeDriver:true}).start(); });
-    const hide = Keyboard.addListener("keyboardDidHide",()=>{ setKbOk(false); fade.setValue(0); });
-    return ()=>{ show.remove(); hide.remove(); };
-  },[visible,fade]);
-  return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={()=>inputRef.current?.focus()}>
-      <View style={[styles.searchModalRoot,{paddingBottom:kbH}]}>
-        <View style={styles.searchOverlay}>
-          <View style={styles.searchBar}>
-            <Feather name="search" size={16} color={MUTED} />
-            <TextInput ref={inputRef} style={styles.searchInput} placeholder="Buscar en Meditaciones..." placeholderTextColor={MUTED} value={q} onChangeText={setQ} returnKeyType="search" />
-          </View>
-          <Pressable onPress={onClose} style={styles.cancelBtn}><Text style={styles.cancelText}>Cancelar</Text></Pressable>
-        </View>
-        {q.length===0&&kbOk&&(
-          <Animated.View style={[styles.searchEmpty,{opacity:fade}]}>
-            <Feather name="moon" size={48} color={GOLD} style={{marginBottom:16}} />
-            <Text style={styles.searchEmptyTitle}>Busca en Meditaciones</Text>
-            <Text style={styles.searchEmptySub}>Visualizaciones, mantras, escaneo y más.</Text>
-          </Animated.View>
-        )}
-        {results.length>0&&(
-          <ScrollView style={{flex:1,backgroundColor:"#210911"}} contentContainerStyle={{padding:H_PAD,gap:9}} keyboardShouldPersistTaps="handled">
-            {results.map((s)=><CategoryCard key={s.id} session={s} horizontal />)}
-          </ScrollView>
-        )}
-      </View>
-    </Modal>
   );
 }
 
@@ -275,6 +236,14 @@ export default function MeditacionesGuiadasScreen() {
     )];
      return uniqueTags.map((tag) => ({ id: tag, label: tag }));
   }, [version]);
+  const searchItems = useMemo<ContextSearchItem[]>(
+    () => getSessionsForTab(null).map((s) => ({
+      id: s.id, title: s.title, meta: s.categoryLabel, subtitle: s.durationLabel,
+      searchText: `${s.title} ${getCategorySessionTags(s, "meditaciones-guiadas").join(" ")}`,
+      image: s.image, duration: s.duration,
+    })),
+    [version],
+  );
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -501,7 +470,25 @@ export default function MeditacionesGuiadasScreen() {
         </AnimatedTabContent>
       </ScrollView>
 
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        scope="discover"
+        contextKey="meditaciones-guiadas"
+        popularTerms={TABS.slice(0, 3).map((tab) => tab.label)}
+        placeholder="Buscar en Meditaciones..."
+        emptyTitle="Busca en Meditaciones"
+        emptySubtitle="Visualizaciones, mantras, escaneo y más."
+        onSelect={(item) => {
+          const session = getSessionById(item.id);
+          if (!session) return false;
+          if (session.skipMiniPlayer) { playSession(session); return true; }
+          if (session.skipDetail) { playSession(session); router.push("/player" as never); return true; }
+          openCategory(`/session/${session.id}`);
+          return true;
+        }}
+      />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
 
@@ -672,15 +659,6 @@ const styles = StyleSheet.create({
   qsRowBorder: {},
   qsIcon: { width: 22 },
   qsLabel: { fontFamily: "Manrope", flex: 1, fontSize: 15, color: TEXT },
-  searchModalRoot: { flex: 1, backgroundColor: "#210911" },
-  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#210911", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
-  searchBar: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FFFFFF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12 },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#111" },
-  cancelBtn: { paddingVertical: 6 },
-  cancelText: { fontFamily: "Manrope", color: GOLD, fontSize: 14, fontWeight: "600" },
-  searchEmpty: { flex: 1, backgroundColor: "#0D0A1A", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
-  searchEmptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
-  searchEmptySub: { fontFamily: "Manrope", fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   chipsShadow: { position: "absolute", left: 0, right: 0, bottom: -7, height: 7 },
 });
