@@ -311,9 +311,9 @@ export function DrawerMenu() {
                       >
                         <View style={styles.itemIcon}>
                           {item.mciIcon ? (
-                            <MaterialCommunityIcons name={item.mciIcon} size={24} color="#F9F9F9" />
+                            <MaterialCommunityIcons name={item.mciIcon} size={23} color="#F9F9F9" />
                           ) : (
-                            <Feather name={item.icon} size={21} color="#F9F9F9" />
+                            <Feather name={item.icon} size={20} color="#F9F9F9" />
                           )}
                         </View>
                         <Text style={[styles.itemLabel, styles.inicio3ItemLabel]}>{item.label}</Text>
@@ -483,6 +483,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.12)",
     marginVertical: 20,
+    transform: [{ translateY: -6 }],
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",
@@ -501,7 +502,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 11,
+    paddingVertical: 8,
     paddingHorizontal: 0,
     borderRadius: 10,
     gap: 14,
