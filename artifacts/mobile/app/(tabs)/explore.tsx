@@ -1094,8 +1094,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(249,249,249,0.18)",
   },
   centeredResonadoresDivider: {
-    marginTop: -9,
-    marginBottom: 8,
+    marginTop: -27,
+    marginBottom: -10,
   },
   popularSection: {
     marginTop: 0,
