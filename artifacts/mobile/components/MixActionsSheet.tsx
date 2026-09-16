@@ -126,7 +126,7 @@ export function MixActionsSheet({
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
-  const sheetColor = theme.gradient[0];
+  const sheetColor = theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
   const sheetGradient = [sheetColor, sheetColor] as [string, string];
   const {
     togglePresetFavorite,

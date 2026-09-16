@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   moreMenuBtn: {
     borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "#000000",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 8,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.20)",
     alignItems: "center",
@@ -920,9 +920,9 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   recommendedMoodBadge: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 49,
+    height: 49,
+    borderRadius: 24.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
@@ -939,7 +939,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontFamily: "Manrope",
     color: TEXT,
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: "800",
   },
   sectionDescription: {

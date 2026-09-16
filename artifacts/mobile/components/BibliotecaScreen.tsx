@@ -380,10 +380,9 @@ function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onP
 
 // ── Fila de playlist del usuario ─────────────────────────────────────────────
 function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPress: () => void; onLongPress?: () => void }) {
-  const { activeSceneId } = useSceneTheme();
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
+      <View style={[styles.userPlCover, { backgroundColor: "#000000" }]}>
         {getDefaultPlaylistCover(pl.id) && !pl.coverUri && !pl.coverType ? (
           <Image source={getDefaultPlaylistCover(pl.id)} style={styles.userPlCover} contentFit="cover" />
         ) : pl.coverType === "geometrix" && pl.coverGeometryId ? (
@@ -1385,7 +1384,7 @@ export function BibliotecaScreen({
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => openPlaylistPanel(pl.id)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "#000000", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1587,7 +1586,7 @@ export function BibliotecaScreen({
              {displayPl.map((pl) => (
                  <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                    onPress={() => openPlaylistPanel(pl.id)}>
-                   <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                   <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "#000000", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                      {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                        <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                      ) : pl.coverType === "creation" && pl.coverCreationId ? (

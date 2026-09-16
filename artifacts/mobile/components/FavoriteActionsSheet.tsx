@@ -18,7 +18,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -69,14 +68,9 @@ function ActionRow({
 export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { theme, activeSceneId } = useSceneTheme();
-  const sheetSolid =
-    activeSceneId === "tibet"
-      ? ((theme.gradient[2] ?? "#2d4081") as string)
-      : isIndigoThemeId(activeSceneId)
-        ? (theme.gradient[theme.gradient.length - 1] as string)
-        : null;
-  const sheetGradient = sheetSolid ? ([sheetSolid, sheetSolid] as [string, string]) : theme.gradient;
+  const { theme } = useSceneTheme();
+  const sheetSolid = theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
+  const sheetGradient = [sheetSolid, sheetSolid] as [string, string];
   const { toggleFavorite } = usePlayer();
   const {
     favFolders,
