@@ -41,3 +41,5 @@ exponer `onScroll`/`scrollEventThrottle` como props opcionales pass-through
 en ese componente para conectarlo al mismo handler compartido.
 
 **Además:** el divisor debe estar SIEMPRE montado y togglear solo `opacity` (nunca montarse condicionalmente): al montarse añade su hairline de alto al header → la grilla de abajo "rebota" al cruzar el umbral de scroll.
+
+**Scroll rápido:** animar el fondo opaco del sticky header con el mismo valor del divisor deja ver cards por detrás durante la transición. El fondo debe ser opaco desde el primer frame y el título debe existir una sola vez; solo la línea cambia de opacidad.

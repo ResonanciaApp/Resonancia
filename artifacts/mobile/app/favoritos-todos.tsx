@@ -176,7 +176,7 @@ export default function FavoritosTodosScreen() {
   const { favFolders, savedEditorialPlaylistIds } = useFoldersPlaylists();
   const { version: catalogVersion } = useCatalog();
   const { favoriteVideoIds } = useVideosState();
-  const { theme: sceneTheme, activeSceneId } = useSceneTheme();
+  const { theme: sceneTheme } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
@@ -277,18 +277,16 @@ export default function FavoritosTodosScreen() {
         <View
           style={[
             styles.stickyHeader,
-            (isIndigoThemeId(activeSceneId) || activeSceneId === "indigo2") && styles.stickyHeaderFade,
             { paddingTop: topPad + 8 },
           ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
-          <Animated.View
+          <View
             pointerEvents="none"
             style={[
               StyleSheet.absoluteFill,
               {
                 backgroundColor: sceneTheme.gradient[0] as string,
-                opacity: titleProgress,
               },
             ]}
           />
@@ -311,10 +309,7 @@ export default function FavoritosTodosScreen() {
                 </View>
               )}
             </Pressable>
-            <Animated.Text style={[styles.largeTitle, { color: colors.foreground, opacity: titleProgress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>Mis favoritos</Animated.Text>
-            <Animated.View pointerEvents="none" style={[styles.compactTitleOverlay, { opacity: titleProgress }]}>
-              <Text style={[styles.compactTitle, { color: colors.foreground }]}>Mis favoritos</Text>
-            </Animated.View>
+            <Text style={[styles.largeTitle, { color: colors.foreground }]}>Mis favoritos</Text>
           </View>
 
           <View style={styles.embeddedTabsHeader}>
@@ -501,11 +496,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
-    backgroundColor: "transparent",
+    backgroundColor: "#060A0F",
     overflow: "hidden",
-  },
-  stickyHeaderFade: {
-    overflow: "visible",
   },
   stickyHeaderRow: {
     position: "relative",
@@ -548,8 +540,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   largeTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", flex: 1 },
-  compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  compactTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", transform: [{ translateY: -5 }] },
   embeddedTabsHeader: {
     position: "relative",
     marginTop: 6,
