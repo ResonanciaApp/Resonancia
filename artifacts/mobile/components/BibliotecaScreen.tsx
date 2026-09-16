@@ -2276,8 +2276,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   embeddedTabsHeader: {
-    marginTop: 6,
-    paddingTop: 10,
+    marginTop: 12,
+    paddingTop: 0,
     paddingBottom: 6,
   },
   stickyScrollEdge: {

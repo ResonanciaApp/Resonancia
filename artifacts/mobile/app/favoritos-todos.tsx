@@ -277,7 +277,7 @@ export default function FavoritosTodosScreen() {
         <View
           style={[
             styles.stickyHeader,
-            { paddingTop: topPad + 8 },
+            { paddingTop: topPad + 4 },
           ]}
           onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
         >
@@ -305,7 +305,7 @@ export default function FavoritosTodosScreen() {
                     { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
                   ]}
                 >
-                  <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                  <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
                 </View>
               )}
             </Pressable>
@@ -504,24 +504,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 19,
-    paddingBottom: 12,
+    paddingHorizontal: 20,
+    paddingBottom: 6,
   },
   libraryTabHeaderRow: {
     minHeight: 48,
-    paddingBottom: 12,
+    paddingBottom: 6,
   },
   libraryTabBackBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   libraryTabBackHitArea: {
     position: "absolute",
-    left: 13,
-    top: -6,
+    left: 16,
+    top: -4,
     width: 48,
     height: 48,
     alignItems: "center",
@@ -539,11 +541,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 0,
   },
-  largeTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", flex: 1 },
+  largeTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", flex: 1 },
   embeddedTabsHeader: {
     position: "relative",
-    marginTop: 6,
-    paddingTop: 10,
+    marginTop: 12,
+    paddingTop: 0,
     paddingBottom: 6,
   },
   tabsDivider: {

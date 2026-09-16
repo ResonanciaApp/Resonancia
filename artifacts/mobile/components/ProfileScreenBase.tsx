@@ -1044,7 +1044,7 @@ export function ProfileScreenBase({
       )}
       {!dedicated && (
         <View
-          style={[styles.stickyHeader, { paddingTop: asTab ? topPad + 8 : topPad + 2 }]}
+          style={[styles.stickyHeader, { paddingTop: asTab ? topPad + 4 : topPad + 2 }]}
         >
           {!isIndigoThemeId(activeSceneId) && activeSceneId !== "indigo2" && (
             <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
@@ -1069,7 +1069,7 @@ export function ProfileScreenBase({
                       { backgroundColor: libraryHeaderButtonBackground, opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    <Feather name="chevron-left" size={26} color="#FBFBFB" />
+                    <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
                   </View>
                 )}
               </Pressable>
@@ -1096,7 +1096,7 @@ export function ProfileScreenBase({
                 accessibilityRole="button"
                 accessibilityLabel="Buscar en Biblioteca"
               >
-                <Feather name="search" size={22} color="#f9f9f9" />
+                <Feather name="search" size={24} color="#f9f9f9" />
               </Pressable>
               <Pressable
                 onPress={libActions.onAdd}
@@ -1705,8 +1705,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 6,
   },
   gearBtn: {
     width: 41,
@@ -1751,19 +1751,21 @@ const styles = StyleSheet.create({
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libraryTabHeaderRow: {
     minHeight: 48,
-    paddingBottom: 12,
+    paddingBottom: 6,
   },
   libraryTabBackBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   libraryTabBackHitArea: {
     position: "absolute",
-    left: 13,
-    top: -6,
+    left: 16,
+    top: -4,
     width: 48,
     height: 48,
     alignItems: "center",
@@ -1773,8 +1775,8 @@ const styles = StyleSheet.create({
   },
   stickyTitleLibraryTab: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
     color: "#FBFBFB",
     letterSpacing: 0.2,
@@ -1913,7 +1915,7 @@ const styles = StyleSheet.create({
   },
   libActionsPill: {
     position: "absolute",
-    right: 19,
+    right: 20,
     top: 0,
     flexDirection: "row",
     alignItems: "center",
@@ -1927,6 +1929,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
   },
