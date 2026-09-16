@@ -1058,6 +1058,7 @@ const styles = StyleSheet.create({
   },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1, paddingHorizontal: 18, height: 50 },
   searchBoxWhiteBorder: {
+    borderWidth: 2,
     borderColor: "#F9F9F9",
   },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
