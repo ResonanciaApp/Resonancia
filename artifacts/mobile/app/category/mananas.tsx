@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  headerSearchButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
   pageTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },

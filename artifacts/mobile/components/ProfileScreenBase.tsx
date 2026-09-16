@@ -1747,7 +1747,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     transform: [{ translateY: 1 }],
   },
-  dedicatedSettingsButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  dedicatedSettingsButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libraryTabHeaderRow: {

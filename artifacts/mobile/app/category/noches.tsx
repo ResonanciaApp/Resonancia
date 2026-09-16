@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   heroIconFloat: { alignItems: "center", paddingBottom: 13, zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: ICON_COLOR + "1A", borderWidth: 2, alignItems: "center", justifyContent: "center", overflow: "hidden" },
   lotoBtn: { width: 45, height: 45, borderRadius: 22.5, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)" },
-  headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
+  headerSearchButton: { width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 4, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
