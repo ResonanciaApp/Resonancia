@@ -305,7 +305,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             },
           ]}
         >
-          <Feather name="chevron-left" size={26} color={TEXT} />
+          <Feather name="chevron-left" size={30} color={TEXT} />
         </Pressable>
         <View style={styles.stickyChipsArea}>
           <ChipRow
@@ -348,9 +348,11 @@ const styles = StyleSheet.create({
   backBtn: {
     position: "absolute",
     left: H_PAD,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -366,6 +368,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
