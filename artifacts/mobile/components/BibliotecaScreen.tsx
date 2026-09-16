@@ -19,6 +19,8 @@ import {
   KeyboardAvoidingView,
   InteractionManager,
   Modal,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -1164,6 +1166,19 @@ export function BibliotecaScreen({
   const [activeTab, setActiveTab] = useState<LibTab | null>(
     initialTab === "geometrix" ? null : initialTab ?? null,
   );
+  const stickyScrollEffect = useRef(new Animated.Value(0)).current;
+  const stickyScrolledRef = useRef(false);
+  const handleLibraryScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const active = event.nativeEvent.contentOffset.y > 2;
+    if (active === stickyScrolledRef.current) return;
+    stickyScrolledRef.current = active;
+    stickyScrollEffect.stopAnimation();
+    Animated.timing(stickyScrollEffect, {
+      toValue: active ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyScrollEffect]);
   const [sort, setSort] = useState<SortMode>("recientes");
   const [sortVisible, setSortVisible] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -2064,6 +2079,10 @@ export function BibliotecaScreen({
             onAdd={onHeaderActions ? undefined : () => setCreateVisible(true)}
           />
         </View>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.stickyScrollEdge, { opacity: stickyScrollEffect }]}
+        />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -2071,6 +2090,8 @@ export function BibliotecaScreen({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: embedded ? 0 : 23 }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={handleLibraryScroll}
       >
         {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "carpetas" || activeTab === "favoritos" || activeTab === "resonadores") &&
           !(activeTab === "playlists" && userPlaylists.length === 0) &&
@@ -2253,18 +2274,24 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 7 },
-    shadowOpacity: 0.16,
-    shadowRadius: 9,
-    elevation: 6,
   },
   embeddedTabsHeader: {
     marginTop: 6,
     paddingTop: 10,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  stickyScrollEdge: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.4,
+    shadowRadius: 9,
+    elevation: 8,
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
@@ -2375,7 +2402,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
-    marginTop: 15,
+    marginTop: 0,
     marginBottom: -8,
   },
   sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
