@@ -670,6 +670,10 @@ export function ExploreScreen({
 
           <View style={styles.sectionDivider} />
 
+          <ResonadoresSection marginTop={36} marginBottom={32} />
+
+          <View style={styles.sectionDivider} />
+
           <View style={styles.categoryBlocksSection}>
             <ContentCategoryGrid
               marginTop={0}
@@ -845,10 +849,6 @@ export function ExploreScreen({
               })}
             </View>
           </View>
-
-          <View style={styles.sectionDivider} />
-
-          <ResonadoresSection marginTop={36} marginBottom={32} />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
