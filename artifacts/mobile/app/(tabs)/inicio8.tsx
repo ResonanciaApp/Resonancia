@@ -1309,7 +1309,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3HeroHeight =
-    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60;
+    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 25;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
   const slowHeaderStyle = useAnimatedStyle(() => {
@@ -3473,7 +3473,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
-    transform: [{ translateY: -28 }],
   },
   inicio3HeroPill: {
     flexDirection: "row",
@@ -3498,8 +3497,8 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "center",
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 20,
+    lineHeight: 26,
   },
   inicio2HeroCategory: {
     marginBottom: 10,
@@ -3527,7 +3526,7 @@ const styles = StyleSheet.create({
   inicio2HeroActionButtonText: {
     fontFamily: "Manrope",
     fontSize: 13,
-    fontWeight: "550" as any,
+    fontWeight: "700",
     color: "#0D0A1E",
     textAlign: "center",
   },
