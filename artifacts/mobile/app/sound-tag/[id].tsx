@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { SymbolView } from "expo-symbols";
 import { router, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo } from "react";
@@ -197,7 +198,11 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
           accessibilityRole="button"
           accessibilityLabel={`Buscar en ${tag.label}`}
         >
-          <Feather name="search" size={24} color={colors.foreground} />
+          {Platform.OS === "ios" ? (
+            <SymbolView name="magnifyingglass" tintColor={colors.foreground} size={24} />
+          ) : (
+            <Feather name="search" size={24} color={colors.foreground} />
+          )}
         </Pressable>
       </View>
       <SupercategoryFilterTabs

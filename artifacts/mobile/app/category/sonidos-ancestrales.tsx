@@ -16,6 +16,7 @@ import {
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { SymbolView } from "expo-symbols";
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   ActivityIndicator, Animated, Dimensions, Easing, Modal, Platform,
@@ -630,7 +631,11 @@ export default function SonidosAncestalesScreen() {
               accessibilityLabel="Buscar en Sonoterapia"
               testID="sound-therapy-sticky-search-button"
             >
-              <Feather name="search" size={24} color={TEXT} />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor={TEXT} size={24} />
+              ) : (
+                <Feather name="search" size={24} color={TEXT} />
+              )}
             </Pressable>
           </View>
         </View>

@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { SymbolView } from "expo-symbols";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -288,7 +289,11 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
               accessibilityRole="button"
               accessibilityLabel={`Buscar en ${title}`}
             >
-              <Feather name="search" size={24} color={TEXT} />
+              {Platform.OS === "ios" ? (
+                <SymbolView name="magnifyingglass" tintColor={TEXT} size={24} />
+              ) : (
+                <Feather name="search" size={24} color={TEXT} />
+              )}
             </Pressable>
           </View>
         </View>
