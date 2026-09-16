@@ -143,7 +143,7 @@ export default function CarpetaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         {renaming ? (
           <TextInput
             style={styles.renameInput}
@@ -170,9 +170,6 @@ export default function CarpetaDetailScreen() {
           }}
         >
           <Feather name="more-horizontal" size={22} color={TEXT} />
-        </Pressable>
-        <Pressable style={styles.iconBtn} hitSlop={10} onPress={() => setAddSheetVisible(true)}>
-          <Feather name="plus" size={22} color={TEXT} />
         </Pressable>
       </View>
 

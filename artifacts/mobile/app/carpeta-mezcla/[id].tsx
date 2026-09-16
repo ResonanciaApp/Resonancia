@@ -106,7 +106,7 @@ export default function CarpetaMezclaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={goBack} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
+        <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}
@@ -114,9 +114,6 @@ export default function CarpetaMezclaDetailScreen() {
           onPress={() => setFolderMenuTarget(folder)}
         >
           <Feather name="more-horizontal" size={22} color={TEXT} />
-        </Pressable>
-        <Pressable style={styles.iconBtn} hitSlop={10} onPress={() => setAddSheetVisible(true)}>
-          <Feather name="plus" size={22} color={TEXT} />
         </Pressable>
       </View>
 
