@@ -303,8 +303,8 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 24,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   },
   stickyTabs: {
     width: "100%",
-    marginTop: 2,
+    marginTop: 10,
   },
   stickyTitleCol: {
     flex: 1,
@@ -349,8 +349,8 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 23,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",

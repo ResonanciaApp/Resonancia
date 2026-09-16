@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
-  stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   stickySpacer: { width: 45 },
 
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
+  pageTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
 
   catList: {},
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
   },
   detailDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
 
-  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginTop: 31 },
+  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginTop: 39 },
   tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
   tabLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   tabIndicator: {

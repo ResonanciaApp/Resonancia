@@ -207,7 +207,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         includeDurationFilters={false}
         hideWithoutEditorialTags
         bottomBorderOpacity={filterBorderOpacity}
-        topPadding={2}
+        topPadding={10}
       />
       {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 23,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
   },
   scroll: { flex: 1 },

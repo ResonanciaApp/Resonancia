@@ -352,8 +352,8 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 24,
     fontWeight: "700",
     color: TEXT,
     letterSpacing: 0.2,
@@ -476,12 +476,12 @@ const styles = StyleSheet.create({
   stickyTitleCol: { flex: 1, alignItems: "center" },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 20,
-    lineHeight: 23,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
     color: TEXT,
     letterSpacing: 0.2,
     textAlign: "center",
   },
-  stickyChipsArea: { width: "100%", marginTop: 2 },
+  stickyChipsArea: { width: "100%", marginTop: 10 },
 });

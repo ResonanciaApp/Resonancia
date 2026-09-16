@@ -351,6 +351,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
   },
-  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
-  stickyTabs: { marginTop: 2 },
+  stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
+  stickyTabs: { marginTop: 10 },
 });

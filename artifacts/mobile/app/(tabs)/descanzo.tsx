@@ -906,8 +906,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 16,
     fontFamily: "Manrope",
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: 16,
+    lineHeight: 20,
     fontWeight: "800",
     letterSpacing: 0.2,
     textAlign: "center",
@@ -922,10 +922,11 @@ const styles = StyleSheet.create({
     right: H_PAD,
   },
   sleepTabsHeader: {
-    marginTop: 9,
+    marginTop: 17,
     paddingBottom: 15,
   },
   stickySleepTabsHeader: {
+    marginTop: 8,
     paddingBottom: 6,
   },
 
@@ -1021,7 +1022,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "800",
     letterSpacing: 0.3,
     textAlign: "left",

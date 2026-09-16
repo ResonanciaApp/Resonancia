@@ -493,7 +493,7 @@ export default function NochesScreen() {
             <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
               <Feather name="chevron-left" size={28} color={TEXT} />
             </Pressable>
-            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: TEXT, flex: 1 }}>Todas las Noches</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: TEXT, flex: 1 }}>Todas las Noches</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
             {getSessionsForTab(null).map((s) => (
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, overflow: "visible" },
   headerTitleCol: { flex: 1, alignItems: "center" },
-  headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
 
   heroArea: { height: 148, position: "relative", alignItems: "center", justifyContent: "flex-end" },
@@ -563,9 +563,9 @@ const styles = StyleSheet.create({
   headerSearchButton: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 4, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
+  profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
 
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -2 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: 6 },
   chipRowWrapper: { position: "relative" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
