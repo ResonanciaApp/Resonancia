@@ -869,7 +869,7 @@ export function ExploreScreen({
             </View>
           </View>
 
-          <View style={styles.sectionDivider} />
+          <View style={[styles.sectionDivider, styles.centeredResonadoresDivider]} />
 
           <ResonadoresSection marginTop={36} marginBottom={32} />
 
@@ -1092,6 +1092,10 @@ const styles = StyleSheet.create({
     marginTop: -27,
     marginBottom: 26,
     backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  centeredResonadoresDivider: {
+    marginTop: -9,
+    marginBottom: 8,
   },
   popularSection: {
     marginTop: 0,
