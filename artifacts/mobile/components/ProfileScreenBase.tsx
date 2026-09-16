@@ -1038,7 +1038,7 @@ export function ProfileScreenBase({
               accessibilityRole="button"
               accessibilityLabel="Abrir configuraciones"
             >
-              <Feather name="settings" size={23} color={colors.foreground} />
+              <Feather name="settings" size={21} color={colors.foreground} />
             </Pressable>
           </View>
         </Animated.View>
@@ -1146,7 +1146,7 @@ export function ProfileScreenBase({
             accessibilityRole="button"
             accessibilityLabel="Abrir configuraciones"
           >
-            <Feather name="settings" size={23} color={colors.foreground} />
+            <Feather name="settings" size={21} color={colors.foreground} />
           </Pressable>
         </View>
 
