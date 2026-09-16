@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -50,6 +50,8 @@ import { type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { SessionDurationBadge } from "@/components/SessionDurationBadge";
+import { readMoodHistory } from "@/data/mood-history";
+import { getMoodById, type Mood } from "@/data/moods";
 
 const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F9F9F9";
@@ -187,6 +189,27 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const [selectedAccent, setSelectedAccent] = useState<string>(DEFAULT_ACCENT);
 
   const playlist = playlists.find((p) => p.id === id);
+  const [latestMoods, setLatestMoods] = useState<Mood[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+      readMoodHistory()
+        .then((records) => {
+          if (cancelled) return;
+          const moods = (records[0]?.moodIds ?? [])
+            .map((moodId) => getMoodById(moodId))
+            .filter((mood): mood is Mood => Boolean(mood));
+          setLatestMoods(moods);
+        })
+        .catch(() => {
+          if (!cancelled) setLatestMoods([]);
+        });
+      return () => {
+        cancelled = true;
+      };
+    }, []),
+  );
 
   const panelColor = playlist?.coverColor
     ? buildPanelColor(playlist.coverColor)
@@ -219,8 +242,20 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const recommended = useMemo(() => {
     if (!playlist) return [];
     const inPl = new Set(playlist.sessionIds);
-    return shuffle(SESSIONS.filter((s) => !inPl.has(s.id))).slice(0, 12);
-  }, [playlist]);
+    const available = SESSIONS.filter((session) => !inPl.has(session.id) && !session.isPlaceholder);
+    if (latestMoods.length === 0) return shuffle(available).slice(0, 12);
+
+    const categories = new Set(latestMoods.flatMap((mood) => mood.categoryIds));
+    const themeTags = new Set(latestMoods.flatMap((mood) => mood.themeTags));
+    const categoryMatches = available.filter((session) => categories.has(session.categoryId));
+    const boosted = categoryMatches.filter((session) =>
+      session.themeTag?.some((tag) => themeTags.has(tag)),
+    );
+    const remaining = categoryMatches.filter((session) =>
+      !session.themeTag?.some((tag) => themeTags.has(tag)),
+    );
+    return [...boosted, ...remaining].slice(0, 12);
+  }, [latestMoods, playlist]);
 
   const totalMin = useMemo(() => {
     const total = sessions.reduce((acc, s) => {
@@ -471,7 +506,17 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         {/* Sesiones recomendadas */}
         {recommended.length > 0 && (
           <>
-            <Text style={styles.sectionHeader}>Sesiones recomendadas</Text>
+            <View style={styles.recommendedHeader}>
+              <View style={styles.recommendedMoodBadge}>
+                <Text style={styles.recommendedMoodEmoji}>{latestMoods[0]?.emoji ?? "😌"}</Text>
+              </View>
+              <View style={styles.recommendedHeaderCopy}>
+                <Text style={styles.sectionHeader}>Sesiones recomendadas</Text>
+                <Text style={styles.sectionDescription}>
+                  Contenido basado en tu último estado de ánimo
+                </Text>
+              </View>
+            </View>
             {recommended.map((session) => (
               <RecommendedRow
                 key={session.id}
@@ -865,15 +910,44 @@ const styles = StyleSheet.create({
   addBtnText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
 
   // Section header
+  recommendedHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 8,
+    marginTop: -10,
+  },
+  recommendedMoodBadge: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  recommendedMoodEmoji: {
+    fontSize: 22,
+    lineHeight: 27,
+  },
+  recommendedHeaderCopy: {
+    flex: 1,
+  },
   sectionHeader: {
     fontFamily: "Manrope",
     color: TEXT,
     fontSize: 18,
     fontWeight: "800",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 8,
-    marginTop: -10,
+  },
+  sectionDescription: {
+    fontFamily: "Manrope",
+    color: MUTED,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 2,
   },
 
   // Session rows

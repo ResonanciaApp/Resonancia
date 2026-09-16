@@ -7,4 +7,4 @@ La primera fase del flujo emocional persiste en el dispositivo únicamente los c
 
 **Why:** La fase se definió como una experiencia visual y local antes de diseñar sincronización de cuenta o un algoritmo definitivo. Guardar parciales haría que el historial mostrara estados que la persona no confirmó.
 
-**How to apply:** Mantener la selección múltiple y el orden selección → encuesta por emoción → resultado. Las recomendaciones pueden usar el mapeo local existente, pero deben tratarse como provisionales; no añadir Coach IA ni sincronización remota sin una fase posterior explícita.
+**How to apply:** Mantener la selección múltiple y el orden selección → encuesta por emoción → resultado. Inicio y las playlists leen el check-in completo más reciente: combinan categorías y etiquetas de todas sus emociones, priorizan coincidencias por etiqueta y muestran el emoji de la primera. El mapeo sigue siendo provisional; no añadir Coach IA ni sincronización remota sin una fase posterior explícita.
