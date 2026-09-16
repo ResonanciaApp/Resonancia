@@ -771,12 +771,12 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
             onPress={handleCreate}
           >
             <LinearGradient
-              colors={["#784576", "#50326E"]}
+              colors={["#F9F9F9", "#F9F9F9"]}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={StyleSheet.absoluteFill}
             />
-            <Text style={styles.nameCreateBtnText}>Crear</Text>
+            <Text style={[styles.nameCreateBtnText, { color: "#060A0F" }]}>Crear</Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>
