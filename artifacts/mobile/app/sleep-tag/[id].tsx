@@ -228,7 +228,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
               accessibilityRole="button"
               accessibilityLabel="Volver"
             >
-              <Feather name="chevron-left" size={26} color={colors.foreground} />
+              <Feather name="chevron-left" size={32} color={colors.foreground} />
             </Pressable>
           </View>
           <View style={styles.stickyTitleCol}>
@@ -297,6 +297,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
@@ -335,13 +337,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   stickyTabs: {
     width: "100%",
-    marginTop: 10,
+    marginTop: 15,
   },
   stickyTitleCol: {
     flex: 1,

@@ -185,7 +185,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
       />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
          <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
+           <Feather name="chevron-left" size={32} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
           {tag.label}
@@ -207,7 +207,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         includeDurationFilters={false}
         hideWithoutEditorialTags
         bottomBorderOpacity={filterBorderOpacity}
-        topPadding={10}
+        topPadding={15}
       />
       {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
@@ -275,6 +275,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
@@ -283,6 +285,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
