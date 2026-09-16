@@ -11,6 +11,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { dedupeCompletedHistoryByDay } from "@/lib/history-calendar";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
 const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -256,13 +257,15 @@ export function HistorialCalendar({
   const entries = useMemo<CalendarEntry[]>(
     () =>
       embedded
-        ? statEvents
-            .filter((event) => event.completed === true)
-            .map((event) => ({
-              sessionId: event.sessionId,
-              playedAt: event.playedAt,
-              categoryLabel: event.categoryLabel,
-            }))
+        ? dedupeCompletedHistoryByDay(
+            statEvents
+              .filter((event) => event.completed === true)
+              .map((event) => ({
+                sessionId: event.sessionId,
+                playedAt: event.playedAt,
+                categoryLabel: event.categoryLabel,
+              })),
+          )
         : history,
     [embedded, history, statEvents],
   );
