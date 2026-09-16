@@ -517,15 +517,17 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
                 </Text>
               </View>
             </View>
-            {recommended.map((session, index) => (
-              <React.Fragment key={session.id}>
-                <RecommendedRow
-                  session={session}
-                  onAdd={() => addToPlaylist(playlist.id, session.id)}
-                />
-                {index < recommended.length - 1 && <View style={styles.recommendedDivider} />}
-              </React.Fragment>
-            ))}
+            <View style={{ marginTop: 15 }}>
+              {recommended.map((session, index) => (
+                <React.Fragment key={session.id}>
+                  <RecommendedRow
+                    session={session}
+                    onAdd={() => addToPlaylist(playlist.id, session.id)}
+                  />
+                  {index < recommended.length - 1 && <View style={styles.recommendedDivider} />}
+                </React.Fragment>
+              ))}
+            </View>
           </>
         )}
       </ScrollView>
