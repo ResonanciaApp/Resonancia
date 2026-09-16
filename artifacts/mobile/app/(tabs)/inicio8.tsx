@@ -1457,7 +1457,16 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           </Pressable>
         </View>
 
-        <View style={styles.inicio3HeroRightActions}>
+        <View
+          style={[
+            styles.inicio3HeroRightActions,
+            isInicio3 && {
+              position: "absolute",
+              top: topInset + 3,
+              right: 16,
+            },
+          ]}
+        >
           <Pressable
             onPress={onOpenProfile}
             onPressIn={() =>
@@ -3321,7 +3330,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    marginRight: 16,
   },
   inicio3HeroSearchButton: {
     width: 43,
