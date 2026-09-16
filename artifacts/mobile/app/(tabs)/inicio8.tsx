@@ -2892,7 +2892,7 @@ export default function HomeScreen2({
           />
         )}
         {variant === "inicio3" && (
-          <View style={styles.inicio3StandaloneDivider} />
+          <View style={styles.inicio3LowerStandaloneDivider} />
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
@@ -2927,7 +2927,7 @@ export default function HomeScreen2({
           </View>
         )}
         {variant === "inicio3" && (
-          <View style={styles.inicio3SectionDivider} />
+          <View style={styles.inicio3LowerSectionDivider} />
         )}
         {variant === "inicio3" && featuredMoment && (
           <Pressable
@@ -2959,7 +2959,7 @@ export default function HomeScreen2({
           </Pressable>
         )}
         {variant === "inicio3" && featuredMoment && (
-          <View style={styles.inicio3SectionDivider} />
+          <View style={styles.inicio3LowerSectionDivider} />
         )}
         {isInicio2 && <AlmaCommunitySection />}
         {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
@@ -4011,6 +4011,20 @@ const styles = StyleSheet.create({
     marginHorizontal: GRID_PAD,
     marginTop: 26,
     marginBottom: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  inicio3LowerStandaloneDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: GRID_PAD,
+    marginTop: 31,
+    marginBottom: 31,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
+  inicio3LowerSectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: GRID_PAD,
+    marginTop: -22,
+    marginBottom: 31,
     backgroundColor: "rgba(249,249,249,0.18)",
   },
   sectionRow: {
