@@ -197,7 +197,7 @@ function LibChip({
 
 // ── Fila de chips animada ─────────────────────────────────────────────────────
 const CHIP_ANIM_DURATION = 600;
-const CLOSE_SLOT = 38;
+const CLOSE_SLOT = 43;
 
 function AnimatedChipRow({
   tabs,
@@ -257,7 +257,7 @@ function AnimatedChipRow({
         style={[styles.animCloseBtn, { opacity: progress }]}
       >
         <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
-          <Feather name="x" size={22} color={MUTED} />
+          <Feather name="x" size={27} color={MUTED} />
         </Pressable>
       </Animated.View>
 
