@@ -38,7 +38,10 @@ import {
 import { getCatalogReadiness } from "../lib/catalogReadiness";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
-import { normalizeSupercategoryEditorialTags } from "../lib/supercategoryEditorialTags";
+import {
+  normalizeFeaturedSleep,
+  normalizeSupercategoryEditorialTags,
+} from "../lib/supercategoryEditorialTags";
 
 const router: IRouter = Router();
 
@@ -144,6 +147,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     imageUrl: s.imageUrl ?? s.imageKey,
     isFeatured: s.isFeatured,
     isFeaturedCategory: s.isFeaturedCategory,
+    isFeaturedSleep: s.isFeaturedSleep,
     isNew: s.isNew,
     isPremium: s.isPremium,
     isPlaceholder: s.isPlaceholder,
@@ -730,6 +734,10 @@ router.post(
           imageUrl: body.imageObjectPath ?? null,
           isPremium: body.isPremium ?? false,
           isFeaturedCategory: body.isFeaturedCategory ?? false,
+          isFeaturedSleep: normalizeFeaturedSleep(
+            body.isFeaturedSleep,
+            normalizedDescansoTags,
+          ),
           skipDetail: body.skipDetail ?? false,
           skipMiniPlayer: body.isPlaceholder ? false : (body.skipMiniPlayer ?? false),
           isLoop: body.isLoop ?? false,
@@ -1087,6 +1095,7 @@ router.patch(
     if (data.isPlaceholder === true) updates.skipMiniPlayer = false;
     if (data.isFeatured !== undefined) updates.isFeatured = data.isFeatured;
     if (data.isFeaturedCategory !== undefined) updates.isFeaturedCategory = data.isFeaturedCategory;
+    if (data.isFeaturedSleep !== undefined) updates.isFeaturedSleep = data.isFeaturedSleep;
     if (data.isNew !== undefined) updates.isNew = data.isNew;
     if (data.voiceTag !== undefined) updates.voiceTag = data.voiceTag;
     if (data.ancestralTag !== undefined) updates.ancestralTag = data.ancestralTag ?? null;
@@ -1153,6 +1162,14 @@ router.patch(
           .from(catalogAudioFilesTable)
           .where(eq(catalogAudioFilesTable.sessionId, id));
         const candidate = { ...current, ...updates };
+        const normalizedFeaturedSleep = normalizeFeaturedSleep(
+          candidate.isFeaturedSleep,
+          candidate.descansoTags,
+        );
+        if (normalizedFeaturedSleep !== candidate.isFeaturedSleep) {
+          candidate.isFeaturedSleep = normalizedFeaturedSleep;
+          updates.isFeaturedSleep = normalizedFeaturedSleep;
+        }
         const normalizedThemeTags = normalizeSupercategoryEditorialTags({
           themeTags: candidate.themeTag,
           descansoTags: candidate.descansoTags,

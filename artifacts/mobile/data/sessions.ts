@@ -68,6 +68,8 @@ export type Session = {
   isFeatured?: boolean;
   /** Destacada dentro de su propia pantalla de categoría ("Destacados de [categoría]"). */
   isFeaturedCategory?: boolean;
+  /** Destacada en la portada agregada de la supercategoría Dormir. */
+  isFeaturedSleep?: boolean;
   isNew?: boolean;
   isPremium?: boolean;
   /** Visible en catálogo, pero sin audio final. El reproductor muestra el aviso y deshabilita Play. */
@@ -1364,6 +1366,7 @@ export type CatalogSessionSnapshot = {
   instruments: string[];
   isFeatured: boolean;
   isFeaturedCategory?: boolean;
+  isFeaturedSleep?: boolean;
   isNew: boolean;
   isPremium: boolean;
   isPlaceholder?: boolean;
@@ -1537,6 +1540,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.instruments = r.instruments;
     local.isFeatured = r.isFeatured;
     local.isFeaturedCategory = r.isFeaturedCategory ?? false;
+    local.isFeaturedSleep = r.isFeaturedSleep ?? false;
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
     local.isPlaceholder = r.isPlaceholder ?? false;
@@ -1619,6 +1623,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       image,
       isFeatured: r.isFeatured,
       isFeaturedCategory: r.isFeaturedCategory ?? false,
+      isFeaturedSleep: r.isFeaturedSleep ?? false,
       isNew: r.isNew,
       isPremium: r.isPremium,
       isPlaceholder: r.isPlaceholder ?? false,

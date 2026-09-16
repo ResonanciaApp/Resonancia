@@ -804,6 +804,7 @@ export interface CatalogSession {
   imageUrl?: string | null;
   isFeatured: boolean;
   isFeaturedCategory: boolean;
+  isFeaturedSleep: boolean;
   isNew: boolean;
   isPremium: boolean;
   isPlaceholder: boolean;
@@ -1228,6 +1229,7 @@ export interface CreatorSubmissionInput {
   instruments?: string[];
   isPremium?: boolean;
   isFeaturedCategory?: boolean;
+  isFeaturedSleep?: boolean;
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isLoop?: boolean;
@@ -1381,6 +1383,7 @@ export interface Submission {
   imageUrl?: string | null;
   isFeatured: boolean;
   isFeaturedCategory: boolean;
+  isFeaturedSleep: boolean;
   isNew: boolean;
   isPremium: boolean;
   isPlaceholder: boolean;
@@ -1484,6 +1487,7 @@ export interface ReviewEditBody {
   skipMiniPlayer?: boolean;
   isFeatured?: boolean;
   isFeaturedCategory?: boolean;
+  isFeaturedSleep?: boolean;
   isNew?: boolean;
   isPlaceholder?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;

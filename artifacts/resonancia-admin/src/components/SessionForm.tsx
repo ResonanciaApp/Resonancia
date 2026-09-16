@@ -168,6 +168,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [sortOrder, setSortOrder] = useState(initial?.sortOrder != null ? String(initial.sortOrder) : "");
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false);
   const [isFeaturedCategory, setIsFeaturedCategory] = useState(initial?.isFeaturedCategory ?? false);
+  const [isFeaturedSleep, setIsFeaturedSleep] = useState(initial?.isFeaturedSleep ?? false);
   const [isNew, setIsNew] = useState(initial?.isNew ?? false);
   const [isPinnedFeatured, setIsPinnedFeatured] = useState(initial?.isPinnedFeatured ?? false);
 
@@ -279,6 +280,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       if (next.length === 0) {
         const prefix = `__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`;
         setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+        setIsFeaturedSleep(false);
       }
       return next;
     });
@@ -399,6 +401,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         skipMiniPlayer,
         isLoop,
         isFeaturedCategory,
+        isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
@@ -481,6 +484,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isLoop,
         isFeatured,
         isFeaturedCategory,
+        isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         isNew,
         isPinnedFeatured,
         frequency: frequency.trim() || null,
@@ -1174,6 +1178,28 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             <Label htmlFor="isFeaturedCategory" className="cursor-pointer">
               Destacada en su categoría
             </Label>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <Switch
+                id="isFeaturedSleep"
+                checked={descansoTags.length > 0 && isFeaturedSleep}
+                onCheckedChange={setIsFeaturedSleep}
+                disabled={descansoTags.length === 0}
+              />
+              <Label
+                htmlFor="isFeaturedSleep"
+                className={descansoTags.length > 0 ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
+              >
+                Destacada en Dormir
+              </Label>
+            </div>
+            {descansoTags.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Añade una colección de Dormir para activar esta opción.
+              </p>
+            ) : null}
           </div>
 
           {isEdit && (

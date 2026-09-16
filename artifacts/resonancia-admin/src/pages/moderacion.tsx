@@ -338,6 +338,7 @@ function EditDialog({
   const [isPremium, setIsPremium] = useState(submission.isPremium);
   const [isFeatured, setIsFeatured] = useState(submission.isFeatured);
   const [isFeaturedCategory, setIsFeaturedCategory] = useState(submission.isFeaturedCategory);
+  const [isFeaturedSleep, setIsFeaturedSleep] = useState(submission.isFeaturedSleep);
   const [isNew, setIsNew] = useState(submission.isNew);
   const [skipDetail, setSkipDetail] = useState(submission.skipDetail ?? false);
   const [skipMiniPlayer, setSkipMiniPlayer] = useState(submission.skipMiniPlayer ?? false);
@@ -415,6 +416,7 @@ function EditDialog({
       if (next.length === 0) {
         const prefix = `__${SUPERCATEGORY_THEME_TAGS.descanso.tagType}__:`;
         setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
+        setIsFeaturedSleep(false);
       }
       return next;
     });
@@ -678,6 +680,27 @@ function EditDialog({
                 <Label htmlFor="edit-featured-category">Destacada en su categoría</Label>
                 <Switch id="edit-featured-category" checked={isFeaturedCategory} onCheckedChange={setIsFeaturedCategory} />
               </div>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <Label
+                    htmlFor="edit-featured-sleep"
+                    className={descansoTags.length > 0 ? undefined : "cursor-not-allowed opacity-60"}
+                  >
+                    Destacada en Dormir
+                  </Label>
+                  <Switch
+                    id="edit-featured-sleep"
+                    checked={descansoTags.length > 0 && isFeaturedSleep}
+                    onCheckedChange={setIsFeaturedSleep}
+                    disabled={descansoTags.length === 0}
+                  />
+                </div>
+                {descansoTags.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    Añade una colección de Dormir para activar esta opción.
+                  </p>
+                ) : null}
+              </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="edit-new">Marcar como nueva</Label>
                 <Switch id="edit-new" checked={isNew} onCheckedChange={setIsNew} />
@@ -869,6 +892,7 @@ function EditDialog({
                   isPremium,
                   isFeatured,
                   isFeaturedCategory,
+                  isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
                   isNew,
                   skipDetail,
                   skipMiniPlayer,

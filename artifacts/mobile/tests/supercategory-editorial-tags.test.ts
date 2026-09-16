@@ -65,20 +65,21 @@ test("hides the Sonidos tab bar until an editorial tag is available", () => {
   assert.equal(shouldShowSupercategoryFilterTabs([], false), true);
 });
 
-test("collects featured sessions across a supercategory without removing them from the source", () => {
+test("keeps category and Dormir featured destinations independent", () => {
   const sessions = [
-    { id: "meditation", categoryId: "meditaciones-guiadas", isFeaturedCategory: true },
-    { id: "music", categoryId: "musica-sonidos", isFeaturedCategory: false },
-    { id: "ancestral", categoryId: "sonidos-ancestrales", isFeaturedCategory: true },
+    { id: "category-only", isFeaturedCategory: true, isFeaturedSleep: false },
+    { id: "sleep-only", isFeaturedCategory: false, isFeaturedSleep: true },
+    { id: "both", isFeaturedCategory: true, isFeaturedSleep: true },
+    { id: "neither", isFeaturedCategory: false, isFeaturedSleep: false },
   ];
 
   assert.deepEqual(
     collectSupercategoryFeaturedSessions(sessions).map((item) => item.id),
-    ["meditation", "ancestral"],
+    ["sleep-only", "both"],
   );
   assert.deepEqual(
     sessions.map((item) => item.id),
-    ["meditation", "music", "ancestral"],
+    ["category-only", "sleep-only", "both", "neither"],
   );
 });
 
@@ -86,7 +87,7 @@ test("returns no featured section data when a supercategory has no featured sess
   assert.deepEqual(
     collectSupercategoryFeaturedSessions([
       { id: "one" },
-      { id: "two", isFeaturedCategory: false },
+      { id: "two", isFeaturedSleep: false },
     ]),
     [],
   );

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   DESCANSO_EDITORIAL_PREFIX,
   SONIDOS_EDITORIAL_PREFIX,
+  normalizeFeaturedSleep,
   normalizeSupercategoryEditorialTags,
 } from "./supercategoryEditorialTags";
 
@@ -27,5 +28,23 @@ describe("normalizeSupercategoryEditorialTags", () => {
       sonidosTags: ["Todos los sonidos"],
       allowEditorialTags: false,
     })).toEqual([categoryTag]);
+  });
+});
+
+describe("normalizeFeaturedSleep", () => {
+  it.each([
+    { featured: false, tags: [], expected: false },
+    { featured: true, tags: [], expected: false },
+    { featured: false, tags: ["Sonidos para dormir"], expected: false },
+    { featured: true, tags: ["Sonidos para dormir"], expected: true },
+  ])(
+    "returns $expected for featured=$featured and tags=$tags",
+    ({ featured, tags, expected }) => {
+      expect(normalizeFeaturedSleep(featured, tags)).toBe(expected);
+    },
+  );
+
+  it("turns the destination off when the last Dormir collection is removed", () => {
+    expect(normalizeFeaturedSleep(true, [])).toBe(false);
   });
 });

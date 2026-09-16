@@ -48,7 +48,7 @@ type ThemeTagged = {
 };
 
 type SupercategoryFeatureable = {
-  isFeaturedCategory?: boolean;
+  isFeaturedSleep?: boolean;
 };
 
 type FilterableSession = ThemeTagged & {
@@ -106,5 +106,5 @@ export function collectSupercategoryEditorialTags(
 export function collectSupercategoryFeaturedSessions<
   T extends SupercategoryFeatureable,
 >(sessions: readonly T[]): T[] {
-  return sessions.filter((session) => session.isFeaturedCategory === true);
+  return sessions.filter((session) => session.isFeaturedSleep === true);
 }

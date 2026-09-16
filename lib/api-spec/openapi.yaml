@@ -5085,6 +5085,8 @@ components:
           type: boolean
         isFeaturedCategory:
           type: boolean
+        isFeaturedSleep:
+          type: boolean
         isNew:
           type: boolean
         isPremium:
@@ -5178,7 +5180,7 @@ components:
           items:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
-        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isNew, isPremium, isPlaceholder, status, sortOrder, audioFiles]
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isFeaturedSleep, isNew, isPremium, isPlaceholder, status, sortOrder, audioFiles]
     EditorialPlaylistPlacement:
       type: object
       properties:
@@ -5617,6 +5619,9 @@ components:
         isFeaturedCategory:
           type: boolean
           default: false
+        isFeaturedSleep:
+          type: boolean
+          default: false
         skipDetail:
           type: boolean
           default: false
@@ -5827,6 +5832,8 @@ components:
           type: boolean
         isFeaturedCategory:
           type: boolean
+        isFeaturedSleep:
+          type: boolean
         isNew:
           type: boolean
         isPremium:
@@ -5933,7 +5940,7 @@ components:
           items:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
-        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isNew, isPremium, isPlaceholder, status, sortOrder, createdAt, updatedAt, audioFiles]
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isFeaturedSleep, isNew, isPremium, isPlaceholder, status, sortOrder, createdAt, updatedAt, audioFiles]
     SubmissionList:
       type: object
       properties:
@@ -6021,6 +6028,8 @@ components:
         isFeatured:
           type: boolean
         isFeaturedCategory:
+          type: boolean
+        isFeaturedSleep:
           type: boolean
         isNew:
           type: boolean
