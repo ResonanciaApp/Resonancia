@@ -270,21 +270,11 @@ export default function CategoryTagScreen({
         {list}
       </ScrollView>
       <View
-        style={[styles.stickyHeader, { paddingTop: topPad + 8, backgroundColor: theme.gradient[0] as string }]}
+        style={[styles.stickyHeader, { paddingTop: topPad + 4, backgroundColor: theme.gradient[0] as string }]}
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
         <View style={styles.stickyHeaderRow}>
-          <View style={styles.stickySpacer}>
-            <Pressable
-              onPress={goBack}
-              hitSlop={10}
-              style={styles.backButton}
-              accessibilityRole="button"
-              accessibilityLabel="Volver"
-            >
-              <Feather name="chevron-left" size={26} color="#FBFBFB" />
-            </Pressable>
-          </View>
+          <View style={styles.stickySpacer} />
           <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
           <View style={styles.stickySpacer}>
             <Pressable
@@ -298,6 +288,21 @@ export default function CategoryTagScreen({
             </Pressable>
           </View>
         </View>
+        <Pressable
+          onPress={goBack}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.backButton,
+            {
+              top: topPad + 4,
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Volver"
+        >
+          <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
+        </Pressable>
         <View style={styles.stickyTabs}>
           <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
         </View>
@@ -327,9 +332,9 @@ export default function CategoryTagScreen({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
-  backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
+  backButton: { position: "absolute", left: H_PAD, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   tabsArea: { paddingTop: 9, paddingBottom: 15, paddingHorizontal: H_PAD },
-  chipRowWrapper: { marginHorizontal: -H_PAD },
+  chipRowWrapper: {},
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   chipSelected: { backgroundColor: "#F9F9F9", borderWidth: 0 },
@@ -342,15 +347,17 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6 },
   stickyBottomBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
-  stickySpacer: { width: 44, alignItems: "center", justifyContent: "center" },
+  stickySpacer: { width: 40, alignItems: "center", justifyContent: "center" },
   headerSearchButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
-  stickyTabs: { marginTop: 13 },
+  stickyTabs: { marginTop: 13, marginHorizontal: -H_PAD },
 });
