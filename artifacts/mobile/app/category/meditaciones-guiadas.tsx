@@ -556,7 +556,7 @@ export default function MeditacionesGuiadasScreen() {
             },
           ]}
         >
-          <Feather name="chevron-left" size={30} color={TEXT} />
+          <Feather name="chevron-left" size={32} color={TEXT} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
         <View style={{ marginTop: 12 }}>
            <ChipRow
