@@ -276,6 +276,18 @@ export default function CategoryTagScreen({
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickySpacer}>
             <Pressable
+              onPress={goBack}
+              hitSlop={10}
+              style={styles.backButton}
+              accessibilityRole="button"
+              accessibilityLabel="Volver"
+            >
+              <Feather name="chevron-left" size={26} color="#FBFBFB" />
+            </Pressable>
+          </View>
+          <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
+          <View style={styles.stickySpacer}>
+            <Pressable
               onPress={() => setSearchVisible(true)}
               hitSlop={10}
               style={styles.headerSearchButton}
@@ -285,12 +297,7 @@ export default function CategoryTagScreen({
               <Feather name="search" size={24} color="#FBFBFB" />
             </Pressable>
           </View>
-          <Text style={styles.stickyTitle} numberOfLines={1}>{title}</Text>
-          <View style={styles.stickySpacer} />
         </View>
-        <Pressable onPress={goBack} hitSlop={10} style={[styles.backButton, { top: topPad }]}>
-          <Feather name="chevron-left" size={26} color="#FBFBFB" />
-        </Pressable>
         <View style={styles.stickyTabs}>
           <FilterTabs editorialTags={editorialTags} active={activeFilter} onSelect={setActiveFilter} />
         </View>
@@ -320,7 +327,7 @@ export default function CategoryTagScreen({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
-  backButton: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center", zIndex: 2 },
+  backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   tabsArea: { paddingTop: 9, paddingBottom: 15, paddingHorizontal: H_PAD },
   chipRowWrapper: { marginHorizontal: -H_PAD },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
@@ -345,5 +352,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.28)",
   },
   stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
-  stickyTabs: { marginTop: 19 },
+  stickyTabs: { marginTop: 2 },
 });

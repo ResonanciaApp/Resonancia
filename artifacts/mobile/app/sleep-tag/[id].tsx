@@ -222,13 +222,13 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer}>
             <Pressable
-              onPress={() => setSearchVisible(true)}
+              onPress={goBack}
               hitSlop={10}
-              style={styles.headerSearchButton}
+              style={styles.backBtn}
               accessibilityRole="button"
-              accessibilityLabel={`Buscar en ${tag.label}`}
+              accessibilityLabel="Volver"
             >
-              <Feather name="search" size={24} color={colors.foreground} />
+              <Feather name="chevron-left" size={26} color={colors.foreground} />
             </Pressable>
           </View>
           <View style={styles.stickyTitleCol}>
@@ -241,28 +241,25 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
               {tag.label}
             </Text>
           </View>
-          <View style={styles.stickyHeaderSpacer} />
+          <View style={styles.stickyHeaderSpacer}>
+            <Pressable
+              onPress={() => setSearchVisible(true)}
+              hitSlop={10}
+              style={styles.headerSearchButton}
+              accessibilityRole="button"
+              accessibilityLabel={`Buscar en ${tag.label}`}
+            >
+              <Feather name="search" size={24} color={colors.foreground} />
+            </Pressable>
+          </View>
         </View>
-        <Pressable
-          onPress={goBack}
-          hitSlop={10}
-          style={({ pressed }) => [
-            styles.backBtn,
-            {
-              backgroundColor: "rgba(0,0,0,0.28)",
-              opacity: pressed ? 0.7 : 1,
-              top: topPad,
-            },
-          ]}
-        >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
-        </Pressable>
         <View style={styles.stickyTabs}>
           <SupercategoryFilterTabs
             editorialTags={editorialTags}
             active={activeFilter}
             onSelect={setActiveFilter}
             bottomBorderOpacity={stickyBorderOpacity}
+            topPadding={2}
           />
         </View>
       </Animated.View>
@@ -297,11 +294,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   backBtn: {
-    position: "absolute",
-    left: H_PAD,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -345,7 +341,7 @@ const styles = StyleSheet.create({
   },
   stickyTabs: {
     width: "100%",
-    marginTop: 17,
+    marginTop: 2,
   },
   stickyTitleCol: {
     flex: 1,

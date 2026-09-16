@@ -15,6 +15,7 @@ export function SupercategoryFilterTabs({
   hideWithoutEditorialTags = false,
   bottomBorderOpacity,
   showBottomBorder = true,
+  topPadding = 9,
 }: {
   editorialTags: string[];
   active: SupercategoryFilter;
@@ -23,13 +24,14 @@ export function SupercategoryFilterTabs({
   hideWithoutEditorialTags?: boolean;
   bottomBorderOpacity?: Animated.Value;
   showBottomBorder?: boolean;
+  topPadding?: number;
 }) {
   if (!shouldShowSupercategoryFilterTabs(editorialTags, hideWithoutEditorialTags)) return null;
 
   const tabs = getSupercategoryFilterTabs(editorialTags, includeDurationFilters);
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { paddingTop: topPadding }]}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

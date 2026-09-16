@@ -184,7 +184,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         pointerEvents="none"
       />
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-         <Pressable onPress={goBack} hitSlop={10} style={[styles.back, { top: topPad }]}>
+         <Pressable onPress={goBack} hitSlop={10} style={styles.back}>
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={1}>
@@ -193,7 +193,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         <Pressable
           onPress={() => setSearchVisible(true)}
           hitSlop={10}
-          style={[styles.searchButton, { top: topPad }]}
+          style={styles.searchButton}
           accessibilityRole="button"
           accessibilityLabel={`Buscar en ${tag.label}`}
         >
@@ -207,6 +207,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
         includeDurationFilters={false}
         hideWithoutEditorialTags
         bottomBorderOpacity={filterBorderOpacity}
+        topPadding={2}
       />
       {filteredSessions.length === 0 ? (
         <View style={styles.scroll}>
@@ -264,23 +265,21 @@ const styles = StyleSheet.create({
   header: {
     minHeight: 58,
     paddingHorizontal: H_PAD,
-    paddingBottom: 12,
+    paddingBottom: 0,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
   },
   back: {
-    position: "absolute",
-    left: H_PAD,
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   searchButton: {
-    position: "absolute",
-    right: H_PAD,
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -289,7 +288,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    paddingHorizontal: 48,
+    flex: 1,
+    textAlign: "center",
     fontFamily: "Manrope",
     fontSize: 20,
     lineHeight: 23,
