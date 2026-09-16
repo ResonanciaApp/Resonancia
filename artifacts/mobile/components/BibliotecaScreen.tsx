@@ -1064,10 +1064,13 @@ function SortSheet({
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const options = isGeneral ? GENERAL_SORT_OPTIONS : TAB_SORT_OPTIONS;
-  const sheetColor = theme.gradient[1] ?? theme.gradient[0];
+  const sheetColor = theme.gradient[2] ?? theme.gradient[1] ?? theme.gradient[0];
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <Pressable
+        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
+        onPress={onClose}
+      />
       <View style={[styles.sortSheet, { paddingBottom: Math.max(insets.bottom, 16), backgroundColor: sheetColor }]}>
         <View style={styles.sortSheetHandle} />
         <Text style={styles.sortSheetTitle}>Ordenar por</Text>
@@ -2420,7 +2423,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     marginBottom: 16,
   },
   sortSheetTitle: {
@@ -2435,8 +2438,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
     paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sortSheetLabel: { fontFamily: "Manrope", color: MUTED, fontSize: 15, flex: 1 },
   sortSheetLabelActive: { fontFamily: "Manrope", color: TEXT, fontWeight: "600" },
