@@ -1989,7 +1989,8 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 17,
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -1997,6 +1998,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 12,
     gap: 0,
+    transform: [{ translateY: -5 }],
   },
   wisdomSection: {
     marginBottom: 28,
