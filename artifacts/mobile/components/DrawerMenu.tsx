@@ -248,6 +248,14 @@ export function DrawerMenu() {
                         {fullName || "Mi perfil"}
                       </Text>
                     </Pressable>
+                    <View style={styles.profilePremiumRow}>
+                      <Text style={styles.profilePremiumText}>Premium</Text>
+                      <Image
+                        source={require("../assets/images/estrella-premium.png")}
+                        style={styles.profilePremiumStar}
+                        contentFit="contain"
+                      />
+                    </View>
                     <Pressable
                       onPress={() => navigate("/(tabs)/profile")}
                       style={styles.verPerfilBtn}
@@ -470,9 +478,26 @@ const styles = StyleSheet.create({
   inicio3VerPerfilText: {
     color: "#F9F9F9",
   },
+  profilePremiumRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 4,
+  },
+  profilePremiumText: {
+    fontFamily: "Manrope",
+    color: "#BE9650",
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
+  profilePremiumStar: {
+    width: 14,
+    height: 14,
+  },
 
   // ── Items ──
-  itemGroup: { gap: 2 },
+  itemGroup: { gap: 2, marginTop: 10 },
   divider: { height: 1, marginBottom: 8 },
   inicio3Sections: {
     marginTop: 14,
