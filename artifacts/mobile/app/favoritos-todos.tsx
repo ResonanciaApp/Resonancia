@@ -333,6 +333,10 @@ export default function FavoritosTodosScreen() {
                 />
               ))}
             </ScrollView>
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.tabsDivider, { opacity: titleProgress }]}
+            />
           </View>
         </View>
 
@@ -547,11 +551,18 @@ const styles = StyleSheet.create({
   compactTitleOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   compactTitle: { fontFamily: "Manrope", fontSize: 20, lineHeight: 23, fontWeight: "700", letterSpacing: 0.2, textAlign: "center", transform: [{ translateY: -5 }] },
   embeddedTabsHeader: {
+    position: "relative",
     marginTop: 6,
     paddingTop: 10,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  tabsDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   tabRowContent: {
     paddingHorizontal: H_PAD,

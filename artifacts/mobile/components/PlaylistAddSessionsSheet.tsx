@@ -2,8 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   FlatList,
   Modal,
@@ -140,6 +141,8 @@ export function PlaylistAddSessionsSheet({
     isInPlaylist,
   } = useFoldersPlaylists();
   const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>("all");
+  const dividerOpacity = useRef(new Animated.Value(0)).current;
+  const dividerVisibleRef = useRef(false);
 
   const topPad = Platform.OS === "web" ? 28 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -167,7 +170,20 @@ export function PlaylistAddSessionsSheet({
   useEffect(() => {
     if (!visible) return;
     setActiveTab("all");
-  }, [visible]);
+    dividerVisibleRef.current = false;
+    dividerOpacity.setValue(0);
+  }, [dividerOpacity, visible]);
+
+  const handleContentScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const nextVisible = event.nativeEvent.contentOffset.y > 0.5;
+    if (nextVisible === dividerVisibleRef.current) return;
+    dividerVisibleRef.current = nextVisible;
+    Animated.timing(dividerOpacity, {
+      toValue: nextVisible ? 1 : 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [dividerOpacity]);
 
   useEffect(() => {
     if (!tabs.some((tab) => tab.id === activeTab)) setActiveTab("all");
@@ -230,6 +246,10 @@ export function PlaylistAddSessionsSheet({
               />
             ))}
           </ScrollView>
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.tabsDivider, { opacity: dividerOpacity }]}
+          />
         </View>
 
         {favoriteSessions.length === 0 ? (
@@ -260,6 +280,8 @@ export function PlaylistAddSessionsSheet({
             columnWrapperStyle={styles.gridRow}
             contentContainerStyle={[styles.gridContent, { paddingBottom: bottomPad + 36 }]}
             showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onScroll={handleContentScroll}
             extraData={`${playlist?.sessionIds.join(",") ?? ""}:${activeTab}`}
           />
         )}
@@ -302,10 +324,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tabsBorder: {
+    position: "relative",
     paddingTop: 17,
     paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  tabsDivider: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   tabsContent: {
     flexDirection: "row",
