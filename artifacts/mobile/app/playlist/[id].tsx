@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BackPill } from "@/components/BackPill";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -335,7 +334,15 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
 
         {/* Header — scrollea con el contenido (sin sticky) */}
         <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
-          <BackPill onPress={goBack} size={28} bgColor="rgba(0,0,0,0.28)" iconOffsetX={-1} style={{ transform: [{ translateX: 4 }] }} />
+          <Pressable
+            onPress={goBack}
+            hitSlop={10}
+            style={styles.playlistBackButton}
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+          >
+            <Feather name="chevron-left" size={32} color="#FFFFFF" style={{ transform: [{ translateX: -1 }] }} />
+          </Pressable>
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
@@ -775,11 +782,22 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  playlistBackButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateX: 8 }],
+  },
   moreMenuBtn: {
     borderRadius: 20,
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
 
   // Hero
