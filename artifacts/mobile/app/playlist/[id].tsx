@@ -59,7 +59,6 @@ const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 const DEFAULT_PANEL_BG = "transparent";
 const PLAYLIST_CONTROL_BG = WIDGET_GREEN_SOLID;
-const PLAYLIST_CARD_BG = "rgba(181,211,255,0.057)";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
 const ACCENT_PALETTE: readonly string[] = [
@@ -376,6 +375,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
               />
             ) : (
               <View style={styles.coverEmpty}>
+                <View pointerEvents="none" style={styles.coverPlaceholderBackground} />
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
                 <View style={styles.coverPlusBadge}>
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   moreMenuBtn: {
     borderRadius: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 8,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "transparent",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.20)",
     alignItems: "center",
@@ -990,7 +990,12 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: PLAYLIST_CARD_BG,
+    backgroundColor: "transparent",
+  },
+  coverPlaceholderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 8,
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   coverPlusBadge: {
     position: "absolute",
