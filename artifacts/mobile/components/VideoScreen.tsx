@@ -136,6 +136,7 @@ export function VideoScreen({ showBack = false }: Props) {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={styles.chipsScroll}
             contentContainerStyle={styles.chipsRow}
           >
             {FILTER_CHIPS.map((chip) => {
@@ -162,7 +163,7 @@ export function VideoScreen({ showBack = false }: Props) {
         style={{ flex: 1 }}
         contentContainerStyle={{
           paddingHorizontal: 19,
-          paddingTop: 8,
+          paddingTop: 23,
           paddingBottom: 100 + bottomPad,
         }}
         showsVerticalScrollIndicator={false}
@@ -296,7 +297,13 @@ const styles = StyleSheet.create({
   },
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
-  chipsRow: { paddingHorizontal: 16, gap: 8, alignItems: "center" },
+  chipsScroll: { overflow: "visible" },
+  chipsRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    gap: 8,
+    alignItems: "center",
+  },
   chip: {
     borderRadius: 27,
     paddingHorizontal: 16,
@@ -304,7 +311,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
