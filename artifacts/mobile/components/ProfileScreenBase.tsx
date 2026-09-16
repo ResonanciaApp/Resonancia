@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { SymbolView } from "expo-symbols";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
 import { router, useFocusEffect, useNavigation } from "expo-router";
@@ -1097,7 +1098,11 @@ export function ProfileScreenBase({
                 accessibilityRole="button"
                 accessibilityLabel="Buscar en Biblioteca"
               >
-                <Feather name="search" size={24} color="#f9f9f9" />
+                {Platform.OS === "ios" ? (
+                  <SymbolView name="magnifyingglass" tintColor="#f9f9f9" size={24} />
+                ) : (
+                  <Feather name="search" size={24} color="#f9f9f9" />
+                )}
               </Pressable>
               <Pressable
                 onPress={libActions.onAdd}
