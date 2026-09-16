@@ -43,7 +43,7 @@ const GRAD_END       = "#F9F9F9";
 const ICON_SIZE      = 27;
 const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
 const TAB_CONTENT_OFFSET_Y = 11;
-const TAB_LABEL_OFFSET_Y = 3;
+const TAB_LABEL_OFFSET_Y = 2;
 const MINI_PLAYER_MARGIN_H = 15;
 
 function getTabBarBackground(activeSceneId: string) {
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   row: {
     height: PILL_H,
     flexDirection: "row",
-    paddingHorizontal: 6,
+    paddingHorizontal: 16,
     alignItems: "center",
     overflow: "visible",
   },
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Manrope",
-    fontSize: 11,
+    fontSize: 10,
     letterSpacing: 0.3,
     fontWeight: "500",
   },

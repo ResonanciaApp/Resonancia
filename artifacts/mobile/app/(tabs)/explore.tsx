@@ -1099,7 +1099,7 @@ const styles = StyleSheet.create({
   },
   monthlySoundTherapySection: {
     paddingHorizontal: H_PAD,
-    marginTop: 20,
+    marginTop: 34,
     marginBottom: SECTION_GAP,
   },
   monthlySoundTherapyHeader: {
