@@ -79,6 +79,7 @@ const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof F
   { id: "playlists", label: "Mis playlist", icon: "list" },
   { id: "mezclas", label: "Mis mezclas", icon: "sliders" },
   { id: "carpetas", label: "Carpetas", icon: "folder" },
+  { id: "resonadores", label: "Resonadores", icon: "users" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -1911,12 +1912,16 @@ export function BibliotecaScreen({
           </View>
         );
       }
+      const sortedResonadores =
+        sort === "alfabetico"
+          ? [...resonadores].sort((a, b) => a.name.localeCompare(b.name, "es"))
+          : resonadores;
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
       if (viewMode === "grid") {
         return (
-          <View style={styles.gridWrap}>
-            {resonadores.map((r) => (
+          <View style={[styles.gridWrap, { marginTop: 30 }]}>
+            {sortedResonadores.map((r) => (
               <Pressable
                 key={r.id}
                 style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
@@ -1933,8 +1938,8 @@ export function BibliotecaScreen({
         );
       }
       return (
-        <View style={{ gap: 9 }}>
-          {resonadores.map((r) => (
+        <View style={{ gap: 15, marginTop: 30 }}>
+          {sortedResonadores.map((r) => (
             <ResonadorRow
               key={r.id}
               name={r.name}
@@ -1999,10 +2004,11 @@ export function BibliotecaScreen({
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: embedded ? 0 : 23 }}
         showsVerticalScrollIndicator={false}
       >
-        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "carpetas" || activeTab === "favoritos") &&
+        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "carpetas" || activeTab === "favoritos" || activeTab === "resonadores") &&
           !(activeTab === "playlists" && userPlaylists.length === 0) &&
           !(activeTab === "mezclas" && presets.length === 0) &&
           !(activeTab === "carpetas" && userFolders.length === 0 && mixFolders.length === 0) &&
+          !(activeTab === "resonadores" && resonadores.length === 0) &&
           !(activeTab === null && userPlaylists.length === 0 && userFolders.length === 0 && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
@@ -2157,6 +2163,11 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.16,
+    shadowRadius: 9,
+    elevation: 6,
   },
   embeddedTabsHeader: {
     marginTop: 6,
