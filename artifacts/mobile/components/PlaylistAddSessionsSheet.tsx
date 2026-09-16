@@ -1,4 +1,5 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -15,18 +16,19 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionCard } from "@/components/SessionCard";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getSessionById, type Session } from "@/data/sessions";
+import { getGuideById } from "@/data/guides";
+import { getArtist } from "@/data/artists";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   buildVisibleFavoriteTabs,
   FAVORITE_COLLECTION_TABS,
   type FavoriteCollectionTabId,
 } from "@/lib/favorites-home-helpers";
-import { isIndigoThemeId } from "@/config/scene-themes";
 
 const H_PAD = 14;
 const GRID_GAP = 14;
@@ -44,14 +46,11 @@ function FavoriteTab({
   label: string;
   onPress: () => void;
 }) {
-  const { theme } = useSceneTheme();
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.tab,
-        theme.id === "tibet" && styles.tabTibet,
-        isIndigoThemeId(theme.id) && styles.tabIndigo,
         selected && styles.tabSelected,
         { opacity: pressed ? 0.75 : 1 },
       ]}
@@ -72,21 +71,24 @@ function SelectableFavoriteCard({
   selected: boolean;
   onToggle: () => void;
 }) {
-  const ambiental = session.categoryId === "ambientales";
+  const guide = session.guideId ? getGuideById(session.guideId) : null;
+  const artist = session.artistId ? getArtist(session.artistId) : null;
+  const author = guide?.name ?? artist?.name ?? "Casa del Cuenco";
   return (
     <View style={styles.cardSlot}>
-      <SessionCard
-        session={session}
-        width={CARD_WIDTH}
-        overridePress={onToggle}
-        editorialPresentation
-        categoryGridPresentation={!ambiental}
-        sleepEditorialContent={!ambiental}
-        showSleepCategoryPill={!ambiental}
-        editorialCategoryPillId={session.categoryId}
-        cardVariant={ambiental ? "ambiental" : undefined}
-        thumbRadius={16}
-      />
+      <Pressable onPress={onToggle} style={({ pressed }) => ({ opacity: pressed ? 0.78 : 1 })}>
+        <View style={styles.cardImageWrap}>
+          <Image
+            source={session.image}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+        </View>
+        <Text style={styles.cardTitle} numberOfLines={2}>{session.title}</Text>
+        <Text style={styles.cardAuthor} numberOfLines={1}>{author}</Text>
+      </Pressable>
       <Pressable
         onPress={onToggle}
         hitSlop={10}
@@ -132,7 +134,9 @@ export function PlaylistAddSessionsSheet({
     return favorites
       .filter((id) => !inAnyFavoriteFolder.has(id))
       .map((id) => getSessionById(id))
-      .filter((session): session is Session => session !== undefined);
+      .filter((session): session is Session =>
+        session !== undefined && session.categoryId !== "ambientales"
+      );
   }, [favorites, favFolders, catalogVersion]);
 
   const tabs = useMemo(
@@ -187,7 +191,10 @@ export function PlaylistAddSessionsSheet({
             <Feather name="x" size={24} color={TEXT} />
           </Pressable>
           <View style={styles.headerCopy}>
-            <Text style={styles.title}>Agregar a esta Playlist</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>Agregar desde Mis favoritos</Text>
+              <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
+            </View>
             <Text style={styles.subtitle} numberOfLines={1}>
               {playlist?.name ?? "Playlist"} · {selectedCount} seleccionada{selectedCount === 1 ? "" : "s"}
             </Text>
@@ -266,6 +273,12 @@ const styles = StyleSheet.create({
   },
   headerCopy: { flex: 1, alignItems: "center", paddingHorizontal: 8 },
   headerSpacer: { width: 40 },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+  },
   title: {
     fontFamily: "Manrope",
     color: TEXT,
@@ -278,7 +291,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     color: MUTED,
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 9,
     textAlign: "center",
   },
   tabsBorder: {
@@ -299,12 +312,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },
-  tabTibet: { backgroundColor: "rgba(0,0,0,0.1)" },
-  tabIndigo: { backgroundColor: "rgba(181,211,255,0.1)" },
   tabSelected: { backgroundColor: "#FFFFFF", borderWidth: 0 },
   tabText: {
     fontFamily: "Manrope",
@@ -325,6 +336,27 @@ const styles = StyleSheet.create({
   cardSlot: {
     width: CARD_WIDTH,
     position: "relative",
+  },
+  cardImageWrap: {
+    width: CARD_WIDTH,
+    height: CARD_WIDTH,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  cardTitle: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "600",
+    marginTop: 7,
+  },
+  cardAuthor: {
+    fontFamily: "Manrope",
+    color: MUTED,
+    fontSize: 11,
+    marginTop: 2,
   },
   selectButton: {
     position: "absolute",
