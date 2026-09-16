@@ -1995,7 +1995,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     alignItems: "stretch",
     overflow: "hidden",
-    marginTop: 15,
+    marginTop: 14,
     marginBottom: 12,
     gap: 0,
     transform: [{ translateY: -5 }],
