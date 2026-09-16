@@ -670,7 +670,26 @@ export function ExploreScreen({
 
           <View style={styles.sectionDivider} />
 
-          <ResonadoresSection marginTop={36} marginBottom={32} />
+          <Pressable
+            onPress={() => router.push("/equipo" as never)}
+            accessibilityRole="button"
+            accessibilityLabel="Conoce a los Resonadores"
+            style={({ pressed }) => [
+              styles.resonadoresBanner,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+          >
+            <View style={styles.resonadoresBannerIcon}>
+              <Feather name="users" color="#F9F9F9" size={30} />
+            </View>
+            <View style={styles.resonadoresBannerCopy}>
+              <Text style={styles.resonadoresBannerTitle}>Conoce a los Resonadores</Text>
+              <Text style={styles.resonadoresBannerSubtitle}>
+                La esencia que le da vida a este espacio, las personas detrás de Resonancia.
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="rgba(249,249,249,0.7)" />
+          </Pressable>
 
           <View style={styles.sectionDivider} />
 
@@ -849,6 +868,10 @@ export function ExploreScreen({
               })}
             </View>
           </View>
+
+          <View style={styles.sectionDivider} />
+
+          <ResonadoresSection marginTop={36} marginBottom={32} />
 
           {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
           {false && (
@@ -1131,6 +1154,46 @@ const styles = StyleSheet.create({
   },
   categoryBlocksSection: {
     marginBottom: SECTION_GAP,
+  },
+  resonadoresBanner: {
+    minHeight: 110,
+    marginTop: 0,
+    marginBottom: 53,
+    marginHorizontal: H_PAD,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.27)",
+    backgroundColor: "rgba(0,0,0,0.34)",
+  },
+  resonadoresBannerIcon: {
+    width: 51,
+    height: 51,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    transform: [{ translateY: 2 }],
+  },
+  resonadoresBannerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  resonadoresBannerTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#F9F9F9",
+    marginBottom: 5,
+  },
+  resonadoresBannerSubtitle: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    color: "#F9F9F9",
   },
   durationSection: {
     marginBottom: SECTION_GAP,
