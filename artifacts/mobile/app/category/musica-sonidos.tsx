@@ -504,14 +504,12 @@ export default function MusicaSonidosScreen() {
       {/* ── Sticky header ── */}
       <Animated.View
         onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
-        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 2 }]}
+        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 4 }]}
       >
-        <View
+        <LinearGradient
           pointerEvents="none"
-          style={[
-            StyleSheet.absoluteFill,
-            { backgroundColor: theme.gradient[0] as string },
-          ]}
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          style={StyleSheet.absoluteFill}
         />
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
@@ -544,13 +542,13 @@ export default function MusicaSonidosScreen() {
             {
               backgroundColor: profileSectionBackground,
               opacity: pressed ? 0.7 : 1,
-              top: topPad + 2,
+              top: topPad + 4,
             },
           ]}
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={{ marginTop: 14 }}>
+        <View style={{ marginTop: 12 }}>
           <ChipRow
             tabs={TABS}
             activeTab={null}
