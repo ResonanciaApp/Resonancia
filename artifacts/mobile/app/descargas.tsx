@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -61,11 +62,12 @@ export default function DownloadsScreen() {
     );
 
   return (
-    <View
+    <LinearGradient
+      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      locations={theme.gradientLocations}
       style={[
         styles.root,
         {
-          backgroundColor: theme.solid,
           paddingTop: Platform.OS === "web" ? 67 : insets.top,
           paddingBottom: (Platform.OS === "web" ? 34 : insets.bottom) + 16,
         },
@@ -227,7 +229,7 @@ export default function DownloadsScreen() {
           })
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
