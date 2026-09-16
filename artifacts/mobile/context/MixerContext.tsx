@@ -118,6 +118,7 @@ export type MixPreset = {
   category: MixCategory;
   sounds: ActiveSound[];
   createdAt: string;
+  updatedAt?: string;
   /** ID de la mezcla compartida en la comunidad (si el autor la compartió). */
   sharedId?: number;
   /** Marcada como favorita por el usuario. */
@@ -132,6 +133,7 @@ export type MixFolder = {
   name: string;
   presetIds: string[];
   createdAt: string;
+  updatedAt?: string;
   pinned?: boolean;
   /** IDs de subcarpetas anidadas dentro de esta carpeta. */
   subFolderIds?: string[];
@@ -652,9 +654,16 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const presetsCloudReadyRef = useRef(false);
   const presetsPushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistPresets = useCallback((next: MixPreset[]) => {
-    setPresets(next);
-    presetsRef.current = next;
-    AsyncStorage.setItem(PRESETS_KEY, JSON.stringify(next)).catch(() => {});
+    const previous = new Map(presetsRef.current.map((item) => [item.id, item]));
+    const now = new Date().toISOString();
+    const stamped = next.map((item) => {
+      const old = previous.get(item.id);
+      if (!old) return item.updatedAt ? item : { ...item, updatedAt: item.createdAt };
+      return old === item ? item : { ...item, updatedAt: now };
+    });
+    setPresets(stamped);
+    presetsRef.current = stamped;
+    AsyncStorage.setItem(PRESETS_KEY, JSON.stringify(stamped)).catch(() => {});
     // Respaldo en la nube (debounced); solo actualiza el campo mixerPresets.
     // No se sube nada hasta que la restauración inicial terminó (evita pisar
     // la copia de la nube con un snapshot local incompleto), y al disparar se
@@ -682,8 +691,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const persistMixFolders = useCallback((next: MixFolder[]) => {
-    setMixFolders(next);
-    AsyncStorage.setItem(MIX_FOLDERS_KEY, JSON.stringify(next)).catch(() => {});
+    const previous = new Map(mixFoldersRef.current.map((item) => [item.id, item]));
+    const now = new Date().toISOString();
+    const stamped = next.map((item) => {
+      const old = previous.get(item.id);
+      if (!old) return item.updatedAt ? item : { ...item, updatedAt: item.createdAt };
+      return old === item ? item : { ...item, updatedAt: now };
+    });
+    setMixFolders(stamped);
+    AsyncStorage.setItem(MIX_FOLDERS_KEY, JSON.stringify(stamped)).catch(() => {});
   }, []);
 
   const createMixFolder = useCallback(

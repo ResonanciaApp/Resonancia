@@ -38,6 +38,7 @@ export type Folder = {
   presetIds?: string[];    // mezclas del Mezclador guardadas en la carpeta
   subFolderIds: string[];  // subcarpetas anidadas
   createdAt: string;
+  updatedAt?: string;
   pinned?: boolean;
 };
 
@@ -46,6 +47,7 @@ export type FavFolder = {
   name: string;
   sessionIds: string[];
   createdAt: string;
+  updatedAt?: string;
   pinned?: boolean;
   /** IDs de subcarpetas anidadas dentro de esta carpeta. */
   subFolderIds?: string[];
@@ -66,6 +68,7 @@ export type Playlist = {
   /** Hex del tono de acento elegido por el usuario para el header */
   coverColor?: string;
   createdAt: string;
+  updatedAt?: string;
   pinned?: boolean;
 };
 
@@ -426,7 +429,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
   // Functional updaters — always read latest state (no stale closure)
   const updateFolders = useCallback((updater: (prev: Folder[]) => Folder[]) => {
     setFolders((prev) => {
-      const next = updater(prev);
+      const raw = updater(prev);
+      const previous = new Map(prev.map((item) => [item.id, item]));
+      const now = new Date().toISOString();
+      const next = raw.map((item) => {
+        const old = previous.get(item.id);
+        if (!old) return item.updatedAt ? item : { ...item, updatedAt: item.createdAt };
+        return old === item ? item : { ...item, updatedAt: now };
+      });
       AsyncStorage.setItem(FOLDERS_KEY, JSON.stringify(next));
       return next;
     });
@@ -434,7 +444,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   const updatePlaylists = useCallback((updater: (prev: Playlist[]) => Playlist[]) => {
     setPlaylists((prev) => {
-      const next = updater(prev);
+      const raw = updater(prev);
+      const previous = new Map(prev.map((item) => [item.id, item]));
+      const now = new Date().toISOString();
+      const next = raw.map((item) => {
+        const old = previous.get(item.id);
+        if (!old) return item.updatedAt ? item : { ...item, updatedAt: item.createdAt };
+        return old === item ? item : { ...item, updatedAt: now };
+      });
       AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(next));
       return next;
     });
@@ -442,7 +459,14 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   const updateFavFolders = useCallback((updater: (prev: FavFolder[]) => FavFolder[]) => {
     setFavFolders((prev) => {
-      const next = updater(prev);
+      const raw = updater(prev);
+      const previous = new Map(prev.map((item) => [item.id, item]));
+      const now = new Date().toISOString();
+      const next = raw.map((item) => {
+        const old = previous.get(item.id);
+        if (!old) return item.updatedAt ? item : { ...item, updatedAt: item.createdAt };
+        return old === item ? item : { ...item, updatedAt: now };
+      });
       AsyncStorage.setItem(FAV_FOLDERS_KEY, JSON.stringify(next));
       return next;
     });

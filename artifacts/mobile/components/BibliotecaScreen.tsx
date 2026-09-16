@@ -72,7 +72,7 @@ export function getLibraryTabSurface(_sceneId: SceneId): string {
 }
 
 type LibTab = "playlists" | "mezclas" | "carpetas" | "geometrix" | "historial" | "favoritos" | "resonadores";
-type SortMode = "recientes" | "agregado" | "alfabetico";
+type SortMode = "recientes" | "modificado" | "antiguos" | "tipo" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string; icon: React.ComponentProps<typeof Feather>["name"] }[] = [
@@ -1034,31 +1034,44 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
 }
 
 // ── Hoja de ordenar ──────────────────────────────────────────────────────────
-const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
+const GENERAL_SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes",   label: "Recientes",               icon: "clock" },
-  { id: "agregado",    label: "Agregado recientemente",  icon: "plus-circle" },
+  { id: "modificado",  label: "Modificado",              icon: "edit-3" },
+  { id: "antiguos",    label: "Del más antiguo al más reciente", icon: "arrow-up" },
+  { id: "tipo",        label: "Por tipo",                 icon: "layers" },
   { id: "alfabetico",  label: "Alfabéticamente",          icon: "type" },
+];
+const TAB_SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
+  { id: "recientes",  label: "Recientes",                         icon: "clock" },
+  { id: "antiguos",   label: "Del más antiguo al más reciente",   icon: "arrow-up" },
+  { id: "modificado", label: "Modificado",                        icon: "edit-3" },
+  { id: "alfabetico", label: "Alfabéticamente",                   icon: "type" },
 ];
 
 function SortSheet({
   visible,
   current,
+  isGeneral,
   onSelect,
   onClose,
 }: {
   visible: boolean;
   current: SortMode;
+  isGeneral: boolean;
   onSelect: (s: SortMode) => void;
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
+  const options = isGeneral ? GENERAL_SORT_OPTIONS : TAB_SORT_OPTIONS;
+  const sheetColor = theme.gradient[1] ?? theme.gradient[0];
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      <View style={[styles.sortSheet, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+      <View style={[styles.sortSheet, { paddingBottom: Math.max(insets.bottom, 16), backgroundColor: sheetColor }]}>
         <View style={styles.sortSheetHandle} />
         <Text style={styles.sortSheetTitle}>Ordenar por</Text>
-        {SORT_OPTIONS.map((opt) => {
+        {options.map((opt) => {
           const active = opt.id === current;
           return (
             <Pressable
@@ -1182,7 +1195,12 @@ export function BibliotecaScreen({
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
 
   // Reset paginación al cambiar de tab
-  useEffect(() => { setMixesLimit(12); setGeoLimit(8); setFavLimit(12); }, [activeTab]);
+  useEffect(() => {
+    setMixesLimit(12);
+    setGeoLimit(8);
+    setFavLimit(12);
+    setSort("recientes");
+  }, [activeTab]);
 
   // Expone lupa/+ al header externo (píldora alineada con el título "Biblioteca").
   useEffect(() => {
@@ -1223,15 +1241,33 @@ export function BibliotecaScreen({
   }, []);
 
   const FOLLOWED_KEY = "@biblioteca_followed_resonadores";
+  const FOLLOWED_AT_KEY = "@biblioteca_followed_resonadores_at";
   const [followedIds, setFollowedIds] = useState<string[]>([]);
+  const [followedAtById, setFollowedAtById] = useState<Record<string, string>>({});
   useEffect(() => {
-    AsyncStorage.getItem(FOLLOWED_KEY).then((val) => {
-      if (val) setFollowedIds(JSON.parse(val));
+    Promise.all([AsyncStorage.getItem(FOLLOWED_KEY), AsyncStorage.getItem(FOLLOWED_AT_KEY)]).then(([idsRaw, datesRaw]) => {
+      const ids = idsRaw ? JSON.parse(idsRaw) as string[] : [];
+      const storedDates = datesRaw ? JSON.parse(datesRaw) as Record<string, string> : {};
+      const fallbackBase = Date.now();
+      const dates = Object.fromEntries(
+        ids.map((id, index) => [id, storedDates[id] ?? new Date(fallbackBase - index).toISOString()]),
+      );
+      setFollowedIds(ids);
+      setFollowedAtById(dates);
+      if (ids.some((id) => !storedDates[id])) {
+        AsyncStorage.setItem(FOLLOWED_AT_KEY, JSON.stringify(dates));
+      }
     });
   }, []);
   const saveFollowed = (ids: string[]) => {
+    const now = new Date().toISOString();
+    const nextDates = Object.fromEntries(
+      ids.map((id) => [id, followedAtById[id] ?? now]),
+    );
     setFollowedIds(ids);
+    setFollowedAtById(nextDates);
     AsyncStorage.setItem(FOLLOWED_KEY, JSON.stringify(ids));
+    AsyncStorage.setItem(FOLLOWED_AT_KEY, JSON.stringify(nextDates));
   };
   const followResonador = (id: string) => {
     if (!followedIds.includes(id)) saveFollowed([id, ...followedIds]);
@@ -1248,8 +1284,15 @@ export function BibliotecaScreen({
   };
 
   const resonadores = useMemo(
-    () => followedIds.map((id) => allResonadores.find((r) => r.id === id)).filter((r): r is typeof allResonadores[number] => !!r),
-    [allResonadores, followedIds]
+    () => followedIds
+      .map((id) => {
+        const resonador = allResonadores.find((r) => r.id === id);
+        if (!resonador) return null;
+        const followedAt = followedAtById[id] ?? new Date(0).toISOString();
+        return { ...resonador, createdAt: followedAt, updatedAt: followedAt };
+      })
+      .filter((r): r is NonNullable<typeof r> => !!r),
+    [allResonadores, followedAtById, followedIds]
   );
 
   const renderContent = () => {
@@ -1257,19 +1300,6 @@ export function BibliotecaScreen({
     if (activeTab === null) {
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-
-      const sortSessions = (arr: import("@/data/sessions").Session[]) => {
-        if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
-        if (sort === "agregado")   return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-        return arr; // "recientes" = orden natural
-      };
-
-      // En la vista general todos los tipos comparten un único orden. Las
-      // carpetas no tienen prioridad sobre playlists o mezclas.
-      const cmpGeneral = (a: { name?: string; createdAt: string }, b: { name?: string; createdAt: string }) => {
-        if (sort === "alfabetico") return (a.name ?? "").localeCompare(b.name ?? "", "es");
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      };
 
       const plIdsInFoldersGeneral = new Set(userFolders.flatMap((f) => f.playlistIds ?? []));
       const mixIdsInFoldersGeneral = new Set([
@@ -1286,7 +1316,24 @@ export function BibliotecaScreen({
         ...presets
           .filter((item) => !mixIdsInFoldersGeneral.has(item.id))
           .map((item) => ({ kind: "mix" as const, item })),
-      ].sort((a, b) => cmpGeneral(a.item, b.item));
+        ...resonadores.map((item) => ({ kind: "resonador" as const, item })),
+      ].sort((a, b) => {
+        if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
+        if (sort === "modificado") {
+          const aDate = a.item.updatedAt ?? a.item.createdAt;
+          const bDate = b.item.updatedAt ?? b.item.createdAt;
+          return new Date(bDate).getTime() - new Date(aDate).getTime();
+        }
+        if (sort === "antiguos") {
+          return new Date(a.item.createdAt).getTime() - new Date(b.item.createdAt).getTime();
+        }
+        if (sort === "tipo") {
+          const rank = (kind: typeof a.kind) =>
+            kind === "playlist" ? 0 : kind === "mix" ? 1 : kind === "resonador" ? 3 : 2;
+          return rank(a.kind) - rank(b.kind);
+        }
+        return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
+      });
 
       return (
         <View style={{ gap: 15, marginTop: 30 }}>
@@ -1347,6 +1394,22 @@ export function BibliotecaScreen({
                         )}
                       </View>
                       <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
+                    </Pressable>
+                  );
+                }
+                if (entry.kind === "resonador") {
+                  const resonador = entry.item;
+                  return (
+                    <Pressable
+                      key={`resonador-${resonador.id}`}
+                      style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
+                      onPress={() => router.push((resonador.kind === "artist" ? `/artista/${resonador.id}` : `/guiador/${resonador.id}`) as never)}
+                      onLongPress={() => unfollowResonador(resonador.id, resonador.name)}
+                      delayLongPress={600}
+                    >
+                      <Image source={resonador.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
+                      <Text style={styles.gridTitle} numberOfLines={2}>{resonador.name}</Text>
+                      <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>{resonador.tags[0]}</Text>
                     </Pressable>
                   );
                 }
@@ -1423,6 +1486,19 @@ export function BibliotecaScreen({
                     />
                   );
                 }
+                if (entry.kind === "resonador") {
+                  const resonador = entry.item;
+                  return (
+                    <ResonadorRow
+                      key={`resonador-${resonador.id}`}
+                      name={resonador.name}
+                      photo={resonador.photo}
+                      tags={resonador.tags}
+                      onPress={() => router.push((resonador.kind === "artist" ? `/artista/${resonador.id}` : `/guiador/${resonador.id}`) as never)}
+                      onLongPress={() => unfollowResonador(resonador.id, resonador.name)}
+                    />
+                  );
+                }
                 const mix = entry.item;
                 return (
                   <MixRow
@@ -1438,23 +1514,6 @@ export function BibliotecaScreen({
               })}
             </View>
           )}
-
-          {/* ── Resonadores seguidos ── */}
-          {resonadores.map((r) => (
-            <Pressable
-              key={r.id}
-              style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.8 : 1 }]}
-              onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-              onLongPress={() => unfollowResonador(r.id, r.name)}
-              delayLongPress={600}
-            >
-              <Image source={r.photo} style={{ width: 62, height: 62, borderRadius: 31 }} resizeMode="cover" />
-              <View style={styles.rowInfo}>
-                <Text style={styles.addResonadorLabel} numberOfLines={1}>{r.name}</Text>
-                <Text style={[styles.rowSub, { marginTop: 2 }]} numberOfLines={1}>{r.tags[0]}</Text>
-              </View>
-            </Pressable>
-          ))}
 
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -1497,15 +1556,12 @@ export function BibliotecaScreen({
     }
 
     if (activeTab === "playlists") {
-      const sortedUserPl = [...userPlaylists]
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      // Aplicar ordenamiento según sort mode
-      const applySort = (arr: typeof sortedUserPl) => {
-        if (sort === "agregado") return [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        if (sort === "alfabetico") return [...arr].sort((a, b) => a.name.localeCompare(b.name, "es"));
-        return arr; // "recientes" ya está ordenado
-      };
-      const displayPl = applySort(sortedUserPl);
+      const displayPl = [...userPlaylists].sort((a, b) => {
+        if (sort === "alfabetico") return a.name.localeCompare(b.name, "es");
+        if (sort === "modificado") return new Date(b.updatedAt ?? b.createdAt).getTime() - new Date(a.updatedAt ?? a.createdAt).getTime();
+        if (sort === "antiguos") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
 
        if (displayPl.length === 0) {
         return (
@@ -1563,12 +1619,12 @@ export function BibliotecaScreen({
     if (activeTab === "mezclas") {
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      const sortedPresets =
-        sort === "alfabetico"
-          ? [...presets].sort((a, b) => a.name.localeCompare(b.name, "es"))
-          : sort === "agregado"
-            ? [...presets].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            : presets;
+      const sortedPresets = [...presets].sort((a, b) => {
+        if (sort === "alfabetico") return a.name.localeCompare(b.name, "es");
+        if (sort === "modificado") return new Date(b.updatedAt ?? b.createdAt).getTime() - new Date(a.updatedAt ?? a.createdAt).getTime();
+        if (sort === "antiguos") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
       if (sortedPresets.length === 0) {
         return (
           <View style={styles.emptyState}>
@@ -1657,6 +1713,8 @@ export function BibliotecaScreen({
         ...mixFolders.map((item) => ({ kind: "mixFolder" as const, item })),
       ].sort((a, b) => {
         if (sort === "alfabetico") return a.item.name.localeCompare(b.item.name, "es");
+        if (sort === "modificado") return new Date(b.item.updatedAt ?? b.item.createdAt).getTime() - new Date(a.item.updatedAt ?? a.item.createdAt).getTime();
+        if (sort === "antiguos") return new Date(a.item.createdAt).getTime() - new Date(b.item.createdAt).getTime();
         return new Date(b.item.createdAt).getTime() - new Date(a.item.createdAt).getTime();
       });
       if (folderItems.length === 0) {
@@ -1843,11 +1901,16 @@ export function BibliotecaScreen({
 
       const sortedFavFolders = [...favFolders].sort((a, b) => {
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (sort === "alfabetico") return a.name.localeCompare(b.name, "es");
+        if (sort === "modificado") return new Date(b.updatedAt ?? b.createdAt).getTime() - new Date(a.updatedAt ?? a.createdAt).getTime();
+        if (sort === "antiguos") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
       const favSorted =
         sort === "alfabetico"
           ? [...favSessions].sort((a, b) => a.title.localeCompare(b.title, "es"))
+          : sort === "antiguos"
+            ? [...favSessions].reverse()
           : favSessions;
       const pinnedFirstFav = [...favSorted].sort(
         (a, b) => (pinnedFavoriteIds.includes(b.id) ? 1 : 0) - (pinnedFavoriteIds.includes(a.id) ? 1 : 0)
@@ -1915,6 +1978,8 @@ export function BibliotecaScreen({
       const sortedResonadores =
         sort === "alfabetico"
           ? [...resonadores].sort((a, b) => a.name.localeCompare(b.name, "es"))
+          : sort === "antiguos"
+            ? [...resonadores].reverse()
           : resonadores;
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
@@ -2012,7 +2077,7 @@ export function BibliotecaScreen({
           !(activeTab === null && userPlaylists.length === 0 && userFolders.length === 0 && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
-              <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
+              <Text style={styles.sortText}>{(activeTab === null ? GENERAL_SORT_OPTIONS : TAB_SORT_OPTIONS).find((o) => o.id === sort)?.label}</Text>
               <Feather name="chevron-down" size={15} color={MUTED} />
             </Pressable>
           </View>
@@ -2073,7 +2138,13 @@ export function BibliotecaScreen({
         onDelete={(mix) => deletePreset(mix.id)}
         libraryActionsOnly
       />
-      <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
+      <SortSheet
+        visible={sortVisible}
+        current={sort}
+        isGeneral={activeTab === null}
+        onSelect={setSort}
+        onClose={() => setSortVisible(false)}
+      />
 
       {/* ── Modal Agregar Resonador ── */}
       <Modal
