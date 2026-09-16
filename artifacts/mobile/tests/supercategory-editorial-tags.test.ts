@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  collectSupercategoryFeaturedSessions,
   collectSupercategoryEditorialTags,
   getSupercategoryFilterTabs,
   getSupercategoryEditorialTags,
@@ -62,4 +63,31 @@ test("hides the Sonidos tab bar until an editorial tag is available", () => {
   assert.equal(shouldShowSupercategoryFilterTabs([], true), false);
   assert.equal(shouldShowSupercategoryFilterTabs(["Opción A"], true), true);
   assert.equal(shouldShowSupercategoryFilterTabs([], false), true);
+});
+
+test("collects featured sessions across a supercategory without removing them from the source", () => {
+  const sessions = [
+    { id: "meditation", categoryId: "meditaciones-guiadas", isFeaturedCategory: true },
+    { id: "music", categoryId: "musica-sonidos", isFeaturedCategory: false },
+    { id: "ancestral", categoryId: "sonidos-ancestrales", isFeaturedCategory: true },
+  ];
+
+  assert.deepEqual(
+    collectSupercategoryFeaturedSessions(sessions).map((item) => item.id),
+    ["meditation", "ancestral"],
+  );
+  assert.deepEqual(
+    sessions.map((item) => item.id),
+    ["meditation", "music", "ancestral"],
+  );
+});
+
+test("returns no featured section data when a supercategory has no featured sessions", () => {
+  assert.deepEqual(
+    collectSupercategoryFeaturedSessions([
+      { id: "one" },
+      { id: "two", isFeaturedCategory: false },
+    ]),
+    [],
+  );
 });

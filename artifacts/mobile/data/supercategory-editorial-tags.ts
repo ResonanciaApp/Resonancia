@@ -47,6 +47,10 @@ type ThemeTagged = {
   themeTag?: readonly string[] | null;
 };
 
+type SupercategoryFeatureable = {
+  isFeaturedCategory?: boolean;
+};
+
 type FilterableSession = ThemeTagged & {
   durationLabel: string;
 };
@@ -97,4 +101,10 @@ export function collectSupercategoryEditorialTags(
   type: SupercategoryEditorialType,
 ): string[] {
   return [...new Set(sessions.flatMap((session) => getSupercategoryEditorialTags(session, type)))];
+}
+
+export function collectSupercategoryFeaturedSessions<
+  T extends SupercategoryFeatureable,
+>(sessions: readonly T[]): T[] {
+  return sessions.filter((session) => session.isFeaturedCategory === true);
 }

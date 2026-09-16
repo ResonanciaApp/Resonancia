@@ -43,6 +43,7 @@ import {
 } from "@/data/playlists";
 import { resolveSleepCarouselOrder } from "@/lib/editorial-playlist-helpers";
 import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
+import { collectSupercategoryFeaturedSessions } from "@/data/supercategory-editorial-tags";
 import {
   formatPracticeNotificationTimeLocal,
   loadPracticeNotificationSettings,
@@ -130,6 +131,11 @@ const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 const SLEEP_CAROUSEL_CARD_W = Math.round(
   (W - H_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+);
+const FEATURED_SLEEP_BASE_W = (W - H_PAD * 2 - 56) * 0.85;
+const FEATURED_SLEEP_CARD_W = Math.round(FEATURED_SLEEP_BASE_W * 1.25 - 25);
+const FEATURED_SLEEP_CARD_H = Math.round(
+  (FEATURED_SLEEP_CARD_W / (16 / 9)) * 1.1,
 );
 const SOUND_CARD_W  = 120;
 
@@ -413,6 +419,10 @@ export default function DescansoScreen() {
 
   // Mismo conjunto que la cola implícita del reproductor (DESCANSO_VISIBLE_TAGS).
   const allDormiSessions = useMemo(() => getDescansoVisibleSessions(), [catalogVersion]);
+  const featuredSleepSessions = useMemo(
+    () => collectSupercategoryFeaturedSessions(allDormiSessions),
+    [allDormiSessions],
+  );
   const sleepSearchItems = useMemo(
     () =>
       allDormiSessions.map((session) => ({
@@ -515,6 +525,34 @@ export default function DescansoScreen() {
           onScroll={handleScroll}
         >
           <View style={{ marginTop: -3 }}>
+            {featuredSleepSessions.length > 0 ? (
+              <>
+                <SessionCarousel
+                  title="Contenido destacado"
+                  sessions={featuredSleepSessions}
+                  isPremium={isPremium}
+                  onPress={handleSessionTap}
+                  style={{
+                    marginTop: 33,
+                    marginBottom: 0,
+                    paddingHorizontal: H_PAD,
+                  }}
+                  disableAmbientalVariant
+                  whiteMetadataGlass
+                  showDurationClock
+                  trailingPeek={20}
+                  cardWidth={FEATURED_SLEEP_CARD_W}
+                  cardHeight={FEATURED_SLEEP_CARD_H}
+                  allowOversizedCardWidth
+                  cardBorderRadius={16}
+                  titleSize={17}
+                  hideCategoryAboveTitle
+                />
+                {orderedSleepCarousels.length > 0 ? (
+                  <View style={styles.sectionDivider} />
+                ) : null}
+              </>
+            ) : null}
             {orderedSleepCarousels.map((item, index) => (
               <React.Fragment key={item.key}>
                 {index > 0 ? <View style={styles.sectionDivider} /> : null}
