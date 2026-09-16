@@ -1309,7 +1309,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
   const inicio3HeroHeight =
-    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 25;
+    INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT;
   const inicio3HeroTop = inicio3HeroLayoutTop - 5;
   const slowHeaderStyle = useAnimatedStyle(() => {
@@ -1396,7 +1396,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           isInicio3 && slowHeaderStyle,
         ]}
       >
-        <View style={styles.inicio2HeroProfileButton}>
+        <View
+          style={[
+            styles.inicio2HeroProfileButton,
+            isInicio3 && styles.inicio3HeroProfileLift,
+          ]}
+        >
           <Pressable
             onPress={onOpenDrawer}
             hitSlop={10}
@@ -3226,6 +3231,9 @@ const styles = StyleSheet.create({
     maxWidth: "76%",
     flexDirection: "row",
     alignItems: "center",
+  },
+  inicio3HeroProfileLift: {
+    transform: [{ translateY: -4 }],
   },
   inicio2HeroAvatar: {
     width: 42,
