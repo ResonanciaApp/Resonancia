@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -115,7 +116,12 @@ export function VideoScreen({ showBack = false }: Props) {
         <View style={styles.titleRow}>
           {showBack ? (
             <Pressable onPress={goBack} hitSlop={10} style={styles.backBtn}>
-              <Feather name="chevron-left" size={28} color="#F4F4F4" />
+              <Feather
+                name="chevron-left"
+                size={28}
+                color="#F4F4F4"
+                style={{ transform: [{ translateX: -1 }] }}
+              />
             </Pressable>
           ) : (
             <View style={styles.backPlaceholder} />
@@ -232,6 +238,15 @@ export function VideoScreen({ showBack = false }: Props) {
               { top: sortMenuPos.top, left: sortMenuPos.left, borderColor: colors.border },
             ]}
           >
+            <View pointerEvents="none" style={styles.sortMenuGlassSurface}>
+              <BlurView
+                intensity={32}
+                tint="dark"
+                experimentalBlurMethod="dimezisBlurView"
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={[StyleSheet.absoluteFill, styles.sortMenuGlassTint]} />
+            </View>
             {(Object.keys(SORT_LABELS) as SortOption[]).map((opt) => {
               const sel = sortBy === opt;
               return (
@@ -340,7 +355,7 @@ const styles = StyleSheet.create({
   sortMenu: {
     position: "absolute",
     minWidth: 190,
-    backgroundColor: "rgba(0,0,0,0.38)",
+    backgroundColor: "transparent",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
     paddingVertical: 6,
@@ -349,6 +364,15 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
     elevation: 8,
+  },
+  sortMenuGlassSurface: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  sortMenuGlassTint: {
+    backgroundColor: "#0E0821",
+    opacity: 0.42,
   },
   sortItem: {
     flexDirection: "row",
