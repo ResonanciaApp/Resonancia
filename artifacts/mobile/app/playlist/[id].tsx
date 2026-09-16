@@ -517,12 +517,14 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
                 </Text>
               </View>
             </View>
-            {recommended.map((session) => (
-              <RecommendedRow
-                key={session.id}
-                session={session}
-                onAdd={() => addToPlaylist(playlist.id, session.id)}
-              />
+            {recommended.map((session, index) => (
+              <React.Fragment key={session.id}>
+                <RecommendedRow
+                  session={session}
+                  onAdd={() => addToPlaylist(playlist.id, session.id)}
+                />
+                {index < recommended.length - 1 && <View style={styles.recommendedDivider} />}
+              </React.Fragment>
             ))}
           </>
         )}
@@ -735,7 +737,7 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
 
   return (
     <View style={styles.sessionRow}>
-      <View style={styles.thumbWrap}>
+      <View style={[styles.thumbWrap, styles.recommendedThumbWrap]}>
         <Image source={session.image as never} style={styles.thumb}
           placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
         <SessionDurationBadge
@@ -939,7 +941,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontFamily: "Manrope",
     color: TEXT,
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "800",
   },
   sectionDescription: {
@@ -957,6 +959,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     gap: 10,
+  },
+  recommendedThumbWrap: {
+    width: 82,
+    height: 82,
+  },
+  recommendedDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: 20,
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
   thumbWrap: { width: 96, height: 96, borderRadius: 8, overflow: "hidden", position: "relative", flexShrink: 0 },
