@@ -393,11 +393,11 @@ export default function EditorialPlaylistScreen({ slug: slugProp }: EditorialPla
             <Pressable
               onPress={goBack}
               hitSlop={12}
-              style={styles.headerButton}
+              style={[styles.headerButton, styles.backHeaderButton]}
               accessibilityRole="button"
               accessibilityLabel="Volver"
             >
-              <Feather name="chevron-left" size={28} color={COLORS.text} />
+              <Feather name="chevron-left" size={32} color={COLORS.text} style={{ transform: [{ translateX: -1 }] }} />
             </Pressable>
             <View style={styles.headerSpacer} />
             <Pressable
@@ -696,6 +696,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.25)",
+  },
+  backHeaderButton: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   headerSpacer: { flex: 1 },
   contentContainer: {

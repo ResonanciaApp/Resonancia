@@ -196,27 +196,18 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
                 styles.heroBackBtn,
                 {
                   top: topPad + 8,
-                  backgroundColor: "rgba(12,10,22,0.48)",
+                  backgroundColor: "rgba(0,0,0,0.28)",
                   opacity: pressed ? 0.7 : 1,
                 },
               ]}
             >
-              <Feather name="chevron-left" size={26} color={colors.foreground} />
+              <Feather name="chevron-left" size={32} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
             </Pressable>
           </View>
           <View style={styles.intro}>
             <Text style={[styles.legacyPageTitle, { color: colors.foreground }]}>
               {tagLabel}
             </Text>
-            {tag?.description ? (
-              <Text
-                style={[styles.pageDescription, { color: colors.foreground }]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {tag.description}
-              </Text>
-            ) : null}
           </View>
         </View>
 
@@ -347,13 +338,13 @@ export default function ThemeTagScreen({ id: idProp }: { id?: string } = {}) {
           style={({ pressed }) => [
             styles.backBtn,
             {
-              backgroundColor: "rgba(255,255,255,0.08)",
+              backgroundColor: "rgba(0,0,0,0.28)",
               opacity: pressed ? 0.7 : 1,
               top: topPad + 2,
             },
           ]}
         >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
+          <Feather name="chevron-left" size={32} color={colors.foreground} style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
       </Animated.View>
     </View>
@@ -374,9 +365,11 @@ const styles = StyleSheet.create({
   heroBackBtn: {
     position: "absolute",
     left: H_PAD,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -388,8 +381,8 @@ const styles = StyleSheet.create({
   },
   legacyPageTitle: {
     fontFamily: "Manrope",
-    fontSize: 26,
-    lineHeight: 33,
+    fontSize: 19,
+    lineHeight: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
     textAlign: "center",
@@ -422,7 +415,7 @@ const styles = StyleSheet.create({
   },
   filterPillIdle: {
     backgroundColor: "rgba(0,0,0,0.28)",
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   filterLabel: {
     fontFamily: "Manrope",
@@ -445,9 +438,11 @@ const styles = StyleSheet.create({
   backBtn: {
     position: "absolute",
     left: H_PAD,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },

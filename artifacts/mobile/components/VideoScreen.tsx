@@ -43,7 +43,7 @@ function parseDurationToSeconds(label: string): number {
   return m * 60 + s;
 }
 
-const CHIPS_H  = 63;
+const CHIPS_H  = 65;
 
 interface Props {
   showBack?: boolean;
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   chipsScroll: { overflow: "visible" },
   chipsRow: {
     paddingHorizontal: 16,
-    paddingVertical: 6,
+    paddingVertical: 7,
     gap: 8,
     alignItems: "center",
   },
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
