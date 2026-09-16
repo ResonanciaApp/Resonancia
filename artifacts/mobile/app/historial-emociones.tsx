@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getMoodById } from "@/data/moods";
 import { readMoodHistory, type MoodHistoryRecord } from "@/data/mood-history";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getLibraryTabSurface } from "@/components/BibliotecaScreen";
 
 type DayGroup = {
   key: string;
@@ -65,7 +66,7 @@ function groupHistory(records: MoodHistoryRecord[]): MonthGroup[] {
 
 export default function HistorialEmocionesScreen() {
   const insets = useSafeAreaInsets();
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
   const [records, setRecords] = useState<MoodHistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
@@ -93,20 +94,21 @@ export default function HistorialEmocionesScreen() {
       colors={theme.gradient as unknown as [string, string, ...string[]]}
       style={styles.root}
     >
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.header, { paddingTop: topPad + 4 }]}>
         <Pressable
           onPress={() => router.back()}
-          style={styles.backButton}
+          style={[styles.backButton, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Volver"
         >
-          <Feather name="arrow-left" size={21} color="#F9F9F9" />
+          <Feather name="chevron-left" size={32} color="#F9F9F9" style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
-        <Text style={styles.headerTitle} numberOfLines={1}>
-          Historial de tu estado de ánimo
-        </Text>
-        <View style={styles.headerSide} />
+        <View style={styles.headerTitleBlock}>
+          <Text style={styles.headerTitle} numberOfLines={1}>Estado de ánimo</Text>
+          <Text style={styles.headerSubtitle}>Tu historial</Text>
+        </View>
+        <View style={[styles.headerSide, { backgroundColor: getLibraryTabSurface(activeSceneId) }]} />
       </View>
 
       {loading ? (
@@ -170,28 +172,46 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingBottom: 18,
+    paddingBottom: 6,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+    transform: [{ translateY: 8 }],
   },
   backButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.24)",
+  },
+  headerTitleBlock: {
+    flex: 1,
+    alignItems: "center",
   },
   headerTitle: {
-    flex: 1,
     fontFamily: "Manrope",
     color: "#F9F9F9",
-    fontSize: 17,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
+    textAlign: "center",
+  },
+  headerSubtitle: {
+    marginTop: 1,
+    fontFamily: "Manrope",
+    color: "rgba(249,249,249,0.7)",
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "500",
+    textAlign: "center",
   },
   headerSide: {
-    width: 42,
+    width: 40,
+    height: 40,
+    opacity: 0,
   },
   content: {
     paddingHorizontal: 20,
@@ -206,6 +226,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "800",
     letterSpacing: 1.2,
+    marginTop: 15,
     marginBottom: 18,
   },
   dayRow: {
@@ -229,8 +250,8 @@ const styles = StyleSheet.create({
   dateText: {
     fontFamily: "Manrope",
     color: "#F9F9F9",
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "600",
   },
   railLine: {
     width: 1,

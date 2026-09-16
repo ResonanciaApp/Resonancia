@@ -791,17 +791,11 @@ export default function MezcladorScreen() {
             {/* ── Hero: chevron y ajustes arriba, como en Música ── */}
             <View style={{ height: topPad + 45, position: "relative" }}>
               <View style={{ position: "absolute", left: 20, top: topPad + 3, zIndex: 10 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+                <View style={styles.mixerHeaderControl}>
                   <BackPill
                     onPress={closeMixer}
                     size={28}
-                    bgColor={
-                      theme.id === "tibet"
-                        ? "rgba(0,0,0,0.15)"
-                        : isIndigoThemeId(theme.id)
-                          ? "rgba(181,211,255,0.057)"
-                          : "rgba(181,211,255,0.057)"
-                    }
+                    bgColor="rgba(0,0,0,0.28)"
                     iconOffsetX={-1}
                     style={{ transform: [{ translateX: -1 }] }}
                   />
@@ -817,7 +811,7 @@ export default function MezcladorScreen() {
               <View style={{ position: "absolute", right: 20, top: topPad + 3, zIndex: 10 }}>
                 <Pressable
                   onPress={() => openMenu()}
-                  style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}
+                  style={styles.mixerHeaderControl}
                   hitSlop={8}
                   accessibilityRole="button"
                   accessibilityLabel="Menú del Mezclador"
@@ -1103,6 +1097,17 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     position: "relative",
   },
+  mixerHeaderControl: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   stickyTabsBorder: {
     position: "absolute",
     left: 0,
@@ -1122,13 +1127,13 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.28)",
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },
   pillTabTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   pillTabSel: { backgroundColor: "#F9F9F9" },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 10, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "550" as any, letterSpacing: 0.3, color: "#F9F9F9", textAlign: "center" },
   pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "550" as any },
   pillTabUnderline: {},
 

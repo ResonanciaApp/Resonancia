@@ -220,10 +220,10 @@ export default function PracticeNotificationsScreen() {
             accessibilityLabel="Volver"
             style={styles.headerButton}
           >
-            <Feather name="chevron-left" size={28} color="#FBFBFB" />
+            <Feather name="chevron-left" size={32} color="#FBFBFB" style={{ transform: [{ translateX: -1 }] }} />
           </Pressable>
           <Text style={styles.headerTitle}>Notificaciones</Text>
-          <View style={styles.headerButton} />
+          <View style={styles.headerPlaceholder} />
         </View>
 
         <View style={styles.card}>
@@ -390,15 +390,24 @@ const styles = StyleSheet.create({
     marginBottom: 34,
   },
   headerButton: {
-    width: 38,
-    height: 38,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  headerPlaceholder: {
+    width: 40,
+    height: 40,
   },
   headerTitle: {
     color: "#FBFBFB",
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
   },
   card: {
@@ -424,7 +433,9 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,

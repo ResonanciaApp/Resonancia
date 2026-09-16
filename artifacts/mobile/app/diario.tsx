@@ -147,18 +147,20 @@ export default function DiarioScreen() {
     >
       <StatusBar hidden />
 
-      {/* Floating back */}
-      <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} />
-
-      {/* Top bar (solo menú) */}
-      <View style={[styles.topBar, { paddingTop: topPad + 4, justifyContent: "flex-end" }]}>
+      <View style={[styles.topBar, { paddingTop: topPad + 4 }]}>
+        <BackPill
+          onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+          size={32}
+          bgColor="rgba(0,0,0,0.28)"
+          borderWidth={1}
+          borderColor="rgba(255,255,255,0.2)"
+          iconOffsetX={-1}
+        />
+        <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Mis notas</Text>
         <Pressable onPress={handleMenu} hitSlop={10} style={styles.topBtn}>
           <Feather name="more-horizontal" size={22} color={"#F9F9F9"} />
         </Pressable>
       </View>
-
-      {/* Title */}
-      <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Mis notas</Text>
 
       {/* Body */}
       {loading ? (
@@ -206,17 +208,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginBottom: 6,
+    paddingBottom: 6,
+    minHeight: 48,
+    transform: [{ translateY: 8 }],
   },
-  topBtn: { padding: 4 },
+  topBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   screenTitle: {
+    flex: 1,
     fontFamily: "Manrope",
-    fontSize: 27,
+    fontSize: 18,
+    lineHeight: 21,
     fontWeight: "700",
-    letterSpacing: 0.3,
-    paddingHorizontal: 20,
-    marginBottom: 8,
-    marginTop: 20,
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
   scroll: { flex: 1 },
 

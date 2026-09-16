@@ -209,7 +209,7 @@ export default function RespiracionScreen() {
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <BackPill
           onPress={() => router.back()}
-          size={28}
+          size={32}
           bgColor="rgba(0,0,0,0.28)"
           borderWidth={1}
           borderColor="rgba(255,255,255,0.2)"

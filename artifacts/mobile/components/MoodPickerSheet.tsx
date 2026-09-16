@@ -324,12 +324,12 @@ export function MoodPickerSheet({
             <View style={[styles.header, { paddingTop: topPad + 8 }]}>
               <Pressable
                 onPress={() => setStep("select")}
-                style={styles.headerButton}
+                style={[styles.headerButton, styles.surveyBackButton]}
                 hitSlop={8}
                 accessibilityRole="button"
                 accessibilityLabel="Volver a seleccionar emociones"
               >
-                <Feather name="arrow-left" size={22} color={GOLD} />
+                <Feather name="chevron-left" size={32} color={GOLD} style={{ transform: [{ translateX: -1 }] }} />
               </Pressable>
               <Text style={styles.progressLabel}>
                 {surveyIndex + 1} DE {selectedMoods.length}
@@ -573,6 +573,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.22)",
+  },
+  surveyBackButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   headerButtonPlaceholder: {
     width: 42,
