@@ -1,4 +1,5 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -97,7 +98,22 @@ function SelectableFavoriteCard({
         accessibilityState={{ checked: selected }}
         accessibilityLabel={`${selected ? "Quitar" : "Agregar"} ${session.title}`}
       >
-        <Feather name={selected ? "check" : "plus"} size={18} color={selected ? "#060A0F" : TEXT} />
+        {!selected && (
+          <>
+            <BlurView
+              intensity={Platform.OS === "android" ? 60 : 28}
+              tint="default"
+              experimentalBlurMethod="dimezisBlurView"
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={[StyleSheet.absoluteFill, styles.selectButtonWhiteTint]} />
+          </>
+        )}
+        <Feather
+          name={selected ? "check" : "plus"}
+          size={selected ? 23 : 18}
+          color={selected ? "#060A0F" : TEXT}
+        />
       </Pressable>
     </View>
   );
@@ -191,10 +207,7 @@ export function PlaylistAddSessionsSheet({
             <Feather name="x" size={24} color={TEXT} />
           </Pressable>
           <View style={styles.headerCopy}>
-            <View style={styles.titleRow}>
-              <Text style={styles.title}>Agregar desde Mis favoritos</Text>
-              <MaterialCommunityIcons name="heart" size={18} color="#FFFFFF" />
-            </View>
+            <Text style={styles.title}>Agregar desde Mis favoritos</Text>
             <Text style={styles.subtitle} numberOfLines={1}>
               {playlist?.name ?? "Playlist"} · {selectedCount} seleccionada{selectedCount === 1 ? "" : "s"}
             </Text>
@@ -273,16 +286,10 @@ const styles = StyleSheet.create({
   },
   headerCopy: { flex: 1, alignItems: "center", paddingHorizontal: 8 },
   headerSpacer: { width: 40 },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-  },
   title: {
     fontFamily: "Manrope",
     color: TEXT,
-    fontSize: 20,
+    fontSize: 16,
     lineHeight: 26,
     fontWeight: "700",
     textAlign: "center",
@@ -295,7 +302,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tabsBorder: {
-    paddingTop: 10,
+    paddingTop: 17,
     paddingBottom: 6,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.07)",
@@ -367,10 +374,14 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.62)",
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.45)",
     zIndex: 10,
+    overflow: "hidden",
+  },
+  selectButtonWhiteTint: {
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   selectButtonSelected: {
     backgroundColor: "#FFFFFF",
