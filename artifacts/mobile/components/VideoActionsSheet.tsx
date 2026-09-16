@@ -3,10 +3,9 @@
  *
  * Acciones:
  *  1. Compartir
- *  2. Temporizador  → abre TimerSheet (timer de VideosContext)
- *  3. Marcar como favorito / Quitar de favoritos
- *  4. Seguir profesor (solo si el video tiene guideId)
- *  5. Ver perfil del profesor (solo si el video tiene guideId)
+ *  2. Marcar como favorito / Quitar de favoritos
+ *  3. Seguir profesor (solo si el video tiene guideId)
+ *  4. Ver perfil del profesor (solo si el video tiene guideId)
  */
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -24,12 +23,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { TimerSheet } from "@/components/TimerSheet";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useVideosState } from "@/context/VideosContext";
 import { getGuideById } from "@/data/guides";
-import { type VideoItem } from "@/data/videos";
+import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const FOLLOWED_KEY = "@biblioteca_followed_resonadores";
 
@@ -41,15 +40,10 @@ type Props = {
 
 export function VideoActionsSheet({ video, visible, onClose }: Props) {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const {
-    isVideoFavorite,
-    toggleVideoFavorite,
-    videoTimerRemaining,
-    setVideoTimer,
-  } = useVideosState();
-
-  const [showTimer, setShowTimer] = useState(false);
+  const { isVideoFavorite, toggleVideoFavorite } = useVideosState();
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
 
   // Seguir profesor
   const [followedIds, setFollowedIds] = useState<string[]>([]);
@@ -64,7 +58,7 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
 
   useEffect(() => {
     if (visible) {
-      setShowTimer(false);
+      setThumbnailFailed(false);
       AsyncStorage.getItem(FOLLOWED_KEY).then((raw) => {
         if (raw) {
           try {
@@ -85,13 +79,10 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
   const guide = video.guideId ? getGuideById(video.guideId) : undefined;
   const author = guide?.name ?? video.author ?? "Casa del Cuenco";
   const isFollowing = guide ? followedIds.includes(guide.id) : false;
-
-  const timerLabel =
-    videoTimerRemaining === null
-      ? "Apagado"
-      : videoTimerRemaining >= 3600
-        ? `${Math.round(videoTimerRemaining / 3600)}h`
-        : `${Math.round(videoTimerRemaining / 60)} min`;
+  const localThumbnail =
+    STATIC_VIDEOS.find((staticVideo) => staticVideo.id === video.id)?.thumbnail ??
+    STATIC_VIDEOS[0].thumbnail;
+  const thumbnailSource = thumbnailFailed ? localThumbnail : video.thumbnail;
 
   // ── Actions ────────────────────────────────────────────────────────────────
 
@@ -168,19 +159,22 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
 
         {/* Sheet */}
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#142761" }]} pointerEvents="none" />
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[2] ?? theme.gradient[0] }]}
+            pointerEvents="none"
+          />
           {/* Handle */}
           <View style={styles.handle} />
 
           {/* Video header */}
           <View style={styles.videoHeader}>
             <Image
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              source={video.thumbnail as any}
+              source={thumbnailSource}
               style={styles.videoThumb}
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
               contentFit="cover"
+              onError={() => setThumbnailFailed(true)}
             />
             <View style={{ flex: 1 }}>
               <Text style={[styles.videoTitle, { color: colors.foreground }]} numberOfLines={2}>
@@ -197,13 +191,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
 
           {/* ── Opciones ── */}
           <ActionRow icon="share" label="Compartir" onPress={handleShare} colors={colors} />
-          <ActionRow
-            icon="clock"
-            label="Temporizador"
-            right={timerLabel}
-            onPress={() => setShowTimer(true)}
-            colors={colors}
-          />
           <FavoriteRow favorited={favorited} onPress={handleFavorite} colors={colors} />
           {guide && (
             <>
@@ -250,14 +237,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
             </Animated.View>
           )}
         </View>
-
-        {/* Sub-sheet: Timer (usa el timer de videos) */}
-        <TimerSheet
-          visible={showTimer}
-          onClose={() => setShowTimer(false)}
-          sleepTimerRemaining={videoTimerRemaining}
-          setSleepTimer={setVideoTimer}
-        />
 
       </View>
     </Modal>

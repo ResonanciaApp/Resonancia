@@ -37,6 +37,7 @@ export function apiVideoToItem(v: ApiVideo): VideoItem {
     thumbnail,
     isPremium: v.isPremium,
     isNew: v.isNew,
+    sortOrder: v.sortOrder,
     author: v.author,
     guideId: (v as ApiVideo & { guideId?: string }).guideId,
     theme: v.theme as VideoItem["theme"],

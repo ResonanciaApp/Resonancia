@@ -58,6 +58,8 @@ export type VideoItem = {
   author?: string;
   /** Puntuación promedio (0-5). Si no está presente, la UI muestra un valor placeholder. */
   rating?: number;
+  /** Prioridad editorial: los valores menores aparecen primero en “Popular”. */
+  sortOrder?: number;
   /** Tema real del video (uno de VIDEO_THEMES). Null/undefined = sin tema asignado, no aparece en ningún chip. */
   theme?: VideoTheme | null;
   /** ID del guiador (data/guides.ts) que presenta el video. Sin guideId → sin acciones "Seguir/Ver perfil". */

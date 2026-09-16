@@ -1,11 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Dimensions,
   Modal,
   Platform,
   Pressable,
@@ -64,7 +64,7 @@ export function VideoScreen({ showBack = false }: Props) {
   const [sortBy, setSortBy]             = useState<SortOption>("popular");
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const sortBtnRef  = useRef<View>(null);
-  const [sortMenuPos, setSortMenuPos]   = useState({ top: 0, right: 0 });
+  const [sortMenuPos, setSortMenuPos]   = useState({ top: 0, left: 0 });
 
   const topPad    = Platform.OS === "web" ? 16 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -74,7 +74,8 @@ export function VideoScreen({ showBack = false }: Props) {
 
     if (activeChip !== "Todos") list = list.filter((v) => v.theme === activeChip);
 
-    if (sortBy === "puntuacion") list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
+    if (sortBy === "popular") list = [...list].sort((a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER));
+    else if (sortBy === "puntuacion") list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
     else if (sortBy === "novedades") list = [...list].sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
     else if (sortBy === "corto") list = [...list].sort((a, b) => parseDurationToSeconds(a.durationLabel) - parseDurationToSeconds(b.durationLabel));
     else if (sortBy === "largo")  list = [...list].sort((a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel));
@@ -97,7 +98,7 @@ export function VideoScreen({ showBack = false }: Props) {
 
   const openSortMenu = () => {
     sortBtnRef.current?.measureInWindow((x, y, w, h) => {
-      setSortMenuPos({ top: y + h + 6, right: Dimensions.get("window").width - (x + w) });
+      setSortMenuPos({ top: y + h + 6, left: x });
       setSortOpen(true);
     });
   };
@@ -127,7 +128,11 @@ export function VideoScreen({ showBack = false }: Props) {
             accessibilityRole="button"
             accessibilityLabel="Buscar videos"
           >
-            <Feather name="search" size={22} color="#F4F4F4" />
+            {Platform.OS === "ios" ? (
+              <SymbolView name="magnifyingglass" tintColor="#F4F4F4" size={24} />
+            ) : (
+              <Feather name="search" size={24} color="#F4F4F4" />
+            )}
           </Pressable>
         </View>
 
@@ -176,9 +181,6 @@ export function VideoScreen({ showBack = false }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.resultsRow, { marginBottom: 15 }]}>
-          <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
-            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
-          </Text>
           <Pressable ref={sortBtnRef} onPress={openSortMenu} style={styles.sortBtn} hitSlop={8}>
             <Text style={[styles.sortText, { color: colors.foreground }]}>{SORT_LABELS[sortBy]}</Text>
             <Feather name="chevron-down" size={14} color={colors.mutedForeground} />
@@ -227,7 +229,7 @@ export function VideoScreen({ showBack = false }: Props) {
           <View
             style={[
               styles.sortMenu,
-              { top: sortMenuPos.top, right: sortMenuPos.right, backgroundColor: colors.card, borderColor: colors.border },
+              { top: sortMenuPos.top, left: sortMenuPos.left, borderColor: colors.border },
             ]}
           >
             {(Object.keys(SORT_LABELS) as SortOption[]).map((opt) => {
@@ -327,8 +329,7 @@ const styles = StyleSheet.create({
   chipSel: { borderColor: "transparent", backgroundColor: "#F9F9F9" },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
-  resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  resultsCount: { fontFamily: "Manrope", fontSize: 11 },
+  resultsRow: { flexDirection: "row", alignItems: "center" },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sortText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
 
@@ -339,6 +340,7 @@ const styles = StyleSheet.create({
   sortMenu: {
     position: "absolute",
     minWidth: 190,
+    backgroundColor: "rgba(0,0,0,0.38)",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
     paddingVertical: 6,

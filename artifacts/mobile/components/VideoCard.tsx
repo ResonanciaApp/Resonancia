@@ -80,7 +80,6 @@ export function VideoCard({
   };
 
   if (feed) {
-    const rating = video.rating ?? 4.8;
     return (
       <View style={styles.feedItem}>
         <Pressable onPress={handlePress} style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}>
@@ -102,13 +101,7 @@ export function VideoCard({
 
         <View style={styles.feedCaptionRow}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
-            <Text style={[styles.feedCaption, { color: secondaryTextColor, flex: 0, marginRight: 0 }]} numberOfLines={1}>
-              {rating.toFixed(1)}
-            </Text>
-            <Text style={[styles.feedCaption, { color: secondaryTextColor, flex: 0, marginLeft: 2, marginRight: 0 }]} numberOfLines={1}>
-              ★
-            </Text>
-            <Text style={[styles.feedCaption, { color: secondaryTextColor, marginLeft: 4, marginRight: 0 }]} numberOfLines={1}>
+            <Text style={[styles.feedCaption, { color: secondaryTextColor, marginRight: 0 }]} numberOfLines={1}>
               {video.subtitle} · {video.durationLabel}
             </Text>
           </View>
