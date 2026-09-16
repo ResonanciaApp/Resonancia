@@ -2,6 +2,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
+import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -303,15 +304,6 @@ function hexTint(hex: string, alpha: number): string {
   const b = parseInt(h.slice(4, 6), 16);
   if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(74,12,12,0.08)`;
   return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function brightenStreakColor(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
 }
 
 const ND = Platform.OS !== "web";
@@ -1298,15 +1290,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 }) {
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
-  const { weekFlags, todayIndex } = useStreak();
-  const { theme } = useSceneTheme();
-  const streakBorderGradient = useMemo(
-    () =>
-      theme.gradient.map((color) =>
-        brightenStreakColor(color, 47),
-      ) as unknown as [string, string, ...string[]],
-    [theme.gradient],
-  );
   const displayName =
     username
     || clerkUser?.firstName
@@ -1519,10 +1502,10 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 <SymbolView
                   name="magnifyingglass"
                   tintColor="#F9F9F9"
-                  size={20}
+                  size={24}
                 />
               ) : (
-                <Feather name="search" size={20} color="#F9F9F9" />
+                <Feather name="search" size={24} color="#F9F9F9" />
               )}
             </Pressable>
           ) : null}
@@ -1539,45 +1522,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             ]}
             testID="inicio3-streak-row"
           >
-            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((initial, i) => {
-              const active = weekFlags[i];
-              const isToday = todayIndex === i;
-              const hasGradientRing = isToday || active;
-              const dayCircle = (
-                <View style={styles.inicio3StreakDay}>
-                  {active ? (
-                  <Feather name="check" size={22} color="#F9F9F9" />
-                  ) : null}
-                </View>
-              );
-              return (
-                <View key={initial} style={styles.inicio3StreakDayWrapper}>
-                  {hasGradientRing ? (
-                    <View style={styles.inicio3StreakDayRingHost}>
-                      {dayCircle}
-                      <MaskedView
-                        pointerEvents="none"
-                        style={StyleSheet.absoluteFill}
-                        maskElement={<View style={styles.inicio3StreakDayRingMask} />}
-                      >
-                        <LinearGradient
-                          colors={streakBorderGradient}
-                          locations={theme.gradientLocations}
-                          start={theme.gradientStart}
-                          end={theme.gradientEnd}
-                          style={StyleSheet.absoluteFill}
-                        />
-                      </MaskedView>
-                    </View>
-                  ) : (
-                    dayCircle
-                  )}
-                  <Text style={styles.inicio3StreakDayLabel}>
-                    {initial}
-                  </Text>
-                </View>
-              );
-            })}
+            <StreakWeekRow />
           </RAnimated.View>
         </>
       )}
@@ -3376,17 +3321,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    transform: [{ translateX: -23 }, { translateY: -2 }],
+    marginRight: 16,
   },
   inicio3HeroSearchButton: {
     width: 43,
     height: 43,
     borderRadius: 21.5,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
+    borderColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.34)",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
@@ -3497,40 +3442,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: GRID_PAD,
     right: GRID_PAD,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     zIndex: 12,
-  },
-  inicio3StreakDayWrapper: {
-    alignItems: "center",
-    gap: 6,
-  },
-  inicio3StreakDay: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inicio3StreakDayRingHost: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-  },
-  inicio3StreakDayRingMask: {
-    flex: 1,
-    borderRadius: 18.5,
-    borderWidth: 2,
-    borderColor: "#000000",
-    backgroundColor: "transparent",
-  },
-  inicio3StreakDayLabel: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "500",
   },
   inicio3HeroStaticImageFrame: {
     left: GRID_PAD - 4,

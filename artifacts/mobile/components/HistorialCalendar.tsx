@@ -12,6 +12,7 @@ import { useColors } from "@/hooks/useColors";
 import { dayKey } from "@/utils/stats";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { dedupeCompletedHistoryByDay } from "@/lib/history-calendar";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 
 const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
 const EMBEDDED_WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -405,7 +406,19 @@ export function HistorialCalendar({
                     }
                   }}
                 >
-                  <View style={styles.embeddedEntryAccent} />
+                  <View style={styles.embeddedEntryImageWrap}>
+                    <Image
+                      source={session.image}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      cachePolicy="memory-disk"
+                    />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      style={styles.embeddedEntryDuration}
+                      textStyle={styles.embeddedEntryDurationText}
+                    />
+                  </View>
                   <View style={styles.embeddedEntryCopy}>
                     <Text style={[styles.embeddedEntryCategory, { color: colors.foreground }]}>
                       {entry.categoryLabel || session.categoryLabel || "Contenido"}
@@ -573,15 +586,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    minHeight: 64,
+    minHeight: 72,
     paddingVertical: 4,
   },
-  embeddedEntryAccent: {
-    width: 3,
-    alignSelf: "stretch",
-    minHeight: 48,
-    borderRadius: 2,
-    backgroundColor: WIDGET_GREEN_SOLID,
+  embeddedEntryImageWrap: {
+    width: 76,
+    height: 64,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  embeddedEntryDuration: {
+    position: "absolute",
+    left: 5,
+    bottom: 5,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  embeddedEntryDurationText: {
+    fontSize: 9,
   },
   embeddedEntryCopy: {
     flex: 1,

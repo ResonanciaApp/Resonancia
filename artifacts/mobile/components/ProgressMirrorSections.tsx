@@ -1,9 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -13,17 +13,6 @@ import { computeActiveDays, computeMaxStreak } from "@/utils/stats";
 
 const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 
-function brightenColor(hex: string, pct: number): string {
-  const value = hex.replace("#", "");
-  if (!/^[0-9a-f]{6}$/i.test(value)) return hex;
-  const channels = [0, 2, 4].map((offset) =>
-    Number.parseInt(value.slice(offset, offset + 2), 16),
-  );
-  return `rgb(${channels
-    .map((channel) => Math.round(channel + (255 - channel) * (pct / 100)))
-    .join(",")})`;
-}
-
 export function ProgressMirrorSections({
   showSectionBorders = true,
 }: {
@@ -32,19 +21,12 @@ export function ProgressMirrorSections({
   const colors = useColors();
   const { theme } = useSceneTheme();
   const { statEvents } = usePlayer();
-  const { currentStreak, weekFlags, todayIndex } = useStreak();
+  const { currentStreak } = useStreak();
   const todayKey = useDayRollover();
   const [statsRangeDays, setStatsRangeDays] = useState<7 | 30 | 90>(30);
   const [statsFilterOpen, setStatsFilterOpen] = useState(false);
   const accent = theme.accent ?? colors.accent;
   const maxStreak = useMemo(() => computeMaxStreak(statEvents), [statEvents]);
-  const streakGradient = useMemo(
-    () =>
-      theme.gradient.map((color) =>
-        brightenColor(color, 20),
-      ) as unknown as [string, string, ...string[]],
-    [theme.gradient],
-  );
   const personalStats = useMemo(() => {
     const rangeStart = new Date();
     rangeStart.setHours(0, 0, 0, 0);
@@ -70,28 +52,7 @@ export function ProgressMirrorSections({
   return (
     <>
       <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
-        <View style={styles.streakRow}>
-          {["L", "M", "X", "J", "V", "S", "D"].map((initial, index) => {
-            const active = weekFlags[index];
-            const isToday = todayIndex === index;
-            return (
-              <View key={`${initial}-${index}`} style={styles.streakDayWrapper}>
-                {active ? (
-                  <LinearGradient
-                    colors={streakGradient}
-                    locations={theme.gradientLocations}
-                    style={[styles.streakDay, styles.streakDayActive]}
-                  >
-                    <Feather name="check" size={22} color="#F9F9F9" />
-                  </LinearGradient>
-                ) : (
-                  <View style={[styles.streakDay, isToday && styles.streakDayActive]} />
-                )}
-                <Text style={styles.streakDayLabel}>{initial}</Text>
-              </View>
-            );
-          })}
-        </View>
+        <StreakWeekRow />
         <View style={styles.sectionDivider} />
         <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
           <Stat
@@ -206,30 +167,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
-  },
-  streakRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  streakDayWrapper: { alignItems: "center", gap: 6 },
-  streakDay: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  streakDayActive: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.45)",
-  },
-  streakDayLabel: {
-    color: "#F9F9F9",
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "500",
   },
   sectionDivider: {
     height: 1,
