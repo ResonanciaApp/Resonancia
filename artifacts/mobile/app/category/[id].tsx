@@ -4,6 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -28,6 +29,8 @@ import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getCategorySessionTags, getCategoryTabs } from "@/data/category-tabs";
 import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { isIndigoThemeId } from "@/config/scene-themes";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 14;
@@ -262,11 +265,12 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
         ]}
         onLayout={(event) => setStickyHeaderHeight(event.nativeEvent.layout.height)}
       >
-        <LinearGradient
-          pointerEvents="none"
-          colors={theme.gradient as unknown as [string, string, ...string[]]}
-          style={StyleSheet.absoluteFill}
-        />
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -310,10 +314,6 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
             onSelect={(tab) => tab === null ? setActiveTab(null) : openSubcategory(tab)}
           />
         </View>
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.stickyBottomBorder, { opacity: stickyBorderOpacity }]}
-        />
       </View>
 
       <ContextSearchModal
@@ -461,6 +461,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stickyHeaderFadeOverflow: { overflow: "visible" },
+  stickyGradientClip: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: "hidden",
+  },
+  stickyScreenGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT,
+  },
   stickyBottomBorder: {
     position: "absolute",
     left: 0,

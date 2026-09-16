@@ -43,7 +43,7 @@ import { ContextSearchModal, type ContextSearchItem } from "@/components/Context
 
 const H_PAD = 14;
 const CARD_GAP = 12;
-const { width: W } = Dimensions.get("window");
+const { width: W, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - CARD_GAP) / 2;
 const FEATURED_CARD_W = getContentCarouselCardWidth(W, H_PAD);
 const MUSIC_FEATURED_BASE_W = (W - H_PAD * 2 - 56) * 0.85;
@@ -506,11 +506,12 @@ export default function MusicaSonidosScreen() {
         onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
         style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 4 }]}
       >
-        <LinearGradient
-          pointerEvents="none"
-          colors={theme.gradient as unknown as [string, string, ...string[]]}
-          style={StyleSheet.absoluteFill}
-        />
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -555,7 +556,6 @@ export default function MusicaSonidosScreen() {
             onSelect={(id) => id && openMusicCollection(id)}
           />
         </View>
-         <Animated.View style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]} />
       </Animated.View>
 
     </View>
@@ -570,6 +570,8 @@ const styles = StyleSheet.create({
   pageTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center" },
   stickyHeaderFadeOverflow: { overflow: "visible" },
+  stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
+  stickyScreenGradient: { position: "absolute", top: 0, left: 0, right: 0, height: SCREEN_HEIGHT },
   stickyBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyHeaderSpacer: { width: 40 },
