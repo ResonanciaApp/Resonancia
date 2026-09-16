@@ -504,7 +504,7 @@ export default function MusicaSonidosScreen() {
       {/* ── Sticky header ── */}
       <Animated.View
         onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
-        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 2 }]}
+        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad - 4 }]}
       >
         <View
           pointerEvents="none"
@@ -550,7 +550,7 @@ export default function MusicaSonidosScreen() {
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={{ marginTop: 14 }}>
+        <View style={{ marginTop: 25 }}>
           <ChipRow
             tabs={TABS}
             activeTab={null}
