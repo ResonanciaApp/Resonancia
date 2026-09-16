@@ -1315,7 +1315,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
-    return { transform: [{ translateY: y * 0.42 }] };
+    return { transform: [{ translateY: y * 0.52 }] };
   }, [isInicio3, reduceMotion]);
   const heroShadowStyle = useAnimatedStyle(() => {
     if (!isInicio3) return { opacity: 0 };
