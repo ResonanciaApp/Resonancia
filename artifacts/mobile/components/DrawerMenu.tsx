@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   },
   headerDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(212,175,55,0.18)",
+    backgroundColor: "rgba(191,230,255,0.2)",
     marginTop: 2,
     marginBottom: 0,
   },
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   inicio3VerPerfilText: {
-    color: "#C8A6FF",
+    color: "#F9F9F9",
   },
 
   // ── Items ──
@@ -477,12 +477,12 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   inicio3SectionShift: {
-    marginTop: 15,
+    marginTop: 0,
   },
   inicio3SectionDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.12)",
-    marginVertical: 12,
+    marginVertical: 20,
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",

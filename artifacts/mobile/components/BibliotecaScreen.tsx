@@ -937,21 +937,21 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, gradient }: {
+function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, onAddResonador, gradient }: {
   visible: boolean;
   onClose: () => void;
   onCreatePlaylist: () => void;
   onCreateCarpeta: () => void;
   onGoMezclas: () => void;
+  onAddResonador: () => void;
   gradient: readonly string[];
 }) {
-  const { openGeometrix } = useGeometrixPanel();
   const { activeSceneId } = useSceneTheme();
   const libraryTabSurface = getLibraryTabSurface(activeSceneId);
   const ITEMS = [
     { icon: "list" as const,     title: "Crear una Playlist",        sub: "Crea una playlist con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
-    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); openGeometrix(); } },
+    { icon: "user-plus" as const, title: "Agregar Resonador",     sub: "Sigue músicos, productores y voces guía", onPress: () => { onClose(); onAddResonador(); } },
     { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlists",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
@@ -1519,42 +1519,41 @@ export function BibliotecaScreen({
             </View>
           )}
 
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreVisible(true)}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="list" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => openMixer()}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="sliders" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="plus" size={28} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaVisible(true)}
-          >
-            <View style={[styles.addResonadorIcon, { backgroundColor: libraryTabSurface }]}>
-              <Feather name="folder" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
-          </Pressable>
+          <View style={viewMode === "grid" ? styles.placeholderGrid : styles.placeholderList}>
+            {[
+              { key: "playlist", icon: "list" as const, label: "Crear una Playlist", onPress: () => setNombreVisible(true) },
+              { key: "mix", icon: "sliders" as const, label: "Crear una mezcla", onPress: () => openMixer() },
+              { key: "resonador", icon: "plus" as const, label: "Agregar Resonador", onPress: () => { setAddResonadorQ(""); setAddResonadorVisible(true); } },
+              { key: "folder", icon: "folder" as const, label: "Crear una carpeta", onPress: () => setNombreCarpetaVisible(true) },
+            ].map((placeholder) => (
+              <Pressable
+                key={placeholder.key}
+                style={({ pressed }) => [
+                  styles.addResonadorBtn,
+                  viewMode === "grid" && { width: cellW, height: "auto", paddingHorizontal: 0, flexDirection: "column", gap: 0 },
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={placeholder.onPress}
+              >
+                <View
+                  style={[
+                    styles.addResonadorIcon,
+                    { backgroundColor: libraryTabSurface },
+                    viewMode === "grid" && {
+                      width: cellW * 0.9,
+                      height: cellW * 0.9,
+                      borderRadius: cellW * 0.45,
+                    },
+                  ]}
+                >
+                  <Feather name={placeholder.icon} size={placeholder.key === "resonador" ? 28 : 25} color={iconPlaceholderColor} />
+                </View>
+                <Text style={[styles.addResonadorLabel, viewMode === "grid" && styles.placeholderGridLabel]} numberOfLines={2}>
+                  {placeholder.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
       );
     }
@@ -2121,6 +2120,7 @@ export function BibliotecaScreen({
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
         onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+        onAddResonador={() => setAddResonadorVisible(true)}
         gradient={sceneTheme.gradient}
       />
       <NombrePlaylistModal
@@ -2425,14 +2425,19 @@ const styles = StyleSheet.create({
   gridWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 5,
+    columnGap: 10,
+    rowGap: 10,
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
   geometrixGridWrap: {
     marginTop: 20,
   },
-  gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.04)" },
+  gridThumb: {
+    borderRadius: 6,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    transform: [{ scale: 0.9 }],
+  },
   gridTitle: { fontFamily: "Manrope", fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
@@ -2672,8 +2677,26 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 31,
     backgroundColor: "rgba(181,211,255,0.057)",
+    borderWidth: 1,
+    borderColor: "rgba(249,249,249,0.4)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  placeholderGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 10,
+    rowGap: 15,
+    paddingHorizontal: H_PAD,
+  },
+  placeholderList: {
+    gap: 15,
+  },
+  placeholderGridLabel: {
+    width: "90%",
+    marginTop: 6,
+    fontSize: 12,
+    textAlign: "left",
   },
   addResonadorLabel: {
     fontFamily: "Manrope",
