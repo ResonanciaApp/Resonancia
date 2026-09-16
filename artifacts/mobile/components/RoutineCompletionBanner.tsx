@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useRoutineCompletionBanner } from "@/context/RoutineCompletionBannerContext";
@@ -257,12 +258,26 @@ export function RoutineCompletionBanner({
         styles.banner,
         {
           bottom,
-          backgroundColor,
           opacity,
           transform: [{ translateY }],
         },
       ]}
     >
+      <View pointerEvents="none" style={styles.glassSurface}>
+        <BlurView
+          intensity={32}
+          tint="dark"
+          experimentalBlurMethod="dimezisBlurView"
+          style={StyleSheet.absoluteFill}
+        />
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            styles.glassTint,
+            { backgroundColor },
+          ]}
+        />
+      </View>
       <View style={[styles.copy, activeEvent.kind === "added" && styles.addedCopy]}>
         {activeEvent.kind === "added" ? (
           <View style={styles.addedTitleRow}>
@@ -331,6 +346,14 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: -3 },
     zIndex: 40,
+  },
+  glassSurface: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 18,
+    overflow: "hidden",
+  },
+  glassTint: {
+    opacity: 0.42,
   },
   copy: {
     flex: 1,
