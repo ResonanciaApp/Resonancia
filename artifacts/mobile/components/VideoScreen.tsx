@@ -147,7 +147,14 @@ export function VideoScreen({ showBack = false }: Props) {
                   onPress={() => setActiveChip(chip)}
                   style={[styles.chip, activeTheme.id === "tibet" && styles.chipTibet, isIndigoThemeId(activeSceneId) && styles.chipIndigo, sel && styles.chipSel]}
                 >
-                  {sel && <LinearGradient colors={isIndigoThemeId(activeSceneId) ? ["#784576", "#50326E"] : ["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+                  {sel && isIndigoThemeId(activeSceneId) && (
+                    <LinearGradient
+                      colors={["#784576", "#50326E"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 1, y: 0.5 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
                   <Text style={[styles.chipText, { color: sel ? (isIndigoThemeId(activeSceneId) ? "#F9F9F9" : "#0D0A1E") : "#F4F4F4" }]}>
                     {chip}
                   </Text>
@@ -317,7 +324,7 @@ const styles = StyleSheet.create({
   },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
-  chipSel: { borderColor: "transparent" },
+  chipSel: { borderColor: "transparent", backgroundColor: "#F9F9F9" },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
