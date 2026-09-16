@@ -36,6 +36,7 @@ import {
   canUserReferenceObject,
 } from "../lib/objectAccess";
 import { getCatalogReadiness } from "../lib/catalogReadiness";
+import { resolvePinnedFeaturedValue } from "../lib/pinnedFeatured";
 import { loadPlaylistCarousels } from "../lib/playlistCarousels";
 import { getSleepCarouselProjection } from "../lib/sleepCarouselOrder";
 import {
@@ -523,41 +524,48 @@ router.put(
   async (req, res) => {
     const { sessionId } = req.body as { sessionId: string | null };
 
-    // Validar que la sesión existe y está publicada (si se provee)
-    if (sessionId != null) {
-      if (typeof sessionId !== "string" || !sessionId.trim()) {
-        res.status(400).json({ error: "sessionId inválido" });
-        return;
-      }
-      const found = await db
-        .select({ id: catalogSessionsTable.id })
-        .from(catalogSessionsTable)
-        .where(
-          and(
-            eq(catalogSessionsTable.id, sessionId),
-            eq(catalogSessionsTable.status, "published"),
-            eq(catalogSessionsTable.isPlaceholder, false),
-          ),
-        )
-        .limit(1);
-      if (!found.length) {
-        res.status(404).json({ error: "Sesión no encontrada o no publicada" });
-        return;
-      }
+    if (sessionId != null && (typeof sessionId !== "string" || !sessionId.trim())) {
+      res.status(400).json({ error: "sessionId inválido" });
+      return;
     }
 
-    // Desactivar cualquier sesión previamente pinneada
-    await db
-      .update(catalogSessionsTable)
-      .set({ isPinnedFeatured: false })
-      .where(eq(catalogSessionsTable.isPinnedFeatured, true));
+    const outcome = await db.transaction(async (tx) => {
+      await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtext('catalog_pinned_featured'))`,
+      );
 
-    // Activar la nueva (si se provee)
-    if (sessionId != null) {
-      await db
+      if (sessionId != null) {
+        const found = await tx
+          .select({ id: catalogSessionsTable.id })
+          .from(catalogSessionsTable)
+          .where(
+            and(
+              eq(catalogSessionsTable.id, sessionId),
+              eq(catalogSessionsTable.status, "published"),
+              eq(catalogSessionsTable.isPlaceholder, false),
+            ),
+          )
+          .limit(1);
+        if (!found.length) return { kind: "not-found" as const };
+      }
+
+      await tx
         .update(catalogSessionsTable)
-        .set({ isPinnedFeatured: true })
-        .where(eq(catalogSessionsTable.id, sessionId));
+        .set({ isPinnedFeatured: false })
+        .where(eq(catalogSessionsTable.isPinnedFeatured, true));
+
+      if (sessionId != null) {
+        await tx
+          .update(catalogSessionsTable)
+          .set({ isPinnedFeatured: true })
+          .where(eq(catalogSessionsTable.id, sessionId));
+      }
+      return { kind: "updated" as const };
+    });
+
+    if (outcome.kind === "not-found") {
+      res.status(404).json({ error: "Sesión no encontrada o no publicada" });
+      return;
     }
 
     res.json({ ok: true });
@@ -1149,6 +1157,15 @@ router.patch(
 
     try {
       const outcome = await db.transaction(async (tx) => {
+        if (
+          data.isPinnedFeatured !== undefined ||
+          data.isPlaceholder === true
+        ) {
+          await tx.execute(
+            sql`select pg_advisory_xact_lock(hashtext('catalog_pinned_featured'))`,
+          );
+        }
+
         const [current] = await tx
           .select()
           .from(catalogSessionsTable)
@@ -1190,6 +1207,28 @@ router.patch(
             return { kind: "not-ready" as const, reason: readiness.reason };
           }
         }
+        const pinnedChange = resolvePinnedFeaturedValue({
+          currentValue: current.isPinnedFeatured,
+          requestedValue: data.isPinnedFeatured,
+          status: candidate.status,
+          isPlaceholder: candidate.isPlaceholder,
+        });
+        if (!pinnedChange.valid) {
+          return { kind: "not-pinnable" as const };
+        }
+        candidate.isPinnedFeatured = pinnedChange.value;
+        if (
+          data.isPinnedFeatured !== undefined ||
+          pinnedChange.value !== current.isPinnedFeatured
+        ) {
+          updates.isPinnedFeatured = pinnedChange.value;
+        }
+        if (data.isPinnedFeatured === true) {
+          await tx
+            .update(catalogSessionsTable)
+            .set({ isPinnedFeatured: false })
+            .where(eq(catalogSessionsTable.isPinnedFeatured, true));
+        }
 
         const [updated] = await tx
           .update(catalogSessionsTable)
@@ -1206,6 +1245,12 @@ router.patch(
         res.status(409).json({
           code: "CATALOG_CONTENT_NOT_READY",
           error: outcome.reason,
+        });
+        return;
+      }
+      if (outcome.kind === "not-pinnable") {
+        res.status(409).json({
+          error: "Solo una sesión publicada y no placeholder puede fijarse en Inicio",
         });
         return;
       }
@@ -1228,25 +1273,41 @@ router.post(
   async (req, res) => {
     const id = String(req.params.id);
     try {
-      const [current] = await db
-        .select()
-        .from(catalogSessionsTable)
-        .where(eq(catalogSessionsTable.id, id))
-        .limit(1);
-      if (!current) {
+      const outcome = await db.transaction(async (tx) => {
+        await tx.execute(
+          sql`select pg_advisory_xact_lock(hashtext('catalog_pinned_featured'))`,
+        );
+        const [current] = await tx
+          .select()
+          .from(catalogSessionsTable)
+          .where(eq(catalogSessionsTable.id, id))
+          .for("update")
+          .limit(1);
+        if (!current) return { kind: "not-found" as const };
+        if (current.status !== "published") {
+          return { kind: "not-published" as const };
+        }
+        await tx
+          .update(catalogSessionsTable)
+          .set({
+            status: "draft",
+            isNew: false,
+            isPinnedFeatured: false,
+            updatedAt: new Date(),
+          })
+          .where(eq(catalogSessionsTable.id, id));
+        return { kind: "hidden" as const };
+      });
+      if (outcome.kind === "not-found") {
         res.status(404).json({ error: "Pieza no encontrada" });
         return;
       }
-      if (current.status !== "published") {
+      if (outcome.kind === "not-published") {
         res
           .status(409)
           .json({ error: "Solo se puede ocultar una pieza publicada" });
         return;
       }
-      await db
-        .update(catalogSessionsTable)
-        .set({ status: "draft", isNew: false, updatedAt: new Date() })
-        .where(eq(catalogSessionsTable.id, id));
       const loaded = await loadSubmission(id);
       req.log.info({ submissionId: id }, "submission hidden");
       res.json(serializeSubmission(loaded!.session, loaded!.audioFiles, loaded!.creator));

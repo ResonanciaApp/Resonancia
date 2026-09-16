@@ -54,6 +54,7 @@ import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
+import { resolveFeaturedMoment } from "@/data/featured-moment";
 import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { ContextSearchModal } from "@/components/ContextSearchModal";
@@ -1898,7 +1899,15 @@ export default function HomeScreen2({
   }, [activeTheme]);
 
   const { version: catalogVersion, status: catalogStatus } = useCatalog();
-  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+  const {
+    data: pinnedFeaturedData,
+    refetch: refetchPinnedFeatured,
+  } = useGetPinnedFeatured();
+  useFocusEffect(
+    useCallback(() => {
+      void refetchPinnedFeatured();
+    }, [refetchPinnedFeatured]),
+  );
 
   const continueMeditationPlaylist = useMemo(() => {
     if (!activeMeditationPlaylist) return null;
@@ -1923,21 +1932,10 @@ export default function HomeScreen2({
   }, [activeMeditationPlaylist, catalogVersion, statEvents]);
 
   const featuredMoment = React.useMemo(() => {
-    const pinned = pinnedFeaturedData?.session;
-    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
-      return getSessionById(pinned.id) ?? undefined;
-    }
-    const pool = SESSIONS.filter(
-      (session) =>
-        session.categoryId === "meditaciones-guiadas" &&
-        session.isFeatured &&
-        !session.isPlaceholder,
+    return resolveFeaturedMoment(
+      SESSIONS,
+      pinnedFeaturedData?.session?.id,
     );
-    if (!pool.length) return undefined;
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-    return pool[dayOfYear % pool.length];
   }, [pinnedFeaturedData, catalogVersion]);
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);

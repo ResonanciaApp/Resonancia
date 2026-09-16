@@ -171,6 +171,8 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [isFeaturedSleep, setIsFeaturedSleep] = useState(initial?.isFeaturedSleep ?? false);
   const [isNew, setIsNew] = useState(initial?.isNew ?? false);
   const [isPinnedFeatured, setIsPinnedFeatured] = useState(initial?.isPinnedFeatured ?? false);
+  const canPinInHome =
+    isEdit && initial?.status === "published" && !isPlaceholder;
 
   // Toggles mutuamente excluyentes (reproductor directo vs miniplayer directo)
   const handleSkipDetail = (v: boolean) => {
@@ -221,10 +223,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const setGuideSlot = (i: number, val: string) => setGuideIds((p) => p.map((v, idx) => idx === i ? val : v));
 
   // Arrays
-  const [benefitInput, setBenefitInput] = useState("");
-  const [benefits, setBenefits] = useState<string[]>(initial?.benefits ?? []);
-  const [instrumentInput, setInstrumentInput] = useState("");
-  const [instruments, setInstruments] = useState<string[]>(initial?.instruments ?? []);
 
   // Audios (solo modo crear)
   const [audio1, setAudio1] = useState<AudioSlot>(emptyAudioSlot());
@@ -284,15 +282,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       }
       return next;
     });
-
-  const addBenefit = () => {
-    const v = benefitInput.trim();
-    if (v && benefits.length < 8) { setBenefits((p) => [...p, v]); setBenefitInput(""); }
-  };
-  const addInstrument = () => {
-    const v = instrumentInput.trim();
-    if (v && instruments.length < 12) { setInstruments((p) => [...p, v]); setInstrumentInput(""); }
-  };
 
   // ── Leer duración de un archivo de audio ──
   const readAudioDuration = (file: File): Promise<number> =>
@@ -404,8 +393,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
-        benefits: benefits.length ? benefits : undefined,
-        instruments: instruments.length ? instruments : undefined,
         themeTag: persistedThemeTags.length ? persistedThemeTags : undefined,
         temaTag: temaTag.length ? temaTag : undefined,
         sleepTag: sleepTag || undefined,
@@ -475,8 +462,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         categoryLabel: categoryLabelFor(categoryId),
         duration: Number(duration),
         description: description.trim(),
-        benefits,
-        instruments,
         isPremium,
         isPlaceholder,
         skipDetail,
@@ -486,7 +471,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isFeaturedCategory,
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         isNew,
-        isPinnedFeatured,
+        isPinnedFeatured: canPinInHome && isPinnedFeatured,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag ? (voiceTag as EditBody["voiceTag"]) : null),
         themeTag: persistedThemeTags,
@@ -535,7 +520,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     setSoundTag(""); setDescansoTags([]); setArtistId("");
     setSonidosTag(""); setPodcastTag(""); setSabiduriaTag(""); setSleepTag(""); setThemeTag([]); setTemaTag([]);
     setGuideIds([""]);
-    setBenefits([]); setInstruments([]);
     setAudio1(emptyAudioSlot()); setAudio2(emptyAudioSlot()); setShowAudio2(false);
     setImageFile(null); setUploadedImage(null);
   };
@@ -1117,58 +1101,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         onToggle={() => toggleSection("extras")}
       >
         <div className="space-y-5">
-          {/* Benefits */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Beneficios (máx 8)</Label>
-            <div className="flex gap-2">
-              <Input
-                value={benefitInput}
-                onChange={(e) => setBenefitInput(e.target.value)}
-                placeholder="Ej: Relajación profunda"
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addBenefit())}
-              />
-              <Button type="button" variant="outline" onClick={addBenefit} disabled={benefits.length >= 8}>
-                Agregar
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {benefits.map((b, i) => (
-                <Badge key={i} variant="secondary" className="gap-1">
-                  {b}
-                  <button type="button" onClick={() => setBenefits((p) => p.filter((_, j) => j !== i))}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* Instruments */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Instrumentos (máx 12)</Label>
-            <div className="flex gap-2">
-              <Input
-                value={instrumentInput}
-                onChange={(e) => setInstrumentInput(e.target.value)}
-                placeholder="Ej: Cuencos tibetanos"
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInstrument())}
-              />
-              <Button type="button" variant="outline" onClick={addInstrument} disabled={instruments.length >= 12}>
-                Agregar
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {instruments.map((b, i) => (
-                <Badge key={i} variant="secondary" className="gap-1">
-                  {b}
-                  <button type="button" onClick={() => setInstruments((p) => p.filter((_, j) => j !== i))}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </div>
-
           <div className="flex items-center gap-3">
             <Switch
               id="isFeaturedCategory"
@@ -1212,17 +1144,39 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                   placeholder="0"
                 />
               </Field>
-              <div className="flex items-center gap-3">
-                <Switch id="isFeatured" checked={isFeatured} onCheckedChange={setIsFeatured} />
-                <Label htmlFor="isFeatured" className="cursor-pointer">Destacada en Inicio</Label>
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <Switch id="isFeatured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+                  <Label htmlFor="isFeatured" className="cursor-pointer">Destacada en Inicio</Label>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  La incluye en la rotación diaria de “Para este momento” cuando no hay una sesión fijada.
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <Switch id="isNew" checked={isNew} onCheckedChange={setIsNew} />
                 <Label htmlFor="isNew" className="cursor-pointer">Marcar como nueva</Label>
               </div>
-              <div className="flex items-center gap-3">
-                <Switch id="isPinnedFeatured" checked={isPinnedFeatured} onCheckedChange={setIsPinnedFeatured} />
-                <Label htmlFor="isPinnedFeatured" className="cursor-pointer">Fijada como "Destacada de hoy"</Label>
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <Switch
+                    id="isPinnedFeatured"
+                    checked={canPinInHome && isPinnedFeatured}
+                    onCheckedChange={setIsPinnedFeatured}
+                    disabled={!canPinInHome}
+                  />
+                  <Label
+                    htmlFor="isPinnedFeatured"
+                    className={canPinInHome ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
+                  >
+                    Mostrar hoy en “Para este momento”
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {canPinInHome
+                    ? "Reemplaza la rotación diaria y quita cualquier fijación anterior."
+                    : "Solo puede fijarse una sesión publicada que no sea placeholder."}
+                </p>
               </div>
             </>
           )}

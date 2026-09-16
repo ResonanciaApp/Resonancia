@@ -91,6 +91,7 @@
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — "..." menu backgrounds: Nivel1&2 full gradient, Nivel3 solid gradient[0], Nivel4 Geometrix untouched, Nivel5 Diario/Grupos not themeable
 - [Destacados por superficie](featured-category-flag.md) — Inicio, categoría y Dormir son destinos independientes; Dormir exige pertenencia a una colección
+- [Para este momento](home-featured-selection.md) — “Destacada en Inicio” rota diariamente; “Mostrar hoy” fija una única sesión de cualquier categoría
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
 - [RN Modal null-stub](modal-null-stub-metro.md) — si NINGÚN <Modal> aparece (estado true, sin error): specs_DEPRECATED/components stubbeado a null en metro.config + parche in-place; RCTModalHostViewNativeComponent debe cargar real
