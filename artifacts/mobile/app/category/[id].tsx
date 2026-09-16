@@ -481,7 +481,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   stickyHeaderRow: {
-    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -498,5 +497,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "center",
   },
-  stickyChipsArea: { width: "100%", marginTop: 12 },
+  stickyChipsArea: { marginTop: 12 },
 });
