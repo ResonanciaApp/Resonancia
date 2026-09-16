@@ -40,7 +40,7 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import { ContextSearchModal, type ContextSearchItem } from "@/components/ContextSearchModal";
 
-const { width } = Dimensions.get("window");
+const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const H_PAD = 14;
 const CARD_GAP = 12;
 const FEATURED_CARD_W = getContentCarouselCardWidth(width, H_PAD);
@@ -604,15 +604,14 @@ export default function SonidosAncestalesScreen() {
       {/* ── Sticky header ── */}
       <Animated.View
         onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
-        style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}
+        style={[styles.stickyHeader, { paddingTop: topPad + 4 }]}
       >
-        <View
-          pointerEvents="none"
-          style={[
-            StyleSheet.absoluteFill,
-            { backgroundColor: theme.gradient[0] as string },
-          ]}
-        />
+        <View pointerEvents="none" style={styles.stickyGradientClip}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            style={styles.stickyScreenGradient}
+          />
+        </View>
         <View style={styles.stickyHeaderRow}>
           <View style={styles.stickyHeaderSpacer} />
           <View style={styles.stickyTitleCol}>
@@ -644,13 +643,13 @@ export default function SonidosAncestalesScreen() {
             {
               backgroundColor: profileSectionBackground,
               opacity: pressed ? 0.7 : 1,
-              top: topPad + 2,
+              top: topPad + 4,
             },
           ]}
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-         <View style={{ marginTop: 2 }}>
+         <View style={{ marginTop: 12 }}>
            <ChipRow
             tabs={TABS}
             activeTab={undefined}
@@ -659,7 +658,6 @@ export default function SonidosAncestalesScreen() {
             )}
           />
         </View>
-         <Animated.View style={[styles.stickyBorder, { opacity: stickyBorderOpacity }]} />
       </Animated.View>
 
       <ContextSearchModal
@@ -715,6 +713,8 @@ const styles = StyleSheet.create({
   backBtn: { position: "absolute", left: H_PAD, width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   pageTitle: { fontFamily: "Manrope", fontSize: 18, lineHeight: 24, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6, alignItems: "center", justifyContent: "center", overflow: "visible" },
+  stickyGradientClip: { ...StyleSheet.absoluteFillObject, overflow: "hidden" },
+  stickyScreenGradient: { position: "absolute", top: 0, left: 0, right: 0, height: SCREEN_HEIGHT },
   stickyBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyHeaderSpacer: { width: 40 },
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.2)" },
+   chip: { height: 51, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.2)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },
