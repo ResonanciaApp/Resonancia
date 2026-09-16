@@ -375,6 +375,7 @@ const styles = StyleSheet.create({
   headerDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(191,230,255,0.2)",
+    marginHorizontal: -20,
     marginTop: 2,
     marginBottom: 0,
   },
@@ -474,7 +475,7 @@ const styles = StyleSheet.create({
   itemGroup: { gap: 2 },
   divider: { height: 1, marginBottom: 8 },
   inicio3Sections: {
-    marginTop: 8,
+    marginTop: 14,
   },
   inicio3SectionShift: {
     marginTop: 0,
@@ -483,7 +484,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.12)",
     marginVertical: 20,
-    transform: [{ translateY: -6 }],
+    transform: [{ translateY: -3 }],
   },
   inicio3SectionTitle: {
     fontFamily: "Manrope",
