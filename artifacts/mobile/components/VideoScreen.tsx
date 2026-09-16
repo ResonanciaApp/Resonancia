@@ -13,12 +13,12 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
+import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
@@ -43,8 +43,7 @@ function parseDurationToSeconds(label: string): number {
   return m * 60 + s;
 }
 
-const SEARCH_H = 63;
-const CHIPS_H  = 52;
+const CHIPS_H  = 63;
 
 interface Props {
   showBack?: boolean;
@@ -59,7 +58,7 @@ export function VideoScreen({ showBack = false }: Props) {
   const router = useRouter();
   const { videos, isLoading } = useVideos();
 
-  const [query, setQuery]               = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
   const [activeChip, setActiveChip]     = useState<(typeof FILTER_CHIPS)[number]>("Todos");
   const [sortOpen, setSortOpen]         = useState(false);
   const [sortBy, setSortBy]             = useState<SortOption>("popular");
@@ -71,12 +70,7 @@ export function VideoScreen({ showBack = false }: Props) {
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    let list = q
-      ? videos.filter(
-          (v) => v.title.toLowerCase().includes(q) || (v.author ?? "").toLowerCase().includes(q),
-        )
-      : videos;
+    let list = videos;
 
     if (activeChip !== "Todos") list = list.filter((v) => v.theme === activeChip);
 
@@ -86,7 +80,20 @@ export function VideoScreen({ showBack = false }: Props) {
     else if (sortBy === "largo")  list = [...list].sort((a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel));
 
     return list;
-  }, [videos, query, sortBy, activeChip]);
+  }, [videos, sortBy, activeChip]);
+
+  const searchItems = useMemo(
+    () =>
+      videos.map((video) => ({
+        id: video.id,
+        title: video.title,
+        meta: video.theme ?? undefined,
+        subtitle: video.author,
+        searchText: `${video.title} ${video.author ?? ""} ${video.theme ?? ""}`,
+        image: video.thumbnail,
+      })),
+    [videos],
+  );
 
   const openSortMenu = () => {
     sortBtnRef.current?.measureInWindow((x, y, w, h) => {
@@ -113,27 +120,15 @@ export function VideoScreen({ showBack = false }: Props) {
             <View style={styles.backPlaceholder} />
           )}
           <Text style={[styles.pageTitle, { color: "#F4F4F4" }]}>Videos</Text>
-          <View style={styles.backPlaceholder} />
-        </View>
-
-        {/* Search bar */}
-        <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.2)", borderColor: "rgba(255,255,255,0.7)", borderWidth: 1 }]}>
-            <Feather name="search" size={16} color="#F9F9F9" />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Titulo, voz guía, artista o tema"
-              placeholderTextColor="#F9F9F9"
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
-              </Pressable>
-            )}
-          </View>
+          <Pressable
+            onPress={() => setSearchVisible(true)}
+            hitSlop={10}
+            style={styles.searchButton}
+            accessibilityRole="button"
+            accessibilityLabel="Buscar videos"
+          >
+            <Feather name="search" size={22} color="#F4F4F4" />
+          </Pressable>
         </View>
 
         {/* Chips row */}
@@ -188,11 +183,11 @@ export function VideoScreen({ showBack = false }: Props) {
           <View style={styles.empty}>
             <Feather name="film" size={36} color="rgba(255,255,255,0.3)" />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              {query || activeChip !== "Todos" ? "Sin resultados" : "Próximamente"}
+              {activeChip !== "Todos" ? "Sin resultados" : "Próximamente"}
             </Text>
             <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              {query || activeChip !== "Todos"
-                ? "Probá con otra búsqueda o categoría."
+              {activeChip !== "Todos"
+                ? "Probá con otra categoría."
                 : "Pronto vas a encontrar videos aquí."}
             </Text>
           </View>
@@ -202,6 +197,21 @@ export function VideoScreen({ showBack = false }: Props) {
           ))
         )}
       </ScrollView>
+
+      <ContextSearchModal
+        visible={searchVisible}
+        onClose={() => setSearchVisible(false)}
+        items={searchItems}
+        placeholder="Buscar videos..."
+        emptyTitle="Encuentra un video"
+        emptySubtitle="Busca por título, artista o tema"
+        showDurationFilters={false}
+        onSelect={(item) => {
+          setSearchVisible(false);
+          router.push(`/video/${item.id}` as never);
+          return true;
+        }}
+      />
 
       {/* Sort menu */}
       <Modal visible={sortOpen} transparent animationType="fade" onRequestClose={() => setSortOpen(false)}>
@@ -248,57 +258,60 @@ const styles = StyleSheet.create({
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
-    paddingBottom: 10,
+    paddingHorizontal: 13,
+    paddingBottom: 12,
     paddingTop: 7,
+    gap: 8,
   },
-  backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  backPlaceholder: { width: 40 },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  backPlaceholder: { width: 40, height: 40 },
+  searchButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
   pageTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 20,
+    lineHeight: 26,
     fontWeight: "700",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     color: "#F4F4F4",
     textAlign: "center",
-    transform: [{ translateY: 1 }],
   },
-
-  searchWrap: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-    marginTop: 7,
-    height: SEARCH_H,
-    justifyContent: "center",
-  },
-  searchBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 999,
-    borderWidth: 1.5,
-    paddingHorizontal: 18,
-    height: 45,
-  },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
-  chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
+  chipsRow: { paddingHorizontal: 16, gap: 8, alignItems: "center" },
   chip: {
-    borderRadius: 999,
-    paddingHorizontal: 11.5,
-    height: 42,
+    borderRadius: 27,
+    paddingHorizontal: 16,
+    height: 51,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
-  chipTibet: { backgroundColor: "rgba(0,0,0,0.15)" },
-  chipIndigo: { backgroundColor: "rgba(181,211,255,0.057)" },
-  chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "400", letterSpacing: 0.3 },
+  chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
+  chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
+  chipSel: { borderColor: "transparent" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontFamily: "Manrope", fontSize: 11 },
