@@ -1311,7 +1311,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroHeight =
     INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT + 12;
-  const inicio3HeroTop = inicio3HeroLayoutTop - 5;
+  const inicio3HeroTop = inicio3HeroLayoutTop - 10;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1328,7 +1328,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height: inicio3HeroLayoutTop + inicio3HeroHeight + 28,
+          height: inicio3HeroLayoutTop + inicio3HeroHeight + 23,
         },
       ]}
       testID="inicio2-hero-static"
