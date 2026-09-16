@@ -33,6 +33,7 @@ import { getSessionsByCategory, type Session } from "@/data/sessions";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 
 const H_PAD = 20;
+const HEADER_H_PAD = 14;
 type DurationFilter = "all" | "duration-5" | "duration-10" | "duration-11";
 type FilterId = DurationFilter | `editorial:${string}`;
 
@@ -337,19 +338,19 @@ export default function CategoryTagScreen({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 12, alignItems: "center", justifyContent: "center" },
-  backButton: { position: "absolute", left: H_PAD, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
+  backButton: { position: "absolute", left: HEADER_H_PAD, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(0,0,0,0.28)", alignItems: "center", justifyContent: "center" },
   tabsArea: { paddingTop: 9, paddingBottom: 15, paddingHorizontal: H_PAD },
   chipRowWrapper: {},
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: HEADER_H_PAD },
   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)" },
   chipSelected: { backgroundColor: "#F9F9F9", borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB" },
   chipTextSelected: { color: "#060A0F" },
-  sessionGrid: { marginTop: -17, marginBottom: 6 },
+  sessionGrid: { marginTop: -2, marginBottom: 6 },
   emptyState: { marginHorizontal: H_PAD, marginTop: 28, minHeight: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(255,255,255,0.25)", borderRadius: 18, alignItems: "center", justifyContent: "center", gap: 10, paddingHorizontal: 28 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
   emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", color: "#c2c2c2" },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: H_PAD, paddingBottom: 6 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, minHeight: 48, paddingHorizontal: HEADER_H_PAD, paddingBottom: 6 },
   stickyBottomBorder: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, backgroundColor: "rgba(255,255,255,0.07)" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickySpacer: { width: 40, alignItems: "center", justifyContent: "center" },
@@ -364,5 +365,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.34)",
   },
   stickyTitle: { flex: 1, textAlign: "center", fontFamily: "Manrope", fontSize: 18, lineHeight: 21, fontWeight: "700", color: "#FBFBFB", letterSpacing: 0.2 },
-  stickyTabs: { marginTop: 13, marginHorizontal: -H_PAD },
+  stickyTabs: { marginTop: 13, marginHorizontal: -HEADER_H_PAD },
 });

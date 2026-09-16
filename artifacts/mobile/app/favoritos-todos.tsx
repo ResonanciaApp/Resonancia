@@ -510,6 +510,7 @@ const styles = StyleSheet.create({
   libraryTabHeaderRow: {
     minHeight: 48,
     paddingBottom: 6,
+    transform: [{ translateY: 9 }],
   },
   libraryTabBackBtn: {
     width: 40,
@@ -547,6 +548,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 0,
     paddingBottom: 6,
+    transform: [{ translateY: 5 }],
   },
   tabsDivider: {
     position: "absolute",
