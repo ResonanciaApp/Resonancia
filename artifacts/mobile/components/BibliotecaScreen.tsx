@@ -2083,7 +2083,10 @@ export function BibliotecaScreen({
             style={{ flex: 1, justifyContent: "flex-end" }}
           >
           <LinearGradient
-            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            colors={[
+              sceneTheme.gradient[1] ?? sceneTheme.gradient[0],
+              sceneTheme.gradient[1] ?? sceneTheme.gradient[0],
+            ]}
             style={styles.addResModalSheet}
           >
             <View style={styles.addResModalHeader}>
