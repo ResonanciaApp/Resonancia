@@ -496,6 +496,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
+    paddingBottom: 10,
     backgroundColor: "#060A0F",
     overflow: "hidden",
   },
@@ -548,7 +549,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 0,
     paddingBottom: 6,
-    transform: [{ translateY: 5 }],
+    transform: [{ translateY: 10 }],
   },
   tabsDivider: {
     position: "absolute",
