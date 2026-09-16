@@ -257,7 +257,7 @@ export default function CategoryScreen({ categoryId }: { categoryId?: string } =
           styles.stickyHeader,
           useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow,
           {
-            paddingTop: topPad + 8,
+            paddingTop: topPad + 2,
             backgroundColor: theme.gradient[0] as string,
           },
         ]}
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
   },
   chip: {
-    height: 56,
+    height: 51,
     paddingHorizontal: 16,
     borderRadius: 27,
     overflow: "hidden",
@@ -483,5 +483,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "center",
   },
-  stickyChipsArea: { width: "100%", marginTop: 10 },
+  stickyChipsArea: { width: "100%", marginTop: 22 },
 });

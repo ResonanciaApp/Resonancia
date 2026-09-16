@@ -513,7 +513,7 @@ export default function MeditacionesGuiadasScreen() {
       {/* ── Sticky header ── */}
       <Animated.View
         onLayout={(e) => setStickyHeaderHeight(e.nativeEvent.layout.height)}
-        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 8 }]}
+        style={[styles.stickyHeader, useDiscoverStickyStyle && styles.stickyHeaderFadeOverflow, { paddingTop: topPad + 2 }]}
       >
         <View
           pointerEvents="none"
@@ -559,7 +559,7 @@ export default function MeditacionesGuiadasScreen() {
         >
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        <View style={{ marginTop: 2 }}>
+        <View style={{ marginTop: 14 }}>
            <ChipRow
              tabs={TABS}
              activeTab={undefined}
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-   chip: { height: 46, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.2)" },
+    chip: { height: 51, paddingHorizontal: 16, borderRadius: 27, overflow: "hidden", flexDirection: "row", gap: 12, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.2)" },
   chipTibet: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo: { backgroundColor: "rgba(0,0,0,0.28)" },
   chipIndigo2Inactive: { backgroundColor: "rgba(0,0,0,0.28)", borderColor: "rgba(255,255,255,0.2)" },
