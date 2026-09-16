@@ -105,8 +105,7 @@ export default function HistorialEmocionesScreen() {
           <Feather name="chevron-left" size={32} color="#F9F9F9" style={{ transform: [{ translateX: -1 }] }} />
         </Pressable>
         <View style={styles.headerTitleBlock}>
-          <Text style={styles.headerTitle} numberOfLines={1}>Estado de ánimo</Text>
-          <Text style={styles.headerSubtitle}>Tu historial</Text>
+          <Text style={styles.headerTitle}>Historial estado de ánimo</Text>
         </View>
         <View style={[styles.headerSide, { backgroundColor: getLibraryTabSurface(activeSceneId) }]} />
       </View>
@@ -195,17 +194,8 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 18,
-    lineHeight: 21,
+    lineHeight: 22,
     fontWeight: "700",
-    textAlign: "center",
-  },
-  headerSubtitle: {
-    marginTop: 1,
-    fontFamily: "Manrope",
-    color: "rgba(249,249,249,0.7)",
-    fontSize: 11,
-    lineHeight: 14,
-    fontWeight: "500",
     textAlign: "center",
   },
   headerSide: {
@@ -243,6 +233,8 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
@@ -269,13 +261,10 @@ const styles = StyleSheet.create({
   moodChip: {
     alignSelf: "flex-start",
     minHeight: 36,
-    borderRadius: 18,
-    paddingHorizontal: 12,
     paddingVertical: 7,
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
-    backgroundColor: "rgba(0,0,0,0.28)",
   },
   moodEmoji: {
     fontSize: 18,
