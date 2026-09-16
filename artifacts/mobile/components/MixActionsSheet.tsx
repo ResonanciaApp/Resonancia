@@ -40,7 +40,6 @@ import {
   useFoldersPlaylists,
 } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { isIndigoThemeId } from "@/config/scene-themes";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
@@ -126,14 +125,9 @@ export function MixActionsSheet({
 }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { theme, activeSceneId } = useSceneTheme();
-  const sheetSolid =
-    activeSceneId === "tibet"
-      ? ((theme.gradient[2] ?? "#2d4081") as string)
-      : isIndigoThemeId(activeSceneId)
-        ? (theme.gradient[theme.gradient.length - 1] as string)
-        : null;
-  const sheetGradient = sheetSolid ? ([sheetSolid, sheetSolid] as [string, string]) : theme.gradient;
+  const { theme } = useSceneTheme();
+  const sheetColor = theme.gradient[0];
+  const sheetGradient = [sheetColor, sheetColor] as [string, string];
   const {
     togglePresetFavorite,
     mixFolders,
