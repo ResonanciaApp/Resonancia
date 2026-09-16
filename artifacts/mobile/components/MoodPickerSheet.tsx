@@ -19,6 +19,7 @@ import {
   getMoodById,
   MOOD_SURVEY_OPTIONS,
   MOODS,
+  type Mood,
   type MoodId,
 } from "@/data/moods";
 import { SESSIONS, type Session } from "@/data/sessions";
@@ -52,6 +53,31 @@ const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
 const CARD_BG = "rgba(255,255,255,0.10)";
 const MOOD_GREEN = WIDGET_GREEN_SOLID;
+
+const MOOD_PICKER_ORDER: MoodId[] = [
+  "agradecido",
+  "emocionado",
+  "lleno-de-amor",
+  "feliz",
+  "en-paz",
+  "esperanzado",
+  "contento",
+  "presente",
+  "cansado",
+  "desmotivado",
+  "solo",
+  "triste",
+  "ansioso",
+  "estresado",
+  "enojado",
+  "adolorido",
+  "inepto",
+  "deprimido",
+];
+
+const MOOD_PICKER_OPTIONS = MOOD_PICKER_ORDER
+  .map((moodId) => MOODS.find((mood) => mood.id === moodId))
+  .filter((mood): mood is Mood => Boolean(mood));
 
 function getRecommendations(moodIds: MoodId[]): Session[] {
   const selectedMoods = moodIds
@@ -264,7 +290,7 @@ export function MoodPickerSheet({
               >
                 <Feather name="x" size={23} color={GOLD} />
               </Pressable>
-              <Text style={styles.headerKicker}>EMOCIÓN</Text>
+              <View />
               <View style={styles.headerButtonPlaceholder} />
             </View>
             <ScrollView
@@ -276,7 +302,7 @@ export function MoodPickerSheet({
                 Elige una o varias emociones para personalizar este momento.
               </Text>
               <View style={styles.grid}>
-                {MOODS.map((mood) => {
+                {MOOD_PICKER_OPTIONS.map((mood) => {
                   const isSelected = selected.includes(mood.id);
                   return (
                     <Pressable
@@ -570,6 +596,8 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.22)",
@@ -619,7 +647,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 22,
+    paddingTop: 12,
   },
   title: {
     fontFamily: "Manrope",
