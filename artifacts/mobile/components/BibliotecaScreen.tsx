@@ -335,9 +335,11 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
   const nMix = (folder.presetIds ?? []).length;
   const nSub = (folder.subFolderIds ?? []).length;
   const count = nPl + nMix + nSub;
-  const label = nMix > 0 || nSub > 0
-    ? `${count} elemento${count !== 1 ? "s" : ""}`
-    : `${nPl} playlist${nPl !== 1 ? "s" : ""}`;
+  const label = nMix > 0
+    ? `${nMix} mezcla${nMix !== 1 ? "s" : ""}`
+    : nSub > 0
+      ? `${count} elemento${count !== 1 ? "s" : ""}`
+      : `${nPl} playlist${nPl !== 1 ? "s" : ""}`;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={[styles.userPlCover, { backgroundColor: getLibraryTabSurface(activeSceneId) }]}>
@@ -2078,9 +2080,24 @@ export function BibliotecaScreen({
           !(activeTab === "resonadores" && resonadores.length === 0) &&
           !(activeTab === null && userPlaylists.length === 0 && userFolders.length === 0 && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
-            <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
+            <Pressable
+              style={styles.sortBtn}
+              hitSlop={12}
+              onPress={() => setSortVisible(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Ordenar biblioteca"
+            >
               <Text style={styles.sortText}>{(activeTab === null ? GENERAL_SORT_OPTIONS : TAB_SORT_OPTIONS).find((o) => o.id === sort)?.label}</Text>
               <Feather name="chevron-down" size={15} color={MUTED} />
+            </Pressable>
+            <Pressable
+              style={styles.viewToggleBtn}
+              hitSlop={12}
+              onPress={toggleView}
+              accessibilityRole="button"
+              accessibilityLabel={viewMode === "list" ? "Mostrar como grilla" : "Mostrar como lista"}
+            >
+              <Feather name={viewMode === "list" ? "grid" : "list"} size={19} color={MUTED} />
             </Pressable>
           </View>
         )}
@@ -2346,16 +2363,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 8,
   },
-  sortBtn: { flexDirection: "row", alignItems: "center", gap: 4, transform: [{ translateY: 7 }] },
+  sortBtn: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    transform: [{ translateY: 7 }],
+  },
   sortTriggerRow: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     marginTop: 15,
     marginBottom: -8,
   },
   sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
-  viewToggleBtn: { padding: 2 },
+  viewToggleBtn: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateY: 7 }],
+  },
 
 
   // ── Scroll content ──────────────────────────────────────────────────────────
