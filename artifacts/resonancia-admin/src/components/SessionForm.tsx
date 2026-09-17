@@ -261,7 +261,8 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // Secciones expandidas
   const [openSections, setOpenSections] = useState({
-    basicos: true, categoria: !isEdit, subcategoria: true, emociones: true, tags: true,
+    basicos: true, categoria: !isEdit, subcategoria: true, emociones: true,
+    otrasTematicas: true, tags: true,
     audios: !isEdit, imagen: false, extras: false,
   });
 
@@ -927,6 +928,24 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         </Section>
       )}
 
+      {/* ── SECCIÓN: Otras temáticas ── */}
+      {(isEdit || categoryId) && (
+        <Section
+          title="Otras temáticas"
+          open={openSections.otrasTematicas}
+          onToggle={() => toggleSection("otrasTematicas")}
+        >
+          <TagOptionSelector
+            tagType="other_theme"
+            defaults={OTHER_THEME_TAGS}
+            label="Temáticas relacionadas (opcional)"
+            selected={themeTag.filter((tag) => !tag.startsWith("__"))}
+            onToggle={toggleTheme}
+            pill
+          />
+        </Section>
+      )}
+
       {/* ── SECCIÓN: Etiquetas ── */}
       {(isEdit || categoryId) && (
         <Section
@@ -935,15 +954,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           onToggle={() => toggleSection("tags")}
         >
           <div className="space-y-4">
-            <TagOptionSelector
-              tagType="other_theme"
-              defaults={OTHER_THEME_TAGS}
-              label="Otras temáticas (opcional)"
-              selected={themeTag.filter((tag) => !tag.startsWith("__"))}
-              onToggle={toggleTheme}
-              pill
-            />
-
             <TagOptionSelector
               tagType="descanso"
               defaults={DESCANSO_TAGS}
