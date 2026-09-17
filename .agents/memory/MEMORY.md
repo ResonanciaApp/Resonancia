@@ -153,3 +153,4 @@
 - [Agregar favoritos a playlists](playlist-add-from-favorites.md) — el selector de sesiones de una playlist es pantalla completa y muestra solo favoritos con tabs/cards de Mis Favoritos
 - [Afinidad emocional de sesiones](session-mood-affinity.md) — recomendaciones usan moodIds editoriales directos; cinco slots fijos y reservas base con cobertura de las 18 emociones
 - [Colecciones dinámicas de supercategorías](dynamic-supercategory-collections.md) — Dormir/Sonidos admiten colecciones Admin; Mobile deriva cards de sesiones y “Todos los sonidos” es inmutable
+- [Reinicio duplicado de Expo](expo-workflow-duplicate-process.md) — un restart puede dejar el Metro anterior vivo y el nuevo esperando el mismo puerto; diagnosticar grupos de proceso antes de reintentar

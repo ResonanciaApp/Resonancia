@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -17,7 +17,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import {
   getMoodById,
   MOOD_SURVEY_OPTIONS,
@@ -25,6 +24,27 @@ import {
   type Mood,
   type MoodId,
 } from "@/data/moods";
+
+const MOOD_HEROES: Record<MoodId, number> = {
+  estresado: require("@/assets/images/mood-heroes/mood-hero-estresado.jpg"),
+  ansioso: require("@/assets/images/mood-heroes/mood-hero-ansioso.jpg"),
+  cansado: require("@/assets/images/mood-heroes/mood-hero-cansado.jpg"),
+  inepto: require("@/assets/images/mood-heroes/mood-hero-inepto.jpg"),
+  triste: require("@/assets/images/mood-heroes/mood-hero-triste.jpg"),
+  solo: require("@/assets/images/mood-heroes/mood-hero-solo.jpg"),
+  deprimido: require("@/assets/images/mood-heroes/mood-hero-deprimido.jpg"),
+  desmotivado: require("@/assets/images/mood-heroes/mood-hero-desmotivado.jpg"),
+  enojado: require("@/assets/images/mood-heroes/mood-hero-enojado.jpg"),
+  adolorido: require("@/assets/images/mood-heroes/mood-hero-adolorido.jpg"),
+  agradecido: require("@/assets/images/mood-heroes/mood-hero-agradecido.jpg"),
+  emocionado: require("@/assets/images/mood-heroes/mood-hero-emocionado.jpg"),
+  "lleno-de-amor": require("@/assets/images/mood-heroes/mood-hero-lleno-de-amor.jpg"),
+  feliz: require("@/assets/images/mood-heroes/mood-hero-feliz.jpg"),
+  "en-paz": require("@/assets/images/mood-heroes/mood-hero-en-paz.jpg"),
+  esperanzado: require("@/assets/images/mood-heroes/mood-hero-esperanzado.jpg"),
+  contento: require("@/assets/images/mood-heroes/mood-hero-contento.jpg"),
+  presente: require("@/assets/images/mood-heroes/mood-hero-presente.jpg"),
+};
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
   readMoodHistory,
@@ -55,8 +75,6 @@ const GOLD = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
 const MOOD_GREEN = WIDGET_GREEN_SOLID;
-const HOME_GRID_PAD = 16;
-
 const MOOD_PICKER_ORDER: MoodId[] = [
   "agradecido",
   "emocionado",
@@ -103,8 +121,8 @@ function getBundledRecommendation(id: string): Session {
 
 const BUNDLED_MOOD_RECOMMENDATIONS = {
   meditation: getBundledRecommendation("1"),
-  soundTherapy: getBundledRecommendation("8"),
   music: getBundledRecommendation("24"),
+  soundTherapy: getBundledRecommendation("8"),
   reflection: getBundledRecommendation("5"),
   story: getBundledRecommendation("61"),
 };
@@ -136,9 +154,9 @@ function getRecommendations(moodIds: MoodId[]): Session[] {
         !session.isPlaceholder &&
         predicate(session),
     );
-    const selected = match ?? fallback;
-    used.add(selected.id);
-    return selected;
+    const recommendation = match ?? fallback;
+    used.add(recommendation.id);
+    return recommendation;
   };
 
   return [
@@ -150,12 +168,13 @@ function getRecommendations(moodIds: MoodId[]): Session[] {
       BUNDLED_MOOD_RECOMMENDATIONS.meditation,
     ),
     pick(
-      (session) => session.categoryId === "sonidos-ancestrales",
-      BUNDLED_MOOD_RECOMMENDATIONS.soundTherapy,
+      (session) =>
+        session.categoryId === "musica-sonidos" && Boolean(session.soundTag),
+      BUNDLED_MOOD_RECOMMENDATIONS.music,
     ),
     pick(
-      (session) => session.categoryId === "musica-sonidos" && Boolean(session.soundTag),
-      BUNDLED_MOOD_RECOMMENDATIONS.music,
+      (session) => session.categoryId === "sonidos-ancestrales",
+      BUNDLED_MOOD_RECOMMENDATIONS.soundTherapy,
     ),
     pick(
       (session) =>
@@ -244,7 +263,10 @@ export function MoodPickerSheet({
     [selected, catalogVersion],
   );
   const recommendationCardWidth = Math.round(
-    (viewportWidth - HOME_GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
+    (viewportWidth - 32 - 56) * 0.85 * 1.25 - 25,
+  );
+  const recommendationCardHeight = Math.round(
+    (recommendationCardWidth / (16 / 9)) * 1.1,
   );
 
   const weekDays = useMemo(() => {
@@ -348,6 +370,13 @@ export function MoodPickerSheet({
   }
 
   const bgColors = theme.gradient as unknown as [string, string, ...string[]];
+  const fadeColor = bgColors[0] || "#080910";
+  const firstMood = selectedMoods[0];
+  const firstMoodAnswer = firstMood
+    ? MOOD_SURVEY_OPTIONS[firstMood.id].find((option) => option.id === answers[firstMood.id])
+    : undefined;
+  const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
+  const fadeSolidStart = 1 - 35 / moodHeroHeight;
 
   return (
     <Modal
@@ -501,8 +530,8 @@ export function MoodPickerSheet({
         )}
 
         {step === "complete" && (
-          <>
-            <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+          <View style={styles.completeRoot}>
+            <View style={[styles.header, styles.completeHeader, { paddingTop: topPad + 8 }]}>
               <Pressable
                 onPress={handleClose}
                 style={styles.headerButton}
@@ -512,110 +541,103 @@ export function MoodPickerSheet({
               >
                 <Feather name="x" size={23} color={GOLD} />
               </Pressable>
-              <View />
-              <View style={styles.headerButtonPlaceholder} />
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={[styles.completeContent, { paddingBottom: bottomPad + 28 }]}
+              contentContainerStyle={{ paddingBottom: bottomPad + 28 }}
+              bounces={false}
             >
-              <Text style={styles.completeTitle}>Tu emoción</Text>
-              <View style={styles.completedMoods}>
-                {selectedMoods.map((mood) => {
-                  const selectedOption = MOOD_SURVEY_OPTIONS[mood.id].find(
-                    (option) => option.id === answers[mood.id],
-                  );
-                  return (
-                    <View key={mood.id} style={styles.completedMoodBlock}>
-                      <View style={styles.completedMoodCard}>
-                        <BlurView
-                          pointerEvents="none"
-                          intensity={38}
-                          tint="light"
-                          experimentalBlurMethod="dimezisBlurView"
-                          style={styles.completedMoodGlass}
-                        />
-                        <Text style={styles.completedMoodEmoji}>{mood.emoji}</Text>
-                        <Text style={styles.completedMoodLabel}>{mood.label}</Text>
-                      </View>
-                      <Text
-                        style={[
-                          styles.completedMoodAnswer,
-                          !selectedOption && styles.completedMoodAnswerSkipped,
-                        ]}
-                      >
-                        {selectedOption?.label ?? "Sin respuesta seleccionada"}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
-
-              <Text style={styles.recommendationsTitle}>Recomendaciones de Resonancia</Text>
-              <View style={styles.recommendationsCarousel}>
-                <SessionCarousel
-                  title=""
-                  sessions={recommendations}
-                  isPremium={isPremium}
-                  onPress={handleSessionPress}
-                  onLockedPress={handleSessionPress}
-                  showHeader={false}
-                  style={styles.recommendationsCarouselInner}
-                  cardWidth={recommendationCardWidth}
-                  allowOversizedCardWidth
-                  squareTitleAuthorBelow
-                  sleepBelowMetadataStyle={{ marginTop: 5 }}
-                  categoryGridPresentation
-                  whiteMetadataGlass
-                  showDurationClock
-                  durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
-                  eagerRender
+              <View style={[styles.heroContainer, { width: viewportWidth, height: moodHeroHeight }]}>
+                <Image
+                  source={MOOD_HEROES[firstMood?.id ?? "feliz"]}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  transition={300}
                 />
-              </View>
-
-              <View style={styles.weekCard}>
-                <Text style={styles.weekTitle}>Esta semana</Text>
-                <View style={styles.weekDaysRow}>
-                  {weekDays.map((date, index) => {
-                    const records = weekRecordsByDay.get(dayKey(date)) ?? [];
-                    const moods = records.flatMap((record) => record.moodIds);
-                    const firstMood = moods[0] ? getMoodById(moods[0]) : undefined;
-                    return (
-                      <View key={dayKey(date)} style={styles.weekDay}>
-                        <Text style={styles.weekDayLabel}>{WEEKDAY_LABELS[index]}</Text>
-                        <View style={[styles.weekMood, firstMood && styles.weekMoodActive]}>
-                          {firstMood ? (
-                            <Text style={styles.weekMoodEmoji}>{firstMood.emoji}</Text>
-                          ) : (
-                            <View style={styles.weekMoodEmpty} />
-                          )}
-                        </View>
-                        {moods.length > 1 && <Text style={styles.weekMoodCount}>+{moods.length - 1}</Text>}
-                      </View>
-                    );
-                  })}
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.3)", fadeColor, fadeColor]}
+                  locations={[0.3, 0.7, fadeSolidStart, 1]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
+                  <Text style={styles.heroKicker}>Tu momento</Text>
+                  <Text style={styles.heroEmoji}>{firstMood?.emoji}</Text>
+                  <Text style={styles.heroMoodLabel}>{firstMood?.label}</Text>
+                  <Text style={styles.heroAnswer}>
+                    {firstMoodAnswer?.label ?? "Sin respuesta seleccionada"}
+                  </Text>
                 </View>
-                <Pressable
-                  onPress={() => {
-                    onClose();
-                    router.push("/historial-emociones" as never);
-                  }}
-                  style={({ pressed }) => [styles.historyButton, { opacity: pressed ? 0.78 : 1 }]}
-                  accessibilityRole="button"
-                  accessibilityLabel="Ver todo el historial de emociones"
-                >
-                  <Text style={styles.historyButtonText}>Ver todo</Text>
-                  <Feather name="chevron-right" size={16} color="#060A0F" />
-                </Pressable>
               </View>
 
-              {history.length > 0 && (
-                <Text style={styles.lastCheckIn}>
-                  Último registro: {formatShortDate(history[0].createdAt)}
-                </Text>
-              )}
+              <LinearGradient colors={bgColors} style={styles.completeContent}>
+                <Text style={styles.resonanceTitle}>Esta es tu Resonancia para este momento</Text>
+                <Text style={styles.resonanceSubtitle}>Te proponemos comenzar con esta sesión</Text>
+
+                <View style={styles.recommendationsCarousel}>
+                  <SessionCarousel
+                    title=""
+                    sessions={recommendations}
+                    isPremium={isPremium}
+                    onPress={handleSessionPress}
+                    onLockedPress={handleSessionPress}
+                    showHeader={false}
+                    style={styles.recommendationsCarouselInner}
+                    cardWidth={recommendationCardWidth}
+                    fixedCardHeight={recommendationCardHeight}
+                    allowOversizedCardWidth
+                    showDurationBadge
+                    showDurationClock
+                    showCategoryPillTopLeft
+                    whiteMetadataGlass
+                    durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+                    eagerRender
+                  />
+                </View>
+
+                <View style={[styles.weekCard, { marginTop: 32 }]}>
+                  <Text style={styles.weekTitle}>Esta semana</Text>
+                  <View style={styles.weekDaysRow}>
+                    {weekDays.map((date, index) => {
+                      const records = weekRecordsByDay.get(dayKey(date)) ?? [];
+                      const moods = records.flatMap((record) => record.moodIds);
+                      const firstDayMood = moods[0] ? getMoodById(moods[0]) : undefined;
+                      return (
+                        <View key={dayKey(date)} style={styles.weekDay}>
+                          <Text style={styles.weekDayLabel}>{WEEKDAY_LABELS[index]}</Text>
+                          <View style={[styles.weekMood, firstDayMood && styles.weekMoodActive]}>
+                            {firstDayMood ? (
+                              <Text style={styles.weekMoodEmoji}>{firstDayMood.emoji}</Text>
+                            ) : (
+                              <View style={styles.weekMoodEmpty} />
+                            )}
+                          </View>
+                          {moods.length > 1 && <Text style={styles.weekMoodCount}>+{moods.length - 1}</Text>}
+                        </View>
+                      );
+                    })}
+                  </View>
+                  <Pressable
+                    onPress={() => {
+                      onClose();
+                      router.push("/historial-emociones" as never);
+                    }}
+                    style={({ pressed }) => [styles.historyButton, { opacity: pressed ? 0.78 : 1 }]}
+                    accessibilityRole="button"
+                    accessibilityLabel="Ver todo el historial de emociones"
+                  >
+                    <Text style={styles.historyButtonText}>Ver todo</Text>
+                    <Feather name="chevron-right" size={16} color="#060A0F" />
+                  </Pressable>
+                </View>
+
+                {history.length > 0 && (
+                  <Text style={styles.lastCheckIn}>
+                    Último registro: {formatShortDate(history[0].createdAt)}
+                  </Text>
+                )}
+              </LinearGradient>
             </ScrollView>
-          </>
+          </View>
         )}
       </LinearGradient>
     </Modal>
@@ -854,84 +876,96 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "700",
   },
+  completeRoot: {
+    flex: 1,
+  },
+  completeHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: "transparent",
+  },
+  heroContainer: {
+    position: "relative",
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    transform: [{ translateY: -35 }],
+  },
+  heroKicker: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 2.4,
+    color: "rgba(249,249,249,0.7)",
+    textTransform: "uppercase",
+    marginBottom: 16,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  heroEmoji: {
+    fontSize: 64,
+    lineHeight: 74,
+    marginBottom: 6,
+    textShadowColor: "rgba(0,0,0,0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
+  heroMoodLabel: {
+    fontFamily: "Manrope",
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: -0.5,
+    marginBottom: 8,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+  },
+  heroAnswer: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.9)",
+    textAlign: "center",
+    maxWidth: "85%",
+    lineHeight: 22,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
   completeContent: {
     paddingHorizontal: 20,
-    paddingTop: 8,
+    marginTop: -35,
+    paddingTop: 12,
   },
-  completeTitle: {
-    maxWidth: 340,
+  resonanceTitle: {
     fontFamily: "Manrope",
-    color: FG,
-    fontSize: 24,
-    lineHeight: 31,
-    fontWeight: "800",
-    letterSpacing: -0.4,
-    marginBottom: 18,
-  },
-  completedMoods: {
-    gap: 18,
-    marginBottom: 30,
-  },
-  completedMoodBlock: {
-    alignItems: "flex-start",
-  },
-  completedMoodCard: {
-    width: "100%",
-    minHeight: 128,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 18,
-    paddingVertical: 18,
-    overflow: "hidden",
-  },
-  completedMoodGlass: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 20,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
-  completedMoodEmoji: {
-    fontSize: 38,
-    lineHeight: 46,
-    marginBottom: 6,
-  },
-  completedMoodLabel: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 17,
     lineHeight: 22,
     fontWeight: "700",
-    textAlign: "center",
+    color: "#F9F9F9",
+    letterSpacing: 0.3,
+    marginBottom: 4,
   },
-  completedMoodAnswer: {
-    marginTop: 11,
-    paddingHorizontal: 3,
+  resonanceSubtitle: {
     fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.90)",
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: "500",
-  },
-  completedMoodAnswerSkipped: {
-    color: MUTED,
-    fontStyle: "italic",
-  },
-  recommendationsTitle: {
-    fontFamily: "Manrope",
-    color: FG,
-    fontSize: 20,
-    lineHeight: 27,
-    fontWeight: "800",
-    letterSpacing: -0.25,
+    fontSize: 12,
+    lineHeight: 20,
+    fontWeight: "400",
+    color: "rgba(249,249,249,0.65)",
+    marginBottom: 20,
   },
   recommendationsCarousel: {
-    marginTop: 20,
+    marginHorizontal: -20,
   },
   recommendationsCarouselInner: {
-    paddingHorizontal: 0,
+    paddingHorizontal: 20,
     marginBottom: 0,
   },
   weekCard: {
