@@ -762,16 +762,16 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             style={[
                               styles.ambientalPlayBackground,
                               {
-                                width: ambientalPlayButtonSize - 4,
-                                height: ambientalPlayButtonSize - 4,
-                                borderRadius: (ambientalPlayButtonSize - 4) / 2,
+                                width: ambientalPlayButtonSize - 7,
+                                height: ambientalPlayButtonSize - 7,
+                                borderRadius: (ambientalPlayButtonSize - 7) / 2,
                               },
                             ]}
                           />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={ambientalPlayIconSize}
-                            color="#060A0F"
+                            color="#F9F9F9"
                           />
                         </AnimatedPressable>
                       </>
@@ -1248,7 +1248,7 @@ const styles = StyleSheet.create({
   },
   ambientalPlayBackground: {
     position: "absolute",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
