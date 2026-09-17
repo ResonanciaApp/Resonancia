@@ -532,6 +532,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalCardBackground =
     ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.28)";
   const ambientalImageSize = Math.round(cw * 0.72);
+  const ambientalDisplayedImageSize = ambientalImageSize * 1.05;
   const ambientalImageBottom =
     (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift + ambientalImageSize;
   const ambientalFillScale = 0.75;
@@ -539,7 +540,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     Math.min(
       (cw + 1) * ambientalFillScale + 15,
       ambientalImageBottom * ambientalFillScale + 15,
-    ) * 0.9;
+    ) * 0.9 * 1.05;
   const ambientalFilledImageWidth = ambientalFilledImageDiameter;
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
@@ -689,11 +690,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               borderRadius: ambientalFilledImageDiameter / 2,
                             }
                           : {
-                              width: ambientalImageSize,
-                              height: ambientalImageSize,
-                              borderRadius: ambientalImageSize / 2,
-                              left: (cw - ambientalImageSize) / 2 - 1,
-                              top: (ch - ambientalImageSize) / 2 - 1 - ambientalImageLift,
+                              width: ambientalDisplayedImageSize,
+                              height: ambientalDisplayedImageSize,
+                              borderRadius: ambientalDisplayedImageSize / 2,
+                              left: (cw - ambientalDisplayedImageSize) / 2 - 1,
+                              top: (ch - ambientalDisplayedImageSize) / 2 - 1 - ambientalImageLift,
                             },
                       ]}
                     />
