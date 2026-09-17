@@ -29,6 +29,7 @@ import {
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
 const AMBIENTAL_CONTENT_DROP = 10;
+const AMBIENTAL_IMAGE_EXTRA_DROP = 10;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
 };
@@ -539,11 +540,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
   const ambientalFilledImageTop =
-    (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 4 + AMBIENTAL_CONTENT_DROP;
-  const ambientalFilledImageBottom =
-    ambientalFilledImageTop + ambientalFilledImageHeight;
-  const ambientalPlayButtonSize = 34 * ambientalFillScale + 14;
-  const ambientalPlayIconSize = 22 * ambientalFillScale + 8;
+    (ambientalImageBottom - ambientalFilledImageHeight) / 2 +
+    4 +
+    AMBIENTAL_CONTENT_DROP +
+    AMBIENTAL_IMAGE_EXTRA_DROP;
+  const ambientalPlayButtonSize = 34 * ambientalFillScale + 10;
+  const ambientalPlayIconSize = 22 * ambientalFillScale + 4;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
@@ -688,7 +690,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                                 (ch - ambientalDisplayedImageSize) / 2 -
                                 1 -
                                 ambientalImageLift +
-                                AMBIENTAL_CONTENT_DROP,
+                                AMBIENTAL_CONTENT_DROP +
+                                AMBIENTAL_IMAGE_EXTRA_DROP,
                             },
                       ]}
                     />
@@ -751,14 +754,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalPlayButtonSize,
                               height: ambientalPlayButtonSize,
                               borderRadius: ambientalPlayButtonSize / 2,
-                              left:
-                                ambientalFilledImageLeft +
-                                (ambientalFilledImageWidth -
-                                  ambientalPlayButtonSize) /
-                                  2,
-                              top:
-                                ambientalFilledImageBottom -
-                                ambientalPlayButtonSize / 2,
+                              left: 15,
+                              top: 15,
                               transform: [{ scale: getPreviewScale(s.id) }],
                             },
                           ]}
