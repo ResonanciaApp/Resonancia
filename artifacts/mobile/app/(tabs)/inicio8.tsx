@@ -1352,8 +1352,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             <LinearGradient
               colors={[
                 "rgba(0,0,0,0)",
-                "rgba(0,0,0,0.26)",
-                "rgba(0,0,0,0.26)",
+                "rgba(0,0,0,0.14)",
+                "rgba(0,0,0,0.14)",
                 "rgba(0,0,0,0)",
               ]}
               locations={[0, 0.14, 0.86, 1]}
@@ -3416,21 +3416,18 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: 0,
-    right: 0,
+    left: GRID_PAD,
+    right: GRID_PAD,
     overflow: "visible",
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderTopLeftRadius: 14,
-    borderTopRightRadius: 14,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderRadius: 29,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
     position: "absolute",
-    top: -14,
+    top: -3,
     left: 5,
     right: 5,
     height: 42,
