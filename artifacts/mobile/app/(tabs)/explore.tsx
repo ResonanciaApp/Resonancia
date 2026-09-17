@@ -17,6 +17,13 @@ import { SymbolView } from "expo-symbols";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Svg, {
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  RadialGradient,
+  Rect,
+  Stop,
+} from "react-native-svg";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
@@ -679,14 +686,48 @@ export function ExploreScreen({
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
-            <LinearGradient
-              colors={["#2DD4BF", "#1E3A8A"]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={styles.resonadoresBannerIcon}
-            >
-              <Feather name="users" color="#F9F9F9" size={30} />
-            </LinearGradient>
+            <View style={styles.resonadoresBannerIcon}>
+              <Svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 100 100"
+                style={StyleSheet.absoluteFill}
+                pointerEvents="none"
+              >
+                <Defs>
+                  <SvgLinearGradient id="auroraBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <Stop offset="0" stopColor="#E9D5FF" />
+                    <Stop offset="0.55" stopColor="#D8E6FF" />
+                    <Stop offset="1" stopColor="#D9D5FF" />
+                  </SvgLinearGradient>
+                  <RadialGradient id="auroraMint" cx="88%" cy="10%" r="72%">
+                    <Stop offset="0" stopColor="#A7F3D0" stopOpacity="0.95" />
+                    <Stop offset="0.48" stopColor="#A7F3D0" stopOpacity="0.42" />
+                    <Stop offset="1" stopColor="#A7F3D0" stopOpacity="0" />
+                  </RadialGradient>
+                  <RadialGradient id="auroraPink" cx="92%" cy="92%" r="76%">
+                    <Stop offset="0" stopColor="#F0A8E8" stopOpacity="0.95" />
+                    <Stop offset="0.5" stopColor="#F0A8E8" stopOpacity="0.38" />
+                    <Stop offset="1" stopColor="#F0A8E8" stopOpacity="0" />
+                  </RadialGradient>
+                  <RadialGradient id="auroraLilac" cx="8%" cy="72%" r="82%">
+                    <Stop offset="0" stopColor="#C4B5FD" stopOpacity="0.72" />
+                    <Stop offset="0.55" stopColor="#C4B5FD" stopOpacity="0.24" />
+                    <Stop offset="1" stopColor="#C4B5FD" stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Rect width="100" height="100" fill="url(#auroraBase)" />
+                <Rect width="100" height="100" fill="url(#auroraLilac)" />
+                <Rect width="100" height="100" fill="url(#auroraMint)" />
+                <Rect width="100" height="100" fill="url(#auroraPink)" />
+              </Svg>
+              <Feather
+                name="users"
+                color="#F9F9F9"
+                size={30}
+                style={styles.resonadoresBannerIconGlyph}
+              />
+            </View>
             <View style={styles.resonadoresBannerCopy}>
               <Text style={styles.resonadoresBannerTitle}>Conoce a los Resonadores</Text>
               <Text style={styles.resonadoresBannerSubtitle}>
@@ -1186,7 +1227,13 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
     transform: [{ translateY: 2 }],
+  },
+  resonadoresBannerIconGlyph: {
+    textShadowColor: "rgba(76,29,149,0.38)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   resonadoresBannerCopy: {
     flex: 1,
