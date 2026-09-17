@@ -1346,8 +1346,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         {isInicio3 ? (
           <RAnimated.View
             style={[styles.inicio3HeroBackShadow, heroShadowStyle]}
-            renderToHardwareTextureAndroid
-            shouldRasterizeIOS
           >
             <LinearGradient
               colors={[
@@ -1374,8 +1372,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 
       <RAnimated.View
         pointerEvents="box-none"
-        renderToHardwareTextureAndroid={isInicio3}
-        shouldRasterizeIOS={isInicio3}
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
@@ -1493,8 +1489,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       {isInicio3 && (
         <>
           <RAnimated.View
-            renderToHardwareTextureAndroid
-            shouldRasterizeIOS
             style={[
               styles.inicio3StreakRow,
               { top: topInset + 80 - INICIO3_VERTICAL_LIFT },

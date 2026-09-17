@@ -11,4 +11,6 @@ El avatar, las acciones laterales y la fila semanal de Inicio 3 deben conservar 
 
 El factor de compensación confirmado es `0.52`: el bloque se desplaza visualmente a cerca del 48% de la velocidad normal del contenido.
 
-No animar una máscara (`MaskedView`) en respuesta al scroll del hero. Aunque el valor viva en el hilo de UI, la recomposición de la máscara puede trabar tanto el hero como las capas parallax. Preferir un degradado simple y rasterizar únicamente los bloques estáticos que se trasladan.
+No animar una máscara (`MaskedView`) en respuesta al scroll del hero. Aunque el valor viva en el hilo de UI, la recomposición de la máscara puede trabar tanto el hero como las capas parallax. Preferir un degradado simple.
+
+No activar `shouldRasterizeIOS` ni `renderToHardwareTextureAndroid` en los bloques que reciben el transform del parallax: bajo Fabric pueden invalidar la superficie durante el scroll y volver a introducir el lag. Mantener esos subárboles estáticos y dejar que Reanimated componga solo el `translateY`.
