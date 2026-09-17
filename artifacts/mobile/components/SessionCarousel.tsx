@@ -308,6 +308,8 @@ type SessionCarouselProps = {
   showCategoryLabelBelow?: boolean;
   /** Shows the session category as a glass pill in the image's upper-left corner. */
   showCategoryPillTopLeft?: boolean;
+  /** Shows the session category as author-style text immediately above the card title. */
+  showCategoryAboveCardTitle?: boolean;
   /** Uses the same white glass surface as Ambiental favorite buttons. */
   whiteMetadataGlass?: boolean;
   /** Shows a clock icon before the duration label. */
@@ -396,6 +398,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   categoryGridPresentation = false,
   showCategoryLabelBelow = false,
   showCategoryPillTopLeft = false,
+  showCategoryAboveCardTitle = false,
   whiteMetadataGlass = false,
   showDurationClock = false,
   soundPreview,
@@ -1048,11 +1051,29 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                 </View>
               ) : !effectiveShowCardMetadata && !useOverlayMetadata && (
                 <>
+                  {showCategoryAboveCardTitle && s.categoryLabel ? (
+                    <Text
+                      style={[
+                        styles.cardAuthor,
+                        styles.cardCategoryAboveTitle,
+                        { color: viewAllAccent },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {s.categoryLabel}
+                    </Text>
+                  ) : null}
                   <Text
                     style={[
                       styles.cardTitle,
                       {
-                         marginTop: titleOffset ?? (hasSecondaryMeta ? 10 : 4),
+                         marginTop: titleOffset ?? (
+                           showCategoryAboveCardTitle
+                             ? 2
+                             : hasSecondaryMeta
+                               ? 10
+                               : 4
+                         ),
                          marginLeft: hasSecondaryMeta ? 0 : 8,
                       },
                     ]}
@@ -1414,4 +1435,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 4 },
+  cardCategoryAboveTitle: {
+    marginTop: 8,
+    marginBottom: 0,
+  },
 });

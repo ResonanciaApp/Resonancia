@@ -198,6 +198,15 @@ function formatShortDate(iso: string) {
   });
 }
 
+function colorWithOpacity(color: string, opacity: number): string {
+  const match = color.match(/^#([0-9a-f]{6})$/i);
+  if (!match) return color;
+  const alpha = Math.round(Math.max(0, Math.min(1, opacity)) * 255)
+    .toString(16)
+    .padStart(2, "0");
+  return `#${match[1]}${alpha}`;
+}
+
 export function MoodPickerSheet({
   visible,
   onClose,
@@ -555,7 +564,12 @@ export function MoodPickerSheet({
                   transition={300}
                 />
                 <LinearGradient
-                  colors={["transparent", "rgba(0,0,0,0.3)", fadeColor, fadeColor]}
+                  colors={[
+                    colorWithOpacity(fadeColor, 0),
+                    colorWithOpacity(fadeColor, 0.3),
+                    fadeColor,
+                    fadeColor,
+                  ]}
                   locations={[0.3, 0.7, fadeSolidStart, 1]}
                   style={StyleSheet.absoluteFill}
                 />
@@ -563,15 +577,16 @@ export function MoodPickerSheet({
                   <Text style={styles.heroKicker}>Tu momento</Text>
                   <Text style={styles.heroEmoji}>{firstMood?.emoji}</Text>
                   <Text style={styles.heroMoodLabel}>{firstMood?.label}</Text>
-                  <Text style={styles.heroAnswer}>
-                    {firstMoodAnswer?.label ?? "Sin respuesta seleccionada"}
-                  </Text>
+                  {firstMoodAnswer?.id !== "other" && (
+                    <Text style={styles.heroAnswer}>
+                      {firstMoodAnswer?.label ?? "Sin respuesta seleccionada"}
+                    </Text>
+                  )}
                 </View>
               </View>
 
               <LinearGradient colors={bgColors} style={styles.completeContent}>
-                <Text style={styles.resonanceTitle}>Esta es tu Resonancia para este momento</Text>
-                <Text style={styles.resonanceSubtitle}>Te proponemos comenzar con esta sesión</Text>
+                <Text style={styles.resonanceTitle}>Resonancia te recomienda:</Text>
 
                 <View style={styles.recommendationsCarousel}>
                   <SessionCarousel
@@ -587,7 +602,7 @@ export function MoodPickerSheet({
                     allowOversizedCardWidth
                     showDurationBadge
                     showDurationClock
-                    showCategoryPillTopLeft
+                    showCategoryAboveCardTitle
                     whiteMetadataGlass
                     durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
                     eagerRender
@@ -951,14 +966,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F9F9F9",
     letterSpacing: 0.3,
-    marginBottom: 4,
-  },
-  resonanceSubtitle: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    lineHeight: 20,
-    fontWeight: "400",
-    color: "rgba(249,249,249,0.65)",
     marginBottom: 20,
   },
   recommendationsCarousel: {
