@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { EmotionalQuoteCard } from "@/components/EmotionalQuoteCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import {
   getMoodById,
@@ -45,6 +46,10 @@ const MOOD_HEROES: Record<MoodId, number> = {
   contento: require("@/assets/images/mood-heroes/mood-hero-contento.jpg"),
   presente: require("@/assets/images/mood-heroes/mood-hero-presente.jpg"),
 };
+const DEPRESSED_QUOTE_BACKGROUND =
+  require("@/assets/images/mood-quotes/mood-quote-deprimido.jpg");
+const DEPRESSED_QUOTE =
+  "Aunque hoy cueste verlo, dentro de ti sigue existiendo un lugar al que la luz sabe volver.";
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
   readMoodHistory,
@@ -644,6 +649,14 @@ export function MoodPickerSheet({
                     <Feather name="chevron-right" size={16} color="#060A0F" />
                   </Pressable>
                 </View>
+
+                {firstMood?.id === "deprimido" && (
+                  <EmotionalQuoteCard
+                    author="Casa del Cuenco"
+                    background={DEPRESSED_QUOTE_BACKGROUND}
+                    quote={DEPRESSED_QUOTE}
+                  />
+                )}
 
                 {history.length > 0 && (
                   <Text style={styles.lastCheckIn}>
