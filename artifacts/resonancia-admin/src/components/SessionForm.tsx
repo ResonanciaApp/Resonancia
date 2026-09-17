@@ -11,7 +11,6 @@ import {
   ChevronUp,
   Trash2,
   RefreshCw,
-  Repeat,
 } from "lucide-react";
 import { TagOptionSelector, SingleTagOptionSelector } from "@/components/TagOptionSelector";
 import {
@@ -85,8 +84,6 @@ const CATS = [
   { id: "ambientales", label: "Ambientales", categoryLabel: "Ambientales", color: "#78AFA5" },
 ] as const;
 
-const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
-
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function resolveImageUrl(raw: string | null | undefined): string | null {
@@ -101,13 +98,10 @@ interface AudioSlot {
   file: File | null;
   objectPath: string;
   name: string;
-  role: string;
-  durationSeconds: string;
-  isLoop: boolean;
 }
 
 const emptyAudioSlot = (): AudioSlot => ({
-  file: null, objectPath: "", name: "", role: "main", durationSeconds: "", isLoop: false,
+  file: null, objectPath: "", name: "",
 });
 
 type CreateBody = Parameters<ReturnType<typeof useCreateSubmission>["mutateAsync"]>[0]["data"];
@@ -257,8 +251,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // Audios (solo modo crear)
   const [audio1, setAudio1] = useState<AudioSlot>(emptyAudioSlot());
-  const [audio2, setAudio2] = useState<AudioSlot>(emptyAudioSlot());
-  const [showAudio2, setShowAudio2] = useState(false);
 
   // Imagen
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -281,7 +273,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // Refs para inputs de archivo
   const audio1Ref = useRef<HTMLInputElement>(null);
-  const audio2Ref = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
 
   // ── Hooks API ──
@@ -353,7 +344,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     if (!isEdit && !isPlaceholder) {
       if (!audio1.file) return "Agregá al menos un archivo de audio";
       if (!audio1.name.trim()) return "Poné un nombre al audio 1";
-      if (showAudio2 && audio2.file && !audio2.name.trim()) return "Poné un nombre al audio 2";
     }
     return null;
   };
@@ -369,11 +359,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       const a1 = audio1.file
         ? await uploadFile(audio1.file, "Subiendo audio principal")
         : null;
-      let a2: UploadedFile | null = null;
-      if (showAudio2 && audio2.file) {
-        a2 = await uploadFile(audio2.file, "Subiendo audio secundario");
-      }
-
       let imgUploaded: UploadedFile | null = uploadedImage;
       if (imageFile && !uploadedImage) {
         imgUploaded = await uploadFile(imageFile, "Subiendo imagen");
@@ -389,20 +374,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           name: audio1.name.trim(),
           contentType: a1.contentType,
           sizeBytes: a1.sizeBytes,
-          role: audio1.role as "main"|"voice"|"ambient"|"base"|"sound",
-          durationSeconds: audio1.durationSeconds ? Number(audio1.durationSeconds) : undefined,
-          isLoop: audio1.isLoop,
-        });
-      }
-      if (a2) {
-        audioFiles.push({
-          objectPath: a2.objectPath,
-          name: audio2.name.trim(),
-          contentType: a2.contentType,
-          sizeBytes: a2.sizeBytes,
-          role: audio2.role as "main"|"voice"|"ambient"|"base"|"sound",
-          durationSeconds: audio2.durationSeconds ? Number(audio2.durationSeconds) : undefined,
-          isLoop: audio2.isLoop,
         });
       }
 
@@ -420,7 +391,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isPlaceholder,
         skipDetail,
         skipMiniPlayer,
-        isLoop,
+        isLoop: categoryId === "ambientales" && isLoop,
         isFeaturedCategory,
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         frequency: frequency.trim() || null,
@@ -499,7 +470,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isPlaceholder,
         skipDetail,
         skipMiniPlayer,
-        isLoop,
+        isLoop: categoryId === "ambientales" && isLoop,
         isFeatured,
         isFeaturedCategory,
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
@@ -554,7 +525,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     setSoundTag(""); setDescansoTags([]); setArtistId("");
     setSonidosTag(""); setPodcastTag(""); setSabiduriaTag(""); setSleepTag(""); setThemeTag([]); setTemaTag([]);
     setGuideIds([""]);
-    setAudio1(emptyAudioSlot()); setAudio2(emptyAudioSlot()); setShowAudio2(false);
+    setAudio1(emptyAudioSlot());
     setImageFile(null); setUploadedImage(null);
   };
 
@@ -614,19 +585,12 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               onClick={() => {
                 if (cat.id !== categoryId) setThemeTag([]);
                 setCategoryId(cat.id);
+                if (cat.id !== "ambientales") setIsLoop(false);
                 if (!isEdit) {
                   // reset tags al cambiar categoría
                   setAncestralTag(""); setMeditationTag("");
                   setSoundTag(""); setDescansoTags([]); setArtistId("");
                   setSonidosTag(""); setPodcastTag(""); setGuideIds([""]);
-                  // auto-mostrar audio2 con rol correcto según categoría
-                  if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas" || cat.id === "descanso") {
-                    setShowAudio2(true);
-                    setAudio2((a) => ({ ...a, role: "voice" }));
-                  } else {
-                    setShowAudio2(false);
-                    setAudio2({ ...emptyAudioSlot(), role: "ambient" });
-                  }
                 }
               }}
               className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all ${
@@ -810,13 +774,15 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            <Switch id="isLoop" checked={isLoop} onCheckedChange={setIsLoop} />
-            <Label htmlFor="isLoop" className="cursor-pointer">
-              Sesión en loop infinito
-              <span className="ml-2 text-xs text-muted-foreground">(se repite sin fin en el reproductor)</span>
-            </Label>
-          </div>
+          {categoryId === "ambientales" && (
+            <div className="flex items-center gap-3">
+              <Switch id="isLoop" checked={isLoop} onCheckedChange={setIsLoop} />
+              <Label htmlFor="isLoop" className="cursor-pointer">
+                Sesión en loop infinito
+                <span className="ml-2 text-xs text-muted-foreground">(se repite sin fin en el reproductor)</span>
+              </Label>
+            </div>
+          )}
           <div className="flex items-center gap-3">
             <Switch id="skipDetail" checked={skipDetail} onCheckedChange={handleSkipDetail} />
             <Label htmlFor="skipDetail" className="cursor-pointer">
@@ -1062,34 +1028,13 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             const audio1Label = isPlaceholder
               ? (isMusica ? "Audio principal (opcional mientras sea próximamente)" : "Audio base (opcional mientras sea próximamente)")
               : (isMusica ? "Audio principal *" : "Audio base *");
-            const audio2Label = isMusica ? "Audio ambiente (opcional)" : "Voz guía (opcional)";
             return (
-              <div className="space-y-6">
-                <AudioUploadSlot
-                  label={audio1Label}
-                  slot={audio1}
-                  onChange={handleAudio1Change}
-                  inputRef={audio1Ref}
-                />
-
-                {showAudio2 ? (
-                  <AudioUploadSlot
-                    label={audio2Label}
-                    slot={audio2}
-                    onChange={setAudio2}
-                    inputRef={audio2Ref}
-                    onRemove={() => { setShowAudio2(false); setAudio2(emptyAudioSlot()); }}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setShowAudio2(true)}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    + {audio2Label}
-                  </button>
-                )}
-              </div>
+              <AudioUploadSlot
+                label={audio1Label}
+                slot={audio1}
+                onChange={handleAudio1Change}
+                inputRef={audio1Ref}
+              />
             );
           })()}
         </Section>
@@ -1474,7 +1419,6 @@ function ExistingAudios({
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CatalogAudioFile | null>(null);
-  const [showAdd, setShowAdd] = useState(false);
   const [newSlot, setNewSlot] = useState<AudioSlot>(emptyAudioSlot());
   const replaceRef = useRef<HTMLInputElement>(null);
   const newRef = useRef<HTMLInputElement>(null);
@@ -1526,7 +1470,7 @@ function ExistingAudios({
     }
   };
 
-  const doAdd = async () => {
+  const doAddFirstAudio = async () => {
     if (!newSlot.file) { toast.error("Elegí un archivo de audio."); return; }
     if (!newSlot.name.trim()) { toast.error("Poné un nombre al audio."); return; }
     setBusy(true);
@@ -1539,14 +1483,10 @@ function ExistingAudios({
           name: newSlot.name.trim(),
           contentType: up.contentType,
           sizeBytes: up.sizeBytes,
-          role: newSlot.role as "main"|"voice"|"ambient"|"base"|"sound",
-          durationSeconds: newSlot.durationSeconds ? Number(newSlot.durationSeconds) : undefined,
-          isLoop: newSlot.isLoop,
         },
       });
-      toast.success("Audio añadido.");
+      toast.success("Audio principal añadido.");
       qc.invalidateQueries();
-      setShowAdd(false);
       setNewSlot(emptyAudioSlot());
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "No se pudo añadir el audio.");
@@ -1570,6 +1510,25 @@ function ExistingAudios({
         }}
       />
 
+      {audioFiles.length === 0 && (
+        <div className="space-y-3">
+          <AudioUploadSlot
+            label="Audio principal *"
+            slot={newSlot}
+            onChange={setNewSlot}
+            inputRef={newRef}
+          />
+          <Button
+            type="button"
+            onClick={doAddFirstAudio}
+            disabled={busy || !newSlot.file || !newSlot.name.trim()}
+            className="w-full"
+          >
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Añadir audio principal"}
+          </Button>
+        </div>
+      )}
+
       <div className="space-y-3">
         {audioFiles.map((af) => (
           <div key={af.id} className="flex items-center gap-3 p-3 rounded-lg bg-secondary border border-border">
@@ -1577,16 +1536,9 @@ function ExistingAudios({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="text-sm font-medium truncate">{af.name}</p>
-                <Badge variant="outline" className="text-xs">{af.role}</Badge>
-                {af.isLoop && (
-                  <Badge variant="secondary" className="text-xs gap-1">
-                    <Repeat className="w-3 h-3" /> Loop
-                  </Badge>
-                )}
               </div>
               <p className="text-xs text-muted-foreground">
                 {af.sizeBytes ? `${(af.sizeBytes / (1024 * 1024)).toFixed(1)} MB` : "—"}
-                {af.durationSeconds ? ` · ${af.durationSeconds}s` : ""}
               </p>
             </div>
             <div className="flex gap-1 shrink-0">
@@ -1612,105 +1564,6 @@ function ExistingAudios({
           </div>
         ))}
       </div>
-
-      {showAdd ? (
-        <div className="rounded-lg border border-border p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <Label className="text-sm font-medium">Nuevo audio</Label>
-            <button
-              type="button"
-              onClick={() => { setShowAdd(false); setNewSlot(emptyAudioSlot()); }}
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Cancelar
-            </button>
-          </div>
-          <input
-            ref={newRef}
-            type="file"
-            accept="audio/*"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) setNewSlot((s) => ({ ...s, file: f, name: s.name || f.name.replace(/\.[^.]+$/, "") }));
-            }}
-          />
-          {newSlot.file ? (
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary border border-border">
-              <Music className="w-5 h-5 text-primary flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{newSlot.file.name}</p>
-                <p className="text-xs text-muted-foreground">{(newSlot.file.size / (1024 * 1024)).toFixed(1)} MB</p>
-              </div>
-              <button type="button" onClick={() => setNewSlot((s) => ({ ...s, file: null }))} className="text-muted-foreground hover:text-foreground">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => newRef.current?.click()}
-              className="w-full border-2 border-dashed border-border rounded-xl p-5 flex flex-col items-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
-            >
-              <Upload className="w-6 h-6 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Click para subir audio</span>
-            </button>
-          )}
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Nombre del audio">
-              <Input
-                value={newSlot.name}
-                onChange={(e) => setNewSlot((s) => ({ ...s, name: e.target.value }))}
-                placeholder="Ej: Voz guía"
-                maxLength={200}
-              />
-            </Field>
-            <Field label="Rol">
-              <Select value={newSlot.role} onValueChange={(v) => setNewSlot((s) => ({ ...s, role: v }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {AUDIO_ROLES.map((r) => (
-                    <SelectItem key={r} value={r}>{r}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Duración (segundos, opcional)">
-              <Input
-                type="number"
-                value={newSlot.durationSeconds}
-                onChange={(e) => setNewSlot((s) => ({ ...s, durationSeconds: e.target.value }))}
-                placeholder="1800"
-              />
-            </Field>
-            <div className="flex items-end pb-0.5">
-              <div className="flex items-center gap-2 h-10">
-                <Switch
-                  id="new-audio-loop"
-                  checked={newSlot.isLoop}
-                  onCheckedChange={(v) => setNewSlot((s) => ({ ...s, isLoop: v }))}
-                />
-                <Label htmlFor="new-audio-loop" className="cursor-pointer text-sm">Loop</Label>
-              </div>
-            </div>
-          </div>
-          <Button onClick={doAdd} disabled={busy} className="w-full">
-            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Añadir audio"}
-          </Button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setShowAdd(true)}
-          className="text-sm text-primary hover:underline"
-        >
-          + Añadir audio
-        </button>
-      )}
 
       <AlertDialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
         <AlertDialogContent>
@@ -1812,24 +1665,15 @@ function AudioUploadSlot({
   slot,
   onChange,
   inputRef,
-  onRemove,
 }: {
   label: string;
   slot: AudioSlot;
   onChange: (s: AudioSlot) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
-  onRemove?: () => void;
 }) {
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">{label}</Label>
-        {onRemove && (
-          <button type="button" onClick={onRemove} className="text-xs text-muted-foreground hover:text-foreground">
-            Quitar
-          </button>
-        )}
-      </div>
+      <Label className="text-sm font-medium">{label}</Label>
       <input
         ref={inputRef}
         type="file"
@@ -1863,49 +1707,14 @@ function AudioUploadSlot({
         </button>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Nombre del audio">
-          <Input
-            value={slot.name}
-            onChange={(e) => onChange({ ...slot, name: e.target.value })}
-            placeholder="Ej: Cuencos del alba"
-            maxLength={200}
-          />
-        </Field>
-        <Field label="Rol">
-          <Select value={slot.role} onValueChange={(v) => onChange({ ...slot, role: v })}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {AUDIO_ROLES.map((r) => (
-                <SelectItem key={r} value={r}>{r}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Duración (segundos, opcional)">
-          <Input
-            type="number"
-            value={slot.durationSeconds}
-            onChange={(e) => onChange({ ...slot, durationSeconds: e.target.value })}
-            placeholder="1800"
-          />
-        </Field>
-        <div className="flex items-end pb-0.5">
-          <div className="flex items-center gap-2 h-10">
-            <Switch
-              id={`loop-${label}`}
-              checked={slot.isLoop}
-              onCheckedChange={(v) => onChange({ ...slot, isLoop: v })}
-            />
-            <Label htmlFor={`loop-${label}`} className="cursor-pointer text-sm">Loop</Label>
-          </div>
-        </div>
-      </div>
+      <Field label="Nombre del audio">
+        <Input
+          value={slot.name}
+          onChange={(e) => onChange({ ...slot, name: e.target.value })}
+          placeholder="Ej: Cuencos del alba"
+          maxLength={200}
+        />
+      </Field>
     </div>
   );
 }
