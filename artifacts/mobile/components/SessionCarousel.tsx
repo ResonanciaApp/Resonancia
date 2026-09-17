@@ -547,8 +547,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
     (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 4;
   const ambientalFilledImageBottom =
     ambientalFilledImageTop + ambientalFilledImageHeight;
-  const ambientalPlayButtonSize = 34 * ambientalFillScale + 20;
-  const ambientalPlayIconSize = 22 * ambientalFillScale + 14;
+  const ambientalPlayButtonSize = 34 * ambientalFillScale + 14;
+  const ambientalPlayIconSize = 22 * ambientalFillScale + 8;
   const viewAllAccent = theme.accent ?? viewAllColor ?? colors.accent;
   return (
     <View style={[styles.section, style]}>
@@ -1220,6 +1220,8 @@ const styles = StyleSheet.create({
   ambientalImage: {
     position: "absolute",
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
   },
   ambientalImageBottomEdge: {
     position: "absolute",
