@@ -30,13 +30,14 @@ const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_COLOR = "rgba(255,255,255,0.25)";
 const CANONICAL_AMBIENTAL_BORDER_WIDTH = 1;
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
+const AMBIENTAL_CONTENT_DROP = 10;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
 };
 const CANONICAL_AMBIENTAL_TITLE_STYLE: TextStyle = {
   height: 42,
-  fontSize: 15,
-  lineHeight: 19,
+  fontSize: 14,
+  lineHeight: 18,
   textAlign: "center",
   textAlignVertical: "top",
 };
@@ -194,8 +195,8 @@ const AmbientalCardTitle = React.memo(function AmbientalCardTitle({
   numberOfLines: number;
 }) {
   return (
-    <View style={styles.sleepOverlayMetadata}>
-      <Text style={styles.sleepOverlayTitle} numberOfLines={numberOfLines}>
+    <View style={[styles.sleepOverlayMetadata, { transform: [{ translateY: AMBIENTAL_CONTENT_DROP }] }]}>
+      <Text style={[styles.sleepOverlayTitle, styles.ambientalCardTitle]} numberOfLines={numberOfLines}>
         {title}
       </Text>
     </View>
@@ -545,7 +546,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const ambientalFilledImageHeight = ambientalFilledImageDiameter;
   const ambientalFilledImageLeft = (cw - ambientalFilledImageWidth) / 2;
   const ambientalFilledImageTop =
-    (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 4;
+    (ambientalImageBottom - ambientalFilledImageHeight) / 2 + 4 + AMBIENTAL_CONTENT_DROP;
   const ambientalFilledImageBottom =
     ambientalFilledImageTop + ambientalFilledImageHeight;
   const ambientalPlayButtonSize = 34 * ambientalFillScale + 14;
@@ -694,7 +695,11 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               height: ambientalDisplayedImageSize,
                               borderRadius: ambientalDisplayedImageSize / 2,
                               left: (cw - ambientalDisplayedImageSize) / 2 - 1,
-                              top: (ch - ambientalDisplayedImageSize) / 2 - 1 - ambientalImageLift,
+                              top:
+                                (ch - ambientalDisplayedImageSize) / 2 -
+                                1 -
+                                ambientalImageLift +
+                                AMBIENTAL_CONTENT_DROP,
                             },
                       ]}
                     />
@@ -923,7 +928,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                           showAmbientalTitleOnly && ambientalTitleOnlyMetadataStyle,
                           showAmbientalTitleOnly &&
                             ambientalImageFillTop && {
-                              top: ambientalImageBottom,
+                               top: ambientalImageBottom + AMBIENTAL_CONTENT_DROP,
                               bottom: 0,
                               justifyContent: "center",
                               transform: [],
@@ -1321,6 +1326,10 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.75)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  ambientalCardTitle: {
+    fontSize: 14,
+    lineHeight: 18,
   },
   sleepOverlayTitleAfterCategory: {
     marginTop: 4,
