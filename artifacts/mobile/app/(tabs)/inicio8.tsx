@@ -3410,8 +3410,8 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: GRID_PAD - 6,
-    right: GRID_PAD - 6,
+    left: GRID_PAD,
+    right: GRID_PAD,
     overflow: "visible",
     zIndex: 20,
   },
