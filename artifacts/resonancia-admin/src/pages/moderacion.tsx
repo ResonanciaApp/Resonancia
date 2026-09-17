@@ -31,6 +31,9 @@ import {
   ANCESTRAL_TAGS,
   MEDITATION_TAGS,
   SOUND_TAGS,
+  CHARLAS_SUBCATEGORY_TAGS,
+  HISTORIAS_SUBCATEGORY_TAGS,
+  AMBIENTALES_SUBCATEGORY_TAGS,
   DESCANSO_TAGS,
   OTHER_THEME_TAGS,
   SONIDOS_COLLECTION_TAGS,
@@ -349,6 +352,9 @@ function EditDialog({
   const [ancestralTag, setAncestralTag] = useState(submission.ancestralTag ?? "");
   const [meditationTag, setMeditationTag] = useState(submission.meditationTag ?? "");
   const [soundTag, setSoundTag] = useState(submission.soundTag ?? "");
+  const [podcastTag, setPodcastTag] = useState(submission.podcastTag ?? "");
+  const [sabiduriaTag, setSabiduriaTag] = useState(submission.sabiduriaTag ?? "");
+  const [sonidosTag, setSonidosTag] = useState(submission.sonidosTag ?? "");
   const [descansoTags, setDescansoTags] = useState<string[]>(submission.descansoTags ?? []);
   const [sonidosTags, setSonidosTags] = useState<string[]>(submission.sonidosTags ?? []);
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
@@ -401,6 +407,13 @@ function EditDialog({
   const isAncestral   = catId === "sonidos-ancestrales";
   const isMeditation  = catId === "meditaciones-guiadas";
   const isMusic       = catId === "musica-sonidos";
+  const isTalk        = catId === "charlas";
+  const isStory       = catId === "historias";
+  const isAmbiental   = catId === "ambientales";
+  const missingRequiredSubcategory =
+    (isTalk && !podcastTag) ||
+    (isStory && !sabiduriaTag) ||
+    (isAmbiental && !sonidosTag);
   const categoryThemeConfig = CATEGORY_THEME_TAGS[catId];
 
   const toggleTheme = (tag: string) =>
@@ -765,6 +778,39 @@ function EditDialog({
                 onSelect={setSoundTag}
               />
             )}
+            {isTalk && (
+              <SingleTagOptionSelector
+                tagType="podcast"
+                defaults={CHARLAS_SUBCATEGORY_TAGS}
+                label="Subcategoría Charlas"
+                selected={podcastTag}
+                onSelect={setPodcastTag}
+                onRename={(from, to) => setPodcastTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setPodcastTag((current) => current === tag ? "" : current)}
+              />
+            )}
+            {isStory && (
+              <SingleTagOptionSelector
+                tagType="sabiduria"
+                defaults={HISTORIAS_SUBCATEGORY_TAGS}
+                label="Subcategoría Historias"
+                selected={sabiduriaTag}
+                onSelect={setSabiduriaTag}
+                onRename={(from, to) => setSabiduriaTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setSabiduriaTag((current) => current === tag ? "" : current)}
+              />
+            )}
+            {isAmbiental && (
+              <SingleTagOptionSelector
+                tagType="sonidos"
+                defaults={AMBIENTALES_SUBCATEGORY_TAGS}
+                label="Subcategoría Ambientales"
+                selected={sonidosTag}
+                onSelect={setSonidosTag}
+                onRename={(from, to) => setSonidosTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setSonidosTag((current) => current === tag ? "" : current)}
+              />
+            )}
 
             {categoryThemeConfig && (
               <div className="space-y-2">
@@ -888,7 +934,13 @@ function EditDialog({
             Cancelar
           </Button>
           <Button
-            disabled={title.trim().length === 0 || subtitle.trim().length === 0 || mutation.isPending || imageUploading}
+            disabled={
+              title.trim().length === 0 ||
+              subtitle.trim().length === 0 ||
+              missingRequiredSubcategory ||
+              mutation.isPending ||
+              imageUploading
+            }
             onClick={() => {
               const dur = parseInt(duration, 10);
               const persistedThemeTags = themeTag.filter((tag) =>
@@ -912,6 +964,9 @@ function EditDialog({
                   ...(isAncestral ? { ancestralTag: ancestralTag || null } : {}),
                   ...(isMeditation ? { meditationTag: meditationTag || null } : {}),
                   ...(isMusic ? { soundTag: soundTag || null } : {}),
+                  ...(isTalk ? { podcastTag: podcastTag || null } : {}),
+                  ...(isStory ? { sabiduriaTag: sabiduriaTag || null } : {}),
+                  ...(isAmbiental ? { sonidosTag: sonidosTag || null } : {}),
                   sleepTag: null,
                   descansoTags,
                   sonidosTags,

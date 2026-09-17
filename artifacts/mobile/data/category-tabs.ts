@@ -18,30 +18,16 @@ export function getCategorySessionTags(
   if (categoryId === "sonidos-ancestrales") {
     return session.ancestralTag ? [session.ancestralTag] : [];
   }
-  const legacyTags =
-    categoryId === "ambientales"
-      ? [
-          session.sonidosTag,
-          ...(session.sonidosTags ?? []),
-          session.soundTag,
-          ...(session.temaTag ?? []),
-        ]
-      : [
-          session.podcastTag,
-          session.sabiduriaTag,
-          ...(session.temaTag ?? []),
-        ];
-
-  const editorialTags = ["historias", "charlas", "ambientales"].includes(categoryId)
-    ? getCategoryEditorialTags(session, categoryId)
-    : [];
-
-  return [
-    ...new Set([
-      ...editorialTags,
-      ...legacyTags.filter((tag): tag is string => Boolean(tag)),
-    ]),
-  ];
+  if (categoryId === "charlas") {
+    return session.podcastTag ? [session.podcastTag] : [];
+  }
+  if (categoryId === "historias") {
+    return session.sabiduriaTag ? [session.sabiduriaTag] : [];
+  }
+  if (categoryId === "ambientales") {
+    return session.sonidosTag ? [session.sonidosTag] : [];
+  }
+  return [];
 }
 
 export function getCategoryEditorialTags(

@@ -1657,6 +1657,12 @@ const DEFAULT_COLLECTION_LABELS: Record<string, Set<string>> = {
     "Sonidos de lluvia",
     "Sonidos para Chakras",
   ].map((label) => label.toLocaleLowerCase())),
+  podcast: new Set(["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"]
+    .map((label) => label.toLocaleLowerCase())),
+  sabiduria: new Set(["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"]
+    .map((label) => label.toLocaleLowerCase())),
+  sonidos: new Set(["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"]
+    .map((label) => label.toLocaleLowerCase())),
 };
 
 function collidesWithDefaultCollection(type: string, label: string): boolean {
@@ -1716,6 +1722,34 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
         .where(and(eq(catalogTagOptionsTable.type, type), sql`lower(${catalogTagOptionsTable.label}) = lower(${label})`))
         .limit(1);
       if (duplicate.length) throw new Error("DUPLICATE");
+      if (type.endsWith("_hidden")) {
+        const inUse = baseType === "podcast"
+          ? await tx.select({ id: catalogSessionsTable.id })
+              .from(catalogSessionsTable)
+              .where(and(
+                eq(catalogSessionsTable.categoryId, "charlas"),
+                eq(catalogSessionsTable.podcastTag, label),
+              ))
+              .limit(1)
+          : baseType === "sabiduria"
+            ? await tx.select({ id: catalogSessionsTable.id })
+                .from(catalogSessionsTable)
+                .where(and(
+                  eq(catalogSessionsTable.categoryId, "historias"),
+                  eq(catalogSessionsTable.sabiduriaTag, label),
+                ))
+                .limit(1)
+            : baseType === "sonidos"
+              ? await tx.select({ id: catalogSessionsTable.id })
+                  .from(catalogSessionsTable)
+                  .where(and(
+                    eq(catalogSessionsTable.categoryId, "ambientales"),
+                    eq(catalogSessionsTable.sonidosTag, label),
+                  ))
+                  .limit(1)
+              : [];
+        if (inUse.length > 0) throw new Error("SUBCATEGORY_IN_USE");
+      }
       const [created] = await tx.insert(catalogTagOptionsTable)
         .values({ type, label })
         .returning();
@@ -1748,6 +1782,12 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
   } catch (err) {
     if (err instanceof Error && err.message === "DUPLICATE") {
       res.status(409).json({ error: "Ya existe una etiqueta con ese nombre" });
+      return;
+    }
+    if (err instanceof Error && err.message === "SUBCATEGORY_IN_USE") {
+      res.status(409).json({
+        error: "Reasigná primero las sesiones que usan esta subcategoría",
+      });
       return;
     }
     req.log.error({ err }, "error creating tag option");
@@ -1840,6 +1880,27 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
                 sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
               )
             : sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
+      } else if (type === "podcast") {
+        await tx.update(catalogSessionsTable)
+          .set({ podcastTag: newLabel })
+          .where(and(
+            eq(catalogSessionsTable.categoryId, "charlas"),
+            eq(catalogSessionsTable.podcastTag, oldLabel),
+          ));
+      } else if (type === "sabiduria") {
+        await tx.update(catalogSessionsTable)
+          .set({ sabiduriaTag: newLabel })
+          .where(and(
+            eq(catalogSessionsTable.categoryId, "historias"),
+            eq(catalogSessionsTable.sabiduriaTag, oldLabel),
+          ));
+      } else if (type === "sonidos") {
+        await tx.update(catalogSessionsTable)
+          .set({ sonidosTag: newLabel })
+          .where(and(
+            eq(catalogSessionsTable.categoryId, "ambientales"),
+            eq(catalogSessionsTable.sonidosTag, oldLabel),
+          ));
       } else if (type === "descanso") {
         await tx.update(catalogSessionsTable)
           .set({ descansoTags: sql`array_replace(${catalogSessionsTable.descansoTags}, ${oldLabel}, ${newLabel})` })
@@ -1876,6 +1937,32 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
       ) {
         throw new Error("PROTECTED");
       }
+      const inUse = option.type === "podcast"
+        ? await tx.select({ id: catalogSessionsTable.id })
+            .from(catalogSessionsTable)
+            .where(and(
+              eq(catalogSessionsTable.categoryId, "charlas"),
+              eq(catalogSessionsTable.podcastTag, option.label),
+            ))
+            .limit(1)
+        : option.type === "sabiduria"
+          ? await tx.select({ id: catalogSessionsTable.id })
+              .from(catalogSessionsTable)
+              .where(and(
+                eq(catalogSessionsTable.categoryId, "historias"),
+                eq(catalogSessionsTable.sabiduriaTag, option.label),
+              ))
+              .limit(1)
+          : option.type === "sonidos"
+            ? await tx.select({ id: catalogSessionsTable.id })
+                .from(catalogSessionsTable)
+                .where(and(
+                  eq(catalogSessionsTable.categoryId, "ambientales"),
+                  eq(catalogSessionsTable.sonidosTag, option.label),
+                ))
+                .limit(1)
+            : [];
+      if (inUse.length > 0) throw new Error("SUBCATEGORY_IN_USE");
       const categoryId = CATEGORY_THEME_TYPE_TO_ID[option.type];
       if (isManagedThemeType(option.type)) {
         const storedLabel = storedCategoryThemeLabel(option.type, option.label);
@@ -1906,6 +1993,12 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
   } catch (err) {
     if (err instanceof Error && err.message === "PROTECTED") {
       res.status(403).json({ error: "“Todos los sonidos” es una colección protegida" });
+      return;
+    }
+    if (err instanceof Error && err.message === "SUBCATEGORY_IN_USE") {
+      res.status(409).json({
+        error: "Reasigná primero las sesiones que usan esta subcategoría",
+      });
       return;
     }
     req.log.error({ err }, "error deleting tag option");

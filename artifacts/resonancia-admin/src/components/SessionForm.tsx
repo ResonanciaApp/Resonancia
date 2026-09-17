@@ -19,6 +19,9 @@ import {
   ANCESTRAL_TAGS,
   MEDITATION_TAGS,
   SOUND_TAGS,
+  CHARLAS_SUBCATEGORY_TAGS,
+  HISTORIAS_SUBCATEGORY_TAGS,
+  AMBIENTALES_SUBCATEGORY_TAGS,
   DESCANSO_TAGS,
   OTHER_THEME_TAGS,
   SONIDOS_COLLECTION_TAGS,
@@ -75,12 +78,11 @@ import {
 // ── Constantes de taxonomía ────────────────────────────────────────────────
 
 const CATS = [
-  { id: "sonidos-ancestrales", label: "Sonoterapia", categoryLabel: "Sonoterapia", color: "#D4AF37" },
-  { id: "descanso", label: "Dormir", categoryLabel: "Dormir", color: "#8AAAD4" },
-  { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
   { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },
-  { id: "historias", label: "Historias", categoryLabel: "Historias", color: "#D5A4E8" },
+  { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
+  { id: "sonidos-ancestrales", label: "Sonoterapia", categoryLabel: "Sonoterapia", color: "#D4AF37" },
   { id: "charlas", label: "Charlas", categoryLabel: "Charlas", color: "#F0B17A" },
+  { id: "historias", label: "Historias", categoryLabel: "Historias", color: "#D5A4E8" },
   { id: "ambientales", label: "Ambientales", categoryLabel: "Ambientales", color: "#78AFA5" },
 ] as const;
 
@@ -131,15 +133,23 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     query: { queryKey: getGetCatalogQueryKey() },
   });
 
-  // Opciones de categoría: primero las conocidas (CATS), luego cualquier extra del catálogo
+  // Nueva sesión usa solo la taxonomía oficial. En edición se conserva una
+  // categoría legacy únicamente si la sesión ya la tiene, para poder migrarla.
   const catalogCats = catalog?.categories ?? [];
   const categoryOptions = (() => {
     const known = CATS.map((c) => ({ id: c.id, label: c.label, color: c.color }));
-    const knownIds = new Set<string>(known.map((k) => k.id));
-    const extras = catalogCats
-      .filter((c) => !knownIds.has(c.id))
-      .map((c) => ({ id: c.id, label: c.title, color: c.color || "#9B8A86" }));
-    return [...known, ...extras];
+    if (!isEdit || !initial?.categoryId || known.some((cat) => cat.id === initial.categoryId)) {
+      return known;
+    }
+    const legacy = catalogCats.find((cat) => cat.id === initial.categoryId);
+    return [
+      ...known,
+      {
+        id: initial.categoryId,
+        label: legacy?.title ?? initial.categoryLabel,
+        color: legacy?.color || "#9B8A86",
+      },
+    ];
   })();
 
   // categoryLabel a guardar: CATS mapping para ids conocidos, sino el título del catálogo
@@ -359,15 +369,12 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const validate = (durationValue = duration): string | null => {
     if (!categoryId) return "Seleccioná una categoría";
     if (categoryId === "musica-sonidos" && !soundTag) return "Seleccioná una subcategoría de Música";
+    if (categoryId === "charlas" && !podcastTag) return "Seleccioná una subcategoría de Charlas";
+    if (categoryId === "historias" && !sabiduriaTag) return "Seleccioná una subcategoría de Historias";
+    if (categoryId === "ambientales" && !sonidosTag) return "Seleccioná una subcategoría de Ambientales";
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
     if (!description.trim()) return "La descripción es requerida";
-    if (
-      ["historias", "charlas", "ambientales"].includes(categoryId) &&
-      categoryThemeSelectedLabels(categoryId, themeTag).length === 0
-    ) {
-      return "Seleccioná al menos una subcategoría";
-    }
     const d = Number(durationValue);
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
     if (!isEdit && !isPlaceholder) {
@@ -876,6 +883,42 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                 label="Subcategoría *"
                 selected={soundTag}
                 onSelect={setSoundTag}
+              />
+            )}
+
+            {categoryId === "charlas" && (
+              <SingleTagOptionSelector
+                tagType="podcast"
+                defaults={CHARLAS_SUBCATEGORY_TAGS}
+                label="Subcategoría *"
+                selected={podcastTag}
+                onSelect={setPodcastTag}
+                onRename={(from, to) => setPodcastTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setPodcastTag((current) => current === tag ? "" : current)}
+              />
+            )}
+
+            {categoryId === "historias" && (
+              <SingleTagOptionSelector
+                tagType="sabiduria"
+                defaults={HISTORIAS_SUBCATEGORY_TAGS}
+                label="Subcategoría *"
+                selected={sabiduriaTag}
+                onSelect={setSabiduriaTag}
+                onRename={(from, to) => setSabiduriaTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setSabiduriaTag((current) => current === tag ? "" : current)}
+              />
+            )}
+
+            {categoryId === "ambientales" && (
+              <SingleTagOptionSelector
+                tagType="sonidos"
+                defaults={AMBIENTALES_SUBCATEGORY_TAGS}
+                label="Subcategoría *"
+                selected={sonidosTag}
+                onSelect={setSonidosTag}
+                onRename={(from, to) => setSonidosTag((current) => current === from ? to : current)}
+                onDelete={(tag) => setSonidosTag((current) => current === tag ? "" : current)}
               />
             )}
 

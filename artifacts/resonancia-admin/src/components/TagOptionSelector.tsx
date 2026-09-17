@@ -108,7 +108,7 @@ export function TagOptionSelector({
 
   // ── Eliminar tag custom (DB) ──────────────────────────────────────────────
   const handleDeleteCustom = async (opt: TagOption) => {
-    if (!window.confirm(`¿Eliminar la etiqueta "${opt.label}"? Se quitará también de las sesiones que la usan.`)) return;
+    if (!window.confirm(`¿Eliminar la etiqueta "${opt.label}"?`)) return;
     setDeleting(`custom-${opt.id}`);
     try {
       const token = await getToken();
@@ -117,12 +117,15 @@ export function TagOptionSelector({
         credentials: "include",
         headers: authHeaders(token),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "No se pudo eliminar");
+      }
       setDbTags((p) => p.filter((t) => t.id !== opt.id));
       onDelete?.(opt.label);
       toast.success(`"${opt.label}" eliminada`);
-    } catch {
-      toast.error("No se pudo eliminar");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo eliminar");
     } finally {
       setDeleting(null);
     }
@@ -142,13 +145,16 @@ export function TagOptionSelector({
         headers: { "Content-Type": "application/json", ...authHeaders(token) },
         body: JSON.stringify({ type: hiddenType, label: tag }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "No se pudo eliminar");
+      }
       const created: TagOption = await res.json();
       setHiddenIds((prev) => new Map(prev).set(key, created.id));
       onDelete?.(tag);
       toast.success(`"${tag}" eliminada`);
-    } catch {
-      toast.error("No se pudo eliminar");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo eliminar");
     } finally {
       setDeleting(null);
     }
@@ -304,6 +310,8 @@ interface SingleTagOptionSelectorProps {
   label: string;
   selected: string;
   onSelect: (tag: string) => void;
+  onRename?: (from: string, to: string) => void;
+  onDelete?: (tag: string) => void;
 }
 
 export function SingleTagOptionSelector({
@@ -312,6 +320,8 @@ export function SingleTagOptionSelector({
   label,
   selected,
   onSelect,
+  onRename,
+  onDelete,
 }: SingleTagOptionSelectorProps) {
   return (
     <TagOptionSelector
@@ -320,6 +330,8 @@ export function SingleTagOptionSelector({
       label={label}
       selected={selected ? [selected] : []}
       onToggle={(tag) => onSelect(selected === tag ? "" : tag)}
+      onRename={onRename}
+      onDelete={onDelete}
     />
   );
 }

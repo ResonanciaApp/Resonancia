@@ -56,6 +56,24 @@ const ADMIN_SESSION_CATEGORY_IDS = [
   "ambientales",
 ] as const;
 
+function missingRequiredCategorySubcategory(session: {
+  categoryId: string;
+  podcastTag?: string | null;
+  sabiduriaTag?: string | null;
+  sonidosTag?: string | null;
+}): string | null {
+  if (session.categoryId === "charlas" && !session.podcastTag?.trim()) {
+    return "Seleccioná una subcategoría de Charlas";
+  }
+  if (session.categoryId === "historias" && !session.sabiduriaTag?.trim()) {
+    return "Seleccioná una subcategoría de Historias";
+  }
+  if (session.categoryId === "ambientales" && !session.sonidosTag?.trim()) {
+    return "Seleccioná una subcategoría de Ambientales";
+  }
+  return null;
+}
+
 const OTHER_THEME_FILTER_OPTIONS = [
   "Para la ansiedad",
   "Energiza tus mañanas",
@@ -679,6 +697,11 @@ router.post(
     }
     const body = parsed.data;
     const me = req.currentUser!;
+    const missingSubcategory = missingRequiredCategorySubcategory(body);
+    if (missingSubcategory) {
+      res.status(400).json({ error: missingSubcategory });
+      return;
+    }
     if (hasInvalidDescansoTags(body.descansoTags)) {
       res.status(400).json({ error: "Colección de Dormir inválida" });
       return;
@@ -1217,6 +1240,13 @@ router.patch(
           .from(catalogAudioFilesTable)
           .where(eq(catalogAudioFilesTable.sessionId, id));
         const candidate = { ...current, ...updates };
+        const missingSubcategory = missingRequiredCategorySubcategory(candidate);
+        if (missingSubcategory) {
+          return {
+            kind: "missing-subcategory" as const,
+            reason: missingSubcategory,
+          };
+        }
         const normalizedFeaturedSleep = normalizeFeaturedSleep(
           candidate.isFeaturedSleep,
           candidate.descansoTags,
@@ -1309,6 +1339,10 @@ router.patch(
           code: "CATALOG_CONTENT_NOT_READY",
           error: outcome.reason,
         });
+        return;
+      }
+      if (outcome.kind === "missing-subcategory") {
+        res.status(400).json({ error: outcome.reason });
         return;
       }
       if (outcome.kind === "not-pinnable") {

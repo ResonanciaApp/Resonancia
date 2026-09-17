@@ -7,6 +7,9 @@ export type CategoryThemeTagConfig = {
 export const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
 export const MEDITATION_TAGS = ["No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría"];
 export const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica","Música Tribal"];
+export const CHARLAS_SUBCATEGORY_TAGS = ["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"];
+export const HISTORIAS_SUBCATEGORY_TAGS = ["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"];
+export const AMBIENTALES_SUBCATEGORY_TAGS = ["Subcategoría 1", "Subcategoría 2", "Subcategoría 3"];
 export const DESCANSO_TAGS = [
   "Música para dormir",
   "Meditaciones para dormir",

@@ -397,6 +397,7 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
         isPlaceholder: true,
         status: "draft",
         audioFiles: [],
+        sabiduriaTag: "Subcategoría 1",
         descansoTags: ["Historias para dormir", "Para niños"],
       });
 
@@ -421,13 +422,13 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     expect(stored.descansoTags).toEqual(["Meditaciones para dormir"]);
   });
 
-  it("rechaza colecciones de Dormir fuera de la taxonomía canónica", async () => {
+  it("acepta colecciones dinámicas de Dormir", async () => {
     authAs(adminUser);
     const res = await request(app)
       .patch(`/api/catalog/submissions/${sessionId}`)
       .send({ descansoTags: ["Etiqueta inventada"] });
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Colección de Dormir inválida");
+    expect(res.status).toBe(200);
+    expect(res.body.descansoTags).toEqual(["Etiqueta inventada"]);
   });
 
   it("crea y edita membresías multi-tag de Sonidos", async () => {
@@ -477,13 +478,16 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
     ]);
   });
 
-  it("rechaza colecciones de Sonidos fuera de la taxonomía canónica", async () => {
+  it("acepta colecciones dinámicas de Sonidos", async () => {
     authAs(adminUser);
     const res = await request(app)
       .patch(`/api/catalog/submissions/${sessionId}`)
       .send({ sonidosTags: ["Etiqueta inventada"] });
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Colección de Sonidos inválida");
+    expect(res.status).toBe(200);
+    expect(res.body.sonidosTags).toEqual([
+      "Todos los sonidos",
+      "Etiqueta inventada",
+    ]);
   });
 
   it("convierte Frecuencias Astrales del campo singular en colección canónica", async () => {
@@ -512,6 +516,108 @@ describe("catalog hide/unhide — security boundary (admin)", () => {
       "Todos los sonidos",
       "Frecuencias Astrales",
     ]);
+  });
+
+  it("exige subcategoría al crear Charlas, Historias y Ambientales", async () => {
+    authAs(adminUser);
+    for (const [categoryId, categoryLabel] of [
+      ["charlas", "Charlas"],
+      ["historias", "Historias"],
+      ["ambientales", "Ambientales"],
+    ] as const) {
+      const res = await request(app)
+        .post("/api/catalog/submissions")
+        .send({
+          title: `Sin subcategoría ${categoryLabel}`,
+          subtitle: "Prueba de validación",
+          categoryId,
+          categoryLabel,
+          duration: 12,
+          description: "Contenido de prueba para validar subcategorías requeridas.",
+          benefits: [],
+          instruments: [],
+          isPlaceholder: true,
+          status: "draft",
+          audioFiles: [],
+        });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain(`subcategoría de ${categoryLabel}`);
+    }
+  });
+
+  it("propaga renombre y borrado de una subcategoría de Charlas", async () => {
+    authAs(adminUser);
+    const originalLabel = `Charlas original ${suffix}`;
+    const renamedLabel = `Charlas renombrada ${suffix}`;
+
+    const optionRes = await request(app)
+      .post("/api/admin/tag-options")
+      .send({ type: "podcast", label: originalLabel });
+    expect(optionRes.status).toBe(201);
+
+    const createRes = await request(app)
+      .post("/api/catalog/submissions")
+      .send({
+        title: "Charla con subcategoría",
+        subtitle: "Prueba de propagación",
+        categoryId: "charlas",
+        categoryLabel: "Charlas",
+        duration: 12,
+        description: "Contenido de prueba para validar el renombre de subcategoría.",
+        benefits: [],
+        instruments: [],
+        isPlaceholder: true,
+        status: "draft",
+        audioFiles: [],
+        podcastTag: originalLabel,
+      });
+    expect(createRes.status).toBe(201);
+    createdSessionIds.push(createRes.body.id);
+
+    const renameRes = await request(app)
+      .patch("/api/admin/tag-options")
+      .send({ type: "podcast", oldLabel: originalLabel, newLabel: renamedLabel });
+    expect(renameRes.status).toBe(200);
+
+    const [renamed] = await db
+      .select({ podcastTag: catalogSessionsTable.podcastTag })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createRes.body.id))
+      .limit(1);
+    expect(renamed.podcastTag).toBe(renamedLabel);
+
+    const invalidEditRes = await request(app)
+      .patch(`/api/catalog/submissions/${createRes.body.id}`)
+      .send({ podcastTag: null });
+    expect(invalidEditRes.status).toBe(400);
+
+    const deleteRes = await request(app)
+      .delete(`/api/admin/tag-options/${renameRes.body.id}`);
+    expect(deleteRes.status).toBe(409);
+    expect(deleteRes.body.error).toContain("Reasigná primero");
+
+    await db.update(catalogSessionsTable)
+      .set({ podcastTag: "Subcategoría 1" })
+      .where(eq(catalogSessionsTable.id, createRes.body.id));
+
+    const deleteUnusedRes = await request(app)
+      .delete(`/api/admin/tag-options/${renameRes.body.id}`);
+    expect(deleteUnusedRes.status).toBe(204);
+
+    const [cleared] = await db
+      .select({ podcastTag: catalogSessionsTable.podcastTag })
+      .from(catalogSessionsTable)
+      .where(eq(catalogSessionsTable.id, createRes.body.id))
+      .limit(1);
+    expect(cleared.podcastTag).toBe("Subcategoría 1");
+  });
+
+  it("rechaza nombres de subcategoría que colisionan con las opciones iniciales", async () => {
+    authAs(adminUser);
+    const createRes = await request(app)
+      .post("/api/admin/tag-options")
+      .send({ type: "sabiduria", label: "subcategoría 1" });
+    expect(createRes.status).toBe(409);
   });
 });
 
