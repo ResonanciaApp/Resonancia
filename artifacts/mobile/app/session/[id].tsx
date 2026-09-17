@@ -33,7 +33,8 @@ import { useStreakCelebration } from "@/context/StreakCelebrationContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, getSonidosVisibleSessions } from "@/data/sessions";
-import { getGuide } from "@/data/guides";
+import { getGuide, getGuideById } from "@/data/guides";
+import { useResonadores } from "@/hooks/useResonadores";
 import { getMeditationBackgroundSounds } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -91,6 +92,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   const overlayBack = useBackOverride();
   const preserveTabBarHiddenRef = useRef(false);
   const colors = useColors();
+  const { resonadores } = useResonadores();
   const insets = useSafeAreaInsets();
   const {
     playSession,
@@ -397,20 +399,32 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
   // guideIds (array) tiene prioridad; sino guideId; sino Casa del Cuenco
   const resolvedIds: string[] = session.guideIds?.length
     ? session.guideIds
-    : isGuiada && session.guideId
+    : session.guideId
     ? [session.guideId]
     : [];
   const authors = resolvedIds.length
-    ? resolvedIds.map((gid) => getGuide(gid)).map((g) => ({
-        name: g.name, firstName: g.name.split(" ")[0],
-        photo: g.photo, country: g.country, city: g.city,
-        bio: g.bio, profilePath: `/guiador/${g.id}`,
-      }))
+    ? resolvedIds.map((gid) => {
+        const resonador = resonadores.find((candidate) => candidate.id === gid);
+        const bundledGuide = getGuideById(gid);
+        const profile = resonador ?? bundledGuide ?? getGuide(gid);
+        return {
+          name: profile.name,
+          firstName: profile.name.split(" ")[0],
+          photo: profile.photo,
+          country: profile.country,
+          city: profile.city,
+          bio: profile.bio,
+          profilePath: bundledGuide
+            ? `/guiador/${gid}`
+            : `/resonador-perfil/${gid}`,
+        };
+      })
     : [getGuide(undefined)].map((g) => ({
         name: g.name, firstName: g.name.split(" ")[0],
         photo: g.photo, country: g.country, city: g.city,
         bio: g.bio, profilePath: `/guiador/${g.id}`,
       }));
+  const authorLabel = authors.map((author) => author.name).join(" · ");
 
   return (
     <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
@@ -569,7 +583,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
               >
                 <Text style={[styles.immersiveAuthorPrefix, { color: colors.foreground }]}>Por </Text>
                 <Text style={[styles.immersiveAuthor, { color: colors.foreground }]}>
-                  {authors[0].name}
+                  {authorLabel}
                 </Text>
               </Pressable>
             )}
@@ -623,7 +637,7 @@ export default function SessionDetailScreen({ id: idProp }: { id?: string } = {}
               />
               <View style={{ flex: 1, marginLeft: 14 }}>
                 <Text style={styles.optSessionTitle} numberOfLines={2}>{session.title}</Text>
-                <Text style={styles.optSessionAuthor}>{authors[0]?.name}</Text>
+                <Text style={styles.optSessionAuthor}>{authorLabel}</Text>
               </View>
             </View>
             <View style={styles.optDivider} />

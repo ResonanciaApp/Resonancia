@@ -16,7 +16,8 @@ import {
 import { type Session } from "@/data/sessions";
 import { CATEGORIES } from "@/data/categories";
 import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
+import { getGuide, getGuideById } from "@/data/guides";
+import { useResonadores } from "@/hooks/useResonadores";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -119,6 +120,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { openForSession } = useAmbientalDuration();
+  const { resonadores } = useResonadores();
   const { width: viewportWidth } = useWindowDimensions();
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
@@ -132,8 +134,20 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     const base = destRoute ?? "/session";
     router.push(`${base}/${session.id}` as never);
   };
-  const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
-  const authorName  = authorObj.name;
+  const guideIds = session.guideIds?.length
+    ? session.guideIds
+    : session.guideId
+      ? [session.guideId]
+      : [];
+  const guideProfiles = guideIds.map((id) =>
+    resonadores.find((resonador) => resonador.id === id) ??
+    getGuideById(id) ??
+    getGuide(id),
+  );
+  const authorObj = guideProfiles[0] ?? getArtist(session.artistId);
+  const authorName = guideProfiles.length
+    ? guideProfiles.map((guide) => guide.name).join(" · ")
+    : authorObj.name;
   const authorPhoto = authorObj.photo;
   const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
   const isAmbiental = cardVariant === "ambiental" || session.categoryId === "ambientales";
@@ -187,7 +201,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           )}
           {showAuthor && !!authorName && (
             <View style={styles.hAuthorRow}>
-              {showAuthorAvatar && (
+              {showAuthorAvatar && authorPhoto && (
                 <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
               )}
               <Text style={[styles.hAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>
@@ -403,7 +417,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           )}
           {!!authorName && (
             <View style={styles.cardAuthorRow}>
-              {showAuthorAvatar && (
+              {showAuthorAvatar && authorPhoto && (
                 <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
               )}
               <Text style={[styles.cardAuthor, { color: theme.id === "indigo2" ? colors.accent : colors.mutedForeground }]} numberOfLines={1}>

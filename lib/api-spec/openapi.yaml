@@ -5165,6 +5165,13 @@ components:
         guideId:
           type: string
           nullable: true
+        guideIds:
+          type: array
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
         artistId:
           type: string
           nullable: true
@@ -5721,6 +5728,13 @@ components:
         guideId:
           type: string
           nullable: true
+        guideIds:
+          type: array
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
         artistId:
           type: string
           nullable: true
@@ -5928,6 +5942,13 @@ components:
         guideId:
           type: string
           nullable: true
+        guideIds:
+          type: array
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
         artistId:
           type: string
           nullable: true
@@ -6098,6 +6119,13 @@ components:
         guideId:
           type: string
           nullable: true
+        guideIds:
+          type: array
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
         artistId:
           type: string
           nullable: true

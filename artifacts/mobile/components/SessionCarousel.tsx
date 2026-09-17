@@ -47,7 +47,8 @@ import { isIndigoThemeId } from "@/config/scene-themes";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
+import { getGuide, getGuideById } from "@/data/guides";
+import { useResonadores } from "@/hooks/useResonadores";
 import type { Session } from "@/data/sessions";
 import {
   SessionCategoryPill,
@@ -403,6 +404,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   const { theme } = useSceneTheme();
   const effectiveAmbientalCardGradient = ambientalCardGradient;
   const { openForSession } = useAmbientalDuration();
+  const { resonadores } = useResonadores();
   const { isFavorite, toggleFavorite } = usePlayer();
   const { width: viewportWidth } = useWindowDimensions();
   const previewScaleById = React.useRef(new Map<string, RNAnimated.Value>()).current;
@@ -599,8 +601,12 @@ export const SessionCarousel = React.memo(function SessionCarousel({
         }
         renderItem={({ item: s }) => {
           const locked = !!s.isPremium && !isPremium;
-          const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
-          const authorName = authorObj?.name;
+          const guideIds = s.guideIds?.length ? s.guideIds : s.guideId ? [s.guideId] : [];
+          const authorName = guideIds.length
+            ? guideIds
+                .map((id) => resonadores.find((resonador) => resonador.id === id)?.name ?? getGuideById(id)?.name ?? id)
+                .join(" · ")
+            : getArtist(s.artistId).name;
           const isAmbiental =
             !disableAmbientalVariant &&
             (forceAmbientalVariant || s.categoryId === "ambientales");

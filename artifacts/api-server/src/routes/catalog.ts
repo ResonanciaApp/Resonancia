@@ -10,6 +10,7 @@ import {
   catalogPlaylistPlacementsTable,
   playbackHistoryTable,
   notificationsTable,
+  resonadoresTable,
   usersTable,
   sceneAnimationsTable,
   CreateSceneAnimationSchema,
@@ -49,6 +50,7 @@ const router: IRouter = Router();
 /** Tamaños máximos aceptados (la validación de bytes reales vive en storage). */
 const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
+const BUNDLED_GUIDE_IDS = new Set(["casa-cuenco", "sofia-ramirez", "mateo-luz"]);
 const SONIDOS_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",
@@ -90,6 +92,14 @@ function normalizeSonidosTags(
 
 function hasInvalidSonidosTags(tags: string[] | undefined): boolean {
   return (tags ?? []).some((tag) => !tag.trim() || tag.length > 120);
+}
+
+function normalizeGuideIds(
+  guideIds: string[] | undefined,
+  legacyGuideId?: string | null,
+): string[] {
+  const source = guideIds !== undefined ? guideIds : legacyGuideId ? [legacyGuideId] : [];
+  return [...new Set(source.map((id) => id.trim()).filter(Boolean))].slice(0, 4);
 }
 
 function serializeCategory(c: CatalogCategory) {
@@ -163,6 +173,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     moodIds: s.moodIds,
     sleepTag: s.sleepTag,
     voiceTag: s.voiceTag,
+    guideIds: s.guideIds?.length ? s.guideIds : (s.guideId ? [s.guideId] : []),
     guideId: s.guideId,
     artistId: s.artistId,
     guests: s.guests,
@@ -720,6 +731,7 @@ router.post(
 
     try {
       await db.transaction(async (tx) => {
+        const guideIds = normalizeGuideIds(body.guideIds, body.guideId);
         await tx.insert(catalogSessionsTable).values({
           id,
           title: body.title,
@@ -758,7 +770,8 @@ router.post(
           moodIds: [...new Set(body.moodIds ?? [])],
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
-          guideId: body.guideId ?? null,
+          guideIds,
+          guideId: guideIds[0] ?? null,
           artistId: body.artistId ?? null,
           playerDescription: body.playerDescription ?? null,
           // Solo un admin puede crear directamente como borrador; los creadores
@@ -959,6 +972,31 @@ router.post(
         });
         return;
       }
+      const guideIds = normalizeGuideIds(
+        pending.session.guideIds?.length ? pending.session.guideIds : undefined,
+        pending.session.guideId,
+      ).filter((guideId) => !BUNDLED_GUIDE_IDS.has(guideId));
+      if (guideIds.length > 0) {
+        const publishedGuides = await db
+          .select({ id: resonadoresTable.id })
+          .from(resonadoresTable)
+          .where(
+            and(
+              inArray(resonadoresTable.id, guideIds),
+              eq(resonadoresTable.status, "published"),
+            ),
+          );
+        const publishedIds = new Set(publishedGuides.map((guide) => guide.id));
+        const unavailableGuideIds = guideIds.filter((guideId) => !publishedIds.has(guideId));
+        if (unavailableGuideIds.length > 0) {
+          res.status(409).json({
+            code: "CATALOG_AUTHORS_NOT_PUBLISHED",
+            error: "Publicá los perfiles de todos los Resonadores antes de publicar la sesión",
+            guideIds: unavailableGuideIds,
+          });
+          return;
+        }
+      }
       const references = [
         pending.session.imageUrl,
         ...pending.audioFiles.map((audio) => audio.url),
@@ -1109,7 +1147,15 @@ router.patch(
     if (data.moodIds !== undefined) updates.moodIds = [...new Set(data.moodIds)];
     if (data.playerDescription !== undefined) updates.playerDescription = data.playerDescription ?? null;
     if (data.frequency !== undefined) updates.frequency = data.frequency ?? null;
-    if (data.guideId !== undefined) updates.guideId = data.guideId ?? null;
+    if (data.guideIds !== undefined) {
+      const guideIds = normalizeGuideIds(data.guideIds);
+      updates.guideIds = guideIds;
+      updates.guideId = guideIds[0] ?? null;
+    } else if (data.guideId !== undefined) {
+      const guideIds = normalizeGuideIds(undefined, data.guideId);
+      updates.guideIds = guideIds;
+      updates.guideId = guideIds[0] ?? null;
+    }
     if (data.artistId !== undefined) updates.artistId = data.artistId ?? null;
     if (data.sabiduriaTag !== undefined) updates.sabiduriaTag = data.sabiduriaTag ?? null;
     if (data.podcastTag !== undefined) updates.podcastTag = data.podcastTag ?? null;
@@ -1201,6 +1247,31 @@ router.patch(
           if (!readiness.ready) {
             return { kind: "not-ready" as const, reason: readiness.reason };
           }
+          const candidateGuideIds = normalizeGuideIds(
+            candidate.guideIds?.length ? candidate.guideIds : undefined,
+            candidate.guideId,
+          ).filter((guideId) => !BUNDLED_GUIDE_IDS.has(guideId));
+          if (candidateGuideIds.length > 0) {
+            const publishedGuides = await tx
+              .select({ id: resonadoresTable.id })
+              .from(resonadoresTable)
+              .where(
+                and(
+                  inArray(resonadoresTable.id, candidateGuideIds),
+                  eq(resonadoresTable.status, "published"),
+                ),
+              );
+            const publishedIds = new Set(publishedGuides.map((guide) => guide.id));
+            const unavailableGuideIds = candidateGuideIds.filter(
+              (guideId) => !publishedIds.has(guideId),
+            );
+            if (unavailableGuideIds.length > 0) {
+              return {
+                kind: "authors-not-published" as const,
+                guideIds: unavailableGuideIds,
+              };
+            }
+          }
         }
         const pinnedChange = resolvePinnedFeaturedValue({
           currentValue: current.isPinnedFeatured,
@@ -1246,6 +1317,14 @@ router.patch(
       if (outcome.kind === "not-pinnable") {
         res.status(409).json({
           error: "Solo una sesión publicada y no placeholder puede fijarse en Inicio",
+        });
+        return;
+      }
+      if (outcome.kind === "authors-not-published") {
+        res.status(409).json({
+          code: "CATALOG_AUTHORS_NOT_PUBLISHED",
+          error: "Publicá los perfiles de todos los Resonadores antes de publicar la sesión",
+          guideIds: outcome.guideIds,
         });
         return;
       }
@@ -1347,6 +1426,31 @@ router.post(
           error: readiness.reason,
         });
         return;
+      }
+      const guideIds = normalizeGuideIds(
+        current.guideIds?.length ? current.guideIds : undefined,
+        current.guideId,
+      ).filter((guideId) => !BUNDLED_GUIDE_IDS.has(guideId));
+      if (guideIds.length > 0) {
+        const publishedGuides = await db
+          .select({ id: resonadoresTable.id })
+          .from(resonadoresTable)
+          .where(
+            and(
+              inArray(resonadoresTable.id, guideIds),
+              eq(resonadoresTable.status, "published"),
+            ),
+          );
+        const publishedIds = new Set(publishedGuides.map((guide) => guide.id));
+        const unavailableGuideIds = guideIds.filter((guideId) => !publishedIds.has(guideId));
+        if (unavailableGuideIds.length > 0) {
+          res.status(409).json({
+            code: "CATALOG_AUTHORS_NOT_PUBLISHED",
+            error: "Publicá los perfiles de todos los Resonadores antes de publicar la sesión",
+            guideIds: unavailableGuideIds,
+          });
+          return;
+        }
       }
       await db
         .update(catalogSessionsTable)

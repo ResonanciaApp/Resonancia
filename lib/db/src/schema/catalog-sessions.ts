@@ -81,6 +81,9 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   sleepTag: text("sleep_tag"),
   /** Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz"). Vacío = sin etiqueta. */
   voiceTag: text("voice_tag"),
+  /** IDs ordenados de los autores/guiadores de la sesión (máximo 4). */
+  guideIds: text("guide_ids").array().notNull().default(sql`ARRAY[]::text[]`),
+  /** @deprecated Compatibilidad con clientes antiguos; usar guideIds. */
   guideId: text("guide_id"),
   artistId: text("artist_id"),
   guests: jsonb("guests").$type<SessionGuest[]>(),

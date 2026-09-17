@@ -1460,6 +1460,8 @@ export type CatalogSessionSnapshot = {
   sleepTag?: string | null;
   voiceTag?: string | null;
   guideId?: string | null;
+  /** Múltiples guiadores en orden editorial; legacy guideId sigue presente para clientes anteriores. */
+  guideIds?: string[] | null;
   artistId?: string | null;
   guests?: { name: string; role: string; instagram?: string | null }[] | null;
   /** URL de imagen (para sesiones nuevas no bundleadas). */
@@ -1585,6 +1587,10 @@ function resolveObjectPath(path: string | null | undefined): string | undefined 
  */
 export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
   const byId = new Map(remote.map((s) => [s.id, s]));
+  const normalizeGuideIds = (guideIds: string[] | null | undefined, guideId: string | null | undefined): string[] => {
+    const candidates = guideIds?.length ? guideIds : guideId ? [guideId] : [];
+    return Array.from(new Set(candidates.map((id) => id.trim()).filter(Boolean))).slice(0, 4);
+  };
 
   // 0. Retirar sesiones agregadas por snapshots anteriores que ya no están
   // publicadas. Nunca se eliminan aquí las sesiones incluidas en el bundle:
@@ -1645,7 +1651,9 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     if (r.voiceTag != null) {
       local.voiceTag = r.voiceTag as "Guiada" | "Sin voz";
     }
-    local.guideId = r.guideId ?? undefined;
+    const guideIds = normalizeGuideIds(r.guideIds, r.guideId);
+    local.guideIds = guideIds.length ? guideIds : undefined;
+    local.guideId = guideIds[0] ?? r.guideId ?? undefined;
     local.artistId = r.artistId ?? undefined;
     local.playerDescription = r.playerDescription ?? undefined;
     local.createdAt = r.createdAt ?? undefined;
@@ -1719,7 +1727,8 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       moodIds: r.moodIds ?? undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
       voiceTag: (r.voiceTag ?? null) as "Guiada" | "Sin voz" | null,
-      guideId: r.guideId ?? undefined,
+      guideIds: normalizeGuideIds(r.guideIds, r.guideId),
+      guideId: normalizeGuideIds(r.guideIds, r.guideId)[0] ?? undefined,
       artistId: r.artistId ?? undefined,
       audioUri: main ? resolveObjectPath(main.url) : undefined,
       voiceUri: voice ? resolveObjectPath(voice.url) : undefined,

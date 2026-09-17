@@ -53,7 +53,8 @@ import {
 } from "@/lib/ambient-sound-preference";
 import { GhostPill } from "@/components/GhostPill";
 import { getArtist } from "@/data/artists";
-import { getGuide } from "@/data/guides";
+import { getGuide, getGuideById } from "@/data/guides";
+import { useResonadores } from "@/hooks/useResonadores";
 import { getMeditationBackgroundSounds } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
@@ -81,6 +82,7 @@ export default function PlayerScreen() {
     privatePlaylistId?: string;
   }>();
   const colors = useColors();
+  const { resonadores } = useResonadores();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const {
@@ -499,16 +501,28 @@ export default function PlayerScreen() {
     seekTo(Math.max(0, progress - 15 / totalSeconds));
   };
 
-  const authorLabel = currentSession.guideId
-    ? getGuide(currentSession.guideId).name
+  const guideIds = currentSession.guideIds?.length
+    ? currentSession.guideIds
+    : currentSession.guideId
+      ? [currentSession.guideId]
+      : [];
+  const guideProfiles = guideIds.map((id) =>
+    resonadores.find((resonador) => resonador.id === id) ??
+    getGuideById(id) ??
+    getGuide(id),
+  );
+  const authorLabel = guideProfiles.length
+    ? guideProfiles.map((guide) => guide.name).join(" · ")
     : getArtist(currentSession.artistId).name;
-
-  const authorPhoto = currentSession.guideId
-    ? getGuide(currentSession.guideId).photo
-    : getArtist(currentSession.artistId).photo;
-
-  const authorProfilePath = currentSession.guideId
-    ? `/guiador/${currentSession.guideId}`
+  const authorPhoto = guideProfiles[0]?.photo ?? getArtist(currentSession.artistId).photo;
+  const primaryGuideId = guideIds[0];
+  const primaryGuideIsBundled = Boolean(
+    primaryGuideId && getGuideById(primaryGuideId),
+  );
+  const authorProfilePath = primaryGuideId
+    ? primaryGuideIsBundled
+      ? `/guiador/${primaryGuideId}`
+      : `/resonador-perfil/${primaryGuideId}`
     : `/artista/${currentSession.artistId}`;
 
   return (
@@ -603,7 +617,7 @@ export default function PlayerScreen() {
           {/* Autor */}
           <View style={styles.authorSection}>
             <Text style={styles.authorLabel}>
-              {currentSession.guideId ? "VOZ GUÍA" : "AUTOR(A)"}
+              {guideProfiles.length ? "VOCES GUÍA" : "AUTOR(A)"}
             </Text>
             <Text style={styles.authorName}>{authorLabel}</Text>
           </View>
@@ -968,12 +982,12 @@ export default function PlayerScreen() {
               </Pressable>
 
               {/* Seguir al voz guía */}
-              {currentSession.guideId && (
+              {primaryGuideId && (
                 <Pressable
                   style={styles.optRow}
                   onPress={() => {
                     closeSheet();
-                    router.push(`/guiador/${currentSession.guideId}` as any);
+                    router.push(authorProfilePath as any);
                   }}
                 >
                   <Feather name="user-plus" size={18} color="#FBFBFB" style={styles.optIcon} />

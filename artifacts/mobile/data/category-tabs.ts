@@ -18,7 +18,7 @@ export function getCategorySessionTags(
   if (categoryId === "sonidos-ancestrales") {
     return session.ancestralTag ? [session.ancestralTag] : [];
   }
-  const tags =
+  const legacyTags =
     categoryId === "ambientales"
       ? [
           session.sonidosTag,
@@ -32,7 +32,16 @@ export function getCategorySessionTags(
           ...(session.temaTag ?? []),
         ];
 
-  return [...new Set(tags.filter((tag): tag is string => Boolean(tag)))];
+  const editorialTags = ["historias", "charlas", "ambientales"].includes(categoryId)
+    ? getCategoryEditorialTags(session, categoryId)
+    : [];
+
+  return [
+    ...new Set([
+      ...editorialTags,
+      ...legacyTags.filter((tag): tag is string => Boolean(tag)),
+    ]),
+  ];
 }
 
 export function getCategoryEditorialTags(

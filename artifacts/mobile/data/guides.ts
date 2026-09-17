@@ -71,11 +71,11 @@ export const GUIDES: Guide[] = [
   },
 ];
 
-/** Resuelve el guiador de una sesión; si no hay guideId (o es inválido), devuelve el guiador de la casa. */
+/** Resuelve el guiador de una sesión; sin ID usa la casa, pero un ID desconocido se conserva literalmente. */
 export function getGuide(id?: string): Guide {
   const fallback = GUIDES.find((g) => g.id === DEFAULT_GUIDE_ID)!;
   if (!id) return fallback;
-  return GUIDES.find((g) => g.id === id) ?? fallback;
+  return GUIDES.find((g) => g.id === id) ?? { ...fallback, id, name: id, featured: false };
 }
 
 /** Busca un guiador por id SIN fallback (para la pantalla de perfil: id inválido → undefined). */

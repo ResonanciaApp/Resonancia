@@ -1182,6 +1182,9 @@ export const getCatalogResponseSessionsItemIsLoopDefault = false;
 export const getCatalogResponseSessionsItemIsPinnedFeaturedDefault = false;
 export const getCatalogResponseSessionsItemMoodIdsMax = 18;
 
+
+export const getCatalogResponseSessionsItemGuideIdsMax = 4;
+
 export const getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 export const getCatalogResponsePlaylistCarouselsItemSortOrderMin = 0;
@@ -1247,6 +1250,7 @@ export const GetCatalogResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getCatalogResponseSessionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -1353,6 +1357,9 @@ export const getCatalogPlaylistResponseSessionsItemIsPinnedFeaturedDefault = fal
 export const getCatalogPlaylistResponseSessionsItemMoodIdsMax = 18;
 
 
+export const getCatalogPlaylistResponseSessionsItemGuideIdsMax = 4;
+
+
 
 export const GetCatalogPlaylistResponse = zod.object({
   "playlist": zod.object({
@@ -1415,6 +1422,7 @@ export const GetCatalogPlaylistResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getCatalogPlaylistResponseSessionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -1450,6 +1458,9 @@ export const getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault = false;
 export const getPinnedFeaturedResponseSessionOneIsLoopDefault = false;
 export const getPinnedFeaturedResponseSessionOneIsPinnedFeaturedDefault = false;
 export const getPinnedFeaturedResponseSessionOneMoodIdsMax = 18;
+
+
+export const getPinnedFeaturedResponseSessionOneGuideIdsMax = 4;
 
 
 
@@ -1493,6 +1504,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getPinnedFeaturedResponseSessionOneGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -1645,6 +1657,9 @@ export const getPopularSessionsResponseSessionsItemIsPinnedFeaturedDefault = fal
 export const getPopularSessionsResponseSessionsItemMoodIdsMax = 18;
 
 
+export const getPopularSessionsResponseSessionsItemGuideIdsMax = 4;
+
+
 
 export const GetPopularSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -1686,6 +1701,7 @@ export const GetPopularSessionsResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getPopularSessionsResponseSessionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -1789,6 +1805,9 @@ export const createSubmissionBodyDescansoTagsMax = 30;
 
 export const createSubmissionBodyMoodIdsMax = 18;
 
+
+export const createSubmissionBodyGuideIdsMax = 4;
+
 export const createSubmissionBodyPlayerDescriptionMax = 300;
 
 
@@ -1840,6 +1859,7 @@ export const CreateSubmissionBody = zod.object({
   "temaTag": zod.array(zod.string()).nullish(),
   "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(createSubmissionBodyMoodIdsMax).optional(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(createSubmissionBodyGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "playerDescription": zod.string().max(createSubmissionBodyPlayerDescriptionMax).nullish(),
   "audioFiles": zod.array(zod.object({
@@ -1871,6 +1891,9 @@ export const getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault =
 export const getPendingSubmissionsResponseSubmissionsItemIsLoopDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemMoodIdsMax = 18;
+
+
+export const getPendingSubmissionsResponseSubmissionsItemGuideIdsMax = 4;
 
 
 
@@ -1914,6 +1937,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getPendingSubmissionsResponseSubmissionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -1976,6 +2000,9 @@ export const getMySubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = fa
 export const getMySubmissionsResponseSubmissionsItemMoodIdsMax = 18;
 
 
+export const getMySubmissionsResponseSubmissionsItemGuideIdsMax = 4;
+
+
 
 export const GetMySubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -2017,6 +2044,7 @@ export const GetMySubmissionsResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getMySubmissionsResponseSubmissionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2070,6 +2098,9 @@ export const approveSubmissionResponseIsPinnedFeaturedDefault = false;
 export const approveSubmissionResponseMoodIdsMax = 18;
 
 
+export const approveSubmissionResponseGuideIdsMax = 4;
+
+
 
 export const ApproveSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2110,6 +2141,7 @@ export const ApproveSubmissionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(approveSubmissionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2170,6 +2202,9 @@ export const rejectSubmissionResponseIsPinnedFeaturedDefault = false;
 export const rejectSubmissionResponseMoodIdsMax = 18;
 
 
+export const rejectSubmissionResponseGuideIdsMax = 4;
+
+
 
 export const RejectSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2210,6 +2245,7 @@ export const RejectSubmissionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(rejectSubmissionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2281,6 +2317,9 @@ export const editSubmissionBodyPlayerDescriptionMax = 300;
 
 export const editSubmissionBodyFrequencyMax = 60;
 
+
+export const editSubmissionBodyGuideIdsMax = 4;
+
 export const editSubmissionBodySonidosTagsItemMax = 120;
 
 export const editSubmissionBodySonidosTagsMax = 30;
@@ -2320,6 +2359,7 @@ export const EditSubmissionBody = zod.object({
   "playerDescription": zod.string().max(editSubmissionBodyPlayerDescriptionMax).nullish(),
   "frequency": zod.string().max(editSubmissionBodyFrequencyMax).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(editSubmissionBodyGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
@@ -2346,6 +2386,9 @@ export const editSubmissionResponseSkipMiniPlayerDefault = false;
 export const editSubmissionResponseIsLoopDefault = false;
 export const editSubmissionResponseIsPinnedFeaturedDefault = false;
 export const editSubmissionResponseMoodIdsMax = 18;
+
+
+export const editSubmissionResponseGuideIdsMax = 4;
 
 
 
@@ -2388,6 +2431,7 @@ export const EditSubmissionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(editSubmissionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2452,6 +2496,9 @@ export const hideSubmissionResponseIsPinnedFeaturedDefault = false;
 export const hideSubmissionResponseMoodIdsMax = 18;
 
 
+export const hideSubmissionResponseGuideIdsMax = 4;
+
+
 
 export const HideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2492,6 +2539,7 @@ export const HideSubmissionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(hideSubmissionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2544,6 +2592,9 @@ export const unhideSubmissionResponseIsPinnedFeaturedDefault = false;
 export const unhideSubmissionResponseMoodIdsMax = 18;
 
 
+export const unhideSubmissionResponseGuideIdsMax = 4;
+
+
 
 export const UnhideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2584,6 +2635,7 @@ export const UnhideSubmissionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(unhideSubmissionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2644,6 +2696,9 @@ export const getAdminSessionsResponseSessionsItemIsPinnedFeaturedDefault = false
 export const getAdminSessionsResponseSessionsItemMoodIdsMax = 18;
 
 
+export const getAdminSessionsResponseSessionsItemGuideIdsMax = 4;
+
+
 
 export const GetAdminSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -2685,6 +2740,7 @@ export const GetAdminSessionsResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getAdminSessionsResponseSessionsItemGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2741,6 +2797,9 @@ export const getAdminSessionResponseIsPinnedFeaturedDefault = false;
 export const getAdminSessionResponseMoodIdsMax = 18;
 
 
+export const getAdminSessionResponseGuideIdsMax = 4;
+
+
 
 export const GetAdminSessionResponse = zod.object({
   "id": zod.string(),
@@ -2781,6 +2840,7 @@ export const GetAdminSessionResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(getAdminSessionResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2852,6 +2912,9 @@ export const addAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
 export const addAdminSessionAudioResponseMoodIdsMax = 18;
 
 
+export const addAdminSessionAudioResponseGuideIdsMax = 4;
+
+
 
 export const AddAdminSessionAudioResponse = zod.object({
   "id": zod.string(),
@@ -2892,6 +2955,7 @@ export const AddAdminSessionAudioResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(addAdminSessionAudioResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),
@@ -2945,6 +3009,9 @@ export const deleteAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
 export const deleteAdminSessionAudioResponseMoodIdsMax = 18;
 
 
+export const deleteAdminSessionAudioResponseGuideIdsMax = 4;
+
+
 
 export const DeleteAdminSessionAudioResponse = zod.object({
   "id": zod.string(),
@@ -2985,6 +3052,7 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
+  "guideIds": zod.array(zod.string().min(1)).max(deleteAdminSessionAudioResponseGuideIdsMax).optional(),
   "artistId": zod.string().nullish(),
   "guests": zod.array(zod.object({
   "name": zod.string(),

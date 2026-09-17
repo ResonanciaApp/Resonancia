@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -100,6 +100,12 @@ interface AudioSlot {
   name: string;
 }
 
+interface ResonadorOption {
+  id: string;
+  name: string;
+  status?: string;
+}
+
 const emptyAudioSlot = (): AudioSlot => ({
   file: null, objectPath: "", name: "",
 });
@@ -171,14 +177,12 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [subtitle, setSubtitle] = useState(initial?.subtitle ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [playerDescription, setPlayerDescription] = useState(initial?.playerDescription ?? "");
-  const [duration, setDuration] = useState(initial?.duration ? String(initial.duration) : "");
+  const [duration, setDuration] = useState(initial?.duration ? String(initial.duration) : "1");
   const [isPremium, setIsPremium] = useState(initial?.isPremium ?? false);
   const [isPlaceholder, setIsPlaceholder] = useState(initial?.isPlaceholder ?? false);
   const [skipDetail, setSkipDetail] = useState(initial?.skipDetail ?? false);
   const [skipMiniPlayer, setSkipMiniPlayer] = useState(initial?.skipMiniPlayer ?? false);
   const [isLoop, setIsLoop] = useState(initial?.isLoop ?? false);
-  const [frequency, setFrequency] = useState(initial?.frequency ?? "");
-  const [voiceTag, setVoiceTag] = useState<string>(initial?.voiceTag ?? "");
 
   // Extras solo en edición
   const [sortOrder, setSortOrder] = useState(initial?.sortOrder != null ? String(initial.sortOrder) : "");
@@ -242,10 +246,50 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       return next;
     });
   };
-  const [guideIds, setGuideIds] = useState<string[]>(initial?.guideId ? [initial.guideId] : [""]);
-  const addGuideSlot = () => setGuideIds((p) => p.length < 4 ? [...p, ""] : p);
-  const removeGuideSlot = (i: number) => setGuideIds((p) => p.filter((_, idx) => idx !== i));
+  const initialGuideIds = initial?.guideIds?.length
+    ? initial.guideIds
+    : initial?.guideId
+      ? [initial.guideId]
+      : [""];
+  const [guideIds, setGuideIds] = useState<string[]>(initialGuideIds);
+  const [customGuideSlots, setCustomGuideSlots] = useState<boolean[]>(
+    initialGuideIds.map((id) => Boolean(id) && id !== "casa-cuenco" && !(initial?.guideIds ?? []).includes(id)),
+  );
+  const addGuideSlot = () => {
+    setGuideIds((p) => p.length < 4 ? [...p, ""] : p);
+    setCustomGuideSlots((p) => p.length < 4 ? [...p, false] : p);
+  };
+  const removeGuideSlot = (i: number) => {
+    setGuideIds((p) => p.filter((_, idx) => idx !== i));
+    setCustomGuideSlots((p) => p.filter((_, idx) => idx !== i));
+  };
   const setGuideSlot = (i: number, val: string) => setGuideIds((p) => p.map((v, idx) => idx === i ? val : v));
+  const setGuideCustom = (i: number, custom: boolean) =>
+    setCustomGuideSlots((p) => p.map((v, idx) => idx === i ? custom : v));
+
+  const [resonadores, setResonadores] = useState<ResonadorOption[]>([]);
+  const [resonadoresLoading, setResonadoresLoading] = useState(true);
+  const [resonadoresError, setResonadoresError] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    fetch("/api/admin/resonadores", { credentials: "include" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("No se pudieron cargar los perfiles de Resonador");
+        return (await res.json()) as { resonadores?: ResonadorOption[] };
+      })
+      .then((data) => {
+        if (!active) return;
+        setResonadores(data.resonadores ?? []);
+        setResonadoresError(null);
+      })
+      .catch((error: unknown) => {
+        if (active) setResonadoresError(error instanceof Error ? error.message : "Error al cargar Resonadores");
+      })
+      .finally(() => {
+        if (active) setResonadoresLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   // Arrays
 
@@ -313,9 +357,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       const audio = new Audio(url);
       audio.onloadedmetadata = () => {
         URL.revokeObjectURL(url);
-        resolve(Math.round(audio.duration / 60)); // en minutos
+        resolve(Math.max(1, Math.round(audio.duration / 60))); // en minutos
       };
-      audio.onerror = () => { URL.revokeObjectURL(url); resolve(0); };
+      audio.onerror = () => { URL.revokeObjectURL(url); resolve(1); };
     });
 
   const handleAudio1Change = async (slot: AudioSlot) => {
@@ -333,13 +377,19 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const isMusica = categoryId === "musica-sonidos";
 
   // ── Validación rápida ──
-  const validate = (): string | null => {
+  const validate = (durationValue = duration): string | null => {
     if (!categoryId) return "Seleccioná una categoría";
     if (categoryId === "musica-sonidos" && !soundTag) return "Seleccioná una subcategoría de Música";
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
     if (!description.trim()) return "La descripción es requerida";
-    const d = Number(duration);
+    if (
+      ["historias", "charlas", "ambientales"].includes(categoryId) &&
+      categoryThemeSelectedLabels(categoryId, themeTag).length === 0
+    ) {
+      return "Seleccioná al menos una subcategoría";
+    }
+    const d = Number(durationValue);
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
     if (!isEdit && !isPlaceholder) {
       if (!audio1.file) return "Agregá al menos un archivo de audio";
@@ -350,7 +400,15 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // ── Submit CREAR ──
   const handleCreate = async () => {
-    const err = validate();
+    let durationValue = Number(duration) || 1;
+    if (audio1.file) {
+      durationValue = await readAudioDuration(audio1.file);
+      setDuration(String(durationValue));
+    } else if (isPlaceholder) {
+      durationValue = 1;
+      setDuration("1");
+    }
+    const err = validate(String(durationValue));
     if (err) { toast.error(err); return; }
 
     setSubmitting(true);
@@ -386,7 +444,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         description: description.trim(),
         categoryId,
         categoryLabel: categoryLabelFor(categoryId),
-        duration: Number(duration),
+         duration: durationValue,
         isPremium,
         isPlaceholder,
         skipDetail,
@@ -394,8 +452,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isLoop: categoryId === "ambientales" && isLoop,
         isFeaturedCategory,
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
-        frequency: frequency.trim() || null,
-        voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
         themeTag: persistedThemeTags.length ? persistedThemeTags : undefined,
         temaTag: temaTag.length ? temaTag : undefined,
         moodIds,
@@ -409,7 +465,13 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         podcastTag: podcastTag || undefined,
         sabiduriaTag: sabiduriaTag || undefined,
         artistId: isMusica ? (artistId.trim() || null) : null,
-        guideId: isMusica ? null : (guideIds.filter(Boolean)[0]?.trim() || null),
+         guideIds: isMusica
+           ? undefined
+           : (() => {
+               const selected = [...new Set(guideIds.map((id) => id.trim()).filter(Boolean))];
+               return selected.length ? selected : ["casa-cuenco"];
+             })(),
+         guideId: isMusica ? null : (guideIds.map((id) => id.trim()).filter(Boolean)[0] || "casa-cuenco"),
         playerDescription: playerDescription.trim() || null,
         imageObjectPath: imgUploaded?.objectPath ?? null,
         imageContentType: imgUploaded?.contentType ?? null,
@@ -476,8 +538,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         isFeaturedSleep: descansoTags.length > 0 && isFeaturedSleep,
         isNew,
         isPinnedFeatured: canPinInHome && isPinnedFeatured,
-        frequency: frequency.trim() || null,
-        voiceTag: (voiceTag ? (voiceTag as EditBody["voiceTag"]) : null),
         themeTag: persistedThemeTags,
         temaTag,
         moodIds,
@@ -491,7 +551,13 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         podcastTag: podcastTag || null,
         sabiduriaTag: sabiduriaTag || null,
         artistId: isMusica ? (artistId.trim() || null) : null,
-        guideId: isMusica ? null : (guideIds.filter(Boolean)[0]?.trim() || null),
+         guideIds: isMusica
+           ? []
+           : (() => {
+               const selected = [...new Set(guideIds.map((id) => id.trim()).filter(Boolean))];
+               return selected.length ? selected : ["casa-cuenco"];
+             })(),
+         guideId: isMusica ? null : (guideIds.map((id) => id.trim()).filter(Boolean)[0] || "casa-cuenco"),
         playerDescription: playerDescription.trim() || null,
         ...(sortOrder !== "" && !isNaN(Number(sortOrder)) ? { sortOrder: Number(sortOrder) } : {}),
         ...(imgUploaded
@@ -520,11 +586,10 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     setDone(false);
     setCategoryId(""); setTitle(""); setSubtitle(""); setDescription(""); setPlayerDescription("");
     setDuration(""); setIsPremium(false); setSkipDetail(false); setSkipMiniPlayer(false); setIsLoop(false);
-    setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
     setSoundTag(""); setDescansoTags([]); setArtistId("");
     setSonidosTag(""); setPodcastTag(""); setSabiduriaTag(""); setSleepTag(""); setThemeTag([]); setTemaTag([]);
-    setGuideIds([""]);
+     setGuideIds([""]); setCustomGuideSlots([false]);
     setAudio1(emptyAudioSlot());
     setImageFile(null); setUploadedImage(null);
   };
@@ -590,7 +655,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                   // reset tags al cambiar categoría
                   setAncestralTag(""); setMeditationTag("");
                   setSoundTag(""); setDescansoTags([]); setArtistId("");
-                  setSonidosTag(""); setPodcastTag(""); setGuideIds([""]);
+                   setSonidosTag(""); setPodcastTag(""); setGuideIds([""]); setCustomGuideSlots([false]);
                 }
               }}
               className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all ${
@@ -668,28 +733,59 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           )}
 
           {categoryId && !isMusica && (
-            <Field label="Autores / Voces guía">
+            <Field label="Resonador">
               <div className="flex flex-col gap-2">
                 {guideIds.map((gid, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <Select value={gid} onValueChange={(val) => setGuideSlot(i, val === "__custom__" ? "" : val)}>
+                    <Select
+                      value={customGuideSlots[i] ? "__custom__" : gid}
+                      onValueChange={(val) => {
+                        if (val === "__custom__") {
+                          setGuideCustom(i, true);
+                          setGuideSlot(i, "");
+                          return;
+                        }
+                        if (guideIds.some((other, index) => index !== i && other === val)) {
+                          toast.error("Ese autor ya está seleccionado");
+                          return;
+                        }
+                        setGuideCustom(i, false);
+                        setGuideSlot(i, val);
+                      }}
+                    >
                       <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Seleccionar autor…" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="casa-cuenco">Casa del Cuenco (default)</SelectItem>
-                        <SelectItem value="sofia-ramirez">Sofía Ramírez</SelectItem>
-                        <SelectItem value="mateo-luz">Mateo Luz</SelectItem>
+                        {resonadores.filter((resonador) => resonador.id !== "casa-cuenco").map((resonador) => (
+                          <SelectItem key={resonador.id} value={resonador.id}>
+                            {resonador.name} {resonador.status && resonador.status !== "published" ? `(${resonador.status})` : ""}
+                          </SelectItem>
+                        ))}
+                        {gid && !resonadores.some((resonador) => resonador.id === gid) && gid !== "casa-cuenco" && (
+                          <SelectItem value={gid}>ID existente: {gid}</SelectItem>
+                        )}
                         <SelectItem value="__custom__">Otro (escribir ID)…</SelectItem>
                       </SelectContent>
                     </Select>
-                    {(gid === "" || !["casa-cuenco","sofia-ramirez","mateo-luz"].includes(gid)) && gid !== "" && (
+                    {customGuideSlots[i] && (
                       <Input
                         value={gid}
-                        onChange={(e) => setGuideSlot(i, e.target.value)}
+                        onChange={(e) => {
+                          const next = e.target.value;
+                          if (guideIds.some((other, index) => index !== i && other === next.trim())) return;
+                          setGuideSlot(i, next);
+                        }}
                         placeholder="id-del-autor"
                         className="flex-1"
                       />
+                    )}
+                    {resonadoresLoading && i === 0 && (
+                      <span className="text-xs text-muted-foreground">Cargando Resonadores…</span>
+                    )}
+                    {resonadoresError && i === 0 && (
+                      <span className="text-xs text-destructive">{resonadoresError}</span>
                     )}
                     {guideIds.length > 1 && (
                       <button
@@ -719,40 +815,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             </Field>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <Field label={`Duración (minutos)${duration ? "" : " *"}`}>
-              <Input
-                type="number"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="Se detecta del audio"
-                min={1}
-                max={600}
-              />
-              {duration ? (
-                <span className="text-xs text-primary">✓ Detectada automáticamente del audio</span>
-              ) : (
-                <span className="text-xs text-muted-foreground">Se rellena sola al subir el audio</span>
-              )}
-            </Field>
-            <Field label="Frecuencia (opcional)">
-              <Input
-                value={frequency}
-                onChange={(e) => setFrequency(e.target.value)}
-                placeholder="Ej: 432 Hz"
-                maxLength={60}
-              />
-            </Field>
-            <Field label="Etiqueta de voz (opcional)">
-              <SelectField
-                value={voiceTag}
-                onChange={setVoiceTag}
-                placeholder="Sin etiqueta"
-                options={["Guiada", "Sin voz"]}
-                clearable
-              />
-            </Field>
-          </div>
           <div className="flex items-center gap-3">
             <Switch id="premium" checked={isPremium} onCheckedChange={setIsPremium} />
             <Label htmlFor="premium" className="cursor-pointer">
@@ -839,27 +901,35 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
             )}
 
             {CATEGORY_THEME_TAGS[categoryId] && (
-              <TagOptionSelector
-                tagType={CATEGORY_THEME_TAGS[categoryId].tagType}
-                defaults={CATEGORY_THEME_TAGS[categoryId].defaults}
-                label={CATEGORY_THEME_TAGS[categoryId].label}
-                selected={categoryThemeSelectedLabels(categoryId, themeTag)}
-                onToggle={(label) => {
-                  const stored = categoryThemeStoredValue(categoryId, label);
-                  setThemeTag((tags) => tags.includes(stored)
-                    ? tags.filter((tag) => tag !== stored)
-                    : [...tags, stored]);
-                }}
-                onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
-                  tag === categoryThemeStoredValue(categoryId, from)
-                    ? categoryThemeStoredValue(categoryId, to)
-                    : tag
-                ))}
-                onDelete={(label) => setThemeTag((tags) =>
-                  tags.filter((value) => value !== categoryThemeStoredValue(categoryId, label))
+              <div className="space-y-2">
+                <TagOptionSelector
+                  tagType={CATEGORY_THEME_TAGS[categoryId].tagType}
+                  defaults={CATEGORY_THEME_TAGS[categoryId].defaults}
+                  label={CATEGORY_THEME_TAGS[categoryId].label}
+                  selected={categoryThemeSelectedLabels(categoryId, themeTag)}
+                  onToggle={(label) => {
+                    const stored = categoryThemeStoredValue(categoryId, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === categoryThemeStoredValue(categoryId, from)
+                      ? categoryThemeStoredValue(categoryId, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((value) => value !== categoryThemeStoredValue(categoryId, label))
+                  )}
+                  pill
+                />
+                {["historias", "charlas", "ambientales"].includes(categoryId) && (
+                  <p className="text-xs text-muted-foreground">
+                    Estas opciones crean los tabs de la pantalla. Podés seleccionar varias,
+                    renombrarlas con el lápiz, eliminarlas con la × o crear una con “Nueva”.
+                  </p>
                 )}
-                pill
-              />
+              </div>
             )}
 
             {isEdit &&

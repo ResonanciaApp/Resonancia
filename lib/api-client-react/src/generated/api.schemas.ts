@@ -854,6 +854,8 @@ export interface CatalogSession {
   sleepTag?: string | null;
   voiceTag?: CatalogSessionVoiceTag;
   guideId?: string | null;
+  /** @maxItems 4 */
+  guideIds?: string[];
   artistId?: string | null;
   guests?: CatalogSessionGuest[] | null;
   playerDescription?: string | null;
@@ -1288,6 +1290,8 @@ export interface CreatorSubmissionInput {
   /** @maxItems 18 */
   moodIds?: MoodId[];
   guideId?: string | null;
+  /** @maxItems 4 */
+  guideIds?: string[];
   artistId?: string | null;
   /** @maxLength 300 */
   playerDescription?: string | null;
@@ -1437,6 +1441,8 @@ export interface Submission {
   sleepTag?: string | null;
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
+  /** @maxItems 4 */
+  guideIds?: string[];
   artistId?: string | null;
   guests?: CatalogSessionGuest[] | null;
   playerDescription?: string | null;
@@ -1534,6 +1540,8 @@ export interface ReviewEditBody {
   /** @maxLength 60 */
   frequency?: string | null;
   guideId?: string | null;
+  /** @maxItems 4 */
+  guideIds?: string[];
   artistId?: string | null;
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
