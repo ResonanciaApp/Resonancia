@@ -31,6 +31,7 @@ import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPer
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { BrightnessProvider, useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
+import { MoodQuotesProvider } from "@/context/MoodQuotesContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
@@ -541,6 +542,7 @@ export default function RootLayout() {
               <ReactQueryAppStateBridge />
               <SoundsProvider>
               <CatalogProvider>
+              <MoodQuotesProvider>
               <AuthProvider>
                 <NotificationsProvider>
                 <PremiumProvider>
@@ -595,6 +597,7 @@ export default function RootLayout() {
                 </PremiumProvider>
               </NotificationsProvider>
               </AuthProvider>
+              </MoodQuotesProvider>
               </CatalogProvider>
               </SoundsProvider>
             </QueryClientProvider>

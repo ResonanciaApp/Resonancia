@@ -29,6 +29,7 @@ import {
   AudioLines,
   UserRound,
   ListOrdered,
+  Sparkles,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -52,6 +53,7 @@ import EscenasPage from "@/pages/escenas";
 import ExplorarPage from "@/pages/explorar";
 import DormirOrdenPage from "@/pages/dormir-orden";
 import ResonadoresPage from "@/pages/resonadores";
+import EmocionPage from "@/pages/emocion";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -175,6 +177,7 @@ const NAV = [
   { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
+  { href: "/emocion", label: "Emoción", icon: Sparkles },
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
   { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
@@ -337,6 +340,7 @@ function AdminGate() {
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />
+        <Route path="/emocion" component={EmocionPage} />
         <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />
         <Route path="/videos" component={VideosPage} />
         <Route path="/descanso-sonidos" component={DescansoSonidosPage} />

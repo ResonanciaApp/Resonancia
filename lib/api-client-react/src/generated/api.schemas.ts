@@ -447,6 +447,97 @@ export interface MixCommentInput {
   body: string;
 }
 
+export type EmotionalPhraseMoodId = typeof EmotionalPhraseMoodId[keyof typeof EmotionalPhraseMoodId];
+
+
+export const EmotionalPhraseMoodId = {
+  estresado: 'estresado',
+  ansioso: 'ansioso',
+  cansado: 'cansado',
+  inepto: 'inepto',
+  triste: 'triste',
+  solo: 'solo',
+  deprimido: 'deprimido',
+  desmotivado: 'desmotivado',
+  enojado: 'enojado',
+  adolorido: 'adolorido',
+  agradecido: 'agradecido',
+  emocionado: 'emocionado',
+  'lleno-de-amor': 'lleno-de-amor',
+  feliz: 'feliz',
+  'en-paz': 'en-paz',
+  esperanzado: 'esperanzado',
+  contento: 'contento',
+  presente: 'presente',
+} as const;
+
+export interface EmotionalPhrase {
+  /**
+     * @minimum 1
+     * @maximum 7
+     */
+  slot: number;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  text: string;
+}
+
+export interface AdminEmotionalPhrase {
+  /**
+     * @minimum 1
+     * @maximum 7
+     */
+  slot: number;
+  /** @maxLength 500 */
+  text: string;
+}
+
+export interface AdminEmotionalPhraseSet {
+  moodId: EmotionalPhraseMoodId;
+  /** @minimum 0 */
+  revision: number;
+  /** @nullable */
+  updatedAt: string | null;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     */
+  phrases: AdminEmotionalPhrase[];
+}
+
+export interface AdminEmotionalPhrasesResponse {
+  /**
+     * @minItems 18
+     * @maxItems 18
+     */
+  moods: AdminEmotionalPhraseSet[];
+}
+
+export interface PublicEmotionalPhraseSet {
+  moodId: EmotionalPhraseMoodId;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     */
+  phrases: EmotionalPhrase[];
+}
+
+export interface PublicEmotionalPhrasesResponse {
+  moods: PublicEmotionalPhraseSet[];
+}
+
+export interface UpdateEmotionalPhrasesInput {
+  /** @minimum 0 */
+  revision: number;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     */
+  phrases: EmotionalPhrase[];
+}
+
 export interface ErrorResponse {
   error: string;
 }

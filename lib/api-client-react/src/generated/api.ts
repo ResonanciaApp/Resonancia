@@ -24,6 +24,8 @@ import type {
   AdminCategoryInput,
   AdminCategoryUpdate,
   AdminDescansoSoundItem,
+  AdminEmotionalPhraseSet,
+  AdminEmotionalPhrasesResponse,
   AdminMixHideInput,
   AdminMixHideResponse,
   AdminMixerSoundItem,
@@ -60,6 +62,7 @@ import type {
   DeleteAccountResponse,
   DeleteSubmission200,
   DirectMessage,
+  EmotionalPhraseMoodId,
   ErrorEnvelope,
   ErrorResponse,
   ExpansorProfile,
@@ -114,6 +117,7 @@ import type {
   PopularSessionsResponse,
   ProgressInput,
   ProgressList,
+  PublicEmotionalPhrasesResponse,
   PublicUserProfile,
   PushPlaysBody,
   RegisterPushTokenBody,
@@ -151,6 +155,7 @@ import type {
   UpdateAdminGeometrix200,
   UpdateApplicationStatusInput,
   UpdateDescansoSoundBody,
+  UpdateEmotionalPhrasesInput,
   UpdateMixerSoundBody,
   UpdateSceneAnimationBody,
   UpdateVideoBody,
@@ -4718,6 +4723,83 @@ export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TE
 
 
 
+export const getGetPublicEmotionalPhrasesUrl = () => {
+
+
+
+
+  return `/api/catalog/emotional-phrases`
+}
+
+/**
+ * @summary Frases emocionales completas para el Registro de ánimo
+ */
+export const getPublicEmotionalPhrases = async ( options?: RequestInit): Promise<PublicEmotionalPhrasesResponse> => {
+
+  return customFetch<PublicEmotionalPhrasesResponse>(getGetPublicEmotionalPhrasesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPublicEmotionalPhrasesQueryKey = () => {
+    return [
+    `/api/catalog/emotional-phrases`
+    ] as const;
+    }
+
+
+export const getGetPublicEmotionalPhrasesQueryOptions = <TData = Awaited<ReturnType<typeof getPublicEmotionalPhrases>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicEmotionalPhrases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPublicEmotionalPhrasesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicEmotionalPhrases>>> = ({ signal }) => getPublicEmotionalPhrases({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPublicEmotionalPhrases>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPublicEmotionalPhrasesQueryResult = NonNullable<Awaited<ReturnType<typeof getPublicEmotionalPhrases>>>
+export type GetPublicEmotionalPhrasesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Frases emocionales completas para el Registro de ánimo
+ */
+
+export function useGetPublicEmotionalPhrases<TData = Awaited<ReturnType<typeof getPublicEmotionalPhrases>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicEmotionalPhrases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPublicEmotionalPhrasesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
 export const getGetCatalogPlaylistUrl = (slug: string,) => {
 
 
@@ -4941,6 +5023,155 @@ export const useSetPinnedFeatured = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getSetPinnedFeaturedMutationOptions(options));
+    }
+
+export const getGetAdminEmotionalPhrasesUrl = () => {
+
+
+
+
+  return `/api/admin/emotional-phrases`
+}
+
+/**
+ * @summary Listar las frases emocionales configurables
+ */
+export const getAdminEmotionalPhrases = async ( options?: RequestInit): Promise<AdminEmotionalPhrasesResponse> => {
+
+  return customFetch<AdminEmotionalPhrasesResponse>(getGetAdminEmotionalPhrasesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminEmotionalPhrasesQueryKey = () => {
+    return [
+    `/api/admin/emotional-phrases`
+    ] as const;
+    }
+
+
+export const getGetAdminEmotionalPhrasesQueryOptions = <TData = Awaited<ReturnType<typeof getAdminEmotionalPhrases>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminEmotionalPhrases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminEmotionalPhrasesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminEmotionalPhrases>>> = ({ signal }) => getAdminEmotionalPhrases({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminEmotionalPhrases>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminEmotionalPhrasesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminEmotionalPhrases>>>
+export type GetAdminEmotionalPhrasesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar las frases emocionales configurables
+ */
+
+export function useGetAdminEmotionalPhrases<TData = Awaited<ReturnType<typeof getAdminEmotionalPhrases>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminEmotionalPhrases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminEmotionalPhrasesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminEmotionalPhrasesUrl = (moodId: EmotionalPhraseMoodId,) => {
+
+
+
+
+  return `/api/admin/emotional-phrases/${moodId}`
+}
+
+/**
+ * @summary Reemplazar las siete frases de una emoción
+ */
+export const updateAdminEmotionalPhrases = async (moodId: EmotionalPhraseMoodId,
+    updateEmotionalPhrasesInput: UpdateEmotionalPhrasesInput, options?: RequestInit): Promise<AdminEmotionalPhraseSet> => {
+
+  return customFetch<AdminEmotionalPhraseSet>(getUpdateAdminEmotionalPhrasesUrl(moodId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateEmotionalPhrasesInput,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminEmotionalPhrasesMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>, TError,{moodId: EmotionalPhraseMoodId;data: BodyType<UpdateEmotionalPhrasesInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>, TError,{moodId: EmotionalPhraseMoodId;data: BodyType<UpdateEmotionalPhrasesInput>}, TContext> => {
+
+const mutationKey = ['updateAdminEmotionalPhrases'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>, {moodId: EmotionalPhraseMoodId;data: BodyType<UpdateEmotionalPhrasesInput>}> = (props) => {
+          const {moodId,data} = props ?? {};
+
+          return  updateAdminEmotionalPhrases(moodId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminEmotionalPhrasesMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>>
+    export type UpdateAdminEmotionalPhrasesMutationBody = BodyType<UpdateEmotionalPhrasesInput>
+    export type UpdateAdminEmotionalPhrasesMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Reemplazar las siete frases de una emoción
+ */
+export const useUpdateAdminEmotionalPhrases = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>, TError,{moodId: EmotionalPhraseMoodId;data: BodyType<UpdateEmotionalPhrasesInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminEmotionalPhrases>>,
+        TError,
+        {moodId: EmotionalPhraseMoodId;data: BodyType<UpdateEmotionalPhrasesInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminEmotionalPhrasesMutationOptions(options));
     }
 
 export const getGetMyLibraryUrl = () => {

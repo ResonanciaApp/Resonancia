@@ -1515,6 +1515,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CatalogResponse"
+  /catalog/emotional-phrases:
+    get:
+      operationId: getPublicEmotionalPhrases
+      tags: [catalog]
+      summary: Frases emocionales completas para el Registro de ánimo
+      responses:
+        "200":
+          description: Conjuntos completos ordenados por emoción y slot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicEmotionalPhrasesResponse"
   /catalog/playlists/{slug}:
     get:
       operationId: getCatalogPlaylist
@@ -1580,6 +1592,78 @@ paths:
           description: sessionId inválido
         "404":
           description: Sesión no encontrada
+  /admin/emotional-phrases:
+    get:
+      operationId: getAdminEmotionalPhrases
+      tags: [admin]
+      summary: Listar las frases emocionales configurables
+      responses:
+        "200":
+          description: Las 18 emociones en orden canónico, incluso si están incompletas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminEmotionalPhrasesResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Se requiere rol admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/emotional-phrases/{moodId}:
+    put:
+      operationId: updateAdminEmotionalPhrases
+      tags: [admin]
+      summary: Reemplazar las siete frases de una emoción
+      parameters:
+        - name: moodId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/EmotionalPhraseMoodId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEmotionalPhrasesInput"
+      responses:
+        "200":
+          description: Conjunto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminEmotionalPhraseSet"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Se requiere rol admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: La revisión enviada quedó obsoleta
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /me/library:
     get:
       tags: [users]
@@ -4650,6 +4734,111 @@ components:
           minLength: 1
           maxLength: 500
       required: [body]
+    EmotionalPhraseMoodId:
+      type: string
+      enum:
+        - estresado
+        - ansioso
+        - cansado
+        - inepto
+        - triste
+        - solo
+        - deprimido
+        - desmotivado
+        - enojado
+        - adolorido
+        - agradecido
+        - emocionado
+        - lleno-de-amor
+        - feliz
+        - en-paz
+        - esperanzado
+        - contento
+        - presente
+    EmotionalPhrase:
+      type: object
+      properties:
+        slot:
+          type: integer
+          minimum: 1
+          maximum: 7
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [slot, text]
+    AdminEmotionalPhrase:
+      type: object
+      properties:
+        slot:
+          type: integer
+          minimum: 1
+          maximum: 7
+        text:
+          type: string
+          maxLength: 500
+      required: [slot, text]
+    AdminEmotionalPhraseSet:
+      type: object
+      properties:
+        moodId:
+          $ref: "#/components/schemas/EmotionalPhraseMoodId"
+        revision:
+          type: integer
+          minimum: 0
+        updatedAt:
+          type: ["string", "null"]
+          format: date-time
+        phrases:
+          type: array
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: "#/components/schemas/AdminEmotionalPhrase"
+      required: [moodId, revision, updatedAt, phrases]
+    AdminEmotionalPhrasesResponse:
+      type: object
+      properties:
+        moods:
+          type: array
+          minItems: 18
+          maxItems: 18
+          items:
+            $ref: "#/components/schemas/AdminEmotionalPhraseSet"
+      required: [moods]
+    PublicEmotionalPhraseSet:
+      type: object
+      properties:
+        moodId:
+          $ref: "#/components/schemas/EmotionalPhraseMoodId"
+        phrases:
+          type: array
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: "#/components/schemas/EmotionalPhrase"
+      required: [moodId, phrases]
+    PublicEmotionalPhrasesResponse:
+      type: object
+      properties:
+        moods:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicEmotionalPhraseSet"
+      required: [moods]
+    UpdateEmotionalPhrasesInput:
+      type: object
+      properties:
+        revision:
+          type: integer
+          minimum: 0
+        phrases:
+          type: array
+          minItems: 7
+          maxItems: 7
+          items:
+            $ref: "#/components/schemas/EmotionalPhrase"
+      required: [revision, phrases]
     ErrorResponse:
       type: object
       properties:

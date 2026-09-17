@@ -1335,6 +1335,29 @@ export const GetCatalogResponse = zod.object({
 
 
 /**
+ * @summary Frases emocionales completas para el Registro de ánimo
+ */
+export const getPublicEmotionalPhrasesResponseMoodsItemPhrasesItemSlotMax = 7;
+
+export const getPublicEmotionalPhrasesResponseMoodsItemPhrasesItemTextMax = 500;
+
+export const getPublicEmotionalPhrasesResponseMoodsItemPhrasesMin = 7;
+export const getPublicEmotionalPhrasesResponseMoodsItemPhrasesMax = 7;
+
+
+
+export const GetPublicEmotionalPhrasesResponse = zod.object({
+  "moods": zod.array(zod.object({
+  "moodId": zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente']),
+  "phrases": zod.array(zod.object({
+  "slot": zod.number().min(1).max(getPublicEmotionalPhrasesResponseMoodsItemPhrasesItemSlotMax),
+  "text": zod.string().min(1).max(getPublicEmotionalPhrasesResponseMoodsItemPhrasesItemTextMax)
+})).min(getPublicEmotionalPhrasesResponseMoodsItemPhrasesMin).max(getPublicEmotionalPhrasesResponseMoodsItemPhrasesMax)
+}))
+})
+
+
+/**
  * @summary Detalle público de una playlist editorial publicada
  */
 export const getCatalogPlaylistPathSlugMax = 80;
@@ -1540,6 +1563,84 @@ export const SetPinnedFeaturedBody = zod.object({
 
 export const SetPinnedFeaturedResponse = zod.object({
   "ok": zod.boolean()
+})
+
+
+/**
+ * @summary Listar las frases emocionales configurables
+ */
+export const getAdminEmotionalPhrasesResponseMoodsItemRevisionMin = 0;
+
+export const getAdminEmotionalPhrasesResponseMoodsItemPhrasesItemSlotMax = 7;
+
+export const getAdminEmotionalPhrasesResponseMoodsItemPhrasesItemTextMax = 500;
+
+export const getAdminEmotionalPhrasesResponseMoodsItemPhrasesMin = 7;
+export const getAdminEmotionalPhrasesResponseMoodsItemPhrasesMax = 7;
+
+export const getAdminEmotionalPhrasesResponseMoodsMin = 18;
+export const getAdminEmotionalPhrasesResponseMoodsMax = 18;
+
+
+
+export const GetAdminEmotionalPhrasesResponse = zod.object({
+  "moods": zod.array(zod.object({
+  "moodId": zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente']),
+  "revision": zod.number().min(getAdminEmotionalPhrasesResponseMoodsItemRevisionMin),
+  "updatedAt": zod.coerce.date().nullable(),
+  "phrases": zod.array(zod.object({
+  "slot": zod.number().min(1).max(getAdminEmotionalPhrasesResponseMoodsItemPhrasesItemSlotMax),
+  "text": zod.string().max(getAdminEmotionalPhrasesResponseMoodsItemPhrasesItemTextMax)
+})).min(getAdminEmotionalPhrasesResponseMoodsItemPhrasesMin).max(getAdminEmotionalPhrasesResponseMoodsItemPhrasesMax)
+})).min(getAdminEmotionalPhrasesResponseMoodsMin).max(getAdminEmotionalPhrasesResponseMoodsMax)
+})
+
+
+/**
+ * @summary Reemplazar las siete frases de una emoción
+ */
+export const UpdateAdminEmotionalPhrasesParams = zod.object({
+  "moodId": zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])
+})
+
+export const updateAdminEmotionalPhrasesBodyRevisionMin = 0;
+
+export const updateAdminEmotionalPhrasesBodyPhrasesItemSlotMax = 7;
+
+export const updateAdminEmotionalPhrasesBodyPhrasesItemTextMax = 500;
+
+export const updateAdminEmotionalPhrasesBodyPhrasesMin = 7;
+export const updateAdminEmotionalPhrasesBodyPhrasesMax = 7;
+
+
+
+export const UpdateAdminEmotionalPhrasesBody = zod.object({
+  "revision": zod.number().min(updateAdminEmotionalPhrasesBodyRevisionMin),
+  "phrases": zod.array(zod.object({
+  "slot": zod.number().min(1).max(updateAdminEmotionalPhrasesBodyPhrasesItemSlotMax),
+  "text": zod.string().min(1).max(updateAdminEmotionalPhrasesBodyPhrasesItemTextMax)
+})).min(updateAdminEmotionalPhrasesBodyPhrasesMin).max(updateAdminEmotionalPhrasesBodyPhrasesMax)
+})
+
+export const updateAdminEmotionalPhrasesResponseRevisionMin = 0;
+
+export const updateAdminEmotionalPhrasesResponsePhrasesItemSlotMax = 7;
+
+export const updateAdminEmotionalPhrasesResponsePhrasesItemTextMax = 500;
+
+export const updateAdminEmotionalPhrasesResponsePhrasesMin = 7;
+export const updateAdminEmotionalPhrasesResponsePhrasesMax = 7;
+
+
+
+export const UpdateAdminEmotionalPhrasesResponse = zod.object({
+  "moodId": zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente']),
+  "revision": zod.number().min(updateAdminEmotionalPhrasesResponseRevisionMin),
+  "updatedAt": zod.coerce.date().nullable(),
+  "phrases": zod.array(zod.object({
+  "slot": zod.number().min(1).max(updateAdminEmotionalPhrasesResponsePhrasesItemSlotMax),
+  "text": zod.string().max(updateAdminEmotionalPhrasesResponsePhrasesItemTextMax)
+})).min(updateAdminEmotionalPhrasesResponsePhrasesMin).max(updateAdminEmotionalPhrasesResponsePhrasesMax)
 })
 
 

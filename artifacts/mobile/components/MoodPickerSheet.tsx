@@ -28,7 +28,8 @@ import {
   type Mood,
   type MoodId,
 } from "@/data/moods";
-import { MOOD_QUOTES } from "@/data/mood-quotes";
+import { useMoodQuotes } from "@/context/MoodQuotesContext";
+import type { MoodQuote } from "@/data/mood-quotes";
 
 const MOOD_HEROES: Record<MoodId, number> = {
   estresado: require("@/assets/images/mood-heroes/mood-hero-estresado.jpg"),
@@ -67,6 +68,7 @@ import {
   getNestedScrollItemY,
   isVerticalItemRevealed,
 } from "@/utils/scroll-reveal";
+import { getPrimaryMoodId } from "@/data/mood-quote-rotation";
 import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
@@ -85,7 +87,7 @@ const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
 const MOOD_GREEN = WIDGET_GREEN_SOLID;
 const CINEMATIC_DURATION = 3000;
-const CINEMATIC_BASE_DELAY = 800;
+const CINEMATIC_BASE_DELAY = 200;
 const MOOD_PICKER_ORDER: MoodId[] = [
   "agradecido",
   "emocionado",
@@ -231,6 +233,7 @@ export function MoodPickerSheet({
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { openCategory } = useCategoryOverlay();
+  const { getQuoteForMood, completeCheckIn } = useMoodQuotes();
   const topPad =  Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const [step, setStep] = useState<FlowStep>("select");
@@ -239,6 +242,10 @@ export function MoodPickerSheet({
   const [answers, setAnswers] = useState<Answers>({});
   const [history, setHistory] = useState<MoodHistoryRecord[]>([]);
   const [completionCycle, setCompletionCycle] = useState(0);
+  const [completionQuote, setCompletionQuote] = useState<MoodQuote | null>(null);
+  const [isFinishing, setIsFinishing] = useState(false);
+  const isFinishingRef = useRef(false);
+  const flowGenerationRef = useRef(0);
   const [quoteRevealed, setQuoteRevealed] = useState(false);
   const quoteRevealedRef = useRef(false);
   const quoteLayoutYRef = useRef<number | null>(null);
@@ -246,6 +253,7 @@ export function MoodPickerSheet({
   const completeScrollYRef = useRef(0);
 
   useEffect(() => {
+    flowGenerationRef.current += 1;
     if (!visible) {
       quoteRevealedRef.current = false;
       quoteLayoutYRef.current = null;
@@ -258,6 +266,8 @@ export function MoodPickerSheet({
     setSelected([...initialSelectedIds]);
     setSurveyIndex(0);
     setAnswers({});
+    setCompletionQuote(null);
+    setIsFinishing(isFinishingRef.current);
     quoteRevealedRef.current = false;
     quoteLayoutYRef.current = null;
     completeContentYRef.current = null;
@@ -350,11 +360,35 @@ export function MoodPickerSheet({
   }
 
   async function finishFlow(nextAnswers: Answers) {
-    if (!selected.length) return;
+    if (!selected.length || isFinishingRef.current) return;
+    const flowGeneration = flowGenerationRef.current;
+    isFinishingRef.current = true;
+    setIsFinishing(true);
+    const primaryMoodId = getPrimaryMoodId(selected);
+    if (!primaryMoodId) {
+      isFinishingRef.current = false;
+      setIsFinishing(false);
+      return;
+    }
     try {
-      const records = await saveMoodCheckIn(selected, nextAnswers);
+      const { result: records, quote } = await completeCheckIn(
+        primaryMoodId,
+        (slot) => saveMoodCheckIn(selected, nextAnswers, {
+          moodId: primaryMoodId,
+          slot,
+        }),
+      );
+      if (flowGeneration !== flowGenerationRef.current) {
+        isFinishingRef.current = false;
+        setIsFinishing(false);
+        return;
+      }
       setHistory(records);
+      setCompletionQuote(quote);
     } catch {
+      isFinishingRef.current = false;
+      setIsFinishing(false);
+      if (flowGeneration !== flowGenerationRef.current) return;
       Alert.alert(
         "No pudimos guardar este registro",
         "Inténtalo nuevamente para conservarlo en tu historial.",
@@ -370,6 +404,8 @@ export function MoodPickerSheet({
     setQuoteRevealed(false);
     setCompletionCycle((cycle) => cycle + 1);
     setStep("complete");
+    isFinishingRef.current = false;
+    setIsFinishing(false);
   }
 
   function revealQuoteIfVisible(scrollY = completeScrollYRef.current) {
@@ -445,7 +481,7 @@ export function MoodPickerSheet({
   const firstMoodAnswer = firstMood
     ? MOOD_SURVEY_OPTIONS[firstMood.id].find((option) => option.id === answers[firstMood.id])
     : undefined;
-  const moodQuote = firstMood ? MOOD_QUOTES[firstMood.id] : undefined;
+  const moodQuote = completionQuote ?? (firstMood ? getQuoteForMood(firstMood.id) : undefined);
   const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
   const fadeSolidStart = 1 - 55 / moodHeroHeight;
 
@@ -541,8 +577,15 @@ export function MoodPickerSheet({
               <Text style={styles.progressLabel}>
                 {surveyIndex + 1} DE {selectedMoods.length}
               </Text>
-              <Pressable onPress={skipSurvey} hitSlop={10} style={styles.skipButton}>
-                <Text style={styles.skipText}>Omitir</Text>
+              <Pressable
+                onPress={skipSurvey}
+                disabled={isFinishing}
+                hitSlop={10}
+                style={[styles.skipButton, isFinishing && styles.continueButtonDisabled]}
+              >
+                <Text style={[styles.skipText, isFinishing && styles.continueButtonTextDisabled]}>
+                  Omitir
+                </Text>
               </Pressable>
             </View>
             <ScrollView
@@ -593,7 +636,7 @@ export function MoodPickerSheet({
             >
               <PrimaryButton
                 label="Continuar"
-                disabled={!currentAnswer}
+                disabled={!currentAnswer || isFinishing}
                 onPress={advanceSurvey}
               />
             </View>
