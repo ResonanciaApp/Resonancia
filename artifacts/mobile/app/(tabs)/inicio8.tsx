@@ -2578,27 +2578,6 @@ export default function HomeScreen2({
             inicio3Compact={variant === "inicio3"}
           />
         )}
-        {variant === "inicio3" && continueMeditationPlaylist && (
-          <>
-            <ContinueMeditationPlaylistCard
-              title={continueMeditationPlaylist.playlist.title}
-              description={continueMeditationPlaylist.playlist.description}
-              coverSource={
-                continueMeditationPlaylist.playlist.coverUrl
-                  ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                  : continueMeditationPlaylist.playlist.cover
-              }
-              completion={continueMeditationPlaylist.completion}
-              onPress={() => {
-                router.push({
-                  pathname: "/editorial-playlist/[slug]",
-                  params: { slug: continueMeditationPlaylist.playlist.id },
-                } as never);
-              }}
-            />
-            <View style={styles.inicio3SectionDivider} />
-          </>
-        )}
         {isInicio2 && featuredMoment && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
@@ -2867,6 +2846,27 @@ export default function HomeScreen2({
         )}
         {variant === "inicio3" && (
           <View style={styles.inicio3LowerStandaloneDivider} />
+        )}
+        {variant === "inicio3" && continueMeditationPlaylist && (
+          <>
+            <ContinueMeditationPlaylistCard
+              title={continueMeditationPlaylist.playlist.title}
+              description={continueMeditationPlaylist.playlist.description}
+              coverSource={
+                continueMeditationPlaylist.playlist.coverUrl
+                  ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                  : continueMeditationPlaylist.playlist.cover
+              }
+              completion={continueMeditationPlaylist.completion}
+              onPress={() => {
+                router.push({
+                  pathname: "/editorial-playlist/[slug]",
+                  params: { slug: continueMeditationPlaylist.playlist.id },
+                } as never);
+              }}
+            />
+            <View style={styles.inicio3SectionDivider} />
+          </>
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>

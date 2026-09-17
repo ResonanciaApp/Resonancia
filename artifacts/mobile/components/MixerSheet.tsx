@@ -945,7 +945,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => handleAnimatedCloseRef.current()}
                 hitSlop={10}
-                style={[styles.headerBtn, { marginLeft: -7, backgroundColor: sleepTabBackground }]}
+                style={[styles.headerBtn, { marginLeft: -7 }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
@@ -957,7 +957,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => handleAnimatedCloseRef.current(true)}
                 hitSlop={10}
-                style={[styles.headerBtn, { marginRight: -8, backgroundColor: sleepTabBackground }]}
+                style={[styles.headerBtn, { marginRight: -8 }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
@@ -1021,7 +1021,7 @@ export function MixerSheet() {
                 accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
               >
                 <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <MaterialCommunityIcons name="clock" size={29} color={palette.footerSideIcon} />
+                  <MaterialCommunityIcons name="clock" size={29} color="#F9F9F9" />
                 </View>
                 <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
                   {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
@@ -1034,15 +1034,15 @@ export function MixerSheet() {
                 style={[styles.footerCenter, { transform: [{ translateY: -20 }] }]}
                 accessibilityRole="button"
               >
-                <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
+                <View style={styles.footerPlayCircle}>
                   <Svg width={45} height={45} viewBox="0 0 48 48" style={{ marginLeft: 2 }}>
                     {isPlaying ? (
                       <>
-                        <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
-                        <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
+                        <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
+                        <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#F9F9F9" />
                       </>
                     ) : (
-                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill={palette.iconColor} />
+                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#F9F9F9" />
                     )}
                   </Svg>
                 </View>
@@ -1052,7 +1052,7 @@ export function MixerSheet() {
               <View style={[styles.footerSide, { transform: [{ translateY: -10 }] }]}>
                 <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
                   <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
-                    <MaterialCommunityIcons name="heart" size={29} color={palette.footerSideIcon} />
+                    <MaterialCommunityIcons name="heart" size={29} color="#F9F9F9" />
                   </View>
                   <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
                 </Pressable>
@@ -1265,7 +1265,16 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 0,
   },
-  headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center", borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)" },
+  headerBtn: {
+    width: 38,
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 19,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
   headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   caption: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
   title: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
@@ -1389,11 +1398,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerPlayCircle: {
-    width: 77,
-    height: 77,
-    borderRadius: 38.5,
+    width: 98,
+    height: 98,
+    borderRadius: 49,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.18)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.30)",
   },
   footerLabel: {
     fontFamily: "Manrope",
