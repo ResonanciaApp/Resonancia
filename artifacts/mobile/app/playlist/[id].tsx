@@ -708,7 +708,11 @@ function PlaylistSessionRow({
   return (
     <View style={styles.sessionRow}>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
-        style={({ pressed }) => [styles.thumbWrap, { opacity: pressed ? 0.75 : 1 }]}>
+        style={({ pressed }) => [
+          styles.thumbWrap,
+          styles.recommendedThumbWrap,
+          { opacity: pressed ? 0.75 : 1 },
+        ]}>
         <Image source={session.image as never} style={styles.thumb}
           placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} contentFit="cover" />
         <SessionDurationBadge
