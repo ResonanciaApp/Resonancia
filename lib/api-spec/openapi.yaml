@@ -5679,18 +5679,22 @@ components:
           nullable: true
         sonidosTags:
           type: array
-          maxItems: 7
+          maxItems: 30
           items:
             type: string
+            minLength: 1
+            maxLength: 120
         descansoTag:
           type: string
           nullable: true
           deprecated: true
         descansoTags:
           type: array
-          maxItems: 8
+          maxItems: 30
           items:
             type: string
+            minLength: 1
+            maxLength: 120
         sleepTag:
           type: string
           nullable: true
@@ -6108,18 +6112,22 @@ components:
           nullable: true
         sonidosTags:
           type: array
-          maxItems: 7
+          maxItems: 30
           items:
             type: string
+            minLength: 1
+            maxLength: 120
         descansoTag:
           type: string
           nullable: true
           deprecated: true
         descansoTags:
           type: array
-          maxItems: 8
+          maxItems: 30
           items:
             type: string
+            minLength: 1
+            maxLength: 120
         sortOrder:
           type: integer
         guests:

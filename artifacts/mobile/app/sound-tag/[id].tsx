@@ -23,10 +23,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import {
   getSessionsBySonidosTag,
+  getSonidosCollectionCards,
   getSonidosVisibleSessions,
   type Session,
 } from "@/data/sessions";
-import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import {
@@ -77,7 +77,7 @@ export default function SoundTagDetailScreen({ id: idProp }: { id?: string } = {
   );
   const topPad = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const tag = SONIDOS_TAG_CARDS.find((candidate) => candidate.id === id);
+  const tag = getSonidosCollectionCards().find((candidate) => candidate.id === id);
   const sessions = useMemo(
     () => tag ? getSessionsBySonidosTag(tag.label) : [],
     [tag, version],

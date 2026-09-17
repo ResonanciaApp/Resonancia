@@ -49,16 +49,6 @@ const router: IRouter = Router();
 /** Tamaños máximos aceptados (la validación de bytes reales vive en storage). */
 const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
-const DESCANSO_TAGS = new Set([
-  "Música para dormir",
-  "Meditaciones para dormir",
-  "Historias para dormir",
-  "Sonidos para dormir",
-  "Paisajes sonoros",
-  "Para niños",
-  "Sonidos de lluvia",
-  "Ruido",
-]);
 const SONIDOS_TAGS = [
   "Todos los sonidos",
   "Sonidos de naturaleza",
@@ -69,7 +59,6 @@ const SONIDOS_TAGS = [
   "Sonidos de lluvia",
   "Sonidos para Chakras",
 ] as const;
-const SONIDOS_TAG_SET = new Set<string>(SONIDOS_TAGS);
 const LEGACY_SONIDOS_TAG_MAP: Record<string, readonly string[]> = {
   "Sonidos Binaurales": ["Sonidos binaurales"],
   "Sonidos Naturaleza": ["Sonidos de naturaleza"],
@@ -79,25 +68,28 @@ const LEGACY_SONIDOS_TAG_MAP: Record<string, readonly string[]> = {
 };
 
 function hasInvalidDescansoTags(tags: string[] | undefined): boolean {
-  return (tags ?? []).some((tag) => !DESCANSO_TAGS.has(tag));
+  return (tags ?? []).some((tag) => !tag.trim() || tag.length > 120);
 }
 
 function normalizeSonidosTags(
   tags: string[] | undefined,
   legacySonidosTag?: string | null,
 ): string[] {
-  const selected = new Set((tags ?? []).filter((tag) => SONIDOS_TAG_SET.has(tag)));
+  const selected = new Set((tags ?? []).map((tag) => tag.trim()).filter(Boolean));
   if (selected.size === 0 && legacySonidosTag) {
     for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag] ?? []) {
       selected.add(tag);
     }
   }
   if (selected.size > 0) selected.add("Todos los sonidos");
-  return SONIDOS_TAGS.filter((tag) => selected.has(tag));
+  return [
+    ...SONIDOS_TAGS.filter((tag) => selected.has(tag)),
+    ...[...selected].filter((tag) => !SONIDOS_TAGS.includes(tag as (typeof SONIDOS_TAGS)[number])),
+  ];
 }
 
 function hasInvalidSonidosTags(tags: string[] | undefined): boolean {
-  return (tags ?? []).some((tag) => !SONIDOS_TAG_SET.has(tag));
+  return (tags ?? []).some((tag) => !tag.trim() || tag.length > 120);
 }
 
 function serializeCategory(c: CatalogCategory) {

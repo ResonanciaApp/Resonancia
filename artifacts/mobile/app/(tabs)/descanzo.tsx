@@ -20,8 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 import { MEMBERSHIP_AURORA } from "@/constants/colors";
-import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions } from "@/data/sessions";
-import { DESCANSO_TAG_CARDS } from "@/data/tags";
+import { getSessionsByDescansoTag, getSessionById, getDescansoVisibleSessions, getDescansoCollectionCards } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { SessionBadgeGlass, SessionDurationBadge } from "@/components/SessionDurationBadge";
@@ -338,7 +337,7 @@ export default function DescansoScreen() {
 
   const sleepCollections = useMemo(
     () =>
-      DESCANSO_TAG_CARDS.map((tag) => ({
+      getDescansoCollectionCards().map((tag) => ({
         ...tag,
         sessions: getSessionsByDescansoTag(tag.label).slice(0, 5),
       })).filter((tag) => tag.sessions.length > 0),

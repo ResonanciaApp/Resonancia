@@ -34,10 +34,10 @@ import {
   getSessionById,
   getSessionsByCategory,
   getSessionsBySonidosTag,
+  getSonidosCollectionCards,
   getSonidosVisibleSessions,
   type Session,
 } from "@/data/sessions";
-import { SONIDOS_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 import { useSoundPreview } from "@/hooks/useSoundPreview";
 import { isIndigoThemeId } from "@/config/scene-themes";
@@ -203,7 +203,7 @@ export default function SonidosScreen() {
 
   const collections = useMemo(
     () =>
-      SONIDOS_TAG_CARDS.map((tag) => ({
+      getSonidosCollectionCards().map((tag) => ({
         ...tag,
         sessions: getSessionsBySonidosTag(tag.label),
       })).filter((tag) => tag.sessions.length > 0),

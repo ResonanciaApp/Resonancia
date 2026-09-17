@@ -20,8 +20,7 @@ import { ContextSearchModal } from "@/components/ContextSearchModal";
 import { SupercategoryFilterTabs } from "@/components/SupercategoryFilterTabs";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { DESCANSO_TAG_CARDS } from "@/data/tags";
-import { getSessionsByDescansoTag } from "@/data/sessions";
+import { getDescansoCollectionCards, getSessionsByDescansoTag } from "@/data/sessions";
 import { getCategoryPopularSearchTerms } from "@/data/category-search";
 import { getCategorySessionTags } from "@/data/category-tabs";
 import {
@@ -71,7 +70,7 @@ export default function SleepTagDetailScreen({ id: idProp }: { id?: string } = {
     }).start();
   }, [stickyBorderOpacity]);
 
-  const tag = DESCANSO_TAG_CARDS.find((t) => t.id === id);
+  const tag = getDescansoCollectionCards().find((t) => t.id === id);
   const sessions = React.useMemo(
     () => tag ? getSessionsByDescansoTag(tag.label) : [],
     [tag, version],

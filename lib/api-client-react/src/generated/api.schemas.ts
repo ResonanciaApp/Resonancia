@@ -1275,11 +1275,11 @@ export interface CreatorSubmissionInput {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
-  /** @maxItems 7 */
+  /** @maxItems 30 */
   sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
-  /** @maxItems 8 */
+  /** @maxItems 30 */
   descansoTags?: string[];
   sleepTag?: string | null;
   voiceTag?: CreatorSubmissionInputVoiceTag;
@@ -1538,11 +1538,11 @@ export interface ReviewEditBody {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
-  /** @maxItems 7 */
+  /** @maxItems 30 */
   sonidosTags?: string[];
   /** @deprecated */
   descansoTag?: string | null;
-  /** @maxItems 8 */
+  /** @maxItems 30 */
   descansoTags?: string[];
   sortOrder?: number;
   guests?: CatalogSessionGuest[] | null;

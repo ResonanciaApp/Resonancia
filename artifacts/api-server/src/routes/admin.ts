@@ -1636,6 +1636,33 @@ router.delete("/admin/guide-configs/:guideId", requireAuth, requireRole("admin")
 
 // ── Tag options ────────────────────────────────────────────────────────────
 
+const DEFAULT_COLLECTION_LABELS: Record<string, Set<string>> = {
+  descanso: new Set([
+    "Música para dormir",
+    "Meditaciones para dormir",
+    "Historias para dormir",
+    "Sonidos para dormir",
+    "Paisajes sonoros",
+    "Para niños",
+    "Sonidos de lluvia",
+    "Ruido",
+  ].map((label) => label.toLocaleLowerCase())),
+  sonidos_collection: new Set([
+    "Todos los sonidos",
+    "Sonidos de naturaleza",
+    "Sonidos binaurales",
+    "Frecuencias Astrales",
+    "Música de enfoque",
+    "Cantos medicinales",
+    "Sonidos de lluvia",
+    "Sonidos para Chakras",
+  ].map((label) => label.toLocaleLowerCase())),
+};
+
+function collidesWithDefaultCollection(type: string, label: string): boolean {
+  return DEFAULT_COLLECTION_LABELS[type]?.has(label.toLocaleLowerCase()) ?? false;
+}
+
 router.get("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
   const parsedQuery = z
     .object({ type: z.string().trim().min(1).max(60).optional() })
@@ -1670,6 +1697,18 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
     return;
   }
   const { type, label } = parsedBody.data;
+  const baseType = type.endsWith("_hidden") ? type.slice(0, -"_hidden".length) : type;
+  if (
+    baseType === "sonidos_collection" &&
+    label.toLocaleLowerCase() === "todos los sonidos"
+  ) {
+    res.status(403).json({ error: "“Todos los sonidos” es una colección protegida" });
+    return;
+  }
+  if (!type.endsWith("_hidden") && collidesWithDefaultCollection(type, label)) {
+    res.status(409).json({ error: "Ya existe una colección inicial con ese nombre" });
+    return;
+  }
   try {
     const row = await db.transaction(async (tx) => {
       const duplicate = await tx.select({ id: catalogTagOptionsTable.id })
@@ -1681,7 +1720,6 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
         .values({ type, label })
         .returning();
       if (type.endsWith("_hidden")) {
-        const baseType = type.slice(0, -"_hidden".length);
         const categoryId = CATEGORY_THEME_TYPE_TO_ID[baseType];
         if (isManagedThemeType(baseType)) {
           const storedLabel = storedCategoryThemeLabel(baseType, label);
@@ -1693,6 +1731,14 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
                   sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
                 )
               : sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
+        } else if (baseType === "descanso") {
+          await tx.update(catalogSessionsTable)
+            .set({ descansoTags: sql`array_remove(${catalogSessionsTable.descansoTags}, ${label})` })
+            .where(sql`${catalogSessionsTable.descansoTags} @> ARRAY[${label}]::text[]`);
+        } else if (baseType === "sonidos_collection") {
+          await tx.update(catalogSessionsTable)
+            .set({ sonidosTags: sql`array_remove(${catalogSessionsTable.sonidosTags}, ${label})` })
+            .where(sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${label}]::text[]`);
         }
       }
       return created;
@@ -1742,6 +1788,19 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
     return;
   }
   const { type, oldLabel, newLabel } = parsed.data;
+  if (
+    type === "sonidos_collection" &&
+    [oldLabel, newLabel].some(
+      (label) => label.toLocaleLowerCase() === "todos los sonidos",
+    )
+  ) {
+    res.status(403).json({ error: "“Todos los sonidos” es una colección protegida" });
+    return;
+  }
+  if (collidesWithDefaultCollection(type, newLabel)) {
+    res.status(409).json({ error: "Ya existe una colección inicial con ese nombre" });
+    return;
+  }
   if (oldLabel.toLocaleLowerCase() === newLabel.toLocaleLowerCase()) {
     res.status(400).json({ error: "El nombre nuevo debe ser diferente" });
     return;
@@ -1781,6 +1840,14 @@ router.patch("/admin/tag-options", requireAuth, requireRole("admin"), async (req
                 sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`,
               )
             : sql`${catalogSessionsTable.themeTag} @> ARRAY[${oldStored}]::text[]`);
+      } else if (type === "descanso") {
+        await tx.update(catalogSessionsTable)
+          .set({ descansoTags: sql`array_replace(${catalogSessionsTable.descansoTags}, ${oldLabel}, ${newLabel})` })
+          .where(sql`${catalogSessionsTable.descansoTags} @> ARRAY[${oldLabel}]::text[]`);
+      } else if (type === "sonidos_collection") {
+        await tx.update(catalogSessionsTable)
+          .set({ sonidosTags: sql`array_replace(${catalogSessionsTable.sonidosTags}, ${oldLabel}, ${newLabel})` })
+          .where(sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${oldLabel}]::text[]`);
       }
       return row;
     });
@@ -1803,6 +1870,12 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
       const [option] = await tx.select().from(catalogTagOptionsTable)
         .where(eq(catalogTagOptionsTable.id, id)).limit(1);
       if (!option) return [];
+      if (
+        option.type === "sonidos_collection" &&
+        option.label.toLocaleLowerCase() === "todos los sonidos"
+      ) {
+        throw new Error("PROTECTED");
+      }
       const categoryId = CATEGORY_THEME_TYPE_TO_ID[option.type];
       if (isManagedThemeType(option.type)) {
         const storedLabel = storedCategoryThemeLabel(option.type, option.label);
@@ -1814,6 +1887,14 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
                 sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`,
               )
             : sql`${catalogSessionsTable.themeTag} @> ARRAY[${storedLabel}]::text[]`);
+      } else if (option.type === "descanso") {
+        await tx.update(catalogSessionsTable)
+          .set({ descansoTags: sql`array_remove(${catalogSessionsTable.descansoTags}, ${option.label})` })
+          .where(sql`${catalogSessionsTable.descansoTags} @> ARRAY[${option.label}]::text[]`);
+      } else if (option.type === "sonidos_collection") {
+        await tx.update(catalogSessionsTable)
+          .set({ sonidosTags: sql`array_remove(${catalogSessionsTable.sonidosTags}, ${option.label})` })
+          .where(sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${option.label}]::text[]`);
       }
       return tx.delete(catalogTagOptionsTable)
         .where(eq(catalogTagOptionsTable.id, id))
@@ -1823,6 +1904,10 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
     req.log.info({ id }, "tag option deleted");
     res.status(204).end();
   } catch (err) {
+    if (err instanceof Error && err.message === "PROTECTED") {
+      res.status(403).json({ error: "“Todos los sonidos” es una colección protegida" });
+      return;
+    }
     req.log.error({ err }, "error deleting tag option");
     res.status(500).json({ error: "Error al eliminar etiqueta" });
   }

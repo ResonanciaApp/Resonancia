@@ -152,15 +152,7 @@ export const SLEEP_TAG_CARDS: SleepTagCard[] = [
 
 // ── Sonidos Tags ─────────────────────────────────────────────────────────────
 
-export type SonidosCollectionTag =
-  | "Todos los sonidos"
-  | "Sonidos de naturaleza"
-  | "Sonidos binaurales"
-  | "Frecuencias Astrales"
-  | "Música de enfoque"
-  | "Cantos medicinales"
-  | "Sonidos de lluvia"
-  | "Sonidos para Chakras";
+export type SonidosCollectionTag = string;
 
 export interface SonidosTagCard {
   id: string;
@@ -231,15 +223,7 @@ export const SONIDOS_TAG_CARDS: SonidosTagCard[] = [
 
 // ── Descanso Tags ────────────────────────────────────────────────────────────
 
-export type DescansoTag =
-  | "Música para dormir"
-  | "Meditaciones para dormir"
-  | "Historias para dormir"
-  | "Sonidos para dormir"
-  | "Paisajes sonoros"
-  | "Para niños"
-  | "Sonidos de lluvia"
-  | "Ruido";
+export type DescansoTag = string;
 
 export type LegacyDescansoTag =
   | "Relajaciones"

@@ -24,6 +24,7 @@ interface TagOptionSelectorProps {
   onDelete?: (tag: string) => void;
   pill?: boolean;
   fixed?: boolean;
+  protectedLabels?: string[];
 }
 
 export function TagOptionSelector({
@@ -36,6 +37,7 @@ export function TagOptionSelector({
   onDelete,
   pill = false,
   fixed = false,
+  protectedLabels = [],
 }: TagOptionSelectorProps) {
   const { getToken } = useAuth();
   const [dbTags, setDbTags] = useState<TagOption[]>([]);
@@ -47,6 +49,8 @@ export function TagOptionSelector({
   const [renaming, setRenaming] = useState<string | null>(null);
 
   const hiddenType = `${tagType}_hidden`;
+  const protectedSet = new Set(protectedLabels.map((label) => label.toLocaleLowerCase()));
+  const isProtected = (label: string) => protectedSet.has(label.toLocaleLowerCase());
 
   const load = useCallback(async () => {
     try {
@@ -228,8 +232,8 @@ export function TagOptionSelector({
               <button type="button" onClick={() => onToggle(tag)} className={btnClass(tag)}>
                 {tag}
               </button>
-              {!fixed && deleteBtn(key, busy, () => handleHideDefault(tag))}
-               {!fixed && renameBtn(tag)}
+              {!fixed && !isProtected(tag) && deleteBtn(key, busy, () => handleHideDefault(tag))}
+              {!fixed && !isProtected(tag) && renameBtn(tag)}
             </div>
           );
         })}
@@ -243,8 +247,8 @@ export function TagOptionSelector({
               <button type="button" onClick={() => onToggle(opt.label)} className={btnClass(opt.label)}>
                 {opt.label}
               </button>
-              {deleteBtn(key, busy, () => handleDeleteCustom(opt))}
-               {renameBtn(opt.label)}
+              {!isProtected(opt.label) && deleteBtn(key, busy, () => handleDeleteCustom(opt))}
+              {!isProtected(opt.label) && renameBtn(opt.label)}
             </div>
           );
         })}

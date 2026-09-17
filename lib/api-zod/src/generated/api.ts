@@ -1779,9 +1779,13 @@ export const createSubmissionBodyIsLoopDefault = false;
 export const createSubmissionBodyIsPlaceholderDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
-export const createSubmissionBodySonidosTagsMax = 7;
+export const createSubmissionBodySonidosTagsItemMax = 120;
 
-export const createSubmissionBodyDescansoTagsMax = 8;
+export const createSubmissionBodySonidosTagsMax = 30;
+
+export const createSubmissionBodyDescansoTagsItemMax = 120;
+
+export const createSubmissionBodyDescansoTagsMax = 30;
 
 export const createSubmissionBodyMoodIdsMax = 18;
 
@@ -1827,9 +1831,9 @@ export const CreateSubmissionBody = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
-  "sonidosTags": zod.array(zod.string()).max(createSubmissionBodySonidosTagsMax).optional(),
+  "sonidosTags": zod.array(zod.string().min(1).max(createSubmissionBodySonidosTagsItemMax)).max(createSubmissionBodySonidosTagsMax).optional(),
   "descansoTag": zod.string().nullish(),
-  "descansoTags": zod.array(zod.string()).max(createSubmissionBodyDescansoTagsMax).optional(),
+  "descansoTags": zod.array(zod.string().min(1).max(createSubmissionBodyDescansoTagsItemMax)).max(createSubmissionBodyDescansoTagsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
@@ -2277,9 +2281,13 @@ export const editSubmissionBodyPlayerDescriptionMax = 300;
 
 export const editSubmissionBodyFrequencyMax = 60;
 
-export const editSubmissionBodySonidosTagsMax = 7;
+export const editSubmissionBodySonidosTagsItemMax = 120;
 
-export const editSubmissionBodyDescansoTagsMax = 8;
+export const editSubmissionBodySonidosTagsMax = 30;
+
+export const editSubmissionBodyDescansoTagsItemMax = 120;
+
+export const editSubmissionBodyDescansoTagsMax = 30;
 
 
 
@@ -2316,9 +2324,9 @@ export const EditSubmissionBody = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
-  "sonidosTags": zod.array(zod.string()).max(editSubmissionBodySonidosTagsMax).optional(),
+  "sonidosTags": zod.array(zod.string().min(1).max(editSubmissionBodySonidosTagsItemMax)).max(editSubmissionBodySonidosTagsMax).optional(),
   "descansoTag": zod.string().nullish(),
-  "descansoTags": zod.array(zod.string()).max(editSubmissionBodyDescansoTagsMax).optional(),
+  "descansoTags": zod.array(zod.string().min(1).max(editSubmissionBodyDescansoTagsItemMax)).max(editSubmissionBodyDescansoTagsMax).optional(),
   "sortOrder": zod.number().optional(),
   "guests": zod.array(zod.object({
   "name": zod.string(),

@@ -46,9 +46,11 @@ import {
   DESCANSO_TAG_CARDS,
   SONIDOS_TAG_CARDS,
   type DescansoTag,
+  type DescansoTagCard,
   type LegacyDescansoTag,
   type SleepTag,
   type SonidosCollectionTag,
+  type SonidosTagCard,
   type ThemeTag,
 } from "@/data/tags";
 import type { MoodId } from "@/data/moods";
@@ -1205,18 +1207,22 @@ export function normalizeSonidosTags(
   const result = new Set<SonidosCollectionTag>();
   if (Array.isArray(tags)) {
     for (const tag of tags) {
-      if (CANONICAL_SONIDOS_TAGS.has(tag as SonidosCollectionTag)) {
-        result.add(tag as SonidosCollectionTag);
-      }
+      const normalized = tag.trim();
+      if (normalized) result.add(normalized);
     }
   }
-  if (result.size === 0 && legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
+  if (tags == null && result.size === 0 && legacySonidosTag && legacySonidosTag in LEGACY_SONIDOS_TAG_MAP) {
     for (const tag of LEGACY_SONIDOS_TAG_MAP[legacySonidosTag as SonidosTag]) {
       result.add(tag);
     }
   }
   if (result.size > 0) result.add("Todos los sonidos");
-  return SONIDOS_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag));
+  return [
+    ...SONIDOS_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag)),
+    ...[...result]
+      .filter((tag) => !CANONICAL_SONIDOS_TAGS.has(tag))
+      .sort((a, b) => a.localeCompare(b, "es")),
+  ];
 }
 
 export function getSessionSonidosTags(session: Session): SonidosCollectionTag[] {
@@ -1233,10 +1239,45 @@ export const SONIDOS_VISIBLE_TAGS: SonidosCollectionTag[] = SONIDOS_TAG_CARDS.ma
   (card) => card.label,
 );
 
+function customCollectionId(label: string): string {
+  const slug = label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 48) || "coleccion";
+  let hash = 0;
+  for (let index = 0; index < label.length; index += 1) {
+    hash = ((hash << 5) - hash + label.charCodeAt(index)) | 0;
+  }
+  return `custom-${slug}-${Math.abs(hash).toString(36)}`;
+}
+
+export function getSonidosCollectionCards(): SonidosTagCard[] {
+  const labels = new Set<string>();
+  for (const session of SESSIONS) {
+    for (const label of getSessionSonidosTags(session)) labels.add(label);
+  }
+  const canonical = SONIDOS_TAG_CARDS.filter((card) => labels.has(card.label));
+  const canonicalLabels = new Set(SONIDOS_TAG_CARDS.map((card) => card.label));
+  const custom = [...labels]
+    .filter((label) => !canonicalLabels.has(label))
+    .sort((a, b) => a.localeCompare(b, "es"))
+    .map((label) => ({
+      id: customCollectionId(label),
+      label,
+      description: `Explora las sesiones de ${label}.`,
+      icon: "layers",
+      accent: "#BE9650",
+    }));
+  return [...canonical, ...custom];
+}
+
 export function getSonidosVisibleSessions(): Session[] {
   const seen = new Set<string>();
   const result: Session[] = [];
-  for (const tag of SONIDOS_VISIBLE_TAGS) {
+  for (const tag of getSonidosCollectionCards().map((card) => card.label)) {
     for (const session of getSessionsBySonidosTag(tag)) {
       if (!seen.has(session.id)) {
         seen.add(session.id);
@@ -1276,15 +1317,21 @@ export function normalizeDescansoTags(
 ): DescansoTag[] {
   const result = new Set<DescansoTag>();
   for (const tag of tags ?? []) {
-    if (CANONICAL_DESCANSO_TAGS.has(tag as DescansoTag)) result.add(tag as DescansoTag);
+    const normalized = tag.trim();
+    if (normalized) result.add(normalized);
   }
-  if (result.size === 0 && legacyDescansoTag && legacyDescansoTag in LEGACY_DESCANSO_TAG_MAP) {
+  if (tags == null && result.size === 0 && legacyDescansoTag && legacyDescansoTag in LEGACY_DESCANSO_TAG_MAP) {
     for (const tag of LEGACY_DESCANSO_TAG_MAP[legacyDescansoTag as LegacyDescansoTag]) result.add(tag);
   }
-  if (result.size === 0 && legacySleepTag && legacySleepTag in LEGACY_SLEEP_TAG_MAP) {
+  if (tags == null && result.size === 0 && legacySleepTag && legacySleepTag in LEGACY_SLEEP_TAG_MAP) {
     for (const tag of LEGACY_SLEEP_TAG_MAP[legacySleepTag as SleepTag]) result.add(tag);
   }
-  return DESCANSO_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag));
+  return [
+    ...DESCANSO_TAG_CARDS.map((card) => card.label).filter((tag) => result.has(tag)),
+    ...[...result]
+      .filter((tag) => !CANONICAL_DESCANSO_TAGS.has(tag))
+      .sort((a, b) => a.localeCompare(b, "es")),
+  ];
 }
 
 export function getSessionDescansoTags(session: Session): DescansoTag[] {
@@ -1319,13 +1366,33 @@ export const DESCANSO_VISIBLE_TAGS: DescansoTag[] = DESCANSO_TAG_CARDS.map(
   (card) => card.label,
 );
 
+export function getDescansoCollectionCards(): DescansoTagCard[] {
+  const labels = new Set<string>();
+  for (const session of SESSIONS) {
+    for (const label of getSessionDescansoTags(session)) labels.add(label);
+  }
+  const canonical = DESCANSO_TAG_CARDS.filter((card) => labels.has(card.label));
+  const canonicalLabels = new Set(DESCANSO_TAG_CARDS.map((card) => card.label));
+  const custom = [...labels]
+    .filter((label) => !canonicalLabels.has(label))
+    .sort((a, b) => a.localeCompare(b, "es"))
+    .map((label) => ({
+      id: customCollectionId(label),
+      label,
+      description: `Explora las sesiones de ${label}.`,
+      icon: "moon",
+      accent: "#BE9650",
+    }));
+  return [...canonical, ...custom];
+}
+
 /** Devuelve todas las sesiones visibles en la pantalla Dormir, deduplicadas
  *  y en el mismo orden en que aparecerían al recorrer los tabs de izquierda a
  *  derecha. Úsala para construir la cola implícita del reproductor. */
 export function getDescansoVisibleSessions(): Session[] {
   const seen = new Set<string>();
   const result: Session[] = [];
-  for (const tag of DESCANSO_VISIBLE_TAGS) {
+  for (const tag of getDescansoCollectionCards().map((card) => card.label)) {
     for (const s of getSessionsByDescansoTag(tag)) {
       if (!seen.has(s.id)) {
         seen.add(s.id);

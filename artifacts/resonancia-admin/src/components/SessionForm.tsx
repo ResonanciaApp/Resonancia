@@ -231,8 +231,16 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       const selected = new Set(current);
       if (selected.has(tag)) selected.delete(tag);
       else selected.add(tag);
-      if (selected.size > 0) selected.add("Todos los sonidos");
-      const next = SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+      const hasSpecificCollection = [...selected].some(
+        (value) => value !== "Todos los sonidos",
+      );
+      if (hasSpecificCollection) selected.add("Todos los sonidos");
+      else selected.delete("Todos los sonidos");
+      const canonical = SONIDOS_COLLECTION_TAGS.filter((value) => selected.has(value));
+      const custom = [...selected]
+        .filter((value) => !SONIDOS_COLLECTION_TAGS.includes(value))
+        .sort((a, b) => a.localeCompare(b, "es"));
+      const next = [...canonical, ...custom];
       if (next.length === 0) {
         const prefix = `__${SUPERCATEGORY_THEME_TAGS.sonidos.tagType}__:`;
         setThemeTag((tags) => tags.filter((value) => !value.startsWith(prefix)));
@@ -960,8 +968,13 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               label="Colecciones de Dormir (opcional)"
               selected={descansoTags}
               onToggle={toggleDescanso}
+              onRename={(from, to) =>
+                setDescansoTags((tags) => tags.map((tag) => tag === from ? to : tag))
+              }
+              onDelete={(label) =>
+                setDescansoTags((tags) => tags.filter((tag) => tag !== label))
+              }
               pill
-              fixed
             />
 
             {descansoTags.length > 0 && (() => {
@@ -997,8 +1010,14 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               label="Colecciones de Sonidos (opcional)"
               selected={sonidosTags}
               onToggle={toggleSonidos}
+              onRename={(from, to) =>
+                setSonidosTags((tags) => tags.map((tag) => tag === from ? to : tag))
+              }
+              onDelete={(label) =>
+                setSonidosTags((tags) => tags.filter((tag) => tag !== label))
+              }
+              protectedLabels={["Todos los sonidos"]}
               pill
-              fixed
             />
 
             {sonidosTags.length > 0 && (() => {
