@@ -385,7 +385,7 @@ export function MoodPickerSheet({
     ? MOOD_SURVEY_OPTIONS[firstMood.id].find((option) => option.id === answers[firstMood.id])
     : undefined;
   const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
-  const fadeSolidStart = 1 - 35 / moodHeroHeight;
+  const fadeSolidStart = 1 - 55 / moodHeroHeight;
 
   return (
     <Modal
@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     paddingHorizontal: 20,
-    transform: [{ translateY: -35 }],
+    transform: [{ translateY: -55 }],
   },
   heroKicker: {
     fontFamily: "Manrope",
@@ -956,7 +956,7 @@ const styles = StyleSheet.create({
   },
   completeContent: {
     paddingHorizontal: 20,
-    marginTop: -35,
+    marginTop: -55,
     paddingTop: 12,
   },
   resonanceTitle: {
