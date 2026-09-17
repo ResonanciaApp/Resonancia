@@ -13,6 +13,8 @@ En Mobile, las subcategorías históricas organizan tabs y carruseles de la pant
 
 En Admin, la sección “Subcategoría” muestra solo la subcategoría canónica de la categoría activa. Para Charlas, Historias y Ambientales, el grupo adicional se llama “Nombre de colección (opcional)”: cada valor crea una pantalla interna y parte de tres ejemplos editables. Los campos heredados “Etiqueta Sonidos” y “Etiqueta Podcast” no se muestran, aunque sus valores existentes se preservan al editar. “Otras temáticas” sigue siendo un grupo histórico visible dentro de “Etiquetas” y no debe eliminarse al añadir taxonomías editoriales nuevas.
 
+El filtro global “Otras temáticas” debe usar exclusivamente sus nueve opciones canónicas, no inferirse desde todos los `themeTag` sin prefijo: los datos históricos incluyen Chakras y etiquetas de prueba que pertenecen a otras taxonomías.
+
 “Etiqueta Dormir” y sus opciones históricas (Binaurales, Ancestrales y ASMR) también están obsoletas y no deben mostrarse al crear o editar Música. Los datos heredados pueden conservarse internamente al guardar sesiones antiguas.
 
 En modo edición, las secciones “Subcategoría” y “Etiquetas” deben renderizarse siempre para cualquier sesión. La primera muestra el selector canónico aplicable o informa que la categoría no tiene subcategorías; la segunda conserva todos los grupos editoriales.

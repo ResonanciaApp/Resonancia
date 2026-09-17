@@ -56,6 +56,18 @@ const ADMIN_SESSION_CATEGORY_IDS = [
   "ambientales",
 ] as const;
 
+const OTHER_THEME_FILTER_OPTIONS = [
+  "Para la ansiedad",
+  "Energiza tus mañanas",
+  "Foco y concentración",
+  "Suelto la Rabia",
+  "Crecimiento personal",
+  "Armonía familiar",
+  "Respiración consciente",
+  "Meditaciones Activas",
+  "Astrología",
+] as const;
+
 /** Tamaños máximos aceptados (la validación de bytes reales vive en storage). */
 const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
@@ -916,14 +928,6 @@ router.get(
         return category ? [category] : [];
       });
 
-      // themeTags: aplanar arrays únicos
-      const themeTagSet = new Set<string>();
-      for (const r of rows) {
-        for (const t of r.themeTag ?? []) {
-          if (t && !t.startsWith("__")) themeTagSet.add(t);
-        }
-      }
-
       const moodIdSet = new Set<string>();
       for (const r of rows) {
         for (const moodId of r.moodIds ?? []) {
@@ -933,7 +937,7 @@ router.get(
 
       res.json({
         categories,
-        themeTags: [...themeTagSet].sort(),
+        themeTags: [...OTHER_THEME_FILTER_OPTIONS],
         moodIds: [...moodIdSet].sort(),
       });
     } catch (err) {
