@@ -679,9 +679,14 @@ export function ExploreScreen({
               { opacity: pressed ? 0.82 : 1 },
             ]}
           >
-            <View style={styles.resonadoresBannerIcon}>
+            <LinearGradient
+              colors={["#7C3AED", "#1E1B4B"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={styles.resonadoresBannerIcon}
+            >
               <Feather name="users" color="#F9F9F9" size={30} />
-            </View>
+            </LinearGradient>
             <View style={styles.resonadoresBannerCopy}>
               <Text style={styles.resonadoresBannerTitle}>Conoce a los Resonadores</Text>
               <Text style={styles.resonadoresBannerSubtitle}>
@@ -1181,7 +1186,6 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
     transform: [{ translateY: 2 }],
   },
   resonadoresBannerCopy: {
