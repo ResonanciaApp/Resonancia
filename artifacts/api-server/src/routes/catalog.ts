@@ -47,6 +47,15 @@ import {
 
 const router: IRouter = Router();
 
+const ADMIN_SESSION_CATEGORY_IDS = [
+  "musica-sonidos",
+  "meditaciones-guiadas",
+  "sonidos-ancestrales",
+  "charlas",
+  "historias",
+  "ambientales",
+] as const;
+
 /** Tamaños máximos aceptados (la validación de bytes reales vive en storage). */
 const MAX_AUDIO_BYTES = 200 * 1024 * 1024; // 200 MB
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
@@ -842,7 +851,7 @@ router.get(
       res.status(400).json({ error: "Consulta inválida" });
       return;
     }
-    const { status: rawStatus, categoryId, createdAfter, themeTag, otherTag } = parsed.data;
+    const { status: rawStatus, categoryId, createdAfter, themeTag, moodId } = parsed.data;
     const status = rawStatus ?? "pending";
     try {
       const conditions = [eq(catalogSessionsTable.status, status)];
@@ -860,16 +869,9 @@ router.get(
           sql`${catalogSessionsTable.themeTag} @> ARRAY[${themeTag}]::text[]`,
         );
       }
-      if (otherTag) {
+      if (moodId) {
         conditions.push(
-          or(
-            sql`${catalogSessionsTable.descansoTags} @> ARRAY[${otherTag}]::text[]`,
-            sql`${catalogSessionsTable.sonidosTags} @> ARRAY[${otherTag}]::text[]`,
-            eq(catalogSessionsTable.sleepTag, otherTag),
-            eq(catalogSessionsTable.meditationTag, otherTag),
-            eq(catalogSessionsTable.soundTag, otherTag),
-            eq(catalogSessionsTable.ancestralTag, otherTag),
-          )!,
+          sql`${catalogSessionsTable.moodIds} @> ARRAY[${moodId}]::text[]`,
         );
       }
       const sessions = await db
@@ -892,28 +894,27 @@ router.get(
   requireRole("admin", "moderador"),
   async (req, res) => {
     try {
-      const rows = await db
-        .select({
-          categoryId: catalogSessionsTable.categoryId,
-          categoryLabel: catalogSessionsTable.categoryLabel,
-          themeTag: catalogSessionsTable.themeTag,
-          descansoTags: catalogSessionsTable.descansoTags,
-          sonidosTags: catalogSessionsTable.sonidosTags,
-          sleepTag: catalogSessionsTable.sleepTag,
-          meditationTag: catalogSessionsTable.meditationTag,
-          soundTag: catalogSessionsTable.soundTag,
-          ancestralTag: catalogSessionsTable.ancestralTag,
-        })
-        .from(catalogSessionsTable);
+      const [rows, categoryRows] = await Promise.all([
+        db
+          .select({
+            themeTag: catalogSessionsTable.themeTag,
+            moodIds: catalogSessionsTable.moodIds,
+          })
+          .from(catalogSessionsTable),
+        db
+          .select({
+            id: catalogCategoriesTable.id,
+            label: catalogCategoriesTable.title,
+          })
+          .from(catalogCategoriesTable)
+          .where(inArray(catalogCategoriesTable.id, [...ADMIN_SESSION_CATEGORY_IDS])),
+      ]);
 
-      // Categorías únicas ordenadas
-      const catMap = new Map<string, string>();
-      for (const r of rows) {
-        if (!catMap.has(r.categoryId)) catMap.set(r.categoryId, r.categoryLabel);
-      }
-      const categories = [...catMap.entries()]
-        .map(([id, label]) => ({ id, label }))
-        .sort((a, b) => a.label.localeCompare(b.label));
+      const categoryById = new Map(categoryRows.map((category) => [category.id, category]));
+      const categories = ADMIN_SESSION_CATEGORY_IDS.flatMap((id) => {
+        const category = categoryById.get(id);
+        return category ? [category] : [];
+      });
 
       // themeTags: aplanar arrays únicos
       const themeTagSet = new Set<string>();
@@ -923,25 +924,17 @@ router.get(
         }
       }
 
-      // otherTags: colecciones de Dormir + taxonomías secundarias únicas
-      const otherTagSet = new Set<string>();
+      const moodIdSet = new Set<string>();
       for (const r of rows) {
-        for (const t of r.descansoTags ?? []) {
-          if (t) otherTagSet.add(t);
+        for (const moodId of r.moodIds ?? []) {
+          if (moodId) moodIdSet.add(moodId);
         }
-        for (const t of r.sonidosTags ?? []) {
-          if (t) otherTagSet.add(t);
-        }
-        if (r.sleepTag) otherTagSet.add(r.sleepTag);
-        if (r.meditationTag) otherTagSet.add(r.meditationTag);
-        if (r.soundTag) otherTagSet.add(r.soundTag);
-        if (r.ancestralTag) otherTagSet.add(r.ancestralTag);
       }
 
       res.json({
         categories,
         themeTags: [...themeTagSet].sort(),
-        otherTags: [...otherTagSet].sort(),
+        moodIds: [...moodIdSet].sort(),
       });
     } catch (err) {
       req.log.error({ err }, "error fetching filter options");

@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { Link } from "wouter";
 import {
   useGetPendingSubmissions,
   useGetSubmissionFilterOptions,
@@ -20,8 +21,10 @@ import type {
   CatalogAudioFile,
   GetPendingSubmissionsStatus,
   GetPendingSubmissionsParams,
+  MoodId,
 } from "@workspace/api-client-react";
 import { uploadFile as uploadFileShared } from "@/lib/uploadFile";
+import { MOOD_OPTIONS } from "@/lib/moods";
 import {
   CATEGORY_THEME_TAGS,
   SUPERCATEGORY_THEME_TAGS,
@@ -84,7 +87,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown, X, Loader2 } from "lucide-react";
+import { ChevronDown, X, Loader2, PlusCircle } from "lucide-react";
 import {
   TagOptionSelector,
   SingleTagOptionSelector,
@@ -238,11 +241,11 @@ function DestacadaDeHoy() {
   );
 }
 
-// ─── Moderación ──────────────────────────────────────────────────────────────
+// ─── Gestión editorial de sesiones ───────────────────────────────────────────
 
 const STATUS_TABS: { value: GetPendingSubmissionsStatus; label: string }[] = [
-  { value: "pending", label: "Pendientes" },
   { value: "published", label: "Publicadas" },
+  { value: "pending", label: "Pendientes" },
   { value: "draft", label: "Ocultas" },
   { value: "rejected", label: "Rechazadas" },
 ];
@@ -764,27 +767,36 @@ function EditDialog({
             )}
 
             {categoryThemeConfig && (
-              <TagOptionSelector
-                tagType={categoryThemeConfig.tagType}
-                defaults={categoryThemeConfig.defaults}
-                label={categoryThemeConfig.label}
-                selected={categoryThemeSelectedLabels(catId, themeTag)}
-                onToggle={(label) => {
-                  const stored = categoryThemeStoredValue(catId, label);
-                  setThemeTag((tags) => tags.includes(stored)
-                    ? tags.filter((tag) => tag !== stored)
-                    : [...tags, stored]);
-                }}
-                onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
-                  tag === categoryThemeStoredValue(catId, from)
-                    ? categoryThemeStoredValue(catId, to)
-                    : tag
-                ))}
-                onDelete={(label) => setThemeTag((tags) =>
-                  tags.filter((value) => value !== categoryThemeStoredValue(catId, label))
+              <div className="space-y-2">
+                <TagOptionSelector
+                  tagType={categoryThemeConfig.tagType}
+                  defaults={categoryThemeConfig.defaults}
+                  label={categoryThemeConfig.label}
+                  selected={categoryThemeSelectedLabels(catId, themeTag)}
+                  onToggle={(label) => {
+                    const stored = categoryThemeStoredValue(catId, label);
+                    setThemeTag((tags) => tags.includes(stored)
+                      ? tags.filter((tag) => tag !== stored)
+                      : [...tags, stored]);
+                  }}
+                  onRename={(from, to) => setThemeTag((tags) => tags.map((tag) =>
+                    tag === categoryThemeStoredValue(catId, from)
+                      ? categoryThemeStoredValue(catId, to)
+                      : tag
+                  ))}
+                  onDelete={(label) => setThemeTag((tags) =>
+                    tags.filter((value) => value !== categoryThemeStoredValue(catId, label))
+                  )}
+                  pill
+                />
+                {["historias", "charlas", "ambientales"].includes(catId) && (
+                  <p className="text-xs text-muted-foreground">
+                    Cada nombre crea una pantalla interna de esta categoría. Podés seleccionar
+                    varias colecciones, renombrarlas con el lápiz, eliminarlas con la × o crear
+                    una con “Nueva”.
+                  </p>
                 )}
-                pill
-              />
+              </div>
             )}
 
             <TagOptionSelector
@@ -1020,6 +1032,15 @@ function SubmissionCard({ submission, isModerator }: { submission: Submission; i
                 </Button>
               </>
             )}
+            {submission.status === "rejected" && (
+              <Button
+                size="sm"
+                disabled={approve.isPending}
+                onClick={() => approve.mutate({ id: submission.id })}
+              >
+                Publicar
+              </Button>
+            )}
             {submission.status === "published" && (
               <Button
                 size="sm"
@@ -1133,7 +1154,7 @@ type ActiveFilters = {
   categoryId?: string;
   fechaRange?: FechaRange;
   themeTag?: string;
-  otherTag?: string;
+  moodId?: MoodId;
 };
 
 function FilterPill({
@@ -1196,7 +1217,7 @@ function FilterBar({
 }) {
   const { data: opts } = useGetSubmissionFilterOptions();
   const hasFilters =
-    !!filters.categoryId || !!filters.fechaRange || !!filters.themeTag || !!filters.otherTag;
+    !!filters.categoryId || !!filters.fechaRange || !!filters.themeTag || !!filters.moodId;
 
   const set = (patch: Partial<ActiveFilters>) => onChange({ ...filters, ...patch });
   const clear = (key: keyof ActiveFilters) =>
@@ -1247,12 +1268,12 @@ function FilterBar({
         </div>
       </FilterPill>
 
-      {/* Temática (nivel 1) */}
-      <FilterPill label={filters.themeTag ?? "Temática"} active={!!filters.themeTag}>
+      {/* Otras temáticas */}
+      <FilterPill label={filters.themeTag ?? "Otras temáticas"} active={!!filters.themeTag}>
         <div className="py-1 max-h-60 overflow-y-auto">
           {!!filters.themeTag && (
             <OptionItem selected={false} onSelect={() => clear("themeTag")}>
-              <X className="w-3 h-3" /> Todas las temáticas
+              <X className="w-3 h-3" /> Todas las otras temáticas
             </OptionItem>
           )}
           {(opts?.themeTags ?? []).map((t) => (
@@ -1273,25 +1294,32 @@ function FilterBar({
         </div>
       </FilterPill>
 
-      {/* Otras etiquetas */}
-      <FilterPill label={filters.otherTag ?? "Otras etiquetas"} active={!!filters.otherTag}>
+      {/* Emociones */}
+      <FilterPill
+        label={
+          filters.moodId
+            ? (MOOD_OPTIONS.find((option) => option.id === filters.moodId)?.label ?? "Emociones")
+            : "Emociones"
+        }
+        active={!!filters.moodId}
+      >
         <div className="py-1 max-h-60 overflow-y-auto">
-          {!!filters.otherTag && (
-            <OptionItem selected={false} onSelect={() => clear("otherTag")}>
-              <X className="w-3 h-3" /> Todas las etiquetas
+          {!!filters.moodId && (
+            <OptionItem selected={false} onSelect={() => clear("moodId")}>
+              <X className="w-3 h-3" /> Todas las emociones
             </OptionItem>
           )}
-          {(opts?.otherTags ?? []).map((t) => (
+          {MOOD_OPTIONS.filter((option) => opts?.moodIds.includes(option.id)).map((option) => (
             <OptionItem
-              key={t}
-              selected={filters.otherTag === t}
-              onSelect={() => set({ otherTag: t })}
+              key={option.id}
+              selected={filters.moodId === option.id}
+              onSelect={() => set({ moodId: option.id })}
             >
-              {t}
+              {option.label}
             </OptionItem>
           ))}
-          {opts && opts.otherTags.length === 0 && (
-            <p className="text-xs text-muted-foreground px-3 py-2">Sin etiquetas.</p>
+          {opts && opts.moodIds.length === 0 && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Sin emociones asignadas.</p>
           )}
           {!opts && (
             <p className="text-xs text-muted-foreground px-3 py-2">Cargando…</p>
@@ -1314,16 +1342,48 @@ function FilterBar({
   );
 }
 
-function SubmissionList({ status, filters = {}, isModerator }: { status: GetPendingSubmissionsStatus; filters?: ActiveFilters; isModerator?: boolean }) {
+const PAGE_SIZE = 25;
+
+function SubmissionList({
+  status,
+  filters = {},
+  search,
+  page,
+  onPageChange,
+  isModerator,
+}: {
+  status: GetPendingSubmissionsStatus;
+  filters?: ActiveFilters;
+  search: string;
+  page: number;
+  onPageChange: (page: number) => void;
+  isModerator?: boolean;
+}) {
   const params: GetPendingSubmissionsParams = {
     status,
     ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
     ...(filters.fechaRange ? { createdAfter: getCreatedAfter(filters.fechaRange) } : {}),
     ...(filters.themeTag ? { themeTag: filters.themeTag } : {}),
-    ...(filters.otherTag ? { otherTag: filters.otherTag } : {}),
+    ...(filters.moodId ? { moodId: filters.moodId } : {}),
   };
 
   const { data, isLoading, error } = useGetPendingSubmissions(params);
+  const normalizedSearch = search.trim().toLocaleLowerCase("es");
+  const filteredSubmissions = (data?.submissions ?? []).filter((submission) =>
+    !normalizedSearch ||
+    [submission.title, submission.subtitle, submission.categoryLabel]
+      .some((value) => value?.toLocaleLowerCase("es").includes(normalizedSearch)),
+  );
+  const totalPages = Math.max(1, Math.ceil(filteredSubmissions.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const visibleSubmissions = filteredSubmissions.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    if (page !== safePage) onPageChange(safePage);
+  }, [onPageChange, page, safePage]);
 
   if (isLoading) {
     return (
@@ -1339,7 +1399,7 @@ function SubmissionList({ status, filters = {}, isModerator }: { status: GetPend
       </p>
     );
   }
-  if (!data || data.submissions.length === 0) {
+  if (filteredSubmissions.length === 0) {
     return (
       <p className="text-muted-foreground py-8 text-center">
         No hay contenido en este estado.
@@ -1348,30 +1408,77 @@ function SubmissionList({ status, filters = {}, isModerator }: { status: GetPend
   }
 
   return (
-    <div className="space-y-3">
-      {data.submissions.map((s) => (
-        <SubmissionCard key={s.id} submission={s} isModerator={isModerator} />
-      ))}
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">
+        {filteredSubmissions.length} {filteredSubmissions.length === 1 ? "sesión" : "sesiones"}
+      </p>
+      <div className="space-y-3">
+        {visibleSubmissions.map((s) => (
+          <SubmissionCard key={s.id} submission={s} isModerator={isModerator} />
+        ))}
+      </div>
+      <div className="flex items-center justify-between pt-2">
+        <p className="text-sm text-muted-foreground">
+          Página {safePage} de {totalPages}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={safePage <= 1}
+            onClick={() => onPageChange(Math.max(1, safePage - 1))}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={safePage >= totalPages}
+            onClick={() => onPageChange(Math.min(totalPages, safePage + 1))}
+          >
+            Siguiente
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default function ModeracionPage({ isModerator }: { isModerator?: boolean } = {}) {
-  const [tab, setTab] = useState<GetPendingSubmissionsStatus>("pending");
+export default function SesionesListaPage({ isModerator }: { isModerator?: boolean } = {}) {
+  const [tab, setTab] = useState<GetPendingSubmissionsStatus>("published");
   const [filters, setFilters] = useState<ActiveFilters>({});
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const handleTabChange = (v: string) => {
     setTab(v as GetPendingSubmissionsStatus);
     setFilters({});
+    setSearch("");
+    setPage(1);
+  };
+
+  const handleFiltersChange = (next: ActiveFilters) => {
+    setFilters(next);
+    setPage(1);
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Moderación</h1>
-        <p className="text-muted-foreground">
-          Revisa, aprueba, edita y oculta el contenido enviado por creadores.
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">Sesiones</h1>
+          <p className="text-muted-foreground">
+            Gestioná, revisá y publicá todas las sesiones del catálogo.
+          </p>
+        </div>
+        {!isModerator && (
+          <Button asChild>
+            <Link href="/sesiones/nueva">
+              <PlusCircle className="w-4 h-4 mr-2" />
+              Nueva sesión
+            </Link>
+          </Button>
+        )}
       </div>
 
       <DestacadaDeHoy />
@@ -1386,12 +1493,31 @@ export default function ModeracionPage({ isModerator }: { isModerator?: boolean 
             ))}
           </TabsList>
 
-          <FilterBar filters={filters} onChange={setFilters} />
+          <FilterBar filters={filters} onChange={handleFiltersChange} />
         </div>
+
+        <Input
+          placeholder="Buscar por título, subtítulo o categoría…"
+          value={search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+            setPage(1);
+          }}
+          className="mt-4 max-w-md"
+        />
 
         {STATUS_TABS.map((t) => (
           <TabsContent key={t.value} value={t.value} className="mt-4">
-            {tab === t.value && <SubmissionList status={t.value} filters={filters} isModerator={isModerator} />}
+            {tab === t.value && (
+              <SubmissionList
+                status={t.value}
+                filters={filters}
+                search={search}
+                page={page}
+                onPageChange={setPage}
+                isModerator={isModerator}
+              />
+            )}
           </TabsContent>
         ))}
       </Tabs>

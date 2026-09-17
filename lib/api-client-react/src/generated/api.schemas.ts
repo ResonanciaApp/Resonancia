@@ -1467,7 +1467,7 @@ export type SubmissionFilterOptionsCategoriesItem = {
 export interface SubmissionFilterOptions {
   categories: SubmissionFilterOptionsCategoriesItem[];
   themeTags: string[];
-  otherTags: string[];
+  moodIds: MoodId[];
 }
 
 export interface ReviewRejectBody {
@@ -2375,13 +2375,13 @@ categoryId?: string;
  */
 createdAfter?: string;
 /**
- * Filtrar por un valor exacto dentro del array themeTag
+ * Filtrar por una “Otra temática” exacta dentro del array themeTag
  */
 themeTag?: string;
 /**
- * Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag
+ * Filtrar por una emoción asignada a la sesión
  */
-otherTag?: string;
+moodId?: MoodId;
 };
 
 export type GetPendingSubmissionsStatus = typeof GetPendingSubmissionsStatus[keyof typeof GetPendingSubmissionsStatus];

@@ -57,17 +57,17 @@ export const CATEGORY_THEME_TAGS: Record<string, CategoryThemeTagConfig> = {
   },
   charlas: {
     tagType: "category_theme_charlas",
-    label: "Subcategorías de Charlas *",
+    label: "Nombre de colección de Charlas (opcional)",
     defaults: ["Consciencia", "Bienestar", "Filosofía"],
   },
   historias: {
     tagType: "category_theme_historias",
-    label: "Subcategorías de Historias *",
+    label: "Nombre de colección de Historias (opcional)",
     defaults: ["Inspiración", "Transformación", "Sabiduría"],
   },
   ambientales: {
     tagType: "category_theme_ambientales",
-    label: "Subcategorías de Ambientales *",
+    label: "Nombre de colección de Ambientales (opcional)",
     defaults: ["Lluvia", "Bosque", "Océano"],
   },
 };

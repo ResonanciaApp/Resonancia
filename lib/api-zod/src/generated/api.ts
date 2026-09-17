@@ -1881,8 +1881,8 @@ export const GetPendingSubmissionsQueryParams = zod.object({
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional(),
   "categoryId": zod.coerce.string().optional(),
   "createdAfter": zod.coerce.string().optional().describe('ISO 8601 date string — solo devuelve sesiones creadas desde esta fecha'),
-  "themeTag": zod.coerce.string().optional().describe('Filtrar por un valor exacto dentro del array themeTag'),
-  "otherTag": zod.coerce.string().optional().describe('Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag')
+  "themeTag": zod.coerce.string().optional().describe('Filtrar por una “Otra temática” exacta dentro del array themeTag'),
+  "moodId": zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente']).optional().describe('Filtrar por una emoción asignada a la sesión')
 })
 
 export const getPendingSubmissionsResponseSubmissionsItemIsPlaceholderDefault = false;
@@ -1985,7 +1985,7 @@ export const GetSubmissionFilterOptionsResponse = zod.object({
   "label": zod.string()
 })),
   "themeTags": zod.array(zod.string()),
-  "otherTags": zod.array(zod.string())
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente']))
 })
 
 

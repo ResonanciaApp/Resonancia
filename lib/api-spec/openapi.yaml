@@ -1814,15 +1814,15 @@ paths:
         - name: themeTag
           in: query
           required: false
-          description: Filtrar por un valor exacto dentro del array themeTag
+          description: Filtrar por una “Otra temática” exacta dentro del array themeTag
           schema:
             type: string
-        - name: otherTag
+        - name: moodId
           in: query
           required: false
-          description: Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag
+          description: Filtrar por una emoción asignada a la sesión
           schema:
-            type: string
+            $ref: "#/components/schemas/MoodId"
       responses:
         "200":
           description: Lista de envíos
@@ -6009,11 +6009,11 @@ components:
           type: array
           items:
             type: string
-        otherTags:
+        moodIds:
           type: array
           items:
-            type: string
-      required: [categories, themeTags, otherTags]
+            $ref: "#/components/schemas/MoodId"
+      required: [categories, themeTags, moodIds]
     ReviewRejectBody:
       type: object
       properties:

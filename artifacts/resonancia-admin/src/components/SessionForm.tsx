@@ -93,6 +93,7 @@ function resolveImageUrl(raw: string | null | undefined): string | null {
 }
 
 import { uploadFile as uploadFileShared, type UploadedFile } from "@/lib/uploadFile";
+import { MOOD_LABEL_TO_ID, MOOD_OPTIONS } from "@/lib/moods";
 
 interface AudioSlot {
   file: File | null;
@@ -112,28 +113,6 @@ const emptyAudioSlot = (): AudioSlot => ({
 
 type CreateBody = Parameters<ReturnType<typeof useCreateSubmission>["mutateAsync"]>[0]["data"];
 type EditBody = Parameters<ReturnType<typeof useEditSubmission>["mutateAsync"]>[0]["data"];
-
-const MOOD_OPTIONS: ReadonlyArray<{ id: MoodId; label: string }> = [
-  { id: "estresado", label: "🥵 Estresad@" },
-  { id: "ansioso", label: "😬 Ansios@" },
-  { id: "cansado", label: "😪 Cansad@" },
-  { id: "inepto", label: "😑 Inept@" },
-  { id: "triste", label: "😭 Triste" },
-  { id: "solo", label: "🥺 Solo(a)" },
-  { id: "deprimido", label: "😔 Deprimido(a)" },
-  { id: "desmotivado", label: "😪 Desmotivado(a)" },
-  { id: "enojado", label: "😤 Enojado(a)" },
-  { id: "adolorido", label: "😣 Adolorido(a)" },
-  { id: "agradecido", label: "🙏 Agradecido(a)" },
-  { id: "emocionado", label: "🤩 Emocionado(a)" },
-  { id: "lleno-de-amor", label: "🥰 Lleno(a) de amor" },
-  { id: "feliz", label: "😊 Feliz" },
-  { id: "en-paz", label: "😌 En paz" },
-  { id: "esperanzado", label: "😇 Esperanzado(a)" },
-  { id: "contento", label: "🙂 Contento(a)" },
-  { id: "presente", label: "🧘 Presente" },
-];
-const MOOD_LABEL_TO_ID = new Map(MOOD_OPTIONS.map((option) => [option.label, option.id]));
 
 export interface SessionFormProps {
   mode: "create" | "edit";
@@ -612,7 +591,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               ? "Ya está visible en la app."
               : publishMode === "draft"
               ? "Podés publicarla más tarde desde Sesiones."
-              : "Podés aprobarla desde la cola de Moderación."}
+              : "Podés aprobarla desde Sesiones."}
           </p>
         </div>
         <Button onClick={handleReset}>Subir otra sesión</Button>
@@ -925,8 +904,9 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                 />
                 {["historias", "charlas", "ambientales"].includes(categoryId) && (
                   <p className="text-xs text-muted-foreground">
-                    Estas opciones crean los tabs de la pantalla. Podés seleccionar varias,
-                    renombrarlas con el lápiz, eliminarlas con la × o crear una con “Nueva”.
+                    Cada nombre crea una pantalla interna de esta categoría. Podés seleccionar
+                    varias colecciones, renombrarlas con el lápiz, eliminarlas con la × o crear
+                    una con “Nueva”.
                   </p>
                 )}
               </div>

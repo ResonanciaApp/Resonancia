@@ -55,6 +55,15 @@ const EMPTY_FORM: FormState = {
   sortOrder: 0,
 };
 
+const ADMIN_CATEGORY_IDS = [
+  "musica-sonidos",
+  "meditaciones-guiadas",
+  "sonidos-ancestrales",
+  "charlas",
+  "historias",
+  "ambientales",
+] as const;
+
 function Field({
   label,
   ...props
@@ -308,7 +317,11 @@ function EditDialog({ category }: { category: CatalogCategory }) {
 
 export default function CategoriasPage() {
   const { data, isLoading, error } = useGetCatalog();
-  const categories = data?.categories ?? [];
+  const catalogCategories = data?.categories ?? [];
+  const categories = ADMIN_CATEGORY_IDS.flatMap((id) => {
+    const category = catalogCategories.find((item) => item.id === id);
+    return category ? [category] : [];
+  });
 
   return (
     <div className="space-y-6">
@@ -319,7 +332,6 @@ export default function CategoriasPage() {
             Organiza las categorías del catálogo.
           </p>
         </div>
-        <CreateDialog />
       </div>
 
       {isLoading ? (

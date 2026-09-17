@@ -16,7 +16,6 @@ import {
   LayoutDashboard,
   Users,
   ShieldCheck,
-  ListMusic,
   FolderTree,
   LogOut,
   PlusCircle,
@@ -39,11 +38,10 @@ import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 import NotFound from "@/pages/not-found";
 import DashboardPage from "@/pages/dashboard";
 import UsuariosPage from "@/pages/usuarios";
-import ModeracionPage from "@/pages/moderacion";
+import SesionesListaPage from "@/pages/moderacion";
 import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
 import SesionesPage from "@/pages/sesiones";
-import SesionesListaPage from "@/pages/sesiones-lista";
 import SesionEditarPage from "@/pages/sesion-editar";
 import SonidosPage from "@/pages/sonidos";
 import GeometrixPage from "@/pages/geometrix";
@@ -167,14 +165,12 @@ function AccessDenied() {
   );
 }
 
-const MODERATOR_NAV_HREFS = ["/moderacion"];
+const MODERATOR_NAV_HREFS = ["/sesiones"];
 
 const NAV = [
   { href: "/", label: "Panel", icon: LayoutDashboard },
   { href: "/usuarios", label: "Usuarios", icon: Users },
-  { href: "/moderacion", label: "Moderación", icon: ShieldCheck },
   { href: "/postulaciones", label: "Postulaciones", icon: UserPlus },
-  { href: "/mezclas", label: "Mezclas", icon: ListMusic },
   { href: "/categorias", label: "Categorías", icon: FolderTree },
   { href: "/playlists", label: "Playlists", icon: Library },
   { href: "/sesiones", label: "Sesiones", icon: AudioLines },
@@ -312,10 +308,13 @@ function AdminGate() {
       <DashboardShell isModerator>
         <Switch>
           <Route path="/moderacion">
-            <ModeracionPage isModerator />
+            <Redirect to="/sesiones" />
+          </Route>
+          <Route path="/sesiones">
+            <SesionesListaPage isModerator />
           </Route>
           <Route path="/">
-            <Redirect to="/moderacion" />
+            <Redirect to="/sesiones" />
           </Route>
           <Route component={NotFound} />
         </Switch>
@@ -329,14 +328,16 @@ function AdminGate() {
         <Route path="/" component={DashboardPage} />
         <Route path="/usuarios" component={UsuariosPage} />
         <Route path="/moderacion">
-          <ModeracionPage />
+          <Redirect to="/sesiones" />
         </Route>
         <Route path="/postulaciones" component={PostulacionesPage} />
         <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />
         <Route path="/sesiones/nueva" component={SesionesPage} />
         <Route path="/sesiones/:id/editar" component={SesionEditarPage} />
-        <Route path="/sesiones" component={SesionesListaPage} />
+        <Route path="/sesiones">
+          <SesionesListaPage />
+        </Route>
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />
