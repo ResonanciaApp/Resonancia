@@ -3428,7 +3428,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroCopy: {
     zIndex: 30,
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
     paddingHorizontal: 24,
     transform: [{ scale: 0.94 }],
@@ -3436,7 +3436,7 @@ const styles = StyleSheet.create({
   inicio3HeroPill: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "center",
+    alignSelf: "flex-start",
     gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -3455,7 +3455,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
-    textAlign: "center",
+    textAlign: "left",
     fontSize: 20,
     lineHeight: 26,
   },
