@@ -121,7 +121,7 @@
 - [Android mixed pill radii](android-mixed-pill-radii.md) — no combinar radio extremo 999 con esquinas pequeñas en una View bordeada: usar el radio real de la altura para conservar los 10 px
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; la card pasa a teal y sale de Inicio tras 1 s; el tap restante abre detalle
-- [Flujo emocional local](mood-checkin-local.md) — primera fase guarda check-ins completos localmente; encuesta secuencial por emoción y recomendaciones con mapeo provisional
+- [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
 - [Carruseles editoriales compactos](content-carousel-sizing.md) — en Dormir/Descubrir/Sonidos/categorías: gap 14 px; pill sube solo con título de 2 líneas
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
 - [Membresía Aurora jade-gold](membership-aurora-jade.md) — dirección aprobada para módulos de Perfil: Premium dorado y Premium Plus morado sobre atmósfera azul verdosa

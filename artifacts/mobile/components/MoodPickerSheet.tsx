@@ -1,20 +1,23 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
-  Image,
   Modal,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SessionCarousel } from "@/components/SessionCarousel";
+import { CONTENT_CAROUSEL_GAP } from "@/constants/carousel";
 import {
   getMoodById,
   MOOD_SURVEY_OPTIONS,
@@ -51,8 +54,8 @@ const WEEKDAY_LABELS = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
 const GOLD = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
-const CARD_BG = "rgba(255,255,255,0.10)";
 const MOOD_GREEN = WIDGET_GREEN_SOLID;
+const HOME_GRID_PAD = 16;
 
 const MOOD_PICKER_ORDER: MoodId[] = [
   "agradecido",
@@ -79,23 +82,95 @@ const MOOD_PICKER_OPTIONS = MOOD_PICKER_ORDER
   .map((moodId) => MOODS.find((mood) => mood.id === moodId))
   .filter((mood): mood is Mood => Boolean(mood));
 
+function getBundledRecommendation(id: string): Session {
+  const session = SESSIONS.find((candidate) => candidate.id === id);
+  if (!session) {
+    throw new Error(`Falta la recomendación emocional base ${id}`);
+  }
+  return Object.freeze({
+    ...session,
+    benefits: [...session.benefits],
+    instruments: [...session.instruments],
+    themeTag: session.themeTag ? [...session.themeTag] : undefined,
+    temaTag: session.temaTag ? [...session.temaTag] : undefined,
+    sonidosTags: session.sonidosTags ? [...session.sonidosTags] : undefined,
+    descansoTags: session.descansoTags ? [...session.descansoTags] : undefined,
+    guideIds: session.guideIds ? [...session.guideIds] : undefined,
+    guests: session.guests?.map((guest) => ({ ...guest })),
+  });
+}
+
+const BUNDLED_MOOD_RECOMMENDATIONS = {
+  meditation: getBundledRecommendation("1"),
+  soundTherapy: getBundledRecommendation("8"),
+  music: getBundledRecommendation("24"),
+  reflection: getBundledRecommendation("5"),
+  story: getBundledRecommendation("61"),
+};
+const BUNDLED_MOOD_RECOMMENDATION_IDS = new Set(
+  Object.values(BUNDLED_MOOD_RECOMMENDATIONS).map((session) => session.id),
+);
+
 function getRecommendations(moodIds: MoodId[]): Session[] {
   const selectedMoods = moodIds
     .map((moodId) => getMoodById(moodId))
     .filter((mood): mood is NonNullable<typeof mood> => Boolean(mood));
   const categories = new Set(selectedMoods.flatMap((mood) => mood.categoryIds));
   const themes = new Set(selectedMoods.flatMap((mood) => mood.themeTags));
-  const pool = SESSIONS.filter((session) => categories.has(session.categoryId));
-  const boosted = pool.filter((session) => session.themeTag?.some((tag) => themes.has(tag)));
-  const rest = pool.filter((session) => !session.themeTag?.some((tag) => themes.has(tag)));
-  const unique = new Set<string>();
-  return [...boosted, ...rest]
-    .filter((session) => {
-      if (unique.has(session.id)) return false;
-      unique.add(session.id);
-      return true;
-    })
-    .slice(0, 5);
+
+  const relevanceScore = (session: Session) =>
+    (categories.has(session.categoryId) ? 2 : 0) +
+    (session.themeTag?.some((tag) => themes.has(tag)) ? 1 : 0);
+  const ranked = [...SESSIONS].sort(
+    (a, b) => relevanceScore(b) - relevanceScore(a),
+  );
+  const used = new Set<string>();
+  const pick = (
+    predicate: (session: Session) => boolean,
+    fallback: Session,
+  ): Session => {
+    const match = ranked.find(
+      (session) =>
+        !used.has(session.id) &&
+        (!BUNDLED_MOOD_RECOMMENDATION_IDS.has(session.id) ||
+          session.id === fallback.id) &&
+        !session.isPlaceholder &&
+        predicate(session),
+    );
+    const selected = match ?? fallback;
+    used.add(selected.id);
+    return selected;
+  };
+
+  return [
+    pick(
+      (session) =>
+        session.categoryId === "meditaciones-guiadas" &&
+        session.meditationTag !== "3 Minutos de Sabiduría" &&
+        !session.sabiduriaTag,
+      BUNDLED_MOOD_RECOMMENDATIONS.meditation,
+    ),
+    pick(
+      (session) => session.categoryId === "sonidos-ancestrales",
+      BUNDLED_MOOD_RECOMMENDATIONS.soundTherapy,
+    ),
+    pick(
+      (session) => session.categoryId === "musica-sonidos" && Boolean(session.soundTag),
+      BUNDLED_MOOD_RECOMMENDATIONS.music,
+    ),
+    pick(
+      (session) =>
+        Boolean(session.sabiduriaTag) ||
+        session.meditationTag === "3 Minutos de Sabiduría",
+      BUNDLED_MOOD_RECOMMENDATIONS.reflection,
+    ),
+    pick(
+      (session) =>
+        session.descansoTag?.startsWith("Historias") === true ||
+        session.descansoTags?.some((tag) => tag.startsWith("Historias")) === true,
+      BUNDLED_MOOD_RECOMMENDATIONS.story,
+    ),
+  ];
 }
 
 function formatShortDate(iso: string) {
@@ -112,6 +187,7 @@ export function MoodPickerSheet({
   onSelect,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const { width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
@@ -167,6 +243,9 @@ export function MoodPickerSheet({
   const recommendations = useMemo(
     () => getRecommendations(selected),
     [selected, catalogVersion],
+  );
+  const recommendationCardWidth = Math.round(
+    (viewportWidth - HOME_GRID_PAD - CONTENT_CAROUSEL_GAP) / 1.9,
   );
 
   const weekDays = useMemo(() => {
@@ -241,11 +320,14 @@ export function MoodPickerSheet({
 
   async function skipSurvey() {
     if (!currentMood) return;
+    const nextAnswers = { ...answers };
+    delete nextAnswers[currentMood.id];
     if (surveyIndex < selectedMoods.length - 1) {
+      setAnswers(nextAnswers);
       setSurveyIndex((index) => index + 1);
       return;
     }
-    await finishFlow(answers);
+    await finishFlow(nextAnswers);
   }
 
   function handleSessionPress(session: Session) {
@@ -438,66 +520,59 @@ export function MoodPickerSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={[styles.completeContent, { paddingBottom: bottomPad + 28 }]}
             >
-              <Text style={styles.completeTitle}>¡Verificación de estado de ánimo completada!</Text>
-              <Text style={[styles.completeSubtitle, { color: themeAccent }]}>
-                Estas son algunas recomendaciones que querrás tomar
-              </Text>
-
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.recommendationsRow}
-              >
-                {recommendations.map((session) => (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => handleSessionPress(session)}
-                    style={({ pressed }) => [
-                      styles.recommendationCard,
-                      { opacity: pressed ? 0.82 : 1 },
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Abrir ${session.title}`}
-                  >
-                    <Image
-                      source={session.image}
-                      style={styles.recommendationImage}
-                      resizeMode="cover"
-                    />
-                    <View style={styles.recommendationShade} />
-                    <Text style={styles.recommendationCategory}>
-                      {session.categoryLabel?.toUpperCase() ?? "PRÁCTICA"}
-                    </Text>
-                    <Text style={styles.recommendationTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <View style={styles.recommendationDuration}>
-                      <Feather name="clock" size={11} color="#FFFFFF" />
-                      <Text style={styles.recommendationDurationText}>{session.durationLabel}</Text>
+              <Text style={styles.completeTitle}>Tu emoción</Text>
+              <View style={styles.completedMoods}>
+                {selectedMoods.map((mood) => {
+                  const selectedOption = MOOD_SURVEY_OPTIONS[mood.id].find(
+                    (option) => option.id === answers[mood.id],
+                  );
+                  return (
+                    <View key={mood.id} style={styles.completedMoodBlock}>
+                      <View style={styles.completedMoodCard}>
+                        <BlurView
+                          pointerEvents="none"
+                          intensity={38}
+                          tint="light"
+                          experimentalBlurMethod="dimezisBlurView"
+                          style={styles.completedMoodGlass}
+                        />
+                        <Text style={styles.completedMoodEmoji}>{mood.emoji}</Text>
+                        <Text style={styles.completedMoodLabel}>{mood.label}</Text>
+                      </View>
+                      <Text
+                        style={[
+                          styles.completedMoodAnswer,
+                          !selectedOption && styles.completedMoodAnswerSkipped,
+                        ]}
+                      >
+                        {selectedOption?.label ?? "Sin respuesta seleccionada"}
+                      </Text>
                     </View>
-                  </Pressable>
-                ))}
-              </ScrollView>
+                  );
+                })}
+              </View>
 
-              <Pressable
-                onPress={() => {
-                  onClose();
-                  router.push("/diario" as never);
-                }}
-                style={({ pressed }) => [styles.diaryCard, { opacity: pressed ? 0.84 : 1 }]}
-                accessibilityRole="button"
-                accessibilityLabel="Abrir Diario"
-              >
-                <View style={styles.diaryIcon}>
-                  <Feather name="edit-3" size={22} color="#FFFFFF" />
-                </View>
-                <View style={styles.diaryCopy}>
-                  <Text style={styles.diaryKicker}>TOMAR NOTA PARA TI</Text>
-                  <Text style={styles.diaryTitle}>¿Qué te está pasando por la mente?</Text>
-                  <Text style={styles.diaryAction}>Tomar notas</Text>
-                </View>
-                <Feather name="arrow-up-right" size={18} color="#FFFFFF" />
-              </Pressable>
+              <Text style={styles.recommendationsTitle}>Recomendaciones de Resonancia</Text>
+              <View style={styles.recommendationsCarousel}>
+                <SessionCarousel
+                  title=""
+                  sessions={recommendations}
+                  isPremium={isPremium}
+                  onPress={handleSessionPress}
+                  onLockedPress={handleSessionPress}
+                  showHeader={false}
+                  style={styles.recommendationsCarouselInner}
+                  cardWidth={recommendationCardWidth}
+                  allowOversizedCardWidth
+                  squareTitleAuthorBelow
+                  sleepBelowMetadataStyle={{ marginTop: 5 }}
+                  categoryGridPresentation
+                  whiteMetadataGlass
+                  showDurationClock
+                  durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
+                  eagerRender
+                />
+              </View>
 
               <View style={styles.weekCard}>
                 <Text style={styles.weekTitle}>Esta semana</Text>
@@ -788,140 +863,85 @@ const styles = StyleSheet.create({
     maxWidth: 340,
     fontFamily: "Manrope",
     color: FG,
-    fontSize: 21,
-    lineHeight: 28,
+    fontSize: 24,
+    lineHeight: 31,
     fontWeight: "800",
     letterSpacing: -0.4,
-    marginBottom: 8,
+    marginBottom: 18,
   },
-  completeSubtitle: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 15,
-    lineHeight: 22,
-    marginBottom: 22,
+  completedMoods: {
+    gap: 18,
+    marginBottom: 30,
   },
-  recommendationsRow: {
-    gap: 14,
-    paddingRight: 20,
-    paddingBottom: 8,
-  },
-  recommendationCard: {
-    width: 250,
-    height: 170,
-    overflow: "hidden",
-    borderRadius: 18,
-    justifyContent: "flex-end",
-    padding: 16,
-    backgroundColor: CARD_BG,
-  },
-  recommendationImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: undefined,
-    height: undefined,
-  },
-  recommendationShade: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(16,8,24,0.30)",
-  },
-  recommendationCategory: {
-    position: "absolute",
-    top: 14,
-    left: 16,
-    maxWidth: 165,
-    borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    overflow: "hidden",
-    backgroundColor: "rgba(30,24,34,0.68)",
-    color: "#FFFFFF",
-    fontFamily: "Manrope",
-    fontSize: 9,
-    fontWeight: "800",
-    letterSpacing: 0.8,
-  },
-  recommendationTitle: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 18,
-    lineHeight: 22,
-    fontWeight: "800",
-    textShadowColor: "rgba(0,0,0,0.42)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  recommendationDuration: {
-    position: "absolute",
-    top: 14,
-    right: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: "rgba(30,24,34,0.68)",
-  },
-  recommendationDurationText: {
-    fontFamily: "Manrope",
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  diaryCard: {
-    minHeight: 150,
-    borderRadius: 20,
-    marginTop: 24,
-    padding: 18,
-    flexDirection: "row",
+  completedMoodBlock: {
     alignItems: "flex-start",
-    gap: 13,
-    backgroundColor: "#372065",
   },
-  diaryIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  completedMoodCard: {
+    width: "100%",
+    minHeight: 128,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+    overflow: "hidden",
   },
-  diaryCopy: {
-    flex: 1,
-    gap: 7,
+  completedMoodGlass: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
-  diaryKicker: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.72)",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.7,
+  completedMoodEmoji: {
+    fontSize: 38,
+    lineHeight: 46,
+    marginBottom: 6,
   },
-  diaryTitle: {
+  completedMoodLabel: {
     fontFamily: "Manrope",
     color: "#FFFFFF",
-    fontSize: 17,
-    lineHeight: 23,
+    fontSize: 16,
+    lineHeight: 22,
     fontWeight: "700",
+    textAlign: "center",
   },
-  diaryAction: {
-    alignSelf: "flex-start",
-    marginTop: 4,
-    borderRadius: 18,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.94)",
-    color: "#060A0F",
+  completedMoodAnswer: {
+    marginTop: 11,
+    paddingHorizontal: 3,
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
+    color: "rgba(255,255,255,0.90)",
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: "500",
+  },
+  completedMoodAnswerSkipped: {
+    color: MUTED,
+    fontStyle: "italic",
+  },
+  recommendationsTitle: {
+    fontFamily: "Manrope",
+    color: FG,
+    fontSize: 20,
+    lineHeight: 27,
+    fontWeight: "800",
+    letterSpacing: -0.25,
+  },
+  recommendationsCarousel: {
+    marginTop: 20,
+  },
+  recommendationsCarouselInner: {
+    paddingHorizontal: 0,
+    marginBottom: 0,
   },
   weekCard: {
-    marginTop: 18,
+    marginTop: 30,
     borderRadius: 18,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.10)",
     padding: 18,
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
   },
   weekTitle: {
     fontFamily: "Manrope",
