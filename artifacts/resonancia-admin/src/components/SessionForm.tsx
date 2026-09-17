@@ -261,7 +261,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
 
   // Secciones expandidas
   const [openSections, setOpenSections] = useState({
-    basicos: true, categoria: !isEdit, subcategoria: true, tags: true,
+    basicos: true, categoria: !isEdit, subcategoria: true, emociones: true, tags: true,
     audios: !isEdit, imagen: false, extras: false,
   });
 
@@ -826,7 +826,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       </Section>
 
       {/* ── SECCIÓN: Subcategoría ── */}
-      {(isEdit || ["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId)) && (
+      {(isEdit || categoryId) && (
         <Section
           title="Subcategoría"
           open={openSections.subcategoria}
@@ -863,43 +863,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               />
             )}
 
-            {isEdit && !["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId) && (
-              <p className="text-sm text-muted-foreground">
-                Esta categoría no tiene subcategorías configuradas. Podés cambiar la categoría para asignar una.
-              </p>
-            )}
-          </div>
-        </Section>
-      )}
-
-      {/* ── SECCIÓN: Etiquetas ── */}
-      {(isEdit || categoryId) && (
-        <Section
-          title="Etiquetas"
-          open={openSections.tags}
-          onToggle={() => toggleSection("tags")}
-        >
-          <div className="space-y-4">
-            <TagOptionSelector
-              tagType="mood_affinity"
-              defaults={MOOD_OPTIONS.map((option) => option.label)}
-              label="Emociones relacionadas"
-              selected={MOOD_OPTIONS
-                .filter((option) => moodIds.includes(option.id))
-                .map((option) => option.label)}
-              onToggle={(label) => {
-                const moodId = MOOD_LABEL_TO_ID.get(label);
-                if (!moodId) return;
-                setMoodIds((current) =>
-                  current.includes(moodId)
-                    ? current.filter((id) => id !== moodId)
-                    : [...current, moodId],
-                );
-              }}
-              pill
-              fixed
-            />
-
             {CATEGORY_THEME_TAGS[categoryId] && (
               <TagOptionSelector
                 tagType={CATEGORY_THEME_TAGS[categoryId].tagType}
@@ -924,6 +887,54 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
               />
             )}
 
+            {isEdit &&
+              !["sonidos-ancestrales", "meditaciones-guiadas", "musica-sonidos"].includes(categoryId) &&
+              !CATEGORY_THEME_TAGS[categoryId] && (
+              <p className="text-sm text-muted-foreground">
+                Esta categoría no tiene subcategorías configuradas. Podés cambiar la categoría para asignar una.
+              </p>
+            )}
+          </div>
+        </Section>
+      )}
+
+      {/* ── SECCIÓN: Emociones ── */}
+      {(isEdit || categoryId) && (
+        <Section
+          title="Emociones"
+          open={openSections.emociones}
+          onToggle={() => toggleSection("emociones")}
+        >
+          <TagOptionSelector
+            tagType="mood_affinity"
+            defaults={MOOD_OPTIONS.map((option) => option.label)}
+            label="Emociones relacionadas"
+            selected={MOOD_OPTIONS
+              .filter((option) => moodIds.includes(option.id))
+              .map((option) => option.label)}
+            onToggle={(label) => {
+              const moodId = MOOD_LABEL_TO_ID.get(label);
+              if (!moodId) return;
+              setMoodIds((current) =>
+                current.includes(moodId)
+                  ? current.filter((id) => id !== moodId)
+                  : [...current, moodId],
+              );
+            }}
+            pill
+            fixed
+          />
+        </Section>
+      )}
+
+      {/* ── SECCIÓN: Etiquetas ── */}
+      {(isEdit || categoryId) && (
+        <Section
+          title="Etiquetas"
+          open={openSections.tags}
+          onToggle={() => toggleSection("tags")}
+        >
+          <div className="space-y-4">
             <TagOptionSelector
               tagType="other_theme"
               defaults={OTHER_THEME_TAGS}
