@@ -723,9 +723,8 @@ export function ExploreScreen({
               </Svg>
               <Feather
                 name="users"
-                color="#F9F9F9"
+                color="#060A0F"
                 size={30}
-                style={styles.resonadoresBannerIconGlyph}
               />
             </View>
             <View style={styles.resonadoresBannerCopy}>
@@ -1229,11 +1228,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
     transform: [{ translateY: 2 }],
-  },
-  resonadoresBannerIconGlyph: {
-    textShadowColor: "rgba(76,29,149,0.38)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   resonadoresBannerCopy: {
     flex: 1,
