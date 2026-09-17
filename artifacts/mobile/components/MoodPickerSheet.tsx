@@ -2,10 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Modal,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -17,6 +19,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { EmotionalQuoteCard } from "@/components/EmotionalQuoteCard";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { SessionCarousel } from "@/components/SessionCarousel";
 import {
   getMoodById,
@@ -60,6 +63,10 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { startOfWeek, dayKey } from "@/utils/stats";
+import {
+  getNestedScrollItemY,
+  isVerticalItemRevealed,
+} from "@/utils/scroll-reveal";
 import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
 type Props = {
@@ -77,6 +84,8 @@ const GOLD = "#F9F9F9";
 const FG = "#F5F2F8";
 const MUTED = "rgba(245,242,248,0.62)";
 const MOOD_GREEN = WIDGET_GREEN_SOLID;
+const CINEMATIC_DURATION = 3000;
+const CINEMATIC_BASE_DELAY = 800;
 const MOOD_PICKER_ORDER: MoodId[] = [
   "agradecido",
   "emocionado",
@@ -216,7 +225,7 @@ export function MoodPickerSheet({
   onSelect,
 }: Props) {
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth } = useWindowDimensions();
+  const { height: viewportHeight, width: viewportWidth } = useWindowDimensions();
   const { theme } = useSceneTheme();
   const { version: catalogVersion } = useCatalog();
   const { isPremium } = usePremium();
@@ -229,13 +238,31 @@ export function MoodPickerSheet({
   const [surveyIndex, setSurveyIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [history, setHistory] = useState<MoodHistoryRecord[]>([]);
+  const [completionCycle, setCompletionCycle] = useState(0);
+  const [quoteRevealed, setQuoteRevealed] = useState(false);
+  const quoteRevealedRef = useRef(false);
+  const quoteLayoutYRef = useRef<number | null>(null);
+  const completeContentYRef = useRef<number | null>(null);
+  const completeScrollYRef = useRef(0);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      quoteRevealedRef.current = false;
+      quoteLayoutYRef.current = null;
+      completeContentYRef.current = null;
+      completeScrollYRef.current = 0;
+      setQuoteRevealed(false);
+      return;
+    }
     setStep("select");
     setSelected([...initialSelectedIds]);
     setSurveyIndex(0);
     setAnswers({});
+    quoteRevealedRef.current = false;
+    quoteLayoutYRef.current = null;
+    completeContentYRef.current = null;
+    completeScrollYRef.current = 0;
+    setQuoteRevealed(false);
     let active = true;
     readMoodHistory()
       .then((records) => {
@@ -336,7 +363,39 @@ export function MoodPickerSheet({
     }
     onSelect?.(selected);
     setAnswers(nextAnswers);
+    quoteRevealedRef.current = false;
+    quoteLayoutYRef.current = null;
+    completeContentYRef.current = null;
+    completeScrollYRef.current = 0;
+    setQuoteRevealed(false);
+    setCompletionCycle((cycle) => cycle + 1);
     setStep("complete");
+  }
+
+  function revealQuoteIfVisible(scrollY = completeScrollYRef.current) {
+    if (
+      quoteRevealedRef.current ||
+      quoteLayoutYRef.current === null ||
+      completeContentYRef.current === null
+    ) return;
+    if (!isVerticalItemRevealed({
+      itemY: getNestedScrollItemY(
+        completeContentYRef.current,
+        quoteLayoutYRef.current,
+      ),
+      scrollY,
+      viewportHeight,
+    })) return;
+    quoteRevealedRef.current = true;
+    setQuoteRevealed(true);
+  }
+
+  function handleCompleteScroll(
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    completeScrollYRef.current = scrollY;
+    revealQuoteIfVisible(scrollY);
   }
 
   async function advanceSurvey() {
@@ -558,6 +617,8 @@ export function MoodPickerSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: bottomPad + 28 }}
               bounces={false}
+              onScroll={handleCompleteScroll}
+              scrollEventThrottle={32}
             >
               <View style={[styles.heroContainer, { width: viewportWidth, height: moodHeroHeight }]}>
                 <Image
@@ -577,21 +638,49 @@ export function MoodPickerSheet({
                   style={StyleSheet.absoluteFill}
                 />
                 <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
-                  <Text style={styles.heroKicker}>Tu momento</Text>
-                  <Text style={styles.heroEmoji}>{firstMood?.emoji}</Text>
-                  <Text style={styles.heroMoodLabel}>{firstMood?.label}</Text>
-                  {firstMoodAnswer?.id !== "other" && (
-                    <Text style={styles.heroAnswer}>
-                      {firstMoodAnswer?.label ?? "Sin respuesta seleccionada"}
-                    </Text>
-                  )}
+                  <CinematicFadeSlide
+                    active={visible}
+                    replayKey={completionCycle}
+                    delay={CINEMATIC_BASE_DELAY}
+                    duration={CINEMATIC_DURATION}
+                    style={styles.heroAnimatedContent}
+                  >
+                    <Text style={styles.heroKicker}>Tu momento</Text>
+                    <Text style={styles.heroEmoji}>{firstMood?.emoji}</Text>
+                    <Text style={styles.heroMoodLabel}>{firstMood?.label}</Text>
+                    {firstMoodAnswer?.id !== "other" && (
+                      <Text style={styles.heroAnswer}>
+                        {firstMoodAnswer?.label ?? "Sin respuesta seleccionada"}
+                      </Text>
+                    )}
+                  </CinematicFadeSlide>
                 </View>
               </View>
 
-              <LinearGradient colors={bgColors} style={styles.completeContent}>
-                <Text style={styles.resonanceTitle}>Resonancia te recomienda:</Text>
+              <LinearGradient
+                colors={bgColors}
+                style={styles.completeContent}
+                onLayout={(event) => {
+                  completeContentYRef.current = event.nativeEvent.layout.y;
+                  revealQuoteIfVisible();
+                }}
+              >
+                <CinematicFadeSlide
+                  active={visible}
+                  replayKey={completionCycle}
+                  delay={CINEMATIC_BASE_DELAY + 700}
+                  duration={CINEMATIC_DURATION}
+                >
+                  <Text style={styles.resonanceTitle}>Resonancia te recomienda:</Text>
+                </CinematicFadeSlide>
 
-                <View style={styles.recommendationsCarousel}>
+                <CinematicFadeSlide
+                  active={visible}
+                  replayKey={completionCycle}
+                  delay={CINEMATIC_BASE_DELAY + 1200}
+                  duration={CINEMATIC_DURATION}
+                  style={styles.recommendationsCarousel}
+                >
                   <SessionCarousel
                     title=""
                     sessions={recommendations}
@@ -610,54 +699,75 @@ export function MoodPickerSheet({
                     durationBadgeStyle={{ top: "auto", bottom: 8, left: 8 }}
                     eagerRender
                   />
-                </View>
+                </CinematicFadeSlide>
 
-                <View style={styles.completeSectionDivider} />
+                <CinematicFadeSlide
+                  active={visible}
+                  replayKey={completionCycle}
+                  delay={CINEMATIC_BASE_DELAY + 1700}
+                  duration={CINEMATIC_DURATION}
+                >
+                  <View style={styles.completeSectionDivider} />
 
-                <View style={styles.weekCard}>
-                  <Text style={styles.weekTitle}>Esta semana</Text>
-                  <View style={styles.weekDaysRow}>
-                    {weekDays.map((date, index) => {
-                      const records = weekRecordsByDay.get(dayKey(date)) ?? [];
-                      const moods = records.flatMap((record) => record.moodIds);
-                      const firstDayMood = moods[0] ? getMoodById(moods[0]) : undefined;
-                      return (
-                        <View key={dayKey(date)} style={styles.weekDay}>
-                          <Text style={styles.weekDayLabel}>{WEEKDAY_LABELS[index]}</Text>
-                          <View style={[styles.weekMood, firstDayMood && styles.weekMoodActive]}>
-                            {firstDayMood ? (
-                              <Text style={styles.weekMoodEmoji}>{firstDayMood.emoji}</Text>
-                            ) : (
-                              <View style={styles.weekMoodEmpty} />
-                            )}
+                  <View style={styles.weekCard}>
+                    <Text style={styles.weekTitle}>Esta semana</Text>
+                    <View style={styles.weekDaysRow}>
+                      {weekDays.map((date, index) => {
+                        const records = weekRecordsByDay.get(dayKey(date)) ?? [];
+                        const moods = records.flatMap((record) => record.moodIds);
+                        const firstDayMood = moods[0] ? getMoodById(moods[0]) : undefined;
+                        return (
+                          <View key={dayKey(date)} style={styles.weekDay}>
+                            <Text style={styles.weekDayLabel}>{WEEKDAY_LABELS[index]}</Text>
+                            <View style={[styles.weekMood, firstDayMood && styles.weekMoodActive]}>
+                              {firstDayMood ? (
+                                <Text style={styles.weekMoodEmoji}>{firstDayMood.emoji}</Text>
+                              ) : (
+                                <View style={styles.weekMoodEmpty} />
+                              )}
+                            </View>
+                            {moods.length > 1 && <Text style={styles.weekMoodCount}>+{moods.length - 1}</Text>}
                           </View>
-                          {moods.length > 1 && <Text style={styles.weekMoodCount}>+{moods.length - 1}</Text>}
-                        </View>
-                      );
-                    })}
+                        );
+                      })}
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        onClose();
+                        router.push("/historial-emociones" as never);
+                      }}
+                      style={({ pressed }) => [styles.historyButton, { opacity: pressed ? 0.78 : 1 }]}
+                      accessibilityRole="button"
+                      accessibilityLabel="Ver todo el historial de emociones"
+                    >
+                      <Text style={styles.historyButtonText}>Ver todo</Text>
+                      <Feather name="chevron-right" size={16} color="#060A0F" />
+                    </Pressable>
                   </View>
-                  <Pressable
-                    onPress={() => {
-                      onClose();
-                      router.push("/historial-emociones" as never);
-                    }}
-                    style={({ pressed }) => [styles.historyButton, { opacity: pressed ? 0.78 : 1 }]}
-                    accessibilityRole="button"
-                    accessibilityLabel="Ver todo el historial de emociones"
-                  >
-                    <Text style={styles.historyButtonText}>Ver todo</Text>
-                    <Feather name="chevron-right" size={16} color="#060A0F" />
-                  </Pressable>
-                </View>
 
-                <View style={styles.completeSectionDivider} />
+                  <View style={styles.completeSectionDivider} />
+                </CinematicFadeSlide>
 
                 {moodQuote && (
-                  <EmotionalQuoteCard
-                    author={moodQuote.author}
-                    background={moodQuote.background}
-                    quote={moodQuote.text}
-                  />
+                  <View
+                    onLayout={(event) => {
+                      quoteLayoutYRef.current = event.nativeEvent.layout.y;
+                      revealQuoteIfVisible();
+                    }}
+                  >
+                    <CinematicFadeSlide
+                      active={visible && quoteRevealed}
+                      replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
+                      delay={120}
+                      duration={CINEMATIC_DURATION}
+                    >
+                      <EmotionalQuoteCard
+                        author={moodQuote.author}
+                        background={moodQuote.background}
+                        quote={moodQuote.text}
+                      />
+                    </CinematicFadeSlide>
+                  </View>
                 )}
 
                 {history.length > 0 && (
@@ -925,6 +1035,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     transform: [{ translateY: -55 }],
+  },
+  heroAnimatedContent: {
+    width: "100%",
+    alignItems: "center",
   },
   heroKicker: {
     fontFamily: "Manrope",
