@@ -4,7 +4,6 @@ import { useDayRollover } from "@/hooks/useDayRollover";
 import { useStreak } from "@/hooks/useStreak";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { useStreakCelebration } from "@/context/StreakCelebrationContext";
-import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
@@ -1347,34 +1346,21 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         {isInicio3 ? (
           <RAnimated.View
             style={[styles.inicio3HeroBackShadow, heroShadowStyle]}
+            renderToHardwareTextureAndroid
+            shouldRasterizeIOS
           >
-            <MaskedView
+            <LinearGradient
+              colors={[
+                "rgba(0,0,0,0)",
+                "rgba(0,0,0,0.26)",
+                "rgba(0,0,0,0.26)",
+                "rgba(0,0,0,0)",
+              ]}
+              locations={[0, 0.14, 0.86, 1]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
               style={StyleSheet.absoluteFill}
-              maskElement={
-                <LinearGradient
-                  colors={[
-                    "rgba(0,0,0,0)",
-                    "#000000",
-                    "#000000",
-                    "rgba(0,0,0,0)",
-                  ]}
-                  locations={[0, 0.14, 0.86, 1]}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 1, y: 0.5 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              }
-            >
-              <LinearGradient
-                colors={[
-                  "rgba(0,0,0,0)",
-                  "rgba(0,0,0,0.15)",
-                  "rgba(0,0,0,0.40)",
-                ]}
-                locations={[0, 0.62, 1]}
-                style={StyleSheet.absoluteFill}
-              />
-            </MaskedView>
+            />
           </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
@@ -1388,6 +1374,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
 
       <RAnimated.View
         pointerEvents="box-none"
+        renderToHardwareTextureAndroid={isInicio3}
+        shouldRasterizeIOS={isInicio3}
         style={[
           styles.inicio2HeroActions,
           { paddingTop: topInset + 8 + (isInicio3 ? 10 - INICIO3_VERTICAL_LIFT : 0) },
@@ -1505,6 +1493,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       {isInicio3 && (
         <>
           <RAnimated.View
+            renderToHardwareTextureAndroid
+            shouldRasterizeIOS
             style={[
               styles.inicio3StreakRow,
               { top: topInset + 80 - INICIO3_VERTICAL_LIFT },
