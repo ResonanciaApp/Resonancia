@@ -789,6 +789,30 @@ export const CatalogSessionStatus = {
   rejected: 'rejected',
 } as const;
 
+export type MoodId = typeof MoodId[keyof typeof MoodId];
+
+
+export const MoodId = {
+  estresado: 'estresado',
+  ansioso: 'ansioso',
+  cansado: 'cansado',
+  inepto: 'inepto',
+  triste: 'triste',
+  solo: 'solo',
+  deprimido: 'deprimido',
+  desmotivado: 'desmotivado',
+  enojado: 'enojado',
+  adolorido: 'adolorido',
+  agradecido: 'agradecido',
+  emocionado: 'emocionado',
+  'lleno-de-amor': 'lleno-de-amor',
+  feliz: 'feliz',
+  'en-paz': 'en-paz',
+  esperanzado: 'esperanzado',
+  contento: 'contento',
+  presente: 'presente',
+} as const;
+
 export interface CatalogSession {
   id: string;
   title: string;
@@ -825,6 +849,8 @@ export interface CatalogSession {
   descansoTags?: string[];
   themeTag?: string[] | null;
   temaTag?: string[] | null;
+  /** @maxItems 18 */
+  moodIds?: MoodId[];
   sleepTag?: string | null;
   voiceTag?: CatalogSessionVoiceTag;
   guideId?: string | null;
@@ -1259,6 +1285,8 @@ export interface CreatorSubmissionInput {
   voiceTag?: CreatorSubmissionInputVoiceTag;
   themeTag?: string[] | null;
   temaTag?: string[] | null;
+  /** @maxItems 18 */
+  moodIds?: MoodId[];
   guideId?: string | null;
   artistId?: string | null;
   /** @maxLength 300 */
@@ -1404,6 +1432,8 @@ export interface Submission {
   descansoTags?: string[];
   themeTag?: string[] | null;
   temaTag?: string[] | null;
+  /** @maxItems 18 */
+  moodIds?: MoodId[];
   sleepTag?: string | null;
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
@@ -1497,6 +1527,8 @@ export interface ReviewEditBody {
   sleepTag?: string | null;
   themeTag?: string[];
   temaTag?: string[];
+  /** @maxItems 18 */
+  moodIds?: MoodId[];
   /** @maxLength 300 */
   playerDescription?: string | null;
   /** @maxLength 60 */

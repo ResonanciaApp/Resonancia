@@ -93,6 +93,7 @@ function getBundledRecommendation(id: string): Session {
     instruments: [...session.instruments],
     themeTag: session.themeTag ? [...session.themeTag] : undefined,
     temaTag: session.temaTag ? [...session.temaTag] : undefined,
+    moodIds: session.moodIds ? [...session.moodIds] : undefined,
     sonidosTags: session.sonidosTags ? [...session.sonidosTags] : undefined,
     descansoTags: session.descansoTags ? [...session.descansoTags] : undefined,
     guideIds: session.guideIds ? [...session.guideIds] : undefined,
@@ -112,15 +113,12 @@ const BUNDLED_MOOD_RECOMMENDATION_IDS = new Set(
 );
 
 function getRecommendations(moodIds: MoodId[]): Session[] {
-  const selectedMoods = moodIds
-    .map((moodId) => getMoodById(moodId))
-    .filter((mood): mood is NonNullable<typeof mood> => Boolean(mood));
-  const categories = new Set(selectedMoods.flatMap((mood) => mood.categoryIds));
-  const themes = new Set(selectedMoods.flatMap((mood) => mood.themeTags));
-
+  const selected = new Set(moodIds);
   const relevanceScore = (session: Session) =>
-    (categories.has(session.categoryId) ? 2 : 0) +
-    (session.themeTag?.some((tag) => themes.has(tag)) ? 1 : 0);
+    session.moodIds?.reduce(
+      (matches, moodId) => matches + (selected.has(moodId) ? 1 : 0),
+      0,
+    ) ?? 0;
   const ranked = [...SESSIONS].sort(
     (a, b) => relevanceScore(b) - relevanceScore(a),
   );
@@ -132,6 +130,7 @@ function getRecommendations(moodIds: MoodId[]): Session[] {
     const match = ranked.find(
       (session) =>
         !used.has(session.id) &&
+        relevanceScore(session) > 0 &&
         (!BUNDLED_MOOD_RECOMMENDATION_IDS.has(session.id) ||
           session.id === fallback.id) &&
         !session.isPlaceholder &&

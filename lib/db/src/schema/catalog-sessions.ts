@@ -7,6 +7,7 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { sql } from "drizzle-orm";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
 
@@ -76,6 +77,7 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   themeTag: text("theme_tag").array(),
   /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
   temaTag: text("tema_tag").array(),
+    moodIds: text("mood_ids").array().notNull().default(sql`ARRAY[]::text[]`),
   sleepTag: text("sleep_tag"),
   /** Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz"). Vacío = sin etiqueta. */
   voiceTag: text("voice_tag"),

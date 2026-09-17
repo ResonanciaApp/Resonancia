@@ -51,6 +51,7 @@ import {
   type SonidosCollectionTag,
   type ThemeTag,
 } from "@/data/tags";
+import type { MoodId } from "@/data/moods";
 
 export type Session = {
   id: string;
@@ -90,6 +91,8 @@ export type Session = {
   themeTag?: ThemeTag[];
   /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
   temaTag?: string[];
+  /** Afinidades emocionales editoriales configuradas desde Admin. */
+  moodIds?: MoodId[];
   sleepTag?: SleepTag;
   /** @deprecated Compatibilidad con sesiones bundleadas anteriores. */
   descansoTag?: LegacyDescansoTag;
@@ -1386,6 +1389,7 @@ export type CatalogSessionSnapshot = {
   descansoTags?: string[] | null;
   themeTag?: string[] | null;
   temaTag?: string[] | null;
+  moodIds?: MoodId[] | null;
   sleepTag?: string | null;
   voiceTag?: string | null;
   guideId?: string | null;
@@ -1566,6 +1570,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.descansoTag = undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
     local.temaTag = r.temaTag ?? undefined;
+    local.moodIds = r.moodIds ?? undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
     // Sesión bundleada: solo sobrescribir si el admin fijó una etiqueta explícita.
     // Si el remoto viene vacío (null), dejar `undefined` para conservar el fallback
@@ -1644,6 +1649,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       descansoTags: normalizeDescansoTags(r.descansoTags, r.descansoTag, r.sleepTag),
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
       temaTag: r.temaTag ?? undefined,
+      moodIds: r.moodIds ?? undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
       voiceTag: (r.voiceTag ?? null) as "Guiada" | "Sin voz" | null,
       guideId: r.guideId ?? undefined,

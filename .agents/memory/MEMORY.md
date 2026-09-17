@@ -151,3 +151,4 @@
 - [Ubicación de carpetas en Biblioteca](library-folder-placement.md) — las carpetas viven solo en la portada general y el tab Carpetas; no duplicarlas en Mis playlist ni Mis mezclas
 - [Carpetas de contenido exclusivo](exclusive-folder-content.md) — una carpeta general guarda playlists o mezclas, nunca ambas; al vaciarse vuelve a quedar libre
 - [Agregar favoritos a playlists](playlist-add-from-favorites.md) — el selector de sesiones de una playlist es pantalla completa y muestra solo favoritos con tabs/cards de Mis Favoritos
+- [Afinidad emocional de sesiones](session-mood-affinity.md) — recomendaciones usan moodIds editoriales directos; cinco slots fijos y reservas base con cobertura de las 18 emociones

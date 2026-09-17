@@ -5149,6 +5149,12 @@ components:
           nullable: true
           items:
             type: string
+        moodIds:
+          type: array
+          maxItems: 18
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/MoodId"
         sleepTag:
           type: string
           nullable: true
@@ -5702,6 +5708,12 @@ components:
           nullable: true
           items:
             type: string
+        moodIds:
+          type: array
+          maxItems: 18
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/MoodId"
         guideId:
           type: string
           nullable: true
@@ -5896,6 +5908,12 @@ components:
           nullable: true
           items:
             type: string
+        moodIds:
+          type: array
+          maxItems: 18
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/MoodId"
         sleepTag:
           type: string
           nullable: true
@@ -6059,6 +6077,12 @@ components:
           type: array
           items:
             type: string
+        moodIds:
+          type: array
+          maxItems: 18
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/MoodId"
         playerDescription:
           type: string
           maxLength: 300
@@ -6117,6 +6141,10 @@ components:
           type: integer
           minimum: 1
           nullable: true
+    MoodId:
+      type: string
+      enum:
+        [estresado, ansioso, cansado, inepto, triste, solo, deprimido, desmotivado, enojado, adolorido, agradecido, emocionado, lleno-de-amor, feliz, en-paz, esperanzado, contento, presente]
     AdminSessionsPage:
       type: object
       properties:

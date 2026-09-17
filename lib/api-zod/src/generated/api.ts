@@ -1180,6 +1180,8 @@ export const getCatalogResponseSessionsItemSkipDetailDefault = false;
 export const getCatalogResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getCatalogResponseSessionsItemIsLoopDefault = false;
 export const getCatalogResponseSessionsItemIsPinnedFeaturedDefault = false;
+export const getCatalogResponseSessionsItemMoodIdsMax = 18;
+
 export const getCatalogResponsePlaylistsItemPlacementsItemSortOrderMin = 0;
 
 export const getCatalogResponsePlaylistCarouselsItemSortOrderMin = 0;
@@ -1241,6 +1243,7 @@ export const GetCatalogResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getCatalogResponseSessionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -1347,6 +1350,9 @@ export const getCatalogPlaylistResponseSessionsItemSkipDetailDefault = false;
 export const getCatalogPlaylistResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getCatalogPlaylistResponseSessionsItemIsLoopDefault = false;
 export const getCatalogPlaylistResponseSessionsItemIsPinnedFeaturedDefault = false;
+export const getCatalogPlaylistResponseSessionsItemMoodIdsMax = 18;
+
+
 
 export const GetCatalogPlaylistResponse = zod.object({
   "playlist": zod.object({
@@ -1405,6 +1411,7 @@ export const GetCatalogPlaylistResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getCatalogPlaylistResponseSessionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -1442,6 +1449,9 @@ export const getPinnedFeaturedResponseSessionOneSkipDetailDefault = false;
 export const getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault = false;
 export const getPinnedFeaturedResponseSessionOneIsLoopDefault = false;
 export const getPinnedFeaturedResponseSessionOneIsPinnedFeaturedDefault = false;
+export const getPinnedFeaturedResponseSessionOneMoodIdsMax = 18;
+
+
 
 export const GetPinnedFeaturedResponse = zod.object({
   "session": zod.union([zod.object({
@@ -1479,6 +1489,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getPinnedFeaturedResponseSessionOneMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -1631,6 +1642,9 @@ export const getPopularSessionsResponseSessionsItemSkipDetailDefault = false;
 export const getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getPopularSessionsResponseSessionsItemIsLoopDefault = false;
 export const getPopularSessionsResponseSessionsItemIsPinnedFeaturedDefault = false;
+export const getPopularSessionsResponseSessionsItemMoodIdsMax = 18;
+
+
 
 export const GetPopularSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -1668,6 +1682,7 @@ export const GetPopularSessionsResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getPopularSessionsResponseSessionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -1768,6 +1783,8 @@ export const createSubmissionBodySonidosTagsMax = 7;
 
 export const createSubmissionBodyDescansoTagsMax = 8;
 
+export const createSubmissionBodyMoodIdsMax = 18;
+
 export const createSubmissionBodyPlayerDescriptionMax = 300;
 
 
@@ -1817,6 +1834,7 @@ export const CreateSubmissionBody = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(createSubmissionBodyMoodIdsMax).optional(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
   "playerDescription": zod.string().max(createSubmissionBodyPlayerDescriptionMax).nullish(),
@@ -1848,6 +1866,9 @@ export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = fal
 export const getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemIsLoopDefault = false;
 export const getPendingSubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = false;
+export const getPendingSubmissionsResponseSubmissionsItemMoodIdsMax = 18;
+
+
 
 export const GetPendingSubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1885,6 +1906,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getPendingSubmissionsResponseSubmissionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -1947,6 +1969,9 @@ export const getMySubmissionsResponseSubmissionsItemSkipDetailDefault = false;
 export const getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 export const getMySubmissionsResponseSubmissionsItemIsLoopDefault = false;
 export const getMySubmissionsResponseSubmissionsItemIsPinnedFeaturedDefault = false;
+export const getMySubmissionsResponseSubmissionsItemMoodIdsMax = 18;
+
+
 
 export const GetMySubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1984,6 +2009,7 @@ export const GetMySubmissionsResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getMySubmissionsResponseSubmissionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2037,6 +2063,9 @@ export const approveSubmissionResponseSkipDetailDefault = false;
 export const approveSubmissionResponseSkipMiniPlayerDefault = false;
 export const approveSubmissionResponseIsLoopDefault = false;
 export const approveSubmissionResponseIsPinnedFeaturedDefault = false;
+export const approveSubmissionResponseMoodIdsMax = 18;
+
+
 
 export const ApproveSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2073,6 +2102,7 @@ export const ApproveSubmissionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(approveSubmissionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2133,6 +2163,9 @@ export const rejectSubmissionResponseSkipDetailDefault = false;
 export const rejectSubmissionResponseSkipMiniPlayerDefault = false;
 export const rejectSubmissionResponseIsLoopDefault = false;
 export const rejectSubmissionResponseIsPinnedFeaturedDefault = false;
+export const rejectSubmissionResponseMoodIdsMax = 18;
+
+
 
 export const RejectSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2169,6 +2202,7 @@ export const RejectSubmissionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(rejectSubmissionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2237,6 +2271,8 @@ export const editSubmissionBodyInstrumentsMax = 12;
 
 export const editSubmissionBodySkipDetailDefault = false;
 export const editSubmissionBodySkipMiniPlayerDefault = false;
+export const editSubmissionBodyMoodIdsMax = 18;
+
 export const editSubmissionBodyPlayerDescriptionMax = 300;
 
 export const editSubmissionBodyFrequencyMax = 60;
@@ -2272,6 +2308,7 @@ export const EditSubmissionBody = zod.object({
   "sleepTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).optional(),
   "temaTag": zod.array(zod.string()).optional(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(editSubmissionBodyMoodIdsMax).optional(),
   "playerDescription": zod.string().max(editSubmissionBodyPlayerDescriptionMax).nullish(),
   "frequency": zod.string().max(editSubmissionBodyFrequencyMax).nullish(),
   "guideId": zod.string().nullish(),
@@ -2300,6 +2337,9 @@ export const editSubmissionResponseSkipDetailDefault = false;
 export const editSubmissionResponseSkipMiniPlayerDefault = false;
 export const editSubmissionResponseIsLoopDefault = false;
 export const editSubmissionResponseIsPinnedFeaturedDefault = false;
+export const editSubmissionResponseMoodIdsMax = 18;
+
+
 
 export const EditSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2336,6 +2376,7 @@ export const EditSubmissionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(editSubmissionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2400,6 +2441,9 @@ export const hideSubmissionResponseSkipDetailDefault = false;
 export const hideSubmissionResponseSkipMiniPlayerDefault = false;
 export const hideSubmissionResponseIsLoopDefault = false;
 export const hideSubmissionResponseIsPinnedFeaturedDefault = false;
+export const hideSubmissionResponseMoodIdsMax = 18;
+
+
 
 export const HideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2436,6 +2480,7 @@ export const HideSubmissionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(hideSubmissionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2488,6 +2533,9 @@ export const unhideSubmissionResponseSkipDetailDefault = false;
 export const unhideSubmissionResponseSkipMiniPlayerDefault = false;
 export const unhideSubmissionResponseIsLoopDefault = false;
 export const unhideSubmissionResponseIsPinnedFeaturedDefault = false;
+export const unhideSubmissionResponseMoodIdsMax = 18;
+
+
 
 export const UnhideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -2524,6 +2572,7 @@ export const UnhideSubmissionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(unhideSubmissionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2584,6 +2633,9 @@ export const getAdminSessionsResponseSessionsItemSkipDetailDefault = false;
 export const getAdminSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
 export const getAdminSessionsResponseSessionsItemIsLoopDefault = false;
 export const getAdminSessionsResponseSessionsItemIsPinnedFeaturedDefault = false;
+export const getAdminSessionsResponseSessionsItemMoodIdsMax = 18;
+
+
 
 export const GetAdminSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -2621,6 +2673,7 @@ export const GetAdminSessionsResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getAdminSessionsResponseSessionsItemMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2677,6 +2730,9 @@ export const getAdminSessionResponseSkipDetailDefault = false;
 export const getAdminSessionResponseSkipMiniPlayerDefault = false;
 export const getAdminSessionResponseIsLoopDefault = false;
 export const getAdminSessionResponseIsPinnedFeaturedDefault = false;
+export const getAdminSessionResponseMoodIdsMax = 18;
+
+
 
 export const GetAdminSessionResponse = zod.object({
   "id": zod.string(),
@@ -2713,6 +2769,7 @@ export const GetAdminSessionResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(getAdminSessionResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2784,6 +2841,9 @@ export const addAdminSessionAudioResponseSkipDetailDefault = false;
 export const addAdminSessionAudioResponseSkipMiniPlayerDefault = false;
 export const addAdminSessionAudioResponseIsLoopDefault = false;
 export const addAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
+export const addAdminSessionAudioResponseMoodIdsMax = 18;
+
+
 
 export const AddAdminSessionAudioResponse = zod.object({
   "id": zod.string(),
@@ -2820,6 +2880,7 @@ export const AddAdminSessionAudioResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(addAdminSessionAudioResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
@@ -2873,6 +2934,9 @@ export const deleteAdminSessionAudioResponseSkipDetailDefault = false;
 export const deleteAdminSessionAudioResponseSkipMiniPlayerDefault = false;
 export const deleteAdminSessionAudioResponseIsLoopDefault = false;
 export const deleteAdminSessionAudioResponseIsPinnedFeaturedDefault = false;
+export const deleteAdminSessionAudioResponseMoodIdsMax = 18;
+
+
 
 export const DeleteAdminSessionAudioResponse = zod.object({
   "id": zod.string(),
@@ -2909,6 +2973,7 @@ export const DeleteAdminSessionAudioResponse = zod.object({
   "descansoTags": zod.array(zod.string()).optional(),
   "themeTag": zod.array(zod.string()).nullish(),
   "temaTag": zod.array(zod.string()).nullish(),
+  "moodIds": zod.array(zod.enum(['estresado', 'ansioso', 'cansado', 'inepto', 'triste', 'solo', 'deprimido', 'desmotivado', 'enojado', 'adolorido', 'agradecido', 'emocionado', 'lleno-de-amor', 'feliz', 'en-paz', 'esperanzado', 'contento', 'presente'])).max(deleteAdminSessionAudioResponseMoodIdsMax).optional(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),

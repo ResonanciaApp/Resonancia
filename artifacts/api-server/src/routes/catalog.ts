@@ -168,6 +168,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     descansoTags: s.descansoTags,
     themeTag: s.themeTag,
     temaTag: s.temaTag,
+    moodIds: s.moodIds,
     sleepTag: s.sleepTag,
     voiceTag: s.voiceTag,
     guideId: s.guideId,
@@ -762,6 +763,7 @@ router.post(
           descansoTags: normalizedDescansoTags,
           themeTag: normalizedThemeTags,
           temaTag: body.temaTag ?? null,
+          moodIds: [...new Set(body.moodIds ?? [])],
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
           guideId: body.guideId ?? null,
@@ -1112,6 +1114,7 @@ router.patch(
     if (data.sleepTag !== undefined) updates.sleepTag = data.sleepTag ?? null;
     if (data.themeTag !== undefined) updates.themeTag = data.themeTag;
     if (data.temaTag !== undefined) updates.temaTag = data.temaTag;
+    if (data.moodIds !== undefined) updates.moodIds = [...new Set(data.moodIds)];
     if (data.playerDescription !== undefined) updates.playerDescription = data.playerDescription ?? null;
     if (data.frequency !== undefined) updates.frequency = data.frequency ?? null;
     if (data.guideId !== undefined) updates.guideId = data.guideId ?? null;

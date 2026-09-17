@@ -41,7 +41,7 @@ import {
   useGetCatalog,
   getGetCatalogQueryKey,
 } from "@workspace/api-client-react";
-import type { Submission, CatalogAudioFile } from "@workspace/api-client-react";
+import type { Submission, CatalogAudioFile, MoodId } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -112,6 +112,28 @@ const emptyAudioSlot = (): AudioSlot => ({
 
 type CreateBody = Parameters<ReturnType<typeof useCreateSubmission>["mutateAsync"]>[0]["data"];
 type EditBody = Parameters<ReturnType<typeof useEditSubmission>["mutateAsync"]>[0]["data"];
+
+const MOOD_OPTIONS: ReadonlyArray<{ id: MoodId; label: string }> = [
+  { id: "estresado", label: "🥵 Estresad@" },
+  { id: "ansioso", label: "😬 Ansios@" },
+  { id: "cansado", label: "😪 Cansad@" },
+  { id: "inepto", label: "😑 Inept@" },
+  { id: "triste", label: "😭 Triste" },
+  { id: "solo", label: "🥺 Solo(a)" },
+  { id: "deprimido", label: "😔 Deprimido(a)" },
+  { id: "desmotivado", label: "😪 Desmotivado(a)" },
+  { id: "enojado", label: "😤 Enojado(a)" },
+  { id: "adolorido", label: "😣 Adolorido(a)" },
+  { id: "agradecido", label: "🙏 Agradecido(a)" },
+  { id: "emocionado", label: "🤩 Emocionado(a)" },
+  { id: "lleno-de-amor", label: "🥰 Lleno(a) de amor" },
+  { id: "feliz", label: "😊 Feliz" },
+  { id: "en-paz", label: "😌 En paz" },
+  { id: "esperanzado", label: "😇 Esperanzado(a)" },
+  { id: "contento", label: "🙂 Contento(a)" },
+  { id: "presente", label: "🧘 Presente" },
+];
+const MOOD_LABEL_TO_ID = new Map(MOOD_OPTIONS.map((option) => [option.label, option.id]));
 
 export interface SessionFormProps {
   mode: "create" | "edit";
@@ -203,6 +225,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
   const [sleepTag, setSleepTag] = useState(initial?.sleepTag ?? "");
   const [themeTag, setThemeTag] = useState<string[]>(initial?.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(initial?.temaTag ?? []);
+  const [moodIds, setMoodIds] = useState<MoodId[]>(initial?.moodIds ?? []);
   const toggleSonidos = (tag: string) => {
     setSonidosTags((current) => {
       const selected = new Set(current);
@@ -395,6 +418,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         voiceTag: (voiceTag as CreateBody["voiceTag"]) || undefined,
         themeTag: persistedThemeTags.length ? persistedThemeTags : undefined,
         temaTag: temaTag.length ? temaTag : undefined,
+        moodIds,
         sleepTag: sleepTag || undefined,
         ancestralTag: ancestralTag || undefined,
         meditationTag: meditationTag || undefined,
@@ -476,6 +500,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
         voiceTag: (voiceTag ? (voiceTag as EditBody["voiceTag"]) : null),
         themeTag: persistedThemeTags,
         temaTag,
+        moodIds,
         sleepTag: sleepTag || null,
         ancestralTag: ancestralTag || null,
         meditationTag: meditationTag || null,
@@ -855,6 +880,26 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           onToggle={() => toggleSection("tags")}
         >
           <div className="space-y-4">
+            <TagOptionSelector
+              tagType="mood_affinity"
+              defaults={MOOD_OPTIONS.map((option) => option.label)}
+              label="Emociones relacionadas"
+              selected={MOOD_OPTIONS
+                .filter((option) => moodIds.includes(option.id))
+                .map((option) => option.label)}
+              onToggle={(label) => {
+                const moodId = MOOD_LABEL_TO_ID.get(label);
+                if (!moodId) return;
+                setMoodIds((current) =>
+                  current.includes(moodId)
+                    ? current.filter((id) => id !== moodId)
+                    : [...current, moodId],
+                );
+              }}
+              pill
+              fixed
+            />
+
             {CATEGORY_THEME_TAGS[categoryId] && (
               <TagOptionSelector
                 tagType={CATEGORY_THEME_TAGS[categoryId].tagType}

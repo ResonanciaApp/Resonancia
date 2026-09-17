@@ -7,6 +7,7 @@
     "hello": "tsx ./src/hello.ts",
     "seed:catalog": "tsx ./src/seed-catalog.ts",
     "seed:sessions": "tsx ./src/seed-bundled-sessions.ts",
+    "backfill:session-moods": "tsx ./src/backfill-session-moods.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
