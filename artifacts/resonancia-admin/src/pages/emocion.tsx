@@ -40,6 +40,27 @@ const CANONICAL_MOODS: EmotionalPhraseMoodId[] = [
   "presente",
 ];
 
+const MOOD_EMOJIS: Record<EmotionalPhraseMoodId, string> = {
+  estresado: "🥵",
+  ansioso: "😬",
+  cansado: "😪",
+  inepto: "😑",
+  triste: "😭",
+  solo: "🥺",
+  deprimido: "😔",
+  desmotivado: "😪",
+  enojado: "😤",
+  adolorido: "😣",
+  agradecido: "🙏",
+  emocionado: "🤩",
+  "lleno-de-amor": "🥰",
+  feliz: "😊",
+  "en-paz": "😌",
+  esperanzado: "😇",
+  contento: "🙂",
+  presente: "🧘",
+};
+
 const phraseSchema = z.object({
   slot: z.number().min(1).max(7),
   text: z.string().trim().min(1, "La frase no puede estar vacía").max(500, "Máximo 500 caracteres"),
@@ -170,8 +191,9 @@ function MoodCard({
     <Card className="flex flex-col border-border/50 transition-all hover-elevate shadow-sm" data-testid={`card-mood-${moodId}`}>
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-serif text-primary" data-testid={`title-mood-${moodId}`}>
-            {capitalize(moodId)}
+          <CardTitle className="flex items-center gap-2 text-lg font-serif text-primary" data-testid={`title-mood-${moodId}`}>
+            <span aria-hidden="true">{MOOD_EMOJIS[moodId]}</span>
+            <span>{capitalize(moodId)}</span>
           </CardTitle>
           <div className="text-xs text-muted-foreground/60 font-mono">
             Rev {moodSet?.revision ?? 0}
@@ -278,10 +300,7 @@ export default function EmocionPage() {
     <div className="space-y-8 pb-12 max-w-[1600px] mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground tracking-tight">
-            <span aria-hidden="true">✨</span>
-            <span>Emoción</span>
-          </h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Emoción</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Gestiona las 7 frases de completitud para cada emoción de la brújula.
           </p>
