@@ -25,6 +25,7 @@ import {
   type Mood,
   type MoodId,
 } from "@/data/moods";
+import { MOOD_QUOTES } from "@/data/mood-quotes";
 
 const MOOD_HEROES: Record<MoodId, number> = {
   estresado: require("@/assets/images/mood-heroes/mood-hero-estresado.jpg"),
@@ -46,10 +47,6 @@ const MOOD_HEROES: Record<MoodId, number> = {
   contento: require("@/assets/images/mood-heroes/mood-hero-contento.jpg"),
   presente: require("@/assets/images/mood-heroes/mood-hero-presente.jpg"),
 };
-const DEPRESSED_QUOTE_BACKGROUND =
-  require("@/assets/images/mood-quotes/mood-quote-deprimido.jpg");
-const DEPRESSED_QUOTE =
-  "Aunque hoy cueste verlo, dentro de ti sigue existiendo un lugar al que la luz sabe volver.";
 import { SESSIONS, type Session } from "@/data/sessions";
 import {
   readMoodHistory,
@@ -389,6 +386,7 @@ export function MoodPickerSheet({
   const firstMoodAnswer = firstMood
     ? MOOD_SURVEY_OPTIONS[firstMood.id].find((option) => option.id === answers[firstMood.id])
     : undefined;
+  const moodQuote = firstMood ? MOOD_QUOTES[firstMood.id] : undefined;
   const moodHeroHeight = Math.min(410, Math.max(340, viewportWidth * 0.98));
   const fadeSolidStart = 1 - 55 / moodHeroHeight;
 
@@ -614,7 +612,9 @@ export function MoodPickerSheet({
                   />
                 </View>
 
-                <View style={[styles.weekCard, { marginTop: 32 }]}>
+                <View style={styles.completeSectionDivider} />
+
+                <View style={styles.weekCard}>
                   <Text style={styles.weekTitle}>Esta semana</Text>
                   <View style={styles.weekDaysRow}>
                     {weekDays.map((date, index) => {
@@ -650,11 +650,13 @@ export function MoodPickerSheet({
                   </Pressable>
                 </View>
 
-                {firstMood?.id === "deprimido" && (
+                <View style={styles.completeSectionDivider} />
+
+                {moodQuote && (
                   <EmotionalQuoteCard
-                    author="Casa del Cuenco"
-                    background={DEPRESSED_QUOTE_BACKGROUND}
-                    quote={DEPRESSED_QUOTE}
+                    author={moodQuote.author}
+                    background={moodQuote.background}
+                    quote={moodQuote.text}
                   />
                 )}
 
@@ -968,7 +970,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   completeContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: -55,
     paddingTop: 12,
   },
@@ -982,19 +984,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   recommendationsCarousel: {
-    marginHorizontal: -20,
+    marginHorizontal: -16,
   },
   recommendationsCarouselInner: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginBottom: 0,
   },
+  completeSectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginTop: 31,
+    marginBottom: 31,
+    backgroundColor: "rgba(255,255,255,0.18)",
+  },
   weekCard: {
-    marginTop: 30,
     borderRadius: 18,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.10)",
     padding: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "transparent",
   },
   weekTitle: {
     fontFamily: "Manrope",

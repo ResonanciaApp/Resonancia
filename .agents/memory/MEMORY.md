@@ -154,3 +154,4 @@
 - [Afinidad emocional de sesiones](session-mood-affinity.md) — recomendaciones usan moodIds editoriales directos; cinco slots fijos y reservas base con cobertura de las 18 emociones
 - [Colecciones dinámicas de supercategorías](dynamic-supercategory-collections.md) — Dormir/Sonidos admiten colecciones Admin; Mobile deriva cards de sesiones y “Todos los sonidos” es inmutable
 - [Reinicio duplicado de Expo](expo-workflow-duplicate-process.md) — un restart puede dejar el Metro anterior vivo y el nuevo esperando el mismo puerto; diagnosticar grupos de proceso antes de reintentar
+- [Cards de frases emocionales](emotional-quote-cards.md) — dirección aprobada: fondo propio emparentado con cada hero, overlay oscuro y espaciado vertical igual a Frase del día

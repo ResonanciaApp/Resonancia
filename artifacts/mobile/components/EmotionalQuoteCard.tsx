@@ -57,14 +57,11 @@ export function EmotionalQuoteCard({ author, background, quote }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    minHeight: 262,
-    marginTop: 22,
     borderRadius: 20,
     overflow: "hidden",
     paddingHorizontal: 22,
     paddingTop: 22,
-    paddingBottom: 20,
-    justifyContent: "flex-end",
+    paddingBottom: 22,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.15)",
     backgroundColor: "#15282B",
@@ -75,7 +72,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "500",
     color: "rgba(249,249,249,0.76)",
-    marginBottom: 17,
+    marginBottom: 22,
   },
   quote: {
     maxWidth: "94%",
@@ -90,15 +87,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 5,
   },
   shareButton: {
-    width: 38,
-    height: 38,
-    marginTop: 18,
-    marginLeft: -8,
-    borderRadius: 19,
-    alignItems: "center",
+    marginTop: 28,
+    alignItems: "flex-start",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.18)",
   },
 });
