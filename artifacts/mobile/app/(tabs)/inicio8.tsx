@@ -1276,7 +1276,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale,
   onOpenDrawer,
   onOpenProfile,
-  onOpenSearch,
   isInicio3,
   scrollY,
 }: {
@@ -1285,7 +1284,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   giftScale: Animated.Value;
   onOpenDrawer: () => void;
   onOpenProfile: () => void;
-  onOpenSearch: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
@@ -1501,29 +1499,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               <Inicio2LotusStreak lightBackground={isInicio3} />
             </Animated.View>
           </Pressable>
-          {isInicio3 ? (
-            <Pressable
-              onPress={onOpenSearch}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.inicio3HeroSearchButton,
-                { opacity: pressed ? 0.72 : 1 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Buscar en Inicio"
-              testID="inicio3-search-button"
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView
-                  name="magnifyingglass"
-                  tintColor="#F9F9F9"
-                  size={24}
-                />
-              ) : (
-                <Feather name="search" size={24} color="#F9F9F9" />
-              )}
-            </Pressable>
-          ) : null}
         </View>
       </RAnimated.View>
 
@@ -2474,7 +2449,6 @@ export default function HomeScreen2({
               giftScale={giftScaleAnim}
               onOpenDrawer={handleOpenDrawer}
               onOpenProfile={handleOpenProgress}
-              onOpenSearch={handleSearchBtnPress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
             />
@@ -3336,16 +3310,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-  },
-  inicio3HeroSearchButton: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.34)",
   },
   inicio2HeroLotusCount: {
     minWidth: 13,
