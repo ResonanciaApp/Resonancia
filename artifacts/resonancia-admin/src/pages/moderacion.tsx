@@ -835,13 +835,6 @@ function EditDialog({
                   )}
                   pill
                 />
-                {["historias", "charlas", "ambientales"].includes(catId) && (
-                  <p className="text-xs text-muted-foreground">
-                    Cada nombre crea una pantalla interna de esta categoría. Podés seleccionar
-                    varias colecciones, renombrarlas con el lápiz, eliminarlas con la × o crear
-                    una con “Nueva”.
-                  </p>
-                )}
               </div>
             )}
 

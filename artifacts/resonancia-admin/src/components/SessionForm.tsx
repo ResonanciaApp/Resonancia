@@ -94,6 +94,10 @@ function resolveImageUrl(raw: string | null | undefined): string | null {
   return raw;
 }
 
+function audioNameFromFile(file: File): string {
+  return (file.name.replace(/\.[^.]+$/, "").trim() || "Audio").slice(0, 200);
+}
+
 import { uploadFile as uploadFileShared, type UploadedFile } from "@/lib/uploadFile";
 import { MOOD_LABEL_TO_ID, MOOD_OPTIONS } from "@/lib/moods";
 
@@ -379,7 +383,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
     if (!d || d < 1 || d > 600) return "La duración debe ser entre 1 y 600 minutos";
     if (!isEdit && !isPlaceholder) {
       if (!audio1.file) return "Agregá al menos un archivo de audio";
-      if (!audio1.name.trim()) return "Poné un nombre al audio 1";
     }
     return null;
   };
@@ -415,7 +418,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       if (a1) {
         audioFiles.push({
           objectPath: a1.objectPath,
-          name: audio1.name.trim(),
+          name: audioNameFromFile(audio1.file!),
           contentType: a1.contentType,
           sizeBytes: a1.sizeBytes,
         });
@@ -945,13 +948,6 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
                   )}
                   pill
                 />
-                {["historias", "charlas", "ambientales"].includes(categoryId) && (
-                  <p className="text-xs text-muted-foreground">
-                    Cada nombre crea una pantalla interna de esta categoría. Podés seleccionar
-                    varias colecciones, renombrarlas con el lápiz, eliminarlas con la × o crear
-                    una con “Nueva”.
-                  </p>
-                )}
               </div>
             )}
 
@@ -1546,7 +1542,7 @@ function ExistingAudios({
         id: sessionId,
         data: {
           objectPath: up.objectPath,
-          name: file.name.replace(/\.[^.]+$/, ""),
+          name: audioNameFromFile(file),
           contentType: up.contentType,
           sizeBytes: up.sizeBytes,
           replaceAudioId: audioId,
@@ -1565,7 +1561,6 @@ function ExistingAudios({
 
   const doAddFirstAudio = async () => {
     if (!newSlot.file) { toast.error("Elegí un archivo de audio."); return; }
-    if (!newSlot.name.trim()) { toast.error("Poné un nombre al audio."); return; }
     setBusy(true);
     try {
       const up = await uploadFile(newSlot.file, "Subiendo audio…");
@@ -1573,7 +1568,7 @@ function ExistingAudios({
         id: sessionId,
         data: {
           objectPath: up.objectPath,
-          name: newSlot.name.trim(),
+          name: audioNameFromFile(newSlot.file),
           contentType: up.contentType,
           sizeBytes: up.sizeBytes,
         },
@@ -1614,7 +1609,7 @@ function ExistingAudios({
           <Button
             type="button"
             onClick={doAddFirstAudio}
-            disabled={busy || !newSlot.file || !newSlot.name.trim()}
+            disabled={busy || !newSlot.file}
             className="w-full"
           >
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Añadir audio principal"}
@@ -1774,7 +1769,7 @@ function AudioUploadSlot({
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) onChange({ ...slot, file: f, name: slot.name || f.name.replace(/\.[^.]+$/, "") });
+          if (f) onChange({ ...slot, file: f, name: audioNameFromFile(f) });
         }}
       />
 
@@ -1800,14 +1795,6 @@ function AudioUploadSlot({
         </button>
       )}
 
-      <Field label="Nombre del audio">
-        <Input
-          value={slot.name}
-          onChange={(e) => onChange({ ...slot, name: e.target.value })}
-          placeholder="Ej: Cuencos del alba"
-          maxLength={200}
-        />
-      </Field>
     </div>
   );
 }
