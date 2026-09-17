@@ -680,7 +680,7 @@ export function ExploreScreen({
             ]}
           >
             <LinearGradient
-              colors={["#7C3AED", "#1E1B4B"]}
+              colors={["#2DD4BF", "#1E3A8A"]}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={styles.resonadoresBannerIcon}

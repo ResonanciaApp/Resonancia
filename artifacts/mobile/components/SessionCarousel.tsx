@@ -27,8 +27,6 @@ import {
 } from "react-native";
 
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
-const CANONICAL_AMBIENTAL_BORDER_COLOR = "rgba(255,255,255,0.25)";
-const CANONICAL_AMBIENTAL_BORDER_WIDTH = 1;
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
 const AMBIENTAL_CONTENT_DROP = 10;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
@@ -261,9 +259,6 @@ type SessionCarouselProps = {
     colors: [string, string, ...string[]];
     locations?: readonly [number, number, ...number[]];
   };
-  /** Optional border override for Ambiental cards on a specific screen/theme. */
-  ambientalCardBorderColor?: string;
-  ambientalCardBorderWidth?: number;
   ambientalCardBorderRadius?: number;
   hideAmbientalTitleInSquareRecent?: boolean;
   eagerRender?: boolean;
@@ -371,8 +366,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
   ambientalCardWidth,
   ambientalCardBackground: ambientalCardBackgroundOverride,
   ambientalCardGradient,
-  ambientalCardBorderColor,
-  ambientalCardBorderWidth,
   ambientalCardBorderRadius,
   hideAmbientalTitleInSquareRecent = false,
   eagerRender = false,
@@ -656,12 +649,8 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                     backgroundColor: effectiveAmbientalCardGradient
                       ? "transparent"
                       : ambientalCardBackground,
-                    borderWidth:
-                      ambientalCardBorderWidth ?? CANONICAL_AMBIENTAL_BORDER_WIDTH,
                     borderRadius:
                       ambientalCardBorderRadius ?? CANONICAL_AMBIENTAL_BORDER_RADIUS,
-                    borderColor:
-                      ambientalCardBorderColor ?? CANONICAL_AMBIENTAL_BORDER_COLOR,
                   },
                 ]}
               >
@@ -703,18 +692,6 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                             },
                       ]}
                     />
-                    {soundPreview && (
-                      <PreviewFadeLayer
-                        active={isPreviewActive && soundPreview.isPlaying}
-                        style={[
-                          styles.ambientalPreviewBorder,
-                          {
-                            borderRadius:
-                              ambientalCardBorderRadius ?? CANONICAL_AMBIENTAL_BORDER_RADIUS,
-                          },
-                        ]}
-                      />
-                    )}
                     {ambientalImageFillTop && (
                       <View
                         pointerEvents="none"
@@ -1261,12 +1238,6 @@ const styles = StyleSheet.create({
   previewCircularProgress: {
     position: "absolute",
     zIndex: 4,
-  },
-  ambientalPreviewBorder: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 6,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.8)",
   },
   favoriteButton: {
     position: "absolute",
