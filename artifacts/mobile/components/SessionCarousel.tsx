@@ -29,7 +29,7 @@ import {
 const AnimatedPressable = RNAnimated.createAnimatedComponent(Pressable);
 const CANONICAL_AMBIENTAL_BORDER_RADIUS = 41;
 const AMBIENTAL_CONTENT_DROP = 10;
-const AMBIENTAL_IMAGE_EXTRA_DROP = 10;
+const AMBIENTAL_IMAGE_EXTRA_DROP = 17;
 const CANONICAL_AMBIENTAL_METADATA_STYLE: ViewStyle = {
   transform: [{ translateY: -2 }],
 };
@@ -55,10 +55,7 @@ import {
   SESSION_CARD_METADATA_HEIGHT_SCALE,
   SessionCardMetadataOverlay,
 } from "@/components/SessionCardMetadataOverlay";
-import {
-  SessionBadgeGlass,
-  SessionDurationBadge,
-} from "@/components/SessionDurationBadge";
+import { SessionDurationBadge } from "@/components/SessionDurationBadge";
 import { PressScale } from "@/components/PressScale";
 import {
   CONTENT_CAROUSEL_GAP,
@@ -754,21 +751,27 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalPlayButtonSize,
                               height: ambientalPlayButtonSize,
                               borderRadius: ambientalPlayButtonSize / 2,
-                              left: 15,
-                              top: 15,
+                              left: 20,
+                              top: 20,
                               transform: [{ scale: getPreviewScale(s.id) }],
                             },
                           ]}
                         >
-                          <SessionBadgeGlass showBlackTint={false} />
                           <View
                             pointerEvents="none"
-                            style={styles.favoriteGlassTint}
+                            style={[
+                              styles.ambientalPlayBackground,
+                              {
+                                width: ambientalPlayButtonSize - 4,
+                                height: ambientalPlayButtonSize - 4,
+                                borderRadius: (ambientalPlayButtonSize - 4) / 2,
+                              },
+                            ]}
                           />
                           <MaterialCommunityIcons
                             name={isPreviewActive && soundPreview.isPlaying ? "pause" : "play"}
                             size={ambientalPlayIconSize}
-                            color="#F9F9F9"
+                            color="#060A0F"
                           />
                         </AnimatedPressable>
                       </>
@@ -1225,10 +1228,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
     backgroundColor: "transparent",
-    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1246,9 +1246,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  favoriteGlassTint: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255,255,255,0.15)",
+  ambientalPlayBackground: {
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
   },
   thumbFallback: { backgroundColor: "rgba(212,175,55,0.10)", alignItems: "center", justifyContent: "center" },
   star: {
