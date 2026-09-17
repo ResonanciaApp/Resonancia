@@ -3303,6 +3303,9 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   inicio3HeroLotusSurface: {
+    height: 39,
+    borderRadius: 19.5,
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },

@@ -6,8 +6,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Modal,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -64,10 +62,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { startOfWeek, dayKey } from "@/utils/stats";
-import {
-  getNestedScrollItemY,
-  isVerticalItemRevealed,
-} from "@/utils/scroll-reveal";
 import { getPrimaryMoodId } from "@/data/mood-quote-rotation";
 import colors, { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -246,20 +240,10 @@ export function MoodPickerSheet({
   const [isFinishing, setIsFinishing] = useState(false);
   const isFinishingRef = useRef(false);
   const flowGenerationRef = useRef(0);
-  const [quoteRevealed, setQuoteRevealed] = useState(false);
-  const quoteRevealedRef = useRef(false);
-  const quoteLayoutYRef = useRef<number | null>(null);
-  const completeContentYRef = useRef<number | null>(null);
-  const completeScrollYRef = useRef(0);
 
   useEffect(() => {
     flowGenerationRef.current += 1;
     if (!visible) {
-      quoteRevealedRef.current = false;
-      quoteLayoutYRef.current = null;
-      completeContentYRef.current = null;
-      completeScrollYRef.current = 0;
-      setQuoteRevealed(false);
       return;
     }
     setStep("select");
@@ -268,11 +252,6 @@ export function MoodPickerSheet({
     setAnswers({});
     setCompletionQuote(null);
     setIsFinishing(isFinishingRef.current);
-    quoteRevealedRef.current = false;
-    quoteLayoutYRef.current = null;
-    completeContentYRef.current = null;
-    completeScrollYRef.current = 0;
-    setQuoteRevealed(false);
     let active = true;
     readMoodHistory()
       .then((records) => {
@@ -397,41 +376,10 @@ export function MoodPickerSheet({
     }
     onSelect?.(selected);
     setAnswers(nextAnswers);
-    quoteRevealedRef.current = false;
-    quoteLayoutYRef.current = null;
-    completeContentYRef.current = null;
-    completeScrollYRef.current = 0;
-    setQuoteRevealed(false);
     setCompletionCycle((cycle) => cycle + 1);
     setStep("complete");
     isFinishingRef.current = false;
     setIsFinishing(false);
-  }
-
-  function revealQuoteIfVisible(scrollY = completeScrollYRef.current) {
-    if (
-      quoteRevealedRef.current ||
-      quoteLayoutYRef.current === null ||
-      completeContentYRef.current === null
-    ) return;
-    if (!isVerticalItemRevealed({
-      itemY: getNestedScrollItemY(
-        completeContentYRef.current,
-        quoteLayoutYRef.current,
-      ),
-      scrollY,
-      viewportHeight,
-    })) return;
-    quoteRevealedRef.current = true;
-    setQuoteRevealed(true);
-  }
-
-  function handleCompleteScroll(
-    event: NativeSyntheticEvent<NativeScrollEvent>,
-  ) {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    completeScrollYRef.current = scrollY;
-    revealQuoteIfVisible(scrollY);
   }
 
   async function advanceSurvey() {
@@ -660,8 +608,6 @@ export function MoodPickerSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: bottomPad + 28 }}
               bounces={false}
-              onScroll={handleCompleteScroll}
-              scrollEventThrottle={32}
             >
               <View style={[styles.heroContainer, { width: viewportWidth, height: moodHeroHeight }]}>
                 <Image
@@ -703,10 +649,6 @@ export function MoodPickerSheet({
               <LinearGradient
                 colors={bgColors}
                 style={styles.completeContent}
-                onLayout={(event) => {
-                  completeContentYRef.current = event.nativeEvent.layout.y;
-                  revealQuoteIfVisible();
-                }}
               >
                 <CinematicFadeSlide
                   active={visible}
@@ -792,14 +734,9 @@ export function MoodPickerSheet({
                 </CinematicFadeSlide>
 
                 {moodQuote && (
-                  <View
-                    onLayout={(event) => {
-                      quoteLayoutYRef.current = event.nativeEvent.layout.y;
-                      revealQuoteIfVisible();
-                    }}
-                  >
+                  <View>
                     <CinematicFadeSlide
-                      active={visible && quoteRevealed}
+                      active={visible}
                       replayKey={`${completionCycle}:${firstMood?.id ?? "none"}`}
                       delay={120}
                       duration={CINEMATIC_DURATION}
