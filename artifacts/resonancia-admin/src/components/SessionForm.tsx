@@ -909,7 +909,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           <TagOptionSelector
             tagType="mood_affinity"
             defaults={MOOD_OPTIONS.map((option) => option.label)}
-            label="Emociones relacionadas"
+            label=""
             selected={MOOD_OPTIONS
               .filter((option) => moodIds.includes(option.id))
               .map((option) => option.label)}
@@ -938,7 +938,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
           <TagOptionSelector
             tagType="other_theme"
             defaults={OTHER_THEME_TAGS}
-            label="Temáticas relacionadas (opcional)"
+            label=""
             selected={themeTag.filter((tag) => !tag.startsWith("__"))}
             onToggle={toggleTheme}
             pill
@@ -949,7 +949,7 @@ export default function SessionForm({ mode, initial, onSaved }: SessionFormProps
       {/* ── SECCIÓN: Etiquetas ── */}
       {(isEdit || categoryId) && (
         <Section
-          title="Etiquetas"
+          title="Pantallas internas súper categorías"
           open={openSections.tags}
           onToggle={() => toggleSection("tags")}
         >

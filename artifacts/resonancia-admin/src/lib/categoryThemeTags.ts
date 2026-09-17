@@ -52,7 +52,7 @@ export const CATEGORY_THEME_TAGS: Record<string, CategoryThemeTagConfig> = {
   },
   "sonidos-ancestrales": {
     tagType: "category_theme_sonoterapia",
-    label: "Etiquetas de Sonoterapia (opcional)",
+    label: "Pantallas internas subcategorías",
     defaults: ["Cuencos", "Gong", "Vibración"],
   },
   charlas: {

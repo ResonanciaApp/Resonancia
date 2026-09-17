@@ -216,7 +216,7 @@ export function TagOptionSelector({
 
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{label}</Label>
+      {label ? <Label className="text-sm font-medium">{label}</Label> : null}
       <div className="flex flex-wrap gap-2 items-center">
 
         {/* ── Defaults visibles (con X para ocultar) ── */}
