@@ -106,7 +106,7 @@ export function DailyRecommendationsSection({
                 }
                 showDurationBadge={inicio3Compact}
                 showChevron
-                titleFontSize={inicio3Compact ? 16 : undefined}
+                titleFontSize={inicio3Compact ? 15 : undefined}
                 titleFontWeight={inicio3Compact ? "600" : undefined}
                 authorColor={themeAccent}
                 authorFontSize={theme.id === "indigo2" ? 11 : undefined}

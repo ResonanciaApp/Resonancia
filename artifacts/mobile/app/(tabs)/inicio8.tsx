@@ -1308,7 +1308,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3HeroHeight =
     (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 40;
   const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT + 12;
-  const inicio3HeroTop = inicio3HeroLayoutTop - 14;
+  const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1325,7 +1325,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height: inicio3HeroLayoutTop + inicio3HeroHeight + 14,
+          height: inicio3HeroLayoutTop + inicio3HeroHeight + 9,
         },
       ]}
       testID="inicio2-hero-static"
@@ -1530,7 +1530,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           styles.inicio2HeroStaticTitle,
           isInicio3 && styles.inicio3HeroTitle,
         ]}>
-          Aprendamos a conectar con lo esencial
+          {"Aprendamos a conectar\ncon lo esencial"}
         </Text>
         <Pressable
           onPress={() => {}}
