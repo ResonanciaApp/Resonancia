@@ -126,7 +126,7 @@
 - [Memoria de Metro en RESONANCE](metro-memory-limit.md) — web+iOS pueden superar 4 GB durante rebuild limpio; conservar heap de 6 GB en el workflow móvil
 - [Drawer único de Inicio](single-home-drawer.md) — el drawer ya no tiene modo legado; toda apertura usa la estructura de Inicio 3 y debe limpiar el desplazamiento residual del gesto
 - [Parallax del header de Inicio 3](inicio3-header-parallax.md) — avatar, acciones y fila semanal conservan desplazamiento lento conjunto; optimizar renders sin quitar ni alterar este efecto
-- [Progreso espejo Perfil](progress-profile-mirror.md) — racha semanal, estadísticas personales y calendario son un solo bloque compartido; Perfil y Tu progreso nunca deben divergir
+- [Progreso en Perfil](progress-profile-mirror.md) — Perfil muestra solo la racha semanal completa; Estadísticas personales y calendario quedan exclusivos de Tu progreso
 - [Dos controles Añadir actividad](routine-add-controls.md) — el bloque inferior de Mi rutina y la píldora del estado Rutina completa tienen diseños deliberadamente distintos
 - [Aviso único al añadir rutina](routine-addition-banner-once.md) — la transición desde calendario lleva el ID creado y lo reconoce globalmente; Inicio no debe volver a mostrar “Actividad añadida”
 - [Etiquetas editoriales por categoría](category-specific-editorial-tags.md) — no mezclar themeTag históricos: categorías nuevas usan prefijo interno; Admin codifica y Mobile decodifica

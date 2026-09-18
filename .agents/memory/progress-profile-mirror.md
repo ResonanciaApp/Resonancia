@@ -1,10 +1,10 @@
 ---
-name: Progreso espejo entre Perfil y Tu progreso
-description: Regla de producto para mantener idénticas las tres secciones de progreso en ambas pantallas.
+name: Progreso visible en Perfil
+description: Regla de producto que separa el resumen de Perfil de la pantalla completa Tu progreso.
 ---
 
-La racha semanal de siete días, la sección de estadísticas personales y el calendario son un único bloque visual y funcional compartido entre Perfil y la pantalla Tu progreso. No crear variantes locales ni ajustar una pantalla por separado.
+Perfil muestra únicamente la sección de racha: siete días de la semana, línea divisora y métricas de racha actual/más larga. Estadísticas personales y calendario se mantienen ocultos en Perfil y visibles en la pantalla Tu progreso.
 
-**Why:** El usuario confirmó explícitamente que estas secciones son espejo siempre; las implementaciones duplicadas ya habían provocado diferencias de estilo y espaciado.
+**Why:** El usuario pidió explícitamente simplificar Perfil y dejar allí solo la racha completa, conservando el detalle ampliado en Tu progreso.
 
-**How to apply:** Cualquier cambio de diseño, datos, bordes, espaciado o comportamiento de estas tres secciones debe hacerse en el componente compartido y comprobarse en ambos contenedores.
+**How to apply:** Mantener el componente compartido, pero usar opciones de visibilidad por contenedor. No volver a mostrar estadísticas personales ni calendario dentro de Perfil salvo nueva indicación.

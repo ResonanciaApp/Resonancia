@@ -1231,7 +1231,11 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
-              <ProgressMirrorSections showSectionBorders={false} />
+              <ProgressMirrorSections
+                showSectionBorders={false}
+                showPersonalStats={false}
+                showCalendar={false}
+              />
             </View>
 
             <View style={{ marginTop: 38 }}>

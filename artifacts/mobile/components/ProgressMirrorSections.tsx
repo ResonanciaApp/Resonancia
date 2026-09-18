@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -14,8 +15,12 @@ const SECTION_BACKGROUND = "rgba(0,0,0,0.28)";
 
 export function ProgressMirrorSections({
   showSectionBorders = true,
+  showPersonalStats = true,
+  showCalendar = true,
 }: {
   showSectionBorders?: boolean;
+  showPersonalStats?: boolean;
+  showCalendar?: boolean;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -50,6 +55,27 @@ export function ProgressMirrorSections({
 
   return (
     <>
+      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
+        <StreakWeekRow />
+        <View style={styles.sectionDivider} />
+        <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
+            value={currentStreak}
+            label="RACHA ACTUAL"
+            accent={accent}
+          />
+          <View style={styles.statDivider} />
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
+            value={maxStreak}
+            label="RACHA MÁS LARGA"
+            accent={accent}
+          />
+        </View>
+      </View>
+
+      {showPersonalStats ? (
       <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
         <View style={styles.personalStatsHeader}>
           <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
@@ -105,30 +131,13 @@ export function ProgressMirrorSections({
           />
         </View>
       </View>
+      ) : null}
 
-      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
-        <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
-            value={currentStreak}
-            label="RACHA ACTUAL"
-            accent={accent}
-          />
-          <View style={styles.statDivider} />
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
-            value={maxStreak}
-            label="RACHA MÁS LARGA"
-            accent={accent}
-          />
-        </View>
-      </View>
-
-      <HistorialCalendar
+      {showCalendar ? <HistorialCalendar
         embedded
         outlined={showSectionBorders}
         backgroundColor={SECTION_BACKGROUND}
-      />
+      /> : null}
     </>
   );
 }
@@ -165,6 +174,12 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     paddingBottom: 16,
     marginBottom: 12,
+  },
+  sectionDivider: {
+    height: 1,
+    width: "100%",
+    marginVertical: 16,
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   personalStatsSection: {
     borderRadius: 19,
