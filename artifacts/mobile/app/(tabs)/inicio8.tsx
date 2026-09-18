@@ -46,8 +46,6 @@ import RAnimated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, {
   Circle as SvgCircle,
-  Path,
-  Rect,
 } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -1386,8 +1384,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   scrollY,
   featuredMoment,
   onOpenFeaturedMoment,
-  featuredMomentPlaying,
-  onToggleFeaturedMoment,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1398,8 +1394,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   scrollY?: SharedValue<number>;
   featuredMoment?: Session | null;
   onOpenFeaturedMoment?: () => void;
-  featuredMomentPlaying?: boolean;
-  onToggleFeaturedMoment?: () => void;
 }) {
   const router = useRouter();
   const { user: clerkUser } = useUser();
@@ -1433,6 +1427,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     inicio3WeekShift +
     inicio3HeroShift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
+  const inicio3HeroCardTop = inicio3HeroTop + 36;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1449,7 +1444,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height: inicio3HeroLayoutTop + inicio3HeroHeight + 9,
+          height: inicio3HeroLayoutTop + inicio3HeroHeight + 45,
         },
       ]}
       testID="inicio2-hero-static"
@@ -1460,7 +1455,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: isInicio3 ? inicio3HeroTop : topInset + 66,
+            top: isInicio3 ? inicio3HeroCardTop : topInset + 66,
             bottom: isInicio3 ? undefined : 18,
             height: isInicio3 ? inicio3HeroHeight : undefined,
           },
@@ -1509,6 +1504,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           )}
         </View>
       </RAnimated.View>
+
+      {isInicio3 && featuredMoment ? (
+        <Text style={[styles.sectionTitle, styles.inicio3HeroSectionLabel, { top: inicio3HeroTop }]}>
+          Tu Resonancia de hoy
+        </Text>
+      ) : null}
 
       <RAnimated.View
         pointerEvents="box-none"
@@ -1646,7 +1647,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: isInicio3 ? inicio3HeroTop : topInset + 66,
+            top: isInicio3 ? inicio3HeroCardTop : topInset + 66,
             bottom: isInicio3 ? undefined : 18,
             height: isInicio3 ? inicio3HeroHeight : undefined,
           },
@@ -1655,9 +1656,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       >
         {isInicio3 && featuredMoment ? (
           <View style={styles.inicio3HeroSessionContent}>
-            <Text style={styles.inicio3FeaturedMomentEyebrowInline}>
-              Tu Resonancia de hoy
-            </Text>
             <View style={styles.inicio3HeroSessionDetails}>
               <View style={styles.inicio3FeaturedMomentPills}>
                 <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
@@ -1674,39 +1672,31 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={3}>
                 {featuredMoment.title}
               </Text>
-              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={2}>
+              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={1}>
                 {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
               </Text>
+              <Pressable
+                onPress={(event) => {
+                  event.stopPropagation();
+                  onOpenFeaturedMoment?.();
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Escuchar ahora"
+                style={({ pressed }) => [
+                  styles.inicio3FeaturedMomentButton,
+                  { opacity: pressed ? 0.82 : 1 },
+                ]}
+              >
+                <BlurView
+                  intensity={26}
+                  tint="light"
+                  experimentalBlurMethod="dimezisBlurView"
+                  style={StyleSheet.absoluteFill}
+                />
+                <Ionicons name="play" size={18} color="#FFFFFF" />
+                <Text style={styles.inicio3FeaturedMomentButtonText}>Escuchar ahora</Text>
+              </Pressable>
             </View>
-            <Pressable
-              onPress={(event) => {
-                event.stopPropagation();
-                onToggleFeaturedMoment?.();
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={featuredMomentPlaying ? "Pausar sesión" : "Reproducir sesión"}
-              style={({ pressed }) => [
-                styles.inicio3FeaturedMomentButton,
-                { transform: [{ scale: pressed ? 0.92 : 1 }] },
-              ]}
-            >
-              <BlurView
-                intensity={26}
-                tint="light"
-                experimentalBlurMethod="dimezisBlurView"
-                style={StyleSheet.absoluteFill}
-              />
-              {featuredMomentPlaying ? (
-                <Svg width={36} height={36} viewBox="0 0 46 46">
-                  <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill="#FFFFFF" />
-                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#FFFFFF" />
-                </Svg>
-              ) : (
-                <Svg width={36} height={36} viewBox="0 0 46 46">
-                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#FFFFFF" />
-                </Svg>
-              )}
-            </Pressable>
           </View>
         ) : (
           <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
@@ -2614,7 +2604,6 @@ export default function HomeScreen2({
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
               featuredMoment={featuredMoment}
-              featuredMomentPlaying={currentSession?.id === featuredMoment?.id && isPlaying}
               onOpenFeaturedMoment={() => {
                 if (!featuredMoment) return;
                 if (featuredMoment.isPremium && !isPremium) {
@@ -2632,19 +2621,6 @@ export default function HomeScreen2({
                   return;
                 }
                 openCategory(`/session/${featuredMoment.id}`);
-              }}
-              onToggleFeaturedMoment={() => {
-                if (!featuredMoment) return;
-                if (featuredMoment.isPremium && !isPremium) {
-                  router.push("/membresia" as never);
-                  return;
-                }
-                if (currentSession?.id === featuredMoment.id) {
-                  pauseResume();
-                  return;
-                }
-                if (openForSession(featuredMoment)) return;
-                playSession(featuredMoment);
               }}
             />
           </>
@@ -4573,20 +4549,11 @@ const styles = StyleSheet.create({
     gap: 8,
     transform: [{ translateX: -15 }, { translateY: 10 }],
   },
-  inicio3FeaturedMomentEyebrowInline: {
+  inicio3HeroSectionLabel: {
     position: "absolute",
-    top: -10,
-    left: 0,
-    right: 0,
-    transform: [{ translateX: -15 }],
-    fontFamily: "Manrope",
-    fontSize: 21,
-    fontWeight: "700",
-    lineHeight: 24,
-    color: "#F9F9F9",
-    textShadowColor: "rgba(0,0,0,0.28)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 5,
+    left: GRID_PAD,
+    zIndex: 31,
+    fontSize: 17,
   },
   inicio3FeaturedMomentTitle: {
     fontFamily: "Manrope",
@@ -4629,18 +4596,24 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   inicio3FeaturedMomentButton: {
-    position: "absolute",
-    right: -20,
-    bottom: -8,
-    width: 103,
-    height: 103,
-    borderRadius: 51.5,
+    width: "100%",
+    minHeight: 48,
+    marginTop: 2,
+    borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.14)",
     borderWidth: 1.5,
     borderColor: "rgba(255,255,255,0.28)",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
+  },
+  inicio3FeaturedMomentButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
 
   // Horizontal scroll
