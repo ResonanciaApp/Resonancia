@@ -1,22 +1,39 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator, Platform, useWindowDimensions } from "react-native";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useInspiration } from "@/hooks/inspiration";
-import { InspirationFade } from "@/components/InspirationFade";
 import { InspirationArtwork } from "@/components/InspirationArtwork";
-import { InspirationNotes } from "@/components/InspirationNotes";
 import { InspirationShare } from "@/components/InspirationShare";
 import { useColors } from "@/hooks/useColors";
-import { formatFullDate } from "@/lib/date-utils";
+import { parseISO } from "@/lib/date-utils";
 import { usePlayerBrowse } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useAmbientalDuration } from "@/context/AmbientalDurationContext";
+
+function dateParts(date: string) {
+  const value = parseISO(date);
+  return {
+    day: new Intl.DateTimeFormat("es", { day: "numeric" }).format(value),
+    monthYear: new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
+      .format(value)
+      .replace(".", ""),
+  };
+}
 
 function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
   const router = useRouter();
@@ -26,102 +43,294 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
   const { playSession } = usePlayerBrowse();
   const { isPremium, hydrated } = usePremium();
   const { openForSession } = useAmbientalDuration();
-  useCatalog(); // React to remotely hydrated audio metadata.
-  const { days, week, isFavorite, setFavorite, loading, error, isCached, retry } = useInspiration({ date });
-  const day = days.find(d => d.date === date);
+  useCatalog();
+  const { days, week, loading, error, isCached, retry } = useInspiration({ date });
+  const day = days.find((candidate) => candidate.date === date);
   const available = day?.status === "available" && !!day.content && !!day.id && (!expectedId || day.id === expectedId);
-  const [viewport, setViewport] = useState(0);
   const [sharing, setSharing] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [savingFavorite, setSavingFavorite] = useState(false);
   const session = available && day?.content?.sessionId ? getSessionById(day.content.sessionId) : undefined;
-  const favorite = !!day?.id && isFavorite(day.id);
-  const close = () => router.canGoBack() ? router.back() : router.replace({ pathname: "/inspiracion-diaria", params: { date } });
-  const toggleFavorite = async () => {
-    if (!available || !day?.id || savingFavorite) return;
-    setSavingFavorite(true); setActionError(null);
-    try { await setFavorite(day.id, !favorite); }
-    catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo guardar el favorito."); }
-    finally { setSavingFavorite(false); }
+  const formatted = dateParts(date);
+  const topInset = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
+  const close = () => router.canGoBack()
+    ? router.back()
+    : router.replace({ pathname: "/inspiracion-diaria", params: { date } });
+
+  const editNote = () => {
+    if (!day?.id) return;
+    router.push({
+      pathname: "/inspiracion-diaria/notas",
+      params: { inspirationId: day.id, date: day.date },
+    });
   };
+
   const play = () => {
     if (!session || !hydrated) return;
-    if (session.isPremium && !isPremium) { router.push("/membresia"); return; }
-    if (session.isPlaceholder) { setActionError("Este audio aún no está disponible."); return; }
+    if (session.isPremium && !isPremium) {
+      router.push("/membresia");
+      return;
+    }
+    if (session.isPlaceholder) {
+      setActionError("Este audio aún no está disponible.");
+      return;
+    }
     if (openForSession(session)) return;
     playSession(session);
     router.push("/player");
   };
-  return <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.background }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-    {available && day?.content && <InspirationArtwork key={day.content.imageUrl} content={day.content} />}
-    <View style={[styles.header, { paddingTop: (Platform.OS === "web" ? 67 : Math.max(insets.top, 40)) + 8, backgroundColor: available ? "rgba(10,16,19,.65)" : colors.background }]}>
-      <Pressable onPress={close} style={styles.icon} accessibilityLabel="Volver" testID="inspiration-detail-back"><Feather name="chevron-left" size={28} color={colors.foreground} /></Pressable>
-      <Text numberOfLines={2} style={{ flex: 1, textAlign: "center", color: colors.foreground, fontSize: 14 }}>{week?.settings.sectionTitle || "Inspiración diaria"}</Text>
-      {available ? <>
-        <Pressable disabled={savingFavorite} onPress={() => void toggleFavorite()} style={styles.icon} accessibilityLabel={favorite ? "Quitar de favoritos" : "Guardar en favoritos"} testID="inspiration-favorite-btn">
-          <MaterialCommunityIcons name={favorite ? "heart" : "heart-outline"} size={24} color={favorite ? "#dc7373" : colors.foreground} />
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {available && day?.content && (
+        <>
+          <InspirationArtwork
+            key={`${day.content.imageUrl}-${day.content.overlayOpacity}`}
+            content={day.content}
+          />
+          <LinearGradient
+            pointerEvents="none"
+            colors={["rgba(3,5,9,.12)", "rgba(3,5,9,.35)", "rgba(3,5,9,.82)"]}
+            locations={[0, 0.5, 1]}
+            style={StyleSheet.absoluteFillObject}
+          />
+        </>
+      )}
+
+      <View style={[styles.controls, { top: topInset + 8 }]}>
+        <Pressable
+          onPress={close}
+          style={styles.closeButton}
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar"
+          testID="inspiration-detail-back"
+        >
+          <Feather name="x" size={30} color="#fff" />
         </Pressable>
-        <Pressable onPress={() => setSharing(true)} style={styles.icon} accessibilityLabel="Compartir imagen" testID="inspiration-share-btn"><Feather name="share-2" size={22} color={colors.foreground} /></Pressable>
-      </> : <View style={styles.icon} />}
-    </View>
-    <ScrollView key={date} keyboardShouldPersistTaps="handled" onScroll={event => setViewport(event.nativeEvent.contentOffset.y)} scrollEventThrottle={64} contentContainerStyle={{ paddingBottom: insets.bottom + 50 }}>
-      {(error || isCached) && <View style={{ padding: 16, backgroundColor: colors.card }}>
-        <Text style={{ color: colors.foreground }}>{error || "Mostrando copia guardada; actualizando…"}</Text>
-        {error && <Pressable onPress={() => void retry()} style={{ paddingTop: 10 }}><Text style={{ color: colors.primary }}>Reintentar</Text></Pressable>}
-      </View>}
-      {actionError && <Text accessibilityRole="alert" style={{ color: "#d87272", padding: 16 }}>{actionError}</Text>}
-      {loading ? <View style={styles.empty}><ActivityIndicator color={colors.primary} /><Text style={{ color: colors.foreground }}>Cargando inspiración…</Text></View> :
-        available && day?.content ? <>
-          <View style={{ minHeight: Math.max(350, height * .6), justifyContent: "flex-end", padding: 24, paddingTop: 100 }}>
-            <InspirationFade replayKey={date} delay={0}><Text style={styles.date}>{formatFullDate(day.date).toUpperCase()}</Text></InspirationFade>
-            <InspirationFade replayKey={date} delay={100}>
-              <Text style={styles.quote}>{day.content.quote}</Text>
-              {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
-            </InspirationFade>
+        {available && (
+          <View style={styles.controlGroup}>
+            <Pressable
+              onPress={editNote}
+              style={styles.groupButton}
+              accessibilityRole="button"
+              accessibilityLabel="Editar nota"
+            >
+              <Feather name="edit-3" size={22} color="#fff" />
+            </Pressable>
+            <View style={styles.groupDivider} />
+            <Pressable
+              onPress={() => setSharing(true)}
+              style={styles.groupButton}
+              accessibilityRole="button"
+              accessibilityLabel="Compartir inspiración"
+              testID="inspiration-share-btn"
+            >
+              <Feather name="share" size={22} color="#fff" />
+            </Pressable>
           </View>
-          <View style={[styles.body, { backgroundColor: "rgba(6,10,15,.72)" }]}>
-            <InspirationFade replayKey={date} viewportTick={viewport} delay={100}>
-              <Text selectable style={{ fontFamily: "Manrope", fontSize: 18, lineHeight: 30, color: colors.foreground }}>{day.content.reflection}</Text>
-            </InspirationFade>
-            {!!day.content.sessionId && <InspirationFade replayKey={date} viewportTick={viewport} delay={180}>
-              <View style={{ paddingTop: 36, gap: 16 }}>
-                <Text style={{ color: colors.foreground, fontSize: 21, fontWeight: "600" }}>{week?.settings.discoverMoreLabel || "Descubre más"}</Text>
-                {session ? <Pressable onPress={play} disabled={!hydrated} style={[styles.audio, { backgroundColor: colors.card }]} accessibilityLabel={`Reproducir ${session.title}, ${session.durationLabel}${session.isPremium ? ", Premium" : ""}`}>
-                  <Image source={session.image} style={{ width: 62, height: 62, borderRadius: 12 }} contentFit="cover" />
-                  <View style={{ flex: 1, gap: 6 }}>
-                    <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "600" }}>{session.title}</Text>
-                    <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>{session.durationLabel} · {session.isPremium ? "Premium" : "Gratis"}</Text>
-                  </View>
-                  <Feather name={session.isPremium && !isPremium ? "lock" : "play"} size={22} color={colors.foreground} />
-                </Pressable> : <Text style={{ color: colors.mutedForeground }}>El audio relacionado ya no está disponible.</Text>}
+        )}
+      </View>
+
+      <ScrollView
+        key={date}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            minHeight: height,
+            paddingTop: topInset + 142,
+            paddingBottom: Math.max(insets.bottom, 18) + 48,
+          },
+        ]}
+      >
+        {(error || isCached) && (
+          <View style={styles.notice}>
+            <Text style={styles.noticeText}>{error || "Mostrando copia guardada"}</Text>
+            {error && (
+              <Pressable onPress={() => void retry()}>
+                <Text style={styles.retry}>Reintentar</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
+        {!!actionError && <Text accessibilityRole="alert" style={styles.error}>{actionError}</Text>}
+
+        {loading ? (
+          <View style={styles.empty}>
+            <ActivityIndicator color="#fff" />
+            <Text style={styles.emptyText}>Cargando inspiración…</Text>
+          </View>
+        ) : available && day?.content ? (
+          <>
+            <View style={styles.dateBlock}>
+              <Text style={styles.day}>{formatted.day}</Text>
+              <Text style={styles.monthYear}>{formatted.monthYear}</Text>
+            </View>
+
+            <Text style={styles.quote}>{day.content.quote}</Text>
+            {!!day.content.author && <Text style={styles.author}>— {day.content.author}</Text>}
+            <Text selectable style={styles.reflection}>{day.content.reflection}</Text>
+
+            {!!day.content.sessionId && (
+              <View style={styles.related}>
+                <View style={styles.separator} />
+                <Text style={styles.relatedTitle}>{week?.settings.discoverMoreLabel || "Descubre más"}</Text>
+                <Text style={styles.relatedSubtitle}>Sobre el audio de hoy</Text>
+
+                {session ? (
+                  <Pressable
+                    onPress={play}
+                    disabled={!hydrated}
+                    style={styles.audioCard}
+                    accessibilityLabel={`Reproducir ${session.title}, ${session.durationLabel}${session.isPremium ? ", Premium" : ""}`}
+                  >
+                    <View style={styles.audioThumb}>
+                      <Image source={session.image} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+                      <View style={styles.playBadge}>
+                        <Feather
+                          name={session.isPremium && !isPremium ? "lock" : "play"}
+                          size={17}
+                          color="#fff"
+                        />
+                      </View>
+                    </View>
+                    <View style={styles.audioCopy}>
+                      <Text numberOfLines={2} style={styles.audioTitle}>{session.title}</Text>
+                      <Text style={styles.audioDuration}>{session.durationLabel}</Text>
+                    </View>
+                  </Pressable>
+                ) : (
+                  <Text style={styles.unavailableAudio}>El audio relacionado ya no está disponible.</Text>
+                )}
               </View>
-            </InspirationFade>}
-            <InspirationFade replayKey={date} viewportTick={viewport} delay={240}>
-              <InspirationNotes inspirationId={day.id!} notesLabel={week?.settings.notesLabel} />
-            </InspirationFade>
+            )}
+          </>
+        ) : (
+          <View style={styles.empty}>
+            <Feather name={day?.status === "future" ? "lock" : "calendar"} size={38} color="rgba(255,255,255,.72)" />
+            <Text style={styles.emptyText}>
+              {day?.status === "future"
+                ? "Disponible pronto"
+                : error
+                  ? "No se pudo consultar esta inspiración"
+                  : "Esta inspiración no está disponible"}
+            </Text>
           </View>
-        </> : <View style={styles.body}>
-          <View style={styles.empty}><Feather name={day?.status === "future" ? "lock" : "calendar"} size={40} color={colors.mutedForeground} />
-            <Text style={{ color: colors.foreground, fontSize: 20, textAlign: "center" }}>{day?.status === "future" ? "Disponible pronto" : error ? "No se pudo consultar esta inspiración" : "Esta inspiración no está disponible"}</Text>
-            <Text style={{ color: colors.mutedForeground, textAlign: "center" }}>Tus notas privadas siguen disponibles en Mis notas.</Text>
-            <Pressable onPress={() => router.push("/inspiracion-diaria/notas")}><Text style={{ color: colors.primary }}>Mis notas</Text></Pressable>
-          </View>
-          {expectedId && <InspirationNotes inspirationId={expectedId} />}
-        </View>}
-    </ScrollView>
-    {sharing && available && day && <InspirationShare day={day} onClose={() => setSharing(false)} />}
-  </KeyboardAvoidingView>;
+        )}
+      </ScrollView>
+
+      {sharing && available && day && <InspirationShare day={day} onClose={() => setSharing(false)} />}
+    </View>
+  );
 }
+
 export default function InspiracionDiariaDetail() {
   const { date, id } = useLocalSearchParams<{ date: string; id?: string }>();
   return <Detail key={`${date}-${id || ""}`} date={date} expectedId={id} />;
 }
+
+const serif = Platform.select({
+  ios: "Georgia",
+  android: "serif",
+  web: "Georgia, serif",
+  default: "serif",
+});
+
 const styles = StyleSheet.create({
-  header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingBottom: 8 },
-  icon: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
-  date: { fontFamily: "Manrope", fontSize: 12, letterSpacing: 1.2, color: "#eee", marginBottom: 14 },
-  quote: { fontFamily: "Manrope", fontSize: 28, lineHeight: 39, color: "#fff", fontWeight: "500" },
-  author: { color: "#eee", fontSize: 16, marginTop: 16, fontStyle: "italic" },
-  body: { padding: 24 }, empty: { minHeight: 260, padding: 24, alignItems: "center", justifyContent: "center", gap: 18 },
-  audio: { flexDirection: "row", alignItems: "center", gap: 14, padding: 14, borderRadius: 16 },
+  container: { flex: 1 },
+  controls: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    zIndex: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  closeButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.14)",
+    backgroundColor: "rgba(6,8,13,.3)",
+  },
+  controlGroup: {
+    height: 52,
+    borderRadius: 26,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.14)",
+    backgroundColor: "rgba(6,8,13,.3)",
+    overflow: "hidden",
+  },
+  groupButton: { width: 54, height: 52, alignItems: "center", justifyContent: "center" },
+  groupDivider: { width: StyleSheet.hairlineWidth, height: 24, backgroundColor: "rgba(255,255,255,.18)" },
+  scrollContent: { paddingHorizontal: 28 },
+  notice: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+    padding: 9,
+    borderRadius: 12,
+    backgroundColor: "rgba(4,8,13,.72)",
+    marginBottom: 18,
+  },
+  noticeText: { color: "rgba(255,255,255,.82)", fontFamily: "Manrope", fontSize: 12 },
+  retry: { color: "#fff", fontFamily: "Manrope", fontSize: 12, fontWeight: "700" },
+  error: { color: "#ffaaaa", marginBottom: 16, fontFamily: "Manrope" },
+  dateBlock: { alignItems: "center", marginBottom: 34 },
+  day: { color: "#fff", fontFamily: "Manrope", fontSize: 36, lineHeight: 40, fontWeight: "500" },
+  monthYear: { color: "rgba(255,255,255,.88)", fontFamily: "Manrope", fontSize: 15, marginTop: 2 },
+  quote: {
+    color: "#fff",
+    fontFamily: serif,
+    fontSize: 27,
+    lineHeight: 36,
+    textAlign: "center",
+    fontWeight: "400",
+  },
+  author: {
+    color: "rgba(255,255,255,.82)",
+    fontFamily: serif,
+    fontSize: 15,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 12,
+  },
+  reflection: {
+    color: "rgba(255,255,255,.94)",
+    fontFamily: "Manrope",
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: 44,
+  },
+  related: { marginTop: 32 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,.26)", marginBottom: 24 },
+  relatedTitle: { color: "#fff", fontFamily: "Manrope", fontSize: 21, lineHeight: 27, fontWeight: "700" },
+  relatedSubtitle: { color: "rgba(255,255,255,.74)", fontFamily: "Manrope", fontSize: 13, marginTop: 4, marginBottom: 20 },
+  audioCard: {
+    minHeight: 72,
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,.96)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  audioThumb: { width: 52, height: 52, borderRadius: 8, overflow: "hidden", backgroundColor: "#171B22" },
+  playBadge: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(5,8,13,.34)",
+  },
+  audioCopy: { flex: 1, gap: 5 },
+  audioTitle: { color: "#24262B", fontFamily: "Manrope", fontSize: 15, lineHeight: 20, fontWeight: "700" },
+  audioDuration: { color: "#8A8D93", fontFamily: "Manrope", fontSize: 12 },
+  unavailableAudio: { color: "rgba(255,255,255,.72)", fontFamily: "Manrope", fontSize: 14 },
+  empty: { minHeight: 420, alignItems: "center", justifyContent: "center", gap: 16 },
+  emptyText: { color: "#fff", fontFamily: "Manrope", fontSize: 18, textAlign: "center" },
 });
