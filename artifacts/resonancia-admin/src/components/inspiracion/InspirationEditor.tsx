@@ -421,7 +421,7 @@ export function InspirationEditor({
       data: { revision: inspiration.revision }
     }, {
       onSuccess: () => {
-        toast.success("Publicado correctamente");
+        toast.success("Publicado correctamente", { duration: 900 });
         setShowPublishConfirm(false);
         invalidate();
       },
