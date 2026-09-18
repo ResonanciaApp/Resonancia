@@ -1231,11 +1231,6 @@ export function ProfileScreenBase({
         {dedicated && (
           <>
             <View style={styles.profileProgressSection}>
-              <View style={styles.profileProgressIntro}>
-                <Text style={[styles.profileProgressIntroTitle, { color: colors.foreground }]}>
-                  Tu progreso en Resonancia
-                </Text>
-              </View>
               <ProgressMirrorSections showSectionBorders={false} />
             </View>
 
@@ -2001,7 +1996,8 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -2146,20 +2142,20 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: { position: "relative", marginBottom: 0 },
   avatarCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 83,
+    height: 83,
+    borderRadius: 41.5,
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.8)",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 83,
+    height: 83,
+    borderRadius: 41.5,
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.8)",
   },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   userNameLeft: { textAlign: "left" },

@@ -50,24 +50,6 @@ export function ProgressMirrorSections({
 
   return (
     <>
-      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
-        <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
-            value={currentStreak}
-            label="RACHA ACTUAL"
-            accent={accent}
-          />
-          <View style={styles.statDivider} />
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
-            value={maxStreak}
-            label="RACHA MÁS LARGA"
-            accent={accent}
-          />
-        </View>
-      </View>
-
       <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
         <View style={styles.personalStatsHeader}>
           <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
@@ -124,6 +106,24 @@ export function ProgressMirrorSections({
         </View>
       </View>
 
+      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
+        <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
+            value={currentStreak}
+            label="RACHA ACTUAL"
+            accent={accent}
+          />
+          <View style={styles.statDivider} />
+          <Stat
+            icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
+            value={maxStreak}
+            label="RACHA MÁS LARGA"
+            accent={accent}
+          />
+        </View>
+      </View>
+
       <HistorialCalendar
         embedded
         outlined={showSectionBorders}
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
+    marginBottom: 12,
   },
   personalStatsSection: {
     borderRadius: 19,
@@ -171,7 +172,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: SECTION_BACKGROUND,
     padding: 16,
-    marginTop: 12,
     marginBottom: 12,
   },
   borderlessSection: {
