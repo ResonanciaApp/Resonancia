@@ -146,3 +146,4 @@
 - [Portada de Inspiración diaria](inspiration-seven-day-window.md) — portada minimalista muestra solo los últimos 7 días hasta hoy; sin navegación semanal ni fechas futuras
 - [Publicación al editar Inspiración](inspiration-admin-publish-edit.md) — en una inspiración publicada, la acción principal guarda y republica; borrador queda como opción secundaria explícita
 - [Detalle diario de Inspiración](inspiration-detail-layout.md) — fondo fullscreen y contenido continuo; controles flotantes, sin header/footer ni sección Mis notas dentro del detalle
+- [Nombres de módulos en Inicio 3](inicio3-module-names.md) — “Inspiración diaria” se refiere al Hero superior; “Frase del día” es el módulo DailyWisdom y no debe intercambiarse por error
