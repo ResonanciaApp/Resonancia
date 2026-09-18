@@ -19,6 +19,8 @@ import {
   FlatList,
   Keyboard,
   Modal,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -1268,8 +1270,17 @@ function Inicio2HeroSliderRebuilt({
 
 const INICIO3_HERO_FALLBACK = require("@/assets/images/inicio2-mistico-1-warm.jpg");
 
-function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
-  const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
+type Inicio3EffectiveHero = ReturnType<typeof useEffectiveHero>;
+
+function Inicio3HeroMedia({
+  active,
+  effectiveHero,
+  reduceMotion,
+}: {
+  active: boolean;
+  effectiveHero: Inicio3EffectiveHero;
+  reduceMotion: boolean;
+}) {
   const [focused, setFocused] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -1287,9 +1298,9 @@ function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
     }, []),
   );
   useEffect(() => {
-    if (!videoUri || !focused) heroPlayer.pause();
+    if (!videoUri || !focused || !active) heroPlayer.pause();
     else heroPlayer.play();
-  }, [focused, heroPlayer, videoUri]);
+  }, [active, focused, heroPlayer, videoUri]);
   useEffect(() => {
     setVideoFailed(false);
     setVideoReady(false);
@@ -1336,8 +1347,7 @@ function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
   );
 }
 
-function Inicio3HeroTitle() {
-  const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
+function Inicio3HeroTitle({ title }: { title: string | undefined }) {
   return (
     <Text
       style={[
@@ -1346,8 +1356,137 @@ function Inicio3HeroTitle() {
         styles.inicio3HeroTitle,
       ]}
     >
-      {effectiveHero.title ?? "Aprendamos a conectar con lo esencial"}
+      {title ?? "Aprendamos a conectar con lo esencial"}
     </Text>
+  );
+}
+
+const INICIO3_PAGER_SLIDES = [
+  { id: "today", image: null, title: null },
+  { id: "ocean", image: require("@/assets/images/inicio3-slider-oceano.jpg"), title: "Encuentra calma en el sonido de las olas" },
+  { id: "forest", image: require("@/assets/images/inicio3-slider-bosque.jpg"), title: "Respira la tranquilidad del bosque" },
+  { id: "mountain", image: require("@/assets/images/inicio3-slider-montana.jpg"), title: "Alcanza nuevas alturas de bienestar" },
+];
+
+function Inicio3HeroPager({
+  top,
+  height,
+  shadowStyle,
+  reduceMotion,
+}: {
+  top: number;
+  height: number;
+  shadowStyle: object;
+  reduceMotion: boolean;
+}) {
+  const router = useRouter();
+  const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
+  const slideWidth = Dimensions.get("window").width - (GRID_PAD - 3) * 2;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [todayMediaActive, setTodayMediaActive] = useState(true);
+  const todayMediaActiveRef = useRef(true);
+
+  const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = e.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / slideWidth);
+    setActiveIndex(Math.max(0, Math.min(index, INICIO3_PAGER_SLIDES.length - 1)));
+  };
+  const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const nextActive = e.nativeEvent.contentOffset.x <= 1;
+    if (nextActive === todayMediaActiveRef.current) return;
+    todayMediaActiveRef.current = nextActive;
+    setTodayMediaActive(nextActive);
+  };
+
+  return (
+    <RAnimated.View
+      style={[
+        styles.inicio2HeroStaticImageFrame,
+        styles.inicio3HeroStaticImageFrame,
+        { top, height, bottom: undefined },
+      ]}
+      testID="inicio3-hero-pager"
+    >
+      <RAnimated.View style={[styles.inicio3HeroBackShadow, shadowStyle]}>
+        <LinearGradient
+          colors={[
+            "rgba(0,0,0,0)",
+            "rgba(0,0,0,0.14)",
+            "rgba(0,0,0,0.14)",
+            "rgba(0,0,0,0)",
+          ]}
+          locations={[0, 0.14, 0.86, 1]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </RAnimated.View>
+      <View style={[StyleSheet.absoluteFill, styles.inicio3HeroImageClip]}>
+        <FlatList
+          data={INICIO3_PAGER_SLIDES}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={onPagerScroll}
+          scrollEventThrottle={16}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          keyExtractor={(item) => item.id}
+          getItemLayout={(_, index) => ({ length: slideWidth, offset: slideWidth * index, index })}
+          renderItem={({ item, index }) => (
+            <View style={[styles.inicio3HeroSlide, { width: slideWidth }]}>
+              <Pressable
+                style={StyleSheet.absoluteFill}
+                onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
+                accessibilityRole="button"
+                accessibilityLabel={item.title || "Inspiración diaria"}
+                testID={`inicio3-hero-slide-${index + 1}`}
+              >
+                {item.id === "today" ? (
+                  <Inicio3HeroMedia
+                    active={todayMediaActive}
+                    effectiveHero={effectiveHero}
+                    reduceMotion={reduceMotion}
+                  />
+                ) : (
+                  <View style={StyleSheet.absoluteFill}>
+                    <Image source={item.image} resizeMode="cover" style={styles.inicio2HeroImage} />
+                    <View style={styles.inicio3HeroSlideOverlay} />
+                  </View>
+                )}
+
+                <View style={[StyleSheet.absoluteFill, styles.inicio3HeroCopy]} pointerEvents="box-none">
+                  <View style={styles.inicio3HeroPill}>
+                    <MaterialCommunityIcons name="creation" size={13} color="#F9F9F9" />
+                    <Text style={styles.inicio3HeroPillText}>INSPIRACIÓN DIARIA</Text>
+                  </View>
+                  {item.id === "today" ? (
+                    <Inicio3HeroTitle title={effectiveHero.title} />
+                  ) : (
+                    <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle, styles.inicio3HeroTitle]}>
+                      {item.title}
+                    </Text>
+                  )}
+                  <View style={styles.inicio3HeroReadMore}>
+                    <Text style={styles.inicio3HeroReadMoreText}>Leer más</Text>
+                  </View>
+                </View>
+              </Pressable>
+            </View>
+          )}
+        />
+        <View style={styles.inicio3HeroProgressContainer} pointerEvents="none">
+          {INICIO3_PAGER_SLIDES.map((slide, i) => (
+            <View
+              key={slide.id}
+              style={[
+                styles.inicio3HeroProgressBar,
+                i === activeIndex && styles.inicio3HeroProgressBarActive,
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+    </RAnimated.View>
   );
 }
 
@@ -1422,48 +1561,33 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       testID="inicio2-hero-static"
       accessibilityLabel="Contenido destacado"
     >
-      <RAnimated.View
-        pointerEvents="none"
-        style={[
-          styles.inicio2HeroStaticImageFrame,
-          {
-            top: isInicio3 ? inicio3HeroTop : topInset + 66,
-            bottom: isInicio3 ? undefined : 18,
-            height: isInicio3 ? inicio3HeroHeight : undefined,
-          },
-          isInicio3 && styles.inicio3HeroStaticImageFrame,
-        ]}
-      >
-        {isInicio3 ? (
-          <RAnimated.View
-            style={[styles.inicio3HeroBackShadow, heroShadowStyle]}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(0,0,0,0)",
-                "rgba(0,0,0,0.14)",
-                "rgba(0,0,0,0.14)",
-                "rgba(0,0,0,0)",
-              ]}
-              locations={[0, 0.14, 0.86, 1]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </RAnimated.View>
-        ) : null}
-        <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
-          {isInicio3 ? (
-            <Inicio3HeroMedia reduceMotion={reduceMotion} />
-          ) : (
+      {isInicio3 ? (
+        <Inicio3HeroPager
+          top={inicio3HeroTop}
+          height={inicio3HeroHeight}
+          shadowStyle={heroShadowStyle}
+          reduceMotion={reduceMotion}
+        />
+      ) : (
+        <RAnimated.View
+          pointerEvents="none"
+          style={[
+            styles.inicio2HeroStaticImageFrame,
+            {
+              top: topInset + 66,
+              bottom: 18,
+            },
+          ]}
+        >
+          <View style={StyleSheet.absoluteFill}>
             <Image
               source={INICIO3_HERO_FALLBACK}
               resizeMode="cover"
               style={styles.inicio2HeroImage}
             />
-          )}
-        </View>
-      </RAnimated.View>
+          </View>
+        </RAnimated.View>
+      )}
 
       <RAnimated.View
         pointerEvents="box-none"
@@ -1596,46 +1720,23 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         </>
       )}
 
-      <Pressable
-        onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
-        style={[
-          styles.inicio2HeroStaticCopy,
-          {
-            top: isInicio3 ? inicio3HeroTop : topInset + 66,
-            bottom: isInicio3 ? undefined : 18,
-            height: isInicio3 ? inicio3HeroHeight : undefined,
-          },
-          isInicio3 && styles.inicio3HeroCopy,
-        ]}
-      >
-        {isInicio3 && (
-          <View style={styles.inicio3HeroPill}>
-            <MaterialCommunityIcons
-              name="creation"
-              size={13}
-              color="#F9F9F9"
-            />
-            <Text style={styles.inicio3HeroPillText}>
-              INSPIRACIÓN DIARIA
-            </Text>
-          </View>
-        )}
-        {isInicio3 ? (
-          <Inicio3HeroTitle />
-        ) : (
+      {!isInicio3 && (
+        <Pressable
+          onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
+          style={[
+            styles.inicio2HeroStaticCopy,
+            {
+              top: topInset + 66,
+              bottom: 18,
+            },
+          ]}
+        >
           <Text style={[
             styles.inicio2HeroTitle,
             styles.inicio2HeroStaticTitle,
           ]}>
             {"Aprendamos a conectar\ncon lo esencial"}
           </Text>
-        )}
-        {isInicio3 && (
-          <View style={styles.inicio3HeroReadMore}>
-            <Text style={styles.inicio3HeroReadMoreText}>Leer más</Text>
-          </View>
-        )}
-        {!isInicio3 && (
           <View
             style={styles.inicio2HeroStaticActionButton}
             accessibilityRole="button"
@@ -1644,8 +1745,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           >
             <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
           </View>
-        )}
-      </Pressable>
+        </Pressable>
+      )}
     </View>
   );
 });
@@ -3546,6 +3647,33 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
+  },
+  inicio3HeroProgressContainer: {
+    position: "absolute",
+    bottom: 24,
+    left: 24,
+    right: 24,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 40,
+  },
+  inicio3HeroProgressBar: {
+    flex: 1,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.4)",
+  },
+  inicio3HeroProgressBarActive: {
+    backgroundColor: "#FFFFFF",
+  },
+  inicio3HeroSlide: {
+    height: "100%",
+  },
+  inicio3HeroSlideOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
   inicio2HeroCategory: {
     marginBottom: 10,
