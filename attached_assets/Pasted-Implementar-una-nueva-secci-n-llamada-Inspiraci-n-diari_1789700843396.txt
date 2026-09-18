@@ -1,0 +1,72 @@
+Implementar una nueva sección llamada “Inspiración diaria” dentro de la app.
+
+La sección presenta una frase de inspiración diferente para cada día, organizada por semanas.
+
+1. Navegación semanal
+
+La pantalla principal muestra un slider horizontal de 7 días, correspondiente a la semana actual.
+Cada día se representa mediante una pequeña tarjeta con:
+Número del día.
+Imagen propia y única para ese día.
+El usuario puede deslizar horizontalmente para navegar entre los días de la semana.
+El día actual debe estar claramente identificado/seleccionado.
+Debe existir la posibilidad de navegar a semanas anteriores y posteriores, manteniendo la misma estructura de 7 días.
+
+2. Portada de cada día
+
+Al seleccionar un día, se muestra una portada visual a pantalla completa.
+La imagen del día funciona como background de toda la pantalla.
+Sobre la imagen se muestra:
+Número del día.
+Mes y año.
+Una frase/título principal de inspiración.
+La composición debe mantener un estilo visual contemplativo, premium y coherente con la identidad de Resonancia.
+La imagen debe tener un tratamiento visual que permita una correcta lectura del texto, por ejemplo mediante overlays o degradados sutiles.
+La portada incluye un botón “Leer más” para acceder al contenido completo.
+
+3. Página interna / detalle
+
+Al presionar “Leer más”, se abre el detalle de la inspiración correspondiente a ese día.
+Se mantiene la imagen del día como fondo visual.
+En la parte superior se muestra:
+Botón para cerrar/volver.
+Acciones para editar/guardar y compartir, según las funciones disponibles en la app.
+Luego se muestra nuevamente la fecha y el título/frase principal.
+Debajo aparece un párrafo explicativo o reflexión asociado específicamente a esa frase.
+El contenido debe poder ocupar varias líneas y adaptarse correctamente a diferentes tamaños de pantalla.
+
+4. Contenido relacionado
+
+Al final del texto aparece una sección “Descubre más”.
+Esta sección presenta contenido relacionado con la inspiración del día.
+Inicialmente puede contener un audio de sabiduría auditiva asociado al día.
+El audio se presenta mediante una card con:
+Imagen/thumbnail.
+Botón de reproducción.
+Nombre del audio.
+Duración.
+El contenido relacionado debe ser configurable por día.
+
+5. Estructura de datos
+Cada día debe ser una entidad independiente con al menos:
+
+Fecha.
+Número del día.
+Imagen de fondo.
+Frase/título principal.
+Texto explicativo.
+Audio relacionado.
+Semana a la que pertenece.
+
+La arquitectura debe permitir agregar y modificar fácilmente nuevas semanas y sus 7 inspiraciones sin tener que modificar la interfaz.
+
+6. Comportamiento
+
+Al cambiar de día, debe actualizarse toda la información correspondiente al día seleccionado.
+La navegación entre días debe ser fluida.
+La semana actual debe abrirse mostrando automáticamente el día actual.
+Si el usuario entra a una fecha específica, debe poder volver a navegar entre los demás días de esa misma semana.
+Las imágenes y contenidos deben cargarse desde una fuente de datos centralizada y no estar hardcodeados directamente en los componentes de UI.
+Mantener los patrones de navegación, tipografía, espaciados, botones, animaciones y estilos visuales existentes en Resonancia.
+
+Objetivo: crear una experiencia de inspiración diaria que combine frase + imagen + reflexión + audio, permitiendo explorar fácilmente las 7 inspiraciones de cada semana mediante un slider y acceder al contenido completo de cada día.
