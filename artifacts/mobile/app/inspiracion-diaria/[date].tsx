@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   related: { marginTop: 32 },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,.26)", marginBottom: 24 },
-  relatedTitle: { color: "#fff", fontFamily: "Manrope", fontSize: 21, lineHeight: 27, fontWeight: "700", marginBottom: 20 },
+  relatedTitle: { color: "#fff", fontFamily: "Manrope", fontSize: 15, lineHeight: 21, fontWeight: "700", marginBottom: 20 },
   audioCard: {
     minHeight: 72,
     padding: 10,
