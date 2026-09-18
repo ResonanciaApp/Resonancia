@@ -340,7 +340,6 @@ export function ProfileScreenBase({
   } = useUserProfile();
 
   const resourceBlockBackground = "rgba(0,0,0,0.28)";
-  const profileSectionBackground = "rgba(0,0,0,0.28)";
   const libraryHeaderButtonBackground = getLibraryTabSurface(activeSceneId);
   const resourceBlockBorder = "rgba(255,255,255,0.1)";
   const secondaryAccent = activeTheme.accent ?? colors.accent;
@@ -1151,7 +1150,7 @@ export function ProfileScreenBase({
         </View>
 
         {/* ── Profile Card ── */}
-          <View style={[styles.profileCard, { backgroundColor: profileSectionBackground }]}>
+          <View style={styles.profileCard}>
           <View style={styles.profileIdentityRow}>
             {/* Avatar */}
             <Pressable
