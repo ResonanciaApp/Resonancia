@@ -231,7 +231,7 @@ export function InspirationEditor({
 
       // 3. Set the form value to the returned object path
       form.setValue("imagePath", objectPath, { shouldDirty: true });
-      toast.success("Imagen subida");
+      toast.success("Imagen subida", { duration: 900 });
     } catch (err: unknown) {
       toast.error(`Error al subir la imagen: ${getApiErrorMessage(err, "No se pudo completar la subida")}`);
     } finally {
@@ -311,7 +311,7 @@ export function InspirationEditor({
         }
       }, {
         onSuccess: (saved) => {
-          toast.success("Inspiración creada");
+          toast.success("Inspiración creada", { duration: 900 });
           form.reset(data, { keepDirty: false });
           invalidate();
           onSaved?.(saved.date);
