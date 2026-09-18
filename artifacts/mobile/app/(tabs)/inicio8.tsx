@@ -1441,9 +1441,9 @@ function Inicio3HeroPager({
           snapToAlignment="start"
           decelerationRate="fast"
           disableIntervalMomentum
-          bounces
-          alwaysBounceHorizontal
-          overScrollMode="always"
+          bounces={false}
+          alwaysBounceHorizontal={false}
+          overScrollMode="never"
           showsHorizontalScrollIndicator={false}
           onScroll={onPagerScroll}
           scrollEventThrottle={16}
@@ -3688,6 +3688,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroSlide: {
     height: "100%",
+    overflow: "hidden",
   },
   inicio3HeroSlideOverlay: {
     ...StyleSheet.absoluteFillObject,
