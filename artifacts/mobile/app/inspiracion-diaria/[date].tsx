@@ -137,7 +137,7 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
           styles.scrollContent,
           {
             minHeight: height,
-            paddingTop: topInset + 142,
+            paddingTop: topInset + 117,
             paddingBottom: Math.max(insets.bottom, 18) + 48,
           },
         ]}
@@ -280,15 +280,15 @@ const styles = StyleSheet.create({
   retry: { color: "#fff", fontFamily: "Manrope", fontSize: 12, fontWeight: "700" },
   error: { color: "#ffaaaa", marginBottom: 16, fontFamily: "Manrope" },
   dateBlock: { alignItems: "center", marginBottom: 34 },
-  day: { color: "#fff", fontFamily: "Manrope", fontSize: 36, lineHeight: 40, fontWeight: "500" },
-  monthYear: { color: "rgba(255,255,255,.88)", fontFamily: "Manrope", fontSize: 15, marginTop: 2 },
+  day: { color: "#fff", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
+  monthYear: { color: "rgba(255,255,255,.88)", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
   quote: {
     color: "#fff",
-    fontFamily: serif,
-    fontSize: 27,
-    lineHeight: 36,
+    fontFamily: "Manrope",
+    fontSize: 21,
+    lineHeight: 30,
     textAlign: "center",
-    fontWeight: "400",
+    fontWeight: "500",
   },
   author: {
     color: "rgba(255,255,255,.82)",
