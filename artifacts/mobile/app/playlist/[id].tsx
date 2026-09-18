@@ -1234,14 +1234,14 @@ const modalStyles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.2)",
   },
   selectedPreviewSlot: {
-    height: 125,
+    height: 170,
     alignItems: "center",
     justifyContent: "center",
   },
   selectedPreview: {
-    width: 77,
-    height: 77,
-    borderRadius: 38.5,
+    width: 115.5,
+    height: 115.5,
+    borderRadius: 57.75,
   },
   uploadPill: {
     flexDirection: "row",
@@ -1265,7 +1265,7 @@ const modalStyles = StyleSheet.create({
     fontWeight: "600",
   },
   presetGridContent: {
-    paddingTop: 18,
+    paddingTop: 26,
     paddingBottom: 20,
   },
   presetGrid: {
