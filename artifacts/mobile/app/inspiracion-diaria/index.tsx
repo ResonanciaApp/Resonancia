@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -16,18 +17,35 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { useInspiration } from "@/hooks/inspiration";
-import { InspirationFade, useInspirationReducedMotion } from "@/components/InspirationFade";
+import { useInspirationReducedMotion } from "@/components/InspirationFade";
 import { InspirationArtwork } from "@/components/InspirationArtwork";
 import { InspirationShare } from "@/components/InspirationShare";
 import { useColors } from "@/hooks/useColors";
 import type { InspirationDay } from "@/types/inspiration";
 import { addDays, formatDayNumber, formatISODate, parseISO } from "@/lib/date-utils";
-import { settledInspirationIndex, commitInspirationDate } from "@/lib/inspiration-interaction";
+import { settledInspirationIndex } from "@/lib/inspiration-interaction";
 
 function monthAndYear(date: string): string {
   return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
     .format(parseISO(date))
     .replace(".", "");
+}
+
+function SelectionDot({ date, selected, reduced }: { date: string; selected: boolean; reduced: boolean }) {
+  const opacity = useRef(new Animated.Value(selected ? 1 : 0)).current;
+  useEffect(() => {
+    opacity.stopAnimation();
+    if (reduced) {
+      opacity.setValue(selected ? 1 : 0);
+      return;
+    }
+    Animated.timing(opacity, {
+      toValue: selected ? 1 : 0,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+  }, [opacity, reduced, selected]);
+  return <Animated.View testID={`inspiration-dot-${date}`} pointerEvents="none" style={[styles.selectionDot, { opacity }]} />;
 }
 
 export default function InspiracionDiariaIndex() {
@@ -49,7 +67,6 @@ export default function InspiracionDiariaIndex() {
       .slice(-7);
   }, [current.days, current.today, previous.days]);
   const [selected, setSelected] = useState(current.today);
-  const [entrance, setEntrance] = useState(0);
   const [moving, setMoving] = useState(false);
   const [sharing, setSharing] = useState(false);
   const activeIndex = Math.max(0, days.findIndex((day) => day.date === selected));
@@ -74,10 +91,11 @@ export default function InspiracionDiariaIndex() {
     cancelSettle();
     pendingTarget.current = null;
     dragging.current = false;
-    offset.current = activeIndex * width;
+    const currentIndex = Math.max(0, days.findIndex((day) => day.date === selectedRef.current));
+    offset.current = currentIndex * width;
     slider.current?.scrollToOffset({ offset: offset.current, animated: false });
     setMoving(false);
-  }, [activeIndex, cancelSettle, width]);
+  }, [cancelSettle, width]);
 
   const commit = useCallback(() => {
     cancelSettle();
@@ -88,10 +106,8 @@ export default function InspiracionDiariaIndex() {
     const date = days[index]?.date;
     setMoving(false);
     if (date && date !== selectedRef.current) {
-      const previousDate = selectedRef.current;
       selectedRef.current = date;
       setSelected(date);
-      setEntrance((value) => commitInspirationDate(previousDate, date, value).entrance);
     }
   }, [cancelSettle, days, width]);
 
@@ -105,7 +121,12 @@ export default function InspiracionDiariaIndex() {
   const chooseDay = (index: number) => {
     cancelSettle();
     pendingTarget.current = index;
-    setMoving(true);
+    const date = days[index]?.date;
+    if (date && date !== selectedRef.current) {
+      selectedRef.current = date;
+      setSelected(date);
+    }
+    setMoving(false);
     slider.current?.scrollToOffset({ offset: index * width, animated: !reduced });
     if (reduced || Math.abs(offset.current - index * width) <= 1) {
       offset.current = index * width;
@@ -140,7 +161,7 @@ export default function InspiracionDiariaIndex() {
           keyExtractor={(day) => day.date}
           getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
           showsHorizontalScrollIndicator={false}
-          extraData={`${selected}-${entrance}-${width}-${height}-${moving}`}
+          extraData={`${selected}-${width}-${height}-${moving}`}
           onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
             offset.current = event.nativeEvent.contentOffset.x;
             if (!dragging.current) scheduleSettle();
@@ -165,15 +186,20 @@ export default function InspiracionDiariaIndex() {
             <View style={{ width, height }}>
               {item.status === "available" && item.content ? (
                 <>
-                  <InspirationArtwork key={item.content.imageUrl} content={item.content} />
-                  <View pointerEvents="none" style={styles.atmosphere} />
-                  <View style={[styles.pageContent, { paddingTop: topInset + 180, paddingBottom: Math.max(insets.bottom, 18) + 38 }]}>
+                  <InspirationArtwork
+                    key={`${item.content.imageUrl}-${item.content.overlayOpacity}`}
+                    content={item.content}
+                  />
+                  <View
+                    testID={`inspiration-content-${item.date}`}
+                    style={[styles.pageContent, { paddingTop: topInset + 180, paddingBottom: Math.max(insets.bottom, 18) + 38 }]}
+                  >
                     <View style={styles.message}>
-                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={0}>
+                      <View>
                         <Text style={styles.dayNumber}>{formatDayNumber(item.date)}</Text>
                         <Text style={styles.month}>{monthAndYear(item.date)}</Text>
-                      </InspirationFade>
-                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={100}>
+                      </View>
+                      <View style={styles.quoteBlock}>
                         <Text
                           style={[
                             styles.quote,
@@ -183,8 +209,8 @@ export default function InspiracionDiariaIndex() {
                           {item.content.quote}
                         </Text>
                         {!!item.content.author && <Text style={styles.author}>— {item.content.author}</Text>}
-                      </InspirationFade>
-                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={200}>
+                      </View>
+                      <View>
                         <Pressable
                           disabled={moving || item.date !== selected}
                           onPress={() => openDetail(item)}
@@ -192,7 +218,7 @@ export default function InspiracionDiariaIndex() {
                         >
                           <Text style={styles.readText}>{current.week?.settings.readMoreLabel || "Leer más"}</Text>
                         </Pressable>
-                      </InspirationFade>
+                      </View>
                     </View>
                   </View>
                 </>
@@ -227,7 +253,7 @@ export default function InspiracionDiariaIndex() {
             <Pressable
               key={day.date}
               onPress={() => chooseDay(index)}
-              style={[styles.dayCard, day.date === selected && styles.dayCardSelected]}
+              style={styles.dayCard}
               accessibilityRole="button"
               accessibilityState={{ selected: day.date === selected }}
               accessibilityLabel={`${day.date === current.today ? "Hoy, " : ""}${formatDayNumber(day.date)} ${monthAndYear(day.date)}, ${day.status === "available" ? "disponible" : "no disponible"}`}
@@ -242,9 +268,18 @@ export default function InspiracionDiariaIndex() {
               ) : (
                 <View style={[StyleSheet.absoluteFillObject, styles.emptyCard]} />
               )}
+              {day.status === "available" && day.content && (
+                <View
+                  pointerEvents="none"
+                  style={[
+                    StyleSheet.absoluteFillObject,
+                    { backgroundColor: `rgba(0,0,0,${day.content.overlayOpacity})` },
+                  ]}
+                />
+              )}
               <View style={styles.cardShade} />
               <Text style={styles.cardNumber}>{formatDayNumber(day.date)}</Text>
-              {day.date === current.today && <View style={styles.todayDot} />}
+              <SelectionDot date={day.date} selected={day.date === selected} reduced={reduced} />
             </Pressable>
           ))}
         </View>
@@ -292,12 +327,9 @@ export default function InspiracionDiariaIndex() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
-  atmosphere: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(3,7,14,.12)",
-  },
   pageContent: { flex: 1, justifyContent: "center", paddingHorizontal: 28 },
   message: { width: "100%", alignItems: "center", transform: [{ translateY: 22 }] },
+  quoteBlock: { width: "100%", alignItems: "center" },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
   quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 25, lineHeight: 34, fontWeight: "500", marginTop: 34 },
@@ -334,11 +366,9 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: 9,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,.15)",
+    borderWidth: 0,
     backgroundColor: "rgba(10,12,18,.35)",
   },
-  dayCardSelected: { borderColor: "rgba(255,255,255,.9)", borderWidth: 1.5 },
   emptyCard: { backgroundColor: "rgba(16,19,27,.68)" },
   cardShade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,.2)" },
   cardNumber: {
@@ -352,7 +382,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,.8)",
     textShadowRadius: 4,
   },
-  todayDot: { position: "absolute", bottom: 5, alignSelf: "center", width: 6, height: 6, borderRadius: 3, backgroundColor: "#74E1B7" },
+  selectionDot: { position: "absolute", bottom: 5, alignSelf: "center", width: 6, height: 6, borderRadius: 3, backgroundColor: "#74E1B7" },
   bottomActions: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "center", gap: 18 },
   actionButton: {
     width: 56,
