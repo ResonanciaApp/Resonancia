@@ -1773,7 +1773,7 @@ const styles = StyleSheet.create({
   },
   libraryTabBackHitArea: {
     position: "absolute",
-    left: 16,
+    left: 10,
     top: -4,
     width: 48,
     height: 48,
@@ -1924,7 +1924,7 @@ const styles = StyleSheet.create({
   },
   libActionsPill: {
     position: "absolute",
-    right: 15,
+    right: 12,
     top: 0,
     flexDirection: "row",
     alignItems: "center",
