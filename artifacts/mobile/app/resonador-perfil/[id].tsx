@@ -19,8 +19,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { usePlayer } from "@/context/PlayerContext";
-import { usePremium } from "@/context/PremiumContext";
 
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
@@ -65,8 +63,6 @@ export default function ResonadorPerfilScreen() {
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
   const { theme: activeTheme } = useSceneTheme();
-  const { playSession } = usePlayer();
-  const { isPremium } = usePremium();
   const bgColors: readonly string[] = activeTheme.gradient;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -299,6 +295,7 @@ export default function ResonadorPerfilScreen() {
                 style={({ pressed }) => [
                   styles.actionPill,
                   styles.actionPillFull,
+                  styles.editProfilePill,
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
@@ -386,6 +383,69 @@ export default function ResonadorPerfilScreen() {
               <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
             ) : null}
           </Pressable>
+        )}
+
+        {/* ── Mis sesiones ── */}
+        {sessions.length > 0 && (
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 17 }]}>
+            <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
+              <Text style={[styles.cardTitle, { fontSize: 25 }]}>Mis sesiones</Text>
+              <Pressable
+                onPress={() => {/* TODO: nav a catálogo del resonador */}}
+                hitSlop={8}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Text style={[styles.verTodasText, { color: colors.primary }]}>Ver todas</Text>
+              </Pressable>
+            </View>
+
+            <Pressable
+              hitSlop={8}
+              onPress={() => {
+                setSessionSort((v) => v === "recientes" ? "escuchadas" : "recientes");
+                setSessionLimit(SESSION_PAGE);
+              }}
+              style={({ pressed }) => [styles.sessionSortBtn, { opacity: pressed ? 0.7 : 1 }]}
+            >
+              <Feather name="chevrons-down" size={13} color="rgba(250,240,238,0.40)" />
+              <Text style={styles.sessionSortText}>
+                {sessionSort === "recientes" ? "Más recientes" : "Más escuchadas"}
+              </Text>
+            </Pressable>
+
+            <View style={styles.sessionList}>
+              {sortedSessions.slice(0, sessionLimit).map((session) => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  horizontal
+                  showAuthor={false}
+                  showDuration
+                  titleFontSize={14}
+                  thumbWidth={94}
+                  thumbRadius={21}
+                />
+              ))}
+            </View>
+            {sortedSessions.length > sessionLimit && (
+              <Pressable
+                onPress={() => setSessionLimit((v) => v + SESSION_PAGE)}
+                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={styles.verMasText}>Ver más</Text>
+                <Feather name="chevron-down" size={14} color={GOLD} />
+              </Pressable>
+            )}
+            {sessionLimit > SESSION_PAGE && sortedSessions.length <= sessionLimit && (
+              <Pressable
+                onPress={() => setSessionLimit(SESSION_PAGE)}
+                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={styles.verMasText}>Ver menos</Text>
+                <Feather name="chevron-up" size={14} color={GOLD} />
+              </Pressable>
+            )}
+          </View>
         )}
 
         {/* ── Sección Resonador ── */}
@@ -477,127 +537,9 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {/* ── Grilla de imágenes ── */}
-        {(() => {
-          const customPhotos = resonador.photos ?? [];
-          if (customPhotos.length > 0) {
-            return (
-              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 45 }]}>
-                {customPhotos.slice(0, 6).map((uri, i) => (
-                  <View key={i} style={styles.photoCell}>
-                    <Image
-                      source={{ uri }}
-                      style={{ width: "100%", height: "100%" }}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                  </View>
-                ))}
-              </View>
-            );
-          }
-          if (sessions.length > 0) {
-            return (
-              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 45 }]}>
-                {sessions.slice(0, 6).map((session, i) => (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => {
-                      if (session.skipMiniPlayer && !(session.isPremium && !isPremium)) { playSession(session); return; }
-                      if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-                      router.push(`/session/${session.id}` as never);
-                    }}
-                    style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <Image
-                      source={session.image}
-                      style={{ width: "100%", height: "100%" }}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    {i === 5 && sessions.length > 6 && (
-                      <View style={styles.photoCellMore}>
-                        <Text style={styles.photoCellMoreText}>+{sessions.length - 5}</Text>
-                      </View>
-                    )}
-                  </Pressable>
-                ))}
-              </View>
-            );
-          }
-          return null;
-        })()}
-
-        {/* ── SECCIÓN 1: Mis sesiones ── */}
-        {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 17 }]}>
-            <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
-              <Text style={[styles.cardTitle, { fontSize: 25 }]}>Mis sesiones</Text>
-              <Pressable
-                onPress={() => {/* TODO: nav a catálogo del resonador */}}
-                hitSlop={8}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-              >
-                <Text style={[styles.verTodasText, { color: colors.primary }]}>Ver todas</Text>
-              </Pressable>
-            </View>
-
-            {/* Filtro de orden */}
-            <Pressable
-              hitSlop={8}
-              onPress={() => {
-                setSessionSort((v) => v === "recientes" ? "escuchadas" : "recientes");
-                setSessionLimit(SESSION_PAGE);
-              }}
-              style={({ pressed }) => [styles.sessionSortBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Feather name="chevrons-down" size={13} color="rgba(250,240,238,0.40)" />
-              <Text style={styles.sessionSortText}>
-                {sessionSort === "recientes" ? "Más recientes" : "Más escuchadas"}
-              </Text>
-            </Pressable>
-
-            <View style={styles.sessionList}>
-              {sortedSessions.slice(0, sessionLimit).map((session) => (
-                <SessionCard
-                  key={session.id}
-                  session={session}
-                  horizontal
-                  showAuthor={false}
-                  showDuration={false}
-                  showMetaBelow
-                  titleFontSize={14}
-                  thumbWidth={94}
-                  thumbRadius={21}
-                />
-              ))}
-            </View>
-            {sortedSessions.length > sessionLimit && (
-              <Pressable
-                onPress={() => setSessionLimit((v) => v + SESSION_PAGE)}
-                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Text style={styles.verMasText}>Ver más</Text>
-                <Feather name="chevron-down" size={14} color={GOLD} />
-              </Pressable>
-            )}
-            {sessionLimit > SESSION_PAGE && sortedSessions.length <= sessionLimit && (
-              <Pressable
-                onPress={() => setSessionLimit(SESSION_PAGE)}
-                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Text style={styles.verMasText}>Ver menos</Text>
-                <Feather name="chevron-up" size={14} color={GOLD} />
-              </Pressable>
-            )}
-          </View>
-        )}
-
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 26 }]}>
+          <View style={[styles.card, styles.projectsCard, { marginHorizontal: H_PAD, marginTop: 26 }]}>
             <Text style={styles.cardTitle}>Proyectos externos</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
@@ -624,27 +566,6 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {/* ── SECCIÓN 5: Formación ── */}
-        {resonador.formacion && resonador.formacion.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 12 }]}>
-            <Text style={styles.cardTitle}>Formación</Text>
-            <View style={styles.formacionList}>
-              {resonador.formacion.map((f, i) => (
-                <View key={i} style={[styles.formacionItem, i > 0 && styles.formacionItemBorder]}>
-                  <View style={styles.formacionDot} />
-                  <View style={{ flex: 1, gap: 2 }}>
-                    <Text style={styles.formacionTitulo}>{f.titulo}</Text>
-                    <Text style={styles.formacionInst}>{f.institucion}</Text>
-                    {f.years ? (
-                      <Text style={styles.formacionYears}>{f.years}</Text>
-                    ) : null}
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
         {/* ── Botón Agenda una hora ── */}
         {resonador.bookingUrl && (
           <Pressable
@@ -654,15 +575,11 @@ export default function ResonadorPerfilScreen() {
               marginHorizontal: H_PAD,
               borderRadius: 100,
               overflow: "hidden" as const,
-              borderWidth: 1.5,
-              borderColor: "rgba(249,249,249,0.5)",
+              backgroundColor: "#F9F9F9",
               opacity: pressed ? 0.85 : 1,
             })}
           >
-            <LinearGradient
-              colors={["#7354A0", "#5B427F"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+            <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -672,10 +589,10 @@ export default function ResonadorPerfilScreen() {
                 borderRadius: 100,
               }}
             >
-              <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#060A0F", fontWeight: "600" }}>
                 Agenda una hora
               </Text>
-            </LinearGradient>
+            </View>
           </Pressable>
         )}
 
@@ -865,6 +782,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
+  editProfilePill: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderColor: "rgba(255,255,255,0.20)",
+  },
   actionPillActive: { backgroundColor: "transparent" },
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
@@ -967,33 +888,6 @@ const styles = StyleSheet.create({
   cardTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
   cardCount: { fontFamily: "Manrope", fontSize: 11, color: GOLD_MUTED, fontWeight: "500" },
 
-  /* ── Grilla de fotos ── */
-  photoGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  photoCell: {
-    width: "30.5%",
-    aspectRatio: 3 / 4,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  photoCellMore: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(27,6,15,0.62)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  photoCellMoreText: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#FAF0EE",
-    letterSpacing: 0.5,
-  },
-
   /* ── Sección 1: Sesiones ── */
   verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
   sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
@@ -1022,6 +916,7 @@ const styles = StyleSheet.create({
   genreText: { fontFamily: "Manrope", fontSize: 12, color: GOLD_MUTED, fontWeight: "500", letterSpacing: 0.2 },
 
   /* ── Sección 4: Proyectos externos ── */
+  projectsCard: { backgroundColor: "rgba(0,0,0,0.28)" },
   projectsList: { gap: 0 },
   projectRow: {
     flexDirection: "row",
@@ -1044,31 +939,6 @@ const styles = StyleSheet.create({
   },
   projectLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FAF0EE" },
   projectPlatform: { fontFamily: "Manrope", fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 1 },
-
-  /* ── Sección 5: Formación ── */
-  formacionList: { gap: 0 },
-  formacionItem: {
-    flexDirection: "row",
-    gap: 12,
-    paddingVertical: 12,
-    alignItems: "flex-start",
-  },
-  formacionItemBorder: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(212,175,55,0.10)",
-  },
-  formacionDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: GOLD,
-    marginTop: 5,
-    flexShrink: 0,
-    opacity: 0.7,
-  },
-  formacionTitulo: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FAF0EE" },
-  formacionInst: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", marginTop: 1 },
-  formacionYears: { fontFamily: "Manrope", fontSize: 11, color: GOLD_MUTED, marginTop: 2 },
 
   /* ── Chip Apóyalo ── */
   apoyaloChip: {
