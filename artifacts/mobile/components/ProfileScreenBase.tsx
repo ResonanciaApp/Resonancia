@@ -1773,7 +1773,7 @@ const styles = StyleSheet.create({
   },
   libraryTabBackHitArea: {
     position: "absolute",
-    left: 10,
+    left: 8,
     top: -4,
     width: 48,
     height: 48,

@@ -610,7 +610,10 @@ export default function MiMezclaScreen() {
         </View>
 
         {/* Sonidos usados */}
-        <Text style={s.sectionTitle}>Sonidos utilizados</Text>
+        <View style={s.soundSectionHeader}>
+          <View style={s.soundSectionDivider} />
+          <Text style={[s.sectionTitle, s.soundSectionTitle]}>Sonidos utilizados</Text>
+        </View>
         <ScrollView
           style={mix.sounds.length > 5 ? s.soundList : undefined}
           nestedScrollEnabled
@@ -806,6 +809,20 @@ const s = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 17,
   },
+  soundSectionHeader: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  soundSectionDivider: {
+    width: 160,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    marginBottom: 20,
+  },
+  soundSectionTitle: {
+    width: 160,
+    textAlign: "center",
+  },
   soundList: {
     maxHeight: 300,
   },
@@ -814,7 +831,7 @@ const s = StyleSheet.create({
     paddingBottom: 10,
   },
   soundRow: {
-    minHeight: 62,
+    minHeight: 100,
     borderRadius: 14,
     padding: 7,
     flexDirection: "row",
@@ -823,9 +840,9 @@ const s = StyleSheet.create({
     backgroundColor: "transparent",
   },
   soundThumb: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
+    width: 86.4,
+    height: 86.4,
+    borderRadius: 18,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
