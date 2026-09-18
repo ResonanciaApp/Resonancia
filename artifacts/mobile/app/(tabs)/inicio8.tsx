@@ -1473,10 +1473,6 @@ function Inicio3HeroPager({
                 )}
 
                 <View style={[StyleSheet.absoluteFill, styles.inicio3HeroCopy]} pointerEvents="box-none">
-                  <View style={styles.inicio3HeroPill}>
-                    <MaterialCommunityIcons name="creation" size={13} color="#F9F9F9" />
-                    <Text style={styles.inicio3HeroPillText}>INSPIRACIÓN DIARIA</Text>
-                  </View>
                   {item.id === "today" ? (
                     <Inicio3HeroTitle title={effectiveHero.title} />
                   ) : (
@@ -1548,7 +1544,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 0;
   const inicio3HeroShift = -1;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 95;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 120;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
@@ -3623,26 +3619,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 24,
     transform: [{ scale: 0.94 }],
-  },
-  inicio3HeroPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginBottom: 10,
-    borderRadius: 999,
-    backgroundColor: "rgba(6,10,15,0.1)",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(249,249,249,0.32)",
-  },
-  inicio3HeroPillText: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    lineHeight: 15,
-    fontWeight: "700",
-    color: "#F9F9F9",
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
