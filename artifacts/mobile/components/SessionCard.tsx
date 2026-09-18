@@ -49,9 +49,11 @@ type Props = {
   thumbHeight?: number;
   thumbRadius?: number;
   showDuration?: boolean;
+  durationWhiteGlass?: boolean;
   showAuthorAvatar?: boolean;
   showAuthor?: boolean;
   showMetaBelow?: boolean;
+  showCategoryBelow?: boolean;
   showCardMetadata?: boolean;
   showCategoryPill?: boolean;
   categoryPillTextOnly?: boolean;
@@ -112,7 +114,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false, sleepEditorialContent = false, showSleepCategoryPill = true, editorialCategoryPillId = "descanso" }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, durationWhiteGlass = false, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, showCategoryBelow = false, showCardMetadata = false, showCategoryPill = true, categoryPillTextOnly = false, categoryPillTinted = false, categoryPillTopInset, titleFontSize, pinned = false, style, overridePress, playing = false, cardVariant, squareMetaBelow = false, categoryGridPresentation = false, editorialPresentation = false, sleepEditorialContent = false, showSleepCategoryPill = true, editorialCategoryPillId = "descanso" }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -185,7 +187,16 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
           <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
-          {showDuration && <Text style={styles.hDurLabel}>{session.durationLabel}</Text>}
+          {showDuration && durationWhiteGlass ? (
+            <SessionDurationBadge
+              label={session.durationLabel}
+              whiteGlass
+              style={styles.hDurationBadge}
+              textStyle={styles.hDurationBadgeText}
+            />
+          ) : showDuration ? (
+            <Text style={styles.hDurLabel}>{session.durationLabel}</Text>
+          ) : null}
         </View>
         <View style={styles.hContent}>
           <View style={styles.hTitleRow}>
@@ -194,9 +205,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             </Text>
             {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
           </View>
-          {showMetaBelow && (
+          {(showMetaBelow || showCategoryBelow) && (
             <Text style={[styles.hMetaBelow, theme.id === "indigo2" && { color: colors.accent }]} numberOfLines={1}>
-              {[session.durationLabel, categoryLabel].filter(Boolean).join(" · ")}
+              {showCategoryBelow
+                ? categoryLabel
+                : [session.durationLabel, categoryLabel].filter(Boolean).join(" · ")}
             </Text>
           )}
           {showAuthor && !!authorName && (
@@ -548,6 +561,21 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.95)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 0,
+  },
+  hDurationBadge: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    height: 19,
+    minHeight: 19,
+    paddingHorizontal: 8,
+    paddingVertical: 0,
+    justifyContent: "center",
+  },
+  hDurationBadgeText: {
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: "600",
   },
   editorialDuration: {
     position: "absolute",

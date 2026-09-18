@@ -181,7 +181,7 @@ export default function ResonadorPerfilScreen() {
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
-        <Animated.View style={{ opacity: headerBgOpacity }}>
+        <Animated.View style={{ opacity: isOwn ? 1 : headerBgOpacity }}>
           {isOwn ? (
             <Pressable
               onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
@@ -288,22 +288,7 @@ export default function ResonadorPerfilScreen() {
           </View>
 
           {/* Pills de acción */}
-          {isOwn ? (
-            <View style={styles.actionPillsWrap}>
-              <Pressable
-                onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
-                style={({ pressed }) => [
-                  styles.actionPill,
-                  styles.actionPillFull,
-                  styles.editProfilePill,
-                  { opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                <Feather name="edit-2" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Editar mi perfil</Text>
-              </Pressable>
-            </View>
-          ) : (
+          {!isOwn && (
             <View style={styles.actionPillsWrap}>
               <View style={styles.actionPillsRow}>
                 <Pressable
@@ -389,7 +374,7 @@ export default function ResonadorPerfilScreen() {
         {sessions.length > 0 && (
           <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 17 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
-              <Text style={[styles.cardTitle, { fontSize: 25 }]}>Mis sesiones</Text>
+              <Text style={[styles.cardTitle, { fontSize: 19 }]}>Mis sesiones</Text>
               <Pressable
                 onPress={() => {/* TODO: nav a catálogo del resonador */}}
                 hitSlop={8}
@@ -421,9 +406,12 @@ export default function ResonadorPerfilScreen() {
                   horizontal
                   showAuthor={false}
                   showDuration
+                  durationWhiteGlass
+                  showCategoryBelow
                   titleFontSize={14}
-                  thumbWidth={94}
-                  thumbRadius={21}
+                  thumbWidth={141}
+                  thumbHeight={141}
+                  thumbRadius={18}
                 />
               ))}
             </View>
@@ -782,10 +770,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },
-  editProfilePill: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderColor: "rgba(255,255,255,0.20)",
-  },
   actionPillActive: { backgroundColor: "transparent" },
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
@@ -793,7 +777,15 @@ const styles = StyleSheet.create({
   actionPillTextSent: { color: "#c2c2c2" },
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  contactPill: { flexBasis: "30%", flexGrow: 1, justifyContent: "center", paddingHorizontal: 8 },
+  contactPill: {
+    flexBasis: "30%",
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.20)",
+  },
 
   /* ── Bloque Agenda online ── */
   agendaBlock: {
@@ -846,7 +838,7 @@ const styles = StyleSheet.create({
 
   /* ── Sección Resonador ── */
   resonadorSection: {
-    backgroundColor: "rgba(181,211,255,0.057)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderRadius: 18,
     padding: 16,
     gap: 16,
