@@ -260,43 +260,15 @@ export default function InspiracionDiariaIndex() {
             <Feather name="chevron-left" size={27} color="#fff" />
           </Pressable>
           <Text style={styles.title}>{current.week?.settings.sectionTitle || "Inspiración diaria"}</Text>
-          <View style={styles.headerSpacer} />
-        </View>
-
-        <View style={styles.days}>
-          {days.map((day, index) => (
-            <Pressable
-              key={day.date}
-              onPress={() => chooseDay(index)}
-              style={styles.dayCard}
-              accessibilityRole="button"
-              accessibilityState={{ selected: day.date === selected }}
-              accessibilityLabel={`${day.date === current.today ? "Hoy, " : ""}${formatDayNumber(day.date)} ${monthAndYear(day.date)}, ${day.status === "available" ? "disponible" : "no disponible"}`}
-            >
-              {day.status === "available" && day.content ? (
-                <Image
-                  source={{ uri: day.content.imageUrl }}
-                  style={StyleSheet.absoluteFillObject}
-                  contentFit="cover"
-                  contentPosition={{ left: `${day.content.imagePositionX}%`, top: `${day.content.imagePositionY}%` }}
-                />
-              ) : (
-                <View style={[StyleSheet.absoluteFillObject, styles.emptyCard]} />
-              )}
-              {day.status === "available" && day.content && (
-                <View
-                  pointerEvents="none"
-                  style={[
-                    StyleSheet.absoluteFillObject,
-                    { backgroundColor: `rgba(0,0,0,${day.content.overlayOpacity * 0.35})` },
-                  ]}
-                />
-              )}
-              <View style={styles.cardShade} />
-              <Text style={styles.cardNumber}>{formatDayNumber(day.date)}</Text>
-              <SelectionDot date={day.date} selected={day.date === selected} reduced={reduced} />
-            </Pressable>
-          ))}
+          <Pressable
+            onPress={() => setSharing(true)}
+            disabled={activeDay?.status !== "available"}
+            style={[styles.circleButton, activeDay?.status !== "available" && styles.disabled]}
+            accessibilityRole="button"
+            accessibilityLabel="Compartir inspiración"
+          >
+            <Feather name="share" size={21} color="#fff" />
+          </Pressable>
         </View>
 
         <Animated.View
@@ -347,25 +319,40 @@ export default function InspiracionDiariaIndex() {
           )}
         </Animated.View>
 
-        <View style={[styles.bottomActions, { bottom: Math.max(insets.bottom, 18) + 18 }]} pointerEvents="box-none">
-          <Pressable
-            onPress={() => openDetail(activeDay)}
-            disabled={activeDay?.status !== "available"}
-            style={[styles.actionButton, activeDay?.status !== "available" && styles.disabled]}
-            accessibilityRole="button"
-            accessibilityLabel="Editar notas"
-          >
-            <Feather name="edit-3" size={21} color="#fff" />
-          </Pressable>
-          <Pressable
-            onPress={() => setSharing(true)}
-            disabled={activeDay?.status !== "available"}
-            style={[styles.actionButton, activeDay?.status !== "available" && styles.disabled]}
-            accessibilityRole="button"
-            accessibilityLabel="Compartir inspiración"
-          >
-            <Feather name="share" size={21} color="#fff" />
-          </Pressable>
+        <View style={[styles.days, { bottom: Math.max(insets.bottom, 18) + 22 }]}>
+          {days.map((day, index) => (
+            <Pressable
+              key={day.date}
+              onPress={() => chooseDay(index)}
+              style={styles.dayCard}
+              accessibilityRole="button"
+              accessibilityState={{ selected: day.date === selected }}
+              accessibilityLabel={`${day.date === current.today ? "Hoy, " : ""}${formatDayNumber(day.date)} ${monthAndYear(day.date)}, ${day.status === "available" ? "disponible" : "no disponible"}`}
+            >
+              {day.status === "available" && day.content ? (
+                <Image
+                  source={{ uri: day.content.imageUrl }}
+                  style={StyleSheet.absoluteFillObject}
+                  contentFit="cover"
+                  contentPosition={{ left: `${day.content.imagePositionX}%`, top: `${day.content.imagePositionY}%` }}
+                />
+              ) : (
+                <View style={[StyleSheet.absoluteFillObject, styles.emptyCard]} />
+              )}
+              {day.status === "available" && day.content && (
+                <View
+                  pointerEvents="none"
+                  style={[
+                    StyleSheet.absoluteFillObject,
+                    { backgroundColor: `rgba(0,0,0,${day.content.overlayOpacity * 0.35})` },
+                  ]}
+                />
+              )}
+              <View style={styles.cardShade} />
+              <Text style={styles.cardNumber}>{formatDayNumber(day.date)}</Text>
+              <SelectionDot date={day.date} selected={day.date === selected} reduced={reduced} />
+            </Pressable>
+          ))}
         </View>
 
         {!!error && (
@@ -390,8 +377,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
   slide: { backgroundColor: "#191919" },
   pageContent: { ...StyleSheet.absoluteFillObject, justifyContent: "center", paddingHorizontal: 28 },
-  message: { width: "100%", alignItems: "center", transform: [{ translateY: -8 }] },
-  unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12, transform: [{ translateY: -8 }] },
+  message: { width: "100%", alignItems: "center", transform: [{ translateY: -178 }] },
+  unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12, transform: [{ translateY: -178 }] },
   quoteBlock: { width: "100%", alignItems: "center" },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
@@ -421,8 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(10,12,18,.22)",
   },
   title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
-  headerSpacer: { width: 48 },
-  days: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18, marginTop: 12 },
+  days: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18 },
   dayCard: {
     width: 31,
     height: 47,
@@ -445,17 +431,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   selectionDot: { position: "absolute", bottom: 5, alignSelf: "center", width: 6, height: 6, borderRadius: 3, backgroundColor: "#74E1B7" },
-  bottomActions: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "center", gap: 18 },
-  actionButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,.14)",
-    backgroundColor: "rgba(255,255,255,.12)",
-  },
   disabled: { opacity: 0.38 },
   notice: {
     position: "absolute",
