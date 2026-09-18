@@ -331,6 +331,62 @@ export function InspirationEditor({
     saveDraft(data);
   };
 
+  const onSaveAndPublish = async (data: FormValues) => {
+    if (!inspiration?.published) return;
+    if (serverConflict || conflictPending) {
+      toast.error("Resuelve el conflicto antes de publicar.");
+      return;
+    }
+    if (!data.imagePath || !data.quote.trim() || !data.reflection.trim()) {
+      toast.error("Falta contenido esencial (imagen, frase, reflexión) para publicar.");
+      return;
+    }
+
+    let savedDraft: AdminInspiration | null = null;
+    try {
+      const target = form.formState.isDirty
+        ? await updateInspiration.mutateAsync({
+            id: inspiration.id,
+            data: {
+              revision: inspiration.revision,
+              date: data.date,
+              draft: toDraft(data),
+            },
+          })
+        : inspiration;
+      savedDraft = target as AdminInspiration;
+
+      const published = await publishInspiration.mutateAsync({
+        id: inspiration.id,
+        data: { revision: target.revision },
+      });
+
+      toast.success("Cambios guardados y publicados en la app");
+      setServerConflict(null);
+      setConflictPending(false);
+      initRevision.current = published.revision;
+      form.reset(data, { keepDirty: false });
+      invalidate();
+      onSaved?.(published.date);
+    } catch (err: unknown) {
+      const status = getApiErrorStatus(err);
+      if (savedDraft) {
+        initRevision.current = savedDraft.revision;
+        form.reset(data, { keepDirty: false });
+        toast.error(`El borrador se guardó, pero no se publicó: ${getApiErrorMessage(err, "vuelve a intentarlo")}`);
+        invalidate();
+        return;
+      }
+      if (status === 409) {
+        setConflictPending(true);
+        toast.error(getApiErrorMessage(err, "Otra edición más reciente existe. Recarga y revisa los cambios."));
+        invalidate();
+      } else {
+        toast.error(getApiErrorMessage(err, "No se pudieron guardar y publicar los cambios"));
+      }
+    }
+  };
+
   const overwriteServerWithLocal = async () => {
     if (!serverConflict || !(await form.trigger())) return;
     saveDraft(form.getValues(), serverConflict.revision);
@@ -428,6 +484,8 @@ export function InspirationEditor({
   };
 
   const hasUnsavedChanges = form.formState.isDirty;
+  const hasUnpublishedDraft = !!inspiration?.published &&
+    inspiration.publishedRevision !== inspiration.revision;
   
   useEffect(() => {
     if (onDirtyChange) {
@@ -435,7 +493,7 @@ export function InspirationEditor({
     }
   }, [hasUnsavedChanges, onDirtyChange]);
 
-  const isPending = updateInspiration.isPending || createInspiration.isPending;
+  const isPending = updateInspiration.isPending || createInspiration.isPending || publishInspiration.isPending;
 
   const currentImagePath = form.watch("imagePath");
   const posX = form.watch("imagePositionX");
@@ -473,7 +531,10 @@ export function InspirationEditor({
             {!inspiration ? (
               <span className="text-muted-foreground">Nuevo</span>
             ) : inspiration.published && !inspiration.deleted ? (
-              <span className="text-emerald-500 font-medium flex items-center gap-1"><Eye className="w-3 h-3" /> Publicado</span>
+              <span className={`font-medium flex items-center gap-1 ${hasUnpublishedDraft ? "text-amber-500" : "text-emerald-500"}`}>
+                <Eye className="w-3 h-3" />
+                {hasUnpublishedDraft ? "Publicado · cambios en borrador" : "Publicado"}
+              </span>
             ) : (
               <span className="text-amber-500 font-medium flex items-center gap-1"><EyeOff className="w-3 h-3" /> Borrador</span>
             )}
@@ -551,7 +612,11 @@ export function InspirationEditor({
       <div className="flex-1 overflow-auto p-6 flex flex-col gap-8 lg:flex-row">
         {/* Formulario principal */}
         <div className="flex-1 space-y-6 min-w-[300px]">
-          <form id="inspiration-form" onSubmit={form.handleSubmit(onSaveDraft)} className="space-y-6">
+          <form
+            id="inspiration-form"
+            onSubmit={form.handleSubmit(inspiration?.published ? onSaveAndPublish : onSaveDraft)}
+            className="space-y-6"
+          >
             <div className="space-y-2">
               <Label>Fecha</Label>
               <Input
@@ -810,14 +875,32 @@ export function InspirationEditor({
             Cancelar
           </Button>
         )}
+        {!!inspiration?.published && (
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isPending || uploading || !hasUnsavedChanges || !!serverConflict || conflictPending}
+            onClick={form.handleSubmit(onSaveDraft)}
+          >
+            Guardar solo como borrador
+          </Button>
+        )}
         <Button 
           type="submit" 
           form="inspiration-form" 
-          disabled={isPending || uploading || !hasUnsavedChanges || !!serverConflict || conflictPending}
-          className="min-w-[150px]"
+          disabled={
+            isPending ||
+            uploading ||
+            (!hasUnsavedChanges && !hasUnpublishedDraft) ||
+            !!serverConflict ||
+            conflictPending
+          }
+          className="min-w-[190px]"
         >
           {isPending ? (
             <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando...</>
+          ) : inspiration?.published ? (
+            <><Eye className="w-4 h-4 mr-2" /> {hasUnsavedChanges ? "Guardar y publicar cambios" : "Publicar cambios pendientes"}</>
           ) : (
             <><Save className="w-4 h-4 mr-2" /> Guardar borrador</>
           )}

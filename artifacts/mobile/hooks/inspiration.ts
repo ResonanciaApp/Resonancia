@@ -40,7 +40,7 @@ export function useInspiration(options: InspirationOptions = {}) {
         inspirationRememberWeekRequest(result, requestedAt);
         return result;
       },
-      staleTime: 60_000, gcTime: 300_000, retry: 1, refetchOnWindowFocus: true,
+      staleTime: 60_000, gcTime: 300_000, retry: 1, refetchOnMount: "always", refetchOnWindowFocus: true,
       enabled: !selection.error,
     },
   });
