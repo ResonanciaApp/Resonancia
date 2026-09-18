@@ -1612,6 +1612,11 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         ]}>
           {"Aprendamos a conectar\ncon lo esencial"}
         </Text>
+        {isInicio3 && (
+          <View style={styles.inicio3HeroReadMore}>
+            <Text style={styles.inicio3HeroReadMoreText}>Leer más</Text>
+          </View>
+        )}
         {!isInicio3 && (
           <View
             style={styles.inicio2HeroStaticActionButton}
@@ -2601,6 +2606,7 @@ export default function HomeScreen2({
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
             inicio3Compact
+            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
           />
         )}
 
@@ -2622,6 +2628,7 @@ export default function HomeScreen2({
             sessions={dailyRecommendations}
             dayKey={todayKey}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
+            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
           />
         )}
         {isInicio2 && featuredMoment && (
@@ -3508,6 +3515,22 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 19,
     lineHeight: 26,
+  },
+  inicio3HeroReadMore: {
+    alignSelf: "flex-start",
+    marginTop: 28,
+    paddingVertical: 9,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(255,255,255,0.14)",
+  },
+  inicio3HeroReadMoreText: {
+    color: "#FFFFFF",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
   },
   inicio2HeroCategory: {
     marginBottom: 10,

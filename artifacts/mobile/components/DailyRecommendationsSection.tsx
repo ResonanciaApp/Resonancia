@@ -1,6 +1,7 @@
 import React from "react";
 import {
   StyleProp,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -18,6 +19,7 @@ type Props = {
   dayKey?: string;
   style?: StyleProp<ViewStyle>;
   inicio3Compact?: boolean;
+  onRefreshRecommendations?: () => void;
 };
 
 const WEEKDAYS = [
@@ -58,6 +60,7 @@ export function DailyRecommendationsSection({
   dayKey,
   style,
   inicio3Compact = false,
+  onRefreshRecommendations,
 }: Props) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -123,6 +126,23 @@ export function DailyRecommendationsSection({
           </React.Fragment>
         ))}
       </View>
+      {onRefreshRecommendations ? (
+        <Pressable
+          onPress={onRefreshRecommendations}
+          accessibilityRole="button"
+          accessibilityLabel="Actualizar recomendaciones"
+          style={({ pressed }) => [
+            styles.refreshButton,
+            {
+              backgroundColor: pressed
+                ? "rgba(255,255,255,0.12)"
+                : "rgba(0,0,0,0.28)",
+            },
+          ]}
+        >
+          <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -175,6 +195,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 11,
     marginVertical: 3,
     backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  refreshButton: {
+    marginTop: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 100,
+  },
+  refreshButtonText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    color: "#F9F9F9",
+    fontWeight: "500",
   },
   row: {
     paddingVertical: 9.3,
