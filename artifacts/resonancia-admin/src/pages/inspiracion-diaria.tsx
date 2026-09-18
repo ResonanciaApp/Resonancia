@@ -229,14 +229,14 @@ export default function InspiracionDiariaPage() {
             }}
           />
         </div>
+        </div>
+
         <HeroOverrideEditor
           key={`hero-${selectedDate}`}
           date={selectedDate}
           weekData={weekData}
           onDirtyChange={(dirty) => setIsHeroDirty(dirty)}
         />
-      </div>
-
       </div>
 
       {showSettings && weekData?.settings && (

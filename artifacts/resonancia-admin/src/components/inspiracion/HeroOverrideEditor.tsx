@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  AlertCircle, Film, Image as ImageIcon, Loader2, Trash2, UploadCloud,
+  AlertCircle, ChevronDown, Film, Image as ImageIcon, Loader2, Trash2, UploadCloud,
 } from "lucide-react";
 import { getApiErrorMessage, getApiErrorStatus } from "./apiError";
 import { AdminInspirationWeek } from "./types";
@@ -183,17 +183,28 @@ export function HeroOverrideEditor({
   const pending = upsert.isPending || update.isPending || publish.isPending || unpublish.isPending || remove.isPending;
 
   return (
-    <section className="rounded-xl border border-border bg-card shadow-sm">
-      <div className="border-b border-border bg-muted/20 px-6 py-4">
+    <details className="group shrink-0 rounded-xl border border-border bg-card shadow-sm">
+      <summary
+        className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-4 py-3 transition-colors hover:bg-muted/20 [&::-webkit-details-marker]:hidden"
+        data-testid="toggle-home-hero-editor"
+      >
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="flex items-center gap-2 text-lg font-semibold"><Film className="h-5 w-5 text-primary" />Hero de Inicio</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Contenido del hero para el {date}. Si no hay override publicado, la app usa Inspiración diaria.</p>
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <Film className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold">Hero de Inicio</h2>
+              <p className="text-xs text-muted-foreground">Opcional · contenido especial para el {date}</p>
+            </div>
           </div>
-          <span className={`rounded-full px-3 py-1 text-xs font-medium ${override?.published ? "bg-emerald-500/10 text-emerald-600" : override?.draft ? "bg-amber-500/10 text-amber-600" : "bg-muted text-muted-foreground"}`}>{status}</span>
         </div>
-      </div>
-      <div className="grid gap-6 p-6 lg:grid-cols-[1fr_280px]">
+        <div className="flex shrink-0 items-center gap-3">
+          <span className={`rounded-full px-3 py-1 text-xs font-medium ${override?.published ? "bg-emerald-500/10 text-emerald-600" : override?.draft ? "bg-amber-500/10 text-amber-600" : "bg-muted text-muted-foreground"}`}>{status}</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+        </div>
+      </summary>
+      <div className="grid gap-5 border-t border-border p-4 lg:grid-cols-[1fr_240px]">
         <div className="space-y-4">
           <div className="rounded-lg border border-dashed border-border p-4">
             <Label>Media del hero</Label>
@@ -226,6 +237,6 @@ export function HeroOverrideEditor({
           {isLoading && <p className="text-xs text-muted-foreground">Cargando estado del hero…</p>}
         </div>
       </div>
-    </section>
+    </details>
   );
 }
