@@ -7,28 +7,31 @@ import { Button } from "@/components/ui/button";
 import { InspirationEditor } from "@/components/inspiracion/InspirationEditor";
 import { InspirationSettingsDialog } from "@/components/inspiracion/InspirationSettingsDialog";
 import { AdminInspirationWeek } from "@/components/inspiracion/types";
+import { HeroOverrideEditor } from "@/components/inspiracion/HeroOverrideEditor";
 
 export default function InspiracionDiariaPage() {
   const [currentDate, setCurrentDate] = useState(() => format(new Date(), "yyyy-MM-dd"));
   const [selectedDate, setSelectedDate] = useState<string>(currentDate);
   const [showSettings, setShowSettings] = useState(false);
   const [isEditorDirty, setIsEditorDirty] = useState(false);
+  const [isHeroDirty, setIsHeroDirty] = useState(false);
+  const hasDirtyChanges = isEditorDirty || isHeroDirty;
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isEditorDirty) {
+      if (hasDirtyChanges) {
         e.preventDefault();
         e.returnValue = '';
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isEditorDirty]);
+  }, [hasDirtyChanges]);
 
   // Capturar clicks en enlaces (ej. sidebar)
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (!isEditorDirty) return;
+      if (!hasDirtyChanges) return;
       const target = (e.target as HTMLElement).closest('a');
       if (target && target.href && !target.hasAttribute('target')) {
         if (target.pathname === window.location.pathname) return;
@@ -36,12 +39,13 @@ export default function InspiracionDiariaPage() {
           e.preventDefault();
         } else {
           setIsEditorDirty(false);
+          setIsHeroDirty(false);
         }
       }
     };
     document.addEventListener('click', handleClick, { capture: true });
     return () => document.removeEventListener('click', handleClick, { capture: true });
-  }, [isEditorDirty]);
+  }, [hasDirtyChanges]);
 
   const { data, isLoading, isError } = useGetAdminInspirationWeek(
     { date: currentDate },
@@ -55,13 +59,14 @@ export default function InspiracionDiariaPage() {
   const weekData = data as unknown as AdminInspirationWeek | undefined;
 
   const handleNavigate = (newDateStr: string, action: () => void) => {
-    if (isEditorDirty) {
+    if (hasDirtyChanges) {
       if (!window.confirm("Tienes cambios sin guardar. ¿Seguro que quieres salir?")) {
         return;
       }
     }
     action();
     setIsEditorDirty(false);
+    setIsHeroDirty(false);
   };
 
   const handlePrevWeek = () => {
@@ -133,7 +138,8 @@ export default function InspiracionDiariaPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 h-full min-h-0 overflow-hidden">
+      <div className="flex flex-col gap-6 min-h-0 overflow-auto">
+        <div className="flex flex-col lg:flex-row gap-6 min-h-[600px]">
         
         {/* Selector de Semana */}
         <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
@@ -223,6 +229,13 @@ export default function InspiracionDiariaPage() {
             }}
           />
         </div>
+        <HeroOverrideEditor
+          key={`hero-${selectedDate}`}
+          date={selectedDate}
+          weekData={weekData}
+          onDirtyChange={(dirty) => setIsHeroDirty(dirty)}
+        />
+      </div>
 
       </div>
 

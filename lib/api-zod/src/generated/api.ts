@@ -58,6 +58,388 @@ export const GetInspirationWeekResponse = zod.object({
 })
 
 
+export const GetEffectiveHeroQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const GetEffectiveHeroResponse = zod.object({
+  "date": zod.string(),
+  "timeZone": zod.string(),
+  "source": zod.enum(['override', 'inspiration', 'fallback']),
+  "media": zod.union([zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string()
+}),zod.null()]),
+  "fallbackImageUrl": zod.string().nullable()
+})
+
+
+export const GetEffectiveHeroMediaParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+export const GetEffectiveHeroMediaQueryParams = zod.object({
+  "revision": zod.coerce.number().min(1),
+  "timeZone": zod.coerce.string()
+})
+
+export const GetEffectiveHeroMediaHeader = zod.object({
+  "Range": zod.string().optional()
+})
+
+
+export const GetEffectiveHeroPosterParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+export const GetEffectiveHeroPosterQueryParams = zod.object({
+  "revision": zod.coerce.number().min(1),
+  "timeZone": zod.coerce.string()
+})
+
+
+export const ListAdminHeroOverridesResponseItem = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+export const ListAdminHeroOverridesResponse = zod.array(ListAdminHeroOverridesResponseItem)
+
+
+export const upsertAdminHeroOverrideBodyRevisionMin = 0;
+
+
+
+export const UpsertAdminHeroOverrideBody = zod.object({
+  "revision": zod.number().min(upsertAdminHeroOverrideBodyRevisionMin).optional(),
+  "date": zod.string(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+})
+})
+
+export const UpsertAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const requestHeroOverrideUploadBodyNameMax = 200;
+
+export const requestHeroOverrideUploadBodySizeMax = 104857600;
+
+
+
+export const RequestHeroOverrideUploadBody = zod.object({
+  "name": zod.string().min(1).max(requestHeroOverrideUploadBodyNameMax),
+  "size": zod.number().min(1).max(requestHeroOverrideUploadBodySizeMax),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'])
+})
+
+export const RequestHeroOverrideUploadResponse = zod.object({
+  "uploadURL": zod.string(),
+  "objectPath": zod.string()
+})
+
+
+export const GetAdminHeroOverrideAssetQueryParams = zod.object({
+  "objectPath": zod.coerce.string()
+})
+
+export const GetAdminHeroOverrideAssetHeader = zod.object({
+  "Range": zod.string().optional()
+})
+
+
+export const GetAdminHeroOverrideParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const UpdateAdminHeroOverrideParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const updateAdminHeroOverrideBodyRevisionMin = 0;
+
+
+
+export const UpdateAdminHeroOverrideBody = zod.object({
+  "revision": zod.number().min(updateAdminHeroOverrideBodyRevisionMin),
+  "date": zod.string(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+})
+})
+
+export const UpdateAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const DeleteAdminHeroOverrideParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const deleteAdminHeroOverrideBodyRevisionMin = 0;
+
+
+
+export const DeleteAdminHeroOverrideBody = zod.object({
+  "revision": zod.number().min(deleteAdminHeroOverrideBodyRevisionMin)
+})
+
+export const DeleteAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const PublishAdminHeroOverrideParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const publishAdminHeroOverrideBodyRevisionMin = 0;
+
+
+
+export const PublishAdminHeroOverrideBody = zod.object({
+  "revision": zod.number().min(publishAdminHeroOverrideBodyRevisionMin)
+})
+
+export const PublishAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const UnpublishAdminHeroOverrideParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const unpublishAdminHeroOverrideBodyRevisionMin = 0;
+
+
+
+export const UnpublishAdminHeroOverrideBody = zod.object({
+  "revision": zod.number().min(unpublishAdminHeroOverrideBodyRevisionMin)
+})
+
+export const UnpublishAdminHeroOverrideResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),
+  "published": zod.union([zod.object({
+  "media": zod.object({
+  "type": zod.enum(['image', 'video']),
+  "objectPath": zod.string(),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm']),
+  "sizeBytes": zod.number(),
+  "generation": zod.string().nullable(),
+  "posterObjectPath": zod.string().nullish()
+}),
+  "title": zod.string().nullish()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
 export const getInspirationSettingsResponseRevisionMin = 0;
 
 export const getInspirationSettingsResponseSectionTitleMax = 100;

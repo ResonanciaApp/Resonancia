@@ -26,6 +26,7 @@ import type {
   AdminDescansoSoundItem,
   AdminEmotionalPhraseSet,
   AdminEmotionalPhrasesResponse,
+  AdminHeroOverride,
   AdminInspiration,
   AdminInspirationWeek,
   AdminMixHideInput,
@@ -65,6 +66,7 @@ import type {
   DeleteAccountResponse,
   DeleteSubmission200,
   DirectMessage,
+  EffectiveHero,
   EmotionalPhraseMoodId,
   ErrorEnvelope,
   ErrorResponse,
@@ -82,6 +84,7 @@ import type {
   GetAdminDescansoSounds200,
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
+  GetAdminHeroOverrideAssetParams,
   GetAdminInspirationImageParams,
   GetAdminInspirationWeekParams,
   GetAdminSessionsParams,
@@ -89,6 +92,9 @@ import type {
   GetAdminTagOptionsParams,
   GetAdminUsersParams,
   GetDirectMessagesParams,
+  GetEffectiveHeroMediaParams,
+  GetEffectiveHeroParams,
+  GetEffectiveHeroPosterParams,
   GetGeometrixSettings200,
   GetInspirationByDateParams,
   GetInspirationFavoritesParams,
@@ -112,6 +118,7 @@ import type {
   GuideConfigInput,
   GuideConfigUpdate,
   HealthStatus,
+  HeroOverrideUploadBody,
   InspirationDay,
   InspirationFavorite,
   InspirationFavorites,
@@ -182,9 +189,11 @@ import type {
   UpdateApplicationStatusInput,
   UpdateDescansoSoundBody,
   UpdateEmotionalPhrasesInput,
+  UpdateHeroOverrideBody,
   UpdateMixerSoundBody,
   UpdateSceneAnimationBody,
   UpdateVideoBody,
+  UpsertHeroOverrideBody,
   UserProfile,
   UserProfileUpdate,
   UserRoleUpdate,
@@ -281,6 +290,864 @@ export function useGetInspirationWeek<TData = Awaited<ReturnType<typeof getInspi
 
 
 
+
+export const getGetEffectiveHeroUrl = (params?: GetEffectiveHeroParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/hero?${stringifiedParams}` : `/api/hero`
+}
+
+export const getEffectiveHero = async (params?: GetEffectiveHeroParams, options?: RequestInit): Promise<EffectiveHero> => {
+
+  return customFetch<EffectiveHero>(getGetEffectiveHeroUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEffectiveHeroQueryKey = (params?: GetEffectiveHeroParams,) => {
+    return [
+    `/api/hero`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetEffectiveHeroQueryOptions = <TData = Awaited<ReturnType<typeof getEffectiveHero>>, TError = ErrorType<unknown>>(params?: GetEffectiveHeroParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHero>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEffectiveHeroQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEffectiveHero>>> = ({ signal }) => getEffectiveHero(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHero>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEffectiveHeroQueryResult = NonNullable<Awaited<ReturnType<typeof getEffectiveHero>>>
+export type GetEffectiveHeroQueryError = ErrorType<unknown>
+
+
+
+export function useGetEffectiveHero<TData = Awaited<ReturnType<typeof getEffectiveHero>>, TError = ErrorType<unknown>>(
+ params?: GetEffectiveHeroParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHero>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEffectiveHeroQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetEffectiveHeroMediaUrl = (id: string,
+    params: GetEffectiveHeroMediaParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/hero/media/${id}?${stringifiedParams}` : `/api/hero/media/${id}`
+}
+
+export const getEffectiveHeroMedia = async (id: string,
+    params: GetEffectiveHeroMediaParams, options?: RequestInit): Promise<Blob | void> => {
+
+  return customFetch<Blob | void>(getGetEffectiveHeroMediaUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEffectiveHeroMediaQueryKey = (id: string,
+    params?: GetEffectiveHeroMediaParams,) => {
+    return [
+    `/api/hero/media/${id}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetEffectiveHeroMediaQueryOptions = <TData = Awaited<ReturnType<typeof getEffectiveHeroMedia>>, TError = ErrorType<void>>(id: string,
+    params: GetEffectiveHeroMediaParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroMedia>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEffectiveHeroMediaQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEffectiveHeroMedia>>> = ({ signal }) => getEffectiveHeroMedia(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroMedia>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEffectiveHeroMediaQueryResult = NonNullable<Awaited<ReturnType<typeof getEffectiveHeroMedia>>>
+export type GetEffectiveHeroMediaQueryError = ErrorType<void>
+
+
+
+export function useGetEffectiveHeroMedia<TData = Awaited<ReturnType<typeof getEffectiveHeroMedia>>, TError = ErrorType<void>>(
+ id: string,
+    params: GetEffectiveHeroMediaParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroMedia>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEffectiveHeroMediaQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetEffectiveHeroPosterUrl = (id: string,
+    params: GetEffectiveHeroPosterParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/hero/poster/${id}?${stringifiedParams}` : `/api/hero/poster/${id}`
+}
+
+export const getEffectiveHeroPoster = async (id: string,
+    params: GetEffectiveHeroPosterParams, options?: RequestInit): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetEffectiveHeroPosterUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEffectiveHeroPosterQueryKey = (id: string,
+    params?: GetEffectiveHeroPosterParams,) => {
+    return [
+    `/api/hero/poster/${id}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetEffectiveHeroPosterQueryOptions = <TData = Awaited<ReturnType<typeof getEffectiveHeroPoster>>, TError = ErrorType<unknown>>(id: string,
+    params: GetEffectiveHeroPosterParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroPoster>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEffectiveHeroPosterQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEffectiveHeroPoster>>> = ({ signal }) => getEffectiveHeroPoster(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroPoster>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEffectiveHeroPosterQueryResult = NonNullable<Awaited<ReturnType<typeof getEffectiveHeroPoster>>>
+export type GetEffectiveHeroPosterQueryError = ErrorType<unknown>
+
+
+
+export function useGetEffectiveHeroPoster<TData = Awaited<ReturnType<typeof getEffectiveHeroPoster>>, TError = ErrorType<unknown>>(
+ id: string,
+    params: GetEffectiveHeroPosterParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEffectiveHeroPoster>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEffectiveHeroPosterQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListAdminHeroOverridesUrl = () => {
+
+
+
+
+  return `/api/admin/heroes`
+}
+
+export const listAdminHeroOverrides = async ( options?: RequestInit): Promise<AdminHeroOverride[]> => {
+
+  return customFetch<AdminHeroOverride[]>(getListAdminHeroOverridesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminHeroOverridesQueryKey = () => {
+    return [
+    `/api/admin/heroes`
+    ] as const;
+    }
+
+
+export const getListAdminHeroOverridesQueryOptions = <TData = Awaited<ReturnType<typeof listAdminHeroOverrides>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroOverrides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminHeroOverridesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminHeroOverrides>>> = ({ signal }) => listAdminHeroOverrides({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroOverrides>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminHeroOverridesQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminHeroOverrides>>>
+export type ListAdminHeroOverridesQueryError = ErrorType<unknown>
+
+
+
+export function useListAdminHeroOverrides<TData = Awaited<ReturnType<typeof listAdminHeroOverrides>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminHeroOverrides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminHeroOverridesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpsertAdminHeroOverrideUrl = () => {
+
+
+
+
+  return `/api/admin/heroes`
+}
+
+export const upsertAdminHeroOverride = async (upsertHeroOverrideBody: UpsertHeroOverrideBody, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getUpsertAdminHeroOverrideUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      upsertHeroOverrideBody,)
+  }
+);}
+
+
+
+
+export const getUpsertAdminHeroOverrideMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upsertAdminHeroOverride>>, TError,{data: BodyType<UpsertHeroOverrideBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof upsertAdminHeroOverride>>, TError,{data: BodyType<UpsertHeroOverrideBody>}, TContext> => {
+
+const mutationKey = ['upsertAdminHeroOverride'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof upsertAdminHeroOverride>>, {data: BodyType<UpsertHeroOverrideBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  upsertAdminHeroOverride(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpsertAdminHeroOverrideMutationResult = NonNullable<Awaited<ReturnType<typeof upsertAdminHeroOverride>>>
+    export type UpsertAdminHeroOverrideMutationBody = BodyType<UpsertHeroOverrideBody>
+    export type UpsertAdminHeroOverrideMutationError = ErrorType<unknown>
+
+    export const useUpsertAdminHeroOverride = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upsertAdminHeroOverride>>, TError,{data: BodyType<UpsertHeroOverrideBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof upsertAdminHeroOverride>>,
+        TError,
+        {data: BodyType<UpsertHeroOverrideBody>},
+        TContext
+      > => {
+      return useMutation(getUpsertAdminHeroOverrideMutationOptions(options));
+    }
+
+export const getRequestHeroOverrideUploadUrl = () => {
+
+
+
+
+  return `/api/admin/heroes/uploads`
+}
+
+export const requestHeroOverrideUpload = async (heroOverrideUploadBody: HeroOverrideUploadBody, options?: RequestInit): Promise<InspirationUpload> => {
+
+  return customFetch<InspirationUpload>(getRequestHeroOverrideUploadUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      heroOverrideUploadBody,)
+  }
+);}
+
+
+
+
+export const getRequestHeroOverrideUploadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestHeroOverrideUpload>>, TError,{data: BodyType<HeroOverrideUploadBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestHeroOverrideUpload>>, TError,{data: BodyType<HeroOverrideUploadBody>}, TContext> => {
+
+const mutationKey = ['requestHeroOverrideUpload'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestHeroOverrideUpload>>, {data: BodyType<HeroOverrideUploadBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestHeroOverrideUpload(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestHeroOverrideUploadMutationResult = NonNullable<Awaited<ReturnType<typeof requestHeroOverrideUpload>>>
+    export type RequestHeroOverrideUploadMutationBody = BodyType<HeroOverrideUploadBody>
+    export type RequestHeroOverrideUploadMutationError = ErrorType<unknown>
+
+    export const useRequestHeroOverrideUpload = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestHeroOverrideUpload>>, TError,{data: BodyType<HeroOverrideUploadBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestHeroOverrideUpload>>,
+        TError,
+        {data: BodyType<HeroOverrideUploadBody>},
+        TContext
+      > => {
+      return useMutation(getRequestHeroOverrideUploadMutationOptions(options));
+    }
+
+export const getGetAdminHeroOverrideAssetUrl = (params: GetAdminHeroOverrideAssetParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/heroes/asset?${stringifiedParams}` : `/api/admin/heroes/asset`
+}
+
+export const getAdminHeroOverrideAsset = async (params: GetAdminHeroOverrideAssetParams, options?: RequestInit): Promise<Blob | void> => {
+
+  return customFetch<Blob | void>(getGetAdminHeroOverrideAssetUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminHeroOverrideAssetQueryKey = (params?: GetAdminHeroOverrideAssetParams,) => {
+    return [
+    `/api/admin/heroes/asset`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminHeroOverrideAssetQueryOptions = <TData = Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>, TError = ErrorType<void>>(params: GetAdminHeroOverrideAssetParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminHeroOverrideAssetQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>> = ({ signal }) => getAdminHeroOverrideAsset(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminHeroOverrideAssetQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>>
+export type GetAdminHeroOverrideAssetQueryError = ErrorType<void>
+
+
+
+export function useGetAdminHeroOverrideAsset<TData = Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>, TError = ErrorType<void>>(
+ params: GetAdminHeroOverrideAssetParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverrideAsset>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminHeroOverrideAssetQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminHeroOverrideUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/heroes/${id}`
+}
+
+export const getAdminHeroOverride = async (id: string, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getGetAdminHeroOverrideUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminHeroOverrideQueryKey = (id: string,) => {
+    return [
+    `/api/admin/heroes/${id}`
+    ] as const;
+    }
+
+
+export const getGetAdminHeroOverrideQueryOptions = <TData = Awaited<ReturnType<typeof getAdminHeroOverride>>, TError = ErrorType<unknown>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverride>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminHeroOverrideQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminHeroOverride>>> = ({ signal }) => getAdminHeroOverride(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverride>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminHeroOverrideQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminHeroOverride>>>
+export type GetAdminHeroOverrideQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminHeroOverride<TData = Awaited<ReturnType<typeof getAdminHeroOverride>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminHeroOverride>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminHeroOverrideQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminHeroOverrideUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/heroes/${id}`
+}
+
+export const updateAdminHeroOverride = async (id: string,
+    updateHeroOverrideBody: UpdateHeroOverrideBody, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getUpdateAdminHeroOverrideUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateHeroOverrideBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminHeroOverrideMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroOverride>>, TError,{id: string;data: BodyType<UpdateHeroOverrideBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroOverride>>, TError,{id: string;data: BodyType<UpdateHeroOverrideBody>}, TContext> => {
+
+const mutationKey = ['updateAdminHeroOverride'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminHeroOverride>>, {id: string;data: BodyType<UpdateHeroOverrideBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminHeroOverride(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminHeroOverrideMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminHeroOverride>>>
+    export type UpdateAdminHeroOverrideMutationBody = BodyType<UpdateHeroOverrideBody>
+    export type UpdateAdminHeroOverrideMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminHeroOverride = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminHeroOverride>>, TError,{id: string;data: BodyType<UpdateHeroOverrideBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminHeroOverride>>,
+        TError,
+        {id: string;data: BodyType<UpdateHeroOverrideBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminHeroOverrideMutationOptions(options));
+    }
+
+export const getDeleteAdminHeroOverrideUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/heroes/${id}`
+}
+
+export const deleteAdminHeroOverride = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getDeleteAdminHeroOverrideUrl(id),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getDeleteAdminHeroOverrideMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['deleteAdminHeroOverride'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminHeroOverride>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  deleteAdminHeroOverride(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminHeroOverrideMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminHeroOverride>>>
+    export type DeleteAdminHeroOverrideMutationBody = BodyType<InspirationRevisionBody>
+    export type DeleteAdminHeroOverrideMutationError = ErrorType<unknown>
+
+    export const useDeleteAdminHeroOverride = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminHeroOverride>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminHeroOverrideMutationOptions(options));
+    }
+
+export const getPublishAdminHeroOverrideUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/heroes/${id}/publish`
+}
+
+export const publishAdminHeroOverride = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getPublishAdminHeroOverrideUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getPublishAdminHeroOverrideMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['publishAdminHeroOverride'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publishAdminHeroOverride>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  publishAdminHeroOverride(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublishAdminHeroOverrideMutationResult = NonNullable<Awaited<ReturnType<typeof publishAdminHeroOverride>>>
+    export type PublishAdminHeroOverrideMutationBody = BodyType<InspirationRevisionBody>
+    export type PublishAdminHeroOverrideMutationError = ErrorType<unknown>
+
+    export const usePublishAdminHeroOverride = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof publishAdminHeroOverride>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getPublishAdminHeroOverrideMutationOptions(options));
+    }
+
+export const getUnpublishAdminHeroOverrideUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/heroes/${id}/unpublish`
+}
+
+export const unpublishAdminHeroOverride = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminHeroOverride> => {
+
+  return customFetch<AdminHeroOverride>(getUnpublishAdminHeroOverrideUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getUnpublishAdminHeroOverrideMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['unpublishAdminHeroOverride'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unpublishAdminHeroOverride>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  unpublishAdminHeroOverride(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnpublishAdminHeroOverrideMutationResult = NonNullable<Awaited<ReturnType<typeof unpublishAdminHeroOverride>>>
+    export type UnpublishAdminHeroOverrideMutationBody = BodyType<InspirationRevisionBody>
+    export type UnpublishAdminHeroOverrideMutationError = ErrorType<unknown>
+
+    export const useUnpublishAdminHeroOverride = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminHeroOverride>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unpublishAdminHeroOverride>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getUnpublishAdminHeroOverrideMutationOptions(options));
+    }
 
 export const getGetInspirationSettingsUrl = () => {
 

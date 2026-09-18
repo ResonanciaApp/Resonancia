@@ -46,6 +46,104 @@ paths:
         - {name: timeZone, in: query, schema: {type: string}}
       responses:
         "200": {description: Seven days, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationWeek"}}}}
+  /hero:
+    get:
+      operationId: getEffectiveHero
+      tags: [inspirations]
+      parameters:
+        - {name: timeZone, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Effective hero for the local day, content: {application/json: {schema: {$ref: "#/components/schemas/EffectiveHero"}}}}
+  /hero/media/{id}:
+    get:
+      operationId: getEffectiveHeroMedia
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: revision, in: query, required: true, schema: {type: integer, minimum: 1}}
+        - {name: timeZone, in: query, required: true, schema: {type: string}}
+        - {name: Range, in: header, schema: {type: string}}
+      responses:
+        "200": {description: Editorial hero media, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+        "206": {description: Partial media response}
+        "416": {description: Invalid or unsatisfiable range}
+  /hero/poster/{id}:
+    get:
+      operationId: getEffectiveHeroPoster
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: revision, in: query, required: true, schema: {type: integer, minimum: 1}}
+        - {name: timeZone, in: query, required: true, schema: {type: string}}
+      responses:
+        "200": {description: Effective hero poster, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+  /admin/heroes:
+    get:
+      operationId: listAdminHeroOverrides
+      tags: [admin]
+      responses:
+        "200": {description: Editorial hero overrides, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/AdminHeroOverride"}}}}}
+    post:
+      operationId: upsertAdminHeroOverride
+      tags: [admin]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/UpsertHeroOverrideBody"}}}}
+      responses:
+        "200": {description: Draft hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
+  /admin/heroes/uploads:
+    post:
+      operationId: requestHeroOverrideUpload
+      tags: [admin]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/HeroOverrideUploadBody"}}}}
+      responses:
+        "200": {description: Upload URL, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationUpload"}}}}
+  /admin/heroes/asset:
+    get:
+      operationId: getAdminHeroOverrideAsset
+      tags: [admin]
+      parameters:
+        - {name: objectPath, in: query, required: true, schema: {type: string}}
+        - {name: Range, in: header, schema: {type: string}}
+      responses:
+        "200": {description: Draft hero asset, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+        "206": {description: Partial draft hero asset}
+        "416": {description: Invalid or unsatisfiable range}
+  /admin/heroes/{id}:
+    get:
+      operationId: getAdminHeroOverride
+      tags: [admin]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: Hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
+    put:
+      operationId: updateAdminHeroOverride
+      tags: [admin]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/UpdateHeroOverrideBody"}}}}
+      responses:
+        "200": {description: Updated hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
+    delete:
+      operationId: deleteAdminHeroOverride
+      tags: [admin]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Deleted hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
+  /admin/heroes/{id}/publish:
+    post:
+      operationId: publishAdminHeroOverride
+      tags: [admin]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Published hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
+  /admin/heroes/{id}/unpublish:
+    post:
+      operationId: unpublishAdminHeroOverride
+      tags: [admin]
+      parameters: [{name: id, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Unpublished hero override, content: {application/json: {schema: {$ref: "#/components/schemas/AdminHeroOverride"}}}}
   /inspirations/settings:
     get:
       operationId: getInspirationSettings
@@ -4429,6 +4527,70 @@ components:
       required: [uploadURL, objectPath]
       properties:
         uploadURL: {type: string}
+        objectPath: {type: string}
+    HeroOverrideMedia:
+      type: object
+      required: [type, objectPath, contentType, sizeBytes, generation]
+      properties:
+        type: {type: string, enum: [image, video]}
+        objectPath: {type: string}
+        contentType: {type: string, enum: [image/jpeg, image/png, image/webp, video/mp4, video/webm]}
+        sizeBytes: {type: integer}
+        generation: {type: [string, "null"]}
+        posterObjectPath: {type: [string, "null"]}
+    HeroOverrideContent:
+      type: object
+      required: [media]
+      properties:
+        media: {$ref: "#/components/schemas/HeroOverrideMedia"}
+        title: {type: [string, "null"]}
+    AdminHeroOverride:
+      type: object
+      required: [id, date, revision, draft, published, publishedRevision, deleted, updatedAt]
+      properties:
+        id: {type: string}
+        date: {type: string}
+        revision: {type: integer}
+        draft: {$ref: "#/components/schemas/HeroOverrideContent"}
+        published: {anyOf: [{$ref: "#/components/schemas/HeroOverrideContent"}, {type: "null"}]}
+        publishedRevision: {type: [integer, "null"]}
+        deleted: {type: boolean}
+        updatedAt: {type: string}
+    UpsertHeroOverrideBody:
+      type: object
+      required: [date, draft]
+      properties:
+        revision: {type: integer, minimum: 0}
+        date: {type: string}
+        draft: {$ref: "#/components/schemas/HeroOverrideContent"}
+    UpdateHeroOverrideBody:
+      type: object
+      required: [revision, date, draft]
+      properties:
+        revision: {type: integer, minimum: 0}
+        date: {type: string}
+        draft: {$ref: "#/components/schemas/HeroOverrideContent"}
+    HeroOverrideUploadBody:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 200}
+        size: {type: integer, minimum: 1, maximum: 104857600}
+        contentType: {type: string, enum: [image/jpeg, image/png, image/webp, video/mp4, video/webm]}
+    EffectiveHero:
+      type: object
+      required: [date, timeZone, source, media, fallbackImageUrl]
+      properties:
+        date: {type: string}
+        timeZone: {type: string}
+        source: {type: string, enum: [override, inspiration, fallback]}
+        media: {anyOf: [{$ref: "#/components/schemas/EffectiveHeroMedia"}, {type: "null"}]}
+        fallbackImageUrl: {type: [string, "null"]}
+    EffectiveHeroMedia:
+      type: object
+      required: [type, objectPath]
+      properties:
+        type: {type: string, enum: [image, video]}
         objectPath: {type: string}
     PutInspirationFavoriteBody:
       type: object

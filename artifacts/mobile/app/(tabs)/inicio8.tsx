@@ -8,7 +8,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useRouter } from "expo-router";
+import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -124,7 +125,7 @@ import {
   isMeditativeSessionPlaylist,
 } from "@/lib/editorial-playlist-helpers";
 
-import { useRouter } from "expo-router";
+import { useEffectiveHero } from "@/hooks/effectiveHero";
 const { width, height } = Dimensions.get("window");
 
 const GRID_GAP = 12;
@@ -1270,6 +1271,76 @@ function Inicio2HeroSliderRebuilt({
   );
 }
 
+const INICIO3_HERO_FALLBACK = require("@/assets/images/inicio2-mistico-1-warm.jpg");
+
+function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
+  const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
+  const [focused, setFocused] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const videoUri = effectiveHero.kind === "video" && !videoFailed && !reduceMotion
+    ? effectiveHero.uri
+    : "";
+  const heroPlayer = useVideoPlayer(videoUri, (player) => {
+    player.loop = true;
+    player.muted = true;
+  });
+  useFocusEffect(
+    useCallback(() => {
+      setFocused(true);
+      return () => setFocused(false);
+    }, []),
+  );
+  useEffect(() => {
+    if (!videoUri || !focused) heroPlayer.pause();
+    else heroPlayer.play();
+  }, [focused, heroPlayer, videoUri]);
+  useEffect(() => {
+    setVideoFailed(false);
+    setVideoReady(false);
+  }, [effectiveHero.uri, effectiveHero.kind]);
+  useEffect(() => {
+    const subscription = heroPlayer.addListener("statusChange", (event) => {
+      if (event.status === "error") {
+        setVideoFailed(true);
+        setVideoReady(false);
+      } else if (event.status === "readyToPlay") {
+        setVideoReady(true);
+      }
+    });
+    return () => subscription.remove();
+  }, [heroPlayer]);
+
+  const fallbackSource = typeof effectiveHero.fallbackImage === "string"
+    ? { uri: effectiveHero.fallbackImage }
+    : INICIO3_HERO_FALLBACK;
+  const imageSource = effectiveHero.kind === "image" && typeof effectiveHero.uri === "string"
+    ? { uri: effectiveHero.uri }
+    : fallbackSource;
+  const showVideo = effectiveHero.kind === "video" && !videoFailed && !reduceMotion;
+
+  return (
+    <View style={StyleSheet.absoluteFill}>
+      <Image
+        source={imageSource}
+        defaultSource={INICIO3_HERO_FALLBACK}
+        resizeMode="cover"
+        style={styles.inicio2HeroImage}
+      />
+      {showVideo ? (
+        <VideoView
+          player={heroPlayer}
+          style={[styles.inicio2HeroImage, StyleSheet.absoluteFill, { opacity: videoReady ? 1 : 0 }]}
+          contentFit="cover"
+          nativeControls={false}
+          allowsFullscreen={false}
+          allowsPictureInPicture={false}
+        />
+      ) : null}
+    </View>
+  );
+}
+
 const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   topInset,
   isPremium,
@@ -1372,11 +1443,15 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
-          <Image
-            source={require("@/assets/images/inicio2-mistico-1-warm.jpg")}
-            resizeMode="cover"
-            style={styles.inicio2HeroImage}
-          />
+          {isInicio3 ? (
+            <Inicio3HeroMedia reduceMotion={reduceMotion} />
+          ) : (
+            <Image
+              source={INICIO3_HERO_FALLBACK}
+              resizeMode="cover"
+              style={styles.inicio2HeroImage}
+            />
+          )}
         </View>
       </RAnimated.View>
 

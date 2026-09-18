@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   db, inspirationsTable as entries, inspirationSettingsTable as settings,
   inspirationAssetsTable as assets, inspirationFavoritesTable as favorites,
+  heroOverridesTable as heroes, heroOverrideAssetsTable as heroAssets,
   inspirationNotesTable as notes, catalogSessionsTable,
   type InspirationContent,
 } from "@workspace/db";
@@ -27,6 +28,8 @@ const router: IRouter = Router();
 const storage = new ObjectStorageService();
 const uuid = z.string().uuid();
 const admin = [requireAuth, requireRole("admin")];
+const heroMedia = z.object({ type: z.enum(["image", "video"]), objectPath: z.string().min(1), contentType: z.enum(["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"]), sizeBytes: z.number().int().positive().max(104857600), generation: z.string().nullable(), posterObjectPath: z.string().nullable().optional() });
+const heroContent = z.object({ media: heroMedia, title: z.string().max(200).nullable().optional() });
 type Entry = typeof entries.$inferSelect;
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 const wrap = (fn: (req: Request, res: Response) => Promise<void>): RequestHandler => async (req, res) => {
@@ -110,6 +113,55 @@ async function sendImage(path: string, res: Response, published: boolean) {
 }
 
 router.get("/inspirations/settings", wrap(async (_req, res) => { res.json(await labels()); }));
+router.get("/hero", wrap(async (req, res) => {
+  const clock = inspirationClock(req.query.timeZone);
+  const [override] = await db.select().from(heroes).where(eq(heroes.date, clock.today));
+  const [inspiration] = await db.select().from(entries).where(eq(entries.date, clock.today));
+  const fallback = inspirationAvailable(inspiration, clock.today) && inspiration.published?.imagePath
+    ? `${origin(req)}/api/inspirations/${inspiration.id}/image?timeZone=${encodeURIComponent(clock.timeZone)}&revision=${inspiration.publishedRevision}` : null;
+  if (override && !override.deleted && override.published) {
+    const media = override.published.media;
+    const timeZone = encodeURIComponent(clock.timeZone);
+    const mediaUrl = `${origin(req)}/api/hero/media/${override.id}?revision=${override.publishedRevision}&timeZone=${timeZone}`;
+    res.json({
+      date: clock.today,
+      timeZone: clock.timeZone,
+      source: "override",
+      media: { type: media.type, objectPath: mediaUrl },
+      fallbackImageUrl: media.type === "video"
+        ? (media.posterObjectPath
+            ? `${origin(req)}/api/hero/poster/${override.id}?revision=${override.publishedRevision}&timeZone=${timeZone}`
+            : fallback)
+        : null,
+    });
+    return;
+  }
+  if (fallback) {
+    res.json({ date: clock.today, timeZone: clock.timeZone, source: "inspiration", media: { type: "image", objectPath: fallback }, fallbackImageUrl: fallback });
+  } else res.json({ date: clock.today, timeZone: clock.timeZone, source: "fallback", media: null, fallbackImageUrl: null });
+}));
+router.get("/hero/media/:id", wrap(async (req, res) => {
+  const row = await heroEntry(String(req.params.id));
+  const clock = inspirationClock(req.query.timeZone);
+  if (!row.published || row.deleted || row.date !== clock.today || String(row.publishedRevision) !== String(req.query.revision)) throw new InspirationError(404, "Media no disponible");
+  const media = row.published.media;
+  const asset = (await db.select().from(heroAssets).where(eq(heroAssets.objectPath, media.objectPath)))[0];
+  if (!asset?.generation || asset.generation !== media.generation) throw new InspirationError(404, "Media no disponible");
+  const current = await storage.getObjectEntityFile(media.objectPath);
+  const file = current.bucket.file(current.name, { generation: asset.generation });
+  const [meta] = await file.getMetadata(); const size = Number(meta.size);
+  streamRangedFile(req, res, file, size, media.contentType);
+}));
+router.get("/hero/poster/:id", wrap(async (req, res) => {
+  const row = await heroEntry(String(req.params.id));
+  const clock = inspirationClock(req.query.timeZone);
+  if (!row.published || row.deleted || row.date !== clock.today || String(row.publishedRevision) !== String(req.query.revision)) {
+    throw new InspirationError(404, "Imagen no disponible");
+  }
+  const posterPath = row.published.media.posterObjectPath;
+  if (!posterPath) throw new InspirationError(404, "Imagen no disponible");
+  await sendHeroAsset(posterPath, res, true);
+}));
 router.get("/inspirations/week", wrap(async (req, res) => {
   const clock = inspirationClock(req.query.timeZone);
   const days = inspirationWeekDates(inspirationDate.parse(req.query.date ?? clock.today));
@@ -143,6 +195,181 @@ router.get("/admin/inspirations/week", ...admin, wrap(async (req, res) => {
   const byDate = new Map(rows.map((r) => [r.date, r]));
   res.json({ weekStart: days[0], days: days.map((date) => ({ date, inspiration: byDate.has(date) ? adminDto(byDate.get(date)!) : null })), settings: await labels() });
 }));
+function heroDto(row: typeof heroes.$inferSelect) { return { ...row, updatedAt: row.updatedAt.toISOString() }; }
+async function heroEntry(id: string, tx: Tx | typeof db = db) {
+  const [row] = await tx.select().from(heroes).where(eq(heroes.id, uuid.parse(id)));
+  if (!row) throw new InspirationError(404, "Hero no encontrado");
+  return row;
+}
+async function verifyHeroMedia(media: { type: "image" | "video"; objectPath: string; contentType: string; sizeBytes: number; generation: string | null }, tx: Tx | typeof db) {
+  const [asset] = await tx.select().from(heroAssets).where(eq(heroAssets.objectPath, media.objectPath));
+  if (!asset || asset.contentType !== media.contentType || asset.sizeBytes !== media.sizeBytes) throw new InspirationError(400, "Asset editorial no encontrado");
+  if (media.type === "image" && asset.sizeBytes > 15 * 1024 * 1024) {
+    throw new InspirationError(400, "La imagen supera el máximo de 15 MiB");
+  }
+  if ((media.type === "image") !== asset.contentType.startsWith("image/")) {
+    throw new InspirationError(400, "El tipo de media no coincide con el archivo");
+  }
+  const file = await storage.getObjectEntityFile(media.objectPath);
+  const [meta] = await file.getMetadata();
+  if (Number(meta.size) !== asset.sizeBytes || meta.contentType !== asset.contentType || !meta.generation || (asset.generation && asset.generation !== String(meta.generation))) throw new InspirationError(400, "El asset fue reemplazado; carga uno nuevo");
+  const generation = String(meta.generation);
+  const pinned = file.bucket.file(file.name, { generation });
+  if (media.type === "image") {
+    const [bytes] = await pinned.download();
+    await validateInspirationImage(bytes, asset.contentType);
+  } else {
+    const prefix = await new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      const stream = pinned.createReadStream({ start: 0, end: 63 });
+      stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+      stream.on("error", reject);
+      stream.on("end", () => resolve(Buffer.concat(chunks)));
+    });
+    const validMp4 = asset.contentType === "video/mp4"
+      && prefix.length >= 12
+      && prefix.toString("ascii", 4, 8) === "ftyp";
+    const validWebm = asset.contentType === "video/webm"
+      && prefix.length >= 4
+      && prefix.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
+    if (!validMp4 && !validWebm) throw new InspirationError(400, "El video no coincide con el formato declarado");
+  }
+  await tx.update(heroAssets).set({ generation }).where(eq(heroAssets.objectPath, media.objectPath));
+  return generation;
+}
+async function sendHeroAsset(path: string, res: Response, published: boolean) {
+  const [asset] = await db.select().from(heroAssets).where(eq(heroAssets.objectPath, path));
+  if (!asset || !asset.contentType.startsWith("image/") || (published && !asset.generation)) {
+    throw new InspirationError(404, "Imagen no disponible");
+  }
+  const current = await storage.getObjectEntityFile(path);
+  const file = published
+    ? current.bucket.file(current.name, { generation: asset.generation! })
+    : current;
+  const [metadata] = await file.getMetadata();
+  if (Number(metadata.size) !== asset.sizeBytes || metadata.contentType !== asset.contentType) {
+    throw new InspirationError(404, "Imagen no disponible");
+  }
+  const [bytes] = await file.download();
+  await validateInspirationImage(bytes, asset.contentType);
+  res.setHeader("Content-Type", asset.contentType);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.send(bytes);
+}
+function streamRangedFile(
+  req: Request,
+  res: Response,
+  file: { createReadStream(options?: { start?: number; end?: number }): NodeJS.ReadableStream },
+  size: number,
+  contentType: string,
+) {
+  res.setHeader("Content-Type", contentType);
+  res.setHeader("Accept-Ranges", "bytes");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  const range = req.headers.range;
+  if (!range) {
+    res.setHeader("Content-Length", String(size));
+    file.createReadStream().pipe(res);
+    return;
+  }
+  const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+  if (!match || (!match[1] && !match[2])) {
+    res.status(416).setHeader("Content-Range", `bytes */${size}`).end();
+    return;
+  }
+  let start: number;
+  let end: number;
+  if (!match[1]) {
+    const suffixLength = Number(match[2]);
+    if (!Number.isSafeInteger(suffixLength) || suffixLength <= 0) {
+      res.status(416).setHeader("Content-Range", `bytes */${size}`).end();
+      return;
+    }
+    start = Math.max(0, size - suffixLength);
+    end = size - 1;
+  } else {
+    start = Number(match[1]);
+    end = match[2] ? Math.min(Number(match[2]), size - 1) : size - 1;
+  }
+  if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start < 0 || end < start || start >= size) {
+    res.status(416).setHeader("Content-Range", `bytes */${size}`).end();
+    return;
+  }
+  res.status(206);
+  res.setHeader("Content-Range", `bytes ${start}-${end}/${size}`);
+  res.setHeader("Content-Length", String(end - start + 1));
+  file.createReadStream({ start, end }).pipe(res);
+}
+router.get("/admin/heroes", ...admin, wrap(async (_req, res) => { res.json((await db.select().from(heroes)).map(heroDto)); }));
+router.get("/admin/heroes/asset", ...admin, wrap(async (req, res) => {
+  const path = z.string().max(500).parse(req.query.objectPath);
+  const [asset] = await db.select().from(heroAssets).where(eq(heroAssets.objectPath, path));
+  if (!asset) throw new InspirationError(404, "Media no disponible");
+  if (asset.contentType.startsWith("image/")) {
+    await sendHeroAsset(path, res, false);
+    return;
+  }
+  const file = await storage.getObjectEntityFile(path);
+  const [metadata] = await file.getMetadata();
+  const size = Number(metadata.size);
+  if (size !== asset.sizeBytes || metadata.contentType !== asset.contentType) throw new InspirationError(404, "Media no disponible");
+  streamRangedFile(req, res, file, size, asset.contentType);
+}));
+router.get("/admin/heroes/:id", ...admin, wrap(async (req, res) => { res.json(heroDto(await heroEntry(String(req.params.id)))); }));
+router.post("/admin/heroes/uploads", ...admin, wrap(async (req, res) => {
+  const body = z.object({ name: z.string().min(1).max(200), size: z.number().int().min(1).max(104857600), contentType: z.enum(["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"]) }).parse(req.body);
+  if (body.contentType.startsWith("image/") && body.size > 15 * 1024 * 1024) {
+    throw new InspirationError(400, "La imagen supera el máximo de 15 MiB");
+  }
+  const uploadURL = await storage.getObjectEntityUploadURL(), objectPath = storage.normalizeObjectEntityPath(uploadURL);
+  await db.insert(heroAssets).values({ objectPath, contentType: body.contentType, sizeBytes: body.size });
+  res.json({ uploadURL, objectPath });
+}));
+router.post("/admin/heroes", ...admin, wrap(async (req, res) => {
+  const body = z.object({ date: z.string(), revision: z.number().int().min(0).optional(), draft: heroContent }).parse(req.body);
+  inspirationDate.parse(body.date); heroContent.parse(body.draft);
+  const row = await db.transaction(async (tx) => {
+    await lock(tx, "hero-editorial");
+    const [existing] = await tx.select().from(heroes).where(eq(heroes.date, body.date));
+    if (existing) throw new InspirationError(409, "La fecha ya tiene un hero", existing.revision);
+    const [created] = await tx.insert(heroes).values({ date: body.date, draft: body.draft }).returning(); return created;
+  });
+  res.json(heroDto(row));
+}));
+router.put("/admin/heroes/:id", ...admin, wrap(async (req, res) => {
+  const body = z.object({ date: z.string(), revision: z.number().int().min(0), draft: heroContent }).parse(req.body); inspirationDate.parse(body.date);
+  const row = await db.transaction(async (tx) => {
+    await lock(tx, "hero-editorial"); const old = await heroEntry(String(req.params.id), tx); requireInspirationRevision(old.revision, body.revision);
+    const [updated] = await tx.update(heroes).set({ date: body.date, draft: body.draft, deleted: false, revision: old.revision + 1, updatedAt: new Date() }).where(eq(heroes.id, old.id)).returning(); return updated;
+  }); res.json(heroDto(row));
+}));
+for (const action of ["publish", "unpublish", "delete"] as const) {
+  const handler = wrap(async (req, res) => {
+    const body = z.object({ revision: z.number().int().min(0) }).parse(req.body);
+    const row = await db.transaction(async (tx) => {
+      await lock(tx, "hero-editorial"); const old = await heroEntry(String(req.params.id), tx); requireInspirationRevision(old.revision, body.revision);
+      let published = action === "publish" ? old.draft : null;
+      if (action === "publish") {
+        if (old.deleted) throw new InspirationError(400, "Guarda el borrador para restaurar este override antes de publicarlo");
+        const generation = await verifyHeroMedia(old.draft.media, tx);
+        if (old.draft.media.posterObjectPath) {
+          const [poster] = await tx.select().from(heroAssets).where(eq(heroAssets.objectPath, old.draft.media.posterObjectPath));
+          if (!poster || !poster.contentType.startsWith("image/")) throw new InspirationError(400, "Poster editorial no encontrado");
+          await verifyHeroMedia({
+            type: "image",
+            objectPath: poster.objectPath,
+            contentType: poster.contentType,
+            sizeBytes: poster.sizeBytes,
+            generation: poster.generation,
+          }, tx);
+        }
+        published = { ...old.draft, media: { ...old.draft.media, generation } };
+      }
+      const [updated] = await tx.update(heroes).set({ revision: old.revision + 1, updatedAt: new Date(), published, publishedRevision: action === "publish" ? old.revision + 1 : null, ...(action === "delete" ? { deleted: true } : {}) }).where(eq(heroes.id, old.id)).returning(); return updated;
+    }); res.json(heroDto(row));
+  });
+  if (action === "delete") router.delete("/admin/heroes/:id", ...admin, handler); else router.post(`/admin/heroes/:id/${action}`, ...admin, handler);
+}
 router.put("/admin/inspirations/settings", ...admin, wrap(async (req, res) => {
   const { revision, ...newLabels } = UpdateInspirationSettingsBody.parse(req.body);
   if (Object.values(newLabels).some((v) => !v.trim())) throw new InspirationError(400, "Las etiquetas no pueden estar vacías");

@@ -173,6 +173,124 @@ export interface InspirationUpload {
   objectPath: string;
 }
 
+export type HeroOverrideMediaType = typeof HeroOverrideMediaType[keyof typeof HeroOverrideMediaType];
+
+
+export const HeroOverrideMediaType = {
+  image: 'image',
+  video: 'video',
+} as const;
+
+export type HeroOverrideMediaContentType = typeof HeroOverrideMediaContentType[keyof typeof HeroOverrideMediaContentType];
+
+
+export const HeroOverrideMediaContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'video/mp4': 'video/mp4',
+  'video/webm': 'video/webm',
+} as const;
+
+export interface HeroOverrideMedia {
+  type: HeroOverrideMediaType;
+  objectPath: string;
+  contentType: HeroOverrideMediaContentType;
+  sizeBytes: number;
+  /** @nullable */
+  generation: string | null;
+  /** @nullable */
+  posterObjectPath?: string | null;
+}
+
+export interface HeroOverrideContent {
+  media: HeroOverrideMedia;
+  /** @nullable */
+  title?: string | null;
+}
+
+export interface AdminHeroOverride {
+  id: string;
+  date: string;
+  revision: number;
+  draft: HeroOverrideContent;
+  published: HeroOverrideContent | null;
+  /** @nullable */
+  publishedRevision: number | null;
+  deleted: boolean;
+  updatedAt: string;
+}
+
+export interface UpsertHeroOverrideBody {
+  /** @minimum 0 */
+  revision?: number;
+  date: string;
+  draft: HeroOverrideContent;
+}
+
+export interface UpdateHeroOverrideBody {
+  /** @minimum 0 */
+  revision: number;
+  date: string;
+  draft: HeroOverrideContent;
+}
+
+export type HeroOverrideUploadBodyContentType = typeof HeroOverrideUploadBodyContentType[keyof typeof HeroOverrideUploadBodyContentType];
+
+
+export const HeroOverrideUploadBodyContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'video/mp4': 'video/mp4',
+  'video/webm': 'video/webm',
+} as const;
+
+export interface HeroOverrideUploadBody {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * @minimum 1
+     * @maximum 104857600
+     */
+  size: number;
+  contentType: HeroOverrideUploadBodyContentType;
+}
+
+export type EffectiveHeroSource = typeof EffectiveHeroSource[keyof typeof EffectiveHeroSource];
+
+
+export const EffectiveHeroSource = {
+  override: 'override',
+  inspiration: 'inspiration',
+  fallback: 'fallback',
+} as const;
+
+export type EffectiveHeroMediaType = typeof EffectiveHeroMediaType[keyof typeof EffectiveHeroMediaType];
+
+
+export const EffectiveHeroMediaType = {
+  image: 'image',
+  video: 'video',
+} as const;
+
+export interface EffectiveHeroMedia {
+  type: EffectiveHeroMediaType;
+  objectPath: string;
+}
+
+export interface EffectiveHero {
+  date: string;
+  timeZone: string;
+  source: EffectiveHeroSource;
+  media: EffectiveHeroMedia | null;
+  /** @nullable */
+  fallbackImageUrl: string | null;
+}
+
 export interface PutInspirationFavoriteBody {
   /** @minimum 0 */
   revision: number;
@@ -2594,6 +2712,30 @@ export interface UpdateDescansoSoundBody {
 export type GetInspirationWeekParams = {
 date?: string;
 timeZone?: string;
+};
+
+export type GetEffectiveHeroParams = {
+timeZone?: string;
+};
+
+export type GetEffectiveHeroMediaParams = {
+/**
+ * @minimum 1
+ */
+revision: number;
+timeZone: string;
+};
+
+export type GetEffectiveHeroPosterParams = {
+/**
+ * @minimum 1
+ */
+revision: number;
+timeZone: string;
+};
+
+export type GetAdminHeroOverrideAssetParams = {
+objectPath: string;
 };
 
 export type GetInspirationByDateParams = {

@@ -54,6 +54,43 @@ export const inspirationAssetsTable = pgTable("inspiration_assets", {
   check("inspiration_assets_content_type_check", sql`${t.contentType} IN ('image/jpeg', 'image/png', 'image/webp')`),
   check("inspiration_assets_size_bytes_check", sql`${t.sizeBytes} BETWEEN 1 AND 15728640`),
 ]);
+export type HeroOverrideMedia = {
+  type: "image" | "video";
+  objectPath: string;
+  contentType: string;
+  sizeBytes: number;
+  generation: string | null;
+  posterObjectPath?: string | null;
+};
+export type HeroOverrideContent = {
+  media: HeroOverrideMedia;
+  title?: string | null;
+};
+/** Date-keyed editorial hero overrides. Deliberately independent of inspirations. */
+export const heroOverridesTable = pgTable("hero_overrides", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  date: date("date", { mode: "string" }).notNull().unique(),
+  revision: integer("revision").notNull().default(1),
+  draft: jsonb("draft").$type<HeroOverrideContent>().notNull(),
+  published: jsonb("published").$type<HeroOverrideContent>(),
+  publishedRevision: integer("published_revision"),
+  deleted: boolean("deleted").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  check("hero_overrides_revision_check", sql`${t.revision} > 0`),
+  check("hero_overrides_snapshot_check", sql`(${t.published} IS NULL) = (${t.publishedRevision} IS NULL)`),
+  check("hero_overrides_deleted_check", sql`NOT ${t.deleted} OR ${t.published} IS NULL`),
+]);
+export const heroOverrideAssetsTable = pgTable("hero_override_assets", {
+  objectPath: text("object_path").primaryKey(),
+  contentType: text("content_type").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  generation: text("generation"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  check("hero_override_assets_content_type_check", sql`${t.contentType} IN ('image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm')`),
+  check("hero_override_assets_size_bytes_check", sql`${t.sizeBytes} BETWEEN 1 AND 104857600`),
+]);
 export const inspirationFavoritesTable = pgTable("inspiration_favorites", {
   userId: integer("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
   inspirationId: uuid("inspiration_id").notNull(),
