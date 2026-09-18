@@ -378,9 +378,9 @@ const styles = StyleSheet.create({
   message: { width: "100%", alignItems: "center" },
   unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12 },
   quoteBlock: { width: "100%", alignItems: "center" },
-  dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
-  month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
-  quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 25, lineHeight: 34, fontWeight: "500", marginTop: 34 },
+  dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 33, lineHeight: 38, fontWeight: "500" },
+  month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
+  quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 21, lineHeight: 30, fontWeight: "500", marginTop: 34 },
   author: { color: "rgba(255,255,255,.82)", textAlign: "center", fontFamily: "Manrope", fontSize: 14, fontStyle: "italic", marginTop: 12 },
   read: {
     alignSelf: "center",
