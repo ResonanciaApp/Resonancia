@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
-import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDayRollover } from "@/hooks/useDayRollover";
@@ -52,8 +51,6 @@ export function ProgressMirrorSections({
   return (
     <>
       <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
-        <StreakWeekRow />
-        <View style={styles.sectionDivider} />
         <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
           <Stat
             icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
@@ -167,12 +164,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 17,
     paddingBottom: 16,
-  },
-  sectionDivider: {
-    height: 1,
-    width: "100%",
-    marginVertical: 16,
-    backgroundColor: "rgba(255,255,255,0.07)",
   },
   personalStatsSection: {
     borderRadius: 19,
