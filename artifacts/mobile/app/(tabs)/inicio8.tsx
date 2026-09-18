@@ -3482,16 +3482,13 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: 0,
-    right: 0,
+    left: GRID_PAD,
+    right: GRID_PAD,
     overflow: "visible",
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderRadius: 31,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
