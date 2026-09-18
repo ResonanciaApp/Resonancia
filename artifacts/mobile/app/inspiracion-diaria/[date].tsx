@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
   reflection: {
     color: "rgba(255,255,255,.94)",
     fontFamily: "Manrope",
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 22,
     marginTop: 44,
   },
   related: { marginTop: 32 },
