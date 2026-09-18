@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Pressable,
   StyleProp,
   StyleSheet,
   Text,
@@ -17,7 +16,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 type Props = {
   sessions: Session[];
   dayKey?: string;
-  onRefreshRecommendations?: () => void;
   style?: StyleProp<ViewStyle>;
   inicio3Compact?: boolean;
 };
@@ -58,7 +56,6 @@ function formatDailyDate(dayKey?: string): string {
 export function DailyRecommendationsSection({
   sessions,
   dayKey,
-  onRefreshRecommendations,
   style,
   inicio3Compact = false,
 }: Props) {
@@ -125,37 +122,7 @@ export function DailyRecommendationsSection({
             ) : null}
           </React.Fragment>
         ))}
-        {inicio3Compact && onRefreshRecommendations ? (
-          <Pressable
-            onPress={onRefreshRecommendations}
-            accessibilityRole="button"
-            accessibilityLabel="Actualizar recomendaciones"
-            style={({ pressed }) => [
-              styles.refreshButton,
-              styles.inicio3RefreshButton,
-              { opacity: pressed ? 0.72 : 1 },
-            ]}
-          >
-            <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
-          </Pressable>
-        ) : null}
       </View>
-      {!inicio3Compact && onRefreshRecommendations && (
-        <Pressable
-          onPress={onRefreshRecommendations}
-          accessibilityRole="button"
-          accessibilityLabel="Actualizar recomendaciones"
-          style={({ pressed }) => [
-            styles.refreshButton,
-            {
-              backgroundColor: "rgba(0,0,0,0.28)",
-              opacity: pressed ? 0.72 : 1,
-            },
-          ]}
-        >
-          <Text style={styles.refreshButtonText}>Actualizar recomendaciones</Text>
-        </Pressable>
-      )}
     </View>
   );
 }
@@ -216,27 +183,5 @@ const styles = StyleSheet.create({
   inicio3Row: {
     paddingVertical: 8.3,
     paddingHorizontal: 11,
-  },
-  refreshButton: {
-    height: 55,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.3)",
-    marginTop: 16,
-    paddingHorizontal: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.28)",
-  },
-  inicio3RefreshButton: {
-    marginHorizontal: 11,
-    marginBottom: 3,
-  },
-  refreshButtonText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#F9F9F9",
-    textAlign: "center",
   },
 });

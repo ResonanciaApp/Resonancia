@@ -2589,7 +2589,6 @@ export default function HomeScreen2({
           <DailyRecommendationsSection
             sessions={dailyRecommendations}
             dayKey={todayKey}
-            onRefreshRecommendations={() => setRecoOffset((offset) => offset + 1)}
             style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
             inicio3Compact={variant === "inicio3"}
           />
