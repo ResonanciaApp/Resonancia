@@ -81,13 +81,15 @@ export function useEffectiveHero(fallbackImage: string | number, enabled = true)
     };
   }, [query.refetch]);
 
-  const inspirationImage = inspiration.days.find((day) => day.date === inspiration.today)?.content?.imageUrl;
+  const inspirationDay = inspiration.days.find((day) => day.date === inspiration.today);
+  const inspirationImage = inspirationDay?.content?.imageUrl;
   const resolved = resolveEffectiveHeroSource(query.data, inspirationImage, fallbackImage);
   const fallbackImageUrl = query.data?.fallbackImageUrl || inspirationImage;
   return {
     ...resolved,
     loading: query.isLoading && !inspirationImage,
     error: query.error ?? inspiration.error,
+    title: inspirationDay?.content?.quote,
     fallbackImage: fallbackImageUrl ? absoluteMediaUrl(fallbackImageUrl) : fallbackImage,
   };
 }

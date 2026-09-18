@@ -1336,6 +1336,21 @@ function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
   );
 }
 
+function Inicio3HeroTitle() {
+  const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
+  return (
+    <Text
+      style={[
+        styles.inicio2HeroTitle,
+        styles.inicio2HeroStaticTitle,
+        styles.inicio3HeroTitle,
+      ]}
+    >
+      {effectiveHero.title ?? "Aprendamos a conectar con lo esencial"}
+    </Text>
+  );
+}
+
 const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   topInset,
   isPremium,
@@ -1605,13 +1620,16 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             </Text>
           </View>
         )}
-        <Text style={[
-          styles.inicio2HeroTitle,
-          styles.inicio2HeroStaticTitle,
-          isInicio3 && styles.inicio3HeroTitle,
-        ]}>
-          {"Aprendamos a conectar\ncon lo esencial"}
-        </Text>
+        {isInicio3 ? (
+          <Inicio3HeroTitle />
+        ) : (
+          <Text style={[
+            styles.inicio2HeroTitle,
+            styles.inicio2HeroStaticTitle,
+          ]}>
+            {"Aprendamos a conectar\ncon lo esencial"}
+          </Text>
+        )}
         {isInicio3 && (
           <View style={styles.inicio3HeroReadMore}>
             <Text style={styles.inicio3HeroReadMoreText}>Leer más</Text>
@@ -3485,7 +3503,7 @@ const styles = StyleSheet.create({
   },
   inicio3HeroCopy: {
     zIndex: 30,
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
     transform: [{ scale: 0.94 }],
@@ -3493,7 +3511,7 @@ const styles = StyleSheet.create({
   inicio3HeroPill: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-start",
+    alignSelf: "center",
     gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -3512,12 +3530,12 @@ const styles = StyleSheet.create({
   },
   inicio3HeroTitle: {
     maxWidth: "86%",
-    textAlign: "left",
-    fontSize: 19,
+    textAlign: "center",
+    fontSize: 21,
     lineHeight: 26,
   },
   inicio3HeroReadMore: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     marginTop: 28,
     paddingVertical: 9,
     paddingHorizontal: 24,
