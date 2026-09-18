@@ -522,7 +522,7 @@ export const SessionCarousel = React.memo(function SessionCarousel({
       hideAmbientalTitleInSquareRecent) &&
     effectiveSquareCards;
   const ambientalCardBackground =
-    ambientalCardBackgroundOverride ?? "rgba(0,0,0,0.28)";
+    ambientalCardBackgroundOverride ?? "rgba(249,249,249,0.1)";
   const ambientalImageSize = Math.round(cw * 0.72);
   const ambientalDisplayedImageSize = ambientalImageSize * 1.05;
   const ambientalImageBottom =
@@ -1298,6 +1298,7 @@ const styles = StyleSheet.create({
   ambientalCardTitle: {
     fontSize: 14,
     lineHeight: 18,
+    color: "#F9F9F9",
   },
   sleepOverlayTitleAfterCategory: {
     marginTop: 4,
@@ -1348,6 +1349,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
     fontWeight: "700",
+    color: "#F9F9F9",
   },
   sleepOverlayDurationInline: {
     position: "relative",

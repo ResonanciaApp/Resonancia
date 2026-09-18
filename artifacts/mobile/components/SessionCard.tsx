@@ -157,7 +157,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const editorialCardWidth =
     getTwoCardCarouselCardWidth(viewportWidth, 14) - 3.5;
   const renderedCardWidth = width;
-  const ambientalCardBackground = "rgba(0,0,0,0.28)";
+  const ambientalCardBackground = "rgba(249,249,249,0.1)";
   const ambientalImageSize = Math.round(renderedCardWidth * 0.72);
   const ambientalCardHeight = Math.round(
     (renderedCardWidth + 50) * SESSION_CARD_METADATA_HEIGHT_SCALE,
