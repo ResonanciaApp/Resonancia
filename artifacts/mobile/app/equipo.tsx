@@ -294,6 +294,8 @@ export default function EquipoScreen() {
             onPress={backOverride ?? (() => router.back())}
             size={28}
             bgColor="rgba(0,0,0,0.28)"
+            borderWidth={1}
+            borderColor="rgba(255,255,255,0.20)"
             iconOffsetX={-1}
             style={styles.backButton}
           />

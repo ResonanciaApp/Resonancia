@@ -432,13 +432,33 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {sessions.length > 0 && resonador.projects && resonador.projects.length > 0 && (
+        {sessions.length > 0 &&
+          (resonador.servicesDescription?.trim() ||
+            (resonador.projects && resonador.projects.length > 0)) && (
           <View style={[styles.sessionsProjectsDivider, { marginHorizontal: H_PAD }]} />
         )}
 
+        {resonador.servicesDescription?.trim() ? (
+          <View style={[styles.card, styles.servicesCard, { marginHorizontal: H_PAD, marginTop: 18 }]}>
+            <Text style={styles.cardTitle}>Mis servicios</Text>
+            <Text style={styles.servicesDescription}>
+              {resonador.servicesDescription.trim()}
+            </Text>
+          </View>
+        ) : null}
+
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, styles.projectsCard, { marginHorizontal: H_PAD, marginTop: 18 }]}>
+          <View
+            style={[
+              styles.card,
+              styles.projectsCard,
+              {
+                marginHorizontal: H_PAD,
+                marginTop: resonador.servicesDescription?.trim() ? 0 : 18,
+              },
+            ]}
+          >
             <Text style={styles.cardTitle}>Proyectos externos</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
@@ -808,6 +828,15 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.20)",
     marginTop: -4,
+  },
+  servicesCard: {
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  servicesDescription: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 20,
+    color: "rgba(255,255,255,0.72)",
   },
   verMasBtn: {
     flexDirection: "row",
