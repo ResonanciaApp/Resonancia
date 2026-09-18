@@ -160,7 +160,7 @@ function Stat({
 
 const styles = StyleSheet.create({
   streakSection: {
-    borderRadius: 14,
+    borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: SECTION_BACKGROUND,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   personalStatsSection: {
-    borderRadius: 17,
+    borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: SECTION_BACKGROUND,

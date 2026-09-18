@@ -2001,9 +2001,8 @@ const styles = StyleSheet.create({
 
   // Profile card
   profileCard: {
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 19,
+    borderWidth: 0,
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",

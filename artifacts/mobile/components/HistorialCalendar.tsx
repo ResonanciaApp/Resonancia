@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   calendarSectionTitle: { fontSize: 17 },
   calendarCard: {
-    borderRadius: 18,
+    borderRadius: 19,
     paddingVertical: 16,
     paddingHorizontal: 14,
   },
