@@ -1384,6 +1384,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   scrollY,
   featuredMoment,
   onOpenFeaturedMoment,
+  featuredMomentPlaying,
+  onToggleFeaturedMoment,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1394,6 +1396,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   scrollY?: SharedValue<number>;
   featuredMoment?: Session | null;
   onOpenFeaturedMoment?: () => void;
+  featuredMomentPlaying?: boolean;
+  onToggleFeaturedMoment?: () => void;
 }) {
   const router = useRouter();
   const { user: clerkUser } = useUser();
@@ -1652,28 +1656,40 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
             <Text style={styles.inicio3FeaturedMomentEyebrowInline}>
               Tu Resonancia de hoy ✨
             </Text>
-            <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={2}>
-              {featuredMoment.title}
-            </Text>
-            <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={1}>
-              {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
-            </Text>
-            <View style={styles.inicio3FeaturedMomentPills}>
-              <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
-                <Feather name="clock" size={13} color="#F9F9F9" />
-                <Text style={styles.inicio3FeaturedMomentPillText}>{featuredMoment.durationLabel}</Text>
-              </BlurView>
-              <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
-                <MaterialCommunityIcons name="shape-outline" size={14} color="#F9F9F9" />
-                <Text style={styles.inicio3FeaturedMomentPillText} numberOfLines={1}>
-                  {featuredMoment.categoryLabel}
-                </Text>
-              </BlurView>
+            <View style={styles.inicio3HeroSessionDetails}>
+              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={2}>
+                {featuredMoment.title}
+              </Text>
+              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={1}>
+                {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
+              </Text>
+              <View style={styles.inicio3FeaturedMomentPills}>
+                <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
+                  <Feather name="clock" size={13} color="#F9F9F9" />
+                  <Text style={styles.inicio3FeaturedMomentPillText}>{featuredMoment.durationLabel}</Text>
+                </BlurView>
+                <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
+                  <MaterialCommunityIcons name="shape-outline" size={14} color="#F9F9F9" />
+                  <Text style={styles.inicio3FeaturedMomentPillText} numberOfLines={1}>
+                    {featuredMoment.categoryLabel}
+                  </Text>
+                </BlurView>
+              </View>
             </View>
-            <View style={styles.inicio3FeaturedMomentButton}>
-              <Ionicons name="play" size={18} color="#060A0F" />
-              <Text style={styles.inicio3FeaturedMomentButtonText}>Escuchar ahora</Text>
-            </View>
+            <Pressable
+              onPress={(event) => {
+                event.stopPropagation();
+                onToggleFeaturedMoment?.();
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={featuredMomentPlaying ? "Pausar sesión" : "Reproducir sesión"}
+              style={({ pressed }) => [
+                styles.inicio3FeaturedMomentButton,
+                { transform: [{ scale: pressed ? 0.92 : 1 }] },
+              ]}
+            >
+              <Ionicons name={featuredMomentPlaying ? "pause" : "play"} size={23} color="#060A0F" />
+            </Pressable>
           </View>
         ) : (
           <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
@@ -2581,6 +2597,7 @@ export default function HomeScreen2({
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
               featuredMoment={featuredMoment}
+              featuredMomentPlaying={currentSession?.id === featuredMoment?.id && isPlaying}
               onOpenFeaturedMoment={() => {
                 if (!featuredMoment) return;
                 if (featuredMoment.isPremium && !isPremium) {
@@ -2598,6 +2615,19 @@ export default function HomeScreen2({
                   return;
                 }
                 openCategory(`/session/${featuredMoment.id}`);
+              }}
+              onToggleFeaturedMoment={() => {
+                if (!featuredMoment) return;
+                if (featuredMoment.isPremium && !isPremium) {
+                  router.push("/membresia" as never);
+                  return;
+                }
+                if (currentSession?.id === featuredMoment.id) {
+                  pauseResume();
+                  return;
+                }
+                if (openForSession(featuredMoment)) return;
+                playSession(featuredMoment);
               }}
             />
           </>
@@ -4521,11 +4551,18 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingBottom: 2,
   },
+  inicio3HeroSessionDetails: {
+    width: "100%",
+    paddingRight: 62,
+    gap: 8,
+    transform: [{ translateX: -15 }, { translateY: 10 }],
+  },
   inicio3FeaturedMomentEyebrowInline: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    transform: [{ translateX: -15 }],
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
@@ -4575,22 +4612,19 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
   },
   inicio3FeaturedMomentButton: {
-    width: "100%",
-    alignSelf: "stretch",
-    minHeight: 48,
-    marginTop: 4,
-    borderRadius: 999,
+    position: "absolute",
+    right: 0,
+    bottom: -8,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     backgroundColor: "#F9F9F9",
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-  },
-  inicio3FeaturedMomentButtonText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#060A0F",
+    shadowColor: "#000000",
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
   },
 
   // Horizontal scroll
