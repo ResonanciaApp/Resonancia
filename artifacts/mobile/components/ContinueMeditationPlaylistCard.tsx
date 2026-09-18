@@ -22,7 +22,7 @@ export function ContinueMeditationPlaylistCard({
 }: Props) {
   return (
     <View style={styles.section} testID="continue-meditation-playlist-section">
-      <Text style={styles.sectionTitle}>Continúa tu Playlist meditativa</Text>
+      <Text style={styles.sectionTitle}>Continúa con tu playlist meditativa</Text>
       <Pressable
         onPress={onPress}
         accessibilityRole="button"

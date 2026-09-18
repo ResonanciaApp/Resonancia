@@ -68,8 +68,17 @@ import {
   type LibHeaderActions,
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
 import { ProfileMixCarousel } from "@/components/ProfileMixCarousel";
 import { ProfilePlaylistCarousel } from "@/components/ProfilePlaylistCarousel";
+import { useCatalog } from "@/context/CatalogContext";
+import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { usePlayer } from "@/context/PlayerContext";
+import { PLAYLISTS } from "@/data/playlists";
+import {
+  computePlaylistCompletion,
+  isMeditativeSessionPlaylist,
+} from "@/lib/editorial-playlist-helpers";
 import {
   gradientColors,
   type GeoSettings,
@@ -347,6 +356,30 @@ export function ProfileScreenBase({
     ? "#F0F0F0"
     : secondaryAccent;
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
+  const { activeMeditationPlaylist } = useFoldersPlaylists();
+  const { statEvents } = usePlayer();
+  const { version: catalogVersion } = useCatalog();
+  const continueMeditationPlaylist = useMemo(() => {
+    if (!activeMeditationPlaylist) return null;
+    const playlist = PLAYLISTS.find(
+      (candidate) => candidate.id === activeMeditationPlaylist.slug,
+    );
+    if (!playlist || !isMeditativeSessionPlaylist(playlist)) return null;
+
+    const completedSessionIds = new Set(
+      statEvents
+        .filter((event) => event.completed)
+        .map((event) => event.sessionId),
+    );
+    const completion = computePlaylistCompletion(
+      playlist.sessionIds,
+      completedSessionIds,
+    );
+    if (completion.total === 0 || completion.completed === completion.total) {
+      return null;
+    }
+    return { playlist, completion };
+  }, [activeMeditationPlaylist, catalogVersion, statEvents]);
 
   const { refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const { data: followCounts } = useGetMyFollowCounts({
@@ -1238,6 +1271,27 @@ export function ProfileScreenBase({
               />
             </View>
 
+            {continueMeditationPlaylist ? (
+              <View style={styles.profileMeditationPlaylist}>
+                <ContinueMeditationPlaylistCard
+                  title={continueMeditationPlaylist.playlist.title}
+                  description={continueMeditationPlaylist.playlist.description}
+                  coverSource={
+                    continueMeditationPlaylist.playlist.coverUrl
+                      ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                      : continueMeditationPlaylist.playlist.cover
+                  }
+                  completion={continueMeditationPlaylist.completion}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/editorial-playlist/[slug]",
+                      params: { slug: continueMeditationPlaylist.playlist.id },
+                    } as never);
+                  }}
+                />
+              </View>
+            ) : null}
+
             <View style={{ marginTop: 38 }}>
               <ProfileMixCarousel marginBottom={0} />
             </View>
@@ -2000,8 +2054,7 @@ const styles = StyleSheet.create({
   // Profile card
   profileCard: {
     borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.28)",
     paddingTop: 24,
     paddingBottom: 6,
     alignItems: "stretch",
@@ -2197,6 +2250,10 @@ const styles = StyleSheet.create({
   // Progreso semanal compacto
   profileProgressSection: {
     marginBottom: 0,
+  },
+  profileMeditationPlaylist: {
+    marginHorizontal: -16,
+    marginTop: 12,
   },
   profileProgressIntro: {
     paddingTop: 10,
