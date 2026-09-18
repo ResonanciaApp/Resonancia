@@ -3604,13 +3604,13 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: 0,
-    right: 0,
+    left: GRID_PAD - 3,
+    right: GRID_PAD - 3,
     overflow: "visible",
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderRadius: 0,
+    borderRadius: 31,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
