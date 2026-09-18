@@ -1391,7 +1391,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 15;
   const inicio3HeroShift = 14;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 70;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 95;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
@@ -1616,7 +1616,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               color="#F9F9F9"
             />
             <Text style={styles.inicio3HeroPillText}>
-              Inspiración diaria
+              INSPIRACIÓN DIARIA
             </Text>
           </View>
         )}
@@ -3525,7 +3525,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 15,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#F9F9F9",
   },
   inicio3HeroTitle: {
@@ -3541,11 +3541,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(255,255,255,0.14)",
+    borderColor: "#F9F9F9",
+    backgroundColor: "#F9F9F9",
   },
   inicio3HeroReadMoreText: {
-    color: "#FFFFFF",
+    color: "#060A0F",
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
