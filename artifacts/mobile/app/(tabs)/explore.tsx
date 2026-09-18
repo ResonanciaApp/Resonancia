@@ -630,49 +630,60 @@ export function ExploreScreen({
         onScroll={handleMainScroll}
       >
         <View style={styles.scrollContent}>
-          <View style={styles.monthlySoundTherapySection}>
-            <View style={styles.monthlySoundTherapyHeader}>
-              <Text style={styles.monthlySoundTherapySectionTitle}>
-                Sonoterapia del mes
+          <View style={styles.newInResonanceSection}>
+            <View style={styles.newInResonanceHeader}>
+              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+                Nuevo en Resonancia
               </Text>
             </View>
-
-            <View
-              accessibilityRole="image"
-              accessibilityLabel="Sonoterapia del mes de Casa del Cuenco"
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -H_PAD }}
+              contentContainerStyle={styles.newInResonanceRow}
             >
-              <View style={styles.monthlySoundTherapyHero}>
-                <Image
-                  source={require("@/assets/images/ambient/universo.jpg")}
-                  style={StyleSheet.absoluteFill}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                  transition={IMAGE_TRANSITION}
-                  placeholder={BLUR_PLACEHOLDER}
-                />
-              </View>
-              <View style={styles.monthlySoundTherapyMeta}>
-                <Image
-                  source={require("@/assets/images/avatar-fundador.png")}
-                  style={styles.monthlySoundTherapyAvatar}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
-                <View style={styles.monthlySoundTherapyMetaCopy}>
-                  <Text style={styles.monthlySoundTherapyContentTitle}>
-                    Sonidos de la Tierra y el Universo
-                  </Text>
-                  <Text
-                    style={[
-                      styles.monthlySoundTherapyAuthor,
-                      { color: activeTheme.accent },
-                    ]}
-                  >
-                    Casa del Cuenco
-                  </Text>
-                </View>
-              </View>
-            </View>
+              {recientesMeditaciones.map((session) => (
+                <Pressable
+                  key={session.id}
+                  onPress={() => handleSessionPress(session)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
+                  style={({ pressed }) => [
+                    styles.newInResonanceCard,
+                    { opacity: pressed ? 0.82 : 1 },
+                  ]}
+                >
+                  <View style={styles.newInResonanceImageWrap}>
+                    <Image
+                      source={session.image as number}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                      cachePolicy="memory-disk"
+                    />
+                    <SessionDurationBadge
+                      label={session.durationLabel}
+                      style={styles.categoryDurationBadge}
+                    />
+                  </View>
+                  <View style={styles.newInResonanceMeta}>
+                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
+                      {session.title}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.newInResonanceSecondary,
+                        { color: activeTheme.accent ?? "#c2c2c2" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getSessionAuthor(session)}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
           </View>
 
           <View style={styles.sectionDivider} />
@@ -749,64 +760,6 @@ export function ExploreScreen({
               ]}
               discoverTieredLayout
             />
-          </View>
-
-          <View style={styles.sectionDivider} />
-
-          <View style={styles.newInResonanceSection}>
-            <View style={styles.newInResonanceHeader}>
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                Nuevo en Resonancia
-              </Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -H_PAD }}
-              contentContainerStyle={styles.newInResonanceRow}
-            >
-              {recientesMeditaciones.map((session) => (
-                <Pressable
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${session.title}. ${getSessionAuthor(session)}`}
-                  style={({ pressed }) => [
-                    styles.newInResonanceCard,
-                    { opacity: pressed ? 0.82 : 1 },
-                  ]}
-                >
-                  <View style={styles.newInResonanceImageWrap}>
-                    <Image
-                      source={session.image as number}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                      cachePolicy="memory-disk"
-                    />
-                    <SessionDurationBadge
-                      label={session.durationLabel}
-                      style={styles.categoryDurationBadge}
-                    />
-                  </View>
-                  <View style={styles.newInResonanceMeta}>
-                    <Text style={styles.newInResonanceTitle} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.newInResonanceSecondary,
-                        { color: activeTheme.accent ?? "#c2c2c2" },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {getSessionAuthor(session)}
-                    </Text>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView>
           </View>
 
           <View style={styles.sectionDivider} />
