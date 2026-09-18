@@ -1659,12 +1659,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               Tu Resonancia de hoy
             </Text>
             <View style={styles.inicio3HeroSessionDetails}>
-              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={3}>
-                {featuredMoment.title}
-              </Text>
-              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={2}>
-                {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
-              </Text>
               <View style={styles.inicio3FeaturedMomentPills}>
                 <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
                   <Feather name="clock" size={13} color="#F9F9F9" />
@@ -1677,6 +1671,12 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                   </Text>
                 </BlurView>
               </View>
+              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={3}>
+                {featuredMoment.title}
+              </Text>
+              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={2}>
+                {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
+              </Text>
             </View>
             <Pressable
               onPress={(event) => {
@@ -4580,7 +4580,7 @@ const styles = StyleSheet.create({
     right: 0,
     transform: [{ translateX: -15 }],
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 21,
     fontWeight: "700",
     lineHeight: 24,
     color: "#F9F9F9",
@@ -4630,7 +4630,7 @@ const styles = StyleSheet.create({
   },
   inicio3FeaturedMomentButton: {
     position: "absolute",
-    right: 0,
+    right: -20,
     bottom: -8,
     width: 103,
     height: 103,
