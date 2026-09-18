@@ -2881,3 +2881,17 @@ mtime_ms = 1789751891241
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/1c68b5b2-1de0-4f42-9003-dccc64965b9a/1f2fa349-250d-47da-80c1-b6b51058acc6"
 storage_version_token = "1789751994990838"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "l_zlE_Gq3HlWW0tkKjaT3"
+uri = "file://attached_assets/generated_images/inspiracion-2026-09-18-universo-realista.jpg"
+type = "image"
+title = "Inspiración diaria — Universo realista"
+description = "Nueva imagen astronómica más realista, con menos partículas, publicada para la Inspiración diaria del 18 de septiembre de 2026."
+logical_id = "acb5b955-e773-4e5b-b948-df6cfdf95095"
+content_hash = "sha256:4e788b01fe6e7c073b3ca56af18b2a21d554a3348710c4a92d1a149deb05a0da"
+size = 98383
+mtime_ms = 1789752278870
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/acb5b955-e773-4e5b-b948-df6cfdf95095/3c1f29b6-fb95-4cdf-8292-0aa60d09056a"
+storage_version_token = "1789752319470627"
+content_type = "image/jpeg"
