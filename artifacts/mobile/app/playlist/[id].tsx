@@ -188,7 +188,14 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const [selectedAccent, setSelectedAccent] = useState<string>(DEFAULT_ACCENT);
 
   const playlist = playlists.find((p) => p.id === id);
+  const [descriptionDraft, setDescriptionDraft] = useState("");
+  const descriptionFocusedRef = useRef(false);
   const [latestMoods, setLatestMoods] = useState<Mood[]>([]);
+
+  useEffect(() => {
+    if (descriptionFocusedRef.current) return;
+    setDescriptionDraft(playlist?.description ?? "");
+  }, [playlist?.description, playlist?.id]);
 
   useFocusEffect(
     useCallback(() => {
@@ -290,6 +297,15 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     );
   };
 
+  const commitDescription = () => {
+    descriptionFocusedRef.current = false;
+    const nextDescription = descriptionDraft.trim();
+    setDescriptionDraft(nextDescription);
+    if (nextDescription !== (playlist.description ?? "")) {
+      setPlaylistDescription(playlist.id, nextDescription);
+    }
+  };
+
   const handlePlayAll = () => {
     const first = playableSessions[0];
     if (!first) return;
@@ -344,6 +360,15 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
           >
             <Feather name="chevron-left" size={32} color="#FFFFFF" style={{ transform: [{ translateX: -1 }] }} />
           </Pressable>
+          <Pressable
+            onPress={() => setMenuVisible(true)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir opciones de la playlist"
+            style={[styles.iconBtn, styles.moreMenuBtn, styles.playlistHeaderMenuButton]}
+          >
+            <Feather name="more-horizontal" size={22} color="#FFFFFF" />
+          </Pressable>
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
@@ -366,14 +391,14 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
-                  size={163}
+                   size={187.45}
                   strokeWidth={1.2}
                   opacity={1}
                 />
               </View>
             ) : playlist.coverType === "creation" && playlist.coverCreationId ? (
               <View style={styles.coverCreation}>
-                <CreationCoverPreview creationId={playlist.coverCreationId} size={127} />
+                 <CreationCoverPreview creationId={playlist.coverCreationId} size={146.05} />
               </View>
             ) : playlist.coverPresetId ? (
               <Image
@@ -401,20 +426,23 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
 
           {/* Info */}
           <View style={styles.heroInfo}>
-            {/* Tres puntos — alineado al borde superior de la imagen */}
-            <Pressable
-              onPress={() => setMenuVisible(true)}
-              hitSlop={10}
-              style={[styles.iconBtn, styles.moreMenuBtn, { position: "absolute", top: -5, right: 0 }]}
-            >
-              <Feather name="more-horizontal" size={22} color="#FFFFFF" />
-            </Pressable>
-            <View style={{ marginTop: 3, paddingRight: 44 }}>
+            <View style={{ marginTop: 3 }}>
               <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
             </View>
-            {!!playlist.description && (
-              <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
-            )}
+            <TextInput
+              style={styles.playlistDesc}
+              value={descriptionDraft}
+              onChangeText={setDescriptionDraft}
+              onFocus={() => {
+                descriptionFocusedRef.current = true;
+              }}
+              onBlur={commitDescription}
+              placeholder="Escribe una descripción (opcional)"
+              placeholderTextColor="#B5B0B0"
+              multiline
+              maxLength={180}
+              accessibilityLabel="Descripción de la playlist"
+            />
           </View>
         </View>
 
@@ -814,6 +842,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },
+  playlistHeaderMenuButton: {
+    position: "absolute",
+    right: 20,
+  },
 
   // Hero
   hero: {
@@ -825,15 +857,16 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   cover: {
-    width: 127,
-    height: 127,
-    borderRadius: 8,
+    width: 146.05,
+    height: 146.05,
+    borderRadius: 73.025,
     backgroundColor: "transparent",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.20)",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    overflow: "hidden",
   },
   heroInfo: { flex: 1, gap: 8, paddingTop: 0, justifyContent: "center" },
   playlistName: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 20, fontWeight: "700", lineHeight: 26 },
@@ -923,7 +956,14 @@ const styles = StyleSheet.create({
   },
 
   // Playlist description
-  playlistDesc: { fontFamily: "Manrope", color: MUTED, fontSize: 13, lineHeight: 18 },
+  playlistDesc: {
+    fontFamily: "Manrope",
+    color: "#B5B0B0",
+    fontSize: 13,
+    lineHeight: 18,
+    minHeight: 36,
+    padding: 0,
+  },
 
   // Top panel (segundo fondo con fade)
   topPanel: {
