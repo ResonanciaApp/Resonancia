@@ -10,7 +10,6 @@ import {
   Linking,
   Platform,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -59,8 +58,6 @@ export default function ResonadorPerfilScreen() {
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
-  const [descExpanded, setDescExpanded] = React.useState(false);
-  const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
   const { theme: activeTheme } = useSceneTheme();
   const bgColors: readonly string[] = activeTheme.gradient;
@@ -127,7 +124,7 @@ export default function ResonadorPerfilScreen() {
   const locationStr = resonador.city.includes(resonador.country)
     ? `${flag} ${resonador.city}`.trim()
     : `${flag} ${resonador.city}, ${resonador.country}`.trim();
-  const hasContacts = !!(resonador.instagram || resonador.phone || resonador.email || resonador.linktree);
+  const hasContacts = !!(resonador.instagram || resonador.phone || resonador.email);
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
     .filter(Boolean) as NonNullable<ReturnType<typeof getSessionById>>[];
@@ -178,7 +175,7 @@ export default function ResonadorPerfilScreen() {
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
           <Text style={styles.headerVerificadoSub} numberOfLines={1}>Resonador Verificado</Text>
         </Animated.View>
-        <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", marginTop: -2, transform: [{ translateY: 2 }] }}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(0,0,0,0.28)", borderWidth: 1, borderColor: "rgba(255,255,255,0.20)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
         <Animated.View style={{ opacity: isOwn ? 1 : headerBgOpacity }}>
@@ -346,28 +343,27 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── Bloque Agenda online ── */}
         {resonador.bookingUrl && (
-          <Pressable
-            onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
-            style={({ pressed }) => [styles.agendaBlock, { marginHorizontal: H_PAD, opacity: pressed ? 0.82 : 1 }]}
-          >
-            <View style={styles.agendaTopRow}>
-              <View style={styles.agendaIconCircle}>
-                <Feather name="calendar" size={18} color="#F9F9F9" />
+          <>
+            <View style={[styles.agendaDivider, { marginHorizontal: H_PAD }]} />
+            <Pressable
+              onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
+              style={({ pressed }) => [styles.agendaBlock, { marginHorizontal: H_PAD, opacity: pressed ? 0.82 : 1 }]}
+            >
+              <View style={styles.agendaTopRow}>
+                <View style={styles.agendaIconCircle}>
+                  <Feather name="calendar" size={18} color="#F9F9F9" />
+                </View>
+                <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
+                <View style={styles.agendaBtn}>
+                  <Text style={styles.agendaBtnText}>Agenda online</Text>
+                </View>
               </View>
-              <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
-              <LinearGradient
-                colors={["#8260B5", "#5B427F"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.agendaBtn}
-              >
-                <Text style={styles.agendaBtnText}>Agenda online</Text>
-              </LinearGradient>
-            </View>
-            {resonador.bookingTagline ? (
-              <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
-            ) : null}
-          </Pressable>
+              {resonador.bookingTagline ? (
+                <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
+              ) : null}
+            </Pressable>
+            <View style={[styles.agendaDivider, styles.agendaDividerBottom, { marginHorizontal: H_PAD }]} />
+          </>
         )}
 
         {/* ── Mis sesiones ── */}
@@ -409,8 +405,8 @@ export default function ResonadorPerfilScreen() {
                   durationWhiteGlass
                   showCategoryBelow
                   titleFontSize={14}
-                  thumbWidth={141}
-                  thumbHeight={141}
+                  thumbWidth={92}
+                  thumbHeight={92}
                   thumbRadius={18}
                 />
               ))}
@@ -436,54 +432,40 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {/* ── Sección Resonador ── */}
-        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 42 }]}>
+        {sessions.length > 0 && resonador.projects && resonador.projects.length > 0 && (
+          <View style={[styles.sessionsProjectsDivider, { marginHorizontal: H_PAD }]} />
+        )}
 
-          {/* Me especializo en */}
-          <View style={styles.sectionBlock}>
-            <Text style={styles.sectionTitle}>Me especializo en</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.chipRow}
-            >
-              {resonador.specialty.map((s) => (
-                <View key={s} style={styles.specialtyChip}>
-                  <Text style={styles.specialtyText}>{s}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-
-          {/* Mis servicios */}
-          {resonador.servicesDescription ? (
-            <View style={styles.sectionBlock}>
-              <Text style={styles.sectionTitle}>Mis servicios</Text>
-              <Text
-                style={styles.serviceDesc}
-                numberOfLines={descExpanded ? undefined : 7}
-                onTextLayout={(e) => {
-                  if (!descOverflows && e.nativeEvent.lines.length > 7)
-                    setDescOverflows(true);
-                }}
-              >
-                {resonador.servicesDescription}
-              </Text>
-              {descOverflows && (
+        {/* ── SECCIÓN 4: Proyectos externos ── */}
+        {resonador.projects && resonador.projects.length > 0 && (
+          <View style={[styles.card, styles.projectsCard, { marginHorizontal: H_PAD, marginTop: 18 }]}>
+            <Text style={styles.cardTitle}>Proyectos externos</Text>
+            <View style={styles.projectsList}>
+              {resonador.projects.map((proj, i) => (
                 <Pressable
-                  onPress={() => setDescExpanded((v) => !v)}
-                  style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
+                  key={i}
+                  onPress={() => Linking.openURL(proj.url)}
+                  style={({ pressed }) => [styles.projectRow, { opacity: pressed ? 0.7 : 1 }]}
                 >
-                  <Text style={styles.readMoreText}>{descExpanded ? "Leer menos" : "Leer más"}</Text>
-                  <Feather name={descExpanded ? "chevron-up" : "chevron-down"} size={13} color={GOLD} />
+                  <View style={styles.projectIconCircle}>
+                    <Feather
+                      name={PLATFORM_ICON[proj.platform] as any}
+                      size={15}
+                      color={GOLD_MUTED}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.projectLabel}>{proj.label}</Text>
+                    <Text style={styles.projectPlatform}>{PLATFORM_LABEL[proj.platform]}</Text>
+                  </View>
+                  <Feather name="external-link" size={14} color="rgba(212,175,55,0.45)" />
                 </Pressable>
-              )}
+              ))}
             </View>
-          ) : null}
+          </View>
+        )}
 
-        </View>
-
-        {/* Contacto y redes — grilla 2×2 */}
+        {/* Contacto y redes */}
         {hasContacts && (
           <View style={[styles.contactGrid, { marginHorizontal: H_PAD }]}>
             {resonador.instagram && (
@@ -513,44 +495,6 @@ export default function ResonadorPerfilScreen() {
                 <Text style={styles.actionPillText}>Correo</Text>
               </Pressable>
             )}
-            {resonador.linktree && (
-              <Pressable
-                onPress={() => Linking.openURL(resonador.linktree!)}
-                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Feather name="link" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Linktree</Text>
-              </Pressable>
-            )}
-          </View>
-        )}
-
-        {/* ── SECCIÓN 4: Proyectos externos ── */}
-        {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, styles.projectsCard, { marginHorizontal: H_PAD, marginTop: 26 }]}>
-            <Text style={styles.cardTitle}>Proyectos externos</Text>
-            <View style={styles.projectsList}>
-              {resonador.projects.map((proj, i) => (
-                <Pressable
-                  key={i}
-                  onPress={() => Linking.openURL(proj.url)}
-                  style={({ pressed }) => [styles.projectRow, { opacity: pressed ? 0.7 : 1 }]}
-                >
-                  <View style={styles.projectIconCircle}>
-                    <Feather
-                      name={PLATFORM_ICON[proj.platform] as any}
-                      size={15}
-                      color={GOLD_MUTED}
-                    />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.projectLabel}>{proj.label}</Text>
-                    <Text style={styles.projectPlatform}>{PLATFORM_LABEL[proj.platform]}</Text>
-                  </View>
-                  <Feather name="external-link" size={14} color="rgba(212,175,55,0.45)" />
-                </Pressable>
-              ))}
-            </View>
           </View>
         )}
 
@@ -788,11 +732,19 @@ const styles = StyleSheet.create({
   },
 
   /* ── Bloque Agenda online ── */
+  agendaDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    marginTop: 16,
+  },
+  agendaDividerBottom: {
+    marginTop: 16,
+  },
   agendaBlock: {
-    borderWidth: 1,
-    borderColor: "#8260B5",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.20)",
     borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(0,0,0,0.35)",
     padding: 16,
     gap: 10,
     marginTop: 16,
@@ -818,7 +770,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   agendaBtn: {
-    backgroundColor: "#BE9650",
+    backgroundColor: "#F9F9F9",
     borderRadius: 20,
     paddingHorizontal: 13,
     paddingVertical: 6,
@@ -827,7 +779,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#060A0F",
   },
   agendaTagline: {
     fontFamily: "Manrope",
@@ -835,39 +787,6 @@ const styles = StyleSheet.create({
     color: "rgba(249,249,249,0.5)",
     paddingLeft: 46,
   },
-
-  /* ── Sección Resonador ── */
-  resonadorSection: {
-    backgroundColor: "rgba(0,0,0,0.28)",
-    borderRadius: 18,
-    padding: 16,
-    gap: 16,
-  },
-
-  /* Banner */
-
-  sectionBlock: { gap: 10 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
-  chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
-  specialtyChip: {
-    borderRadius: 999,
-    paddingHorizontal: 13,
-    height: 31,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.07)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  specialtyText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
-  serviceDesc: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
-  readMoreBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    marginTop: 6,
-    alignSelf: "flex-start",
-  },
-  readMoreText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: GOLD },
 
   /* ── Cards de sección ── */
   card: {
@@ -884,7 +803,12 @@ const styles = StyleSheet.create({
   verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
   sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
   sessionSortText: { fontFamily: "Manrope", fontSize: 12, color: "rgba(250,240,238,0.40)", fontWeight: "500" },
-  sessionList: { gap: 4 },
+  sessionList: { gap: 9 },
+  sessionsProjectsDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    marginTop: 18,
+  },
   verMasBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -937,8 +861,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 13,
     paddingVertical: 6,
+    backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.30)",
+    borderColor: "rgba(255,255,255,0.20)",
   },
   apoyaloChipText: {
     fontFamily: "Manrope",
