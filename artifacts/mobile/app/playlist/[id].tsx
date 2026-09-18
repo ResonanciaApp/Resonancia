@@ -365,7 +365,12 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             hitSlop={10}
             accessibilityRole="button"
             accessibilityLabel="Abrir opciones de la playlist"
-            style={[styles.iconBtn, styles.moreMenuBtn, styles.playlistHeaderMenuButton]}
+            style={[
+              styles.iconBtn,
+              styles.moreMenuBtn,
+              styles.playlistHeaderMenuButton,
+              { top: topPad + 8 },
+            ]}
           >
             <Feather name="more-horizontal" size={22} color="#FFFFFF" />
           </Pressable>
@@ -1500,14 +1505,20 @@ function PlaylistMenuSheet({
   onAddSessions: () => void; onEditOrder: () => void; onEditInfo: () => void;
 }) {
   const { theme: sceneTheme } = useSceneTheme();
-  const BG_GRADIENT = sceneTheme.gradient;
+  const menuBackgroundColor =
+    sceneTheme.gradient[2] ??
+    sceneTheme.gradient[sceneTheme.gradient.length - 1];
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={menuSt.backdrop} onPress={onClose} />
-      <View style={[menuSt.sheet, { paddingBottom: bottomPad + 8 }]}>
-        <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
+      <View
+        style={[
+          menuSt.sheet,
+          { paddingBottom: bottomPad + 8, backgroundColor: menuBackgroundColor },
+        ]}
+      >
         <View style={menuSt.handle} />
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
@@ -1590,7 +1601,7 @@ function DragHandle({
 
   return (
     <View style={dreSt.dragHandle} {...pan.panHandlers}>
-      <Feather name="menu" size={22} color={isDragging ? GOLD : MUTED} />
+      <Feather name="menu" size={22} color={isDragging ? "#F9F9F9" : MUTED} />
     </View>
   );
 }
@@ -1669,6 +1680,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
           <Text style={dreSt.hint}>Toca y arrastra ≡ para reordenar</Text>
           <ScrollView
             style={{ flex: 1 }}
+            contentContainerStyle={dreSt.listContent}
             scrollEnabled={dragIdx === null}
             showsVerticalScrollIndicator={false}
           >
@@ -1726,12 +1738,15 @@ const dreSt = StyleSheet.create({
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
   hint: { fontFamily: "Manrope", color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 4, paddingHorizontal: 20 },
+  listContent: {
+    paddingTop: 20,
+  },
   row: {
     height: DRAG_ROW_H, flexDirection: "row", alignItems: "center", gap: 12,
     paddingHorizontal: 4,
     borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.30)",
   },
-  rowActive: { backgroundColor: "rgba(212,175,55,0.12)", opacity: 0.7 },
+  rowActive: { backgroundColor: "rgba(255,255,255,0.1)" },
   dragHandle: { width: 56, height: DRAG_ROW_H, alignItems: "center", justifyContent: "center" },
   thumb: { width: 44, height: 44, borderRadius: 6 },
   rowTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 18 },
@@ -1873,9 +1888,9 @@ const eiSt = StyleSheet.create({
   fieldLabel: { fontFamily: "Manrope", color: MUTED, fontSize: 12, fontWeight: "600", marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
   input: {
     fontFamily: "Manrope",
-    backgroundColor: "rgba(74,12,12,0.18)", borderRadius: 10, padding: 12,
+    backgroundColor: "rgba(0,0,0,0.28)", borderRadius: 10, padding: 12,
     color: TEXT, fontSize: 15,
-    borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(212,175,55,0.2)",
+    borderWidth: 0,
   },
   inputMulti: { height: 90, textAlignVertical: "top" },
   deleteBtn: {
