@@ -1285,7 +1285,7 @@ const styles = StyleSheet.create({
   },
   newInResonanceSection: {
     paddingHorizontal: H_PAD,
-    marginTop: 5,
+    marginTop: 33,
     marginBottom: SECTION_GAP,
   },
   newInResonanceHeader: {
