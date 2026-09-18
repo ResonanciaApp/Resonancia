@@ -1388,10 +1388,16 @@ function Inicio3HeroPager({
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const todayMediaActiveRef = useRef(true);
 
-  const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = e.nativeEvent.contentOffset.x;
+  const updateActiveSlide = (offsetX: number) => {
     const index = Math.round(offsetX / slideWidth);
     setActiveIndex(Math.max(0, Math.min(index, INICIO3_PAGER_SLIDES.length - 1)));
+  };
+  const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    updateActiveSlide(e.nativeEvent.contentOffset.x);
+  };
+  const onScrollEndDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const targetOffset = e.nativeEvent.targetContentOffset?.x ?? e.nativeEvent.contentOffset.x;
+    updateActiveSlide(targetOffset);
   };
   const onPagerScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const nextActive = e.nativeEvent.contentOffset.x <= 1;
@@ -1447,6 +1453,7 @@ function Inicio3HeroPager({
           showsHorizontalScrollIndicator={false}
           onScroll={onPagerScroll}
           scrollEventThrottle={16}
+          onScrollEndDrag={onScrollEndDrag}
           onMomentumScrollEnd={onMomentumScrollEnd}
           keyExtractor={(item) => item.id}
           getItemLayout={(_, index) => ({ length: slideWidth, offset: slideWidth * index, index })}
