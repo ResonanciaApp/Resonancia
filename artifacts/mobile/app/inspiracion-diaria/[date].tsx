@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
@@ -171,8 +172,7 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
             {!!day.content.sessionId && (
               <View style={styles.related}>
                 <View style={styles.separator} />
-                <Text style={styles.relatedTitle}>{week?.settings.discoverMoreLabel || "Descubre más"}</Text>
-                <Text style={styles.relatedSubtitle}>Sobre el audio de hoy</Text>
+                <Text style={styles.relatedTitle}>Reflexión de apoyo</Text>
 
                 {session ? (
                   <Pressable
@@ -181,6 +181,16 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
                     style={styles.audioCard}
                     accessibilityLabel={`Reproducir ${session.title}, ${session.durationLabel}${session.isPremium ? ", Premium" : ""}`}
                   >
+                    {Platform.OS !== "web" ? (
+                      <BlurView
+                        intensity={22}
+                        tint="dark"
+                        experimentalBlurMethod="dimezisBlurView"
+                        style={StyleSheet.absoluteFillObject}
+                      />
+                    ) : (
+                      <View style={[StyleSheet.absoluteFillObject, styles.audioCardWebGlass]} />
+                    )}
                     <View style={styles.audioThumb}>
                       <Image source={session.image} style={StyleSheet.absoluteFillObject} contentFit="cover" />
                       <View style={styles.playBadge}>
@@ -307,17 +317,20 @@ const styles = StyleSheet.create({
   },
   related: { marginTop: 32 },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,.26)", marginBottom: 24 },
-  relatedTitle: { color: "#fff", fontFamily: "Manrope", fontSize: 21, lineHeight: 27, fontWeight: "700" },
-  relatedSubtitle: { color: "rgba(255,255,255,.74)", fontFamily: "Manrope", fontSize: 13, marginTop: 4, marginBottom: 20 },
+  relatedTitle: { color: "#fff", fontFamily: "Manrope", fontSize: 21, lineHeight: 27, fontWeight: "700", marginBottom: 20 },
   audioCard: {
     minHeight: 72,
     padding: 10,
     borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,.96)",
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,.28)",
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
   },
+  audioCardWebGlass: { backgroundColor: "rgba(255,255,255,.14)" },
   audioThumb: { width: 52, height: 52, borderRadius: 8, overflow: "hidden", backgroundColor: "#171B22" },
   playBadge: {
     ...StyleSheet.absoluteFillObject,
@@ -326,8 +339,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(5,8,13,.34)",
   },
   audioCopy: { flex: 1, gap: 5 },
-  audioTitle: { color: "#24262B", fontFamily: "Manrope", fontSize: 15, lineHeight: 20, fontWeight: "700" },
-  audioDuration: { color: "#8A8D93", fontFamily: "Manrope", fontSize: 12 },
+  audioTitle: { color: "#F9F9F9", fontFamily: "Manrope", fontSize: 15, lineHeight: 20, fontWeight: "700" },
+  audioDuration: { color: "#F9F9F9", fontFamily: "Manrope", fontSize: 12 },
   unavailableAudio: { color: "rgba(255,255,255,.72)", fontFamily: "Manrope", fontSize: 14 },
   empty: { minHeight: 420, alignItems: "center", justifyContent: "center", gap: 16 },
   emptyText: { color: "#fff", fontFamily: "Manrope", fontSize: 18, textAlign: "center" },
