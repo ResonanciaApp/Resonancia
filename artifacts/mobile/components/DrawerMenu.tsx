@@ -38,23 +38,22 @@ type MenuItem = {
 
 const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
   {
-    title: "Mi espacio",
+    title: "Mi contenido",
     items: [
       { id: "favorites", label: "Favoritos", icon: "heart", mciIcon: "heart-outline", route: "__overlay:/favoritos-todos" },
+      { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
       { id: "history", label: "Historial", icon: "clock", mciIcon: "history", route: "__overlay:/historial" },
       { id: "downloads", label: "Descargas", icon: "download", mciIcon: "download-outline", route: "/descargas" },
-      { id: "library", label: "Biblioteca", icon: "book", mciIcon: "bookshelf", route: "/(tabs)/biblioteca" },
-      { id: "notes", label: "Mis notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
-      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
-      { id: "mood-history", label: "Historial estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
     ],
   },
   {
     title: "Herramientas",
     items: [
-      { id: "mixer", label: "Mezclador de sonidos", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
-      { id: "breathing", label: "Ejercicios de respiración", icon: "wind", mciIcon: "weather-windy", route: "/respiracion" },
+      { id: "mixer", label: "Mezclador de sonido", icon: "sliders", mciIcon: "tune-vertical", route: "__mixer" },
+      { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
+      { id: "mood-history", label: "Historial estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
       { id: "practice-reminders", label: "Recordatorio de prácticas", icon: "bell", mciIcon: "bell-outline", route: "/notificaciones-practica" },
+      { id: "notes", label: "Diario de notas", icon: "book-open", mciIcon: "notebook-outline", route: "__overlay:/diario" },
       { id: "geometrix", label: "Geometrix", icon: "hexagon", mciIcon: "hexagon-multiple-outline", route: "__geometrix" },
     ],
   },

@@ -610,22 +610,29 @@ export function MoodPickerSheet({
               bounces={false}
             >
               <View style={[styles.heroContainer, { width: viewportWidth, height: moodHeroHeight }]}>
-                <Image
-                  source={MOOD_HEROES[firstMood?.id ?? "feliz"]}
+                <CinematicFadeSlide
+                  active={visible}
+                  replayKey={`hero-background:${completionCycle}`}
+                  delay={0}
+                  duration={CINEMATIC_DURATION}
                   style={StyleSheet.absoluteFill}
-                  contentFit="cover"
-                  transition={300}
-                />
-                <LinearGradient
-                  colors={[
-                    colorWithOpacity(fadeColor, 0),
-                    colorWithOpacity(fadeColor, 0.3),
-                    fadeColor,
-                    fadeColor,
-                  ]}
-                  locations={[0.3, 0.7, fadeSolidStart, 1]}
-                  style={StyleSheet.absoluteFill}
-                />
+                >
+                  <Image
+                    source={MOOD_HEROES[firstMood?.id ?? "feliz"]}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                  />
+                  <LinearGradient
+                    colors={[
+                      colorWithOpacity(fadeColor, 0),
+                      colorWithOpacity(fadeColor, 0.3),
+                      fadeColor,
+                      fadeColor,
+                    ]}
+                    locations={[0.3, 0.7, fadeSolidStart, 1]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                </CinematicFadeSlide>
                 <View style={[styles.heroOverlay, { paddingTop: topPad + 80 }]}>
                   <CinematicFadeSlide
                     active={visible}
