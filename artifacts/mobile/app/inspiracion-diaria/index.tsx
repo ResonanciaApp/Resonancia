@@ -1,45 +1,75 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { View, Text, StyleSheet, Pressable, FlatList, ScrollView, useWindowDimensions, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent, Platform } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { useInspiration } from "@/hooks/inspiration";
 import { InspirationFade, useInspirationReducedMotion } from "@/components/InspirationFade";
 import { InspirationArtwork } from "@/components/InspirationArtwork";
+import { InspirationShare } from "@/components/InspirationShare";
 import { useColors } from "@/hooks/useColors";
 import type { InspirationDay } from "@/types/inspiration";
-import { formatShortDate, formatDayNumber, formatDayLetter, parseISO, addDays, formatISODate } from "@/lib/date-utils";
-import { initialInspirationDate, settledInspirationIndex, commitInspirationDate } from "@/lib/inspiration-interaction";
+import { addDays, formatDayNumber, formatISODate, parseISO } from "@/lib/date-utils";
+import { settledInspirationIndex, commitInspirationDate } from "@/lib/inspiration-interaction";
 
-function WeekPager({ initialDate, requestedWeek }: { initialDate?: string; requestedWeek?: string }) {
+function monthAndYear(date: string): string {
+  return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
+    .format(parseISO(date))
+    .replace(".", "");
+}
+
+export default function InspiracionDiariaIndex() {
   const router = useRouter();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
-  const [pageHeight, setPageHeight] = useState(height);
-  const [headerHeight, setHeaderHeight] = useState(200);
   const reduced = useInspirationReducedMotion();
-  const pinnedWeek = useRef(requestedWeek);
-  const { days, today, loading, error, week, weekStart, isCached, retry } = useInspiration({ date: initialDate, weekStart: pinnedWeek.current });
-  // Midnight refreshes availability, not the week the reader is exploring.
-  if (!pinnedWeek.current) pinnedWeek.current = weekStart;
-  // Mount per explicit entry/week, never reinitialize on a refreshed days array.
-  const [selected, setSelected] = useState(() => {
-    return initialInspirationDate(days.map(d => d.date), initialDate, today);
-  });
+  const current = useInspiration();
+  const previousAnchor = formatISODate(addDays(parseISO(current.today), -7));
+  const previous = useInspiration({ date: previousAnchor, timezone: current.timezone });
+  const days = useMemo(() => {
+    const byDate = new Map<string, InspirationDay>();
+    for (const day of [...previous.days, ...current.days]) {
+      if (day.date <= current.today) byDate.set(day.date, day);
+    }
+    return [...byDate.values()]
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-7);
+  }, [current.days, current.today, previous.days]);
+  const [selected, setSelected] = useState(current.today);
   const [entrance, setEntrance] = useState(0);
-  const activeIndex = Math.max(0, days.findIndex(d => d.date === selected));
+  const [moving, setMoving] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const activeIndex = Math.max(0, days.findIndex((day) => day.date === selected));
+  const activeDay = days[activeIndex];
   const selectedRef = useRef(selected);
   const slider = useRef<FlatList<InspirationDay>>(null);
-  const thumbnails = useRef<ScrollView>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragging = useRef(false);
   const offset = useRef(activeIndex * width);
   const pendingTarget = useRef<number | null>(null);
-  const [moving, setMoving] = useState(false);
-  const cancelSettle = () => { if (settleTimer.current) clearTimeout(settleTimer.current); };
-  useEffect(() => () => cancelSettle(), []);
+  const loading = (current.loading || previous.loading) && !days.some((day) => day.status === "available");
+  const error = current.error || previous.error;
+  const isCached = current.isCached || previous.isCached;
+  const topInset = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
+
+  const cancelSettle = useCallback(() => {
+    if (settleTimer.current) clearTimeout(settleTimer.current);
+  }, []);
+
+  useEffect(() => () => cancelSettle(), [cancelSettle]);
   useEffect(() => {
     cancelSettle();
     pendingTarget.current = null;
@@ -47,10 +77,8 @@ function WeekPager({ initialDate, requestedWeek }: { initialDate?: string; reque
     offset.current = activeIndex * width;
     slider.current?.scrollToOffset({ offset: offset.current, animated: false });
     setMoving(false);
-  }, [width]);
-  useEffect(() => {
-    thumbnails.current?.scrollTo({ x: Math.max(0, activeIndex * 56 - (width - 96) / 2 + 28), animated: !reduced });
-  }, [activeIndex, width, reduced]);
+  }, [activeIndex, cancelSettle, width]);
+
   const commit = useCallback(() => {
     cancelSettle();
     const index = settledInspirationIndex(offset.current, width, days.length);
@@ -60,107 +88,297 @@ function WeekPager({ initialDate, requestedWeek }: { initialDate?: string; reque
     const date = days[index]?.date;
     setMoving(false);
     if (date && date !== selectedRef.current) {
-      const previous = selectedRef.current;
+      const previousDate = selectedRef.current;
       selectedRef.current = date;
       setSelected(date);
-      setEntrance(value => commitInspirationDate(previous, date, value).entrance);
+      setEntrance((value) => commitInspirationDate(previousDate, date, value).entrance);
     }
-  }, [days, width]);
-  const scheduleSettle = () => {
+  }, [cancelSettle, days, width]);
+
+  const scheduleSettle = useCallback(() => {
     cancelSettle();
-    settleTimer.current = setTimeout(() => { if (!dragging.current) commit(); }, 180);
-  };
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    offset.current = event.nativeEvent.contentOffset.x;
-    if (!dragging.current) scheduleSettle();
-  };
+    settleTimer.current = setTimeout(() => {
+      if (!dragging.current) commit();
+    }, 180);
+  }, [cancelSettle, commit]);
+
   const chooseDay = (index: number) => {
     cancelSettle();
     pendingTarget.current = index;
     setMoving(true);
     slider.current?.scrollToOffset({ offset: index * width, animated: !reduced });
-    if (reduced || Math.abs(offset.current - index * width) <= 1) { offset.current = index * width; commit(); }
+    if (reduced || Math.abs(offset.current - index * width) <= 1) {
+      offset.current = index * width;
+      commit();
+    }
   };
-  const openWeek = (amount: number) => {
-    const date = formatISODate(addDays(parseISO(weekStart), amount * 7));
-    router.setParams({ date, weekStart: date, entry: undefined });
+
+  const openDetail = (day: InspirationDay | undefined) => {
+    if (moving || day?.status !== "available" || !day.id) return;
+    router.push({ pathname: "/inspiracion-diaria/[date]", params: { date: day.date, id: day.id } });
   };
-  const close = () => router.canGoBack() ? router.back() : router.replace("/(tabs)/inicio8");
-  return <View onLayout={event => setPageHeight(event.nativeEvent.layout.height)} style={[styles.container, { backgroundColor: colors.background }]}>
-    <View onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)} style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 2, paddingTop: (Platform.OS === "web" ? 67 : Math.max(insets.top, 40)) + 8, backgroundColor: "rgba(10,16,19,.65)" }}>
-      <View style={styles.topRow}>
-        <Pressable onPress={close} style={styles.icon} accessibilityLabel="Cerrar"><Feather name="x" size={24} color="#fff" /></Pressable>
-        <Text style={styles.title} numberOfLines={2}>{week?.settings.sectionTitle || "Inspiración diaria"}</Text>
-        <Pressable onPress={() => router.push("/inspiracion-diaria/notas")} style={styles.icon} accessibilityLabel="Mis notas"><Feather name="edit-3" size={21} color="#fff" /></Pressable>
-      </View>
-      <View style={styles.weekRow}>
-        <Pressable onPress={() => openWeek(-1)} style={styles.nav} testID="week-prev-btn" accessibilityLabel="Semana anterior"><Feather name="chevron-left" size={22} color="#fff" /></Pressable>
-        <ScrollView ref={thumbnails} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 8 }} style={{ flex: 1 }}>
-          {days.map((day, index) => <Pressable key={day.date} onPress={() => chooseDay(index)} style={styles.day}
-            accessibilityRole="button" accessibilityState={{ selected: day.date === selected }}
-            accessibilityLabel={`${formatShortDate(day.date)}${day.date === today ? ", hoy" : ""}, ${day.status === "available" ? "disponible" : day.status === "future" ? "futuro bloqueado" : "no disponible"}`}>
-            <View style={[styles.thumb, { borderColor: day.date === selected ? "#d2b77c" : "rgba(255,255,255,.2)", borderWidth: day.date === selected ? 2 : 1 }]}>
-              {day.status === "available" && day.content ? <Image source={{ uri: day.content.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover"
-                contentPosition={{ left: `${day.content.imagePositionX}%`, top: `${day.content.imagePositionY}%` }} /> :
-                <Feather name={day.status === "future" ? "lock" : "calendar"} size={16} color="#aaa" />}
-              {day.date === today && <View style={styles.todayDot} />}
+
+  const retry = async () => {
+    await Promise.all([current.retry(), previous.retry()]);
+  };
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator color={colors.primary} />
+          <Text style={{ color: colors.foreground }}>Cargando inspiración…</Text>
+        </View>
+      ) : (
+        <FlatList
+          ref={slider}
+          style={StyleSheet.absoluteFillObject}
+          data={days}
+          horizontal
+          pagingEnabled
+          initialScrollIndex={Math.max(0, days.length - 1)}
+          keyExtractor={(day) => day.date}
+          getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+          showsHorizontalScrollIndicator={false}
+          extraData={`${selected}-${entrance}-${width}-${height}-${moving}`}
+          onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            offset.current = event.nativeEvent.contentOffset.x;
+            if (!dragging.current) scheduleSettle();
+          }}
+          scrollEventThrottle={16}
+          onScrollBeginDrag={() => {
+            cancelSettle();
+            dragging.current = true;
+            pendingTarget.current = null;
+            setMoving(true);
+          }}
+          onScrollEndDrag={() => {
+            dragging.current = false;
+            scheduleSettle();
+          }}
+          onMomentumScrollBegin={cancelSettle}
+          onMomentumScrollEnd={(event) => {
+            offset.current = event.nativeEvent.contentOffset.x;
+            commit();
+          }}
+          renderItem={({ item }) => (
+            <View style={{ width, height }}>
+              {item.status === "available" && item.content ? (
+                <>
+                  <InspirationArtwork key={item.content.imageUrl} content={item.content} />
+                  <View pointerEvents="none" style={styles.atmosphere} />
+                  <View style={[styles.pageContent, { paddingTop: topInset + 180, paddingBottom: Math.max(insets.bottom, 18) + 38 }]}>
+                    <View style={styles.message}>
+                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={0}>
+                        <Text style={styles.dayNumber}>{formatDayNumber(item.date)}</Text>
+                        <Text style={styles.month}>{monthAndYear(item.date)}</Text>
+                      </InspirationFade>
+                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={100}>
+                        <Text
+                          style={[
+                            styles.quote,
+                            Platform.OS === "web" && ({ overflowWrap: "anywhere", wordBreak: "break-word" } as never),
+                          ]}
+                        >
+                          {item.content.quote}
+                        </Text>
+                        {!!item.content.author && <Text style={styles.author}>— {item.content.author}</Text>}
+                      </InspirationFade>
+                      <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={200}>
+                        <Pressable
+                          disabled={moving || item.date !== selected}
+                          onPress={() => openDetail(item)}
+                          style={styles.read}
+                        >
+                          <Text style={styles.readText}>{current.week?.settings.readMoreLabel || "Leer más"}</Text>
+                        </Pressable>
+                      </InspirationFade>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <View style={[styles.center, { paddingTop: topInset + 140 }]}>
+                  <Feather name="calendar" size={36} color="rgba(255,255,255,.72)" />
+                  <Text style={styles.unavailable}>No disponible</Text>
+                  <Text style={styles.unavailableDate}>{formatDayNumber(item.date)} {monthAndYear(item.date)}</Text>
+                </View>
+              )}
             </View>
-            <Text style={{ color: day.date === selected ? "#e8d4a8" : "#ddd", fontSize: 12 }}>{formatDayLetter(day.date)} {formatDayNumber(day.date)}</Text>
-          </Pressable>)}
-        </ScrollView>
-        <Pressable onPress={() => openWeek(1)} style={styles.nav} testID="week-next-btn" accessibilityLabel="Semana siguiente"><Feather name="chevron-right" size={22} color="#fff" /></Pressable>
+          )}
+        />
+      )}
+
+      <View style={[styles.overlay, { paddingTop: topInset + 8 }]} pointerEvents="box-none">
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/inicio8"))}
+            style={styles.circleButton}
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+          >
+            <Feather name="chevron-left" size={27} color="#fff" />
+          </Pressable>
+          <Text style={styles.title}>{current.week?.settings.sectionTitle || "Inspiración diaria"}</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        <View style={styles.days}>
+          {days.map((day, index) => (
+            <Pressable
+              key={day.date}
+              onPress={() => chooseDay(index)}
+              style={[styles.dayCard, day.date === selected && styles.dayCardSelected]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: day.date === selected }}
+              accessibilityLabel={`${day.date === current.today ? "Hoy, " : ""}${formatDayNumber(day.date)} ${monthAndYear(day.date)}, ${day.status === "available" ? "disponible" : "no disponible"}`}
+            >
+              {day.status === "available" && day.content ? (
+                <Image
+                  source={{ uri: day.content.imageUrl }}
+                  style={StyleSheet.absoluteFillObject}
+                  contentFit="cover"
+                  contentPosition={{ left: `${day.content.imagePositionX}%`, top: `${day.content.imagePositionY}%` }}
+                />
+              ) : (
+                <View style={[StyleSheet.absoluteFillObject, styles.emptyCard]} />
+              )}
+              <View style={styles.cardShade} />
+              <Text style={styles.cardNumber}>{formatDayNumber(day.date)}</Text>
+              {day.date === current.today && <View style={styles.todayDot} />}
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={[styles.bottomActions, { bottom: Math.max(insets.bottom, 18) + 18 }]} pointerEvents="box-none">
+          <Pressable
+            onPress={() => openDetail(activeDay)}
+            disabled={activeDay?.status !== "available"}
+            style={[styles.actionButton, activeDay?.status !== "available" && styles.disabled]}
+            accessibilityRole="button"
+            accessibilityLabel="Editar notas"
+          >
+            <Feather name="edit-3" size={21} color="#fff" />
+          </Pressable>
+          <Pressable
+            onPress={() => setSharing(true)}
+            disabled={activeDay?.status !== "available"}
+            style={[styles.actionButton, activeDay?.status !== "available" && styles.disabled]}
+            accessibilityRole="button"
+            accessibilityLabel="Compartir inspiración"
+          >
+            <Feather name="share" size={21} color="#fff" />
+          </Pressable>
+        </View>
+
+        {(error || isCached) && (
+          <View style={styles.notice}>
+            <Text style={styles.noticeText}>{error || "Mostrando copia guardada"}</Text>
+            {error && (
+              <Pressable onPress={() => void retry()}>
+                <Text style={styles.retry}>Reintentar</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
       </View>
-      <Pressable onPress={() => router.setParams({ date: today, weekStart: undefined, entry: undefined })} style={{ alignSelf: "center", padding: 8 }}><Text style={{ color: "#ddd", fontSize: 12 }}>Volver a hoy</Text></Pressable>
-    {(error || isCached) && <View style={{ padding: 10, backgroundColor: colors.card }}>
-      <Text style={{ color: colors.foreground }}>{error || "Mostrando copia guardada; actualizando…"}</Text>
-      {error && <Pressable onPress={() => void retry()}><Text style={{ color: colors.primary, paddingTop: 6 }}>Reintentar</Text></Pressable>}
-    </View>}
+
+      {sharing && activeDay?.status === "available" && activeDay.content && (
+        <InspirationShare day={activeDay} onClose={() => setSharing(false)} />
+      )}
     </View>
-    {loading ? <View style={styles.center}><ActivityIndicator color={colors.primary} /><Text style={{ color: colors.foreground }}>Cargando inspiración…</Text></View> :
-      <FlatList ref={slider} style={StyleSheet.absoluteFillObject} data={days} horizontal pagingEnabled initialScrollIndex={activeIndex} keyExtractor={d => d.date}
-        showsHorizontalScrollIndicator={false} getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
-        extraData={`${selected}-${entrance}-${width}-${moving}`} onScroll={onScroll} scrollEventThrottle={16}
-        onScrollBeginDrag={() => { cancelSettle(); dragging.current = true; pendingTarget.current = null; setMoving(true); }}
-        onScrollEndDrag={() => { dragging.current = false; scheduleSettle(); }}
-        onMomentumScrollBegin={cancelSettle} onMomentumScrollEnd={event => { offset.current = event.nativeEvent.contentOffset.x; commit(); }}
-        renderItem={({ item }) => <View style={{ width, height: pageHeight }}>
-          {item.status === "available" && item.content ? <>
-            <InspirationArtwork key={item.content.imageUrl} content={item.content} />
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: 24, paddingTop: headerHeight + 24, paddingBottom: Math.max(insets.bottom, Platform.OS === "web" ? 34 : 0) + 28 }}>
-              <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={0}>
-                <Text style={styles.date}>{formatShortDate(item.date).toUpperCase()}</Text>
-              </InspirationFade>
-              <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={100}>
-                <Text style={styles.quote}>{item.content.quote}</Text>
-                {!!item.content.author && <Text style={styles.author}>— {item.content.author}</Text>}
-              </InspirationFade>
-              <InspirationFade animate={item.date === selected} replayKey={`${item.date}-${entrance}`} delay={200}>
-                <Pressable disabled={moving || item.date !== selected} onPress={() => router.push({ pathname: "/inspiracion-diaria/[date]", params: { date: item.date, id: item.id! } })} style={styles.read}>
-                  <Text style={{ color: "#fff", fontWeight: "600" }}>{week?.settings.readMoreLabel || "Leer más"}</Text><Feather name="arrow-right" size={16} color="#fff" />
-                </Pressable>
-              </InspirationFade>
-            </ScrollView>
-          </> : <View style={[styles.center, { paddingTop: headerHeight + 24 }]}><Feather name={item.status === "future" ? "lock" : "calendar"} size={40} color={colors.mutedForeground} />
-            <Text style={{ color: colors.foreground, fontSize: 20, marginTop: 16 }}>{item.status === "future" ? "Disponible pronto" : error ? "No se pudo consultar este día" : "No disponible"}</Text>
-            <Text style={{ color: colors.mutedForeground, marginTop: 8 }}>{formatShortDate(item.date)}</Text></View>}
-        </View>} />}
-  </View>;
+  );
 }
 
-export default function InspiracionDiariaIndex() {
-  const params = useLocalSearchParams<{ date?: string; weekStart?: string; entry?: string }>();
-  return <WeekPager key={`${params.entry || ""}-${params.date || ""}-${params.weekStart || ""}`} initialDate={params.entry === "today" ? undefined : params.date} requestedWeek={params.entry === "today" ? undefined : params.weekStart} />;
-}
 const styles = StyleSheet.create({
-  container: { flex: 1 }, center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
-  topRow: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10 },
-  title: { flex: 1, textAlign: "center", color: "#fff", fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
-  icon: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
-  weekRow: { flexDirection: "row", alignItems: "center" }, nav: { width: 40, height: 64, alignItems: "center", justifyContent: "center" },
-  day: { width: 56, alignItems: "center", gap: 5 }, thumb: { width: 42, height: 52, borderRadius: 8, overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  todayDot: { position: "absolute", bottom: 3, width: 6, height: 6, borderRadius: 3, backgroundColor: "#fff" },
-  date: { color: "#eee", fontSize: 12, letterSpacing: 1.2, marginBottom: 12, fontFamily: "Manrope" },
-  quote: { color: "#fff", fontSize: 28, lineHeight: 38, fontFamily: "Manrope", fontWeight: "500" },
-  author: { color: "#eee", fontSize: 16, marginTop: 12, fontStyle: "italic" },
-  read: { alignSelf: "flex-start", flexDirection: "row", gap: 10, padding: 14, paddingHorizontal: 22, borderRadius: 28, marginTop: 28, backgroundColor: "rgba(255,255,255,.18)" },
+  container: { flex: 1 },
+  center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
+  atmosphere: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(3,7,14,.12)",
+  },
+  pageContent: { flex: 1, justifyContent: "center", paddingHorizontal: 28 },
+  message: { width: "100%", alignItems: "center", transform: [{ translateY: 22 }] },
+  dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
+  month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
+  quote: { width: "100%", flexShrink: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 25, lineHeight: 34, fontWeight: "500", marginTop: 34 },
+  author: { color: "rgba(255,255,255,.82)", textAlign: "center", fontFamily: "Manrope", fontSize: 14, fontStyle: "italic", marginTop: 12 },
+  read: {
+    alignSelf: "center",
+    marginTop: 28,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.18)",
+    backgroundColor: "rgba(255,255,255,.14)",
+  },
+  readText: { color: "#fff", fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  overlay: { ...StyleSheet.absoluteFillObject },
+  header: { height: 56, flexDirection: "row", alignItems: "center", paddingHorizontal: 18 },
+  circleButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.14)",
+    backgroundColor: "rgba(10,12,18,.22)",
+  },
+  title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
+  headerSpacer: { width: 48 },
+  days: { flexDirection: "row", justifyContent: "space-between", gap: 7, paddingHorizontal: 18, marginTop: 12 },
+  dayCard: {
+    flex: 1,
+    maxWidth: 43,
+    height: 58,
+    borderRadius: 9,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.15)",
+    backgroundColor: "rgba(10,12,18,.35)",
+  },
+  dayCardSelected: { borderColor: "rgba(255,255,255,.9)", borderWidth: 1.5 },
+  emptyCard: { backgroundColor: "rgba(16,19,27,.68)" },
+  cardShade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,.2)" },
+  cardNumber: {
+    position: "absolute",
+    top: 5,
+    alignSelf: "center",
+    color: "#fff",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    textShadowColor: "rgba(0,0,0,.8)",
+    textShadowRadius: 4,
+  },
+  todayDot: { position: "absolute", bottom: 5, alignSelf: "center", width: 6, height: 6, borderRadius: 3, backgroundColor: "#74E1B7" },
+  bottomActions: { position: "absolute", left: 0, right: 0, flexDirection: "row", justifyContent: "center", gap: 18 },
+  actionButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,.14)",
+    backgroundColor: "rgba(255,255,255,.12)",
+  },
+  disabled: { opacity: 0.38 },
+  notice: {
+    position: "absolute",
+    left: 24,
+    right: 24,
+    bottom: 94,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+    padding: 9,
+    borderRadius: 12,
+    backgroundColor: "rgba(4,8,13,.7)",
+  },
+  noticeText: { color: "rgba(255,255,255,.82)", fontFamily: "Manrope", fontSize: 12 },
+  retry: { color: "#fff", fontFamily: "Manrope", fontSize: 12, fontWeight: "700" },
+  unavailable: { color: "#fff", fontFamily: "Manrope", fontSize: 20 },
+  unavailableDate: { color: "rgba(255,255,255,.7)", fontFamily: "Manrope", fontSize: 14 },
 });

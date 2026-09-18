@@ -143,3 +143,4 @@
 - [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle
 - [Caché del catálogo Mixer](mixer-catalog-cache.md) — Mobile inicia desde el último snapshot válido de sonidos; una API temporalmente caída no debe vaciar las cards
 - [Caché editorial programada](scheduled-editorial-cache.md) — retirada y bloqueo futuro invalidan respuestas viejas, pero un estreno autorizado puede desbloquear la misma revisión
+- [Portada de Inspiración diaria](inspiration-seven-day-window.md) — portada minimalista muestra solo los últimos 7 días hasta hoy; sin navegación semanal ni fechas futuras
