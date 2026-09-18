@@ -368,11 +368,11 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── Mis sesiones ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 17 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 2 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
               <Text style={[styles.cardTitle, { fontSize: 19 }]}>Mis sesiones</Text>
               <Pressable
-                onPress={() => {/* TODO: nav a catálogo del resonador */}}
+                onPress={() => router.push(`/resonador-sesiones/${resonador.id}` as never)}
                 hitSlop={8}
                 style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
               >
@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
   agendaDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.20)",
-    marginTop: 16,
+    marginTop: 1,
   },
   agendaDividerBottom: {
     marginTop: 16,
@@ -807,7 +807,7 @@ const styles = StyleSheet.create({
   sessionsProjectsDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.20)",
-    marginTop: 18,
+    marginTop: -4,
   },
   verMasBtn: {
     flexDirection: "row",
