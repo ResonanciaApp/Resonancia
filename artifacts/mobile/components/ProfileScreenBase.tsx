@@ -1924,7 +1924,7 @@ const styles = StyleSheet.create({
   },
   libActionsPill: {
     position: "absolute",
-    right: 20,
+    right: 15,
     top: 0,
     flexDirection: "row",
     alignItems: "center",
