@@ -1,4 +1,3 @@
-- [Null-stub rompía scroll horizontal Android](tablet-horizontal-scroll-bug.md) — RESUELTO: el null-stub de specs_DEPRECATED en metro.config anulaba AndroidHorizontalScrollContentView; excepciones obligatorias listadas en el topic
 - [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
 - [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
 - [SceneAnimationInline focus gate](scene-animation-inline-focus.md) — SceneAnimationInline necesita prop paused={!tabFocused}; sin él los withRepeat de cada capa corren 60fps en todas las tabs siempre
@@ -12,16 +11,12 @@
 - [Slide decks](slide-decks.md) — tres artifacts slides distintos: resonancia-deck (Brochure), resonancia-pitch (Pitch Inversionistas), resonancia-plantilla (Invitación); no mezclarlos
 - [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen
 - [Navy + gold palette (rebrand)](warm-theme.md) — marca migrada de café/bronce a azul marina #060A0F + dorado #BE9650; mapeo de reemplazo + slides hardcodean hex inline (no usan CSS vars); mockups de decks pendientes
-- [Chat optimistic uploads + audio preload](chat-optimistic-uploads.md) — pattern para image/audio sends instantáneos en DM; dedup por serverObjectPath, no setQueryData
-- [session image shared pool](session-images-shared-pool.md) — session-N.jpg es pool decorativo compartido (grupos usan imageIdx); al borrar sesión, repuntar refs in-place, no quitar entradas
-- [SacredBackground solid + category colors](sacred-background-gradient.md) — fondos planos sólidos (Calm); SacredBackground solid por defecto, null sin solidColor → muestra root bg de cada pantalla; cada categoría conserva su color
 - [MixerSheet al guardar](mixer-sheet-fade.md) — guardar cierra solo el popup, conserva “Tu mezcla”, pausa sin vaciar sonidos y confirma con toast; el fade global queda solo para cierres reales
 - [expo-audio lock-screen player](expo-audio-lockscreen.md) — persistent player + .replace() shares one status listener; guard session switches (switchingRef, pause old track) or stale position bleeds across sessions
 - [Crossfade B-entry click fix](crossfade-b-entry-click.md) — fade de entrada de B requiere setInterval a 16ms, NO Date.now() inline en el listener (iOS ticks cada ~200ms → bEntry ya vale 1 en el primer tick siguiente)
 - [Codegen clean breaks Metro](codegen-metro-resolve.md) — Orval clean:true deletes generated/ mid-run; Metro caches "Unable to resolve ./generated/api" → restart expo after codegen
 - [iOS 26 Hermes PAC crash](ios26-hermes-pac-crash.md) — EXC_BAD_ACCESS on JS thread on physical iOS 26 devices; prebuilt Hermes fails PAC → fix = buildReactNativeFromSource (Xcode 26)
 - [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session
-- [Diario structure](diario-structure.md) — free Diario = list (diario.tsx) + modal editor (diario-entrada.tsx); useDiario mutators must read-modify-write storage (parallel hook instances); Voz/Favoritos kept for premium
 - [api-server stale bundle](api-server-stale-bundle.md) — campo zod-validado se descarta en silencio pese a source correcto → bundle esbuild viejo; grep el dist (no source), fix = restart workflow (rebuild)
 - [Admin gate y API caída](admin-gate-api-unavailable.md) — AdminGate muestra “acceso restringido” también cuando /api/me falla; verificar API workflow antes de cambiar roles
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
@@ -39,9 +34,7 @@
 - [voiceTag three-state caption](voice-tag-three-state.md) — caption de voz: undefined=fallback VOICE_MAP, null=DB vacío, string=admin; fase 1 de applyCatalogSnapshot NO debe clobbear undefined→null
 - [Tab bar overlay padding](tab-bar-overlay-padding.md) — la tab bar de (tabs) es overlay absoluto; pantallas con contenido al fondo deben reservar tabBarHeight (recalcular fórmula de _layout.tsx)
 - [Tab bar hide on Geometrix](tab-bar-hide-geometrix.md) — menú inferior se esconde en Geometrix vía contexto compartido + pestañita para recuperarlo (es la única navegación entre tabs: no atrapar al usuario)
-- [MiniPlayer carousel scrollable](miniplayer-carousel-scroll.md) — thumbnails apilados del mezclador: ScrollView horizontal con scrollEnabled=stackOpen; contentContainerStyle necesita width explícito cuando hijos son position:absolute; reset scroll animated:false en collapse y en n changes
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
-- [Geometrix intro audio](geometrix-intro-audio.md) — sonido de carga única: precargar en root layout (tabs montan lazy → preload en la tab llega tarde) + flag de módulo = one-shot por lanzamiento
 - [Geometrix landing focus gate](geometrix-landing-focus-gate.md) — landing queda montado al blur; loops infinitos ahí = lag global; gatear por tabFocused + cancelAnimation en cleanup
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
@@ -59,8 +52,6 @@
 - [Reanimated slider oscillator](reanimated-slider-oscillator.md) — loop start/stop deps deben ser boolean on/off (no la amplitud analógica) o cada tick del slider colapsa el barrido; amplitud vive en el worklet
 - [Reanimated closure capture order](reanimated-closure-capture-order.md) — variables usadas en worklets deben declararse ANTES de useAnimatedStyle o Reanimated captura undefined (Babel serializa el closure al llamar al hook)
 - [RN overlay effect gotchas](rn-overlay-effect-gotchas.md) — hitSlop se recorta al padre directo (wrap > botón); sibling con margin negativo roba taps (zIndex); onda one-shot reposa en 1; glow = ring+shadow no disco
-- [Tab-slide image grid jank](tab-slide-image-jank.md) — grilla que anima al cambiar de tab: anima por prop (no key=remontaje) + expo-image cachePolicy memory-disk, o las imágenes cargan escalonadas
-- [Controlled slider bounce](controlled-slider-bounce.md) — slider Reanimated controlado + source-of-truth por gesto: guard del useEffect con flag (runOnJS/FIFO) + epsilon, o rebota al soltar
 - [Geometrix carousel microlag](geometrix-carousel-microlag.md) — parámetros fijos del carrusel (HOLD/FLIP/gap) y modelo FLIP: DOM estable + translateX por slot; gap 180ms para evitar lag de arrastre; NO tocar layout animations
 - [Geometrix Hold mode](geometrix-hold-mode.md) — toggle manito aplica gestos a TODAS las capas; bifurca en holdModeSV dentro del worklet; commitHold* usa setSettings funcional sobre active[]; rotationGesture.enabled usa estado React (holdMode) no SV
 - [Geometrix undo (Atrás)](geometrix-undo-history.md) — pila de snapshots {active,settings,master,hiddenIds}; restaurar por setState revierte gestos (props ganan en reposo); debounce agrupa ráfagas; hiddenIds cleanup debe mantener ref estable; reset en load/new NO en clearCanvas
@@ -68,7 +59,6 @@
 - [Reanimated slide-push sin glitch](reanimated-slide-push-noглitch.md) — spacer vacío (width animado, sin texto) + pill con opacity pura (width fijo); marginLeft:-gap en el spacer cancela el mini-snap al desmontar
 - [Geometrix trazo fino vs relleno](geometrix-thin-stroke.md) — "fino" (strokeMode) solo escala stroke-width; mosaicos de relleno (c/k/r-asset) no cambian; geometryType es metadato no usado en render; admin gatea "Trazo" por SVG real
 - [Hero como fondo único](hero-fade-bg-match.md) — imagen hero + bg degradado leídos como "dos fondos": fix = meter la imagen EN la capa de fondo raíz y desvanecerla al color EXACTO del degradado raíz a la Y del borde (mismo degradado continuo debajo, sin costura); top fade desde #4A0C0C opaco→transparente; offsets px vía locations
-- [Drawer animation glitches](drawer-animation.md) — drawer SIEMPRE montado (sin gate rendered) + animar imperativo con stopAnimation antes de cada transición + sombra solo si isOpen; no regresar
 - [BPM mix-bus limiter](bpm-mixbus-limiter.md) — apilar 3+ loops satura el master (clipping); fix = WaveShaper soft-clip (la lib NO trae compresor); createWaveShaper() = 0 args, curva/oversample por propiedad
 - [Animated layout-prop slide fails under Fabric](animated-left-fabric.md) — animar `left`/posición con JS driver no renderiza en New Arch; usar `translateX` nativo con left estático (width JS + transform nativo conviven)
 - [Mixer "tiempo" phase offset](mixer-phase-offset.md) — offset de loop BPM = LAG por beats `[0,.125,.25,.375]` (no cuartos); solo audible al combinar ≥2 capas; runtime-only (no se persiste); offset 0 = no-op; tocar las 4 rutas en lockstep
@@ -101,12 +91,10 @@
 - [Clerk native SSO redirect](clerk-native-sso-redirect.md) — SSO Expo vuelve sin sesión: scheme correcto + allowlist redirect_urls por API (estaba vacía) + ruta explícita sso-callback
 - [Manrope default font patch](manrope-default-font-patch.md) — fuente global via patch de Text.render (base primero), NUNCA parchando StyleSheet.create: eso pisaba la fontFamily de los íconos → tofu en Android
 - [Android top-inset floor](android-top-inset-floor.md) — tablets Android dan insets.top chico (~24) vs iPhone (~59); topPad nativo = Math.max(insets.top, 40) en todas las pantallas
-- [Android tab bar blur dimezis](android-tabbar-blur-dimezis.md) — blur funciona fuera de la barra pero no dentro (sospecha: transform del contenedor); tintes quitados en Android, iOS intacto
 - [Chat overlay sobre Amigos](chat-overlay-stack.md) — desde overlays del drawer router.push monta DEBAJO; chat usa openChat→ChatOverlay apilado; otras rutas: closeOverlay antes de push
 - [Racha canónica en utils/stats](streak-canonical.md) — toda racha/semana importa de utils/stats (día activo = ≥3 min O sesión completada, desde ago 2026; fallback a ayer); memos deben depender de useDayRollover o quedan pegados en ayer
 - [useStreak hook unificado](usestreak-unified.md) — hook único reconcilia servidor+local sin regresiones; toda UI importa de hooks/useStreak, salvo la celebración en tiempo real
 - [Sleep timer background enforcement](sleep-timer-background.md) — MixerContext y PlayerContext: sleepEndTimeRef timestamp + guardián en listener nativo (UIBackgroundModes audio); AppState recovery al volver al frente; setInterval solo es UI
-- [Social table indexes](social-db-indexes.md) — 12 índices añadidos a tablas sociales (shared_mixes/glyphs feed+likes+author, comments mix+author, likes user, messages createdAt); aplicar con push-force tras cambios de schema
 - [Server streak endpoint + Orval Zod crash](server-streak-endpoint.md) — GET /me/streak?tz= server-authoritative; Orval ^8.9.1 se actualizó a 8.23.0 → genera zod.int() (v4) → crash API; fix: pin exacto "8.9.1" + parche sed en api-zod/generated
 - [Library sync](library-sync.md) — snapshot JSONB user_library ahora incluye mixerPresets+geometrixCreations; PUT /me/library es parcial (campo omitido se preserva); firstSync=unión, luego local autoritativo; push debounced lee estado fresco al disparar
 - [AudioBridge chat slot](audiobridge-chat-slot.md) — chatStopper = 4to slot del audioBridge; AudioAttachment registra/desregistra al play/pause/finish/unmount; startRecording también corta todo antes de grabar
@@ -117,12 +105,9 @@
 - [Account deletion vs signed uploads](account-deletion-signed-uploads.md) — borrar un objeto una vez no basta si sobreviven PUT firmados; tombstone + segundo barrido tras el TTL antes de completar
 - [Private object reference grants](private-object-reference-grants.md) — una ruta privada referenciada no concede acceso por sí sola; exigir propiedad del upload o rol editorial antes de compartir/publicar
 - [Readiness editorial del catálogo](catalog-readiness-placeholders.md) — placeholders explícitos permanecen visibles; finales exigen audio reproducible y validación transaccional
-- [Slider local sin frames negros](slider-local-image-layers.md) — carruseles locales: capas RN Image persistentes + wrappers animados; no remontar expo-image con opacidad compartida
-- [Android mixed pill radii](android-mixed-pill-radii.md) — no combinar radio extremo 999 con esquinas pequeñas en una View bordeada: usar el radio real de la altura para conservar los 10 px
 - [Contenido remoto de Descubrir](discover-remote-content-cache.md) — secciones y Top 5 conservan la última respuesta válida; un fallo transitorio nunca debe vaciar contenido ya recibido
 - [Ticket de Mi Rutina](routine-ticket-behavior.md) — solo el ticket completa; la card pasa a teal y sale de Inicio tras 1 s; el tap restante abre detalle
 - [Flujo emocional local](mood-checkin-local.md) — guarda check-ins completos localmente; cierre usa cinco tipos fijos con reservas inmutables porque el catálogo muta sesiones en sitio
-- [Carruseles editoriales compactos](content-carousel-sizing.md) — en Dormir/Descubrir/Sonidos/categorías: gap 14 px; pill sube solo con título de 2 líneas
 - [Handoff entre Modal nativos](native-modal-handoff.md) — nunca abrir un segundo Modal con un timeout estimado; esperar cierre real + siguiente frame para evitar fallos intermitentes en iOS
 - [Membresía Aurora jade-gold](membership-aurora-jade.md) — dirección aprobada para módulos de Perfil: Premium dorado y Premium Plus morado sobre atmósfera azul verdosa
 - [Bajas remotas del catálogo](catalog-remote-deletions.md) — un cache móvil viejo puede resucitar sesiones DB-only; snapshots frescos deben podar entradas remotas ausentes
@@ -133,7 +118,6 @@
 - [Drizzle y aritmética timestamptz](drizzle-timestamptz-arithmetic.md) — parámetros Date en SQL crudo pueden tiparse como interval; castear ISO explícitamente a timestamptz antes de restar intervalos
 - [Contadores animados interrumpibles](interruptible-counter-events.md) — al ocultar la superficie, conservar eventos aún no mostrados y descartar solo los ya confirmados para evitar pérdidas o repeticiones
 - [Separación tras contenido dinámico](dynamic-section-spacing.md) — en Inicio, el gap posterior a un bloque que cambia al terminar una animación debe pertenecer al siguiente contenedor estable
-- [Alto canónico de cards editoriales](editorial-card-canonical-size.md) — mantienen el alto de Música para dormir; las grids conservan su ancho local para llenar la fila
 - [Cards Ambientales en Sonidos](ambiental-cards-sonidos.md) — tratamiento propio de Sonidos: título centrado y categoría; sin autor, duración ni overlay oscuro
 - [Playlists editoriales](editorial-playlist-boundaries.md) — publicación por pantalla, no por tags; guardar referencia editorial no crea una playlist privada editable
 - [Transacciones de recordatorios locales](practice-notification-transactions.md) — actualizar una alarma exige operación nativa estricta + rollback; la cancelación tolerante queda solo para limpieza
@@ -157,3 +141,4 @@
 - [Cards de frases emocionales](emotional-quote-cards.md) — dirección aprobada: fondo propio emparentado con cada hero, overlay oscuro y espaciado vertical igual a Frase del día
 - [Rotación de frases emocionales](emotional-quote-rotation.md) — el slot consumido vive también en el historial; este dato recupera la secuencia si falla el contador secundario
 - [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle
+- [Caché del catálogo Mixer](mixer-catalog-cache.md) — Mobile inicia desde el último snapshot válido de sonidos; una API temporalmente caída no debe vaciar las cards

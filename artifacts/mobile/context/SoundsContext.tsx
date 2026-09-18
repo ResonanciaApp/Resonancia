@@ -12,8 +12,11 @@ import React, {
   useState,
   useCallback,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { replaceSoundCatalog, type MixSound } from "@/data/sounds";
 import { applyRemoteSounds, resolveRemoteObjectUrl } from "@/lib/remoteSoundMap";
+
+const SOUND_CATALOG_CACHE_KEY = "@resonance_sound_catalog_v1";
 
 interface SoundsContextValue {
   /** Lista activa publicada por la API. */
@@ -50,6 +53,41 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const [sounds, setSounds] = useState<MixSound[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  const applySnapshot = useCallback((remoteSounds: ApiSound[]) => {
+    // Only active API rows participate in the mobile catalog or maps.
+    const activeSounds = remoteSounds.filter((sound) => sound.isActive === true);
+    applyRemoteSounds(activeSounds);
+
+    const catalog: MixSound[] = activeSounds
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .map((sound) => ({
+        id: sound.id,
+        name: sound.name,
+        icon: sound.iconName,
+        iconSet: (sound.iconSet === "feather" || sound.iconSet === "ionicons"
+          ? sound.iconSet
+          : "feather") as "feather" | "ionicons",
+        category: sound.categoryId as MixSound["category"],
+        isPremium: sound.isPremium,
+        isActive: true,
+        showInMeditationBackgrounds: sound.showInMeditationBackgrounds === true,
+        ...(sound.objectPath
+          ? { audioUrl: resolveRemoteObjectUrl(sound.objectPath) }
+          : {}),
+        ...(sound.thumbnailObjectPath
+          ? { imageUrl: resolveRemoteObjectUrl(sound.thumbnailObjectPath) }
+          : {}),
+        ...(sound.tags && sound.tags.length > 0
+          ? { tags: sound.tags as MixSound["tags"] }
+          : {}),
+        ...(sound.bpm != null ? { bpm: sound.bpm as MixSound["bpm"] } : {}),
+        ...(sound.loopBars != null ? { loopBars: sound.loopBars } : {}),
+      }));
+
+    replaceSoundCatalog(catalog);
+    setSounds(catalog);
+  }, []);
+
   const fetchAndMerge = useCallback(async () => {
     try {
       const apiBase = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
@@ -61,44 +99,45 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
       }
       const body = (await res.json()) as { sounds?: ApiSound[] };
       const remoteSounds = Array.isArray(body.sounds) ? body.sounds : [];
-
-      // Only active API rows participate in the mobile catalog or maps.
-      const activeSounds = remoteSounds.filter((s) => s.isActive === true);
-      applyRemoteSounds(activeSounds);
-
-      const catalog: MixSound[] = activeSounds
-        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-        .map((s) => ({
-          id: s.id,
-          name: s.name,
-          icon: s.iconName,
-          iconSet: (s.iconSet === "feather" || s.iconSet === "ionicons"
-            ? s.iconSet
-            : "feather") as "feather" | "ionicons",
-          category: s.categoryId as MixSound["category"],
-          isPremium: s.isPremium,
-          isActive: true,
-          showInMeditationBackgrounds: s.showInMeditationBackgrounds === true,
-          ...(s.objectPath ? { audioUrl: resolveRemoteObjectUrl(s.objectPath) } : {}),
-          ...(s.thumbnailObjectPath
-            ? { imageUrl: resolveRemoteObjectUrl(s.thumbnailObjectPath) }
-            : {}),
-          ...(s.tags && s.tags.length > 0 ? { tags: s.tags as MixSound["tags"] } : {}),
-          ...(s.bpm != null ? { bpm: s.bpm as MixSound["bpm"] } : {}),
-          ...(s.loopBars != null ? { loopBars: s.loopBars } : {}),
-        }));
-      replaceSoundCatalog(catalog);
-      setSounds(catalog);
+      applySnapshot(remoteSounds);
+      AsyncStorage.setItem(
+        SOUND_CATALOG_CACHE_KEY,
+        JSON.stringify(remoteSounds),
+      ).catch(() => {});
     } catch {
       // Conserva el último catálogo válido; la próxima apertura vuelve a intentar.
     } finally {
       setLoaded(true);
     }
-  }, []);
+  }, [applySnapshot]);
 
   useEffect(() => {
-    void fetchAndMerge();
-  }, [fetchAndMerge]);
+    let cancelled = false;
+
+    const hydrateAndRefresh = async () => {
+      try {
+        const raw = await AsyncStorage.getItem(SOUND_CATALOG_CACHE_KEY);
+        if (raw && !cancelled) {
+          const cached = JSON.parse(raw) as unknown;
+          if (Array.isArray(cached)) {
+            applySnapshot(cached as ApiSound[]);
+            setLoaded(true);
+          }
+        }
+      } catch {
+        // Un caché inválido no bloquea la actualización desde la API.
+      }
+
+      if (!cancelled) {
+        await fetchAndMerge();
+      }
+    };
+
+    void hydrateAndRefresh();
+    return () => {
+      cancelled = true;
+    };
+  }, [applySnapshot, fetchAndMerge]);
 
   return (
     <SoundsContext.Provider value={{ sounds, loaded, refresh: fetchAndMerge }}>
