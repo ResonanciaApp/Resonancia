@@ -373,6 +373,100 @@ function MixMenuSheet({
   );
 }
 
+// ── Nombre y datos de la mezcla ──────────────────────────────────────────────
+function EditMixInfoModal({
+  visible,
+  mix,
+  onClose,
+  onSave,
+  onChangeCover,
+  onDelete,
+}: {
+  visible: boolean;
+  mix: MixPreset;
+  onClose: () => void;
+  onSave: (name: string) => void;
+  onChangeCover: () => void;
+  onDelete: () => void;
+}) {
+  const { theme } = useSceneTheme();
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const [draftName, setDraftName] = useState("");
+
+  useEffect(() => {
+    if (visible) setDraftName(mix.name);
+  }, [mix.name, visible]);
+
+  const handleSave = () => {
+    const trimmed = draftName.trim();
+    if (!trimmed) return;
+    onSave(trimmed);
+    onClose();
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={infoSt.backdrop}>
+        <View style={[infoSt.sheet, { paddingBottom: bottomPad }]}>
+          <LinearGradient
+            colors={theme.gradient as unknown as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={infoSt.handle} />
+          <View style={infoSt.header}>
+            <Pressable onPress={onClose} hitSlop={12} style={infoSt.closeBtn}>
+              <Feather name="x" size={20} color={MUTED} />
+            </Pressable>
+            <Text style={infoSt.title}>Nombre y datos</Text>
+            <Pressable onPress={handleSave} hitSlop={12}>
+              <Text style={infoSt.saveText}>Guardar</Text>
+            </Pressable>
+          </View>
+
+          <ScrollView
+            style={{ flex: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <Pressable
+              style={({ pressed }) => [infoSt.coverRow, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={onChangeCover}
+            >
+              <MixCover mix={mix} size={52} radius={8} showSoundStack={false} />
+              <View style={{ flex: 1 }}>
+                <Text style={infoSt.coverLabel}>Foto de portada</Text>
+                <Text style={infoSt.coverSub}>Toca para cambiar</Text>
+              </View>
+              <Feather name="chevron-right" size={18} color={MUTED} />
+            </Pressable>
+
+            <Text style={infoSt.fieldLabel}>Nombre</Text>
+            <TextInput
+              style={infoSt.input}
+              value={draftName}
+              onChangeText={setDraftName}
+              placeholder="Nombre de la mezcla"
+              placeholderTextColor={MUTED}
+              returnKeyType="done"
+              onSubmitEditing={handleSave}
+              maxLength={60}
+            />
+
+            <Pressable
+              style={({ pressed }) => [infoSt.deleteBtn, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={onDelete}
+            >
+              <Feather name="trash-2" size={16} color="#E05252" />
+              <Text style={infoSt.deleteBtnText}>Eliminar mezcla</Text>
+            </Pressable>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
@@ -392,6 +486,7 @@ export default function MiMezclaScreen() {
   const [name, setName] = useState(mix?.name ?? "");
   const [pickerVisible, setPickerVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [editInfoVisible, setEditInfoVisible] = useState(false);
   useEffect(() => {
     if (mix?.name) setName(mix.name);
   }, [mix?.name]);
@@ -470,8 +565,23 @@ export default function MiMezclaScreen() {
     <LinearGradient colors={bgGradient} style={{ flex: 1 }}>
       {/* Header */}
       <View style={[s.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => { saveName(); goBack(); }} hitSlop={12} style={s.iconBtn}>
-          <Feather name="arrow-left" size={22} color={TEXT} />
+        <Pressable
+          onPress={() => { saveName(); goBack(); }}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Volver a Biblioteca"
+          style={({ pressed }) => [
+            s.iconBtn,
+            s.headerMenuButton,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          <Feather
+            name="chevron-left"
+            size={32}
+            color="#FBFBFB"
+            style={{ transform: [{ translateX: -1 }] }}
+          />
         </Pressable>
         <Text style={s.headerTitle} numberOfLines={1}>{mix.name}</Text>
         <Pressable
@@ -506,21 +616,6 @@ export default function MiMezclaScreen() {
             <Feather name="camera" size={14} color="#1B060F" />
           </Pressable>
         </View>
-
-        {/* Nombre */}
-        <Text style={s.sectionTitle}>Nombre de la mezcla</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          onBlur={saveName}
-          onSubmitEditing={saveName}
-          returnKeyType="done"
-          maxLength={60}
-          selectTextOnFocus
-          style={s.nameInput}
-          placeholder="Nombre de la mezcla"
-          placeholderTextColor={MUTED}
-        />
 
         {/* Categoría */}
         <Text style={[s.sectionTitle, s.categorySectionTitle]}>Usa tu mezcla para</Text>
@@ -643,9 +738,30 @@ export default function MiMezclaScreen() {
         onClose={() => setMenuVisible(false)}
         onShare={handleShare}
         onEditMix={handleEditMix}
-        onNameAndData={() => setMenuVisible(false)}
+        onNameAndData={() => {
+          setMenuVisible(false);
+          setTimeout(() => setEditInfoVisible(true), 300);
+        }}
         onDelete={() => {
           setMenuVisible(false);
+          setTimeout(handleDelete, 300);
+        }}
+      />
+
+      <EditMixInfoModal
+        visible={editInfoVisible}
+        mix={mix}
+        onClose={() => setEditInfoVisible(false)}
+        onSave={(nextName) => {
+          setName(nextName);
+          save({ name: nextName });
+        }}
+        onChangeCover={() => {
+          setEditInfoVisible(false);
+          setTimeout(() => setPickerVisible(true), 300);
+        }}
+        onDelete={() => {
+          setEditInfoVisible(false);
           setTimeout(handleDelete, 300);
         }}
       />
@@ -701,19 +817,6 @@ const s = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: "#1B060F",
-  },
-  nameInput: {
-    height: 48,
-    borderRadius: 100,
-    paddingHorizontal: 18,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    color: TEXT,
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    marginBottom: 0,
   },
   floatingBar: {
     position: "absolute",
@@ -973,5 +1076,112 @@ const menuSt = StyleSheet.create({
   },
   rowTextDestructive: {
     color: "#E05C5C",
+  },
+});
+
+const infoSt = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    height: "80%",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    overflow: "hidden",
+    paddingHorizontal: 20,
+  },
+  handle: {
+    alignSelf: "center",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(212,175,55,0.25)",
+    marginTop: 10,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontFamily: "Manrope",
+    flex: 1,
+    textAlign: "center",
+    color: TEXT,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  saveText: {
+    fontFamily: "Manrope",
+    color: GOLD,
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  coverRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 14,
+    marginBottom: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(61,14,22,0.35)",
+  },
+  coverLabel: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  coverSub: {
+    fontFamily: "Manrope",
+    color: MUTED,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  fieldLabel: {
+    fontFamily: "Manrope",
+    color: MUTED,
+    fontSize: 12,
+    fontWeight: "600",
+    marginTop: 16,
+    marginBottom: 6,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  input: {
+    fontFamily: "Manrope",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderRadius: 10,
+    padding: 12,
+    color: TEXT,
+    fontSize: 15,
+    borderWidth: 0,
+  },
+  deleteBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 32,
+    marginBottom: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(224,82,82,0.35)",
+    backgroundColor: "rgba(224,82,82,0.08)",
+  },
+  deleteBtnText: {
+    fontFamily: "Manrope",
+    color: "#E05252",
+    fontSize: 15,
+    fontWeight: "600",
   },
 });
