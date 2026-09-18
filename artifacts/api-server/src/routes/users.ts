@@ -109,6 +109,14 @@ router.get("/me/export", requireAuth, async (req, res) => {
     const result = await db.execute(sql`
       SELECT jsonb_build_object(
         'account', to_jsonb(u),
+        'inspirationFavorites', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.updated_at)
+          FROM inspiration_favorites t WHERE t.user_id = u.id
+        ), '[]'::jsonb),
+        'inspirationNotes', COALESCE((
+          SELECT jsonb_agg(to_jsonb(t) ORDER BY t.updated_at)
+          FROM inspiration_notes t WHERE t.user_id = u.id
+        ), '[]'::jsonb),
         'activity', jsonb_build_object(
           'playbackHistory', COALESCE((
             SELECT jsonb_agg(to_jsonb(t) ORDER BY t.created_at)

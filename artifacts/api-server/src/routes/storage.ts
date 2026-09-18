@@ -153,6 +153,11 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
       objectPath,
       clerkUserId,
     });
+    if (databaseAccess === "inspiration-only") {
+      res.setHeader("Cache-Control", "private, no-store");
+      res.status(404).json({ error: "Archivo no disponible en esta ruta" });
+      return;
+    }
     let aclAccess = false;
     if (databaseAccess === "denied") {
       try {

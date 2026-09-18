@@ -416,6 +416,14 @@ export default function FavoritesScreen() {
         </View>
 
         {/* ── Tabs ── */}
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 20, marginBottom: 20 }}>
+          <Pressable onPress={() => router.push({ pathname: "/favoritos-todos", params: { tab: "inspiraciones" } })}>
+            <Text style={{ color: colors.foreground }}>Inspiraciones ›</Text>
+          </Pressable>
+          <Pressable onPress={() => router.push("/inspiracion-diaria/notas")}>
+            <Text style={{ color: colors.foreground }}>Mis notas ›</Text>
+          </Pressable>
+        </View>
         <View
           style={[
             styles.tabBar,

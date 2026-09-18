@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 
 import { SessionCarousel } from "@/components/SessionCarousel";
 import { EditorialPlaylistCarousel } from "@/components/EditorialPlaylistCarousel";
@@ -32,12 +33,10 @@ import { useVideos } from "@/hooks/useVideos";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { PLAYLISTS, type EditorialPlaylist } from "@/data/playlists";
 import { useCatalog } from "@/context/CatalogContext";
-import {
-  buildVisibleFavoriteTabs,
-  FAVORITE_COLLECTION_TABS,
-  resolveSavedEditorialFavorites,
-  type FavoriteCollectionTabId,
-} from "@/lib/favorites-home-helpers";
+import { buildVisibleFavoriteTabs, FAVORITE_COLLECTION_TABS, resolveSavedEditorialFavorites, type FavoriteCollectionTabId } from "@/lib/favorites-home-helpers";
+import { useInspiration } from "@/hooks/inspiration";
+import type { InspirationFavorite } from "@/types/inspiration";
+import { confirmInspirationAction } from "@/components/InspirationNotes";
 
 const H_PAD = 14;
 const { width: W } = Dimensions.get("window");
@@ -167,7 +166,82 @@ function FavoriteVideosCarousel({
   );
 }
 
+function FavoriteInspirationsCarousel({
+  title,
+  inspirations,
+}: {
+  title: string;
+  inspirations: InspirationFavorite[];
+}) {
+  const colors = useColors();
+  const { setFavorite } = useInspiration();
+  const [error, setError] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
+  if (!inspirations || inspirations.length === 0) return null;
+  return (
+    <View style={[styles.videoCarouselSection, { marginBottom: 30 }]}>
+      <Text style={styles.carouselTitle}>{title}</Text>
+      {error && <Text accessibilityRole="alert" style={{ color: "#d87272", padding: 14 }}>{error}</Text>}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.videoCarouselScroll}
+        contentContainerStyle={styles.videoCarouselContent}
+      >
+        {inspirations.map((fav) => (
+          <Pressable
+            key={fav.inspirationId}
+            onPress={() => {
+              const date = fav.date || fav.day?.date;
+              if (date) {
+                router.push({ pathname: "/inspiracion-diaria/[date]", params: { date, id: fav.inspirationId } });
+              } else {
+                router.push("/inspiracion-diaria/notas");
+              }
+            }}
+            style={{ width: CAROUSEL_CARD_W, marginRight: 16 }}
+          >
+            <View style={{ width: '100%', aspectRatio: 0.72, borderRadius: 16, backgroundColor: colors.card, overflow: 'hidden', marginBottom: 8 }}>
+              {fav.day?.content?.imageUrl ? (
+                <Image
+                  source={{ uri: fav.day.content.imageUrl }}
+                  style={{ width: '100%', height: '100%' }}
+                  contentFit="cover"
+                  contentPosition={{ left: `${fav.day.content.imagePositionX}%`, top: `${fav.day.content.imagePositionY}%` }}
+                />
+              ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Feather name="calendar" size={24} color={colors.mutedForeground} />
+                </View>
+              )}
+            </View>
+            <Text style={{ fontFamily: 'Manrope', fontSize: 15, fontWeight: '600', color: colors.foreground }} numberOfLines={1}>
+              {fav.date || fav.day?.date || "Inspiración"}
+            </Text>
+            {fav.day?.status !== "available" && <Text style={{ color: colors.mutedForeground, marginTop: 4 }}>No disponible · Tus notas se conservan</Text>}
+            {fav.day?.content?.quote && (
+              <Text style={{ fontFamily: 'Manrope', fontSize: 13, color: colors.mutedForeground }} numberOfLines={1}>
+                "{fav.day.content.quote}"
+              </Text>
+            )}
+            <Pressable disabled={removing === fav.inspirationId} onPress={event => {
+              event.stopPropagation();
+              confirmInspirationAction("Quitar favorito", "¿Quitar esta inspiración? Tus notas no se borrarán.", () => {
+                setRemoving(fav.inspirationId); setError(null);
+                void setFavorite(fav.inspirationId, false).catch(cause => setError(cause instanceof Error ? cause.message : "No se pudo quitar el favorito.")).finally(() => setRemoving(null));
+              });
+            }} style={{ paddingVertical: 12 }} accessibilityLabel="Quitar inspiración de favoritos">
+              <Text style={{ color: colors.primary }}>{removing === fav.inspirationId ? "Guardando…" : "Quitar de favoritos"}</Text>
+            </Pressable>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function FavoritosTodosScreen() {
+  const params = useLocalSearchParams<{ tab?: string }>();
   const goBack = useBackOverride();
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -178,6 +252,7 @@ export default function FavoritosTodosScreen() {
   const { favoriteVideoIds } = useVideosState();
   const { theme: sceneTheme } = useSceneTheme();
   const { videos: allVideos } = useVideos();
+  const { favorites: inspirationFavorites } = useInspiration();
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const [stickyHeaderHeight, setStickyHeaderHeight] = useState(0);
 
@@ -185,7 +260,7 @@ export default function FavoritosTodosScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const libraryHeaderButtonBackground = "rgba(0,0,0,0.28)";
 
-  const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>("all");
+  const [activeTab, setActiveTab] = useState<FavoriteCollectionTabId>(params.tab === "inspiraciones" ? "inspiraciones" : "all");
   const titleProgress = useRef(new Animated.Value(0)).current;
   const indigo2TabsSurfaceAnim = useRef(new Animated.Value(0)).current;
   const compactRef = useRef(false);
@@ -231,8 +306,9 @@ export default function FavoritosTodosScreen() {
       favSessions.map((session) => session.categoryId),
       favVideos.length > 0,
       favoritePlaylists.length > 0,
+      inspirationFavorites.length > 0 || params.tab === "inspiraciones"
     ),
-    [favSessions, favVideos.length, favoritePlaylists.length],
+    [favSessions, favVideos.length, favoritePlaylists.length, inspirationFavorites.length, params.tab],
   );
   const visibleContentTabs = useMemo(
     () => {
@@ -342,6 +418,9 @@ export default function FavoritosTodosScreen() {
           scrollEventThrottle={16}
           onScroll={handleScroll}
         >
+          <Pressable onPress={() => router.push("/inspiracion-diaria/notas")} style={{ paddingHorizontal: 18, paddingBottom: 20 }}>
+            <Text style={{ color: colors.foreground }}>Mis notas de inspiración ›</Text>
+          </Pressable>
           {activeTab === "all" ? (
             visibleContentTabs.length === 0 ? (
               <View style={styles.empty}>
@@ -353,6 +432,17 @@ export default function FavoritosTodosScreen() {
             ) : (
               <View style={styles.allCollections}>
                 {visibleContentTabs.map((tab, index) => {
+                  if (tab.id === "inspiraciones") {
+                    return (
+                      <React.Fragment key={tab.id}>
+                        {index > 0 ? <View style={styles.sectionDivider} /> : null}
+                        <FavoriteInspirationsCarousel
+                          title={tab.label}
+                          inspirations={inspirationFavorites}
+                        />
+                      </React.Fragment>
+                    );
+                  }
                   if (tab.id === "videos") {
                     return (
                       <React.Fragment key={tab.id}>
@@ -393,6 +483,19 @@ export default function FavoritosTodosScreen() {
                     </React.Fragment>
                   );
                 })}
+              </View>
+            )
+          ) : activeTab === "inspiraciones" ? (
+            inspirationFavorites.length === 0 ? (
+              <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+                <Feather name="heart" size={20} color="#f9f9f9" />
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  Aún no tienes inspiraciones favoritas.
+                </Text>
+              </View>
+            ) : (
+              <View style={{ paddingHorizontal: H_PAD }}>
+                <FavoriteInspirationsCarousel title="Inspiraciones" inspirations={inspirationFavorites} />
               </View>
             )
           ) : activeTab === "videos" ? (

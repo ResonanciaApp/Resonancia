@@ -40,6 +40,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { isIndigoThemeId } from "@/config/scene-themes";
 import { deleteMyAccount, exportMyAccountData } from "@workspace/api-client-react";
 import { removeLocalAccountData } from "@/lib/accountData";
+import { clearInspirationAccountData } from "@/context/InspirationContext";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -74,7 +75,7 @@ export default function ConfiguracionesScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { getToken } = useClerkAuth();
-  const { logout, isCreator, isAdmin, isSignedIn } = useAuth();
+  const { logout, isCreator, isAdmin, isSignedIn, clerkUserId } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { expansorId, setExpansorId } = useUserProfile();
   const { updateDefaultSleepTimer } = usePlayer();
@@ -223,9 +224,11 @@ export default function ConfiguracionesScreen() {
 
   const performAccountDeletion = async () => {
     if (accountAction) return;
+    const deletedOwner = clerkUserId;
     setAccountAction("delete");
     try {
       await deleteMyAccount({ confirmation: "ELIMINAR" });
+      if (deletedOwner) await clearInspirationAccountData(deletedOwner);
       await removeLocalAccountData();
       await logout();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

@@ -5,6 +5,216 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface InspirationContent {
+  /** @maxLength 2000 */
+  quote: string;
+  /**
+     * @maxLength 200
+     * @nullable
+     */
+  author: string | null;
+  /** @maxLength 20000 */
+  reflection: string;
+  /** @nullable */
+  imagePath: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  imagePositionX: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  imagePositionY: number;
+  /**
+     * @minimum 0
+     * @maximum 0.85
+     */
+  overlayOpacity: number;
+  /** @nullable */
+  sessionId: string | null;
+}
+
+export interface InspirationPublicContent {
+  quote: string;
+  /** @nullable */
+  author: string | null;
+  reflection: string;
+  imageUrl: string;
+  imagePositionX: number;
+  imagePositionY: number;
+  overlayOpacity: number;
+  /** @nullable */
+  sessionId: string | null;
+}
+
+export type InspirationDayStatus = typeof InspirationDayStatus[keyof typeof InspirationDayStatus];
+
+
+export const InspirationDayStatus = {
+  available: 'available',
+  future: 'future',
+  unavailable: 'unavailable',
+} as const;
+
+export interface InspirationDay {
+  date: string;
+  status: InspirationDayStatus;
+  /** @nullable */
+  id: string | null;
+  /** @nullable */
+  revision: number | null;
+  content: InspirationPublicContent | null;
+}
+
+export interface InspirationSettings {
+  /** @minimum 0 */
+  revision: number;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sectionTitle: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  readMoreLabel: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  discoverMoreLabel: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  notesLabel: string;
+}
+
+export interface InspirationWeek {
+  weekStart: string;
+  today: string;
+  timeZone: string;
+  /**
+     * @minItems 7
+     * @maxItems 7
+     */
+  days: InspirationDay[];
+  settings: InspirationSettings;
+}
+
+export interface AdminInspiration {
+  id: string;
+  date: string;
+  revision: number;
+  draft: InspirationContent;
+  published: InspirationContent | null;
+  /** @nullable */
+  publishedRevision: number | null;
+  deleted: boolean;
+  updatedAt: string;
+}
+
+export type AdminInspirationWeekDaysItem = {
+  date: string;
+  inspiration: AdminInspiration | null;
+};
+
+export interface AdminInspirationWeek {
+  weekStart: string;
+  days: AdminInspirationWeekDaysItem[];
+  settings: InspirationSettings;
+}
+
+export interface InspirationRevisionBody {
+  /** @minimum 0 */
+  revision: number;
+}
+
+export interface CreateAdminInspirationBody {
+  date: string;
+  draft: InspirationContent;
+}
+
+export interface UpdateAdminInspirationBody {
+  /** @minimum 0 */
+  revision: number;
+  date: string;
+  draft: InspirationContent;
+}
+
+export type InspirationUploadBodyContentType = typeof InspirationUploadBodyContentType[keyof typeof InspirationUploadBodyContentType];
+
+
+export const InspirationUploadBodyContentType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+} as const;
+
+export interface InspirationUploadBody {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * @minimum 1
+     * @maximum 15728640
+     */
+  size: number;
+  contentType: InspirationUploadBodyContentType;
+}
+
+export interface InspirationUpload {
+  uploadURL: string;
+  objectPath: string;
+}
+
+export interface PutInspirationFavoriteBody {
+  /** @minimum 0 */
+  revision: number;
+  deleted: boolean;
+}
+
+export interface InspirationFavorite {
+  inspirationId: string;
+  revision: number;
+  deleted: boolean;
+  updatedAt: string;
+  day: InspirationDay | null;
+}
+
+export interface InspirationFavorites {
+  items: InspirationFavorite[];
+}
+
+export interface PutInspirationNoteBody {
+  /** @minimum 0 */
+  revision: number;
+  inspirationId: string;
+  /** @maxLength 20000 */
+  text: string;
+  deleted: boolean;
+}
+
+export interface InspirationNote {
+  id: string;
+  inspirationId: string;
+  text: string;
+  revision: number;
+  deleted: boolean;
+  updatedAt: string;
+  /** @nullable */
+  date: string | null;
+}
+
+export interface InspirationNotes {
+  items: InspirationNote[];
+}
+
 export type AccountDataExportData = { [key: string]: unknown };
 
 export interface AccountDataExport {
@@ -2380,6 +2590,51 @@ export interface UpdateDescansoSoundBody {
   sortOrder?: number;
   isActive?: boolean;
 }
+
+export type GetInspirationWeekParams = {
+date?: string;
+timeZone?: string;
+};
+
+export type GetInspirationByDateParams = {
+timeZone?: string;
+};
+
+export type GetInspirationParams = {
+timeZone?: string;
+};
+
+export type GetInspirationImageParams = {
+timeZone?: string;
+/**
+ * @minimum 1
+ */
+revision?: number;
+};
+
+export type GetAdminInspirationWeekParams = {
+date?: string;
+};
+
+export type GetAdminInspirationImageParams = {
+objectPath: string;
+};
+
+export type GetInspirationFavoritesParams = {
+timeZone?: string;
+};
+
+export type PutInspirationFavoriteParams = {
+timeZone?: string;
+};
+
+export type GetInspirationNotesParams = {
+inspirationId?: string;
+};
+
+export type PutInspirationNoteParams = {
+timeZone?: string;
+};
 
 export type GetMessagesParams = {
 page?: number;

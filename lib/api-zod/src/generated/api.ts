@@ -8,6 +8,896 @@
 import * as zod from 'zod';
 
 
+export const GetInspirationWeekQueryParams = zod.object({
+  "date": zod.coerce.string().optional(),
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const getInspirationWeekResponseDaysMin = 7;
+export const getInspirationWeekResponseDaysMax = 7;
+
+export const getInspirationWeekResponseSettingsRevisionMin = 0;
+
+export const getInspirationWeekResponseSettingsSectionTitleMax = 100;
+
+export const getInspirationWeekResponseSettingsReadMoreLabelMax = 100;
+
+export const getInspirationWeekResponseSettingsDiscoverMoreLabelMax = 100;
+
+export const getInspirationWeekResponseSettingsNotesLabelMax = 100;
+
+
+
+export const GetInspirationWeekResponse = zod.object({
+  "weekStart": zod.string(),
+  "today": zod.string(),
+  "timeZone": zod.string(),
+  "days": zod.array(zod.object({
+  "date": zod.string(),
+  "status": zod.enum(['available', 'future', 'unavailable']),
+  "id": zod.string().nullable(),
+  "revision": zod.number().nullable(),
+  "content": zod.union([zod.object({
+  "quote": zod.string(),
+  "author": zod.string().nullable(),
+  "reflection": zod.string(),
+  "imageUrl": zod.string(),
+  "imagePositionX": zod.number(),
+  "imagePositionY": zod.number(),
+  "overlayOpacity": zod.number(),
+  "sessionId": zod.string().nullable()
+}),zod.null()])
+})).min(getInspirationWeekResponseDaysMin).max(getInspirationWeekResponseDaysMax),
+  "settings": zod.object({
+  "revision": zod.number().min(getInspirationWeekResponseSettingsRevisionMin),
+  "sectionTitle": zod.string().min(1).max(getInspirationWeekResponseSettingsSectionTitleMax),
+  "readMoreLabel": zod.string().min(1).max(getInspirationWeekResponseSettingsReadMoreLabelMax),
+  "discoverMoreLabel": zod.string().min(1).max(getInspirationWeekResponseSettingsDiscoverMoreLabelMax),
+  "notesLabel": zod.string().min(1).max(getInspirationWeekResponseSettingsNotesLabelMax)
+})
+})
+
+
+export const getInspirationSettingsResponseRevisionMin = 0;
+
+export const getInspirationSettingsResponseSectionTitleMax = 100;
+
+export const getInspirationSettingsResponseReadMoreLabelMax = 100;
+
+export const getInspirationSettingsResponseDiscoverMoreLabelMax = 100;
+
+export const getInspirationSettingsResponseNotesLabelMax = 100;
+
+
+
+export const GetInspirationSettingsResponse = zod.object({
+  "revision": zod.number().min(getInspirationSettingsResponseRevisionMin),
+  "sectionTitle": zod.string().min(1).max(getInspirationSettingsResponseSectionTitleMax),
+  "readMoreLabel": zod.string().min(1).max(getInspirationSettingsResponseReadMoreLabelMax),
+  "discoverMoreLabel": zod.string().min(1).max(getInspirationSettingsResponseDiscoverMoreLabelMax),
+  "notesLabel": zod.string().min(1).max(getInspirationSettingsResponseNotesLabelMax)
+})
+
+
+export const GetInspirationByDateParams = zod.object({
+  "date": zod.coerce.string()
+})
+
+export const GetInspirationByDateQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const GetInspirationByDateResponse = zod.object({
+  "date": zod.string(),
+  "status": zod.enum(['available', 'future', 'unavailable']),
+  "id": zod.string().nullable(),
+  "revision": zod.number().nullable(),
+  "content": zod.union([zod.object({
+  "quote": zod.string(),
+  "author": zod.string().nullable(),
+  "reflection": zod.string(),
+  "imageUrl": zod.string(),
+  "imagePositionX": zod.number(),
+  "imagePositionY": zod.number(),
+  "overlayOpacity": zod.number(),
+  "sessionId": zod.string().nullable()
+}),zod.null()])
+})
+
+
+export const GetInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const GetInspirationQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const GetInspirationResponse = zod.object({
+  "date": zod.string(),
+  "status": zod.enum(['available', 'future', 'unavailable']),
+  "id": zod.string().nullable(),
+  "revision": zod.number().nullable(),
+  "content": zod.union([zod.object({
+  "quote": zod.string(),
+  "author": zod.string().nullable(),
+  "reflection": zod.string(),
+  "imageUrl": zod.string(),
+  "imagePositionX": zod.number(),
+  "imagePositionY": zod.number(),
+  "overlayOpacity": zod.number(),
+  "sessionId": zod.string().nullable()
+}),zod.null()])
+})
+
+
+export const GetInspirationImageParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+export const GetInspirationImageQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional(),
+  "revision": zod.coerce.number().min(1).optional()
+})
+
+
+export const GetAdminInspirationWeekQueryParams = zod.object({
+  "date": zod.coerce.string().optional()
+})
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteMax = 2000;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftAuthorMax = 200;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftReflectionMax = 20000;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMax = 100;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMax = 100;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMax = 0.85;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteMax = 2000;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneAuthorMax = 200;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneReflectionMax = 20000;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMax = 100;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMax = 100;
+
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMin = 0;
+export const getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMax = 0.85;
+
+export const getAdminInspirationWeekResponseSettingsRevisionMin = 0;
+
+export const getAdminInspirationWeekResponseSettingsSectionTitleMax = 100;
+
+export const getAdminInspirationWeekResponseSettingsReadMoreLabelMax = 100;
+
+export const getAdminInspirationWeekResponseSettingsDiscoverMoreLabelMax = 100;
+
+export const getAdminInspirationWeekResponseSettingsNotesLabelMax = 100;
+
+
+
+export const GetAdminInspirationWeekResponse = zod.object({
+  "weekStart": zod.string(),
+  "days": zod.array(zod.object({
+  "date": zod.string(),
+  "inspiration": zod.union([zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftQuoteMax),
+  "author": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMin).max(getAdminInspirationWeekResponseDaysItemInspirationOneDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneQuoteMax),
+  "author": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMin).max(getAdminInspirationWeekResponseDaysItemInspirationOnePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+}),zod.null()])
+})),
+  "settings": zod.object({
+  "revision": zod.number().min(getAdminInspirationWeekResponseSettingsRevisionMin),
+  "sectionTitle": zod.string().min(1).max(getAdminInspirationWeekResponseSettingsSectionTitleMax),
+  "readMoreLabel": zod.string().min(1).max(getAdminInspirationWeekResponseSettingsReadMoreLabelMax),
+  "discoverMoreLabel": zod.string().min(1).max(getAdminInspirationWeekResponseSettingsDiscoverMoreLabelMax),
+  "notesLabel": zod.string().min(1).max(getAdminInspirationWeekResponseSettingsNotesLabelMax)
+})
+})
+
+
+export const updateInspirationSettingsBodyRevisionMin = 0;
+
+export const updateInspirationSettingsBodySectionTitleMax = 100;
+
+export const updateInspirationSettingsBodyReadMoreLabelMax = 100;
+
+export const updateInspirationSettingsBodyDiscoverMoreLabelMax = 100;
+
+export const updateInspirationSettingsBodyNotesLabelMax = 100;
+
+
+
+export const UpdateInspirationSettingsBody = zod.object({
+  "revision": zod.number().min(updateInspirationSettingsBodyRevisionMin),
+  "sectionTitle": zod.string().min(1).max(updateInspirationSettingsBodySectionTitleMax),
+  "readMoreLabel": zod.string().min(1).max(updateInspirationSettingsBodyReadMoreLabelMax),
+  "discoverMoreLabel": zod.string().min(1).max(updateInspirationSettingsBodyDiscoverMoreLabelMax),
+  "notesLabel": zod.string().min(1).max(updateInspirationSettingsBodyNotesLabelMax)
+})
+
+export const updateInspirationSettingsResponseRevisionMin = 0;
+
+export const updateInspirationSettingsResponseSectionTitleMax = 100;
+
+export const updateInspirationSettingsResponseReadMoreLabelMax = 100;
+
+export const updateInspirationSettingsResponseDiscoverMoreLabelMax = 100;
+
+export const updateInspirationSettingsResponseNotesLabelMax = 100;
+
+
+
+export const UpdateInspirationSettingsResponse = zod.object({
+  "revision": zod.number().min(updateInspirationSettingsResponseRevisionMin),
+  "sectionTitle": zod.string().min(1).max(updateInspirationSettingsResponseSectionTitleMax),
+  "readMoreLabel": zod.string().min(1).max(updateInspirationSettingsResponseReadMoreLabelMax),
+  "discoverMoreLabel": zod.string().min(1).max(updateInspirationSettingsResponseDiscoverMoreLabelMax),
+  "notesLabel": zod.string().min(1).max(updateInspirationSettingsResponseNotesLabelMax)
+})
+
+
+export const requestInspirationUploadBodyNameMax = 200;
+
+export const requestInspirationUploadBodySizeMax = 15728640;
+
+
+
+export const RequestInspirationUploadBody = zod.object({
+  "name": zod.string().min(1).max(requestInspirationUploadBodyNameMax),
+  "size": zod.number().min(1).max(requestInspirationUploadBodySizeMax),
+  "contentType": zod.enum(['image/jpeg', 'image/png', 'image/webp'])
+})
+
+export const RequestInspirationUploadResponse = zod.object({
+  "uploadURL": zod.string(),
+  "objectPath": zod.string()
+})
+
+
+export const GetAdminInspirationImageQueryParams = zod.object({
+  "objectPath": zod.coerce.string()
+})
+
+
+export const createAdminInspirationBodyDraftQuoteMax = 2000;
+
+export const createAdminInspirationBodyDraftAuthorMax = 200;
+
+export const createAdminInspirationBodyDraftReflectionMax = 20000;
+
+export const createAdminInspirationBodyDraftImagePositionXMin = 0;
+export const createAdminInspirationBodyDraftImagePositionXMax = 100;
+
+export const createAdminInspirationBodyDraftImagePositionYMin = 0;
+export const createAdminInspirationBodyDraftImagePositionYMax = 100;
+
+export const createAdminInspirationBodyDraftOverlayOpacityMin = 0;
+export const createAdminInspirationBodyDraftOverlayOpacityMax = 0.85;
+
+
+
+export const CreateAdminInspirationBody = zod.object({
+  "date": zod.string(),
+  "draft": zod.object({
+  "quote": zod.string().max(createAdminInspirationBodyDraftQuoteMax),
+  "author": zod.string().max(createAdminInspirationBodyDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(createAdminInspirationBodyDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(createAdminInspirationBodyDraftImagePositionXMin).max(createAdminInspirationBodyDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(createAdminInspirationBodyDraftImagePositionYMin).max(createAdminInspirationBodyDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(createAdminInspirationBodyDraftOverlayOpacityMin).max(createAdminInspirationBodyDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+})
+})
+
+export const createAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const createAdminInspirationResponseDraftAuthorMax = 200;
+
+export const createAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const createAdminInspirationResponseDraftImagePositionXMin = 0;
+export const createAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const createAdminInspirationResponseDraftImagePositionYMin = 0;
+export const createAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const createAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const createAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const createAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const createAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const createAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const createAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const createAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const createAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const createAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const createAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const createAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const CreateAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(createAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(createAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(createAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(createAdminInspirationResponseDraftImagePositionXMin).max(createAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(createAdminInspirationResponseDraftImagePositionYMin).max(createAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(createAdminInspirationResponseDraftOverlayOpacityMin).max(createAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(createAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(createAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(createAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(createAdminInspirationResponsePublishedOneImagePositionXMin).max(createAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(createAdminInspirationResponsePublishedOneImagePositionYMin).max(createAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(createAdminInspirationResponsePublishedOneOverlayOpacityMin).max(createAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const GetAdminInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const getAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const getAdminInspirationResponseDraftAuthorMax = 200;
+
+export const getAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const getAdminInspirationResponseDraftImagePositionXMin = 0;
+export const getAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const getAdminInspirationResponseDraftImagePositionYMin = 0;
+export const getAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const getAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const getAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const getAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const getAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const getAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const getAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const getAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const getAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const getAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const getAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const getAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const GetAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(getAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(getAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(getAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(getAdminInspirationResponseDraftImagePositionXMin).max(getAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(getAdminInspirationResponseDraftImagePositionYMin).max(getAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(getAdminInspirationResponseDraftOverlayOpacityMin).max(getAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(getAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(getAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(getAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(getAdminInspirationResponsePublishedOneImagePositionXMin).max(getAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(getAdminInspirationResponsePublishedOneImagePositionYMin).max(getAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(getAdminInspirationResponsePublishedOneOverlayOpacityMin).max(getAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const UpdateAdminInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const updateAdminInspirationBodyRevisionMin = 0;
+
+export const updateAdminInspirationBodyDraftQuoteMax = 2000;
+
+export const updateAdminInspirationBodyDraftAuthorMax = 200;
+
+export const updateAdminInspirationBodyDraftReflectionMax = 20000;
+
+export const updateAdminInspirationBodyDraftImagePositionXMin = 0;
+export const updateAdminInspirationBodyDraftImagePositionXMax = 100;
+
+export const updateAdminInspirationBodyDraftImagePositionYMin = 0;
+export const updateAdminInspirationBodyDraftImagePositionYMax = 100;
+
+export const updateAdminInspirationBodyDraftOverlayOpacityMin = 0;
+export const updateAdminInspirationBodyDraftOverlayOpacityMax = 0.85;
+
+
+
+export const UpdateAdminInspirationBody = zod.object({
+  "revision": zod.number().min(updateAdminInspirationBodyRevisionMin),
+  "date": zod.string(),
+  "draft": zod.object({
+  "quote": zod.string().max(updateAdminInspirationBodyDraftQuoteMax),
+  "author": zod.string().max(updateAdminInspirationBodyDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(updateAdminInspirationBodyDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(updateAdminInspirationBodyDraftImagePositionXMin).max(updateAdminInspirationBodyDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(updateAdminInspirationBodyDraftImagePositionYMin).max(updateAdminInspirationBodyDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(updateAdminInspirationBodyDraftOverlayOpacityMin).max(updateAdminInspirationBodyDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+})
+})
+
+export const updateAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const updateAdminInspirationResponseDraftAuthorMax = 200;
+
+export const updateAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const updateAdminInspirationResponseDraftImagePositionXMin = 0;
+export const updateAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const updateAdminInspirationResponseDraftImagePositionYMin = 0;
+export const updateAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const updateAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const updateAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const updateAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const updateAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const updateAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const updateAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const updateAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const updateAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const updateAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const updateAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const updateAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const UpdateAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(updateAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(updateAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(updateAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(updateAdminInspirationResponseDraftImagePositionXMin).max(updateAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(updateAdminInspirationResponseDraftImagePositionYMin).max(updateAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(updateAdminInspirationResponseDraftOverlayOpacityMin).max(updateAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(updateAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(updateAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(updateAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(updateAdminInspirationResponsePublishedOneImagePositionXMin).max(updateAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(updateAdminInspirationResponsePublishedOneImagePositionYMin).max(updateAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(updateAdminInspirationResponsePublishedOneOverlayOpacityMin).max(updateAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const DeleteAdminInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const deleteAdminInspirationBodyRevisionMin = 0;
+
+
+
+export const DeleteAdminInspirationBody = zod.object({
+  "revision": zod.number().min(deleteAdminInspirationBodyRevisionMin)
+})
+
+export const deleteAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const deleteAdminInspirationResponseDraftAuthorMax = 200;
+
+export const deleteAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const deleteAdminInspirationResponseDraftImagePositionXMin = 0;
+export const deleteAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const deleteAdminInspirationResponseDraftImagePositionYMin = 0;
+export const deleteAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const deleteAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const deleteAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const deleteAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const deleteAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const deleteAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const deleteAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const deleteAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const deleteAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const deleteAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const deleteAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const deleteAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const DeleteAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(deleteAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(deleteAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(deleteAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(deleteAdminInspirationResponseDraftImagePositionXMin).max(deleteAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(deleteAdminInspirationResponseDraftImagePositionYMin).max(deleteAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(deleteAdminInspirationResponseDraftOverlayOpacityMin).max(deleteAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(deleteAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(deleteAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(deleteAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(deleteAdminInspirationResponsePublishedOneImagePositionXMin).max(deleteAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(deleteAdminInspirationResponsePublishedOneImagePositionYMin).max(deleteAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(deleteAdminInspirationResponsePublishedOneOverlayOpacityMin).max(deleteAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const PublishAdminInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const publishAdminInspirationBodyRevisionMin = 0;
+
+
+
+export const PublishAdminInspirationBody = zod.object({
+  "revision": zod.number().min(publishAdminInspirationBodyRevisionMin)
+})
+
+export const publishAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const publishAdminInspirationResponseDraftAuthorMax = 200;
+
+export const publishAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const publishAdminInspirationResponseDraftImagePositionXMin = 0;
+export const publishAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const publishAdminInspirationResponseDraftImagePositionYMin = 0;
+export const publishAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const publishAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const publishAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const publishAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const publishAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const publishAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const publishAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const publishAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const publishAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const publishAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const publishAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const publishAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const PublishAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(publishAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(publishAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(publishAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(publishAdminInspirationResponseDraftImagePositionXMin).max(publishAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(publishAdminInspirationResponseDraftImagePositionYMin).max(publishAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(publishAdminInspirationResponseDraftOverlayOpacityMin).max(publishAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(publishAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(publishAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(publishAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(publishAdminInspirationResponsePublishedOneImagePositionXMin).max(publishAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(publishAdminInspirationResponsePublishedOneImagePositionYMin).max(publishAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(publishAdminInspirationResponsePublishedOneOverlayOpacityMin).max(publishAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const UnpublishAdminInspirationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const unpublishAdminInspirationBodyRevisionMin = 0;
+
+
+
+export const UnpublishAdminInspirationBody = zod.object({
+  "revision": zod.number().min(unpublishAdminInspirationBodyRevisionMin)
+})
+
+export const unpublishAdminInspirationResponseDraftQuoteMax = 2000;
+
+export const unpublishAdminInspirationResponseDraftAuthorMax = 200;
+
+export const unpublishAdminInspirationResponseDraftReflectionMax = 20000;
+
+export const unpublishAdminInspirationResponseDraftImagePositionXMin = 0;
+export const unpublishAdminInspirationResponseDraftImagePositionXMax = 100;
+
+export const unpublishAdminInspirationResponseDraftImagePositionYMin = 0;
+export const unpublishAdminInspirationResponseDraftImagePositionYMax = 100;
+
+export const unpublishAdminInspirationResponseDraftOverlayOpacityMin = 0;
+export const unpublishAdminInspirationResponseDraftOverlayOpacityMax = 0.85;
+
+export const unpublishAdminInspirationResponsePublishedOneQuoteMax = 2000;
+
+export const unpublishAdminInspirationResponsePublishedOneAuthorMax = 200;
+
+export const unpublishAdminInspirationResponsePublishedOneReflectionMax = 20000;
+
+export const unpublishAdminInspirationResponsePublishedOneImagePositionXMin = 0;
+export const unpublishAdminInspirationResponsePublishedOneImagePositionXMax = 100;
+
+export const unpublishAdminInspirationResponsePublishedOneImagePositionYMin = 0;
+export const unpublishAdminInspirationResponsePublishedOneImagePositionYMax = 100;
+
+export const unpublishAdminInspirationResponsePublishedOneOverlayOpacityMin = 0;
+export const unpublishAdminInspirationResponsePublishedOneOverlayOpacityMax = 0.85;
+
+
+
+export const UnpublishAdminInspirationResponse = zod.object({
+  "id": zod.string(),
+  "date": zod.string(),
+  "revision": zod.number(),
+  "draft": zod.object({
+  "quote": zod.string().max(unpublishAdminInspirationResponseDraftQuoteMax),
+  "author": zod.string().max(unpublishAdminInspirationResponseDraftAuthorMax).nullable(),
+  "reflection": zod.string().max(unpublishAdminInspirationResponseDraftReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(unpublishAdminInspirationResponseDraftImagePositionXMin).max(unpublishAdminInspirationResponseDraftImagePositionXMax),
+  "imagePositionY": zod.number().min(unpublishAdminInspirationResponseDraftImagePositionYMin).max(unpublishAdminInspirationResponseDraftImagePositionYMax),
+  "overlayOpacity": zod.number().min(unpublishAdminInspirationResponseDraftOverlayOpacityMin).max(unpublishAdminInspirationResponseDraftOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),
+  "published": zod.union([zod.object({
+  "quote": zod.string().max(unpublishAdminInspirationResponsePublishedOneQuoteMax),
+  "author": zod.string().max(unpublishAdminInspirationResponsePublishedOneAuthorMax).nullable(),
+  "reflection": zod.string().max(unpublishAdminInspirationResponsePublishedOneReflectionMax),
+  "imagePath": zod.string().nullable(),
+  "imagePositionX": zod.number().min(unpublishAdminInspirationResponsePublishedOneImagePositionXMin).max(unpublishAdminInspirationResponsePublishedOneImagePositionXMax),
+  "imagePositionY": zod.number().min(unpublishAdminInspirationResponsePublishedOneImagePositionYMin).max(unpublishAdminInspirationResponsePublishedOneImagePositionYMax),
+  "overlayOpacity": zod.number().min(unpublishAdminInspirationResponsePublishedOneOverlayOpacityMin).max(unpublishAdminInspirationResponsePublishedOneOverlayOpacityMax),
+  "sessionId": zod.string().nullable()
+}),zod.null()]),
+  "publishedRevision": zod.number().nullable(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string()
+})
+
+
+export const GetInspirationFavoritesQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const GetInspirationFavoritesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "inspirationId": zod.string(),
+  "revision": zod.number(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "day": zod.union([zod.object({
+  "date": zod.string(),
+  "status": zod.enum(['available', 'future', 'unavailable']),
+  "id": zod.string().nullable(),
+  "revision": zod.number().nullable(),
+  "content": zod.union([zod.object({
+  "quote": zod.string(),
+  "author": zod.string().nullable(),
+  "reflection": zod.string(),
+  "imageUrl": zod.string(),
+  "imagePositionX": zod.number(),
+  "imagePositionY": zod.number(),
+  "overlayOpacity": zod.number(),
+  "sessionId": zod.string().nullable()
+}),zod.null()])
+}),zod.null()])
+}))
+})
+
+
+export const PutInspirationFavoriteParams = zod.object({
+  "inspirationId": zod.coerce.string()
+})
+
+export const PutInspirationFavoriteQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const putInspirationFavoriteBodyRevisionMin = 0;
+
+
+
+export const PutInspirationFavoriteBody = zod.object({
+  "revision": zod.number().min(putInspirationFavoriteBodyRevisionMin),
+  "deleted": zod.boolean()
+})
+
+export const PutInspirationFavoriteResponse = zod.object({
+  "inspirationId": zod.string(),
+  "revision": zod.number(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "day": zod.union([zod.object({
+  "date": zod.string(),
+  "status": zod.enum(['available', 'future', 'unavailable']),
+  "id": zod.string().nullable(),
+  "revision": zod.number().nullable(),
+  "content": zod.union([zod.object({
+  "quote": zod.string(),
+  "author": zod.string().nullable(),
+  "reflection": zod.string(),
+  "imageUrl": zod.string(),
+  "imagePositionX": zod.number(),
+  "imagePositionY": zod.number(),
+  "overlayOpacity": zod.number(),
+  "sessionId": zod.string().nullable()
+}),zod.null()])
+}),zod.null()])
+})
+
+
+export const GetInspirationNotesQueryParams = zod.object({
+  "inspirationId": zod.coerce.string().optional()
+})
+
+export const GetInspirationNotesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "inspirationId": zod.string(),
+  "text": zod.string(),
+  "revision": zod.number(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "date": zod.string().nullable()
+}))
+})
+
+
+export const PutInspirationNoteParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const PutInspirationNoteQueryParams = zod.object({
+  "timeZone": zod.coerce.string().optional()
+})
+
+export const putInspirationNoteBodyRevisionMin = 0;
+
+export const putInspirationNoteBodyTextMax = 20000;
+
+
+
+export const PutInspirationNoteBody = zod.object({
+  "revision": zod.number().min(putInspirationNoteBodyRevisionMin),
+  "inspirationId": zod.string(),
+  "text": zod.string().max(putInspirationNoteBodyTextMax),
+  "deleted": zod.boolean()
+})
+
+export const PutInspirationNoteResponse = zod.object({
+  "id": zod.string(),
+  "inspirationId": zod.string(),
+  "text": zod.string(),
+  "revision": zod.number(),
+  "deleted": zod.boolean(),
+  "updatedAt": zod.string(),
+  "date": zod.string().nullable()
+})
+
+
 /**
  * Returns server health status
  * @summary Health check

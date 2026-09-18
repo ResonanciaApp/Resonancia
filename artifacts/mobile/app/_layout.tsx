@@ -33,6 +33,7 @@ import { BrightnessProvider, useBrightness, applyBrightSat } from "@/context/Bri
 import { CatalogProvider } from "@/context/CatalogContext";
 import { MoodQuotesProvider } from "@/context/MoodQuotesContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { InspirationProvider } from "@/context/InspirationContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { initializePracticeNotifications } from "@/lib/practiceNotifications";
@@ -544,6 +545,7 @@ export default function RootLayout() {
               <CatalogProvider>
               <MoodQuotesProvider>
               <AuthProvider>
+              <InspirationProvider>
                 <NotificationsProvider>
                 <PremiumProvider>
                 <DownloadProvider>
@@ -596,6 +598,7 @@ export default function RootLayout() {
                 </DownloadProvider>
                 </PremiumProvider>
               </NotificationsProvider>
+              </InspirationProvider>
               </AuthProvider>
               </MoodQuotesProvider>
               </CatalogProvider>

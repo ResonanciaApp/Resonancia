@@ -24,6 +24,7 @@ import communityRouter from "./community";
 import resonadoresRouter from "./resonadores";
 import searchTrendsRouter from "./search-trends";
 import emotionalPhrasesRouter from "./emotional-phrases";
+import inspirationsRouter from "./inspirations";
 
 const router: IRouter = Router();
 
@@ -52,5 +53,6 @@ router.use(communityRouter);
 router.use(resonadoresRouter);
 router.use(searchTrendsRouter);
 router.use(emotionalPhrasesRouter);
+router.use(inspirationsRouter);
 
 export default router;

@@ -27,6 +27,7 @@ vi.mock("@clerk/express", () => ({
 
 import {
   catalogPlaylistsTable,
+  inspirationAssetsTable,
   db,
   directMessagesTable,
   uploadsTable,
@@ -62,6 +63,7 @@ const suffix = `${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
 const privatePath = `/objects/uploads/private-${suffix}`;
 const publicPath = `/objects/uploads/public-${suffix}`;
 const messagePath = `/objects/uploads/message-${suffix}`;
+const scheduledPath = `/objects/uploads/inspiration-${suffix}`;
 let owner: User;
 let other: User;
 let admin: User;
@@ -118,6 +120,14 @@ describe("private object serving policy", () => {
       coverUrl: publicPath,
       isActive: true,
     });
+    await db.insert(inspirationAssetsTable).values({
+      objectPath: scheduledPath, contentType: "image/png", sizeBytes: 7,
+    });
+    // Even an accidental public reference must not bypass the date proxy.
+    await db.insert(catalogPlaylistsTable).values({
+      slug: `storage-scheduled-${suffix}`, title: "Scheduled test",
+      coverUrl: scheduledPath, isActive: true,
+    });
     await db.insert(directMessagesTable).values({
       senderId: owner.id,
       recipientId: other.id,
@@ -172,7 +182,8 @@ describe("private object serving policy", () => {
     vi.restoreAllMocks();
     await db
       .delete(catalogPlaylistsTable)
-      .where(eq(catalogPlaylistsTable.slug, `storage-public-${suffix}`));
+      .where(inArray(catalogPlaylistsTable.slug, [`storage-public-${suffix}`, `storage-scheduled-${suffix}`]));
+    await db.delete(inspirationAssetsTable).where(eq(inspirationAssetsTable.objectPath, scheduledPath));
     await db
       .delete(usersTable)
       .where(
@@ -189,6 +200,15 @@ describe("private object serving policy", () => {
   it("returns 401 for an anonymous private upload", async () => {
     const res = await getObject(privatePath);
     expect(res.status).toBe(401);
+  });
+  it("blocks scheduled editorial assets through generic storage, even with public references/ACL or admin", async () => {
+    authState.aclAllowed = true;
+    expect((await getObject(scheduledPath)).status).toBe(404);
+    authAs(admin);
+    const response = await getObject(scheduledPath).set("Range", "bytes=0-2");
+    expect(response.status).toBe(404);
+    expect(response.headers["cache-control"]).toBe("private, no-store");
+    expect(response.headers["content-range"]).toBeUndefined();
   });
 
   it("allows the upload owner", async () => {

@@ -124,6 +124,7 @@ import {
   isMeditativeSessionPlaylist,
 } from "@/lib/editorial-playlist-helpers";
 
+import { useRouter } from "expo-router";
 const { width, height } = Dimensions.get("window");
 
 const GRID_GAP = 12;
@@ -1286,6 +1287,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
 }) {
+  const router = useRouter();
   const { user: clerkUser } = useUser();
   const { username, photoUri } = useUserProfile();
   const displayName =
@@ -1509,8 +1511,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         </>
       )}
 
-      <View
-        pointerEvents="box-none"
+      <Pressable
+        onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
         style={[
           styles.inicio2HeroStaticCopy,
           {
@@ -1529,7 +1531,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
               color="#F9F9F9"
             />
             <Text style={styles.inicio3HeroPillText}>
-              Inspiración semanal
+              Inspiración diaria
             </Text>
           </View>
         )}
@@ -1541,21 +1543,16 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           {"Aprendamos a conectar\ncon lo esencial"}
         </Text>
         {!isInicio3 && (
-          <Pressable
-            onPress={() => {}}
-            style={({ pressed }) => [
-              styles.inicio2HeroActionButton,
-              styles.inicio2HeroStaticActionButton,
-              { opacity: pressed ? 0.82 : 1 },
-            ]}
+          <View
+            style={styles.inicio2HeroStaticActionButton}
             accessibilityRole="button"
             accessibilityLabel="Descubrir"
             testID="inicio2-hero-action"
           >
             <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
-          </Pressable>
+          </View>
         )}
-      </View>
+      </Pressable>
     </View>
   );
 });

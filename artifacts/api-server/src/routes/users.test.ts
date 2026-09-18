@@ -31,6 +31,8 @@ vi.mock("../lib/objectStorage", () => ({
 import {
   accountDeletionsTable,
   applicationsTable,
+  inspirationNotesTable,
+  inspirationFavoritesTable,
   db,
   liveSessionsTable,
   pushTokensTable,
@@ -117,6 +119,14 @@ describe("account data lifecycle", () => {
   });
 
   it("exports the authenticated account in a portable JSON envelope", async () => {
+    const inspirationId = "b6f996da-5ed1-4630-a3ba-b887311e1fc2";
+    await db.insert(inspirationNotesTable).values({
+      id: inspirationId, inspirationId, userId: currentUser!.id,
+      revision: 1, deleted: false, text: "Mi nota privada",
+    });
+    await db.insert(inspirationFavoritesTable).values({
+      inspirationId, userId: currentUser!.id, revision: 1, deleted: false,
+    });
     await db.insert(applicationsTable).values({
       type: "resonador",
       name: "Cuenta de prueba",
@@ -143,6 +153,9 @@ describe("account data lifecycle", () => {
     expect(res.body.data.applications[0].phone).toBe("+56 000000000");
     expect(res.body.data.pushTokens).toHaveLength(1);
     expect(res.body.data.pushTokens[0].platform).toBe("ios");
+    expect(res.body.data.inspirationNotes).toHaveLength(1);
+    expect(res.body.data.inspirationNotes[0].text).toBe("Mi nota privada");
+    expect(res.body.data.inspirationFavorites).toHaveLength(1);
   });
 
   it("rejects account deletion without the exact confirmation", async () => {
@@ -163,6 +176,14 @@ describe("account data lifecycle", () => {
 
   it("deletes owned objects, database data, and the Clerk identity", async () => {
     const objectPath = `/objects/account-test-${suffix}`;
+    const inspirationId = "b6f996da-5ed1-4630-a3ba-b887311e1fc2";
+    await db.insert(inspirationNotesTable).values({
+      id: inspirationId, inspirationId, userId: currentUser!.id,
+      revision: 2, deleted: false, text: "Eliminar junto a mi cuenta",
+    });
+    await db.insert(inspirationFavoritesTable).values({
+      inspirationId, userId: currentUser!.id, revision: 2, deleted: true,
+    });
     await db.insert(uploadsTable).values({
       userId: currentUser!.id,
       objectPath,
@@ -186,6 +207,8 @@ describe("account data lifecycle", () => {
       .from(usersTable)
       .where(eq(usersTable.id, currentUser!.id));
     expect(deleted).toBeUndefined();
+    expect(await db.select().from(inspirationNotesTable).where(eq(inspirationNotesTable.userId, currentUser!.id))).toEqual([]);
+    expect(await db.select().from(inspirationFavoritesTable).where(eq(inspirationFavoritesTable.userId, currentUser!.id))).toEqual([]);
 
     const [tombstone] = await db
       .select()

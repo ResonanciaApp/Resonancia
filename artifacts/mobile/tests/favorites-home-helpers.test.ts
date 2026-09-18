@@ -6,6 +6,12 @@ import {
   resolveSavedEditorialFavorites,
 } from "../lib/favorites-home-helpers.ts";
 
+test("inspiration favorites are an independent collection, never a session category", () => {
+  assert.deepEqual(buildVisibleFavoriteTabs([], false, false, true).map(tab => tab.id), ["all", "inspiraciones"]);
+  assert.deepEqual(buildVisibleFavoriteTabs(["inspiraciones"], false, false, false).map(tab => tab.id), ["all"]);
+  assert.deepEqual(buildVisibleFavoriteTabs([], false, false, false).map(tab => tab.id), ["all"]);
+});
+
 test("keeps Ver todos fixed and only exposes non-empty favorite collections", () => {
   const tabs = buildVisibleFavoriteTabs(
     ["musica-sonidos", "meditaciones-guiadas", "musica-sonidos"],

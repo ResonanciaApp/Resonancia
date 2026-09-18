@@ -144,6 +144,7 @@ app.get("/privacidad", (_req, res) => {
       <li><strong>Información de cuenta:</strong> nombre de usuario, dirección de correo electrónico y contraseña (gestionada de forma segura a través de Clerk).</li>
       <li><strong>Datos de actividad:</strong> sesiones de meditación escuchadas, tiempo de reproducción, sesiones favoritas y progreso personal.</li>
       <li><strong>Contenido generado por el usuario:</strong> entradas del diario personal, intenciones del día y mezclas de sonidos guardadas.</li>
+      <li><strong>Inspiración diaria:</strong> inspiraciones guardadas en favoritos y notas privadas asociadas. Cada nota conserva su identidad y revisión para sincronizar cambios sin sobrescribir texto silenciosamente.</li>
       <li><strong>Datos de uso:</strong> información sobre cómo interactuás con la App (funciones usadas, frecuencia de uso) con el propósito de mejorar la experiencia.</li>
       <li><strong>Información del dispositivo:</strong> identificador del dispositivo, sistema operativo y versión de la App, necesarios para el funcionamiento técnico.</li>
     </ul>
@@ -179,6 +180,16 @@ app.get("/privacidad", (_req, res) => {
     </p>
 
     <h2>5. Retención de datos</h2>
+    <p>
+      Las notas y favoritos de Inspiración diaria de invitados permanecen en el dispositivo.
+      Al iniciar sesión, su importación requiere confirmación. Los datos sincronizados pertenecen
+      exclusivamente a tu cuenta: los administradores editoriales no pueden consultar tus notas.
+      Las notas no se incluyen al compartir una imagen de inspiración. Podés exportar estos datos
+      desde tu cuenta; al eliminarla se borran también sus notas y favoritos sincronizados.
+      Al borrar una nota se elimina su texto y se conserva un registro mínimo de baja y revisión
+      mientras exista la cuenta para evitar que un dispositivo sin conexión la restaure.
+      Retirar una publicación editorial no borra tus notas privadas.
+    </p>
     <p>
       Conservamos tu información mientras tu cuenta esté activa. Si eliminás tu cuenta,
       borraremos o anonimizaremos tus datos personales dentro de los 30 días siguientes,

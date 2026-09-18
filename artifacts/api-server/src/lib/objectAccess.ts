@@ -1,7 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { db, uploadsTable, type UserRole } from "@workspace/db";
 
-export type ObjectReadAccess = "public" | "private" | "denied";
+export type ObjectReadAccess = "public" | "private" | "denied" | "inspiration-only";
 
 /**
  * Database-backed access policy for objects stored under PRIVATE_OBJECT_DIR.
@@ -26,6 +26,9 @@ export async function resolveObjectReadAccess({
       LIMIT 1
     )
     SELECT
+      EXISTS (
+        SELECT 1 FROM inspiration_assets a WHERE a.object_path = ${objectPath}
+      ) AS inspiration_only,
       (
         EXISTS (
           SELECT 1
@@ -122,12 +125,16 @@ export async function resolveObjectReadAccess({
   const row = result.rows[0] as
     | {
         is_public?: boolean;
+        inspiration_only?: boolean;
         is_owner?: boolean;
         is_privileged?: boolean;
         is_message_participant?: boolean;
       }
     | undefined;
 
+  // Scheduled images may only be read through the date/revision-gated proxy,
+  // even if accidentally referenced by another catalog entity or public ACL.
+  if (row?.inspiration_only) return "inspiration-only";
   if (row?.is_public) return "public";
   if (
     row?.is_owner ||

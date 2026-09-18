@@ -26,6 +26,8 @@ import type {
   AdminDescansoSoundItem,
   AdminEmotionalPhraseSet,
   AdminEmotionalPhrasesResponse,
+  AdminInspiration,
+  AdminInspirationWeek,
   AdminMixHideInput,
   AdminMixHideResponse,
   AdminMixerSoundItem,
@@ -49,6 +51,7 @@ import type {
   CatalogVideo,
   CommunityMessage,
   Conversation,
+  CreateAdminInspirationBody,
   CreateApplicationInput,
   CreateBunnyUploadUrlBody,
   CreateDescansoSoundBody,
@@ -79,12 +82,20 @@ import type {
   GetAdminDescansoSounds200,
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
+  GetAdminInspirationImageParams,
+  GetAdminInspirationWeekParams,
   GetAdminSessionsParams,
   GetAdminSounds200,
   GetAdminTagOptionsParams,
   GetAdminUsersParams,
   GetDirectMessagesParams,
   GetGeometrixSettings200,
+  GetInspirationByDateParams,
+  GetInspirationFavoritesParams,
+  GetInspirationImageParams,
+  GetInspirationNotesParams,
+  GetInspirationParams,
+  GetInspirationWeekParams,
   GetLiveGuides200,
   GetMessagesParams,
   GetMixerSounds200,
@@ -101,6 +112,16 @@ import type {
   GuideConfigInput,
   GuideConfigUpdate,
   HealthStatus,
+  InspirationDay,
+  InspirationFavorite,
+  InspirationFavorites,
+  InspirationNote,
+  InspirationNotes,
+  InspirationRevisionBody,
+  InspirationSettings,
+  InspirationUpload,
+  InspirationUploadBody,
+  InspirationWeek,
   LibrarySnapshot,
   ListDescansoSounds200,
   MessagesPage,
@@ -120,6 +141,10 @@ import type {
   PublicEmotionalPhrasesResponse,
   PublicUserProfile,
   PushPlaysBody,
+  PutInspirationFavoriteBody,
+  PutInspirationFavoriteParams,
+  PutInspirationNoteBody,
+  PutInspirationNoteParams,
   RegisterPushTokenBody,
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
@@ -153,6 +178,7 @@ import type {
   UnreadCount,
   UnregisterPushTokenBody,
   UpdateAdminGeometrix200,
+  UpdateAdminInspirationBody,
   UpdateApplicationStatusInput,
   UpdateDescansoSoundBody,
   UpdateEmotionalPhrasesInput,
@@ -177,6 +203,1396 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getGetInspirationWeekUrl = (params?: GetInspirationWeekParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/inspirations/week?${stringifiedParams}` : `/api/inspirations/week`
+}
+
+export const getInspirationWeek = async (params?: GetInspirationWeekParams, options?: RequestInit): Promise<InspirationWeek> => {
+
+  return customFetch<InspirationWeek>(getGetInspirationWeekUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationWeekQueryKey = (params?: GetInspirationWeekParams,) => {
+    return [
+    `/api/inspirations/week`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationWeekQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationWeek>>, TError = ErrorType<unknown>>(params?: GetInspirationWeekParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationWeek>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationWeekQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationWeek>>> = ({ signal }) => getInspirationWeek(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationWeek>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationWeekQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationWeek>>>
+export type GetInspirationWeekQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationWeek<TData = Awaited<ReturnType<typeof getInspirationWeek>>, TError = ErrorType<unknown>>(
+ params?: GetInspirationWeekParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationWeek>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationWeekQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetInspirationSettingsUrl = () => {
+
+
+
+
+  return `/api/inspirations/settings`
+}
+
+export const getInspirationSettings = async ( options?: RequestInit): Promise<InspirationSettings> => {
+
+  return customFetch<InspirationSettings>(getGetInspirationSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationSettingsQueryKey = () => {
+    return [
+    `/api/inspirations/settings`
+    ] as const;
+    }
+
+
+export const getGetInspirationSettingsQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationSettings>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationSettings>>> = ({ signal }) => getInspirationSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationSettings>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationSettings>>>
+export type GetInspirationSettingsQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationSettings<TData = Awaited<ReturnType<typeof getInspirationSettings>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetInspirationByDateUrl = (date: string,
+    params?: GetInspirationByDateParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/inspirations/by-date/${date}?${stringifiedParams}` : `/api/inspirations/by-date/${date}`
+}
+
+export const getInspirationByDate = async (date: string,
+    params?: GetInspirationByDateParams, options?: RequestInit): Promise<InspirationDay> => {
+
+  return customFetch<InspirationDay>(getGetInspirationByDateUrl(date,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationByDateQueryKey = (date: string,
+    params?: GetInspirationByDateParams,) => {
+    return [
+    `/api/inspirations/by-date/${date}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationByDateQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationByDate>>, TError = ErrorType<unknown>>(date: string,
+    params?: GetInspirationByDateParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationByDate>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationByDateQueryKey(date,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationByDate>>> = ({ signal }) => getInspirationByDate(date,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(date), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationByDate>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationByDateQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationByDate>>>
+export type GetInspirationByDateQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationByDate<TData = Awaited<ReturnType<typeof getInspirationByDate>>, TError = ErrorType<unknown>>(
+ date: string,
+    params?: GetInspirationByDateParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationByDate>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationByDateQueryOptions(date,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetInspirationUrl = (id: string,
+    params?: GetInspirationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/inspirations/${id}?${stringifiedParams}` : `/api/inspirations/${id}`
+}
+
+export const getInspiration = async (id: string,
+    params?: GetInspirationParams, options?: RequestInit): Promise<InspirationDay> => {
+
+  return customFetch<InspirationDay>(getGetInspirationUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationQueryKey = (id: string,
+    params?: GetInspirationParams,) => {
+    return [
+    `/api/inspirations/${id}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationQueryOptions = <TData = Awaited<ReturnType<typeof getInspiration>>, TError = ErrorType<unknown>>(id: string,
+    params?: GetInspirationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspiration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspiration>>> = ({ signal }) => getInspiration(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspiration>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationQueryResult = NonNullable<Awaited<ReturnType<typeof getInspiration>>>
+export type GetInspirationQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspiration<TData = Awaited<ReturnType<typeof getInspiration>>, TError = ErrorType<unknown>>(
+ id: string,
+    params?: GetInspirationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspiration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetInspirationImageUrl = (id: string,
+    params?: GetInspirationImageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/inspirations/${id}/image?${stringifiedParams}` : `/api/inspirations/${id}/image`
+}
+
+export const getInspirationImage = async (id: string,
+    params?: GetInspirationImageParams, options?: RequestInit): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetInspirationImageUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationImageQueryKey = (id: string,
+    params?: GetInspirationImageParams,) => {
+    return [
+    `/api/inspirations/${id}/image`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationImageQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationImage>>, TError = ErrorType<unknown>>(id: string,
+    params?: GetInspirationImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationImageQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationImage>>> = ({ signal }) => getInspirationImage(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationImage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationImageQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationImage>>>
+export type GetInspirationImageQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationImage<TData = Awaited<ReturnType<typeof getInspirationImage>>, TError = ErrorType<unknown>>(
+ id: string,
+    params?: GetInspirationImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationImageQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminInspirationWeekUrl = (params?: GetAdminInspirationWeekParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/inspirations/week?${stringifiedParams}` : `/api/admin/inspirations/week`
+}
+
+export const getAdminInspirationWeek = async (params?: GetAdminInspirationWeekParams, options?: RequestInit): Promise<AdminInspirationWeek> => {
+
+  return customFetch<AdminInspirationWeek>(getGetAdminInspirationWeekUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminInspirationWeekQueryKey = (params?: GetAdminInspirationWeekParams,) => {
+    return [
+    `/api/admin/inspirations/week`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminInspirationWeekQueryOptions = <TData = Awaited<ReturnType<typeof getAdminInspirationWeek>>, TError = ErrorType<unknown>>(params?: GetAdminInspirationWeekParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationWeek>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminInspirationWeekQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminInspirationWeek>>> = ({ signal }) => getAdminInspirationWeek(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationWeek>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminInspirationWeekQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminInspirationWeek>>>
+export type GetAdminInspirationWeekQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminInspirationWeek<TData = Awaited<ReturnType<typeof getAdminInspirationWeek>>, TError = ErrorType<unknown>>(
+ params?: GetAdminInspirationWeekParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationWeek>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminInspirationWeekQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateInspirationSettingsUrl = () => {
+
+
+
+
+  return `/api/admin/inspirations/settings`
+}
+
+export const updateInspirationSettings = async (inspirationSettings: InspirationSettings, options?: RequestInit): Promise<InspirationSettings> => {
+
+  return customFetch<InspirationSettings>(getUpdateInspirationSettingsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationSettings,)
+  }
+);}
+
+
+
+
+export const getUpdateInspirationSettingsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateInspirationSettings>>, TError,{data: BodyType<InspirationSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateInspirationSettings>>, TError,{data: BodyType<InspirationSettings>}, TContext> => {
+
+const mutationKey = ['updateInspirationSettings'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateInspirationSettings>>, {data: BodyType<InspirationSettings>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateInspirationSettings(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateInspirationSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateInspirationSettings>>>
+    export type UpdateInspirationSettingsMutationBody = BodyType<InspirationSettings>
+    export type UpdateInspirationSettingsMutationError = ErrorType<unknown>
+
+    export const useUpdateInspirationSettings = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateInspirationSettings>>, TError,{data: BodyType<InspirationSettings>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateInspirationSettings>>,
+        TError,
+        {data: BodyType<InspirationSettings>},
+        TContext
+      > => {
+      return useMutation(getUpdateInspirationSettingsMutationOptions(options));
+    }
+
+export const getRequestInspirationUploadUrl = () => {
+
+
+
+
+  return `/api/admin/inspirations/uploads`
+}
+
+export const requestInspirationUpload = async (inspirationUploadBody: InspirationUploadBody, options?: RequestInit): Promise<InspirationUpload> => {
+
+  return customFetch<InspirationUpload>(getRequestInspirationUploadUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationUploadBody,)
+  }
+);}
+
+
+
+
+export const getRequestInspirationUploadMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestInspirationUpload>>, TError,{data: BodyType<InspirationUploadBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestInspirationUpload>>, TError,{data: BodyType<InspirationUploadBody>}, TContext> => {
+
+const mutationKey = ['requestInspirationUpload'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestInspirationUpload>>, {data: BodyType<InspirationUploadBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestInspirationUpload(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestInspirationUploadMutationResult = NonNullable<Awaited<ReturnType<typeof requestInspirationUpload>>>
+    export type RequestInspirationUploadMutationBody = BodyType<InspirationUploadBody>
+    export type RequestInspirationUploadMutationError = ErrorType<unknown>
+
+    export const useRequestInspirationUpload = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestInspirationUpload>>, TError,{data: BodyType<InspirationUploadBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestInspirationUpload>>,
+        TError,
+        {data: BodyType<InspirationUploadBody>},
+        TContext
+      > => {
+      return useMutation(getRequestInspirationUploadMutationOptions(options));
+    }
+
+export const getGetAdminInspirationImageUrl = (params: GetAdminInspirationImageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/inspirations/image?${stringifiedParams}` : `/api/admin/inspirations/image`
+}
+
+export const getAdminInspirationImage = async (params: GetAdminInspirationImageParams, options?: RequestInit): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetAdminInspirationImageUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminInspirationImageQueryKey = (params?: GetAdminInspirationImageParams,) => {
+    return [
+    `/api/admin/inspirations/image`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminInspirationImageQueryOptions = <TData = Awaited<ReturnType<typeof getAdminInspirationImage>>, TError = ErrorType<unknown>>(params: GetAdminInspirationImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminInspirationImageQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminInspirationImage>>> = ({ signal }) => getAdminInspirationImage(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationImage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminInspirationImageQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminInspirationImage>>>
+export type GetAdminInspirationImageQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminInspirationImage<TData = Awaited<ReturnType<typeof getAdminInspirationImage>>, TError = ErrorType<unknown>>(
+ params: GetAdminInspirationImageParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspirationImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminInspirationImageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminInspirationUrl = () => {
+
+
+
+
+  return `/api/admin/inspirations`
+}
+
+export const createAdminInspiration = async (createAdminInspirationBody: CreateAdminInspirationBody, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getCreateAdminInspirationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createAdminInspirationBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminInspirationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminInspiration>>, TError,{data: BodyType<CreateAdminInspirationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminInspiration>>, TError,{data: BodyType<CreateAdminInspirationBody>}, TContext> => {
+
+const mutationKey = ['createAdminInspiration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminInspiration>>, {data: BodyType<CreateAdminInspirationBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminInspiration(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminInspirationMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminInspiration>>>
+    export type CreateAdminInspirationMutationBody = BodyType<CreateAdminInspirationBody>
+    export type CreateAdminInspirationMutationError = ErrorType<unknown>
+
+    export const useCreateAdminInspiration = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminInspiration>>, TError,{data: BodyType<CreateAdminInspirationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminInspiration>>,
+        TError,
+        {data: BodyType<CreateAdminInspirationBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminInspirationMutationOptions(options));
+    }
+
+export const getGetAdminInspirationUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/inspirations/${id}`
+}
+
+export const getAdminInspiration = async (id: string, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getGetAdminInspirationUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminInspirationQueryKey = (id: string,) => {
+    return [
+    `/api/admin/inspirations/${id}`
+    ] as const;
+    }
+
+
+export const getGetAdminInspirationQueryOptions = <TData = Awaited<ReturnType<typeof getAdminInspiration>>, TError = ErrorType<unknown>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspiration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminInspirationQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminInspiration>>> = ({ signal }) => getAdminInspiration(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminInspiration>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminInspirationQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminInspiration>>>
+export type GetAdminInspirationQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminInspiration<TData = Awaited<ReturnType<typeof getAdminInspiration>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminInspiration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminInspirationQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateAdminInspirationUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/inspirations/${id}`
+}
+
+export const updateAdminInspiration = async (id: string,
+    updateAdminInspirationBody: UpdateAdminInspirationBody, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getUpdateAdminInspirationUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateAdminInspirationBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminInspirationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminInspiration>>, TError,{id: string;data: BodyType<UpdateAdminInspirationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminInspiration>>, TError,{id: string;data: BodyType<UpdateAdminInspirationBody>}, TContext> => {
+
+const mutationKey = ['updateAdminInspiration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminInspiration>>, {id: string;data: BodyType<UpdateAdminInspirationBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminInspiration(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminInspirationMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminInspiration>>>
+    export type UpdateAdminInspirationMutationBody = BodyType<UpdateAdminInspirationBody>
+    export type UpdateAdminInspirationMutationError = ErrorType<unknown>
+
+    export const useUpdateAdminInspiration = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminInspiration>>, TError,{id: string;data: BodyType<UpdateAdminInspirationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminInspiration>>,
+        TError,
+        {id: string;data: BodyType<UpdateAdminInspirationBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminInspirationMutationOptions(options));
+    }
+
+export const getDeleteAdminInspirationUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/inspirations/${id}`
+}
+
+export const deleteAdminInspiration = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getDeleteAdminInspirationUrl(id),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getDeleteAdminInspirationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['deleteAdminInspiration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminInspiration>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  deleteAdminInspiration(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminInspirationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminInspiration>>>
+    export type DeleteAdminInspirationMutationBody = BodyType<InspirationRevisionBody>
+    export type DeleteAdminInspirationMutationError = ErrorType<unknown>
+
+    export const useDeleteAdminInspiration = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminInspiration>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminInspirationMutationOptions(options));
+    }
+
+export const getPublishAdminInspirationUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/inspirations/${id}/publish`
+}
+
+export const publishAdminInspiration = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getPublishAdminInspirationUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getPublishAdminInspirationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['publishAdminInspiration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publishAdminInspiration>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  publishAdminInspiration(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublishAdminInspirationMutationResult = NonNullable<Awaited<ReturnType<typeof publishAdminInspiration>>>
+    export type PublishAdminInspirationMutationBody = BodyType<InspirationRevisionBody>
+    export type PublishAdminInspirationMutationError = ErrorType<unknown>
+
+    export const usePublishAdminInspiration = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof publishAdminInspiration>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getPublishAdminInspirationMutationOptions(options));
+    }
+
+export const getUnpublishAdminInspirationUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/inspirations/${id}/unpublish`
+}
+
+export const unpublishAdminInspiration = async (id: string,
+    inspirationRevisionBody: InspirationRevisionBody, options?: RequestInit): Promise<AdminInspiration> => {
+
+  return customFetch<AdminInspiration>(getUnpublishAdminInspirationUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inspirationRevisionBody,)
+  }
+);}
+
+
+
+
+export const getUnpublishAdminInspirationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext> => {
+
+const mutationKey = ['unpublishAdminInspiration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unpublishAdminInspiration>>, {id: string;data: BodyType<InspirationRevisionBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  unpublishAdminInspiration(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnpublishAdminInspirationMutationResult = NonNullable<Awaited<ReturnType<typeof unpublishAdminInspiration>>>
+    export type UnpublishAdminInspirationMutationBody = BodyType<InspirationRevisionBody>
+    export type UnpublishAdminInspirationMutationError = ErrorType<unknown>
+
+    export const useUnpublishAdminInspiration = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unpublishAdminInspiration>>, TError,{id: string;data: BodyType<InspirationRevisionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof unpublishAdminInspiration>>,
+        TError,
+        {id: string;data: BodyType<InspirationRevisionBody>},
+        TContext
+      > => {
+      return useMutation(getUnpublishAdminInspirationMutationOptions(options));
+    }
+
+export const getGetInspirationFavoritesUrl = (params?: GetInspirationFavoritesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/inspiration-favorites?${stringifiedParams}` : `/api/me/inspiration-favorites`
+}
+
+export const getInspirationFavorites = async (params?: GetInspirationFavoritesParams, options?: RequestInit): Promise<InspirationFavorites> => {
+
+  return customFetch<InspirationFavorites>(getGetInspirationFavoritesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationFavoritesQueryKey = (params?: GetInspirationFavoritesParams,) => {
+    return [
+    `/api/me/inspiration-favorites`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationFavoritesQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationFavorites>>, TError = ErrorType<unknown>>(params?: GetInspirationFavoritesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationFavorites>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationFavoritesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationFavorites>>> = ({ signal }) => getInspirationFavorites(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationFavorites>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationFavoritesQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationFavorites>>>
+export type GetInspirationFavoritesQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationFavorites<TData = Awaited<ReturnType<typeof getInspirationFavorites>>, TError = ErrorType<unknown>>(
+ params?: GetInspirationFavoritesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationFavorites>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationFavoritesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getPutInspirationFavoriteUrl = (inspirationId: string,
+    params?: PutInspirationFavoriteParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/inspiration-favorites/${inspirationId}?${stringifiedParams}` : `/api/me/inspiration-favorites/${inspirationId}`
+}
+
+export const putInspirationFavorite = async (inspirationId: string,
+    putInspirationFavoriteBody: PutInspirationFavoriteBody,
+    params?: PutInspirationFavoriteParams, options?: RequestInit): Promise<InspirationFavorite> => {
+
+  return customFetch<InspirationFavorite>(getPutInspirationFavoriteUrl(inspirationId,params),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putInspirationFavoriteBody,)
+  }
+);}
+
+
+
+
+export const getPutInspirationFavoriteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInspirationFavorite>>, TError,{inspirationId: string;data: BodyType<PutInspirationFavoriteBody>;params?: PutInspirationFavoriteParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof putInspirationFavorite>>, TError,{inspirationId: string;data: BodyType<PutInspirationFavoriteBody>;params?: PutInspirationFavoriteParams}, TContext> => {
+
+const mutationKey = ['putInspirationFavorite'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putInspirationFavorite>>, {inspirationId: string;data: BodyType<PutInspirationFavoriteBody>;params?: PutInspirationFavoriteParams}> = (props) => {
+          const {inspirationId,data,params} = props ?? {};
+
+          return  putInspirationFavorite(inspirationId,data,params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutInspirationFavoriteMutationResult = NonNullable<Awaited<ReturnType<typeof putInspirationFavorite>>>
+    export type PutInspirationFavoriteMutationBody = BodyType<PutInspirationFavoriteBody>
+    export type PutInspirationFavoriteMutationError = ErrorType<unknown>
+
+    export const usePutInspirationFavorite = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInspirationFavorite>>, TError,{inspirationId: string;data: BodyType<PutInspirationFavoriteBody>;params?: PutInspirationFavoriteParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof putInspirationFavorite>>,
+        TError,
+        {inspirationId: string;data: BodyType<PutInspirationFavoriteBody>;params?: PutInspirationFavoriteParams},
+        TContext
+      > => {
+      return useMutation(getPutInspirationFavoriteMutationOptions(options));
+    }
+
+export const getGetInspirationNotesUrl = (params?: GetInspirationNotesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/inspiration-notes?${stringifiedParams}` : `/api/me/inspiration-notes`
+}
+
+export const getInspirationNotes = async (params?: GetInspirationNotesParams, options?: RequestInit): Promise<InspirationNotes> => {
+
+  return customFetch<InspirationNotes>(getGetInspirationNotesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInspirationNotesQueryKey = (params?: GetInspirationNotesParams,) => {
+    return [
+    `/api/me/inspiration-notes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetInspirationNotesQueryOptions = <TData = Awaited<ReturnType<typeof getInspirationNotes>>, TError = ErrorType<unknown>>(params?: GetInspirationNotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationNotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInspirationNotesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInspirationNotes>>> = ({ signal }) => getInspirationNotes(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInspirationNotes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInspirationNotesQueryResult = NonNullable<Awaited<ReturnType<typeof getInspirationNotes>>>
+export type GetInspirationNotesQueryError = ErrorType<unknown>
+
+
+
+export function useGetInspirationNotes<TData = Awaited<ReturnType<typeof getInspirationNotes>>, TError = ErrorType<unknown>>(
+ params?: GetInspirationNotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInspirationNotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInspirationNotesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getPutInspirationNoteUrl = (id: string,
+    params?: PutInspirationNoteParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/inspiration-notes/${id}?${stringifiedParams}` : `/api/me/inspiration-notes/${id}`
+}
+
+export const putInspirationNote = async (id: string,
+    putInspirationNoteBody: PutInspirationNoteBody,
+    params?: PutInspirationNoteParams, options?: RequestInit): Promise<InspirationNote> => {
+
+  return customFetch<InspirationNote>(getPutInspirationNoteUrl(id,params),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putInspirationNoteBody,)
+  }
+);}
+
+
+
+
+export const getPutInspirationNoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInspirationNote>>, TError,{id: string;data: BodyType<PutInspirationNoteBody>;params?: PutInspirationNoteParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof putInspirationNote>>, TError,{id: string;data: BodyType<PutInspirationNoteBody>;params?: PutInspirationNoteParams}, TContext> => {
+
+const mutationKey = ['putInspirationNote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putInspirationNote>>, {id: string;data: BodyType<PutInspirationNoteBody>;params?: PutInspirationNoteParams}> = (props) => {
+          const {id,data,params} = props ?? {};
+
+          return  putInspirationNote(id,data,params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutInspirationNoteMutationResult = NonNullable<Awaited<ReturnType<typeof putInspirationNote>>>
+    export type PutInspirationNoteMutationBody = BodyType<PutInspirationNoteBody>
+    export type PutInspirationNoteMutationError = ErrorType<unknown>
+
+    export const usePutInspirationNote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInspirationNote>>, TError,{id: string;data: BodyType<PutInspirationNoteBody>;params?: PutInspirationNoteParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof putInspirationNote>>,
+        TError,
+        {id: string;data: BodyType<PutInspirationNoteBody>;params?: PutInspirationNoteParams},
+        TContext
+      > => {
+      return useMutation(getPutInspirationNoteMutationOptions(options));
+    }
 
 export const getHealthCheckUrl = () => {
 

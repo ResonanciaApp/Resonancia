@@ -142,3 +142,4 @@
 - [Rotación de frases emocionales](emotional-quote-rotation.md) — el slot consumido vive también en el historial; este dato recupera la secuencia si falla el contador secundario
 - [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle
 - [Caché del catálogo Mixer](mixer-catalog-cache.md) — Mobile inicia desde el último snapshot válido de sonidos; una API temporalmente caída no debe vaciar las cards
+- [Caché editorial programada](scheduled-editorial-cache.md) — retirada y bloqueo futuro invalidan respuestas viejas, pero un estreno autorizado puede desbloquear la misma revisión

@@ -37,6 +37,160 @@ tags:
   - name: live-sessions
     description: Sesiones en vivo con guiadores (Cal.com + Daily.co)
 paths:
+  /inspirations/week:
+    get:
+      operationId: getInspirationWeek
+      tags: [inspirations]
+      parameters:
+        - {name: date, in: query, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Seven days, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationWeek"}}}}
+  /inspirations/settings:
+    get:
+      operationId: getInspirationSettings
+      tags: [inspirations]
+      responses:
+        "200": {description: Editorial labels, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationSettings"}}}}
+  /inspirations/by-date/{date}:
+    get:
+      operationId: getInspirationByDate
+      tags: [inspirations]
+      parameters:
+        - {name: date, in: path, required: true, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Gated day, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationDay"}}}}
+  /inspirations/{id}:
+    get:
+      operationId: getInspiration
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Gated day, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationDay"}}}}
+  /inspirations/{id}/image:
+    get:
+      operationId: getInspirationImage
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+        - {name: revision, in: query, schema: {type: integer, minimum: 1}}
+      responses:
+        "200": {description: Protected published image, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+  /admin/inspirations/week:
+    get:
+      operationId: getAdminInspirationWeek
+      tags: [inspirations]
+      parameters:
+        - {name: date, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Editorial week, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspirationWeek"}}}}
+  /admin/inspirations/settings:
+    put:
+      operationId: updateInspirationSettings
+      tags: [inspirations]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationSettings"}}}}
+      responses:
+        "200": {description: Updated labels, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationSettings"}}}}
+  /admin/inspirations/uploads:
+    post:
+      operationId: requestInspirationUpload
+      tags: [inspirations]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationUploadBody"}}}}
+      responses:
+        "200": {description: Private upload, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationUpload"}}}}
+  /admin/inspirations/image:
+    get:
+      operationId: getAdminInspirationImage
+      tags: [inspirations]
+      parameters:
+        - {name: objectPath, in: query, required: true, schema: {type: string}}
+      responses:
+        "200": {description: Admin-only preview, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+  /admin/inspirations:
+    post:
+      operationId: createAdminInspiration
+      tags: [inspirations]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/CreateAdminInspirationBody"}}}}
+      responses:
+        "200": {description: Draft, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+  /admin/inspirations/{id}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {type: string}}
+    get:
+      operationId: getAdminInspiration
+      tags: [inspirations]
+      responses:
+        "200": {description: Editorial record, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+    put:
+      operationId: updateAdminInspiration
+      tags: [inspirations]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/UpdateAdminInspirationBody"}}}}
+      responses:
+        "200": {description: Draft updated, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+    delete:
+      operationId: deleteAdminInspiration
+      tags: [inspirations]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Deleted record, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+  /admin/inspirations/{id}/publish:
+    post:
+      operationId: publishAdminInspiration
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Published snapshot, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+  /admin/inspirations/{id}/unpublish:
+    post:
+      operationId: unpublishAdminInspiration
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationRevisionBody"}}}}
+      responses:
+        "200": {description: Withdrawn, content: {application/json: {schema: {$ref: "#/components/schemas/AdminInspiration"}}}}
+  /me/inspiration-favorites:
+    get:
+      operationId: getInspirationFavorites
+      tags: [inspirations]
+      parameters:
+        - {name: timeZone, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Owner favorites including tombstones, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationFavorites"}}}}
+  /me/inspiration-favorites/{inspirationId}:
+    put:
+      operationId: putInspirationFavorite
+      tags: [inspirations]
+      parameters:
+        - {name: inspirationId, in: path, required: true, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/PutInspirationFavoriteBody"}}}}
+      responses:
+        "200": {description: Owner favorite, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationFavorite"}}}}
+  /me/inspiration-notes:
+    get:
+      operationId: getInspirationNotes
+      tags: [inspirations]
+      parameters:
+        - {name: inspirationId, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Owner notes including tombstones, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationNotes"}}}}
+  /me/inspiration-notes/{id}:
+    put:
+      operationId: putInspirationNote
+      tags: [inspirations]
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: timeZone, in: query, schema: {type: string}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/PutInspirationNoteBody"}}}}
+      responses:
+        "200": {description: Owner note, content: {application/json: {schema: {$ref: "#/components/schemas/InspirationNote"}}}}
   /healthz:
     get:
       operationId: healthCheck
@@ -4159,6 +4313,170 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    InspirationContent:
+      type: object
+      required: [quote, author, reflection, imagePath, imagePositionX, imagePositionY, overlayOpacity, sessionId]
+      properties:
+        quote: {type: string, maxLength: 2000}
+        author: {type: [string, "null"], maxLength: 200}
+        reflection: {type: string, maxLength: 20000}
+        imagePath: {type: [string, "null"]}
+        imagePositionX: {type: number, minimum: 0, maximum: 100}
+        imagePositionY: {type: number, minimum: 0, maximum: 100}
+        overlayOpacity: {type: number, minimum: 0, maximum: 0.85}
+        sessionId: {type: [string, "null"]}
+    InspirationPublicContent:
+      type: object
+      required: [quote, author, reflection, imageUrl, imagePositionX, imagePositionY, overlayOpacity, sessionId]
+      properties:
+        quote: {type: string}
+        author: {type: [string, "null"]}
+        reflection: {type: string}
+        imageUrl: {type: string}
+        imagePositionX: {type: number}
+        imagePositionY: {type: number}
+        overlayOpacity: {type: number}
+        sessionId: {type: [string, "null"]}
+    InspirationDay:
+      type: object
+      required: [date, status, id, revision, content]
+      properties:
+        date: {type: string}
+        status: {type: string, enum: [available, future, unavailable]}
+        id: {type: [string, "null"]}
+        revision: {type: [integer, "null"]}
+        content:
+          anyOf:
+            - {$ref: "#/components/schemas/InspirationPublicContent"}
+            - {type: "null"}
+    InspirationSettings:
+      type: object
+      required: [revision, sectionTitle, readMoreLabel, discoverMoreLabel, notesLabel]
+      properties:
+        revision: {type: integer, minimum: 0}
+        sectionTitle: {type: string, minLength: 1, maxLength: 100}
+        readMoreLabel: {type: string, minLength: 1, maxLength: 100}
+        discoverMoreLabel: {type: string, minLength: 1, maxLength: 100}
+        notesLabel: {type: string, minLength: 1, maxLength: 100}
+    InspirationWeek:
+      type: object
+      required: [weekStart, today, timeZone, days, settings]
+      properties:
+        weekStart: {type: string}
+        today: {type: string}
+        timeZone: {type: string}
+        days: {type: array, minItems: 7, maxItems: 7, items: {$ref: "#/components/schemas/InspirationDay"}}
+        settings: {$ref: "#/components/schemas/InspirationSettings"}
+    AdminInspiration:
+      type: object
+      required: [id, date, revision, draft, published, publishedRevision, deleted, updatedAt]
+      properties:
+        id: {type: string}
+        date: {type: string}
+        revision: {type: integer}
+        draft: {$ref: "#/components/schemas/InspirationContent"}
+        published:
+          anyOf:
+            - {$ref: "#/components/schemas/InspirationContent"}
+            - {type: "null"}
+        publishedRevision: {type: [integer, "null"]}
+        deleted: {type: boolean}
+        updatedAt: {type: string}
+    AdminInspirationWeek:
+      type: object
+      required: [weekStart, days, settings]
+      properties:
+        weekStart: {type: string}
+        days:
+          type: array
+          items:
+            type: object
+            required: [date, inspiration]
+            properties:
+              date: {type: string}
+              inspiration:
+                anyOf:
+                  - {$ref: "#/components/schemas/AdminInspiration"}
+                  - {type: "null"}
+        settings: {$ref: "#/components/schemas/InspirationSettings"}
+    InspirationRevisionBody:
+      type: object
+      required: [revision]
+      properties:
+        revision: {type: integer, minimum: 0}
+    CreateAdminInspirationBody:
+      type: object
+      required: [date, draft]
+      properties:
+        date: {type: string}
+        draft: {$ref: "#/components/schemas/InspirationContent"}
+    UpdateAdminInspirationBody:
+      type: object
+      required: [revision, date, draft]
+      properties:
+        revision: {type: integer, minimum: 0}
+        date: {type: string}
+        draft: {$ref: "#/components/schemas/InspirationContent"}
+    InspirationUploadBody:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 200}
+        size: {type: integer, minimum: 1, maximum: 15728640}
+        contentType: {type: string, enum: [image/jpeg, image/png, image/webp]}
+    InspirationUpload:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL: {type: string}
+        objectPath: {type: string}
+    PutInspirationFavoriteBody:
+      type: object
+      required: [revision, deleted]
+      properties:
+        revision: {type: integer, minimum: 0}
+        deleted: {type: boolean}
+    InspirationFavorite:
+      type: object
+      required: [inspirationId, revision, deleted, updatedAt, day]
+      properties:
+        inspirationId: {type: string}
+        revision: {type: integer}
+        deleted: {type: boolean}
+        updatedAt: {type: string}
+        day:
+          anyOf:
+            - {$ref: "#/components/schemas/InspirationDay"}
+            - {type: "null"}
+    InspirationFavorites:
+      type: object
+      required: [items]
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/InspirationFavorite"}}
+    PutInspirationNoteBody:
+      type: object
+      required: [revision, inspirationId, text, deleted]
+      properties:
+        revision: {type: integer, minimum: 0}
+        inspirationId: {type: string}
+        text: {type: string, maxLength: 20000}
+        deleted: {type: boolean}
+    InspirationNote:
+      type: object
+      required: [id, inspirationId, text, revision, deleted, updatedAt, date]
+      properties:
+        id: {type: string}
+        inspirationId: {type: string}
+        text: {type: string}
+        revision: {type: integer}
+        deleted: {type: boolean}
+        updatedAt: {type: string}
+        date: {type: [string, "null"]}
+    InspirationNotes:
+      type: object
+      required: [items]
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/InspirationNote"}}
     AccountDataExport:
       type: object
       properties:

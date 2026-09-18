@@ -11,7 +11,8 @@ export type FavoriteCollectionTabId =
   | "all"
   | (typeof FAVORITE_COLLECTION_TABS)[number]["id"]
   | "videos"
-  | "playlists";
+  | "playlists"
+  | "inspiraciones";
 
 export type FavoriteTabDefinition = {
   id: FavoriteCollectionTabId;
@@ -29,6 +30,7 @@ export function buildVisibleFavoriteTabs(
   sessionCategoryIds: readonly string[],
   hasVideos: boolean,
   hasPlaylists: boolean,
+  hasInspiraciones?: boolean,
 ): FavoriteTabDefinition[] {
   const categorySet = new Set(sessionCategoryIds);
   const tabs: FavoriteTabDefinition[] = [
@@ -37,6 +39,7 @@ export function buildVisibleFavoriteTabs(
   ];
   if (hasVideos) tabs.push({ id: "videos", label: "Videos", categoryId: null });
   if (hasPlaylists) tabs.push({ id: "playlists", label: "Playlists", categoryId: null });
+  if (hasInspiraciones) tabs.push({ id: "inspiraciones", label: "Inspiraciones", categoryId: null });
   return tabs;
 }
 
