@@ -459,7 +459,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         )}
 
         {/* Sessions list */}
-        <View style={{ marginTop: 15 }}>
+        <View style={{ marginTop: sessions.length > 0 ? 30 : 15 }}>
         {sessions.map((session) => (
           <PlaylistSessionRow
             key={session.id}
@@ -510,7 +510,11 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
 
         {/* + Agregar a esta playlist */}
         <Pressable
-          style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [
+            styles.addBtn,
+            sessions.length > 0 && styles.addBtnWithSessions,
+            { opacity: pressed ? 0.8 : 1 },
+          ]}
           onPress={() => setAddSheetVisible(true)}
         >
           <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
@@ -876,7 +880,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginHorizontal: 20,
-    marginTop: -4,
+    marginTop: 11,
     marginBottom: 8,
   },
   pill: {
@@ -933,12 +937,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 16,
     marginTop: 11,
-    marginBottom: 20,
+    marginBottom: 25,
     paddingVertical: 9,
     borderRadius: 30,
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.7)",
+  },
+  addBtnWithSessions: {
+    marginTop: 26,
   },
   addBtnText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
 
@@ -950,7 +957,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 8,
-    marginTop: -10,
+    marginTop: 5,
   },
   recommendedSectionDivider: {
     height: StyleSheet.hairlineWidth,
