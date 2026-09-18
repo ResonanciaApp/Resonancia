@@ -60,19 +60,6 @@ const MUTED = "#c2c2c2";
 const DEFAULT_PANEL_BG = "transparent";
 const PLAYLIST_CONTROL_BG = WIDGET_GREEN_SOLID;
 
-const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
-const ACCENT_PALETTE: readonly string[] = [
-  DEFAULT_ACCENT, // borgoña degradado (por defecto)
-  "#7B2D52", // borgoña
-  "#2C4A8C", // azul marino
-  "#2C6B4A", // verde
-  "#6B2C8C", // violeta
-  "#8C4A2C", // terra
-  "#2C6B7B", // teal
-  "#8C7B2C", // dorado
-  "#4A1C8C", // índigo
-];
-
 /** Convierte hex a [r,g,b] (0-255). */
 function hexToRgb(hex: string): [number, number, number] | null {
   const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
@@ -122,7 +109,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.96)`
     : "rgba(0,0,0,0.96)";
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverPreset, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverPreset, removeVideoFromPlaylist } = useFoldersPlaylists();
   const { videos: allVideos } = useVideos();
   const {
     playSession,
@@ -178,14 +165,6 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
   const [editOrderVisible, setEditOrderVisible] = useState(false);
   const [editInfoVisible, setEditInfoVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
-  const [pendingCover, setPendingCover] = useState<
-    | { type: "image"; uri: string }
-    | { type: "geometry"; geoId: string }
-    | { type: "creation"; creationId: string }
-    | null
-  >(null);
-  const [colorPickerVisible, setColorPickerVisible] = useState(false);
-  const [selectedAccent, setSelectedAccent] = useState<string>(DEFAULT_ACCENT);
 
   const playlist = playlists.find((p) => p.id === id);
   const [descriptionDraft, setDescriptionDraft] = useState("");
@@ -643,95 +622,13 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             quality: 0.85,
           });
           if (!result.canceled && result.assets[0]?.uri) {
-            setPendingCover({ type: "image", uri: result.assets[0].uri });
-            setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
-            setColorPickerVisible(true);
+            setPlaylistCover(playlist.id, result.assets[0].uri);
           }
         }}
         onPickPreset={(preset) => {
           setPlaylistCoverPreset(playlist.id, preset.id);
         }}
       />
-
-      {/* ── Color picker de encabezado ──────────────────────────────────────── */}
-      <Modal
-        visible={colorPickerVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setColorPickerVisible(false)}
-      >
-        <View style={cpStyles.backdrop}>
-          <View style={cpStyles.sheet}>
-            <Text style={cpStyles.title}>Fondo de tu Playlist</Text>
-            <Text style={cpStyles.sub}>Elige el color que resuena con tus canciones</Text>
-
-            {/* Preview del header con el color seleccionado */}
-            <View style={[cpStyles.preview, { backgroundColor: buildPanelColor(selectedAccent) }]}>
-              {pendingCover?.type === "image" && (
-                <Image source={{ uri: pendingCover.uri }} style={cpStyles.previewImg} contentFit="cover" />
-              )}
-              {pendingCover?.type === "geometry" && (
-                <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: 0.35 }]}>
-                  <SacredGlyph id={pendingCover.geoId as GeometryId} color={GOLD} size={56} strokeWidth={1.2} opacity={1} />
-                </View>
-              )}
-              {pendingCover?.type === "creation" && (
-                <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: 0.35 }]}>
-                  <CreationCoverPreview creationId={pendingCover.creationId} size={52} />
-                </View>
-              )}
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: buildPanelColor(selectedAccent), opacity: 0.2 }]} />
-              <Text style={cpStyles.previewLabel}>Vista previa</Text>
-            </View>
-
-            {/* Paleta de colores */}
-            <View style={cpStyles.palette}>
-              {ACCENT_PALETTE.map((hex) => (
-                <Pressable
-                  key={hex === DEFAULT_ACCENT ? "__default__" : hex}
-                  onPress={() => setSelectedAccent(hex)}
-                  style={[
-                    cpStyles.swatch,
-                    { backgroundColor: hex === DEFAULT_ACCENT ? "#2E0510" : hex },
-                    selectedAccent === hex && cpStyles.swatchSelected,
-                  ]}
-                >
-                  {hex === DEFAULT_ACCENT && (
-                    <View style={cpStyles.swatchDefaultStripe} />
-                  )}
-                </Pressable>
-              ))}
-            </View>
-
-            {/* Botones */}
-            <View style={cpStyles.actions}>
-              <Pressable
-                style={cpStyles.btnCancel}
-                onPress={() => setColorPickerVisible(false)}
-              >
-                <Text style={cpStyles.btnCancelText}>Cancelar</Text>
-              </Pressable>
-              <Pressable
-                style={cpStyles.btnConfirm}
-                onPress={() => {
-                  if (pendingCover?.type === "image") {
-                    setPlaylistCover(playlist.id, pendingCover.uri);
-                  } else if (pendingCover?.type === "geometry") {
-                    setPlaylistCoverGeometry(playlist.id, pendingCover.geoId);
-                  } else if (pendingCover?.type === "creation") {
-                    setPlaylistCoverCreation(playlist.id, pendingCover.creationId);
-                  }
-                  if (pendingCover) setPlaylistCoverColor(playlist.id, selectedAccent === DEFAULT_ACCENT ? "" : selectedAccent);
-                  setColorPickerVisible(false);
-                  setPendingCover(null);
-                }}
-              >
-                <Text style={cpStyles.btnConfirmText}>Guardar</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
     </View>
   );
@@ -1383,120 +1280,6 @@ const modalStyles = StyleSheet.create({
   },
 });
 
-const cpStyles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "flex-end",
-  },
-  sheet: {
-    backgroundColor: "#1E0810",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
-  title: {
-    fontFamily: "Manrope",
-    color: TEXT,
-    fontSize: 17,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 4,
-  },
-  sub: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 13,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  preview: {
-    height: 72,
-    borderRadius: 14,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 24,
-  },
-  previewImg: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.45,
-  },
-  previewLabel: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.6)",
-    fontSize: 12,
-    letterSpacing: 1,
-    zIndex: 1,
-  },
-  palette: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 14,
-    marginBottom: 28,
-  },
-  swatch: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-  },
-  swatchDefaultStripe: {
-    position: "absolute",
-    top: 8,
-    left: 8,
-    right: 8,
-    bottom: 8,
-    borderRadius: 14,
-    backgroundColor: "#210911",
-    opacity: 0.45,
-  },
-  swatchSelected: {
-    borderWidth: 3,
-    borderColor: GOLD,
-    shadowColor: GOLD,
-    shadowOpacity: 0.6,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 6,
-  },
-  actions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  btnCancel: {
-    flex: 1,
-    height: 48,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.3)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btnCancelText: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  btnConfirm: {
-    flex: 1,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: GOLD,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btnConfirmText: {
-    fontFamily: "Manrope",
-    color: "#1B060F",
-    fontSize: 15,
-    fontWeight: "700",
-  },
-});
-
 // ── PlaylistMenuSheet (tres puntos) ────────────────────────────────────────
 function PlaylistMenuSheet({
   visible, onClose, onShare, onAddSessions, onEditOrder, onEditInfo,
@@ -1545,7 +1328,7 @@ const menuSt = StyleSheet.create({
   },
   handle: {
     alignSelf: "center", width: 36, height: 4, borderRadius: 2,
-    backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10, marginBottom: 8,
+    backgroundColor: "rgba(255,255,255,0.1)", marginTop: 10, marginBottom: 8,
   },
   row: {
     flexDirection: "row", alignItems: "center", gap: 14,
