@@ -34,7 +34,7 @@ export function ContinueMeditationPlaylistCard({
       style={[styles.section, sectionStyle]}
       testID="continue-meditation-playlist-section"
     >
-      <Text style={styles.sectionTitle}>Continúa con tu playlist meditativa</Text>
+      <Text style={styles.sectionTitle}>Continua tu programa</Text>
       <Pressable
         onPress={onPress}
         accessibilityRole="button"

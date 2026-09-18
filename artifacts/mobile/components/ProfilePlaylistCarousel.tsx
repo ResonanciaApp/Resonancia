@@ -69,7 +69,7 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
   return (
     <View style={[styles.section, { marginBottom }]}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Mis playlist recientes</Text>
+          <Text style={styles.sectionTitle}>Mis Playlist</Text>
           <Pressable onPress={() => openLib("playlists")} hitSlop={8}>
             <Text style={[styles.viewAllText, { color: accent }]}>Ver todos</Text>
           </Pressable>

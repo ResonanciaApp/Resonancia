@@ -1272,31 +1272,34 @@ export function ProfileScreenBase({
             </View>
 
             {continueMeditationPlaylist ? (
-              <View style={styles.profileMeditationPlaylist}>
-                <ContinueMeditationPlaylistCard
-                  title={continueMeditationPlaylist.playlist.title}
-                  description={continueMeditationPlaylist.playlist.description}
-                  coverSource={
-                    continueMeditationPlaylist.playlist.coverUrl
-                      ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                      : continueMeditationPlaylist.playlist.cover
-                  }
-                  completion={continueMeditationPlaylist.completion}
-                  sectionStyle={styles.profileMeditationPlaylistSection}
-                  onPress={() => {
-                    router.push({
-                      pathname: "/editorial-playlist/[slug]",
-                      params: { slug: continueMeditationPlaylist.playlist.id },
-                    } as never);
-                  }}
-                />
-                <View
-                  style={[
-                    styles.profileCarouselDivider,
-                    styles.profileMeditationCarouselDivider,
-                  ]}
-                />
-              </View>
+              <>
+                <View style={styles.profileCarouselDivider} />
+                <View style={styles.profileMeditationPlaylist}>
+                  <ContinueMeditationPlaylistCard
+                    title={continueMeditationPlaylist.playlist.title}
+                    description={continueMeditationPlaylist.playlist.description}
+                    coverSource={
+                      continueMeditationPlaylist.playlist.coverUrl
+                        ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                        : continueMeditationPlaylist.playlist.cover
+                    }
+                    completion={continueMeditationPlaylist.completion}
+                    sectionStyle={styles.profileMeditationPlaylistSection}
+                    onPress={() => {
+                      router.push({
+                        pathname: "/editorial-playlist/[slug]",
+                        params: { slug: continueMeditationPlaylist.playlist.id },
+                      } as never);
+                    }}
+                  />
+                  <View
+                    style={[
+                      styles.profileCarouselDivider,
+                      styles.profileMeditationCarouselDivider,
+                    ]}
+                  />
+                </View>
+              </>
             ) : null}
 
             <View style={styles.profileCarouselAfterDivider}>
@@ -2265,9 +2268,10 @@ const styles = StyleSheet.create({
   },
   profileMeditationPlaylist: {
     marginHorizontal: -16,
-    marginTop: 12,
+    marginTop: 26,
   },
   profileMeditationPlaylistSection: {
+    marginTop: 0,
     marginBottom: 0,
   },
   profileProgressIntro: {

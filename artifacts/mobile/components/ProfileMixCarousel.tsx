@@ -60,7 +60,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
   return (
     <View style={[styles.section, { marginBottom }]}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Mis mezclas recientes</Text>
+        <Text style={styles.sectionTitle}>Mis mezclas</Text>
         <Pressable onPress={() => openLib("mezclas")} hitSlop={8}>
           <Text style={[styles.viewAllText, { color: accent }]}>Ver todos</Text>
         </Pressable>
