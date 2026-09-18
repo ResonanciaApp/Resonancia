@@ -16,7 +16,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -42,8 +41,8 @@ const INDIGO2_COLOR  = "#DEDEDE";
 const GRAD_END       = "#F9F9F9";
 
 const ICON_SIZE      = 27;
-const PILL_H         = 68;
-const TAB_CONTENT_OFFSET_Y = 0;
+const PILL_H         = 58;   // altura del bloque de navegación, sin safe area
+const TAB_CONTENT_OFFSET_Y = 11;
 const TAB_LABEL_OFFSET_Y = 2;
 const MINI_PLAYER_MARGIN_H = 15;
 
@@ -158,7 +157,6 @@ type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tab
 
 function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const { width: screenWidth } = useWindowDimensions();
   const pathname = usePathname();
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
@@ -168,8 +166,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { closeAllCategories, stack: categoryStack } = useCategoryOverlay();
   const { libOpen, closeLib, libraryParallax } = useDrawer();
 
-  const barHeight = PILL_H;
-  const barWidth = Math.min(438, screenWidth - 24);
+  // El bloque llega hasta el borde inferior e incluye el área segura.
+  const barHeight = PILL_H + pb;
 
   const { hidden, showMenu, revealHandleHidden } = useTabBarVisibility();
   const { activeSceneId } = useSceneTheme();
@@ -242,8 +240,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           styles.bar,
           {
             height: barHeight,
-            width: barWidth,
-            bottom: pb + 8,
             transform: [
               { translateX: libraryBarOffset },
               { translateY: routeForcesHidden ? barHeight + 40 : translateY },
@@ -357,7 +353,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + bottomPb + 8;
+  const tabBarHeight       = PILL_H + bottomPb;
   const { libOpen }        = useDrawer();
   const [barProps, setBarProps] = useState<any>(null);
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
@@ -520,10 +516,9 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   bar: {
     position: "absolute",
-    alignSelf: "center",
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    left: 0,
+    right: 0,
+    bottom: 0,
     overflow: "hidden",
     zIndex: 50,
   },
