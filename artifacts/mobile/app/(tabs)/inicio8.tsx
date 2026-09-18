@@ -1305,9 +1305,17 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const reduceMotion = useReducedMotion();
   const fallbackScrollY = useSharedValue(0);
   const effectiveScrollY = scrollY ?? fallbackScrollY;
+  const inicio3WeekShift = 15;
+  const inicio3HeroShift = 14;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 40;
-  const inicio3HeroLayoutTop = topInset + 165 - INICIO3_VERTICAL_LIFT + 12;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60;
+  const inicio3HeroLayoutTop =
+    topInset +
+    165 -
+    INICIO3_VERTICAL_LIFT +
+    12 +
+    inicio3WeekShift +
+    inicio3HeroShift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
@@ -1491,7 +1499,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           <RAnimated.View
             style={[
               styles.inicio3StreakRow,
-              { top: topInset + 75 - INICIO3_VERTICAL_LIFT },
+              { top: topInset + 75 - INICIO3_VERTICAL_LIFT + inicio3WeekShift },
               slowHeaderStyle,
             ]}
             testID="inicio3-streak-row"
@@ -2542,6 +2550,28 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
+        {variant === "inicio3" && continueMeditationPlaylist && (
+          <>
+            <ContinueMeditationPlaylistCard
+              title={continueMeditationPlaylist.playlist.title}
+              description={continueMeditationPlaylist.playlist.description}
+              coverSource={
+                continueMeditationPlaylist.playlist.coverUrl
+                  ? { uri: continueMeditationPlaylist.playlist.coverUrl }
+                  : continueMeditationPlaylist.playlist.cover
+              }
+              completion={continueMeditationPlaylist.completion}
+              onPress={() => {
+                router.push({
+                  pathname: "/editorial-playlist/[slug]",
+                  params: { slug: continueMeditationPlaylist.playlist.id },
+                } as never);
+              }}
+            />
+            <View style={styles.inicio3SectionDivider} />
+          </>
+        )}
+
         <View
           style={isInicio2 && styles.inicio2ContentPanel}
         >
@@ -2565,7 +2595,13 @@ export default function HomeScreen2({
           />
         )}
         {isInicio2 && featuredMoment && (
-          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: INICIO2_SECTION_GAP }}>
+          <View
+            style={{
+              paddingHorizontal: GRID_PAD,
+              marginTop: variant === "inicio3" ? -18 : 0,
+              marginBottom: INICIO2_SECTION_GAP,
+            }}
+          >
             <Text style={[styles.sectionTitle, { fontSize: 17, marginBottom: 17 }]}>
               Para este momento
             </Text>
@@ -2832,27 +2868,6 @@ export default function HomeScreen2({
         )}
         {variant === "inicio3" && (
           <View style={styles.inicio3LowerStandaloneDivider} />
-        )}
-        {variant === "inicio3" && continueMeditationPlaylist && (
-          <>
-            <ContinueMeditationPlaylistCard
-              title={continueMeditationPlaylist.playlist.title}
-              description={continueMeditationPlaylist.playlist.description}
-              coverSource={
-                continueMeditationPlaylist.playlist.coverUrl
-                  ? { uri: continueMeditationPlaylist.playlist.coverUrl }
-                  : continueMeditationPlaylist.playlist.cover
-              }
-              completion={continueMeditationPlaylist.completion}
-              onPress={() => {
-                router.push({
-                  pathname: "/editorial-playlist/[slug]",
-                  params: { slug: continueMeditationPlaylist.playlist.id },
-                } as never);
-              }}
-            />
-            <View style={styles.inicio3SectionDivider} />
-          </>
         )}
         {isInicio2 && variant !== "inicio3" && (
           <View style={{ paddingTop: INICIO2_SECTION_GAP }}>
@@ -3418,7 +3433,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   inicio3HeroImageClip: {
-    borderRadius: 29,
+    borderRadius: 18,
     overflow: "hidden",
   },
   inicio3HeroBackShadow: {
