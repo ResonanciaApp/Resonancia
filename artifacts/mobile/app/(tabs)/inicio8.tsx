@@ -1341,39 +1341,6 @@ function Inicio3HeroMedia({ reduceMotion }: { reduceMotion: boolean }) {
   );
 }
 
-function Inicio3InspirationCard() {
-  const router = useRouter();
-  const reduceMotion = useReducedMotion();
-  return (
-    <View style={styles.inicio3InspirationSection}>
-      <Pressable
-        onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
-        accessibilityRole="button"
-        accessibilityLabel="Abrir Inspiración diaria"
-        style={({ pressed }) => [
-          styles.inicio3InspirationCard,
-          { opacity: pressed ? 0.9 : 1 },
-        ]}
-      >
-        <Inicio3HeroMedia reduceMotion={reduceMotion} />
-        <LinearGradient
-          colors={["rgba(3,8,15,0.14)", "rgba(3,8,15,0.62)"]}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={styles.inicio3InspirationCopy}>
-          <View style={styles.inicio3HeroPill}>
-            <MaterialCommunityIcons name="creation" size={13} color="#F9F9F9" />
-            <Text style={styles.inicio3HeroPillText}>Inspiración diaria</Text>
-          </View>
-          <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
-            {"Aprendamos a conectar\ncon lo esencial"}
-          </Text>
-        </View>
-      </Pressable>
-    </View>
-  );
-}
-
 const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   topInset,
   isPremium,
@@ -1382,8 +1349,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   onOpenProfile,
   isInicio3,
   scrollY,
-  featuredMoment,
-  onOpenFeaturedMoment,
 }: {
   topInset: number;
   isPremium: boolean;
@@ -1392,8 +1357,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   onOpenProfile: () => void;
   isInicio3?: boolean;
   scrollY?: SharedValue<number>;
-  featuredMoment?: Session | null;
-  onOpenFeaturedMoment?: () => void;
 }) {
   const router = useRouter();
   const { user: clerkUser } = useUser();
@@ -1418,7 +1381,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 15;
   const inicio3HeroShift = 14;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 70 + 40;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 70;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
@@ -1427,7 +1390,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
     inicio3WeekShift +
     inicio3HeroShift;
   const inicio3HeroTop = inicio3HeroLayoutTop - 19;
-  const inicio3HeroCardTop = inicio3HeroTop + 36;
   const slowHeaderStyle = useAnimatedStyle(() => {
     if (!isInicio3 || reduceMotion) return { transform: [{ translateY: 0 }] };
     const y = Math.max(0, effectiveScrollY.value);
@@ -1444,7 +1406,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       style={[
         styles.inicio2Hero,
         isInicio3 && {
-          height: inicio3HeroLayoutTop + inicio3HeroHeight + 45,
+          height: inicio3HeroLayoutTop + inicio3HeroHeight + 9,
         },
       ]}
       testID="inicio2-hero-static"
@@ -1455,7 +1417,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         style={[
           styles.inicio2HeroStaticImageFrame,
           {
-            top: isInicio3 ? inicio3HeroCardTop : topInset + 66,
+            top: isInicio3 ? inicio3HeroTop : topInset + 66,
             bottom: isInicio3 ? undefined : 18,
             height: isInicio3 ? inicio3HeroHeight : undefined,
           },
@@ -1481,20 +1443,8 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           </RAnimated.View>
         ) : null}
         <View style={[StyleSheet.absoluteFill, isInicio3 && styles.inicio3HeroImageClip]}>
-          {isInicio3 && featuredMoment ? (
-            <>
-              <ExpoImage
-                source={featuredMoment.image}
-                style={styles.inicio2HeroImage}
-                contentFit="cover"
-                cachePolicy="memory-disk"
-              />
-              <LinearGradient
-                colors={["rgba(3,8,15,0.44)", "rgba(3,8,15,0.14)", "rgba(3,8,15,0.68)"]}
-                locations={[0, 0.48, 1]}
-                style={StyleSheet.absoluteFill}
-              />
-            </>
+          {isInicio3 ? (
+            <Inicio3HeroMedia reduceMotion={reduceMotion} />
           ) : (
             <Image
               source={INICIO3_HERO_FALLBACK}
@@ -1504,12 +1454,6 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
           )}
         </View>
       </RAnimated.View>
-
-      {isInicio3 && featuredMoment ? (
-        <Text style={[styles.sectionTitle, styles.inicio3HeroSectionLabel, { top: inicio3HeroTop }]}>
-          Tu Resonancia de hoy
-        </Text>
-      ) : null}
 
       <RAnimated.View
         pointerEvents="box-none"
@@ -1643,66 +1587,36 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
       )}
 
       <Pressable
-        onPress={isInicio3 ? onOpenFeaturedMoment : () => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
+        onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
         style={[
           styles.inicio2HeroStaticCopy,
           {
-            top: isInicio3 ? inicio3HeroCardTop : topInset + 66,
+            top: isInicio3 ? inicio3HeroTop : topInset + 66,
             bottom: isInicio3 ? undefined : 18,
             height: isInicio3 ? inicio3HeroHeight : undefined,
           },
           isInicio3 && styles.inicio3HeroCopy,
         ]}
       >
-        {isInicio3 && featuredMoment ? (
-          <View style={styles.inicio3HeroSessionContent}>
-            <View style={styles.inicio3HeroSessionDetails}>
-              <View style={styles.inicio3FeaturedMomentPills}>
-                <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
-                  <Feather name="clock" size={13} color="#F9F9F9" />
-                  <Text style={styles.inicio3FeaturedMomentPillText}>{featuredMoment.durationLabel}</Text>
-                </BlurView>
-                <BlurView intensity={32} tint="light" style={styles.inicio3FeaturedMomentPill}>
-                  <MaterialCommunityIcons name="shape-outline" size={14} color="#F9F9F9" />
-                  <Text style={styles.inicio3FeaturedMomentPillText} numberOfLines={1}>
-                    {featuredMoment.categoryLabel}
-                  </Text>
-                </BlurView>
-              </View>
-              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={3}>
-                {featuredMoment.title}
-              </Text>
-              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={1}>
-                {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
-              </Text>
-              <Pressable
-                onPress={(event) => {
-                  event.stopPropagation();
-                  onOpenFeaturedMoment?.();
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Escuchar ahora"
-                style={({ pressed }) => [
-                  styles.inicio3FeaturedMomentButton,
-                  { opacity: pressed ? 0.82 : 1 },
-                ]}
-              >
-                <BlurView
-                  intensity={26}
-                  tint="light"
-                  experimentalBlurMethod="dimezisBlurView"
-                  style={StyleSheet.absoluteFill}
-                />
-                <Ionicons name="play" size={18} color="#FFFFFF" />
-                <Text style={styles.inicio3FeaturedMomentButtonText}>Escuchar ahora</Text>
-              </Pressable>
-            </View>
+        {isInicio3 && (
+          <View style={styles.inicio3HeroPill}>
+            <MaterialCommunityIcons
+              name="creation"
+              size={13}
+              color="#F9F9F9"
+            />
+            <Text style={styles.inicio3HeroPillText}>
+              Inspiración diaria
+            </Text>
           </View>
-        ) : (
-          <Text style={[styles.inicio2HeroTitle, styles.inicio2HeroStaticTitle]}>
-            {"Aprendamos a conectar\ncon lo esencial"}
-          </Text>
         )}
+        <Text style={[
+          styles.inicio2HeroTitle,
+          styles.inicio2HeroStaticTitle,
+          isInicio3 && styles.inicio3HeroTitle,
+        ]}>
+          {"Aprendamos a conectar\ncon lo esencial"}
+        </Text>
         {!isInicio3 && (
           <View
             style={styles.inicio2HeroStaticActionButton}
@@ -2603,25 +2517,6 @@ export default function HomeScreen2({
               onOpenProfile={handleOpenProgress}
               isInicio3={variant === "inicio3"}
               scrollY={inicio3ScrollY}
-              featuredMoment={featuredMoment}
-              onOpenFeaturedMoment={() => {
-                if (!featuredMoment) return;
-                if (featuredMoment.isPremium && !isPremium) {
-                  router.push("/membresia" as never);
-                  return;
-                }
-                if (openForSession(featuredMoment)) return;
-                if (featuredMoment.skipMiniPlayer) {
-                  playSession(featuredMoment);
-                  return;
-                }
-                if (featuredMoment.skipDetail) {
-                  playSession(featuredMoment);
-                  router.push("/player" as never);
-                  return;
-                }
-                openCategory(`/session/${featuredMoment.id}`);
-              }}
             />
           </>
         ) : showAnimatedScene ? (
@@ -2777,11 +2672,11 @@ export default function HomeScreen2({
             <View style={styles.inicio3SectionDivider} />
           </>
         )}
-        {isInicio2 && variant !== "inicio3" && featuredMoment && (
+        {isInicio2 && featuredMoment && (
           <View
             style={{
               paddingHorizontal: GRID_PAD,
-              marginTop: 0,
+              marginTop: variant === "inicio3" ? -18 : 0,
               marginBottom: INICIO2_SECTION_GAP,
             }}
           >
@@ -2864,11 +2759,8 @@ export default function HomeScreen2({
             </Pressable>
           </View>
         )}
-        {variant === "inicio3" && (
-          <>
-            <Inicio3InspirationCard />
-            <View style={styles.inicio3InspirationDivider} />
-          </>
+        {variant === "inicio3" && featuredMoment && (
+          <View style={styles.inicio3SectionDivider} />
         )}
         {isInicio2 && (
           <SessionCarousel
@@ -4511,109 +4403,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-  },
-  inicio3InspirationSection: {
-    paddingHorizontal: GRID_PAD,
-    marginBottom: 2,
-  },
-  inicio3InspirationDivider: {
-    height: StyleSheet.hairlineWidth,
-    marginHorizontal: GRID_PAD,
-    marginTop: 26,
-    marginBottom: 26,
-    backgroundColor: "rgba(249,249,249,0.18)",
-  },
-  inicio3InspirationCard: {
-    width: "100%",
-    height: HERO_HEIGHT,
-    borderRadius: 18,
-    overflow: "hidden",
-    backgroundColor: "rgba(249,249,249,0.06)",
-  },
-  inicio3InspirationCopy: {
-    position: "absolute",
-    left: 18,
-    right: 18,
-    bottom: 18,
-  },
-  inicio3HeroSessionContent: {
-    flex: 1,
-    width: "100%",
-    alignItems: "flex-start",
-    justifyContent: "flex-end",
-    gap: 8,
-    paddingBottom: 2,
-  },
-  inicio3HeroSessionDetails: {
-    width: "100%",
-    gap: 8,
-    transform: [{ translateX: -15 }, { translateY: 10 }],
-  },
-  inicio3HeroSectionLabel: {
-    position: "absolute",
-    left: GRID_PAD,
-    zIndex: 31,
-    fontSize: 17,
-  },
-  inicio3FeaturedMomentTitle: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "700",
-    lineHeight: 24,
-    color: "#F9F9F9",
-  },
-  inicio3FeaturedMomentDescription: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    lineHeight: 18,
-    color: "rgba(249,249,249,0.72)",
-  },
-  inicio3FeaturedMomentPills: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 2,
-    width: "68%",
-  },
-  inicio3FeaturedMomentPill: {
-    minHeight: 30,
-    maxWidth: "62%",
-    paddingHorizontal: 11,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(249,249,249,0.34)",
-    backgroundColor: "rgba(249,249,249,0.18)",
-    overflow: "hidden",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
-  inicio3FeaturedMomentPillText: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#F9F9F9",
-  },
-  inicio3FeaturedMomentButton: {
-    width: "100%",
-    minHeight: 48,
-    marginTop: 2,
-    borderRadius: 999,
-    overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.14)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.28)",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  inicio3FeaturedMomentButtonText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#FFFFFF",
   },
 
   // Horizontal scroll
