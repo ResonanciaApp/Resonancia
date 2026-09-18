@@ -46,6 +46,8 @@ import RAnimated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, {
   Circle as SvgCircle,
+  Path,
+  Rect,
 } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -1493,7 +1495,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 cachePolicy="memory-disk"
               />
               <LinearGradient
-                colors={["rgba(3,8,15,0.30)", "rgba(3,8,15,0.08)", "rgba(3,8,15,0.64)"]}
+                colors={["rgba(3,8,15,0.44)", "rgba(3,8,15,0.14)", "rgba(3,8,15,0.68)"]}
                 locations={[0, 0.48, 1]}
                 style={StyleSheet.absoluteFill}
               />
@@ -1654,13 +1656,13 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         {isInicio3 && featuredMoment ? (
           <View style={styles.inicio3HeroSessionContent}>
             <Text style={styles.inicio3FeaturedMomentEyebrowInline}>
-              Tu Resonancia de hoy ✨
+              Tu Resonancia de hoy
             </Text>
             <View style={styles.inicio3HeroSessionDetails}>
-              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={2}>
+              <Text style={styles.inicio3FeaturedMomentTitle} numberOfLines={3}>
                 {featuredMoment.title}
               </Text>
-              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={1}>
+              <Text style={styles.inicio3FeaturedMomentDescription} numberOfLines={2}>
                 {featuredMoment.description || "Una sesión elegida para acompañar tu momento presente."}
               </Text>
               <View style={styles.inicio3FeaturedMomentPills}>
@@ -1688,7 +1690,22 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
                 { transform: [{ scale: pressed ? 0.92 : 1 }] },
               ]}
             >
-              <Ionicons name={featuredMomentPlaying ? "pause" : "play"} size={23} color="#060A0F" />
+              <BlurView
+                intensity={26}
+                tint="light"
+                experimentalBlurMethod="dimezisBlurView"
+                style={StyleSheet.absoluteFill}
+              />
+              {featuredMomentPlaying ? (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Rect x="7" y="5" width="12" height="36" rx="5" ry="5" fill="#FFFFFF" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="#FFFFFF" />
+                </Svg>
+              ) : (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#FFFFFF" />
+                </Svg>
+              )}
             </Pressable>
           </View>
         ) : (
@@ -4553,13 +4570,12 @@ const styles = StyleSheet.create({
   },
   inicio3HeroSessionDetails: {
     width: "100%",
-    paddingRight: 62,
     gap: 8,
     transform: [{ translateX: -15 }, { translateY: 10 }],
   },
   inicio3FeaturedMomentEyebrowInline: {
     position: "absolute",
-    top: 0,
+    top: -10,
     left: 0,
     right: 0,
     transform: [{ translateX: -15 }],
@@ -4590,6 +4606,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginTop: 2,
+    width: "68%",
   },
   inicio3FeaturedMomentPill: {
     minHeight: 30,
@@ -4615,16 +4632,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     bottom: -8,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: "#F9F9F9",
+    width: 103,
+    height: 103,
+    borderRadius: 51.5,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.28)",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000000",
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
   },
 
   // Horizontal scroll
