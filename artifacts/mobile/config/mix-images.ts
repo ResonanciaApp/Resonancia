@@ -10,14 +10,19 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import type { ImageSourcePropType } from "react-native";
+import { PLAYLIST_COVER_PRESETS } from "@/data/default-playlist-covers";
 
 const MIX_IMAGE_MAP: Record<string, ImageSourcePropType> = {
   concentracion: require("@/assets/images/mixer/categories/concentracion.jpg"),
   dormir: require("@/assets/images/mixer/categories/dormir.jpg"),
   motivarme: require("@/assets/images/mixer/categories/motivarme.jpg"),
+  ...Object.fromEntries(
+    PLAYLIST_COVER_PRESETS.map((preset) => [preset.id, preset.source]),
+  ),
 };
 
-export const MIX_IMAGE_GALLERY: string[] = Object.keys(MIX_IMAGE_MAP);
+/** Galería temporal: reutiliza las 25 portadas de playlists. */
+export const MIX_IMAGE_GALLERY: string[] = PLAYLIST_COVER_PRESETS.map((preset) => preset.id);
 
 export function getMixImage(key?: string): ImageSourcePropType | undefined {
   if (!key) return undefined;

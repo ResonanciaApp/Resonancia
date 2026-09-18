@@ -4,12 +4,14 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
+  FlatList,
   Modal,
   Platform,
   Pressable,
@@ -33,6 +35,7 @@ import { type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
+import { IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 
 const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
@@ -170,57 +173,134 @@ export function MixCover({
 // ── Cover picker sheet ────────────────────────────────────────────────────────
 function CoverPickerSheet({
   visible,
+  currentImageKey,
+  currentCoverUri,
   onClose,
+  onPickImage,
   onPickPreset,
-  onClearCover,
 }: {
   visible: boolean;
+  currentImageKey?: string;
+  currentCoverUri?: string;
   onClose: () => void;
+  onPickImage: (closeFn: () => void) => void;
   onPickPreset: (key: string) => void;
-  onClearCover: () => void;
 }) {
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
+  const [selectedImageKey, setSelectedImageKey] = useState<string | null>(null);
 
-  if (!visible) return null;
+  useEffect(() => {
+    if (!visible) return;
+    setSelectedImageKey(currentCoverUri ? null : (currentImageKey ?? null));
+  }, [currentCoverUri, currentImageKey, visible]);
+
+  const selectedSource = selectedImageKey
+    ? getMixImage(selectedImageKey)
+    : currentCoverUri
+      ? { uri: currentCoverUri }
+      : undefined;
 
   return (
-    <Modal visible animationType="slide" transparent onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={ms.backdrop} onPress={onClose} />
-      <LinearGradient colors={["#190913", "#190913"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+      <View
+        style={[
+          ms.sheet,
+          {
+            top: topOffset,
+            paddingBottom: bottomPad,
+            backgroundColor: theme.gradient[theme.gradient.length - 1],
+          },
+        ]}
+      >
+        <LinearGradient
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          locations={theme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         <View style={ms.handle} />
-        <Text style={ms.sheetTitle}>Elige una imagen</Text>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
-          <View style={ms.gridRow}>
-            {MIX_IMAGE_GALLERY.map((key) => {
-              const img = getMixImage(key);
-              return (
-                <Pressable
-                  key={key}
-                  style={({ pressed }) => [ms.presetThumb, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickPreset(key); onClose(); }}
-                >
-                  {img ? (
-                    <Image source={img as number} style={ms.presetThumbImg} contentFit="cover" />
-                  ) : (
-                    <View style={[ms.presetThumbImg, { backgroundColor: "rgba(212,175,55,0.15)", alignItems: "center", justifyContent: "center" }]}>
-                      <Feather name="image" size={20} color={MUTED} />
-                    </View>
-                  )}
-                  <Text style={ms.presetLabel} numberOfLines={1}>{formatMixImageLabel(key)}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
+        <View style={ms.coverHeader}>
+          <Text style={ms.sheetTitle}>Portada</Text>
           <Pressable
-            style={({ pressed }) => [ms.row, { borderBottomWidth: 0, marginTop: 8, opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => { onClearCover(); onClose(); }}
+            onPress={onClose}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar selector de portada"
+            style={({ pressed }) => [
+              ms.coverCloseButton,
+              { opacity: pressed ? 0.7 : 1 },
+            ]}
           >
-            <Feather name="x-circle" size={20} color={MUTED} />
-            <Text style={[ms.rowText, { color: MUTED }]}>Quitar portada</Text>
+            <Feather name="x" size={18} color={GOLD} />
           </Pressable>
-        </ScrollView>
-      </LinearGradient>
+        </View>
+
+        <View style={ms.selectedPreviewSlot}>
+          {selectedSource && (
+            <Image
+              source={selectedSource}
+              style={ms.selectedPreview}
+              contentFit="cover"
+              transition={IMAGE_TRANSITION}
+            />
+          )}
+        </View>
+
+        <Pressable
+          style={({ pressed }) => [
+            ms.uploadPill,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
+          onPress={() => onPickImage(onClose)}
+          accessibilityRole="button"
+          accessibilityLabel="Agregar imagen desde la galería"
+        >
+          <Feather name="image" size={18} color={GOLD} />
+          <Text style={ms.uploadPillText}>Agregar imagen</Text>
+        </Pressable>
+
+        <FlatList
+          style={ms.presetGrid}
+          data={MIX_IMAGE_GALLERY}
+          keyExtractor={(key) => key}
+          numColumns={5}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={ms.presetGridContent}
+          columnWrapperStyle={ms.presetGridRow}
+          renderItem={({ item: key }) => {
+            const source = getMixImage(key);
+            const selected = key === selectedImageKey;
+            if (!source) return null;
+            return (
+              <Pressable
+                onPress={() => {
+                  setSelectedImageKey(key);
+                  onPickPreset(key);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Portada: ${formatMixImageLabel(key)}`}
+                accessibilityState={{ selected }}
+                style={({ pressed }) => [
+                  ms.presetPhotoFrame,
+                  selected && ms.presetPhotoFrameSelected,
+                  { opacity: pressed ? 0.72 : 1 },
+                ]}
+              >
+                <Image
+                  source={source}
+                  style={ms.presetPhoto}
+                  contentFit="cover"
+                  transition={IMAGE_TRANSITION}
+                />
+              </Pressable>
+            );
+          }}
+        />
+      </View>
     </Modal>
   );
 }
@@ -438,12 +518,30 @@ export default function MiMezclaScreen() {
 
       <CoverPickerSheet
         visible={pickerVisible}
+        currentImageKey={mix.image}
+        currentCoverUri={mix.coverUri}
         onClose={() => setPickerVisible(false)}
+        onPickImage={async (closeFn) => {
+          closeFn();
+          await new Promise<void>((resolve) => setTimeout(resolve, 350));
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.85,
+          });
+          if (!result.canceled && result.assets[0]?.uri) {
+            save({
+              image: undefined,
+              coverUri: result.assets[0].uri,
+              coverGeometryId: undefined,
+              coverCreationId: undefined,
+              categoryChosen: true,
+            });
+          }
+        }}
         onPickPreset={(key) =>
           save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined, categoryChosen: true })
-        }
-        onClearCover={() =>
-          save({ image: undefined, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined })
         }
       />
     </LinearGradient>
@@ -619,114 +717,105 @@ const ms = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
     position: "absolute",
-    bottom: 0, left: 0, right: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
-    maxHeight: "80%",
+    overflow: "hidden",
+    backgroundColor: "#190913",
   },
   handle: {
     alignSelf: "center",
     width: 36, height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(74,12,12,0.08)",
     marginTop: 10, marginBottom: 4,
   },
   sheetTitle: {
     fontFamily: "Manrope",
+    flex: 1,
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
     textAlign: "center",
-    marginVertical: 14,
+    marginBottom: 0,
   },
-  headerRow: {
+  coverHeader: {
+    minHeight: 36,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
-  },
-  rowText: {
-    fontFamily: "Manrope",
-    flex: 1,
-    color: TEXT,
-    fontSize: 15,
-  },
-  gridRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    justifyContent: "flex-start",
-  },
-  presetThumb: {
-    width: "30%",
-    alignItems: "center",
-    gap: 4,
-  },
-  presetThumbImg: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
-  },
-  presetLabel: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 11,
-    textTransform: "capitalize",
-  },
-  geoItem: {
-    width: "30%",
-    alignItems: "center",
-    gap: 4,
-  },
-  geoThumb: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
-    backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
-  geoName: {
-    fontFamily: "Manrope",
-    color: MUTED,
-    fontSize: 11,
-    textAlign: "center",
-  },
-  creationItem: {
-    width: "47%",
+  coverCloseButton: {
+    position: "absolute",
+    right: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
-    gap: 6,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
-  creationThumb: {
-    width: 100,
-    height: 100,
-    borderRadius: 12,
-    overflow: "hidden",
+  selectedPreviewSlot: {
+    height: 170,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  creationGrid: {
+  selectedPreview: {
+    width: 115.5,
+    height: 115.5,
+    borderRadius: 20,
+  },
+  uploadPill: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    justifyContent: "space-between",
-  },
-  creationItem2col: {
-    width: "47%",
     alignItems: "center",
-    gap: 8,
+    justifyContent: "center",
+    alignSelf: "center",
+    gap: 9,
+    minWidth: 190,
+    minHeight: 42,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 21,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
-  creationThumb2col: {
-    width: "100%",
-    aspectRatio: 1,
-    borderRadius: 14,
+  uploadPillText: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  presetGridContent: {
+    paddingTop: 26,
+    paddingBottom: 20,
+  },
+  presetGrid: {
+    flex: 1,
+  },
+  presetGridRow: {
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  presetPhotoFrame: {
+    width: 63,
+    height: 63,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "transparent",
+    padding: 2,
+  },
+  presetPhotoFrameSelected: {
+    borderColor: "#F9F9F9",
+  },
+  presetPhoto: {
+    flex: 1,
+    borderRadius: 16,
     overflow: "hidden",
   },
 });
