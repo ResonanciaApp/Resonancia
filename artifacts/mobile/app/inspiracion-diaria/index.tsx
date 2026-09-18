@@ -277,8 +277,6 @@ export default function InspiracionDiariaIndex() {
           style={[
             styles.pageContent,
             {
-              paddingTop: topInset + 180,
-              paddingBottom: Math.max(insets.bottom, 18) + 38,
               opacity: contentOpacity,
             },
           ]}
@@ -377,8 +375,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
   slide: { backgroundColor: "#191919" },
   pageContent: { ...StyleSheet.absoluteFillObject, justifyContent: "center", paddingHorizontal: 28 },
-  message: { width: "100%", alignItems: "center", transform: [{ translateY: -178 }] },
-  unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12, transform: [{ translateY: -178 }] },
+  message: { width: "100%", alignItems: "center" },
+  unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12 },
   quoteBlock: { width: "100%", alignItems: "center" },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
