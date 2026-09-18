@@ -2844,7 +2844,7 @@ export default function HomeScreen2({
         {variant === "inicio3" && (
           <>
             <Inicio3InspirationCard />
-            <View style={styles.inicio3SectionDivider} />
+            <View style={styles.inicio3InspirationDivider} />
           </>
         )}
         {isInicio2 && (
@@ -4493,6 +4493,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     marginBottom: 2,
   },
+  inicio3InspirationDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: GRID_PAD,
+    marginTop: 26,
+    marginBottom: 26,
+    backgroundColor: "rgba(249,249,249,0.18)",
+  },
   inicio3InspirationCard: {
     width: "100%",
     height: HERO_HEIGHT,
@@ -4507,11 +4514,18 @@ const styles = StyleSheet.create({
     bottom: 18,
   },
   inicio3HeroSessionContent: {
+    flex: 1,
     width: "100%",
     alignItems: "flex-start",
+    justifyContent: "flex-end",
     gap: 8,
+    paddingBottom: 2,
   },
   inicio3FeaturedMomentEyebrowInline: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
@@ -4562,6 +4576,7 @@ const styles = StyleSheet.create({
   },
   inicio3FeaturedMomentButton: {
     width: "100%",
+    alignSelf: "stretch",
     minHeight: 48,
     marginTop: 4,
     borderRadius: 999,
