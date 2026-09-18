@@ -61,6 +61,8 @@ export type Playlist = {
   /** IDs de videos (data/videos.ts) agregados a la playlist. */
   videoIds?: string[];
   coverUri?: string;
+  /** ID estable de una portada predeterminada bundleada. */
+  coverPresetId?: string;
   /** 'image' = foto del celular; 'geometrix' = geometría sagrada; 'creation' = composición propia */
   coverType?: "image" | "geometrix" | "creation";
   coverGeometryId?: string;
@@ -100,6 +102,7 @@ interface FoldersPlaylistsCtx {
   setPlaylistDescription: (playlistId: string, description: string) => void;
   reorderPlaylist: (playlistId: string, newSessionIds: string[]) => void;
   setPlaylistCover: (playlistId: string, uri: string) => void;
+  setPlaylistCoverPreset: (playlistId: string, presetId: string) => void;
   setPlaylistCoverColor: (playlistId: string, color: string) => void;
   setPlaylistCoverGeometry: (playlistId: string, geometryId: string) => void;
   setPlaylistCoverCreation: (playlistId: string, creationId: string) => void;
@@ -673,7 +676,24 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   const setPlaylistCover = useCallback((playlistId: string, uri: string) => {
     updatePlaylists((prev) =>
-      prev.map((p) => p.id === playlistId ? { ...p, coverUri: uri, coverType: "image" as const } : p)
+      prev.map((p) => p.id === playlistId
+        ? { ...p, coverUri: uri, coverPresetId: undefined, coverType: "image" as const }
+        : p)
+    );
+  }, [updatePlaylists]);
+
+  const setPlaylistCoverPreset = useCallback((playlistId: string, presetId: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId
+        ? {
+            ...p,
+            coverUri: undefined,
+            coverPresetId: presetId,
+            coverType: "image" as const,
+            coverGeometryId: undefined,
+            coverCreationId: undefined,
+          }
+        : p)
     );
   }, [updatePlaylists]);
 
@@ -685,13 +705,17 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
 
   const setPlaylistCoverGeometry = useCallback((playlistId: string, geometryId: string) => {
     updatePlaylists((prev) =>
-      prev.map((p) => p.id === playlistId ? { ...p, coverType: "geometrix" as const, coverGeometryId: geometryId } : p)
+      prev.map((p) => p.id === playlistId
+        ? { ...p, coverPresetId: undefined, coverType: "geometrix" as const, coverGeometryId: geometryId }
+        : p)
     );
   }, [updatePlaylists]);
 
   const setPlaylistCoverCreation = useCallback((playlistId: string, creationId: string) => {
     updatePlaylists((prev) =>
-      prev.map((p) => p.id === playlistId ? { ...p, coverType: "creation" as const, coverCreationId: creationId } : p)
+      prev.map((p) => p.id === playlistId
+        ? { ...p, coverPresetId: undefined, coverType: "creation" as const, coverCreationId: creationId }
+        : p)
     );
   }, [updatePlaylists]);
 
@@ -910,6 +934,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         setPlaylistDescription,
         reorderPlaylist,
         setPlaylistCover,
+        setPlaylistCoverPreset,
         setPlaylistCoverColor,
         setPlaylistCoverGeometry,
         setPlaylistCoverCreation,

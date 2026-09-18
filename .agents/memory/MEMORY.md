@@ -156,3 +156,4 @@
 - [Reinicio duplicado de Expo](expo-workflow-duplicate-process.md) — un restart puede dejar el Metro anterior vivo y el nuevo esperando el mismo puerto; diagnosticar grupos de proceso antes de reintentar
 - [Cards de frases emocionales](emotional-quote-cards.md) — dirección aprobada: fondo propio emparentado con cada hero, overlay oscuro y espaciado vertical igual a Frase del día
 - [Rotación de frases emocionales](emotional-quote-rotation.md) — el slot consumido vive también en el historial; este dato recupera la secuencia si falla el contador secundario
+- [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle

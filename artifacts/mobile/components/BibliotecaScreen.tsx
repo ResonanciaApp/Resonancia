@@ -56,7 +56,10 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
-import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
+import {
+  getDefaultPlaylistCover,
+  getPlaylistCoverPreset,
+} from "@/data/default-playlist-covers";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 
@@ -395,6 +398,8 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
           </View>
         ) : pl.coverType === "creation" && pl.coverCreationId ? (
           <CreationCoverPreview creationId={pl.coverCreationId} size={64} />
+        ) : pl.coverPresetId ? (
+          <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={styles.userPlCover} contentFit="cover" />
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
@@ -1406,6 +1411,8 @@ export function BibliotecaScreen({
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
                           <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
+                        ) : pl.coverPresetId ? (
+                          <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                         ) : pl.coverUri ? (
                           <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                         ) : (
@@ -1607,7 +1614,9 @@ export function BibliotecaScreen({
                        <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                      ) : pl.coverType === "creation" && pl.coverCreationId ? (
                        <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
-                     ) : pl.coverUri ? (
+                      ) : pl.coverPresetId ? (
+                        <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
+                      ) : pl.coverUri ? (
                        <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                      ) : (
                        <Feather name="music" size={28} color={MUTED} />

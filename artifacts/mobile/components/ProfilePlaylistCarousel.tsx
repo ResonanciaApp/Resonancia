@@ -19,7 +19,10 @@ import { WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
+import {
+  getDefaultPlaylistCover,
+  getPlaylistCoverPreset,
+} from "@/data/default-playlist-covers";
 import { useColors } from "@/hooks/useColors";
 
 const GRID_PAD = 14;
@@ -133,7 +136,17 @@ export const ProfilePlaylistCarousel = React.memo(function ProfilePlaylistCarous
                 onPress={() => router.push(`/playlist/${encodeURIComponent(playlist.id)}` as never)}
                 style={{ width: cardWidth }}
               >
-                {playlist.coverUri ? (
+                {playlist.coverPresetId ? (
+                  <Image
+                    source={getPlaylistCoverPreset(playlist.coverPresetId)?.source}
+                    style={{
+                      width: cardWidth,
+                      height: cardWidth,
+                      borderRadius: 13,
+                    }}
+                    contentFit="cover"
+                  />
+                ) : playlist.coverUri ? (
                   <Image
                     source={{ uri: playlist.coverUri }}
                     style={{

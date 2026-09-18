@@ -1532,19 +1532,21 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
         ]}>
           {"Aprendamos a conectar\ncon lo esencial"}
         </Text>
-        <Pressable
-          onPress={() => {}}
-          style={({ pressed }) => [
-            styles.inicio2HeroActionButton,
-            styles.inicio2HeroStaticActionButton,
-            { opacity: pressed ? 0.82 : 1 },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel="Descubrir"
-          testID="inicio2-hero-action"
-        >
-          <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
-        </Pressable>
+        {!isInicio3 && (
+          <Pressable
+            onPress={() => {}}
+            style={({ pressed }) => [
+              styles.inicio2HeroActionButton,
+              styles.inicio2HeroStaticActionButton,
+              { opacity: pressed ? 0.82 : 1 },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Descubrir"
+            testID="inicio2-hero-action"
+          >
+            <Text style={styles.inicio2HeroActionButtonText}>Descubrir</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -3456,7 +3458,7 @@ const styles = StyleSheet.create({
   inicio3HeroTitle: {
     maxWidth: "86%",
     textAlign: "left",
-    fontSize: 20,
+    fontSize: 19,
     lineHeight: 26,
   },
   inicio2HeroCategory: {

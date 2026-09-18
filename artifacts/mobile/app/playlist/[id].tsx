@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Alert,
   FlatList,
-  Image as RNImage,
   Modal,
   PanResponder,
   Platform,
@@ -28,8 +27,10 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import {
-  DEFAULT_PLAYLIST_COVERS,
+  PLAYLIST_COVER_PRESETS,
   getDefaultPlaylistCover,
+  getPlaylistCoverPreset,
+  type PlaylistCoverPreset,
 } from "@/data/default-playlist-covers";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { VideoActionsSheet } from "@/components/VideoActionsSheet";
@@ -121,7 +122,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
     ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.96)`
     : "rgba(0,0,0,0.96)";
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverPreset, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
   const { videos: allVideos } = useVideos();
   const {
     playSession,
@@ -365,15 +366,21 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
-                  size={142}
+                  size={163}
                   strokeWidth={1.2}
                   opacity={1}
                 />
               </View>
             ) : playlist.coverType === "creation" && playlist.coverCreationId ? (
               <View style={styles.coverCreation}>
-                <CreationCoverPreview creationId={playlist.coverCreationId} size={110} />
+                <CreationCoverPreview creationId={playlist.coverCreationId} size={127} />
               </View>
+            ) : playlist.coverPresetId ? (
+              <Image
+                source={getPlaylistCoverPreset(playlist.coverPresetId)?.source}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+              />
             ) : playlist.coverUri ? (
               <Image
                 source={{ uri: playlist.coverUri }}
@@ -513,6 +520,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
         {/* Sesiones recomendadas */}
         {recommended.length > 0 && (
           <>
+            <View style={styles.recommendedSectionDivider} />
             <View style={styles.recommendedHeader}>
               <View style={styles.recommendedMoodBadge}>
                 <Text style={styles.recommendedMoodEmoji}>{latestMoods[0]?.emoji ?? "😌"}</Text>
@@ -586,6 +594,7 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
       {/* Modal de selección de cover */}
       <CoverPickerModal
         visible={coverModalVisible}
+        currentPresetId={playlist.coverPresetId}
         onClose={() => setCoverModalVisible(false)}
         onPickImage={async (closeFn) => {
           closeFn();
@@ -602,10 +611,8 @@ export default function PlaylistDetailScreen({ id: idProp }: { id?: string } = {
             setColorPickerVisible(true);
           }
         }}
-        onPickPreset={(source) => {
-          const uri = RNImage.resolveAssetSource(source)?.uri;
-          if (!uri) return;
-          setPlaylistCover(playlist.id, uri);
+        onPickPreset={(preset) => {
+          setPlaylistCoverPreset(playlist.id, preset.id);
         }}
       />
 
@@ -814,8 +821,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   cover: {
-    width: 110,
-    height: 110,
+    width: 127,
+    height: 127,
     borderRadius: 8,
     backgroundColor: "transparent",
     borderWidth: StyleSheet.hairlineWidth,
@@ -945,6 +952,11 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     marginTop: -10,
   },
+  recommendedSectionDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: 20,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
   recommendedMoodBadge: {
     width: 49,
     height: 49,
@@ -1050,51 +1062,125 @@ const styles = StyleSheet.create({
 // ── CoverPickerModal ───────────────────────────────────────────────────────
 function CoverPickerModal({
   visible,
+  currentPresetId,
   onClose,
   onPickImage,
   onPickPreset,
 }: {
   visible: boolean;
+  currentPresetId?: string;
   onClose: () => void;
   onPickImage: (closeFn: () => void) => void;
-  onPickPreset: (source: number) => void;
+  onPickPreset: (preset: PlaylistCoverPreset) => void;
 }) {
   const { theme: sceneTheme } = useSceneTheme();
-  const sheetColor = sceneTheme.gradient[1] ?? sceneTheme.gradient[0];
+  const sheetColor = sceneTheme.gradient[sceneTheme.gradient.length - 1];
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
+  const selectedPreset = getPlaylistCoverPreset(selectedPresetId ?? undefined);
+
+  useEffect(() => {
+    if (!visible) return;
+    setSelectedPresetId(currentPresetId ?? null);
+  }, [currentPresetId, visible]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
-      <View style={[modalStyles.sheet, { paddingBottom: bottomPad, backgroundColor: sheetColor }]}>
+      <View
+        style={[
+          modalStyles.sheet,
+          {
+            top: topOffset,
+            paddingBottom: bottomPad,
+            backgroundColor: sheetColor,
+          },
+        ]}
+      >
+        <LinearGradient
+          colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+          locations={sceneTheme.gradientLocations}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         <View style={modalStyles.handle} />
-        <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
+        <View style={modalStyles.coverHeader}>
+          <Text style={modalStyles.sheetTitle}>Portada</Text>
+          <Pressable
+            onPress={onClose}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar selector de portada"
+            style={({ pressed }) => [
+              modalStyles.coverCloseButton,
+              { opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Feather name="x" size={18} color={GOLD} />
+          </Pressable>
+        </View>
+
+        <View style={modalStyles.selectedPreviewSlot}>
+          {selectedPreset && (
+            <Image
+              source={selectedPreset.source}
+              style={modalStyles.selectedPreview}
+              contentFit="cover"
+              transition={IMAGE_TRANSITION}
+            />
+          )}
+        </View>
+
         <Pressable
-          style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
+          style={({ pressed }) => [
+            modalStyles.uploadPill,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
           onPress={() => { onPickImage(onClose); }}
+          accessibilityRole="button"
+          accessibilityLabel="Agregar imagen desde la galería"
         >
-          <Feather name="image" size={22} color={GOLD} />
-          <Text style={modalStyles.sheetRowText}>Foto de la galería</Text>
+          <Feather name="image" size={18} color={GOLD} />
+          <Text style={modalStyles.uploadPillText}>Agregar imagen</Text>
         </Pressable>
-        <Text style={modalStyles.presetTitle}>Elige una foto predeterminada</Text>
-        <View style={modalStyles.presetRow}>
-          {Object.values(DEFAULT_PLAYLIST_COVERS).map((source, index) => (
+
+        <FlatList
+          style={modalStyles.presetGrid}
+          data={PLAYLIST_COVER_PRESETS}
+          keyExtractor={(preset) => preset.id}
+          numColumns={5}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={modalStyles.presetGridContent}
+          columnWrapperStyle={modalStyles.presetGridRow}
+          renderItem={({ item: preset }) => {
+            const selected = preset.id === selectedPresetId;
+            return (
             <Pressable
-              key={index}
               onPress={() => {
-                onPickPreset(source);
-                onClose();
+                setSelectedPresetId(preset.id);
+                onPickPreset(preset);
               }}
+              accessibilityRole="button"
+              accessibilityLabel={`Portada: ${preset.label}`}
+              accessibilityState={{ selected }}
               style={({ pressed }) => [
-                modalStyles.presetPhoto,
+                modalStyles.presetPhotoFrame,
+                selected && modalStyles.presetPhotoFrameSelected,
                 { opacity: pressed ? 0.72 : 1 },
               ]}
             >
-              <Image source={source} style={StyleSheet.absoluteFill} contentFit="cover" />
+              <Image
+                source={preset.source}
+                style={modalStyles.presetPhoto}
+                contentFit="cover"
+                transition={IMAGE_TRANSITION}
+              />
             </Pressable>
-          ))}
-        </View>
+            );
+          }}
+        />
       </View>
     </Modal>
   );
@@ -1104,7 +1190,9 @@ const modalStyles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
     position: "absolute",
-    bottom: 0, left: 0, right: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
@@ -1120,46 +1208,88 @@ const modalStyles = StyleSheet.create({
   },
   sheetTitle: {
     fontFamily: "Manrope",
+    flex: 1,
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 0,
   },
-  sheetRow: {
+  coverHeader: {
+    minHeight: 36,
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    paddingVertical: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
+    justifyContent: "center",
   },
-  sheetRowText: {
+  coverCloseButton: {
+    position: "absolute",
+    right: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  selectedPreviewSlot: {
+    height: 125,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  selectedPreview: {
+    width: 77,
+    height: 77,
+    borderRadius: 38.5,
+  },
+  uploadPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    gap: 9,
+    minWidth: 190,
+    minHeight: 42,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 21,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  uploadPillText: {
     fontFamily: "Manrope",
     color: TEXT,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
   },
-  presetTitle: {
-    fontFamily: "Manrope",
-    color: TEXT,
-    fontSize: 13,
-    fontWeight: "600",
-    marginTop: 18,
+  presetGridContent: {
+    paddingTop: 18,
+    paddingBottom: 20,
+  },
+  presetGrid: {
+    flex: 1,
+  },
+  presetGridRow: {
+    justifyContent: "space-between",
     marginBottom: 12,
   },
-  presetRow: {
-    flexDirection: "row",
-    gap: 12,
-    paddingBottom: 20,
+  presetPhotoFrame: {
+    width: 63,
+    height: 63,
+    borderRadius: 31.5,
+    borderWidth: 2,
+    borderColor: "transparent",
+    padding: 2,
+  },
+  presetPhotoFrameSelected: {
+    borderColor: "#F9F9F9",
   },
   presetPhoto: {
     flex: 1,
-    aspectRatio: 1,
-    borderRadius: 12,
+    borderRadius: 27.5,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.16)",
   },
   headerRow: {
     flexDirection: "row",
@@ -1569,7 +1699,7 @@ const dreSt = StyleSheet.create({
 // ── EditInfoModal (Nombre y datos) ─────────────────────────────────────────
 function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDelete }: {
   visible: boolean;
-  playlist: { id: string; name: string; description?: string; coverUri?: string; coverType?: string };
+  playlist: { id: string; name: string; description?: string; coverUri?: string; coverPresetId?: string; coverType?: string };
   onClose: () => void;
   onSave: (name: string, description: string) => void;
   onChangeCover: () => void;
@@ -1612,7 +1742,9 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
             {/* Portada */}
             <Pressable style={({ pressed }) => [eiSt.coverRow, { opacity: pressed ? 0.7 : 1 }]} onPress={onChangeCover}>
               <View style={eiSt.coverThumb}>
-                {playlist.coverUri ? (
+                {playlist.coverPresetId ? (
+                  <Image source={getPlaylistCoverPreset(playlist.coverPresetId)?.source} style={StyleSheet.absoluteFill} contentFit="cover" />
+                ) : playlist.coverUri ? (
                   <Image source={{ uri: playlist.coverUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
                 ) : (
                   <Feather name="music" size={24} color={MUTED} />

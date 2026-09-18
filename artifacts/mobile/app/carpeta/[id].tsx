@@ -30,7 +30,10 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { getDefaultPlaylistCover } from "@/data/default-playlist-covers";
+import {
+  getDefaultPlaylistCover,
+  getPlaylistCoverPreset,
+} from "@/data/default-playlist-covers";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 
@@ -226,6 +229,8 @@ export default function CarpetaDetailScreen() {
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
                     <CreationCoverPreview creationId={pl.coverCreationId} size={52} />
+                  ) : pl.coverPresetId ? (
+                    <Image source={getPlaylistCoverPreset(pl.coverPresetId)?.source} style={{ width: 52, height: 52, borderRadius: 6 }} contentFit="cover" />
                   ) : pl.coverUri ? (
                     <Image source={{ uri: pl.coverUri }} style={{ width: 52, height: 52, borderRadius: 6 }} contentFit="cover" />
                   ) : (
