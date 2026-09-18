@@ -1310,7 +1310,7 @@ const Inicio2HeroStatic = React.memo(function Inicio2HeroStatic({
   const inicio3WeekShift = 15;
   const inicio3HeroShift = 14;
   const inicio3HeroHeight =
-    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60;
+    (INICIO2_HERO_HEIGHT + 184 - (topInset + 286) - 52 + 60 + 32) / 2 + 60 + 70;
   const inicio3HeroLayoutTop =
     topInset +
     165 -
@@ -2547,6 +2547,35 @@ export default function HomeScreen2({
           </View>
         ) : null}
 
+        {variant === "inicio3" && (
+          <DailyRecommendationsSection
+            sessions={dailyRecommendations}
+            dayKey={todayKey}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
+            inicio3Compact
+          />
+        )}
+
+        <View
+          style={isInicio2 && styles.inicio2ContentPanel}
+        >
+        {isInicio2 && variant !== "inicio3" && (
+          <View
+            style={[
+              styles.inicio2ToolsSection,
+              { marginTop: 21, marginBottom: INICIO2_SECTION_GAP - 11 },
+            ]}
+          >
+            <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
+          </View>
+        )}
+        {isInicio2 && variant !== "inicio3" && (
+          <DailyRecommendationsSection
+            sessions={dailyRecommendations}
+            dayKey={todayKey}
+            style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
+          />
+        )}
         {variant === "inicio3" && continueMeditationPlaylist && (
           <>
             <ContinueMeditationPlaylistCard
@@ -2567,28 +2596,6 @@ export default function HomeScreen2({
             />
             <View style={styles.inicio3SectionDivider} />
           </>
-        )}
-
-        <View
-          style={isInicio2 && styles.inicio2ContentPanel}
-        >
-        {isInicio2 && variant !== "inicio3" && (
-          <View
-            style={[
-              styles.inicio2ToolsSection,
-              { marginTop: 21, marginBottom: INICIO2_SECTION_GAP - 11 },
-            ]}
-          >
-            <ToolsGrid onOpenMoodPicker={() => setMoodSheetVisible(true)} />
-          </View>
-        )}
-        {isInicio2 && (
-          <DailyRecommendationsSection
-            sessions={dailyRecommendations}
-            dayKey={todayKey}
-            style={{ paddingHorizontal: GRID_PAD, marginTop: -11 }}
-            inicio3Compact={variant === "inicio3"}
-          />
         )}
         {isInicio2 && featuredMoment && (
           <View
@@ -3423,8 +3430,8 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   inicio3HeroStaticImageFrame: {
-    left: GRID_PAD,
-    right: GRID_PAD,
+    left: GRID_PAD - 4,
+    right: GRID_PAD - 4,
     overflow: "visible",
     zIndex: 20,
   },
