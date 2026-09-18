@@ -16,6 +16,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -34,6 +35,7 @@ import { MIX_CATEGORIES, MIX_CATEGORY_ACTION_LABELS, type MixCategory } from "@/
 import { type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 
@@ -191,6 +193,10 @@ function CoverPickerSheet({
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const topOffset = (Platform.OS === "web" ? 67 : insets.top) + 50;
   const [selectedImageKey, setSelectedImageKey] = useState<string | null>(null);
+  const gradientLocations =
+    theme.gradientLocations?.length === theme.gradient.length
+      ? theme.gradientLocations
+      : undefined;
 
   useEffect(() => {
     if (!visible) return;
@@ -218,7 +224,7 @@ function CoverPickerSheet({
       >
         <LinearGradient
           colors={theme.gradient as unknown as [string, string, ...string[]]}
-          locations={theme.gradientLocations}
+          locations={gradientLocations}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
@@ -305,6 +311,68 @@ function CoverPickerSheet({
   );
 }
 
+// ── Menú de mezcla (tres puntos) ─────────────────────────────────────────────
+function MixMenuSheet({
+  visible,
+  onClose,
+  onShare,
+  onEditMix,
+  onNameAndData,
+  onDelete,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onShare: () => void;
+  onEditMix: () => void;
+  onNameAndData: () => void;
+  onDelete: () => void;
+}) {
+  const { theme } = useSceneTheme();
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const menuBackgroundColor =
+    theme.gradient[2] ??
+    theme.gradient[theme.gradient.length - 1];
+
+  const actions: {
+    icon: React.ComponentProps<typeof Feather>["name"];
+    label: string;
+    action: () => void;
+    destructive?: boolean;
+  }[] = [
+    { icon: "share", label: "Compartir", action: onShare },
+    { icon: "sliders", label: "Editar mezcla", action: onEditMix },
+    { icon: "edit-2", label: "Nombre y datos", action: onNameAndData },
+    { icon: "trash-2", label: "Eliminar mezcla", action: onDelete, destructive: true },
+  ];
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={menuSt.backdrop} onPress={onClose} />
+      <View
+        style={[
+          menuSt.sheet,
+          { paddingBottom: bottomPad + 8, backgroundColor: menuBackgroundColor },
+        ]}
+      >
+        <View style={menuSt.handle} />
+        {actions.map(({ icon, label, action, destructive }) => (
+          <Pressable
+            key={label}
+            style={({ pressed }) => [menuSt.row, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={action}
+          >
+            <Feather name={icon} size={20} color={destructive ? "#E05C5C" : GOLD} />
+            <Text style={[menuSt.rowText, destructive && menuSt.rowTextDestructive]}>
+              {label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </Modal>
+  );
+}
+
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
@@ -314,7 +382,8 @@ export default function MiMezclaScreen() {
   const { theme, activeSceneId } = useSceneTheme();
   const bgGradient = theme.gradient;
 
-  const { presets, updatePresetMeta, deletePreset } = useMixer();
+  const { presets, updatePresetMeta, deletePreset, loadPreset } = useMixer();
+  const { openMixer } = useMixerPanel();
   const { sounds: catalogSounds } = useSounds();
 
   const mix = useMemo(() => presets.find((p) => p.id === id), [presets, id]);
@@ -322,6 +391,7 @@ export default function MiMezclaScreen() {
   const [category, setCategory] = useState<MixCategory>(mix?.category ?? "dormir");
   const [name, setName] = useState(mix?.name ?? "");
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   useEffect(() => {
     if (mix?.name) setName(mix.name);
   }, [mix?.name]);
@@ -371,6 +441,23 @@ export default function MiMezclaScreen() {
     ]);
   }, [mix, id, deletePreset, goBack]);
 
+  const handleShare = useCallback(async () => {
+    if (!mix) return;
+    setMenuVisible(false);
+    await Share.share({
+      message: `${mix.name}\n${mix.sounds.length} sonido${mix.sounds.length !== 1 ? "s" : ""}`,
+    });
+  }, [mix]);
+
+  const handleEditMix = useCallback(() => {
+    if (!mix) return;
+    setMenuVisible(false);
+    saveName();
+    loadPreset(mix);
+    goBack();
+    requestAnimationFrame(openMixer);
+  }, [goBack, loadPreset, mix, openMixer, saveName]);
+
   if (!mix) {
     return (
       <LinearGradient colors={bgGradient} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -387,8 +474,14 @@ export default function MiMezclaScreen() {
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
         <Text style={s.headerTitle} numberOfLines={1}>{mix.name}</Text>
-        <Pressable onPress={handleDelete} hitSlop={12} style={s.iconBtn}>
-          <Feather name="trash-2" size={20} color="rgba(224,92,92,0.75)" />
+        <Pressable
+          onPress={() => setMenuVisible(true)}
+          hitSlop={12}
+          style={[s.iconBtn, s.headerMenuButton]}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir opciones de la mezcla"
+        >
+          <Feather name="more-horizontal" size={22} color="#FFFFFF" />
         </Pressable>
       </View>
 
@@ -544,6 +637,18 @@ export default function MiMezclaScreen() {
           save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined, categoryChosen: true })
         }
       />
+
+      <MixMenuSheet
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+        onShare={handleShare}
+        onEditMix={handleEditMix}
+        onNameAndData={() => setMenuVisible(false)}
+        onDelete={() => {
+          setMenuVisible(false);
+          setTimeout(handleDelete, 300);
+        }}
+      />
     </LinearGradient>
   );
 }
@@ -562,6 +667,14 @@ const s = StyleSheet.create({
     height: 36,
     alignItems: "center",
     justifyContent: "center",
+  },
+  headerMenuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   headerTitle: {
     fontFamily: "Manrope",
@@ -817,5 +930,48 @@ const ms = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     overflow: "hidden",
+  },
+});
+
+const menuSt = StyleSheet.create({
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingHorizontal: 20,
+    overflow: "hidden",
+  },
+  handle: {
+    alignSelf: "center",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    marginTop: 10,
+    marginBottom: 8,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(61,14,22,0.35)",
+  },
+  rowText: {
+    fontFamily: "Manrope",
+    color: TEXT,
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  rowTextDestructive: {
+    color: "#E05C5C",
   },
 });
