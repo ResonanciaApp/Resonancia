@@ -1282,6 +1282,7 @@ export function ProfileScreenBase({
                       : continueMeditationPlaylist.playlist.cover
                   }
                   completion={continueMeditationPlaylist.completion}
+                  sectionStyle={styles.profileMeditationPlaylistSection}
                   onPress={() => {
                     router.push({
                       pathname: "/editorial-playlist/[slug]",
@@ -1289,17 +1290,21 @@ export function ProfileScreenBase({
                     } as never);
                   }}
                 />
+                <View
+                  style={[
+                    styles.profileCarouselDivider,
+                    styles.profileMeditationCarouselDivider,
+                  ]}
+                />
               </View>
             ) : null}
 
-            <View style={{ marginTop: 38 }}>
+            <View style={styles.profileCarouselAfterDivider}>
               <ProfileMixCarousel marginBottom={0} />
             </View>
-            <View style={{ marginTop: 26 }}>
-              <View style={styles.profilePlaylistDivider} />
-              <View style={{ marginTop: 26 }}>
-                <ProfilePlaylistCarousel marginBottom={0} />
-              </View>
+            <View style={styles.profileCarouselDivider} />
+            <View style={styles.profileCarouselAfterDivider}>
+              <ProfilePlaylistCarousel marginBottom={0} />
             </View>
 
           </>
@@ -1702,9 +1707,16 @@ function ModalField({ label, value, onChangeText, placeholder, colors, icon, mul
 // ── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  profilePlaylistDivider: {
+  profileCarouselDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(249,249,249,0.16)",
+    marginTop: 26,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  profileCarouselAfterDivider: {
+    marginTop: 26,
+  },
+  profileMeditationCarouselDivider: {
+    marginHorizontal: 16,
   },
   root: { flex: 1 },
   contentShift: {
@@ -2254,6 +2266,9 @@ const styles = StyleSheet.create({
   profileMeditationPlaylist: {
     marginHorizontal: -16,
     marginTop: 12,
+  },
+  profileMeditationPlaylistSection: {
+    marginBottom: 0,
   },
   profileProgressIntro: {
     paddingTop: 10,

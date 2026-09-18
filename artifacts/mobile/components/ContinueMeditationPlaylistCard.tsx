@@ -1,7 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { Image as ExpoImage, type ImageSource } from "expo-image";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  type StyleProp,
+  View,
+  type ViewStyle,
+} from "react-native";
 
 import type { PlaylistCompletion } from "@/lib/editorial-playlist-helpers";
 
@@ -11,6 +18,7 @@ type Props = {
   coverSource: unknown;
   completion: PlaylistCompletion;
   onPress: () => void;
+  sectionStyle?: StyleProp<ViewStyle>;
 };
 
 export function ContinueMeditationPlaylistCard({
@@ -19,9 +27,13 @@ export function ContinueMeditationPlaylistCard({
   coverSource,
   completion,
   onPress,
+  sectionStyle,
 }: Props) {
   return (
-    <View style={styles.section} testID="continue-meditation-playlist-section">
+    <View
+      style={[styles.section, sectionStyle]}
+      testID="continue-meditation-playlist-section"
+    >
       <Text style={styles.sectionTitle}>Continúa con tu playlist meditativa</Text>
       <Pressable
         onPress={onPress}
