@@ -67,11 +67,15 @@ export default function InspiracionDiariaIndex() {
       .slice(-7);
   }, [current.days, current.today, previous.days]);
   const [selected, setSelected] = useState(current.today);
+  const [displayedDate, setDisplayedDate] = useState(current.today);
   const [moving, setMoving] = useState(false);
   const [sharing, setSharing] = useState(false);
   const activeIndex = Math.max(0, days.findIndex((day) => day.date === selected));
   const activeDay = days[activeIndex];
+  const displayedDay = days.find((day) => day.date === displayedDate) ?? activeDay;
   const selectedRef = useRef(selected);
+  const desiredDisplay = useRef(displayedDate);
+  const contentOpacity = useRef(new Animated.Value(1)).current;
   const slider = useRef<FlatList<InspirationDay>>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragging = useRef(false);
@@ -85,6 +89,50 @@ export default function InspiracionDiariaIndex() {
   const cancelSettle = useCallback(() => {
     if (settleTimer.current) clearTimeout(settleTimer.current);
   }, []);
+
+  const revealContent = useCallback((date: string) => {
+    desiredDisplay.current = date;
+    setDisplayedDate(date);
+    contentOpacity.stopAnimation();
+    if (reduced) {
+      contentOpacity.setValue(1);
+      return;
+    }
+    Animated.timing(contentOpacity, {
+      toValue: 1,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [contentOpacity, reduced]);
+
+  const fadeToContent = useCallback((date: string) => {
+    desiredDisplay.current = date;
+    contentOpacity.stopAnimation();
+    if (reduced) {
+      revealContent(date);
+      return;
+    }
+    Animated.timing(contentOpacity, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished && desiredDisplay.current === date) revealContent(date);
+    });
+  }, [contentOpacity, reduced, revealContent]);
+
+  const hideContent = useCallback(() => {
+    contentOpacity.stopAnimation();
+    if (reduced) {
+      contentOpacity.setValue(0);
+      return;
+    }
+    Animated.timing(contentOpacity, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  }, [contentOpacity, reduced]);
 
   useEffect(() => () => cancelSettle(), [cancelSettle]);
   useEffect(() => {
@@ -105,11 +153,14 @@ export default function InspiracionDiariaIndex() {
     pendingTarget.current = null;
     const date = days[index]?.date;
     setMoving(false);
-    if (date && date !== selectedRef.current) {
-      selectedRef.current = date;
-      setSelected(date);
+    if (date) {
+      if (date !== selectedRef.current) {
+        selectedRef.current = date;
+        setSelected(date);
+      }
+      revealContent(date);
     }
-  }, [cancelSettle, days, width]);
+  }, [cancelSettle, days, revealContent, width]);
 
   const scheduleSettle = useCallback(() => {
     cancelSettle();
@@ -125,6 +176,9 @@ export default function InspiracionDiariaIndex() {
     if (date && date !== selectedRef.current) {
       selectedRef.current = date;
       setSelected(date);
+      fadeToContent(date);
+    } else if (date) {
+      revealContent(date);
     }
     setMoving(false);
     slider.current?.scrollToOffset({ offset: index * width, animated: !reduced });
@@ -172,6 +226,7 @@ export default function InspiracionDiariaIndex() {
             dragging.current = true;
             pendingTarget.current = null;
             setMoving(true);
+            hideContent();
           }}
           onScrollEndDrag={() => {
             dragging.current = false;
@@ -183,58 +238,19 @@ export default function InspiracionDiariaIndex() {
             commit();
           }}
           renderItem={({ item }) => (
-            <View style={{ width, height }}>
-              {item.status === "available" && item.content ? (
-                <>
-                  <InspirationArtwork
-                    key={`${item.content.imageUrl}-${item.content.overlayOpacity}`}
-                    content={item.content}
-                  />
-                  <View
-                    testID={`inspiration-content-${item.date}`}
-                    style={[styles.pageContent, { paddingTop: topInset + 180, paddingBottom: Math.max(insets.bottom, 18) + 38 }]}
-                  >
-                    <View style={styles.message}>
-                      <View>
-                        <Text style={styles.dayNumber}>{formatDayNumber(item.date)}</Text>
-                        <Text style={styles.month}>{monthAndYear(item.date)}</Text>
-                      </View>
-                      <View style={styles.quoteBlock}>
-                        <Text
-                          style={[
-                            styles.quote,
-                            Platform.OS === "web" && ({ overflowWrap: "anywhere", wordBreak: "break-word" } as never),
-                          ]}
-                        >
-                          {item.content.quote}
-                        </Text>
-                        {!!item.content.author && <Text style={styles.author}>— {item.content.author}</Text>}
-                      </View>
-                      <View>
-                        <Pressable
-                          disabled={moving || item.date !== selected}
-                          onPress={() => openDetail(item)}
-                          style={styles.read}
-                        >
-                          <Text style={styles.readText}>{current.week?.settings.readMoreLabel || "Leer más"}</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                <View style={[styles.center, { paddingTop: topInset + 140 }]}>
-                  <Feather name="calendar" size={36} color="rgba(255,255,255,.72)" />
-                  <Text style={styles.unavailable}>No disponible</Text>
-                  <Text style={styles.unavailableDate}>{formatDayNumber(item.date)} {monthAndYear(item.date)}</Text>
-                </View>
+            <View style={[styles.slide, { width, height }]}>
+              {item.status === "available" && item.content && (
+                <InspirationArtwork
+                  key={`${item.content.imageUrl}-${item.content.overlayOpacity}`}
+                  content={item.content}
+                />
               )}
             </View>
           )}
         />
       )}
 
-      <View style={[styles.overlay, { paddingTop: topInset + 8 }]} pointerEvents="box-none">
+      <View style={[styles.overlay, { paddingTop: topInset - 2 }]} pointerEvents="box-none">
         <View style={styles.header}>
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/inicio8"))}
@@ -284,6 +300,54 @@ export default function InspiracionDiariaIndex() {
           ))}
         </View>
 
+        <Animated.View
+          testID={`inspiration-content-${displayedDay?.date ?? "empty"}`}
+          pointerEvents="box-none"
+          style={[
+            styles.pageContent,
+            {
+              paddingTop: topInset + 180,
+              paddingBottom: Math.max(insets.bottom, 18) + 38,
+              opacity: contentOpacity,
+            },
+          ]}
+        >
+          {displayedDay?.status === "available" && displayedDay.content ? (
+            <View style={styles.message}>
+              <View>
+                <Text style={styles.dayNumber}>{formatDayNumber(displayedDay.date)}</Text>
+                <Text style={styles.month}>{monthAndYear(displayedDay.date)}</Text>
+              </View>
+              <View style={styles.quoteBlock}>
+                <Text
+                  style={[
+                    styles.quote,
+                    Platform.OS === "web" && ({ overflowWrap: "anywhere", wordBreak: "break-word" } as never),
+                  ]}
+                >
+                  {displayedDay.content.quote}
+                </Text>
+                {!!displayedDay.content.author && <Text style={styles.author}>— {displayedDay.content.author}</Text>}
+              </View>
+              <View>
+                <Pressable
+                  disabled={moving || displayedDay.date !== selected}
+                  onPress={() => openDetail(displayedDay)}
+                  style={styles.read}
+                >
+                  <Text style={styles.readText}>{current.week?.settings.readMoreLabel || "Leer más"}</Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.unavailableContent}>
+              <Feather name="calendar" size={36} color="rgba(255,255,255,.72)" />
+              <Text style={styles.unavailable}>No disponible</Text>
+              {!!displayedDay && <Text style={styles.unavailableDate}>{formatDayNumber(displayedDay.date)} {monthAndYear(displayedDay.date)}</Text>}
+            </View>
+          )}
+        </Animated.View>
+
         <View style={[styles.bottomActions, { bottom: Math.max(insets.bottom, 18) + 18 }]} pointerEvents="box-none">
           <Pressable
             onPress={() => openDetail(activeDay)}
@@ -327,8 +391,10 @@ export default function InspiracionDiariaIndex() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
-  pageContent: { flex: 1, justifyContent: "center", paddingHorizontal: 28 },
-  message: { width: "100%", alignItems: "center", transform: [{ translateY: 22 }] },
+  slide: { backgroundColor: "#191919" },
+  pageContent: { ...StyleSheet.absoluteFillObject, justifyContent: "center", paddingHorizontal: 28 },
+  message: { width: "100%", alignItems: "center", transform: [{ translateY: -8 }] },
+  unavailableContent: { alignItems: "center", justifyContent: "center", gap: 12, transform: [{ translateY: -8 }] },
   quoteBlock: { width: "100%", alignItems: "center" },
   dayNumber: { color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 35, lineHeight: 40, fontWeight: "500" },
   month: { color: "rgba(255,255,255,.9)", textAlign: "center", fontFamily: "Manrope", fontSize: 16, marginTop: 2 },
@@ -337,7 +403,7 @@ const styles = StyleSheet.create({
   read: {
     alignSelf: "center",
     marginTop: 28,
-    paddingVertical: 12,
+    paddingVertical: 9,
     paddingHorizontal: 24,
     borderRadius: 24,
     borderWidth: 1,
@@ -359,12 +425,11 @@ const styles = StyleSheet.create({
   },
   title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
   headerSpacer: { width: 48 },
-  days: { flexDirection: "row", justifyContent: "space-between", gap: 7, paddingHorizontal: 18, marginTop: 12 },
+  days: { flexDirection: "row", justifyContent: "center", gap: 14, paddingHorizontal: 18, marginTop: 12 },
   dayCard: {
-    flex: 1,
-    maxWidth: 43,
-    height: 58,
-    borderRadius: 9,
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
     overflow: "hidden",
     borderWidth: 0,
     backgroundColor: "rgba(10,12,18,.35)",
