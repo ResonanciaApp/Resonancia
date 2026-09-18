@@ -2641,7 +2641,7 @@ logical_id = "2ee5a2b0-bcc3-4080-b058-ce623f8302e9"
 [[outputs]]
 id = "Bb8H5oCEzhSIaIPQzrVn_"
 uri = "file://docs/informe-respuesta-auditoria-2026-08.html"
-type = "text"
+type = "html"
 title = "Respuesta a la Auditoría Técnica — RESONANCIA"
 description = "Informe que contrasta cada hallazgo de la auditoría de Sparkpath con el trabajo realizado, verificado contra el código actual."
 logical_id = "34b4ac5c-4136-47be-8bc7-3b4e6c361f6f"
@@ -2867,3 +2867,17 @@ mtime_ms = 1788828900780
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/aaa8b2e5-ad78-4e25-a0a5-6c755231898f/87ce9d27-1668-4ac8-b36c-77782382a229"
 storage_version_token = "1788828918043315"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "B8nrrMBV91VT8DLWR0yOG"
+uri = "file://attached_assets/generated_images/inspiracion-2026-09-18-universo-en-cambio.jpg"
+type = "image"
+title = "Inspiración diaria — Universo en cambio"
+description = "Nueva imagen editorial generada y publicada para la Inspiración diaria del 18 de septiembre de 2026."
+logical_id = "1c68b5b2-1de0-4f42-9003-dccc64965b9a"
+content_hash = "sha256:5a875b32bf1164fcf86ce50c616c025ceaf8f4e26f71eb8aef25694f9b82418a"
+size = 197710
+mtime_ms = 1789751891241
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/1c68b5b2-1de0-4f42-9003-dccc64965b9a/1f2fa349-250d-47da-80c1-b6b51058acc6"
+storage_version_token = "1789751994990838"
+content_type = "image/jpeg"
