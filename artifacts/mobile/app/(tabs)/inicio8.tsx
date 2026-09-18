@@ -1381,7 +1381,9 @@ function Inicio3HeroPager({
 }) {
   const router = useRouter();
   const effectiveHero = useEffectiveHero(INICIO3_HERO_FALLBACK);
-  const slideWidth = Dimensions.get("window").width - (GRID_PAD - 3) * 2;
+  const [slideWidth, setSlideWidth] = useState(
+    Dimensions.get("window").width - (GRID_PAD - 3) * 2,
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [todayMediaActive, setTodayMediaActive] = useState(true);
   const todayMediaActiveRef = useRef(true);
@@ -1421,11 +1423,27 @@ function Inicio3HeroPager({
           style={StyleSheet.absoluteFill}
         />
       </RAnimated.View>
-      <View style={[StyleSheet.absoluteFill, styles.inicio3HeroImageClip]}>
+      <View
+        style={[StyleSheet.absoluteFill, styles.inicio3HeroImageClip]}
+        onLayout={(event) => {
+          const measuredWidth = Math.round(event.nativeEvent.layout.width);
+          if (measuredWidth > 0 && measuredWidth !== slideWidth) {
+            setSlideWidth(measuredWidth);
+          }
+        }}
+      >
         <FlatList
+          key={`inicio3-pager-${slideWidth}`}
           data={INICIO3_PAGER_SLIDES}
           horizontal
           pagingEnabled
+          snapToInterval={slideWidth}
+          snapToAlignment="start"
+          decelerationRate="fast"
+          disableIntervalMomentum
+          bounces
+          alwaysBounceHorizontal
+          overScrollMode="always"
           showsHorizontalScrollIndicator={false}
           onScroll={onPagerScroll}
           scrollEventThrottle={16}
