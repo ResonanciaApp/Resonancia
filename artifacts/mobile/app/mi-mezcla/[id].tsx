@@ -31,7 +31,6 @@ import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mi
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useSounds } from "@/context/SoundsContext";
-import { MIX_CATEGORIES, MIX_CATEGORY_ACTION_LABELS, type MixCategory } from "@/data/mix-categories";
 import { type GeometryId } from "@/data/geometries";
 import { useLibraryReturnBack } from "@/hooks/useLibraryReturnBack";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -318,14 +317,12 @@ function MixMenuSheet({
   onShare,
   onEditMix,
   onNameAndData,
-  onDelete,
 }: {
   visible: boolean;
   onClose: () => void;
   onShare: () => void;
   onEditMix: () => void;
   onNameAndData: () => void;
-  onDelete: () => void;
 }) {
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -343,7 +340,6 @@ function MixMenuSheet({
     { icon: "share", label: "Compartir", action: onShare },
     { icon: "sliders", label: "Editar mezcla", action: onEditMix },
     { icon: "edit-2", label: "Nombre y datos", action: onNameAndData },
-    { icon: "trash-2", label: "Eliminar mezcla", action: onDelete, destructive: true },
   ];
 
   return (
@@ -482,7 +478,6 @@ export default function MiMezclaScreen() {
 
   const mix = useMemo(() => presets.find((p) => p.id === id), [presets, id]);
 
-  const [category, setCategory] = useState<MixCategory>(mix?.category ?? "dormir");
   const [name, setName] = useState(mix?.name ?? "");
   const [pickerVisible, setPickerVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -490,9 +485,6 @@ export default function MiMezclaScreen() {
   useEffect(() => {
     if (mix?.name) setName(mix.name);
   }, [mix?.name]);
-  useEffect(() => {
-    if (mix?.category) setCategory(mix.category);
-  }, [mix?.category]);
   const profileBlockBackground = activeSceneId === "tibet"
     ? "rgba(0,0,0,0.15)"
     : isIndigoThemeId(activeSceneId)
@@ -617,35 +609,6 @@ export default function MiMezclaScreen() {
           </Pressable>
         </View>
 
-        {/* Categoría */}
-        <Text style={[s.sectionTitle, s.categorySectionTitle]}>Usa tu mezcla para</Text>
-        <View style={s.catGrid}>
-          {MIX_CATEGORIES.map((cat) => {
-            const selected = category === cat.id;
-            return (
-              <Pressable
-                key={cat.id}
-                style={({ pressed }) => [
-                  s.catCell,
-                  selected && s.catCellSelected,
-                  { opacity: pressed ? 0.82 : 1 },
-                ]}
-                onPress={() => {
-                  setCategory(cat.id);
-                  save({ category: cat.id, categoryChosen: true });
-                }}
-              >
-                {selected && <View style={s.catCellOverlay} />}
-                <View style={s.catCellLabelRow}>
-                  <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
-                    {MIX_CATEGORY_ACTION_LABELS[cat.id]}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-
         {/* Sonidos usados */}
         <Text style={s.sectionTitle}>Sonidos utilizados</Text>
         <ScrollView
@@ -742,10 +705,6 @@ export default function MiMezclaScreen() {
           setMenuVisible(false);
           setTimeout(() => setEditInfoVisible(true), 300);
         }}
-        onDelete={() => {
-          setMenuVisible(false);
-          setTimeout(handleDelete, 300);
-        }}
       />
 
       <EditMixInfoModal
@@ -840,59 +799,12 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-  catGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 28,
-  },
-  catCell: {
-    width: "31%",
-    flexGrow: 1,
-    borderRadius: 27,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(0,0,0,0.28)",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 14,
-    minHeight: 50,
-  },
-  catCellSelected: {
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#F9F9F9",
-  },
-  catCellOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "transparent",
-  },
-  catCellLabelRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-  },
-  catCellLabel: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 12,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  catCellLabelSelected: {
-    color: "#060A0F",
-  },
   sectionTitle: {
     fontFamily: "Manrope",
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
     marginBottom: 17,
-  },
-  categorySectionTitle: {
-    marginTop: 40,
   },
   soundList: {
     maxHeight: 300,

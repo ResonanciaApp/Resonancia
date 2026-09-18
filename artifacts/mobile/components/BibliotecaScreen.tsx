@@ -241,7 +241,7 @@ function AnimatedChipRow({
 
   const handleSelect = (id: LibTab) => {
     const visualLeft = offsetsRef.current[id] ?? 0;
-    setTargetTranslate(CLOSE_SLOT - H_PAD + scrollXRef.current - visualLeft);
+    setTargetTranslate(CLOSE_SLOT + scrollXRef.current - visualLeft);
     setDisplayTab(id);
     setColorTab(id);
     onSelect(id);
@@ -2329,7 +2329,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 2,
     position: "absolute",
-    right: H_PAD + 5,
+    right: H_PAD,
     top: 0,
     marginTop: 38,
     zIndex: 3,
@@ -2342,8 +2342,8 @@ const styles = StyleSheet.create({
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: H_PAD - 10, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
-  chipRowScroller: { flex: 1, marginHorizontal: H_PAD },
-  chipRow: { flexDirection: "row", gap: 8, paddingVertical: 2 },
+  chipRowScroller: { flex: 1, transform: [{ translateY: 4 }] },
+  chipRow: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chipRowWithActions: { paddingRight: 104 },
   libraryTabColumn: { width: 136, height: 51 },
   libraryTabPress: { width: "100%", height: 51 },
