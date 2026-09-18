@@ -126,7 +126,7 @@ export default function InspiracionDiariaPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
             <CalendarHeart className="w-6 h-6 text-primary" />
-            Inspiración Diaria
+            Sabiduría Diaria
           </h1>
           <p className="text-muted-foreground mt-1">
             Gestiona las frases, reflexiones e imágenes diarias.

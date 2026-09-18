@@ -52,8 +52,8 @@ export default function TerminosScreen() {
           Guardamos lo mínimo necesario para que la app funcione: tu nombre, foto opcional y preferencias. Los textos del Diario y tus grabaciones de Voz Interior quedan en tu dispositivo. No vendemos ni compartimos tus datos con terceros con fines comerciales.
         </Section>
 
-        <Section title="Inspiración diaria: favoritos y notas privadas" colors={colors}>
-          Sin cuenta, los favoritos y las notas de Inspiración diaria se guardan en este dispositivo. Al usar una cuenta, se sincronizan de forma privada para recuperarlos en tus dispositivos; las notas creadas como invitado solo se importan con tu confirmación. El panel editorial no permite leer tus notas. Podés editarlas o borrarlas, y recuperarlas desde Mis notas aunque la inspiración deje de publicarse. Los datos de tu cuenta se incluyen en la exportación y se eliminan al borrar la cuenta. Las imágenes que compartís incluyen únicamente la inspiración pública, nunca tus notas personales.
+        <Section title="Sabiduría diaria: favoritos y notas privadas" colors={colors}>
+          Sin cuenta, los favoritos y las notas de Sabiduría diaria se guardan en este dispositivo. Al usar una cuenta, se sincronizan de forma privada para recuperarlos en tus dispositivos; las notas creadas como invitado solo se importan con tu confirmación. El panel editorial no permite leer tus notas. Podés editarlas o borrarlas, y recuperarlas desde Mis notas aunque la sabiduría deje de publicarse. Los datos de tu cuenta se incluyen en la exportación y se eliminan al borrar la cuenta. Las imágenes que compartís incluyen únicamente la sabiduría pública, nunca tus notas personales.
         </Section>
 
         <Section title="6. Notificaciones" colors={colors}>

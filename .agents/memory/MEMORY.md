@@ -143,7 +143,7 @@
 - [Portadas bundleadas de playlists](playlist-bundled-cover-ids.md) — persistir un ID estable y resolver el asset local al renderizar; nunca sincronizar la URI runtime del bundle
 - [Caché del catálogo Mixer](mixer-catalog-cache.md) — Mobile inicia desde el último snapshot válido de sonidos; una API temporalmente caída no debe vaciar las cards
 - [Caché editorial programada](scheduled-editorial-cache.md) — retirada y bloqueo futuro invalidan respuestas viejas, pero un estreno autorizado puede desbloquear la misma revisión
-- [Portada de Inspiración diaria](inspiration-seven-day-window.md) — portada minimalista muestra solo los últimos 7 días hasta hoy; sin navegación semanal ni fechas futuras
+- [Portada de Sabiduría diaria](inspiration-seven-day-window.md) — portada minimalista muestra solo los últimos 7 días hasta hoy; sin navegación semanal ni fechas futuras
 - [Publicación al editar Inspiración](inspiration-admin-publish-edit.md) — en una inspiración publicada, la acción principal guarda y republica; borrador queda como opción secundaria explícita
 - [Detalle diario de Inspiración](inspiration-detail-layout.md) — fondo fullscreen y contenido continuo; controles flotantes, sin header/footer ni sección Mis notas dentro del detalle
 - [Hero secundario en Admin Inspiración](admin-inspiration-hero-hierarchy.md) — Hero de Inicio va debajo del editor principal y plegado por defecto; nunca como tercera columna que comprima el contenido diario

@@ -7,4 +7,4 @@ Una retirada editorial y un bloqueo por fecha futura necesitan reglas de caché 
 
 **Why:** Tratar todo bloqueo como retirada permanente impide estrenar una publicación programada que no cambió de revisión. No invalidar las respuestas anteriores permite que una petición demorada vuelva a mostrar contenido que el servidor acaba de bloquear.
 
-**How to apply:** En nuevas lecturas o superficies de Inspiración diaria, conservar la autorización temporal del servidor y el orden de las peticiones; nunca usar el reloj del dispositivo como permiso para desbloquear contenido. Probar tanto respuestas fuera de orden como el estreno de la misma revisión al llegar la fecha.
+**How to apply:** En nuevas lecturas o superficies de Sabiduría diaria, conservar la autorización temporal del servidor y el orden de las peticiones; nunca usar el reloj del dispositivo como permiso para desbloquear contenido. Probar tanto respuestas fuera de orden como el estreno de la misma revisión al llegar la fecha.

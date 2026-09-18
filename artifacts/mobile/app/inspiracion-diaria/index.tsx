@@ -24,6 +24,7 @@ import { useColors } from "@/hooks/useColors";
 import type { InspirationDay } from "@/types/inspiration";
 import { addDays, formatDayNumber, formatISODate, parseISO } from "@/lib/date-utils";
 import { settledInspirationIndex } from "@/lib/inspiration-interaction";
+import { INSPIRATION_SKY } from "@/constants/colors";
 
 function monthAndYear(date: string): string {
   return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
@@ -259,7 +260,7 @@ export default function InspiracionDiariaIndex() {
           >
             <Feather name="chevron-left" size={27} color="#fff" />
           </Pressable>
-          <Text style={styles.title}>{current.week?.settings.sectionTitle || "Inspiración diaria"}</Text>
+          <Text style={styles.title}>{current.week?.settings.sectionTitle || "Sabiduría diaria"}</Text>
           <Pressable
             onPress={() => setSharing(true)}
             disabled={activeDay?.status !== "available"}
@@ -428,7 +429,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,.8)",
     textShadowRadius: 4,
   },
-  selectionDot: { position: "absolute", bottom: 5, alignSelf: "center", width: 6, height: 6, borderRadius: 3, backgroundColor: "#74E1B7" },
+  selectionDot: { position: "absolute", bottom: 10, alignSelf: "center", width: 8, height: 8, borderRadius: 4, backgroundColor: INSPIRATION_SKY },
   disabled: { opacity: 0.38 },
   notice: {
     position: "absolute",

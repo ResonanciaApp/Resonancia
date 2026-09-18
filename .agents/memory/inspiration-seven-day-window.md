@@ -1,6 +1,6 @@
 ---
-name: Portada de Inspiración diaria
-description: Dirección visual y temporal confirmada para la pantalla inicial móvil de Inspiración diaria.
+name: Portada de Sabiduría diaria
+description: Dirección visual y temporal confirmada para la pantalla inicial móvil de Sabiduría diaria.
 ---
 
 La portada móvil es una composición minimalista sobre una imagen fullscreen: volver y título transparentes arriba, siete miniaturas, fecha y frase centradas, CTA y acciones circulares de editar/compartir abajo. No lleva barra opaca ni acceso a notas en el encabezado.

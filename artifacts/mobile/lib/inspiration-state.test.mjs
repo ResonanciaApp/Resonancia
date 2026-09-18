@@ -21,7 +21,7 @@ const favorite = (overrides = {}) => ({
   inspirationId: "editorial-1", revision: 0, updatedAt: time, deletedAt: null, ...overrides,
 });
 const recovery = () => "recovery-1";
-const settings = { revision: 1, sectionTitle: "Inspiración diaria", readMoreLabel: "Leer más", discoverMoreLabel: "Descubre más", notesLabel: "Mis notas" };
+const settings = { revision: 1, sectionTitle: "Sabiduría diaria", readMoreLabel: "Leer más", discoverMoreLabel: "Descubre más", notesLabel: "Mis notas" };
 const content = { quote: "Editorial", author: null, reflection: "Reflexión", imageUrl: "https://example.test/protected", imagePositionX: 50, imagePositionY: 50, overlayOpacity: .35, sessionId: null };
 function week(overrides = {}) {
   return {

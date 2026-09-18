@@ -62,7 +62,11 @@ function origin(req: Request) {
 }
 async function labels() {
   const [row] = await db.select().from(settings).where(eq(settings.id, 1));
-  return row ? { revision: row.revision, ...row.labels } : defaultInspirationSettings;
+  if (!row) return defaultInspirationSettings;
+  const resolved = { revision: row.revision, ...row.labels };
+  return resolved.sectionTitle === "Inspiración diaria"
+    ? { ...resolved, sectionTitle: "Sabiduría diaria" }
+    : resolved;
 }
 async function entry(id: string, tx: Tx | typeof db = db) {
   const [row] = await tx.select().from(entries).where(eq(entries.id, uuid.parse(id)));
@@ -74,7 +78,7 @@ function adminDto(row: Entry) { return { ...row, updatedAt: row.updatedAt.toISOS
 async function checkDraft(draft: InspirationContent, tx: Tx | typeof db) {
   if (draft.imagePath) {
     const [image] = await tx.select().from(assets).where(eq(assets.objectPath, draft.imagePath));
-    if (!image) throw new InspirationError(400, "Usa una imagen cargada desde Inspiración diaria");
+    if (!image) throw new InspirationError(400, "Usa una imagen cargada desde Sabiduría diaria");
   }
   if (draft.sessionId) {
     const [session] = await tx.select({ id: catalogSessionsTable.id }).from(catalogSessionsTable).where(eq(catalogSessionsTable.id, draft.sessionId));

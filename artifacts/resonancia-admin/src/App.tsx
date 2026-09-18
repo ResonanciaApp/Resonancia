@@ -180,7 +180,7 @@ const NAV = [
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
   { href: "/emocion", label: "Emoción", icon: Sparkles },
-  { href: "/inspiracion-diaria", label: "Inspiración diaria", icon: Sun },
+  { href: "/inspiracion-diaria", label: "Sabiduría diaria", icon: Sun },
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
   { href: "/explorar", label: "Explorar — orden", icon: LayoutList },

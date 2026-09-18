@@ -36,7 +36,7 @@ const SESSIONS = [
     durationLabel: "5 min",
     description:
       "Una pequeña semilla de sabiduría para plantar en tu jornada. El sonido del cuenco abre el espacio, y la reflexión que le sigue puede cambiar el rumbo de tu día.",
-    benefits: ["Inspiración diaria", "Intención clara", "Perspectiva fresca", "Momento de pausa"],
+    benefits: ["Sabiduría diaria", "Intención clara", "Perspectiva fresca", "Momento de pausa"],
     instruments: ["Cuenco tibetano", "Voz guía"],
   },
   {

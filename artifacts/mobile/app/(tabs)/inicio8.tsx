@@ -1463,7 +1463,7 @@ function Inicio3HeroPager({
                 style={StyleSheet.absoluteFill}
                 onPress={() => router.push({ pathname: "/inspiracion-diaria", params: { entry: "today" } })}
                 accessibilityRole="button"
-                accessibilityLabel={item.title || "Inspiración diaria"}
+                accessibilityLabel={item.title || "Sabiduría diaria"}
                 testID={`inicio3-hero-slide-${index + 1}`}
               >
                 {item.id === "today" ? (

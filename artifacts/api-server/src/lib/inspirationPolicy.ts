@@ -29,7 +29,7 @@ export function inspirationWeekDates(date: string) {
   });
 }
 export const defaultInspirationSettings = {
-  revision: 0, sectionTitle: "Inspiración diaria", readMoreLabel: "Leer más",
+  revision: 0, sectionTitle: "Sabiduría diaria", readMoreLabel: "Leer más",
   discoverMoreLabel: "Descubre más", notesLabel: "Mis notas",
 };
 export const emptyInspirationContent: InspirationContent = {

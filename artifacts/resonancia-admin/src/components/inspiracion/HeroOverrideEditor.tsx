@@ -179,7 +179,7 @@ export function HeroOverrideEditor({
       ? `/api/admin/heroes/asset?objectPath=${encodeURIComponent(local.media.objectPath)}`
       : null);
   const previewContent = local?.media;
-  const status = override?.deleted ? "Eliminado · guarda para restaurar" : override?.published ? "Publicado" : override?.draft ? "Borrador" : "Usa Inspiración diaria por defecto";
+  const status = override?.deleted ? "Eliminado · guarda para restaurar" : override?.published ? "Publicado" : override?.draft ? "Borrador" : "Usa Sabiduría diaria por defecto";
   const pending = upsert.isPending || update.isPending || publish.isPending || unpublish.isPending || remove.isPending;
 
   return (
@@ -231,9 +231,9 @@ export function HeroOverrideEditor({
         <div className="space-y-2">
           <Label>Vista previa</Label>
           <div className="relative aspect-video overflow-hidden rounded-lg border border-border bg-muted">
-            {previewContent?.type === "video" && preview ? <video key={preview} src={preview} poster={fallbackPath ? `/api/admin/inspirations/image?objectPath=${encodeURIComponent(fallbackPath)}` : undefined} controls className="h-full w-full object-cover" /> : previewContent?.type === "image" && preview ? <img src={preview} alt="Vista previa del hero" className="h-full w-full object-cover" /> : fallbackPath ? <><img src={`/api/admin/inspirations/image?objectPath=${encodeURIComponent(fallbackPath)}`} alt="Inspiración diaria usada como fallback" className="h-full w-full object-cover" /><span className="absolute inset-x-2 bottom-2 rounded bg-black/70 px-2 py-1 text-center text-xs text-white">Se mostrará la imagen de Inspiración diaria</span></> : <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-muted-foreground"><ImageIcon className="h-8 w-8" /><span className="text-xs">Sin media. Se usará el fallback de Inspiración diaria.</span></div>}
+            {previewContent?.type === "video" && preview ? <video key={preview} src={preview} poster={fallbackPath ? `/api/admin/inspirations/image?objectPath=${encodeURIComponent(fallbackPath)}` : undefined} controls className="h-full w-full object-cover" /> : previewContent?.type === "image" && preview ? <img src={preview} alt="Vista previa del hero" className="h-full w-full object-cover" /> : fallbackPath ? <><img src={`/api/admin/inspirations/image?objectPath=${encodeURIComponent(fallbackPath)}`} alt="Sabiduría diaria usada como fallback" className="h-full w-full object-cover" /><span className="absolute inset-x-2 bottom-2 rounded bg-black/70 px-2 py-1 text-center text-xs text-white">Se mostrará la imagen de Sabiduría diaria</span></> : <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-muted-foreground"><ImageIcon className="h-8 w-8" /><span className="text-xs">Sin media. Se usará el fallback de Sabiduría diaria.</span></div>}
           </div>
-          {previewContent?.type === "video" && <p className="text-xs text-muted-foreground">Si el vídeo no puede reproducirse, la app muestra la imagen de Inspiración diaria de este día.</p>}
+          {previewContent?.type === "video" && <p className="text-xs text-muted-foreground">Si el vídeo no puede reproducirse, la app muestra la imagen de Sabiduría diaria de este día.</p>}
           {isLoading && <p className="text-xs text-muted-foreground">Cargando estado del hero…</p>}
         </div>
       </div>

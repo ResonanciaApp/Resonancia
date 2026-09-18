@@ -127,7 +127,7 @@ export function InspirationSettingsDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajustes de Inspiración Diaria</DialogTitle>
+          <DialogTitle>Ajustes de Sabiduría Diaria</DialogTitle>
         </DialogHeader>
         {(serverConflict || conflictPending) && (
           <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive space-y-3">
@@ -187,7 +187,7 @@ export function InspirationSettingsDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="sectionTitle">Título de la sección</Label>
-            <Input id="sectionTitle" {...form.register("sectionTitle")} placeholder="Ej. Inspiración diaria" />
+            <Input id="sectionTitle" {...form.register("sectionTitle")} placeholder="Ej. Sabiduría diaria" />
             {form.formState.errors.sectionTitle && (
               <p className="text-sm text-destructive">{form.formState.errors.sectionTitle.message}</p>
             )}
