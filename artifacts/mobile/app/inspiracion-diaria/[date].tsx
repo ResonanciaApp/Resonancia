@@ -44,7 +44,7 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
   const { isPremium, hydrated } = usePremium();
   const { openForSession } = useAmbientalDuration();
   useCatalog();
-  const { days, week, loading, error, isCached, retry } = useInspiration({ date });
+  const { days, week, loading, error, retry } = useInspiration({ date });
   const day = days.find((candidate) => candidate.date === date);
   const available = day?.status === "available" && !!day.content && !!day.id && (!expectedId || day.id === expectedId);
   const [sharing, setSharing] = useState(false);
@@ -142,14 +142,12 @@ function Detail({ date, expectedId }: { date: string; expectedId?: string }) {
           },
         ]}
       >
-        {(error || isCached) && (
+        {!!error && (
           <View style={styles.notice}>
-            <Text style={styles.noticeText}>{error || "Mostrando copia guardada"}</Text>
-            {error && (
-              <Pressable onPress={() => void retry()}>
-                <Text style={styles.retry}>Reintentar</Text>
-              </Pressable>
-            )}
+            <Text style={styles.noticeText}>{error}</Text>
+            <Pressable onPress={() => void retry()}>
+              <Text style={styles.retry}>Reintentar</Text>
+            </Pressable>
           </View>
         )}
         {!!actionError && <Text accessibilityRole="alert" style={styles.error}>{actionError}</Text>}

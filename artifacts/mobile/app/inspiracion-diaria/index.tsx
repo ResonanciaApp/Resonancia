@@ -83,7 +83,6 @@ export default function InspiracionDiariaIndex() {
   const pendingTarget = useRef<number | null>(null);
   const loading = (current.loading || previous.loading) && !days.some((day) => day.status === "available");
   const error = current.error || previous.error;
-  const isCached = current.isCached || previous.isCached;
   const topInset = Platform.OS === "web" ? 67 : Math.max(insets.top, 40);
 
   const cancelSettle = useCallback(() => {
@@ -369,14 +368,12 @@ export default function InspiracionDiariaIndex() {
           </Pressable>
         </View>
 
-        {(error || isCached) && (
+        {!!error && (
           <View style={styles.notice}>
-            <Text style={styles.noticeText}>{error || "Mostrando copia guardada"}</Text>
-            {error && (
-              <Pressable onPress={() => void retry()}>
-                <Text style={styles.retry}>Reintentar</Text>
-              </Pressable>
-            )}
+            <Text style={styles.noticeText}>{error}</Text>
+            <Pressable onPress={() => void retry()}>
+              <Text style={styles.retry}>Reintentar</Text>
+            </Pressable>
           </View>
         )}
       </View>
