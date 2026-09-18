@@ -289,7 +289,7 @@ export default function InspiracionDiariaIndex() {
                   pointerEvents="none"
                   style={[
                     StyleSheet.absoluteFillObject,
-                    { backgroundColor: `rgba(0,0,0,${day.content.overlayOpacity})` },
+                    { backgroundColor: `rgba(0,0,0,${day.content.overlayOpacity * 0.35})` },
                   ]}
                 />
               )}
@@ -425,17 +425,17 @@ const styles = StyleSheet.create({
   },
   title: { flex: 1, color: "#fff", textAlign: "center", fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
   headerSpacer: { width: 48 },
-  days: { flexDirection: "row", justifyContent: "center", gap: 14, paddingHorizontal: 18, marginTop: 12 },
+  days: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 18, marginTop: 12 },
   dayCard: {
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
+    width: 31,
+    height: 47,
+    borderRadius: 8,
     overflow: "hidden",
     borderWidth: 0,
     backgroundColor: "rgba(10,12,18,.35)",
   },
   emptyCard: { backgroundColor: "rgba(16,19,27,.68)" },
-  cardShade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,.2)" },
+  cardShade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,.08)" },
   cardNumber: {
     position: "absolute",
     top: 5,
