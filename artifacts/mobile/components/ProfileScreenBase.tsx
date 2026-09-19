@@ -1165,6 +1165,18 @@ export function ProfileScreenBase({
               >
                 <Text style={styles.accountDeleteButtonText}>Eliminar cuenta</Text>
               </Pressable>
+
+              <View style={styles.accountSettingsSections}>
+                <ProfileSettingsSections
+                  placement="settings"
+                  sceneId={activeSceneId}
+                  foreground={colors.foreground}
+                  mutedForeground={colors.mutedForeground}
+                  accent={secondaryAccent}
+                  cardBackground="rgba(0,0,0,0.28)"
+                  onLogout={handleProfileLogout}
+                />
+              </View>
             </ScrollView>
           </KeyboardAvoidingView>
           <Animated.View
@@ -1465,6 +1477,16 @@ export function ProfileScreenBase({
           <View style={styles.dedicatedTitleLeft}>
             <Text style={[styles.dedicatedHeroTitle, { color: colors.foreground }]}>Perfil</Text>
           </View>
+          <Pressable
+            onPress={() => router.push("/mi-perfil")}
+            hitSlop={8}
+            style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.68 : 1 }]}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir ajustes"
+            testID="profile-open-settings"
+          >
+            <Feather name="settings" size={21} color={colors.foreground} />
+          </Pressable>
         </View>
 
         {/* ── Profile Card ── */}
@@ -1598,18 +1620,6 @@ export function ProfileScreenBase({
                 </View>
               </>
             ) : null}
-
-            <View style={styles.profileSettingsSections}>
-              <ProfileSettingsSections
-                placement="settings"
-                sceneId={activeSceneId}
-                foreground={colors.foreground}
-                mutedForeground={colors.mutedForeground}
-                accent={secondaryAccent}
-                cardBackground="rgba(0,0,0,0.28)"
-                onLogout={handleProfileLogout}
-              />
-            </View>
 
           </>
         )}
@@ -2125,6 +2135,9 @@ const styles = StyleSheet.create({
   },
   profileSettingsSections: {
     marginTop: 12,
+  },
+  accountSettingsSections: {
+    marginTop: 32,
   },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
