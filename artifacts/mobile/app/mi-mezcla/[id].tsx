@@ -240,7 +240,7 @@ function CoverPickerSheet({
               { opacity: pressed ? 0.7 : 1 },
             ]}
           >
-            <Feather name="x" size={18} color={GOLD} />
+            <Feather name="x" size={22} color={GOLD} />
           </Pressable>
         </View>
 
@@ -570,7 +570,7 @@ export default function MiMezclaScreen() {
         >
           <Feather
             name="chevron-left"
-            size={32}
+            size={28}
             color="#FBFBFB"
             style={{ transform: [{ translateX: -1 }] }}
           />
@@ -611,7 +611,6 @@ export default function MiMezclaScreen() {
 
         {/* Sonidos usados */}
         <View style={s.soundSectionHeader}>
-          <View style={s.soundSectionDivider} />
           <Text style={[s.sectionTitle, s.soundSectionTitle]}>Sonidos utilizados</Text>
         </View>
         <ScrollView
@@ -741,15 +740,15 @@ const s = StyleSheet.create({
     gap: 8,
   },
   iconBtn: {
-    width: 36,
-    height: 36,
+    width: 43,
+    height: 43,
     alignItems: "center",
     justifyContent: "center",
   },
   headerMenuButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     backgroundColor: "rgba(0,0,0,0.28)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
@@ -810,18 +809,11 @@ const s = StyleSheet.create({
     marginBottom: 17,
   },
   soundSectionHeader: {
-    alignItems: "center",
+    alignItems: "flex-start",
     marginTop: 20,
   },
-  soundSectionDivider: {
-    width: 160,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    marginBottom: 20,
-  },
   soundSectionTitle: {
-    width: 160,
-    textAlign: "center",
+    textAlign: "left",
   },
   soundList: {
     maxHeight: 300,
@@ -888,7 +880,7 @@ const ms = StyleSheet.create({
     marginBottom: 0,
   },
   coverHeader: {
-    minHeight: 36,
+    minHeight: 43,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -896,9 +888,9 @@ const ms = StyleSheet.create({
   coverCloseButton: {
     position: "absolute",
     right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.28)",
