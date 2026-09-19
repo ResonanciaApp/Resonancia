@@ -751,8 +751,14 @@ export const SessionCarousel = React.memo(function SessionCarousel({
                               width: ambientalPlayButtonSize,
                               height: ambientalPlayButtonSize,
                               borderRadius: ambientalPlayButtonSize / 2,
-                              left: 20,
-                              top: 20,
+                               left:
+                                 ambientalFilledImageLeft +
+                                 ambientalFilledImageDiameter / 2 -
+                                 ambientalPlayButtonSize / 2,
+                               top:
+                                 ambientalFilledImageTop +
+                                 ambientalFilledImageDiameter -
+                                 ambientalPlayButtonSize / 2,
                               transform: [{ scale: getPreviewScale(s.id) }],
                             },
                           ]}
