@@ -400,9 +400,9 @@ const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFillObject },
   header: { height: 56, flexDirection: "row", alignItems: "center", paddingHorizontal: 18 },
   circleButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,

@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { SymbolView } from "expo-symbols";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
@@ -90,6 +91,119 @@ import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
 import { InnerSpaceCard } from "@/components/InnerSpaceCard";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+
+const REFLECTION_BANNER_ENTRY_DISTANCE = 86;
+const REFLECTION_BANNER_ENTRY_DURATION = 380;
+const REFLECTION_BANNER_HOLD_DURATION = 1800;
+const REFLECTION_BANNER_EXIT_DURATION = 320;
+
+function ReflectionSavedBanner({
+  trigger,
+  bottom,
+  onPress,
+}: {
+  trigger: number;
+  bottom: number;
+  onPress: () => void;
+}) {
+  const [visible, setVisible] = useState(false);
+  const translateY = useRef(new Animated.Value(REFLECTION_BANNER_ENTRY_DISTANCE)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (trigger <= 0) return;
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    translateY.stopAnimation();
+    opacity.stopAnimation();
+    translateY.setValue(REFLECTION_BANNER_ENTRY_DISTANCE);
+    opacity.setValue(1);
+    setVisible(true);
+
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: REFLECTION_BANNER_ENTRY_DURATION,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (!finished) return;
+      holdTimerRef.current = setTimeout(() => {
+        holdTimerRef.current = null;
+        Animated.parallel([
+          Animated.timing(translateY, {
+            toValue: REFLECTION_BANNER_ENTRY_DISTANCE,
+            duration: REFLECTION_BANNER_EXIT_DURATION,
+            easing: Easing.in(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: REFLECTION_BANNER_EXIT_DURATION,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]).start(({ finished: exited }) => {
+          if (exited) setVisible(false);
+        });
+      }, REFLECTION_BANNER_HOLD_DURATION);
+    });
+
+    return () => {
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      translateY.stopAnimation();
+      opacity.stopAnimation();
+    };
+  }, [opacity, translateY, trigger]);
+
+  if (!visible) return null;
+
+  const handlePress = () => {
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    translateY.stopAnimation();
+    opacity.stopAnimation();
+    setVisible(false);
+    onPress();
+  };
+
+  return (
+    <Animated.View
+      style={[
+        styles.reflectionSavedBanner,
+        { bottom, opacity, transform: [{ translateY }] },
+      ]}
+    >
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Ver tu mensaje registrado"
+        onPress={handlePress}
+        style={({ pressed }) => [
+          styles.reflectionSavedPressable,
+          pressed && styles.reflectionSavedPressed,
+        ]}
+      >
+        <View pointerEvents="none" style={styles.reflectionSavedGlassSurface}>
+          <BlurView
+            intensity={32}
+            tint="dark"
+            experimentalBlurMethod="dimezisBlurView"
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={[StyleSheet.absoluteFill, styles.reflectionSavedGlassTint]} />
+        </View>
+        <View style={styles.reflectionSavedTitleRow}>
+          <View style={styles.reflectionSavedCheckSurface}>
+            <Feather name="check" size={17} color="#F9F9F9" />
+          </View>
+          <Text style={styles.reflectionSavedTitle}>Tu mensaje registrado</Text>
+        </View>
+        <Text style={styles.reflectionSavedAction}>Ver</Text>
+      </Pressable>
+    </Animated.View>
+  );
+}
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -427,6 +541,7 @@ export function ProfileScreenBase({
   const composeFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [innerSpaceLayoutY, setInnerSpaceLayoutY] = useState<number | null>(null);
   const [innerSpaceFocusRequest, setInnerSpaceFocusRequest] = useState(0);
+  const [reflectionSavedTrigger, setReflectionSavedTrigger] = useState(0);
   const navigation = useNavigation();
   const positionInnerSpaceForWriting = useCallback(() => {
     if (innerSpaceLayoutY === null) return;
@@ -1450,6 +1565,7 @@ export function ProfileScreenBase({
               <InnerSpaceCard
                 focusRequest={innerSpaceFocusRequest}
                 onComposeRequested={positionInnerSpaceForWriting}
+                onMessageSaved={() => setReflectionSavedTrigger((value) => value + 1)}
               />
             </View>
 
@@ -1646,6 +1762,14 @@ export function ProfileScreenBase({
 
       {!dedicated && <BibliotecaScreen embedded initialTab={initialLibraryTab} onHeaderActions={setLibActions} />}
       </View>
+
+      {dedicated && (
+        <ReflectionSavedBanner
+          trigger={reflectionSavedTrigger}
+          bottom={58 + bottomPad + 15}
+          onPress={() => router.push("/mi-espacio-interior")}
+        />
+      )}
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet
@@ -2564,6 +2688,66 @@ const styles = StyleSheet.create({
   },
   innerSpaceSection: {
     marginTop: 12,
+  },
+  reflectionSavedBanner: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    height: 64,
+    borderRadius: 18,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.10)",
+    shadowColor: "#000000",
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: -3 },
+    zIndex: 40,
+  },
+  reflectionSavedPressable: {
+    flex: 1,
+    borderRadius: 18,
+    paddingHorizontal: 17,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  reflectionSavedPressed: {
+    opacity: 0.6,
+  },
+  reflectionSavedGlassSurface: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 18,
+    overflow: "hidden",
+  },
+  reflectionSavedGlassTint: {
+    backgroundColor: "#0E0821",
+    opacity: 0.42,
+  },
+  reflectionSavedTitleRow: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  reflectionSavedCheckSurface: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reflectionSavedTitle: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  reflectionSavedAction: {
+    color: "#F9F9F9",
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
   },
   profileMeditationPlaylist: {
     marginHorizontal: -16,

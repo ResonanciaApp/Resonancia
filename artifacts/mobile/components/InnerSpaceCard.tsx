@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated, Easing } from "react-native";
-import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Animated } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/useColors";
 import { useCreateMyReflection, type ReflectionCategory } from "@workspace/api-client-react";
@@ -12,16 +12,15 @@ import { useReducedMotion } from "react-native-reanimated";
 export function InnerSpaceCard({
   focusRequest = 0,
   onComposeRequested,
+  onMessageSaved,
 }: {
   focusRequest?: number;
   onComposeRequested?: () => void;
+  onMessageSaved?: () => void;
 }) {
   const colors = useColors();
   const [category, setCategory] = useState<ReflectionCategory | null>(null);
   const [message, setMessage] = useState("");
-  const [toastVisible, setToastVisible] = useState(false);
-  const toastAnim = useRef(new Animated.Value(0)).current;
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<TextInput>(null);
   const [inputActive, setInputActive] = useState(false);
   const categoryScales = useRef(
@@ -37,19 +36,19 @@ export function InnerSpaceCard({
       onSuccess: () => {
         setMessage("");
         setCategory(null);
+        inputRef.current?.blur();
+        setInputActive(false);
         qc.invalidateQueries({ predicate: (query) => query.queryKey[0] === '/api/me/reflections' });
-        showToast();
+        onMessageSaved?.();
       }
     }
   });
 
   useEffect(() => {
     return () => {
-      toastAnim.stopAnimation();
       Object.values(categoryScales).forEach((scale) => scale.stopAnimation());
-      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     }
-  }, [categoryScales, toastAnim]);
+  }, [categoryScales]);
 
   useEffect(() => {
     if (focusRequest <= 0) return;
@@ -69,39 +68,6 @@ export function InnerSpaceCard({
     }
     setInputActive(true);
     requestAnimationFrame(() => inputRef.current?.focus());
-  };
-
-  const showToast = () => {
-    setToastVisible(true);
-    toastAnim.stopAnimation();
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    if (reducedMotion) {
-      toastAnim.setValue(1);
-      toastTimerRef.current = setTimeout(() => {
-        setToastVisible(false);
-        toastTimerRef.current = null;
-      }, 4000);
-    } else {
-      toastAnim.setValue(0);
-      Animated.sequence([
-        Animated.timing(toastAnim, { toValue: 1, duration: 300, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-        Animated.delay(4000),
-        Animated.timing(toastAnim, { toValue: 0, duration: 300, easing: Easing.in(Easing.ease), useNativeDriver: true }),
-      ]).start(({ finished }) => {
-        if (finished) {
-          setToastVisible(false);
-        }
-      });
-    }
-  };
-
-  const closeToast = () => {
-    toastAnim.stopAnimation();
-    if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = null;
-    }
-    setToastVisible(false);
   };
 
   const isSubmitDisabled = !category || message.trim().length === 0 || createMutation.isPending;
@@ -212,20 +178,6 @@ export function InnerSpaceCard({
         </View>
       </Pressable>
 
-      {toastVisible && (
-        <Animated.View style={[styles.toast, { opacity: toastAnim, transform: [{ translateY: toastAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }] }]}>
-          <View style={styles.toastIcon}>
-            <MaterialCommunityIcons name="check" size={18} color="#fff" />
-          </View>
-          <View style={styles.toastContent}>
-            <Text style={styles.toastTitle}>Mensaje registrado</Text>
-            <Text style={styles.toastMessage}>Tu reflexión ha sido guardada en tu espacio interior.</Text>
-          </View>
-          <Pressable testID="close-toast" accessibilityLabel="Cerrar mensaje" onPress={closeToast} style={styles.toastClose}>
-            <Feather name="x" size={18} color="#AAB9BE" />
-          </Pressable>
-        </Animated.View>
-      )}
     </View>
   );
 }
@@ -318,48 +270,5 @@ const styles = StyleSheet.create({
   historyLinkText: {
     fontSize: 13,
     fontWeight: "500",
-  },
-  toast: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
-    backgroundColor: "#1E2336",
-    borderRadius: 16,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  toastIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "#5FCA81",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  toastContent: {
-    flex: 1,
-  },
-  toastTitle: {
-    color: "#FFF",
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 2,
-  },
-  toastMessage: {
-    color: "#AAB9BE",
-    fontSize: 13,
-  },
-  toastClose: {
-    padding: 4,
   },
 });
