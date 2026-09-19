@@ -40,7 +40,7 @@ export function StreakWeekRow() {
         const dayCircle = (
           <View style={styles.day}>
             {active ? (
-              <Feather name="check" size={22} color="#F9F9F9" />
+              <Feather name="check" size={22} color="#FFFFFF" />
             ) : (
               <Text style={styles.dayLabel}>{initial}</Text>
             )}
@@ -58,7 +58,7 @@ export function StreakWeekRow() {
                   maskElement={<View style={styles.ringMask} />}
                 >
                   <LinearGradient
-                    colors={borderGradient}
+                    colors={isToday ? ["#BE9650", "#BE9650"] : borderGradient}
                     locations={theme.gradientLocations}
                     start={theme.gradientStart}
                     end={theme.gradientEnd}
@@ -111,6 +111,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
-    opacity: 0.8,
+    opacity: 0.6,
   },
 });

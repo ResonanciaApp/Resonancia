@@ -102,7 +102,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
                 {
                   width: cardWidth,
                   height: cardWidth,
-                  backgroundColor: "rgba(0,0,0,0.28)",
+                  backgroundColor: "rgba(0,0,0,0.18)",
                 },
               ]}
             >
@@ -137,7 +137,7 @@ export const ProfileMixCarousel = React.memo(function ProfileMixCarousel({
                     {
                       width: cardWidth,
                       height: cardWidth,
-                      backgroundColor: "rgba(0,0,0,0.28)",
+                      backgroundColor: "rgba(0,0,0,0.18)",
                     },
                   ]}
                 >

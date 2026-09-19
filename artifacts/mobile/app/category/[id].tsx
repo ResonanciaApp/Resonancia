@@ -84,11 +84,6 @@ function ChipRow({
         style={styles.chipRow}
         contentContainerStyle={styles.chipRowContent}
       >
-        <Chip
-          label="Ver todo"
-          selected={activeTab === null}
-          onPress={() => onSelect(null)}
-        />
         {tabs.map((tab) => (
           <Chip
             key={tab}

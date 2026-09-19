@@ -41,7 +41,7 @@ const INICIO3_SECTIONS: { title: string; items: MenuItem[] }[] = [
     title: "Estado de ánimo",
     items: [
       { id: "mood-register", label: "Registro de ánimo", icon: "smile", mciIcon: "emoticon-happy-outline", route: "__mood_register" },
-      { id: "mood-history", label: "Historial de estado de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
+      { id: "mood-history", label: "Historial de ánimo", icon: "activity", mciIcon: "chart-timeline-variant", route: "/historial-emociones" },
     ],
   },
   {

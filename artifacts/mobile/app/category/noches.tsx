@@ -100,18 +100,16 @@ function Chip({
   );
 }
 
-function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect, onClear }: {
+function ChipRow({ tabs, activeTab, indigo2BackgroundColor, onSelect }: {
   tabs: SubDef[];
   activeTab: CatTab | null;
   indigo2BackgroundColor?: Animated.AnimatedInterpolation<string | number>;
   onSelect: (id: CatTab) => void;
-  onClear: () => void;
 }) {
   return (
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Ver todo" sel={activeTab === null} indigo2BackgroundColor={indigo2BackgroundColor} onPress={onClear} />
         {tabs.map((t) => (
           <Chip key={t.tag} label={t.tag} sel={activeTab === t.tag}
             indigo2BackgroundColor={indigo2BackgroundColor}
@@ -473,7 +471,6 @@ export default function NochesScreen() {
             activeTab={activeTab}
             indigo2BackgroundColor={indigo2ChipBackgroundColor}
             onSelect={(id) => setActiveTab(id)}
-            onClear={() => setActiveTab(null)}
           />
         </View>
 

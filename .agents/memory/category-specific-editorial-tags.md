@@ -11,6 +11,8 @@ Las etiquetas editoriales de categorías distintas de Música se guardan dentro 
 
 En Mobile, las subcategorías organizan tabs y carruseles de la pantalla principal. Al abrir una subcategoría, la barra interna no usa duraciones: queda desmontada sin etiquetas editoriales y, con al menos una, muestra `Ver todo` más solo las etiquetas presentes. Las etiquetas editoriales nunca crean tabs o carruseles principales.
 
+Las pantallas principales de categorías no muestran un tab `Ver todo`: cargan por defecto el contenido completo y la barra contiene únicamente las subcategorías. `Ver todo` pertenece solo a las pantallas internas.
+
 En Admin, la sección “Subcategoría” contiene dos niveles para Charlas, Historias y Ambientales: primero una subcategoría obligatoria editable que crea los tabs; debajo “Nombre de colección (opcional)”, cuyas etiquetas crean pantallas internas dentro del tab. “Otras temáticas” sigue siendo un grupo histórico separado y no debe eliminarse al añadir estas taxonomías.
 
 El filtro global “Otras temáticas” debe usar exclusivamente sus nueve opciones canónicas, no inferirse desde todos los `themeTag` sin prefijo: los datos históricos incluyen Chakras y etiquetas de prueba que pertenecen a otras taxonomías.

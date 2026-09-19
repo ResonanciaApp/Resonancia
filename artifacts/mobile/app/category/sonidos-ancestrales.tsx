@@ -160,8 +160,6 @@ function ChipRow({ tabs, activeTab, onSelect }: {
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        <Chip label="Ver todo" sel={activeTab === null}
-          onPress={() => onSelect(null)} />
         {tabs.map((t) => (
           <Chip key={t.id} label={t.label} sel={activeTab === t.id}
             onPress={() => onSelect(t.id)} />

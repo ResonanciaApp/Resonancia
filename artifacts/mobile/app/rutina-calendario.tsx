@@ -450,7 +450,7 @@ function RutinaCalendarioScreenContent() {
                 hitSlop={12}
                 style={styles.backButton}
               >
-                <Feather name="chevron-left" size={26} color="#F9F9F9" />
+                <Feather name="chevron-left" size={28} color="#F9F9F9" />
               </Pressable>
               <Text
                 pointerEvents="none"
@@ -643,9 +643,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(0,0,0,0.28)",
     alignItems: "center",
     justifyContent: "center",
