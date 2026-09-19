@@ -2694,33 +2694,19 @@ export default function HomeScreen2({
         {/* Centro: espacio */}
         <View style={{ flex: 1 }} pointerEvents="none" />
 
-        {/* Derecha: acceso al perfil */}
+        {/* Derecha: bandeja de notificaciones */}
         <Pressable
           hitSlop={8}
-          style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 10, flexDirection: "row", alignItems: "center" }]}
-          onPressIn={() =>
-            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-          }
-          onPressOut={() => {
-            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-          }}
-          onPress={() => router.push("/(tabs)/profile" as never)}
-          // Prueba escondida: presión larga abre el flujo de celebración de
-          // día de racha (no marca el día como celebrado).
-          onLongPress={previewStreakFlow}
-          delayLongPress={600}
+          style={({ pressed }) => [styles.homeNotificationsButton, { opacity: pressed ? 0.8 : 1, marginRight: 10 }]}
+          onPress={() => router.push("/notificaciones" as never)}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir notificaciones"
         >
-          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{
-              backgroundColor: isIndigoThemeId(activeSceneId) ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
-              borderRadius: 20,
-              height: 36,
-              paddingHorizontal: 10,
-              alignItems: "center",
-            }}>
-              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
-            </View>
-          </Animated.View>
+          {Platform.OS === "ios" ? (
+            <SymbolView name="bell.fill" tintColor="#FFFFFF" size={21} />
+          ) : (
+            <Feather name="bell" size={21} color="#FFFFFF" />
+          )}
         </Pressable>
       </View>
       )}
@@ -4084,6 +4070,16 @@ const styles = StyleSheet.create({
     height: 42,
     alignItems: "center",
     justifyContent: "center",
+  },
+  homeNotificationsButton: {
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.34)",
   },
   universeBtnIcon: {
     width: 28,

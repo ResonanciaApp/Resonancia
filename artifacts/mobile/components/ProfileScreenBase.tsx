@@ -69,6 +69,7 @@ import {
 } from "@/components/BibliotecaScreen";
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
 import { ContinueMeditationPlaylistCard } from "@/components/ContinueMeditationPlaylistCard";
+import { ProfileSettingsSections } from "@/components/ProfileSettingsSections";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -1209,16 +1210,17 @@ export function ProfileScreenBase({
             </Animated.Text>
             <Pressable
               hitSlop={10}
-              onPress={() => router.push("/configuraciones")}
+              onPress={() => router.navigate("/(tabs)/inicio3" as never)}
               style={[
                 styles.dedicatedSettingsButton,
                 styles.profileStickySettingsButton,
-                { backgroundColor: resourceBlockBackground },
               ]}
               accessibilityRole="button"
-              accessibilityLabel="Abrir configuraciones"
+              accessibilityLabel="Ir a Inicio"
             >
-              <Feather name="settings" size={21} color={colors.foreground} />
+              <View style={styles.profileLotusPill}>
+                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+              </View>
             </Pressable>
           </View>
         </Animated.View>
@@ -1322,12 +1324,14 @@ export function ProfileScreenBase({
           </View>
           <Pressable
             hitSlop={10}
-            onPress={() => router.push("/configuraciones")}
-            style={[styles.dedicatedSettingsButton, { backgroundColor: resourceBlockBackground }]}
+            onPress={() => router.navigate("/(tabs)/inicio3" as never)}
+            style={styles.dedicatedSettingsButton}
             accessibilityRole="button"
-            accessibilityLabel="Abrir configuraciones"
+            accessibilityLabel="Ir a Inicio"
           >
-            <Feather name="settings" size={21} color={colors.foreground} />
+            <View style={styles.profileLotusPill}>
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" />
+            </View>
           </Pressable>
         </View>
 
@@ -1451,6 +1455,18 @@ export function ProfileScreenBase({
                 </View>
               </>
             ) : null}
+
+            <View style={styles.profileSettingsSections}>
+              <ProfileSettingsSections
+                placement="settings"
+                sceneId={activeSceneId}
+                foreground={colors.foreground}
+                mutedForeground={colors.mutedForeground}
+                accent={secondaryAccent}
+                cardBackground="rgba(0,0,0,0.28)"
+                onLogout={handleProfileLogout}
+              />
+            </View>
 
           </>
         )}
@@ -1961,7 +1977,25 @@ const styles = StyleSheet.create({
     textAlign: "left",
     transform: [{ translateY: 1 }],
   },
-  dedicatedSettingsButton: { width: 43, height: 43, borderRadius: 21.5, borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center", transform: [{ translateY: -2 }] },
+  dedicatedSettingsButton: {
+    width: 43,
+    height: 43,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateY: -2 }],
+  },
+  profileLotusPill: {
+    height: 36,
+    minWidth: 40,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  profileSettingsSections: {
+    marginTop: 12,
+  },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
   stickyTitleTab: { fontSize: 30, fontWeight: "800", textAlign: "left", flex: 1, marginLeft: 0, transform: [{ translateY: 3 }] },
   libraryTabHeaderRow: {
