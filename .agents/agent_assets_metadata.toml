@@ -2895,3 +2895,17 @@ mtime_ms = 1789752278870
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/acb5b955-e773-4e5b-b948-df6cfdf95095/3c1f29b6-fb95-4cdf-8292-0aa60d09056a"
 storage_version_token = "1789752319470627"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "czvvz1S0jEMYRTv17wtT2"
+uri = "file://attached_assets/generated_images/sabiduria-2026-09-19-universo-profundo.jpg"
+type = "image"
+title = "Sabiduría diaria — Universo profundo"
+description = "Imagen hiperrealista asignada al sábado 19 de septiembre de 2026."
+logical_id = "b11516fe-fd93-4789-89f1-0788c3cdce91"
+content_hash = "sha256:ad17a9aa01e9daf848ae815a0283f179295bbbf8d70522b3c56a9c056dc6a7ac"
+size = 162877
+mtime_ms = 1789831094125
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:5427b858-8852-4aed-954b-cd80d9fa4b6b/b11516fe-fd93-4789-89f1-0788c3cdce91/531f0ce5-7b8f-4df8-aa15-8c502e502448"
+storage_version_token = "1789831149489205"
+content_type = "image/jpeg"
