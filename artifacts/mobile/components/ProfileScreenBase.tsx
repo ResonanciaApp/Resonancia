@@ -87,6 +87,8 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { MEMBERSHIP_AURORA, WIDGET_GREEN_SOLID } from "@/constants/colors";
+import { InnerSpaceCard } from "@/components/InnerSpaceCard";
+import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 
 function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1291,8 +1293,8 @@ export function ProfileScreenBase({
       )}
 
       {dedicated && (
-      <ScrollView
-        ref={profileScrollRef}
+      <KeyboardAwareScrollViewCompat
+        scrollRef={profileScrollRef}
         style={styles.scroll}
         contentContainerStyle={{
           paddingBottom: 160 + bottomPad,
@@ -1303,6 +1305,8 @@ export function ProfileScreenBase({
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={60}
       >
         <View style={styles.dedicatedTitleRow}>
           <View style={styles.dedicatedTitleLeft}>
@@ -1380,6 +1384,8 @@ export function ProfileScreenBase({
             foregroundColor={colors.foreground}
           />
         </View>
+
+        <InnerSpaceCard />
 
         {false && (
           <View style={styles.wisdomSection}>
@@ -1588,7 +1594,7 @@ export function ProfileScreenBase({
 
         </Animated.View>
 
-      </ScrollView>
+      </KeyboardAwareScrollViewCompat>
       )}
 
 

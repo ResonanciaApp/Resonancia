@@ -6282,3 +6282,73 @@ export const DeleteAdminGuideConfigParams = zod.object({
 })
 
 
+export const listMyReflectionsQueryLimitDefault = 20;
+export const listMyReflectionsQueryLimitMax = 50;
+
+
+
+export const ListMyReflectionsQueryParams = zod.object({
+  "cursor": zod.coerce.string().optional(),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']).optional(),
+  "limit": zod.coerce.number().min(1).max(listMyReflectionsQueryLimitMax).default(listMyReflectionsQueryLimitDefault)
+})
+
+export const listMyReflectionsResponseItemsItemMessageMax = 300;
+
+
+
+export const ListMyReflectionsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "message": zod.string().min(1).max(listMyReflectionsResponseItemsItemMessageMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})),
+  "nextCursor": zod.string().nullable()
+})
+
+
+export const createMyReflectionBodyMessageMax = 300;
+
+
+
+export const CreateMyReflectionBody = zod.object({
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "message": zod.string().min(1).max(createMyReflectionBodyMessageMax)
+})
+
+
+export const UpdateMyReflectionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updateMyReflectionBodyMessageMax = 300;
+
+
+
+export const UpdateMyReflectionBody = zod.object({
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']).optional(),
+  "message": zod.string().min(1).max(updateMyReflectionBodyMessageMax).optional()
+})
+
+export const updateMyReflectionResponseMessageMax = 300;
+
+
+
+export const UpdateMyReflectionResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "category": zod.enum(['gratitude', 'understanding', 'clarity', 'calm', 'purpose', 'acceptance']),
+  "message": zod.string().min(1).max(updateMyReflectionResponseMessageMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const DeleteMyReflectionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+

@@ -5,6 +5,55 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type ReflectionCategory = typeof ReflectionCategory[keyof typeof ReflectionCategory];
+
+
+export const ReflectionCategory = {
+  gratitude: 'gratitude',
+  understanding: 'understanding',
+  clarity: 'clarity',
+  calm: 'calm',
+  purpose: 'purpose',
+  acceptance: 'acceptance',
+} as const;
+
+export interface Reflection {
+  id: number;
+  userId: number;
+  category: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReflectionInput {
+  category: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  message: string;
+}
+
+export interface ReflectionUpdate {
+  category?: ReflectionCategory;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  message?: string;
+}
+
+export interface ReflectionsPage {
+  items: Reflection[];
+  /** @nullable */
+  nextCursor: string | null;
+}
+
 export interface ExploreSection {
   id: number;
   slug: string;
@@ -3240,5 +3289,15 @@ type?: string;
 
 export type GetAdminGuideConfigs200 = {
   guideConfigs: GuideConfig[];
+};
+
+export type ListMyReflectionsParams = {
+cursor?: string;
+category?: ReflectionCategory;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
 };
 

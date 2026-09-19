@@ -26,6 +26,7 @@ import searchTrendsRouter from "./search-trends";
 import emotionalPhrasesRouter from "./emotional-phrases";
 import inspirationsRouter from "./inspirations";
 import coverPresetsRouter from "./cover-presets";
+import reflectionsRouter from "./reflections";
 
 const router: IRouter = Router();
 
@@ -56,5 +57,6 @@ router.use(searchTrendsRouter);
 router.use(emotionalPhrasesRouter);
 router.use(inspirationsRouter);
 router.use(coverPresetsRouter);
+router.use(reflectionsRouter);
 
 export default router;

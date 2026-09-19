@@ -4610,8 +4610,107 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /me/reflections:
+    get:
+      operationId: listMyReflections
+      tags: [reflections]
+      parameters:
+        - name: cursor
+          in: query
+          schema: {type: string}
+        - name: category
+          in: query
+          schema: {$ref: "#/components/schemas/ReflectionCategory"}
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 50, default: 20}
+      responses:
+        "200":
+          description: Paginated private reflections
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ReflectionsPage"}
+    post:
+      operationId: createMyReflection
+      tags: [reflections]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionInput"}
+      responses:
+        "201":
+          description: Created reflection
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Reflection"}
+  /me/reflections/{id}:
+    patch:
+      operationId: updateMyReflection
+      tags: [reflections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ReflectionUpdate"}
+      responses:
+        "200":
+          description: Updated reflection
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Reflection"}
+        "404": {description: Reflection not found}
+    delete:
+      operationId: deleteMyReflection
+      tags: [reflections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "204": {description: Reflection deleted}
+        "404": {description: Reflection not found}
 components:
   schemas:
+    ReflectionCategory:
+      type: string
+      enum: [gratitude, understanding, clarity, calm, purpose, acceptance]
+    Reflection:
+      type: object
+      required: [id, userId, category, message, createdAt, updatedAt]
+      properties:
+        id: {type: integer}
+        userId: {type: integer}
+        category: {$ref: "#/components/schemas/ReflectionCategory"}
+        message: {type: string, minLength: 1, maxLength: 300}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+    ReflectionInput:
+      type: object
+      required: [category, message]
+      properties:
+        category: {$ref: "#/components/schemas/ReflectionCategory"}
+        message: {type: string, minLength: 1, maxLength: 300}
+    ReflectionUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        category: {$ref: "#/components/schemas/ReflectionCategory"}
+        message: {type: string, minLength: 1, maxLength: 300}
+    ReflectionsPage:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/Reflection"}
+        nextCursor: {type: [string, "null"]}
     ExploreSection:
       type: object
       required: [id, slug, label, visible, sortOrder, coverImagePath, isDefault, inUseCount, canDelete, deleteBlockedReason]
