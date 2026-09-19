@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ProgressMirrorSections } from "@/components/ProgressMirrorSections";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { useStreak } from "@/hooks/useStreak";
@@ -57,39 +58,25 @@ export default function ProgresoScreen() {
           { paddingBottom: bottomPad + 32 },
         ]}
       >
-        <View style={styles.streakIntro}>
-          <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
-            {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
-          </Text>
-          <Text style={styles.streakIntroDescription}>
-            Medita al menos 3 días a la semana y transforma tu vida
-          </Text>
-          <View
-            style={styles.streakProgressBars}
-            accessibilityRole="progressbar"
-            accessibilityLabel={`${completedWeekDays} de 3 días de práctica semanal`}
-            accessibilityValue={{
-              min: 0,
-              max: 3,
-              now: Math.min(completedWeekDays, 3),
-            }}
-          >
-            {[0, 1, 2].map((index) =>
-              index < completedWeekDays ? (
-                <View
-                  key={index}
-                  style={[
-                    styles.streakProgressBarActive,
-                    { backgroundColor: theme.accent ?? colors.accent },
-                  ]}
-                />
-              ) : (
-                <View key={index} style={styles.streakProgressBarInactive} />
-              ),
-            )}
+        <CinematicFadeSlide
+          replayKey="progress-intro"
+          delay={200}
+          duration={3000}
+        >
+          <View style={styles.streakIntro}>
+            <Text style={[styles.streakIntroCount, { color: colors.foreground }]}>
+              {completedWeekDays} {completedWeekDays === 1 ? "Día de racha" : "Días de racha"}
+            </Text>
+            <Text style={styles.streakIntroDescription}>
+              Medita al menos 3 días a la semana y transforma tu vida
+            </Text>
           </View>
-        </View>
-        <ProgressMirrorSections />
+        </CinematicFadeSlide>
+        <ProgressMirrorSections
+          animateEntrance
+          entranceReplayKey="progress-sections"
+          entranceBaseDelay={900}
+        />
       </ScrollView>
     </LinearGradient>
   );
@@ -125,12 +112,14 @@ const styles = StyleSheet.create({
   },
   streakIntro: {
     marginBottom: 16,
+    alignItems: "center",
   },
   streakIntroCount: {
     fontFamily: "Manrope",
     fontSize: 24,
     lineHeight: 31,
     fontWeight: "700",
+    textAlign: "center",
   },
   streakIntroDescription: {
     color: "rgba(249,249,249,0.78)",
@@ -138,23 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 4,
-  },
-  streakProgressBars: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 14,
-  },
-  streakProgressBarActive: {
-    flex: 1,
-    height: 8,
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  streakProgressBarInactive: {
-    flex: 1,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "rgba(255,255,255,0.16)",
+    textAlign: "center",
   },
   streakSection: {
     borderRadius: 18,

@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HistorialCalendar } from "@/components/HistorialCalendar";
+import { CinematicFadeSlide } from "@/components/CinematicFadeSlide";
 import { StreakWeekRow } from "@/components/StreakWeekRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -17,10 +18,16 @@ export function ProgressMirrorSections({
   showSectionBorders = true,
   showPersonalStats = true,
   showCalendar = true,
+  animateEntrance = false,
+  entranceReplayKey = "progress-mirror",
+  entranceBaseDelay = 0,
 }: {
   showSectionBorders?: boolean;
   showPersonalStats?: boolean;
   showCalendar?: boolean;
+  animateEntrance?: boolean;
+  entranceReplayKey?: string | number;
+  entranceBaseDelay?: number;
 }) {
   const colors = useColors();
   const { theme } = useSceneTheme();
@@ -55,90 +62,134 @@ export function ProgressMirrorSections({
 
   return (
     <>
-      <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
-        <StreakWeekRow />
-        <View style={styles.sectionDivider} />
-        <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
-            value={currentStreak}
-            label="RACHA ACTUAL"
-            accent={accent}
-          />
-          <View style={styles.statDivider} />
-          <Stat
-            icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
-            value={maxStreak}
-            label="RACHA MÁS LARGA"
-            accent={accent}
-          />
+      <SectionEntrance
+        animated={animateEntrance}
+        replayKey={`${entranceReplayKey}:streak`}
+        delay={entranceBaseDelay}
+      >
+        <View style={[styles.streakSection, !showSectionBorders && styles.borderlessSection]}>
+          <StreakWeekRow />
+          <View style={styles.sectionDivider} />
+          <View style={[styles.statsValues, styles.statsValuesNoTitle]}>
+            <Stat
+              icon={<MaterialCommunityIcons name="spa" size={20} color="#F9F9F9" />}
+              value={currentStreak}
+              label="RACHA ACTUAL"
+              accent={accent}
+            />
+            <View style={styles.statDivider} />
+            <Stat
+              icon={<MaterialCommunityIcons name="spa" size={20} color="#BE9650" />}
+              value={maxStreak}
+              label="RACHA MÁS LARGA"
+              accent={accent}
+            />
+          </View>
         </View>
-      </View>
+      </SectionEntrance>
 
       {showPersonalStats ? (
-      <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
-        <View style={styles.personalStatsHeader}>
-          <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
-            Estadísticas personales
-          </Text>
-          <Pressable
-            onPress={() => setStatsFilterOpen((open) => !open)}
-            style={styles.filterTrigger}
-            accessibilityRole="button"
-            accessibilityLabel="Elegir filtro de días"
-            accessibilityState={{ expanded: statsFilterOpen }}
-          >
-            <Text style={[styles.filterText, { color: accent }]}>
-              Últimos {statsRangeDays} días
-            </Text>
-            <Feather name="chevron-down" size={17} color={accent} />
-          </Pressable>
-          {statsFilterOpen && (
-            <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
-              {([7, 30, 90] as const).map((days) => (
-                <Pressable
-                  key={days}
-                  onPress={() => {
-                    setStatsRangeDays(days);
-                    setStatsFilterOpen(false);
-                  }}
-                  style={[
-                    styles.filterOption,
-                    statsRangeDays === days && styles.filterOptionSelected,
-                  ]}
-                >
-                  <Text style={[styles.filterText, { color: accent }]}>
-                    Últimos {days} días
-                  </Text>
-                </Pressable>
-              ))}
+        <SectionEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:personal`}
+          delay={entranceBaseDelay + 500}
+        >
+          <View style={[styles.personalStatsSection, !showSectionBorders && styles.borderlessSection]}>
+            <View style={styles.personalStatsHeader}>
+              <Text style={[styles.personalStatsTitle, { color: colors.foreground }]}>
+                Estadísticas personales
+              </Text>
+              <Pressable
+                onPress={() => setStatsFilterOpen((open) => !open)}
+                style={styles.filterTrigger}
+                accessibilityRole="button"
+                accessibilityLabel="Elegir filtro de días"
+                accessibilityState={{ expanded: statsFilterOpen }}
+              >
+                <Text style={[styles.filterText, { color: accent }]}>
+                  Últimos {statsRangeDays} días
+                </Text>
+                <Feather name="chevron-down" size={17} color={accent} />
+              </Pressable>
+              {statsFilterOpen && (
+                <View style={[styles.filterMenu, { backgroundColor: theme.gradient[0] }]}>
+                  {([7, 30, 90] as const).map((days) => (
+                    <Pressable
+                      key={days}
+                      onPress={() => {
+                        setStatsRangeDays(days);
+                        setStatsFilterOpen(false);
+                      }}
+                      style={[
+                        styles.filterOption,
+                        statsRangeDays === days && styles.filterOptionSelected,
+                      ]}
+                    >
+                      <Text style={[styles.filterText, { color: accent }]}>
+                        Últimos {days} días
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
             </View>
-          )}
-        </View>
-        <View style={styles.statsValues}>
-          <Stat
-            icon={<Feather name="clock" size={20} color="#F9F9F9" />}
-            value={personalStats.totalMinutes}
-            label="MINUTOS TOTALES"
-            accent={accent}
-          />
-          <View style={styles.statDivider} />
-          <Stat
-            icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
-            value={personalStats.activeDays}
-            label="DÍAS ACTIVOS"
-            accent={accent}
-          />
-        </View>
-      </View>
+            <View style={styles.statsValues}>
+              <Stat
+                icon={<Feather name="clock" size={20} color="#F9F9F9" />}
+                value={personalStats.totalMinutes}
+                label="MINUTOS TOTALES"
+                accent={accent}
+              />
+              <View style={styles.statDivider} />
+              <Stat
+                icon={<Feather name="calendar" size={20} color="#F9F9F9" />}
+                value={personalStats.activeDays}
+                label="DÍAS ACTIVOS"
+                accent={accent}
+              />
+            </View>
+          </View>
+        </SectionEntrance>
       ) : null}
 
-      {showCalendar ? <HistorialCalendar
-        embedded
-        outlined={showSectionBorders}
-        backgroundColor={SECTION_BACKGROUND}
-      /> : null}
+      {showCalendar ? (
+        <SectionEntrance
+          animated={animateEntrance}
+          replayKey={`${entranceReplayKey}:calendar`}
+          delay={entranceBaseDelay + (showPersonalStats ? 1000 : 500)}
+        >
+          <HistorialCalendar
+            embedded
+            outlined={showSectionBorders}
+            backgroundColor={SECTION_BACKGROUND}
+          />
+        </SectionEntrance>
+      ) : null}
     </>
+  );
+}
+
+function SectionEntrance({
+  animated,
+  children,
+  delay,
+  replayKey,
+}: {
+  animated: boolean;
+  children: React.ReactNode;
+  delay: number;
+  replayKey: string | number;
+}) {
+  if (!animated) return <>{children}</>;
+
+  return (
+    <CinematicFadeSlide
+      replayKey={replayKey}
+      delay={delay}
+      duration={3000}
+    >
+      {children}
+    </CinematicFadeSlide>
   );
 }
 
