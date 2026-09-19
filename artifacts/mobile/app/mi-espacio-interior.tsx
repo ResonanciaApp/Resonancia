@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, FlatList, ActivityIndicator, Modal, TextInput, Platform, Animated, Easing } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -27,6 +27,97 @@ const MONTH_NAMES = [
   "Noviembre",
   "Diciembre",
 ] as const;
+
+function SlidingSheetModal({
+  visible,
+  onClose,
+  surfaceColor,
+  children,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  surfaceColor: string;
+  children: React.ReactNode;
+}) {
+  const [mounted, setMounted] = useState(visible);
+  const translateY = useRef(new Animated.Value(700)).current;
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      setMounted(true);
+      translateY.setValue(700);
+      overlayOpacity.setValue(0);
+      requestAnimationFrame(() => {
+        Animated.parallel([
+          Animated.timing(translateY, {
+            toValue: 0,
+            duration: 350,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(overlayOpacity, {
+            toValue: 1,
+            duration: 350,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      });
+      return;
+    }
+
+    if (mounted) {
+      Animated.parallel([
+        Animated.timing(translateY, {
+          toValue: 700,
+          duration: 350,
+          easing: Easing.in(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(overlayOpacity, {
+          toValue: 0,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+      ]).start(({ finished }) => {
+        if (finished) setMounted(false);
+      });
+    }
+  }, [mounted, overlayOpacity, translateY, visible]);
+
+  useEffect(() => () => {
+    translateY.stopAnimation();
+    overlayOpacity.stopAnimation();
+  }, [overlayOpacity, translateY]);
+
+  return (
+    <Modal
+      visible={mounted}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalRoot}>
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.modalOverlay, { opacity: overlayOpacity }]}
+        />
+        <Pressable style={styles.modalBackdrop} onPress={onClose}>
+          <Animated.View
+            accessibilityViewIsModal
+            style={[
+              styles.actionSheet,
+              { backgroundColor: surfaceColor, transform: [{ translateY }] },
+            ]}
+            onStartShouldSetResponder={() => true}
+          >
+            {children}
+          </Animated.View>
+        </Pressable>
+      </View>
+    </Modal>
+  );
+}
 
 function CollapsibleReflectionMessage({
   message,
@@ -534,110 +625,92 @@ export default function InnerSpaceScreen() {
           renderScrollComponent={Platform.OS === 'web' ? undefined : (props) => <KeyboardAwareScrollView {...props} />}
         />
       )}
-      <Modal
+      <SlidingSheetModal
         visible={monthPickerVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setMonthPickerVisible(false)}
+        onClose={() => setMonthPickerVisible(false)}
+        surfaceColor={theme.gradient[0]}
       >
-        <Pressable style={styles.modalBackdrop} onPress={() => setMonthPickerVisible(false)}>
-          <Pressable
-            accessibilityViewIsModal
-            style={[styles.actionSheet, { backgroundColor: theme.gradient[0], borderColor: colors.border }]}
-            onPress={(event) => event.stopPropagation()}
-          >
-            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>
-              Seleccionar mes · {selectedYear}
-            </Text>
-            <ScrollView style={styles.monthList} showsVerticalScrollIndicator={false}>
-              {MONTH_NAMES.map((month, index) => {
-                const isSelected = selectedMonth === index;
-                return (
-                  <Pressable
-                    key={month}
-                    testID={`month-${index}`}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    style={[styles.monthOption, isSelected && styles.monthOptionSelected]}
-                    onPress={() => {
-                      setSelectedMonth(index);
-                      setMonthPickerVisible(false);
-                    }}
-                  >
-                    <Text style={[styles.monthOptionText, isSelected && styles.monthOptionTextSelected]}>
-                      {month}
-                    </Text>
-                    {isSelected && <Feather name="check" size={18} color="#060A0F" />}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </Pressable>
-        </Pressable>
-      </Modal>
-      <Modal
-        visible={Boolean(actionReflection)}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setActionReflection(null)}
-      >
-        <Pressable style={styles.modalBackdrop} onPress={() => setActionReflection(null)}>
-          <Pressable
-            accessibilityViewIsModal
-            style={[styles.actionSheet, { backgroundColor: theme.gradient[0], borderColor: colors.border }]}
-            onPress={(event) => event.stopPropagation()}
-          >
-            {actionMode === "menu" ? (
-              <>
-                <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>Reflexión</Text>
-                <Pressable
-                  testID="reflection-edit-action"
-                  accessibilityRole="button"
-                  style={styles.actionRow}
-                  onPress={() => actionReflection && beginEditing(actionReflection)}
-                >
-                  <Feather name="edit-2" size={19} color={colors.foreground} />
-                  <Text style={[styles.actionLabel, { color: colors.foreground }]}>Editar</Text>
-                </Pressable>
-                <Pressable
-                  testID="reflection-delete-action"
-                  accessibilityRole="button"
-                  style={styles.actionRow}
-                  onPress={() => setActionMode("delete")}
-                >
-                  <Feather name="trash-2" size={19} color={colors.destructive} />
-                  <Text style={[styles.actionLabel, { color: colors.destructive }]}>Eliminar</Text>
-                </Pressable>
-              </>
-            ) : (
-              <>
-                <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>¿Eliminar esta reflexión?</Text>
-                <Text style={[styles.actionSheetBody, { color: colors.mutedForeground }]}>
-                  Esta acción no se puede deshacer.
+        <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>
+          Seleccionar mes · {selectedYear}
+        </Text>
+        <ScrollView style={styles.monthList} showsVerticalScrollIndicator={false}>
+          {MONTH_NAMES.map((month, index) => {
+            const isSelected = selectedMonth === index;
+            return (
+              <Pressable
+                key={month}
+                testID={`month-${index}`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                style={[styles.monthOption, isSelected && styles.monthOptionSelected]}
+                onPress={() => {
+                  setSelectedMonth(index);
+                  setMonthPickerVisible(false);
+                }}
+              >
+                <Text style={[styles.monthOptionText, isSelected && styles.monthOptionTextSelected]}>
+                  {month}
                 </Text>
-                <View style={styles.confirmActions}>
-                  <Pressable
-                    testID="reflection-delete-cancel"
-                    accessibilityRole="button"
-                    style={styles.confirmButton}
-                    onPress={() => setActionMode("menu")}
-                  >
-                    <Text style={[styles.confirmLabel, { color: colors.foreground }]}>Cancelar</Text>
-                  </Pressable>
-                  <Pressable
-                    testID="reflection-delete-confirm"
-                    accessibilityRole="button"
-                    style={[styles.confirmButton, styles.destructiveButton]}
-                    onPress={confirmDelete}
-                  >
-                    <Text style={[styles.confirmLabel, { color: "#FFFFFF" }]}>Eliminar</Text>
-                  </Pressable>
-                </View>
-              </>
-            )}
-          </Pressable>
-        </Pressable>
-      </Modal>
+                {isSelected && <Feather name="check" size={18} color="#060A0F" />}
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </SlidingSheetModal>
+      <SlidingSheetModal
+        visible={Boolean(actionReflection)}
+        onClose={() => setActionReflection(null)}
+        surfaceColor={theme.gradient[0]}
+      >
+        {actionMode === "menu" ? (
+          <>
+            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>Reflexión</Text>
+            <Pressable
+              testID="reflection-edit-action"
+              accessibilityRole="button"
+              style={styles.actionRow}
+              onPress={() => actionReflection && beginEditing(actionReflection)}
+            >
+              <Feather name="edit-2" size={19} color={colors.foreground} />
+              <Text style={[styles.actionLabel, { color: colors.foreground }]}>Editar</Text>
+            </Pressable>
+            <Pressable
+              testID="reflection-delete-action"
+              accessibilityRole="button"
+              style={styles.actionRow}
+              onPress={() => setActionMode("delete")}
+            >
+              <Feather name="trash-2" size={19} color={colors.destructive} />
+              <Text style={[styles.actionLabel, { color: colors.destructive }]}>Eliminar</Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={[styles.actionSheetTitle, { color: colors.foreground }]}>¿Eliminar esta reflexión?</Text>
+            <Text style={[styles.actionSheetBody, { color: colors.mutedForeground }]}>
+              Esta acción no se puede deshacer.
+            </Text>
+            <View style={styles.confirmActions}>
+              <Pressable
+                testID="reflection-delete-cancel"
+                accessibilityRole="button"
+                style={styles.confirmButton}
+                onPress={() => setActionMode("menu")}
+              >
+                <Text style={[styles.confirmLabel, { color: colors.foreground }]}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                testID="reflection-delete-confirm"
+                accessibilityRole="button"
+                style={[styles.confirmButton, styles.destructiveButton]}
+                onPress={confirmDelete}
+              >
+                <Text style={[styles.confirmLabel, { color: "#FFFFFF" }]}>Eliminar</Text>
+              </Pressable>
+            </View>
+          </>
+        )}
+      </SlidingSheetModal>
     </LinearGradient>
   );
 }
@@ -915,15 +988,20 @@ const styles = StyleSheet.create({
   monthOptionTextSelected: {
     color: "#060A0F",
   },
-  modalBackdrop: {
+  modalRoot: {
+    flex: 1,
+  },
+  modalOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.62)",
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "flex-end",
   },
   actionSheet: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    borderWidth: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 34,
